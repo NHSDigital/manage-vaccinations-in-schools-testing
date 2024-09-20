@@ -1,4 +1,4 @@
-# Immunisation API test automation project
+# Manage vaccinations in schools
 
 ## Introduction
 
