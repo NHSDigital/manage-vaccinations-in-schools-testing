@@ -5,6 +5,8 @@ import os
 
 
 class CurrentExecution:
+    page = None
+
     def start_execution(self):
         self.execution_start_time = datetime.now()
         self.get_env_values()
@@ -40,27 +42,28 @@ class CurrentExecution:
     def quit_browser(self):
         self.browser.close()
 
-    def launch_chromium(self):
+    @staticmethod
+    def launch_chromium():
         try:
-            self.browser = self.playwright.chromium.launch(headless=self.headless_mode, args=["--fullscreen"])
-            self.context = self.browser.new_context(
-                http_credentials={"username": "manage", "password": "vaccinations"}
+            CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(headless=CurrentExecution.headless_mode, args=["--fullscreen"])
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
             )
-            self.page = self.context.new_page()
-            self.page.goto(url=self.environment)
+            CurrentExecution.page = CurrentExecution.context.new_page()
+            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
             print(f"Error launching Chromium: {e}")
 
-    def launch_edge(self):
+    def launch_edge():
         try:
-            self.browser = self.playwright.chromium.launch(
-                channel="msedge", headless=self.headless_mode, args=["--fullscreen"]
+            CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
+                channel="msedge", headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
-            self.context = self.browser.new_context(
-                http_credentials={"username": "manage", "password": "vaccinations"}
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
             )
-            self.page = self.context.new_page()
-            self.page.goto(url=self.environment)
+            CurrentExecution.page = CurrentExecution.context.new_page()
+            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
             print(f"Error launching Edge: {e}")
 
@@ -68,7 +71,7 @@ class CurrentExecution:
         try:
             self.browser = self.playwright.webkit.launch(headless=self.headless_mode, args=["--fullscreen"])
             self.context = self.browser.new_context(
-                http_credentials={"username": "manage", "password": "vaccinations"}
+                http_credentials={"username": self.base_auth_username, "password": self.base_auth_password}
             )
             self.page = self.context.new_page()
             self.page.goto(url=self.environment)
@@ -81,7 +84,7 @@ class CurrentExecution:
                 channel="chrome", headless=self.headless_mode, args=["--fullscreen"]
             )
             self.context = self.browser.new_context(
-                http_credentials={"username": "manage", "password": "vaccinations"}
+                http_credentials={"username": self.base_auth_username, "password": self.base_auth_password}
             )
             self.page = self.context.new_page()
             self.page.goto(url=self.environment)
@@ -92,7 +95,7 @@ class CurrentExecution:
         try:
             self.browser = self.playwright.firefox.launch(headless=self.headless_mode, args=["--fullscreen"])
             self.context = self.browser.new_context(
-                http_credentials={"username": "manage", "password": "vaccinations"}
+                http_credentials={"username": self.base_auth_username, "password": self.base_auth_password}
             )
             self.page = self.context.new_page()
             self.page.goto(url=self.environment)

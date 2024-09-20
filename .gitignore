@@ -19,3 +19,4 @@ screenshots/
 .env
 venv/
 .venv/
+.vscode/
