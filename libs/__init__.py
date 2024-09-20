@@ -6,38 +6,44 @@ import os
 
 class CurrentExecution:
     page = None
+    environment = None
+    base_auth_username=""
+    base_auth_password=""
+    current_browser_name=""
+    headless_mode=False
+    playwright=None
 
     def start_execution(self):
         self.execution_start_time = datetime.now()
-        self.get_env_values()
-        self.start_browser()
+        CurrentExecution.get_env_values()
+        CurrentExecution.start_browser()
 
     def end_execution(self):
         self.execution_end_time = datetime.now()
         self.execution_duration = self.execution_end_time - self.execution_start_time
-        self.quit_browser()
+        CurrentExecution.quit_browser()
 
-    def get_env_values(self):
+    @staticmethod
+    def get_env_values():
         load_dotenv()
-        self.environment = os.getenv("TEST_URL")
-        self.base_auth_username = os.getenv("TEST_USERNAME")
-        self.base_auth_password = os.getenv("TEST_PASSWORD")
-        self.current_browser_name = os.getenv("BROWSER").lower()
-        self.headless_mode = os.getenv("HEADLESS").lower() == "true"
+        CurrentExecution.environment = os.getenv("TEST_URL")
+        CurrentExecution.base_auth_username = os.getenv("TEST_USERNAME")
+        CurrentExecution.base_auth_password = os.getenv("TEST_PASSWORD")
+        CurrentExecution.current_browser_name = os.getenv("BROWSER").lower()
+        CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
 
-    def start_browser(self):
-        self.playwright = sync_playwright().start()
-        match self.current_browser_name:
+    @staticmethod
+    def start_browser():
+        CurrentExecution.playwright = sync_playwright().start()
+        match CurrentExecution.current_browser_name:
             case "chromium":
-                self.launch_chromium()
+                CurrentExecution.launch_chromium()
             case "edge":
-                self.launch_edge()
-            case "safari":
-                self.launch_safari()
+                CurrentExecution.launch_edge()
             case "firefox":
-                self.launch_firefox()
+                CurrentExecution.launch_firefox()
             case _:  # Chrome for all other cases
-                self.launch_chrome()
+                CurrentExecution.launch_chrome()
 
     def quit_browser(self):
         self.browser.close()
@@ -52,8 +58,9 @@ class CurrentExecution:
             CurrentExecution.page = CurrentExecution.context.new_page()
             CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
-            print(f"Error launching Chromium: {e}")
+            raise AssertionError(f"Error launching Chromium: {e}")
 
+    @staticmethod
     def launch_edge():
         try:
             CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
@@ -65,42 +72,33 @@ class CurrentExecution:
             CurrentExecution.page = CurrentExecution.context.new_page()
             CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
-            print(f"Error launching Edge: {e}")
+            raise AssertionError(f"Error launching Edge: {e}")
 
-    def launch_safari(self):
+    @staticmethod
+    def launch_firefox():
         try:
-            self.browser = self.playwright.webkit.launch(headless=self.headless_mode, args=["--fullscreen"])
-            self.context = self.browser.new_context(
-                http_credentials={"username": self.base_auth_username, "password": self.base_auth_password}
+            CurrentExecution.browser = CurrentExecution.playwright.firefox.launch(headless=CurrentExecution.headless_mode, args=["--fullscreen"])
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
             )
-            self.page = self.context.new_page()
-            self.page.goto(url=self.environment)
+            CurrentExecution.page = CurrentExecution.context.new_page()
+            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
-            print(f"Error launching Safari: {e}")
+            raise AssertionError(f"Error launching Firefox: {e}")
 
-    def launch_chrome(self):
+    @staticmethod
+    def launch_chrome():
         try:
-            self.browser = self.playwright.chromium.launch(
-                channel="chrome", headless=self.headless_mode, args=["--fullscreen"]
+            CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
+                channel="chrome", headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
-            self.context = self.browser.new_context(
-                http_credentials={"username": self.base_auth_username, "password": self.base_auth_password}
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
             )
-            self.page = self.context.new_page()
-            self.page.goto(url=self.environment)
+            CurrentExecution.page = CurrentExecution.context.new_page()
+            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
-            print(f"Error launching Safari: {e}")
-
-    def launch_firefox(self):
-        try:
-            self.browser = self.playwright.firefox.launch(headless=self.headless_mode, args=["--fullscreen"])
-            self.context = self.browser.new_context(
-                http_credentials={"username": self.base_auth_username, "password": self.base_auth_password}
-            )
-            self.page = self.context.new_page()
-            self.page.goto(url=self.environment)
-        except Exception as e:
-            print(f"Error launching Firefox: {e}")
+            raise AssertionError(f"Error launching Chrome: {e}")
 
     def launch_mobile_browser(self):
         device_name = self.device_name.lower()
