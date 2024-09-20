@@ -16,6 +16,7 @@ class Test_Smoke:
 
     @pytest.mark.smoke
     @pytest.mark.order(1)
+    @pytest.mark.skip(reason="Do not run via Github actions")
     def test_smoke_files_and_paths(self):
         assert self.fo.check_if_path_exists(file_or_folder_path=".env"), ".env file not found at the project root."
         assert self.fo.check_if_path_exists(
