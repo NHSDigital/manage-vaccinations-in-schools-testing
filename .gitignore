@@ -11,3 +11,11 @@
 !project.code-workspace
 
 # Please, add your custom content below!
+*.pyc
+*.png
+__pycache__/
+.pytest_cache/
+screenshots/
+.env
+venv/
+.venv/
