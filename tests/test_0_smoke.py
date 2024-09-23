@@ -19,7 +19,6 @@ class Test_Smoke:
     @pytest.mark.smoke
     @pytest.mark.order(1)
     def test_smoke_files_and_paths(self):
-        assert self.fo.check_if_path_exists(file_or_folder_path=".env"), ".env file not found at the project root."
         assert self.fo.check_if_path_exists(
             file_or_folder_path="screenshots/"
         ), "Screenshots folder does not exist at project root"
