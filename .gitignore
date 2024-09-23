@@ -19,3 +19,5 @@ __pycache__/
 venv/
 .venv/
 .vscode/
+screenshots/*
+main.py
