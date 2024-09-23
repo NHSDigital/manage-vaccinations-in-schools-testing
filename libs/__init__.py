@@ -44,9 +44,10 @@ class CurrentExecution:
                 CurrentExecution.launch_firefox()
             case _:  # Chrome for all other cases
                 CurrentExecution.launch_chrome()
-
-    def quit_browser(self):
-        self.browser.close()
+    
+    @staticmethod
+    def quit_browser():
+        CurrentExecution.browser.close()
 
     @staticmethod
     def launch_chromium():
