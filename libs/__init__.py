@@ -1,6 +1,6 @@
 from datetime import datetime
 from dotenv import load_dotenv
-from playwright.sync_api import sync_playwright, Browser, expect
+from playwright.sync_api import sync_playwright
 import os
 
 
