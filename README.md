@@ -1,5 +1,8 @@
 # Manage vaccinations in schools
 
+[![Run MAVIS tests on TEST](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/MAVIS_TEST.yml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/MAVIS_TEST.yml)
+
+
 ## Introduction
 
 This is a test automation project to test the manage vaccinations in schools (MAVIS) project.  It contains several positive and negative functional as well as regression tests.
