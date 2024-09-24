@@ -1,19 +1,11 @@
 import pytest
 import subprocess
-from libs import CurrentExecution
 from libs import file_ops
 from playwright.sync_api import expect
 
 
 class Test_Smoke:
-    ce = CurrentExecution()
     fo = file_ops.file_operations()
-
-    @pytest.fixture
-    def setup(self):
-        self.ce.start_execution()
-        yield
-        self.ce.end_execution()
 
     # SELF TEST
     @pytest.mark.smoke
@@ -36,4 +28,4 @@ class Test_Smoke:
     @pytest.mark.smoke
     @pytest.mark.order(3)
     def test_smoke_homepage_loads(self, setup):
-        expect(self.ce.page.locator("h1")).to_contain_text("Manage vaccinations in schools")
+        expect(setup.locator("h1")).to_contain_text("Manage vaccinations in schools")

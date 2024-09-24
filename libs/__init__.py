@@ -12,16 +12,23 @@ class CurrentExecution:
     current_browser_name=""
     headless_mode=False
     playwright=None
+    execution_start_time=None
+    execution_end_time=None
+    execution_duration=None
 
-    def start_execution(self):
-        self.execution_start_time = datetime.now()
+
+    @staticmethod
+    def start_execution():
+        CurrentExecution.execution_start_time = datetime.now()
         CurrentExecution.get_env_values()
         CurrentExecution.start_browser()
+        return CurrentExecution.page
 
-    def end_execution(self):
-        self.execution_end_time = datetime.now()
-        self.execution_duration = self.execution_end_time - self.execution_start_time
+    @staticmethod
+    def end_execution():
         CurrentExecution.quit_browser()
+        CurrentExecution.execution_end_time = datetime.now()
+        CurrentExecution.execution_duration = CurrentExecution.execution_end_time - CurrentExecution.execution_start_time
 
     @staticmethod
     def get_env_values():
