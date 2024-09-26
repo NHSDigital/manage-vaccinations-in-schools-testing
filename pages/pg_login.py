@@ -3,7 +3,7 @@ from libs.constants import object_properties, actions
 from libs import CurrentExecution
 
 
-class login:
+class pg_login:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
 

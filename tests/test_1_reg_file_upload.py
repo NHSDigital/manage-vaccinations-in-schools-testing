@@ -3,7 +3,7 @@ from pages import pg_login
 
 
 class Test_Regression:
-    login_page = pg_login.login()
+    login_page = pg_login.pg_login()
 
     @pytest.mark.regression
     @pytest.mark.order(101)
