@@ -26,18 +26,35 @@ class playwright_operations:
                 expect(elem).to_contain_text(value)
 
     def perform_action(self, page, locator, action, value=None) -> None:
-        self.capture_screenshot(page=page, identifier=locator, action=action)
+        self.capture_screenshot(page=page, identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
-                elem = page.get_by_role("link", name=locator)
+                elem = page.get_by_role("link", name=locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_BUTTON:
-                elem = page.get_by_role("button", name=locator)
+                elem = page.get_by_role("button", name=locator).nth(0)
+                elem.scroll_into_view_if_needed()
+                elem.click()
+            case actions.CLICK_LABEL:
+                elem = page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.FILL:
-                elem = page.get_by_label(locator, exact=True)
+                elem = page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
                 elem.fill(value)
+                self.capture_screenshot(page=page, identifier=locator, action=f"after-{action}")
+            case actions.RADIO_BUTTON_SELECT:
+                elem = page.get_by_text(locator, exact=True).nth(0)
+                elem.scroll_into_view_if_needed()
+                elem.click()
+                self.capture_screenshot(page=page, identifier=locator, action=f"after-{action}")
+            case actions.SELECT_FILE:
+                # _values = os.path.split(value)
+                # _file_path = _values[0]
+                # _file_name = _values[1]
+                elem = page.get_by_label(locator, exact=True).nth(0)
+                elem.scroll_into_view_if_needed()
+                elem.set_input_files(value)

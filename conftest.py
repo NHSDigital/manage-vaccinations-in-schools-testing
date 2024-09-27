@@ -7,8 +7,8 @@ from datetime import datetime
 @pytest.fixture(scope="session")
 def start_exe_session():
     ce.execution_start_time = datetime.now()
-    ce.session_screenshots_dir = create_session_screenshot_dir()
     ce.get_env_values()
+    ce.session_screenshots_dir = create_session_screenshot_dir()
     ce.start_browser()
     yield
     ce.quit_browser()
@@ -24,7 +24,8 @@ def browser_page(start_exe_session):
 
 
 def create_session_screenshot_dir() -> str:
-    _start_time = str(ce.execution_start_time).replace("-", "").replace(" ", "").replace(":", "").split(".")[0]
-    _session_name = f"Execution-{_start_time}"
-    fo.file_operations().create_dir(dir_path=f"screenshots/{_session_name}")
-    return f"screenshots/{_session_name}"
+    if ce.capture_screenshot_flag:
+        _start_time = str(ce.execution_start_time).replace("-", "").replace(" ", "").replace(":", "").split(".")[0]
+        _session_name = f"Execution-{_start_time}"
+        fo.file_operations().create_dir(dir_path=f"screenshots/{_session_name}")
+        return f"screenshots/{_session_name}"
