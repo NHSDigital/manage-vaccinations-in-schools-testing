@@ -39,7 +39,7 @@ class CurrentExecution:
         CurrentExecution.login_password = os.getenv("LOGIN_PASSWORD")
         CurrentExecution.current_browser_name = os.getenv("BROWSER").lower()
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
-        CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower == "true"
+        CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
 
     @staticmethod
     def start_browser():

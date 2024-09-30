@@ -15,7 +15,10 @@ class Test_Smoke:
     def test_smoke_files_and_paths(self):
         assert self.fo.check_if_path_exists(
             file_or_folder_path="screenshots/"
-        ), "Screenshots folder does not exist at project root"
+        ), "screenshots folder does not exist at project root"
+        assert self.fo.check_if_path_exists(
+            file_or_folder_path="test_data/"
+        ), "test_data folder does not exist at project root"
 
     @pytest.mark.smoke
     @pytest.mark.order(2)
@@ -30,7 +33,6 @@ class Test_Smoke:
     @pytest.mark.order(3)
     def test_smoke_homepage_loads(self, browser_page):
         self.po.verify(
-            page=browser_page,
             locator="heading",
             property=object_properties.TEXT,
             value="Manage vaccinations in schools (Mavis)",

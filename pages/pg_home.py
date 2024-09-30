@@ -7,5 +7,5 @@ class pg_home:
 
     LNK_PROGRAMMES = "Programmes"
 
-    def click_programmes(self, browser_page):
-        self.po.perform_action(page=browser_page, locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
+    def click_programmes(self):
+        self.po.perform_action(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)

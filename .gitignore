@@ -19,5 +19,10 @@ __pycache__/
 venv/
 .venv/
 .vscode/
+
+# Chinmay
 screenshots/*
+logs/*
+reports/*
 main.py
+
