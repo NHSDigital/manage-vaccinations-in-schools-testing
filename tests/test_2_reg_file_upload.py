@@ -10,8 +10,8 @@ class Test_Regression:
     programmes_page = pg_programmes.pg_programmes()
 
     @pytest.mark.regression
-    @pytest.mark.order(101)
-    def test_reg_file_upload(self, browser_page):
+    @pytest.mark.order(201)
+    def test_reg_file_upload(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_vaccination_records(file_path="test_data/hpv/file2.csv")
+        self.programmes_page.upload_vaccination_records(template_path="test_data/hpv/file1.csv")

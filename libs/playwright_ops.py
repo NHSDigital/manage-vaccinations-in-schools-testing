@@ -25,6 +25,9 @@ class playwright_operations:
                 elem.scroll_into_view_if_needed()
                 expect(elem).to_contain_text(value)
 
+    def get_object_property(self, locator: str, property: str, value: str) -> str:
+        pass
+
     def perform_action(self, locator, action, value=None) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():

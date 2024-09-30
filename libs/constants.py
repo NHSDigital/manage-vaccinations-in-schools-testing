@@ -13,3 +13,9 @@ class actions:
 
 class screenshot_types:
     JPEG = "jpeg"
+
+
+class file_mode:
+    READ = "r"
+    WRITE = "w"
+    APPEND = "a"

@@ -19,6 +19,9 @@ class Test_Smoke:
         assert self.fo.check_if_path_exists(
             file_or_folder_path="test_data/"
         ), "test_data folder does not exist at project root"
+        assert self.fo.check_if_path_exists(
+            file_or_folder_path="working/"
+        ), "working folder does not exist at project root"
 
     @pytest.mark.smoke
     @pytest.mark.order(2)
@@ -31,7 +34,7 @@ class Test_Smoke:
     # CHECK APPLICATION ACCESS
     @pytest.mark.smoke
     @pytest.mark.order(3)
-    def test_smoke_homepage_loads(self, browser_page):
+    def test_smoke_homepage_loads(self, create_browser_page):
         self.po.verify(
             locator="heading",
             property=object_properties.TEXT,

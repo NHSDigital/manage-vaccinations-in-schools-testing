@@ -20,7 +20,7 @@ venv/
 .venv/
 .vscode/
 
-# Chinmay
+# Local
 screenshots/*
 logs/*
 reports/*

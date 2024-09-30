@@ -17,7 +17,7 @@ def start_exe_session():
 
 
 @pytest.fixture
-def browser_page(start_exe_session):
+def create_browser_page(start_exe_session):
     ce.start_test()
     yield ce.page
     ce.end_test()
