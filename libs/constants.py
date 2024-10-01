@@ -19,3 +19,8 @@ class file_mode:
     READ = "r"
     WRITE = "w"
     APPEND = "a"
+
+
+class api_constants:
+    API_SUCCESS_STATUS_CODE_MIN = 200
+    API_SUCCESS_STATUS_CODE_MAX = 299

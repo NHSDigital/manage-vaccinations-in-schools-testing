@@ -1,8 +1,5 @@
-from libs import playwright_ops
+from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.constants import actions
-from libs import CurrentExecution
-from libs import testdata_ops
-from libs import file_ops
 
 
 class pg_programmes:
@@ -62,14 +59,22 @@ class pg_programmes:
             value=file_path,
         )
 
-    def upload_vaccination_records(self, template_path: str):
-        _data_file_path = self.tdo.create_file_from_template(template_path=template_path)
-        _input_df = self.fo.read_file_to_df(file_path=_data_file_path)
+    def upload_hpv_vaccination_records(self, input_file_path: str):
         self.click_HPV()
         self.click_Imports()
         self.click_ImportRecords()
         self.select_VaccinationRecords()
         self.click_Continue()
-        self.choose_file_vaccination_records(file_path=_data_file_path)
+        self.choose_file_vaccination_records(file_path=input_file_path)
+        self.click_Continue()
+        self.click_UploadRecords()
+
+    def upload_hpv_child_records(self, input_file_path: str):
+        self.click_HPV()
+        self.click_Imports()
+        self.click_ImportRecords()
+        self.select_ChildRecords()
+        self.click_Continue()
+        self.choose_file_child_records(file_path=input_file_path)
         self.click_Continue()
         self.click_UploadRecords()

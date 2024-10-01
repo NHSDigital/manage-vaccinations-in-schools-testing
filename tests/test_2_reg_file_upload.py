@@ -1,7 +1,6 @@
 import pytest
-from pages import pg_login
-from pages import pg_home
-from pages import pg_programmes
+
+from pages import pg_home, pg_login, pg_programmes
 
 
 class Test_Regression:
@@ -14,4 +13,4 @@ class Test_Regression:
     def test_reg_file_upload(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_vaccination_records(template_path="test_data/hpv/file1.csv")
+        self.programmes_page.upload_hpv_vaccination_records(input_file_path="test_data/hpv/hpv_positive_full.csv")

@@ -1,7 +1,9 @@
-from playwright.sync_api import expect
-from libs.constants import object_properties, actions, screenshot_types
-from libs import CurrentExecution
 import os
+
+from playwright.sync_api import expect
+
+from libs import CurrentExecution
+from libs.constants import actions, object_properties, screenshot_types
 
 
 class playwright_operations:
