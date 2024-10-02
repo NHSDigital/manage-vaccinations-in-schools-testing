@@ -1,8 +1,9 @@
 import pytest
+
 from pages import pg_login
 
 
-class Test_Regression:
+class Test_Regression_Login:
     login_page = pg_login.pg_login()
 
     parameters = [
