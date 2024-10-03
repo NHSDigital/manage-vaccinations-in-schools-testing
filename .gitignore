@@ -19,5 +19,10 @@ __pycache__/
 venv/
 .venv/
 .vscode/
+
+# Local
 screenshots/*
+logs/*
+reports/*
 main.py
+

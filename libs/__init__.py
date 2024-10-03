@@ -1,4 +1,3 @@
-from datetime import datetime
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 import os
@@ -7,28 +6,27 @@ import os
 class CurrentExecution:
     page = None
     environment = None
-    base_auth_username=""
-    base_auth_password=""
-    current_browser_name=""
-    headless_mode=False
-    playwright=None
-    execution_start_time=None
-    execution_end_time=None
-    execution_duration=None
-
-
-    @staticmethod
-    def start_execution():
-        CurrentExecution.execution_start_time = datetime.now()
-        CurrentExecution.get_env_values()
-        CurrentExecution.start_browser()
-        return CurrentExecution.page
+    base_auth_username = ""
+    base_auth_password = ""
+    current_browser_name = ""
+    headless_mode = False
+    playwright = None
+    execution_start_time = None
+    execution_end_time = None
+    execution_duration = None
+    session_screenshots_dir = ""
+    screenshot_sequence = 0
+    capture_screenshot_flag = False
+    login_username: str = ""
+    login_password: str = ""
 
     @staticmethod
-    def end_execution():
-        CurrentExecution.quit_browser()
-        CurrentExecution.execution_end_time = datetime.now()
-        CurrentExecution.execution_duration = CurrentExecution.execution_end_time - CurrentExecution.execution_start_time
+    def start_test():
+        CurrentExecution.start_page()
+
+    @staticmethod
+    def end_test():
+        CurrentExecution.close_page()
 
     @staticmethod
     def get_env_values():
@@ -36,8 +34,11 @@ class CurrentExecution:
         CurrentExecution.environment = os.getenv("TEST_URL")
         CurrentExecution.base_auth_username = os.getenv("TEST_USERNAME")
         CurrentExecution.base_auth_password = os.getenv("TEST_PASSWORD")
+        CurrentExecution.login_username = os.getenv("LOGIN_USERNAME")
+        CurrentExecution.login_password = os.getenv("LOGIN_PASSWORD")
         CurrentExecution.current_browser_name = os.getenv("BROWSER").lower()
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
+        CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
 
     @staticmethod
     def start_browser():
@@ -53,18 +54,30 @@ class CurrentExecution:
                 CurrentExecution.launch_chrome()
 
     @staticmethod
+    def start_page():
+        CurrentExecution.context = CurrentExecution.browser.new_context(
+            http_credentials={
+                "username": CurrentExecution.base_auth_username,
+                "password": CurrentExecution.base_auth_password,
+            }
+        )
+        CurrentExecution.page = CurrentExecution.context.new_page()
+        CurrentExecution.page.goto(url=CurrentExecution.environment)
+
+    @staticmethod
     def quit_browser():
         CurrentExecution.browser.close()
 
     @staticmethod
+    def close_page():
+        CurrentExecution.page.close()
+
+    @staticmethod
     def launch_chromium():
         try:
-            CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(headless=CurrentExecution.headless_mode, args=["--fullscreen"])
-            CurrentExecution.context = CurrentExecution.browser.new_context(
-                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
+            CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
+                headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
-            CurrentExecution.page = CurrentExecution.context.new_page()
-            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
             raise AssertionError(f"Error launching Chromium: {e}")
 
@@ -74,23 +87,15 @@ class CurrentExecution:
             CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
                 channel="msedge", headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
-            CurrentExecution.context = CurrentExecution.browser.new_context(
-                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
-            )
-            CurrentExecution.page = CurrentExecution.context.new_page()
-            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
             raise AssertionError(f"Error launching Edge: {e}")
 
     @staticmethod
     def launch_firefox():
         try:
-            CurrentExecution.browser = CurrentExecution.playwright.firefox.launch(headless=CurrentExecution.headless_mode, args=["--fullscreen"])
-            CurrentExecution.context = CurrentExecution.browser.new_context(
-                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
+            CurrentExecution.browser = CurrentExecution.playwright.firefox.launch(
+                headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
-            CurrentExecution.page = CurrentExecution.context.new_page()
-            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
             raise AssertionError(f"Error launching Firefox: {e}")
 
@@ -100,11 +105,6 @@ class CurrentExecution:
             CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
                 channel="chrome", headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
-            CurrentExecution.context = CurrentExecution.browser.new_context(
-                http_credentials={"username": CurrentExecution.base_auth_username, "password": CurrentExecution.base_auth_password}
-            )
-            CurrentExecution.page = CurrentExecution.context.new_page()
-            CurrentExecution.page.goto(url=CurrentExecution.environment)
         except Exception as e:
             raise AssertionError(f"Error launching Chrome: {e}")
 
