@@ -43,5 +43,7 @@ jobs:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         TEST_URL: ${{ secrets.TEST_URL }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        echo "capture screenshots: $CAPTURE_SCREENSHOTS"
       run: |
-        pytest
+        pytest -m smoke
