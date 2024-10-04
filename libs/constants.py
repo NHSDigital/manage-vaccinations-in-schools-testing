@@ -31,3 +31,7 @@ class api_constants:
 class workflow_type:
     APPLICATION = "application"
     PARENTAL_CONSENT = "parental_consent"
+
+
+class data_values:
+    EMPTY = "<empty>"
