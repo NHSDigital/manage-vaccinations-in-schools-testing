@@ -1,28 +1,30 @@
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
+from libs.constants import workflow_type
 import os
 
 
 class CurrentExecution:
     page = None
     environment = None
-    base_auth_username = ""
-    base_auth_password = ""
-    current_browser_name = ""
-    headless_mode = False
-    playwright = None
+    base_auth_username: str = ""
+    base_auth_password: str = ""
+    current_browser_name: str = ""
+    headless_mode: bool = False
+    playwright: bool = None
     execution_start_time = None
     execution_end_time = None
     execution_duration = None
-    session_screenshots_dir = ""
-    screenshot_sequence = 0
-    capture_screenshot_flag = False
+    session_screenshots_dir: str = ""
+    screenshot_sequence: int = 0
+    capture_screenshot_flag: bool = False
     login_username: str = ""
     login_password: str = ""
+    parental_consent_url: str = ""
 
     @staticmethod
-    def start_test():
-        CurrentExecution.start_page()
+    def start_test(w_type: workflow_type):
+        CurrentExecution.start_page(w_type=w_type)
 
     @staticmethod
     def end_test():
@@ -39,6 +41,7 @@ class CurrentExecution:
         CurrentExecution.current_browser_name = os.getenv("BROWSER").lower()
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
+        CurrentExecution.parental_consent_url = os.getenv("PARENTAL_CONSENT_URL")
 
     @staticmethod
     def start_browser():
@@ -54,7 +57,7 @@ class CurrentExecution:
                 CurrentExecution.launch_chrome()
 
     @staticmethod
-    def start_page():
+    def start_page(w_type: workflow_type):
         CurrentExecution.context = CurrentExecution.browser.new_context(
             http_credentials={
                 "username": CurrentExecution.base_auth_username,
@@ -62,7 +65,11 @@ class CurrentExecution:
             }
         )
         CurrentExecution.page = CurrentExecution.context.new_page()
-        CurrentExecution.page.goto(url=CurrentExecution.environment)
+        match w_type.lower():
+            case workflow_type.PARENTAL_CONSENT:
+                CurrentExecution.page.goto(url=CurrentExecution.parental_consent_url)
+            case _:
+                CurrentExecution.page.goto(url=CurrentExecution.environment)
 
     @staticmethod
     def quit_browser():

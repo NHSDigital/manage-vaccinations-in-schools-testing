@@ -52,7 +52,7 @@ class playwright_operations:
                 elem.fill(value)
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.RADIO_BUTTON_SELECT:
-                elem = self.ce.page.get_by_text(locator, exact=True).nth(0)
+                elem = self.ce.page.get_by_text(locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
@@ -60,3 +60,12 @@ class playwright_operations:
                 elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.set_input_files(value)
+            case actions.SELECT_FROM_LIST:
+                self.perform_action(locator=locator, action=actions.FILL, value=value)
+                elem = self.ce.page.get_by_role("option", name=value)
+                elem.scroll_into_view_if_needed()
+                elem.click()
+            case actions.CHECKBOX_CHECK:
+                elem = self.ce.page.get_by_label(locator).nth(0)
+                elem.scroll_into_view_if_needed()
+                elem.check()

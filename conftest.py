@@ -2,6 +2,7 @@ import pytest
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
 from datetime import datetime
+from libs.constants import workflow_type
 
 
 @pytest.fixture(scope="session")
@@ -18,7 +19,14 @@ def start_exe_session():
 
 @pytest.fixture
 def create_browser_page(start_exe_session):
-    ce.start_test()
+    ce.start_test(w_type=workflow_type.APPLICATION)
+    yield ce.page
+    ce.end_test()
+
+
+@pytest.fixture
+def start_consent_workflow(start_exe_session):
+    ce.start_test(w_type=workflow_type.PARENTAL_CONSENT)
     yield ce.page
     ce.end_test()
 
