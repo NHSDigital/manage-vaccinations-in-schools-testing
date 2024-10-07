@@ -46,6 +46,7 @@ class CurrentExecution:
     @staticmethod
     def start_browser():
         CurrentExecution.playwright = sync_playwright().start()
+        CurrentExecution.playwright.selectors.set_test_id_attribute("data-qa")
         match CurrentExecution.current_browser_name:
             case "chromium":
                 CurrentExecution.launch_chromium()

@@ -10,5 +10,7 @@ class Test_Regression_Consent:
 
     @pytest.mark.regression
     @pytest.mark.order(301)
-    def test_reg_parental_consent_workflow(self, start_consent_workflow):
-        self.helper.run_test_for_data(file_path="test_data/ParentalConsent.xlsx")
+    @pytest.mark.parametrize("row", helper.df.iterrows())
+    def test_reg_parental_consent_workflow(self, start_consent_workflow, row):
+        self.helper.read_data_for_scenario(row_data=row)
+        self.helper.enter_details()

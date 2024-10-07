@@ -27,20 +27,23 @@ class playwright_operations:
     #             elem.scroll_into_view_if_needed()
     #             expect(elem).to_contain_text(value)
 
-    def verify(self, locator: str, property: str, value: str) -> None:
+    def verify(self, locator: str, property: str, value: str, by_test_id: bool = False) -> None:
         match property.lower():
             case object_properties.TEXT:
                 self.capture_screenshot(identifier=locator, action="verify_text")
-                text = self.get_object_property(locator=locator, property=property)
+                text = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
                 assert value in text, f"Text '{value}' not found in '{text}'."
 
-    def get_object_property(self, locator: str, property: str) -> str:
+    def get_object_property(self, locator: str, property: str, by_test_id: bool = False) -> str:
         match property:
             case object_properties.TEXT:
                 self.capture_screenshot(identifier=locator, action=f"get_{property}")
-                elem = self.ce.page.get_by_role(locator).nth(0)
+                if by_test_id:
+                    elem = self.ce.page.get_by_test_id(locator)
+                else:
+                    elem = self.ce.page.get_by_role(locator).nth(0)
                 elem.scroll_into_view_if_needed()
-                return "".join(elem.all_text_contents())
+                return "".join(elem.all_text_contents()).strip()
 
     def perform_action(self, locator, action, value=None) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
@@ -76,7 +79,6 @@ class playwright_operations:
             case actions.SELECT_FROM_LIST:
                 self.perform_action(locator=locator, action=actions.FILL, value=value)
                 elem = self.ce.page.get_by_role("option", name=value)
-                elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CHECKBOX_CHECK:
                 elem = self.ce.page.get_by_label(locator).nth(0)

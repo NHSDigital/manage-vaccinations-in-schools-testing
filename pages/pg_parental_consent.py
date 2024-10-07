@@ -42,8 +42,12 @@ class pg_parental_consent:
     RDO_NO = "No"
     TXT_DETAILS = "Give details"
     BTN_CONFIRM = "Confirm"
-    # LBL_MAIN_CONTENT = "#main-content"
-    LBL_MAIN_CONTENT = "div"
+    LBL_SCHOOL_NAME = "school-name"
+    RDO_VACCINE_ALREADY_RECEIVED = "Vaccine already received"
+    RDO_VACCINE_WILL_BE_GIVEN_ELSEWHERE = "Vaccine will be given elsewhere"
+    RDO_VACCINE_MEDICAL_REASONS = "Medical reasons"
+    RDO_PERSONAL_CHOICE = "Personal choice"
+    RDO_OTHER = "Other"
 
     def click_start_now(self):
         self.po.perform_action(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
@@ -67,12 +71,14 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_child_school(self, school_name: str) -> None:
-        # if school_name == self.po.get_object_property(locator=self.LBL_MAIN_CONTENT, property=object_properties.TEXT):
-        #     self.po.perform_action(locator=self.RDO_SELECT_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
-        # else:
-        self.po.perform_action(locator=self.RDO_SELECT_DIFFERENT_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.TXT_SCHOOL_NAME, action=actions.SELECT_FROM_LIST, value=school_name)
+        if school_name == self.po.get_object_property(
+            locator=self.LBL_SCHOOL_NAME, property=object_properties.TEXT, by_test_id=True
+        ):
+            self.po.perform_action(locator=self.RDO_SELECT_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
+        else:
+            self.po.perform_action(locator=self.RDO_SELECT_DIFFERENT_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
+            self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+            self.po.perform_action(locator=self.TXT_SCHOOL_NAME, action=actions.SELECT_FROM_LIST, value=school_name)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_parent_details(self, parent_name: str, relation: str, email: str, phone: str) -> None:
@@ -134,8 +140,32 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reaction_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def confirm_details(self):
+    def click_confirm_details(self):
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
-    def final_message(self, expected_message: str):
+    def verify_final_message(self, expected_message: str):
         self.po.verify(locator="heading", property=object_properties.TEXT, value=expected_message)
+
+    def select_consent_not_given_reason(self, reason: str, reason_details: str) -> None:
+        match reason.lower():
+            case "vaccine already received":
+                self.po.perform_action(locator=self.RDO_VACCINE_ALREADY_RECEIVED, action=actions.RADIO_BUTTON_SELECT)
+                self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+            case "vaccine will be given elsewhere":
+                self.po.perform_action(
+                    locator=self.RDO_VACCINE_WILL_BE_GIVEN_ELSEWHERE, action=actions.RADIO_BUTTON_SELECT
+                )
+                self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+            case "medical reasons":
+                self.po.perform_action(locator=self.RDO_VACCINE_MEDICAL_REASONS, action=actions.RADIO_BUTTON_SELECT)
+                self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+            case "personal choice":
+                self.po.perform_action(locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT)
+            case _:  # Other
+                self.po.perform_action(locator=self.RDO_OTHER, action=actions.RADIO_BUTTON_SELECT)
+                self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)

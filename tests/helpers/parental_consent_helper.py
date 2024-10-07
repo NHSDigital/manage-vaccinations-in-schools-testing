@@ -8,32 +8,35 @@ class parental_consent_helper:
     fo = file_ops.file_operations()
     pc = pg_parental_consent.pg_parental_consent()
 
-    def run_test_for_data(self, file_path: str) -> None:
-        _df = self.fo.read_excel_to_df(file_path=file_path)
-        for _, _r in _df.iterrows():
-            self.child_first_name = str(_r["ChildFirstName"])
-            self.child_last_name = str(_r["ChildLastName"])
-            self.child_aka = str(_r["ChildAKA"])
-            self.child_dob_day = str(_r["ChildDobDay"])
-            self.child_dob_month = str(_r["ChildDobMonth"])
-            self.child_dob_month = str(_r["ChildDobMonth"])
-            self.child_dob_year = str(_r["ChildDobYear"])
-            self.school_name = str(_r["SchoolName"])
-            self.parent_name = str(_r["ParentFullName"])
-            self.relation = str(_r["Relation"])
-            self.email = str(_r["Email"])
-            self.phone = str(_r["Phone"])
-            self.consent = str(_r["ConsentVaccine"])
-            self.gp = str(_r["GPName"])
-            self.addr1 = str(_r["AddressLine1"])
-            self.addr2 = str(_r["AddressLine2"])
-            self.city = str(_r["City"])
-            self.postcode = str(_r["PostCode"])
-            self.allergy_details = str(_r["AllergyDetails"])
-            self.medical_condition_details = str(_r["MedicalConditionDetails"])
-            self.reaction_details = str(_r["ReactionDetails"])
-            self.expected_message = str(_r["ExpectedFinalMessage"])
-            self.enter_details()
+    def __init__(self):
+        self.df = self.fo.read_excel_to_df(file_path="test_data/ParentalConsent.xlsx")
+
+    def read_data_for_scenario(self, row_data) -> None:
+        _, _row = row_data
+        self.child_first_name = str(_row["ChildFirstName"])
+        self.child_last_name = str(_row["ChildLastName"])
+        self.child_aka = str(_row["ChildAKA"])
+        self.child_dob_day = str(_row["ChildDobDay"])
+        self.child_dob_month = str(_row["ChildDobMonth"])
+        self.child_dob_month = str(_row["ChildDobMonth"])
+        self.child_dob_year = str(_row["ChildDobYear"])
+        self.school_name = str(_row["SchoolName"])
+        self.parent_name = str(_row["ParentFullName"])
+        self.relation = str(_row["Relation"])
+        self.email = str(_row["Email"])
+        self.phone = str(_row["Phone"])
+        self.consent = str(_row["ConsentVaccine"]).lower() == "true"
+        self.gp = str(_row["GPName"])
+        self.addr1 = str(_row["AddressLine1"])
+        self.addr2 = str(_row["AddressLine2"])
+        self.city = str(_row["City"])
+        self.postcode = str(_row["PostCode"])
+        self.allergy_details = str(_row["AllergyDetails"])
+        self.medical_condition_details = str(_row["MedicalConditionDetails"])
+        self.reaction_details = str(_row["ReactionDetails"])
+        self.consent_not_given_reason = str(_row["ConsentNotGivenReason"])
+        self.consent_not_given_details = str(_row["ConsentNotGivenDetails"])
+        self.expected_message = str(_row["ExpectedFinalMessage"])
 
     def enter_details(self) -> None:
         self.pc.click_start_now()
@@ -51,10 +54,16 @@ class parental_consent_helper:
             phone=self.phone,
         )
         self.pc.select_consent_for_vaccination(consented=self.consent)
-        self.pc.fill_gp_details(gp_name=self.gp)
-        self.pc.fill_address_details(line1=self.addr1, line2=self.addr2, city=self.city, postcode=self.postcode)
-        self.pc.select_severe_allergies(allergy_details=self.allergy_details)
-        self.pc.select_medical_condition(medical_condition_details=self.medical_condition_details)
-        self.pc.select_severe_reaction(reaction_details=self.reaction_details)
-        self.pc.confirm_details()
-        self.pc.final_message(expected_message=self.expected_message)
+        if self.consent:
+            self.pc.fill_gp_details(gp_name=self.gp)
+            self.pc.fill_address_details(line1=self.addr1, line2=self.addr2, city=self.city, postcode=self.postcode)
+            self.pc.select_severe_allergies(allergy_details=self.allergy_details)
+            self.pc.select_medical_condition(medical_condition_details=self.medical_condition_details)
+            self.pc.select_severe_reaction(reaction_details=self.reaction_details)
+        else:
+            self.pc.select_consent_not_given_reason(
+                reason=self.consent_not_given_reason, reason_details=self.consent_not_given_details
+            )
+        self.pc.click_confirm_details()
+        self.pc.verify_final_message(expected_message=self.expected_message)
+        self.ce.end_test()
