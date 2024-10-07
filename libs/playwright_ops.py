@@ -3,7 +3,7 @@ import os
 from playwright.sync_api import expect
 
 from libs import CurrentExecution
-from libs.constants import actions, object_properties, screenshot_types
+from libs.constants import actions, object_properties, screenshot_types, data_values
 
 
 class playwright_operations:
@@ -19,16 +19,31 @@ class playwright_operations:
             self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
             self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
 
-    def verify(self, locator: str, property: str, value: str) -> None:
+    # def verify(self, locator: str, property: str, value: str) -> None:
+    #     match property.lower():
+    #         case object_properties.TEXT:
+    #             self.capture_screenshot(identifier=locator, action="verify_text")
+    #             elem = self.ce.page.get_by_role(locator).nth(0)
+    #             elem.scroll_into_view_if_needed()
+    #             expect(elem).to_contain_text(value)
+
+    def verify(self, locator: str, property: str, value: str, by_test_id: bool = False) -> None:
         match property.lower():
             case object_properties.TEXT:
                 self.capture_screenshot(identifier=locator, action="verify_text")
-                elem = self.ce.page.get_by_role(locator).nth(0)
-                elem.scroll_into_view_if_needed()
-                expect(elem).to_contain_text(value)
+                text = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
+                assert value in text, f"Text '{value}' not found in '{text}'."
 
-    def get_object_property(self, locator: str, property: str, value: str) -> str:
-        pass
+    def get_object_property(self, locator: str, property: str, by_test_id: bool = False) -> str:
+        match property:
+            case object_properties.TEXT:
+                self.capture_screenshot(identifier=locator, action=f"get_{property}")
+                if by_test_id:
+                    elem = self.ce.page.get_by_test_id(locator)
+                else:
+                    elem = self.ce.page.get_by_role(locator).nth(0)
+                elem.scroll_into_view_if_needed()
+                return "".join(elem.all_text_contents()).strip()
 
     def perform_action(self, locator, action, value=None) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
@@ -49,7 +64,8 @@ class playwright_operations:
                 elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
-                elem.fill(value)
+                if value != data_values.EMPTY:
+                    elem.fill(value)
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.RADIO_BUTTON_SELECT:
                 elem = self.ce.page.get_by_text(locator, exact=True).nth(0)
@@ -60,3 +76,11 @@ class playwright_operations:
                 elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.set_input_files(value)
+            case actions.SELECT_FROM_LIST:
+                self.perform_action(locator=locator, action=actions.FILL, value=value)
+                elem = self.ce.page.get_by_role("option", name=value)
+                elem.click()
+            case actions.CHECKBOX_CHECK:
+                elem = self.ce.page.get_by_label(locator).nth(0)
+                elem.scroll_into_view_if_needed()
+                elem.check()
