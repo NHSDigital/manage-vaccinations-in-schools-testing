@@ -1,5 +1,6 @@
 class object_properties:
     TEXT = "text"
+    VISIBILITY = "visibility"
 
 
 class actions:
@@ -35,3 +36,9 @@ class workflow_type:
 
 class data_values:
     EMPTY = "<empty>"
+
+
+class playwright_roles:
+    LINK = "link"
+    BUTTON = "button"
+    OPTION = "option"

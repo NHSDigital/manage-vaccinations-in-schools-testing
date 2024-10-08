@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 from libs.constants import workflow_type
 import os
+import time
 
 
 class CurrentExecution:
