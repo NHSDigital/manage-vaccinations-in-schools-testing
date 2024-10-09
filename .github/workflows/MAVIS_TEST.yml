@@ -43,6 +43,7 @@ jobs:
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
         PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
         LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
