@@ -140,10 +140,10 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reaction_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def click_confirm_details(self):
+    def click_confirm_details(self) -> None:
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
-    def verify_final_message(self, expected_message: str):
+    def verify_final_message(self, expected_message: str) -> None:
         self.po.verify(locator="heading", property=object_properties.TEXT, value=expected_message)
 
     def select_consent_not_given_reason(self, reason: str, reason_details: str) -> None:

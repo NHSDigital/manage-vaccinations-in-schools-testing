@@ -1,6 +1,7 @@
 from libs import CurrentExecution
 from libs import file_ops
 from pages import pg_parental_consent
+from libs.constants import data_values
 
 
 class parental_consent_helper:
@@ -53,6 +54,8 @@ class parental_consent_helper:
             email=self.email,
             phone=self.phone,
         )
+        if self.phone != data_values.EMPTY:
+            self.pc.check_phone_options()
         self.pc.select_consent_for_vaccination(consented=self.consent)
         if self.consent:
             self.pc.fill_gp_details(gp_name=self.gp)

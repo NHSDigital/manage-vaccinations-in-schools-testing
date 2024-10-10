@@ -3,7 +3,7 @@ import os
 from playwright.sync_api import expect
 
 from libs import CurrentExecution
-from libs.constants import actions, object_properties, screenshot_types, data_values
+from libs.constants import actions, object_properties, screenshot_types, data_values, playwright_roles
 
 
 class playwright_operations:
@@ -19,41 +19,42 @@ class playwright_operations:
             self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
             self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
 
-    # def verify(self, locator: str, property: str, value: str) -> None:
-    #     match property.lower():
-    #         case object_properties.TEXT:
-    #             self.capture_screenshot(identifier=locator, action="verify_text")
-    #             elem = self.ce.page.get_by_role(locator).nth(0)
-    #             elem.scroll_into_view_if_needed()
-    #             expect(elem).to_contain_text(value)
-
-    def verify(self, locator: str, property: str, value: str, by_test_id: bool = False) -> None:
+    def verify(self, locator: str, property: str, value: str, exact: bool = False, by_test_id: bool = False) -> None:
         match property.lower():
             case object_properties.TEXT:
                 self.capture_screenshot(identifier=locator, action="verify_text")
                 text = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
-                assert value in text, f"Text '{value}' not found in '{text}'."
+                if exact:
+                    assert value == text, f"Exact match failed. Expected; '{value}' but actual '{text}'."
+                else:
+                    assert value in text.replace("\n", ""), f"Text '{value}' not found in '{text}'."
+            case object_properties.VISIBILITY:
+                self.capture_screenshot(identifier=locator, action="verify_visibility")
+                current_state = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
+                assert value == current_state, f"{locator} is not visible."
 
     def get_object_property(self, locator: str, property: str, by_test_id: bool = False) -> str:
         match property:
             case object_properties.TEXT:
-                self.capture_screenshot(identifier=locator, action=f"get_{property}")
                 if by_test_id:
                     elem = self.ce.page.get_by_test_id(locator)
                 else:
                     elem = self.ce.page.get_by_role(locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
+            case object_properties.VISIBILITY:
+                elem = self.ce.page.get_by_role(locator).nth(0)
+                return elem.is_visible()
 
     def perform_action(self, locator, action, value=None) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
-                elem = self.ce.page.get_by_role("link", name=locator).nth(0)
+                elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_BUTTON:
-                elem = self.ce.page.get_by_role("button", name=locator).nth(0)
+                elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_LABEL:
@@ -78,7 +79,7 @@ class playwright_operations:
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:
                 self.perform_action(locator=locator, action=actions.FILL, value=value)
-                elem = self.ce.page.get_by_role("option", name=value)
+                elem = self.ce.page.get_by_role(playwright_roles.OPTION, name=value)
                 elem.click()
             case actions.CHECKBOX_CHECK:
                 elem = self.ce.page.get_by_label(locator).nth(0)
