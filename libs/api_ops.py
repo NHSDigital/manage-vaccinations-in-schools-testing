@@ -1,5 +1,5 @@
 import requests
-from constants import api_constants
+from libs.constants import api_constants
 
 
 class api_operations:

@@ -19,12 +19,15 @@ class playwright_operations:
             self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
             self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
 
-    def verify(self, locator: str, property: str, value: str, by_test_id: bool = False) -> None:
+    def verify(self, locator: str, property: str, value: str, exact: bool = False, by_test_id: bool = False) -> None:
         match property.lower():
             case object_properties.TEXT:
                 self.capture_screenshot(identifier=locator, action="verify_text")
                 text = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
-                assert value in text, f"Text '{value}' not found in '{text}'."
+                if exact:
+                    assert value == text, f"Exact match failed. Expected; '{value}' but actual '{text}'."
+                else:
+                    assert value in text.replace("\n", ""), f"Text '{value}' not found in '{text}'."
             case object_properties.VISIBILITY:
                 self.capture_screenshot(identifier=locator, action="verify_visibility")
                 current_state = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
