@@ -55,10 +55,10 @@ class pg_programmes:
     COHORT_EXPECTED_ERRORS = [
         "Row 2 CHILD_FIRST_NAME: is required but missing",
         "Row 3 CHILD_LAST_NAME: is required but missing",
-        "Row 4 CHILD_DATE_OF_BIRTH: is required but missing",
+        "Row 5 CHILD_DATE_OF_BIRTH: is required but missing",
         "Year group: is not part of this programme",
-        "Row 5 CHILD_SCHOOL_URN: is not included in the list",
-        "Row 6 CHILD_POSTCODE: is required but missing",
+        "Row 7 CHILD_SCHOOL_URN: is not included in the list",
+        "Row 8 CHILD_POSTCODE: is required but missing",
     ]
 
     def click_HPV(self):
@@ -171,3 +171,4 @@ class pg_programmes:
         wait(timeout=wait_time.MED)  # Wait for processing to finish
         self.click_Imports()
         self.click_uploaded_file_datetime()
+        self.verify_cohort_upload_errors()
