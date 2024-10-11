@@ -42,3 +42,9 @@ class playwright_roles:
     LINK = "link"
     BUTTON = "button"
     OPTION = "option"
+
+
+class wait_time:
+    MIN = "3s"
+    MED = "10s"
+    MAX = "30s"

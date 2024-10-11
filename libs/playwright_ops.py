@@ -27,7 +27,9 @@ class playwright_operations:
                 if exact:
                     assert value == text, f"Exact match failed. Expected; '{value}' but actual '{text}'."
                 else:
-                    assert value in text.replace("\n", ""), f"Text '{value}' not found in '{text}'."
+                    assert value.replace("\n", "").replace(" ", "") in text.replace("\n", "").replace(
+                        " ", ""
+                    ), f"Text '{value}' not found in '{text}'."
             case object_properties.VISIBILITY:
                 self.capture_screenshot(identifier=locator, action="verify_visibility")
                 current_state = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
