@@ -12,8 +12,8 @@ class parental_consent_helper:
     def __init__(self):
         self.df = self.fo.read_excel_to_df(file_path="test_data/ParentalConsent.xlsx")
 
-    def read_data_for_scenario(self, row_data) -> None:
-        _, _row = row_data
+    def read_data_for_scenario(self, scenario_data) -> None:
+        _, _row = scenario_data
         self.child_first_name = str(_row["ChildFirstName"])
         self.child_last_name = str(_row["ChildLastName"])
         self.child_aka = str(_row["ChildAKA"])
