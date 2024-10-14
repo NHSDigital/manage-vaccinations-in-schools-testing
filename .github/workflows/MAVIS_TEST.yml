@@ -18,6 +18,8 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    env:
+      TZ: "Europe/London"
     strategy:
       matrix:
         location: ['UK']
