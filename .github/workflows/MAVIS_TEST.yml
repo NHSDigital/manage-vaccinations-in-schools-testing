@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: "0 7 * * *"
+    - cron: "0 7 * * 1-5"
 
 permissions:
   contents: write
@@ -18,6 +18,10 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        location: ['UK']
+
 
     steps:
     - uses: actions/checkout@v4
