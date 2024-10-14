@@ -1,9 +1,7 @@
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 from libs.constants import workflow_type
-from libs import api_ops
 import os
-import time
 
 
 class CurrentExecution:
@@ -24,7 +22,7 @@ class CurrentExecution:
     login_password: str = ""
     parental_consent_url: str = ""
     reset_endpoint: str = ""
-    ao = api_ops.api_operations()
+    api_token: str = ""
 
     @staticmethod
     def start_test(w_type: workflow_type):
@@ -47,6 +45,7 @@ class CurrentExecution:
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
         CurrentExecution.parental_consent_url = os.getenv("PARENTAL_CONSENT_URL")
         CurrentExecution.reset_endpoint = os.getenv("RESET_ENDPOINT")
+        CurrentExecution.api_token = os.getenv("API_TOKEN")
 
     @staticmethod
     def start_browser():
@@ -75,7 +74,7 @@ class CurrentExecution:
             case workflow_type.PARENTAL_CONSENT:
                 CurrentExecution.page.goto(url=CurrentExecution.parental_consent_url)
             case _:
-                # CurrentExecution.reset_upload_data()
+                CurrentExecution.reset_upload_data()
                 CurrentExecution.page.goto(url=CurrentExecution.environment)
 
     @staticmethod
@@ -144,4 +143,5 @@ class CurrentExecution:
 
     @staticmethod
     def reset_upload_data():
-        _ = CurrentExecution.ao.api_get(endpoint=CurrentExecution.reset_endpoint, header=None, param=None)
+        _headers = {"Authorization": CurrentExecution.api_token}
+        # _ = api_ops.api_operations().api_get(endpoint=CurrentExecution.reset_endpoint, header=_headers, param=None)

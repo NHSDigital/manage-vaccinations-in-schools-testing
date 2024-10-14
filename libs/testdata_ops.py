@@ -23,3 +23,6 @@ class testdata_operations:
 
     def get_new_datetime(self) -> str:
         return datetime.now().strftime("%Y%m%d%H%M%S")
+
+    def get_expected_errors(self, file_path: str) -> list[str]:
+        return self.fo.get_file_text(file_path=file_path)
