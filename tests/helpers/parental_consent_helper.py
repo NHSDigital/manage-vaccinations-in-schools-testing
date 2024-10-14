@@ -1,7 +1,7 @@
 from libs import CurrentExecution
 from libs import file_ops
 from pages import pg_parental_consent
-from libs.constants import data_values
+from libs.constants import data_values, test_data_file_paths
 
 
 class parental_consent_helper:
@@ -10,10 +10,10 @@ class parental_consent_helper:
     pc = pg_parental_consent.pg_parental_consent()
 
     def __init__(self):
-        self.df = self.fo.read_excel_to_df(file_path="test_data/ParentalConsent.xlsx")
+        self.df = self.fo.read_excel_to_df(file_path=test_data_file_paths.PARENTAL_CONSENT)
 
-    def read_data_for_scenario(self, row_data) -> None:
-        _, _row = row_data
+    def read_data_for_scenario(self, scenario_data) -> None:
+        _, _row = scenario_data
         self.child_first_name = str(_row["ChildFirstName"])
         self.child_last_name = str(_row["ChildLastName"])
         self.child_aka = str(_row["ChildAKA"])
