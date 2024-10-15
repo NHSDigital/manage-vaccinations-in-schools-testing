@@ -56,4 +56,10 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        pytest
+        pytest --html-report=./reports
+    - name: Test Report Generation
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: reports
+        path: reports
