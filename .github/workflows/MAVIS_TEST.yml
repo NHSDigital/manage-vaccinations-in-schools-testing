@@ -62,4 +62,4 @@ jobs:
       if: success() || failure()
       with:
         name: reports
-        path: reports
+        path: ./reports/
