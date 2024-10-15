@@ -1,7 +1,9 @@
-from libs import file_ops
-from libs import CurrentExecution
 from datetime import datetime
+
 import nhs_number
+
+from libs import CurrentExecution, file_ops
+from libs.constants import escape_characters
 
 
 class testdata_operations:
@@ -26,3 +28,8 @@ class testdata_operations:
 
     def get_expected_errors(self, file_path: str) -> list[str]:
         return self.fo.get_file_text(file_path=file_path)
+
+    def clean_text(text: str) -> str:
+        for _chr in escape_characters.FORMATTING:
+            text = text.replace(_chr, "")
+        return text

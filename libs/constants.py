@@ -56,6 +56,7 @@ class escape_characters:
 
 class test_data_file_paths:
     PARENTAL_CONSENT = "test_data/ParentalConsent.xlsx"
-    VACCS_HPV_POSITIVE = "test_data/hpv/hpv_i_positive_full.csv||test_data/hpv/hpv_o_positive_full.csv"
-    VACCS_HPV_NEGATIVE = "test_data/hpv/hpv_i_negative_full.csv||test_data/hpv/hpv_o_negative_full.csv"
-    COHORTS = "test_data/cohorts/cohort_i_full.csv||test_data/cohorts/cohort_o_full.csv"
+    VACCS_HPV_POSITIVE = "test_data/hpv/hpv_i_positive.csv||test_data/hpv/hpv_o_positive.csv"
+    VACCS_HPV_NEGATIVE = "test_data/hpv/hpv_i_negative.csv||test_data/hpv/hpv_o_negative.csv"
+    COHORTS_POSITIVE = "test_data/cohorts/cohort_i_positive.csv||test_data/cohorts/cohort_o_positive.csv"
+    COHORTS_NEGATIVE = "test_data/cohorts/cohort_i_negative.csv||test_data/cohorts/cohort_o_negative.csv"

@@ -1,7 +1,7 @@
 import pytest
 
-from pages import pg_home, pg_login, pg_programmes
 from libs.constants import test_data_file_paths
+from pages import pg_home, pg_login, pg_programmes
 
 
 class Test_Regression_Vaccinations_Upload:
