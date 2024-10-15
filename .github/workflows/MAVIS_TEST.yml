@@ -61,4 +61,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: pytest-html-report
-        path: report.html
+        path: .
