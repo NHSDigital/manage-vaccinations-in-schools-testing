@@ -59,7 +59,7 @@ jobs:
         pytest --html-report=./reports
     - name: Test Report Generation
       uses: actions/upload-artifact@v4
-      if: success() || failure()
+      if: always()
       with:
         name: reports
-        path: ./reports/
+        path: ./reports/pytest-report.html
