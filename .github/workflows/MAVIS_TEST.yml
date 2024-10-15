@@ -56,4 +56,9 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        pytest
+        pytest --html=reports/report.html --self-contained-html
+    - name: Upload report
+      uses: actions/upload-artifact@v2
+      with:
+        name: pytest-html-report
+        path: reports/report.html
