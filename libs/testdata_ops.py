@@ -27,9 +27,10 @@ class testdata_operations:
         return datetime.now().strftime("%Y%m%d%H%M%S")
 
     def get_expected_errors(self, file_path: str) -> list[str]:
-        return self.fo.get_file_text(file_path=file_path)
+        _file_content = self.fo.get_file_text(file_path=file_path)
+        return _file_content.split("\n") if _file_content is not None else None
 
-    def clean_text(text: str) -> str:
+    def clean_text(self, text: str) -> str:
         for _chr in escape_characters.FORMATTING:
             text = text.replace(_chr, "")
         return text

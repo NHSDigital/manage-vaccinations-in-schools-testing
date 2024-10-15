@@ -1,6 +1,6 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.wrappers import *
 from libs.constants import actions, object_properties, wait_time
+from libs.wrappers import *
 
 
 class pg_programmes:
@@ -75,7 +75,7 @@ class pg_programmes:
     def record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
 
-    def verify_upload_errors(self, file_path: str):
+    def verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
@@ -97,7 +97,7 @@ class pg_programmes:
         wait(timeout=wait_time.MED)  # Wait for processing to finish
         self.click_Imports()
         self.click_uploaded_file_datetime()
-        self.verify_upload_errors(file_path=_output_file_path)
+        self.verify_upload_output(file_path=_output_file_path)
 
     def upload_hpv_child_records(self, input_file_path: str):
         self.click_HPV()
@@ -120,4 +120,4 @@ class pg_programmes:
         wait(timeout=wait_time.MED)  # Wait for processing to finish
         self.click_Imports()
         self.click_uploaded_file_datetime()
-        self.verify_upload_errors(file_path=_output_file_path)
+        self.verify_upload_output(file_path=_output_file_path)

@@ -58,5 +58,7 @@ class test_data_file_paths:
     PARENTAL_CONSENT = "test_data/ParentalConsent.xlsx"
     VACCS_HPV_POSITIVE = "test_data/hpv/hpv_i_positive.csv||test_data/hpv/hpv_o_positive.csv"
     VACCS_HPV_NEGATIVE = "test_data/hpv/hpv_i_negative.csv||test_data/hpv/hpv_o_negative.csv"
+    VACCS_HPV_DUP_1 = "test_data/hpv/hpv_i_dup_1.csv||test_data/hpv/hpv_o_dup_1.csv"
+    VACCS_HPV_DUP_2 = "test_data/hpv/hpv_i_dup_2.csv||test_data/hpv/hpv_o_dup_2.csv"
     COHORTS_POSITIVE = "test_data/cohorts/cohort_i_positive.csv||test_data/cohorts/cohort_o_positive.csv"
     COHORTS_NEGATIVE = "test_data/cohorts/cohort_i_negative.csv||test_data/cohorts/cohort_o_negative.csv"
