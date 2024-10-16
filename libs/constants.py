@@ -51,7 +51,30 @@ class wait_time:
 
 
 class escape_characters:
-    FORMATTING = [" ", "\n", "â€™", "â€˜", "‘", "’"]
+    SPACE = " "
+    NEW_LINE = "\n"
+    CARRIAGE_RETURN = "\r"
+    NEW_LINE_CARRIAGE_RETURN = "\r\n"
+    SINGLE_QUOTE_OPEN_UNICODE = "â€™"
+    SINGLE_QUOTE_CLOSE_UNICODE = "â€˜"
+    SINGLE_QUOTE_OPEN = "‘"
+    SINGLE_QUOTE_CLOSE = "’"
+    TAB = "	"
+    COLON = ":"
+    BACKSLASH = "\\"
+    FRONTSLASH = "/"
+    UI_FORMATTING = [
+        SPACE,
+        NEW_LINE,
+        CARRIAGE_RETURN,
+        NEW_LINE_CARRIAGE_RETURN,
+        SINGLE_QUOTE_OPEN_UNICODE,
+        SINGLE_QUOTE_OPEN,
+        SINGLE_QUOTE_CLOSE_UNICODE,
+        SINGLE_QUOTE_CLOSE,
+        TAB,
+    ]
+    FILE_NAME = [COLON, BACKSLASH, FRONTSLASH]
 
 
 class test_data_file_paths:

@@ -1,8 +1,9 @@
 {
   "folders": [
     {
-      "name": "Repository Template",
+      "name": "Manage vaccinations in schools test",
       "path": "."
     }
-  ]
+  ],
+  "settings": {}
 }

@@ -21,6 +21,7 @@ class pg_programmes:
     LBL_CHOOSE_COHORT_FILE = "HPVImport child records"
     LBL_IMPORT_STARTED = "Import processing started"
     LBL_PARAGRAPH = "paragraph"
+    LBL_MAIN = "main"
 
     def click_HPV(self):
         self.po.perform_action(locator=self.LNK_HPV, action=actions.CLICK_LINK)
@@ -79,9 +80,7 @@ class pg_programmes:
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
-                self.po.verify(
-                    locator="import-errors", property=object_properties.TEXT, value=_msg, by_test_id=True, exact=False
-                )
+                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
 
     def upload_hpv_vaccination_records(self, input_file_path: str):
         _input_file_path = input_file_path.split("||")[0]

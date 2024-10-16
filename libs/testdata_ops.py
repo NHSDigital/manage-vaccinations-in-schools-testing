@@ -31,6 +31,11 @@ class testdata_operations:
         return _file_content.split("\n") if _file_content is not None else None
 
     def clean_text(self, text: str) -> str:
-        for _chr in escape_characters.FORMATTING:
+        for _chr in escape_characters.UI_FORMATTING:
             text = text.replace(_chr, "")
         return text
+
+    def clean_file_name(self, file_name: str) -> str:
+        for _chr in escape_characters.FILE_NAME:
+            file_name = file_name.replace(_chr, "")
+        return file_name

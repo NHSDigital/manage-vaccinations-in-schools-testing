@@ -12,6 +12,7 @@ class Test_Regression_Login:
         ("", "invalid_password", "Invalid Email or password."),
     ]
 
+    @pytest.mark.login
     @pytest.mark.regression
     @pytest.mark.order(101)
     @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
