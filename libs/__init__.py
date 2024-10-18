@@ -42,7 +42,6 @@ class CurrentExecution:
         CurrentExecution.base_auth_password = os.getenv("TEST_PASSWORD")
         CurrentExecution.login_username = os.getenv("LOGIN_USERNAME")
         CurrentExecution.login_password = os.getenv("LOGIN_PASSWORD")
-        CurrentExecution.current_browser_name = os.getenv("BROWSER").lower()
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
         CurrentExecution.parental_consent_url = os.getenv("PARENTAL_CONSENT_URL")
@@ -53,15 +52,14 @@ class CurrentExecution:
     def start_browser(browser_name: str):
         CurrentExecution.playwright = sync_playwright().start()
         CurrentExecution.playwright.selectors.set_test_id_attribute("data-qa")
-        _browser = browser_name if browser_name is not None else CurrentExecution.current_browser_name
-        match _browser.lower():
+        match browser_name.lower():
             case "chromium":
                 CurrentExecution.launch_chromium()
             case "edge":
                 CurrentExecution.launch_edge()
             case "firefox":
                 CurrentExecution.launch_firefox()
-            case _:  # Chrome for all other cases
+            case _:  # Google Chrome for all other cases
                 CurrentExecution.launch_chrome()
 
     @staticmethod
@@ -124,23 +122,39 @@ class CurrentExecution:
         except Exception as e:
             raise AssertionError(f"Error launching Chrome: {e}")
 
-    def launch_mobile_browser(self):
-        device_name = self.device_name.lower()
+    @staticmethod
+    def launch_mobile_browser():
+        device_name = CurrentExecution.device_name.lower()
         try:
             if "iphone_12" == device_name:
-                self.browser = self.playwright.webkit.launch(headless=self.headless_mode)
-                self.context = self.browser.new_context(**self.playwright.devices["iPhone 12"])
+                CurrentExecution.browser = CurrentExecution.playwright.webkit.launch(
+                    headless=CurrentExecution.headless_mode
+                )
+                CurrentExecution.context = CurrentExecution.browser.new_context(
+                    **CurrentExecution.playwright.devices["iPhone 12"]
+                )
             elif "iphone_11" == device_name:
-                self.browser = self.playwright.chromium.launch(channel="chrome", headless=self.headless_mode)
-                self.context = self.browser.new_context(**self.playwright.devices["iPhone 11"])
+                CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
+                    channel="chrome", headless=CurrentExecution.headless_mode
+                )
+                CurrentExecution.context = CurrentExecution.browser.new_context(
+                    **CurrentExecution.playwright.devices["iPhone 11"]
+                )
             elif "pixel_5" == device_name:
-                self.browser = self.playwright.webkit.launch(headless=self.headless_mode)
-                self.context = self.browser.new_context(**self.playwright.devices["Pixel 5"])
+                CurrentExecution.browser = CurrentExecution.playwright.webkit.launch(
+                    headless=CurrentExecution.headless_mode
+                )
+                CurrentExecution.context = CurrentExecution.browser.new_context(
+                    **CurrentExecution.playwright.devices["Pixel 5"]
+                )
             else:
-                self.browser = self.playwright.chromium.launch(channel="chromium", headless=self.headless_mode)
-                self.context = self.browser.new_context(**self.playwright.devices["Galaxy S9+"])
-
-            self.page = self.context.new_page()
+                CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
+                    channel="chromium", headless=CurrentExecution.headless_mode
+                )
+                CurrentExecution.context = CurrentExecution.browser.new_context(
+                    **CurrentExecution.playwright.devices["Galaxy S9+"]
+                )
+            CurrentExecution.page = CurrentExecution.context.new_page()
         except Exception as e:
             print(f"Error launching mobile browser for {device_name}: {e}")
 

@@ -8,7 +8,7 @@ from libs.constants import workflow_type
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser_name", action="store")
+    parser.addoption("--browser_name", action="store", default="chrome")
 
 
 @pytest.fixture(scope="session")
