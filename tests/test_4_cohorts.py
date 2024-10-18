@@ -15,7 +15,7 @@ class Test_Regression_Cohorts:
     def test_reg_cohort_upload_positive(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_cohorts(input_file_path=test_data_file_paths.COHORTS_POSITIVE)
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_POSITIVE)
 
     @pytest.mark.cohorts
     @pytest.mark.regression
@@ -23,4 +23,4 @@ class Test_Regression_Cohorts:
     def test_reg_cohort_upload_negative(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_cohorts(input_file_path=test_data_file_paths.COHORTS_NEGATIVE)
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_NEGATIVE)

@@ -82,9 +82,8 @@ class pg_programmes:
             for _msg in _expected_errors:
                 self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
 
-    def upload_hpv_vaccination_records(self, input_file_path: str):
-        _input_file_path = input_file_path.split("||")[0]
-        _output_file_path = input_file_path.split("||")[1]
+    def upload_hpv_vaccination_records(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
         self.click_HPV()
         self.click_Imports()
         self.click_ImportRecords()
@@ -93,30 +92,36 @@ class pg_programmes:
         self.choose_file_vaccination_records(file_path=_input_file_path)
         self.click_Continue()
         self.record_upload_time()
-        wait(timeout=wait_time.MED)  # Wait for processing to finish
+        wait(timeout=wait_time.MED)
         self.click_Imports()
+        wait(timeout=wait_time.MIN)  # Required for Firefox
         self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
-    def upload_hpv_child_records(self, input_file_path: str):
+    def upload_hpv_child_records(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
         self.click_HPV()
         self.click_Imports()
         self.click_ImportRecords()
         self.select_ChildRecords()
         self.click_Continue()
-        self.choose_file_child_records(file_path=input_file_path)
+        self.choose_file_child_records(file_path=_input_file_path)
         self.click_Continue()
+        self.record_upload_time()
+        wait(timeout=wait_time.MED)
+        self.click_Imports()
+        self.click_uploaded_file_datetime()
+        self.verify_upload_output(file_path=_output_file_path)
 
-    def upload_cohorts(self, input_file_path: str):
-        _input_file_path = input_file_path.split("||")[0]
-        _output_file_path = input_file_path.split("||")[1]
+    def upload_cohorts(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
         self.click_HPV()
         self.click_Cohorts()
         self.click_ImportCohortRecords()
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_Continue()
         self.record_upload_time()
-        wait(timeout=wait_time.MED)  # Wait for processing to finish
+        wait(timeout=wait_time.MED)
         self.click_Imports()
         self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)

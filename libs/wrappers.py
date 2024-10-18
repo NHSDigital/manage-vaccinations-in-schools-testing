@@ -36,3 +36,7 @@ def get_link_formatted_date_time():
     except:
         _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev PC)
     return f"{_dt}{_ampm}"
+
+
+def get_new_datetime(self) -> str:
+    return datetime.now().strftime("%Y%m%d%H%M%S")
