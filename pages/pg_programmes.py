@@ -92,8 +92,9 @@ class pg_programmes:
         self.choose_file_vaccination_records(file_path=_input_file_path)
         self.click_Continue()
         self.record_upload_time()
-        wait(timeout=wait_time.MED)  # Wait for processing to finish
+        wait(timeout=wait_time.MED)
         self.click_Imports()
+        wait(timeout=wait_time.MIN)  # Required for Firefox
         self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
@@ -107,7 +108,7 @@ class pg_programmes:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_Continue()
         self.record_upload_time()
-        wait(timeout=wait_time.MED)  # Wait for processing to finish
+        wait(timeout=wait_time.MED)
         self.click_Imports()
         self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
@@ -120,7 +121,7 @@ class pg_programmes:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_Continue()
         self.record_upload_time()
-        wait(timeout=wait_time.MED)  # Wait for processing to finish
+        wait(timeout=wait_time.MED)
         self.click_Imports()
         self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)

@@ -50,10 +50,11 @@ class CurrentExecution:
         CurrentExecution.api_token = os.getenv("API_TOKEN")
 
     @staticmethod
-    def start_browser():
+    def start_browser(browser_name: str):
         CurrentExecution.playwright = sync_playwright().start()
         CurrentExecution.playwright.selectors.set_test_id_attribute("data-qa")
-        match CurrentExecution.current_browser_name:
+        _browser = browser_name if browser_name is not None else CurrentExecution.current_browser_name
+        match _browser.lower():
             case "chromium":
                 CurrentExecution.launch_chromium()
             case "edge":

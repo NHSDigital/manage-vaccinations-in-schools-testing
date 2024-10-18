@@ -1,16 +1,23 @@
+from datetime import datetime
+
 import pytest
+
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
-from datetime import datetime
 from libs.constants import workflow_type
 
 
+def pytest_addoption(parser):
+    parser.addoption("--browser_name", action="store")
+
+
 @pytest.fixture(scope="session")
-def start_exe_session():
+def start_exe_session(request):
     ce.execution_start_time = datetime.now()
     ce.get_env_values()
+    _browser_name = request.config.getoption("browser_name")
     ce.session_screenshots_dir = create_session_screenshot_dir()
-    ce.start_browser()
+    ce.start_browser(browser_name=_browser_name)
     yield
     ce.quit_browser()
     ce.execution_end_time = datetime.now()
