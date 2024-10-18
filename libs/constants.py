@@ -59,7 +59,7 @@ class escape_characters:
     SINGLE_QUOTE_CLOSE_UNICODE = "â€˜"
     SINGLE_QUOTE_OPEN = "‘"
     SINGLE_QUOTE_CLOSE = "’"
-    TAB = "	"
+    TAB = "\t"
     COLON = ":"
     BACKSLASH = "\\"
     FRONTSLASH = "/"
@@ -74,7 +74,7 @@ class escape_characters:
         SINGLE_QUOTE_CLOSE,
         TAB,
     ]
-    FILE_NAME = [COLON, BACKSLASH, FRONTSLASH]
+    FILE_NAME = [COLON]
 
 
 class test_data_file_paths:
@@ -85,3 +85,5 @@ class test_data_file_paths:
     VACCS_HPV_DUP_2 = "test_data/hpv/i_dup_2.csv||test_data/hpv/o_dup_2.csv"
     COHORTS_POSITIVE = "test_data/cohorts/i_positive.csv||test_data/cohorts/o_positive.csv"
     COHORTS_NEGATIVE = "test_data/cohorts/i_negative.csv||test_data/cohorts/o_negative.csv"
+    CHILD_POSITIVE = "test_data/child/i_positive.csv||test_data/child/o_positive.csv"
+    CHILD_NEGATIVE = "test_data/child/i_negative.csv||test_data/child/o_negative.csv"

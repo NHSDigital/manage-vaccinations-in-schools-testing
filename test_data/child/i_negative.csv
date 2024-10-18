@@ -1,0 +1,10 @@
+CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_SCHOOL_URN,CHILD_DATE_OF_BIRTH,CHILD_NHS_NUMBER,CHILD_GENDER,CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_TOWN,CHILD_POSTCODE,CHILD_REGISTRATION,PARENT_1_NAME,PARENT_1_RELATIONSHIP,PARENT_1_EMAIL,PARENT_1_PHONE,PARENT_2_NAME,PARENT_2_RELATIONSHIP,PARENT_2_EMAIL,PARENT_2_PHONE
+,ChildLast1,110158,20100101,9729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst2,,110158,20100101,9650974318,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst3,ChildLast3,,20100101,5990960948,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst4,ChildLast4,110158,,9729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst4,ChildLast4,110158,20100101,19729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst4,ChildLast4,110158,20100101,729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst4,ChildLast4,110158,20100101,9729852545,Male,Addr1,Addr2,Town,ABC DEF,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com
+ChildFirst4,ChildLast4,110158,20100101,9729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,example.com,,Parent2,Mum,mum@example.com
+ChildFirst4,ChildLast4,110158,20100101,9729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,example.com
