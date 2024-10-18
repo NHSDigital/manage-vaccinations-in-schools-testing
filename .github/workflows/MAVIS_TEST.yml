@@ -44,7 +44,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       env:
-        BROWSER: ${{ vars.BROWSER }}
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
@@ -56,7 +55,8 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        pytest
+        pytest --browser_name chrome -n auto
+        pytest --browser_name firefox -n auto
     - name: Upload report
       uses: actions/upload-artifact@v4
       with:
