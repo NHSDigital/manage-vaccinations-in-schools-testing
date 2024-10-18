@@ -51,11 +51,37 @@ class wait_time:
 
 
 class escape_characters:
-    FORMATTING = [" ", "\n", "â€™", "â€˜", "‘", "’"]
+    SPACE = " "
+    NEW_LINE = "\n"
+    CARRIAGE_RETURN = "\r"
+    NEW_LINE_CARRIAGE_RETURN = "\r\n"
+    SINGLE_QUOTE_OPEN_UNICODE = "â€™"
+    SINGLE_QUOTE_CLOSE_UNICODE = "â€˜"
+    SINGLE_QUOTE_OPEN = "‘"
+    SINGLE_QUOTE_CLOSE = "’"
+    TAB = "	"
+    COLON = ":"
+    BACKSLASH = "\\"
+    FRONTSLASH = "/"
+    UI_FORMATTING = [
+        SPACE,
+        NEW_LINE,
+        CARRIAGE_RETURN,
+        NEW_LINE_CARRIAGE_RETURN,
+        SINGLE_QUOTE_OPEN_UNICODE,
+        SINGLE_QUOTE_OPEN,
+        SINGLE_QUOTE_CLOSE_UNICODE,
+        SINGLE_QUOTE_CLOSE,
+        TAB,
+    ]
+    FILE_NAME = [COLON, BACKSLASH, FRONTSLASH]
 
 
 class test_data_file_paths:
     PARENTAL_CONSENT = "test_data/ParentalConsent.xlsx"
-    VACCS_HPV_POSITIVE = "test_data/hpv/hpv_i_positive_full.csv||test_data/hpv/hpv_o_positive_full.csv"
-    VACCS_HPV_NEGATIVE = "test_data/hpv/hpv_i_negative_full.csv||test_data/hpv/hpv_o_negative_full.csv"
-    COHORTS = "test_data/cohorts/cohort_i_full.csv||test_data/cohorts/cohort_o_full.csv"
+    VACCS_HPV_POSITIVE = "test_data/hpv/i_positive.csv||test_data/hpv/o_positive.csv"
+    VACCS_HPV_NEGATIVE = "test_data/hpv/i_negative.csv||test_data/hpv/o_negative.csv"
+    VACCS_HPV_DUP_1 = "test_data/hpv/i_dup_1.csv||test_data/hpv/o_dup_1.csv"
+    VACCS_HPV_DUP_2 = "test_data/hpv/i_dup_2.csv||test_data/hpv/o_dup_2.csv"
+    COHORTS_POSITIVE = "test_data/cohorts/i_positive.csv||test_data/cohorts/o_positive.csv"
+    COHORTS_NEGATIVE = "test_data/cohorts/i_negative.csv||test_data/cohorts/o_negative.csv"

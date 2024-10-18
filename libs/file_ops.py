@@ -16,10 +16,10 @@ class file_operations:
             os.makedirs(name=dir_path)
         return self.check_if_path_exists(file_or_folder_path=dir_path)
 
-    def get_file_text(self, file_path: str) -> list[str]:
+    def get_file_text(self, file_path: str) -> str:
         if self.check_if_path_exists(file_or_folder_path=file_path):
             with open(file=file_path, mode=file_mode.READ) as f:
-                _text = f.readlines()
+                _text = f.read()
             return _text
 
     def create_file(self, content: str) -> str:

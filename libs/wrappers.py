@@ -1,6 +1,5 @@
 import time
 from datetime import datetime
-from libs.constants import escape_characters
 
 
 def convert_time_units_to_seconds(time_unit: str) -> int:
@@ -37,9 +36,3 @@ def get_link_formatted_date_time():
     except:
         _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev PC)
     return f"{_dt}{_ampm}"
-
-
-def clean_text(text: str) -> str:
-    for _chr in escape_characters.FORMATTING:
-        text = text.replace(_chr, "")
-    return text

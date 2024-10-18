@@ -8,6 +8,7 @@ class Test_Regression_Consent:
     pc = pg_parental_consent.pg_parental_consent()
     helper = parental_consent_helper.parental_consent_helper()
 
+    @pytest.mark.consent
     @pytest.mark.regression
     @pytest.mark.order(301)
     @pytest.mark.parametrize("scenario_", helper.df.iterrows())

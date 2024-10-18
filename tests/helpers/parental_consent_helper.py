@@ -1,7 +1,6 @@
-from libs import CurrentExecution
-from libs import file_ops
-from pages import pg_parental_consent
+from libs import CurrentExecution, file_ops
 from libs.constants import data_values, test_data_file_paths
+from pages import pg_parental_consent
 
 
 class parental_consent_helper:

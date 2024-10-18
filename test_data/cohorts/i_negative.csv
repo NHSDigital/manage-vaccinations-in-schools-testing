@@ -6,4 +6,7 @@ ChildFirst,ChildLast,,1-1-2010,110158,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,d
 ChildFirst,ChildLast,ChildCommon,,110158,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
 ChildFirst,ChildLast,ChildCommon,1-1-2010,888888,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
 ChildFirst,ChildLast,ChildCommon,1-1-2010,,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
+ChildFirst,ChildLast,ChildCommon,1-1-2010,ABCDEF,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
 ChildFirst,ChildLast,ChildCommon,1-1-2010,110158,,Addr1,Add2,City,,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
+ChildFirst,ChildLast,ChildCommon,1-1-2010,110158,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,example.com,,Parent2Name,Mum,mum@example.com,
+ChildFirst,ChildLast,ChildCommon,1-1-2010,110158,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,example.com,

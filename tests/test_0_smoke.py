@@ -1,7 +1,8 @@
-import pytest
 import subprocess
-from libs import file_ops
-from libs import playwright_ops
+
+import pytest
+
+from libs import file_ops, playwright_ops
 from libs.constants import object_properties
 
 

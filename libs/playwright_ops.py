@@ -1,14 +1,18 @@
 import os
 
-from playwright.sync_api import expect
-
-from libs import CurrentExecution
-from libs.constants import actions, object_properties, screenshot_types, data_values, playwright_roles
-from libs.wrappers import *
+from libs import CurrentExecution, testdata_ops
+from libs.constants import (
+    actions,
+    data_values,
+    object_properties,
+    playwright_roles,
+    screenshot_types,
+)
 
 
 class playwright_operations:
     ce = CurrentExecution()
+    tdo = testdata_ops.testdata_operations()
 
     def capture_screenshot(self, identifier: str, action: str) -> None:
         if self.ce.capture_screenshot_flag:
@@ -28,7 +32,9 @@ class playwright_operations:
                 if exact:
                     assert value == text, f"Exact match failed. Expected; '{value}' but actual '{text}'."
                 else:
-                    assert clean_text(text=value) in clean_text(text=text), f"Text '{value}' not found in '{text}'."
+                    assert self.tdo.clean_text(text=value) in self.tdo.clean_text(
+                        text=text
+                    ), f"Text '{value}' not found in '{text}'."
             case object_properties.VISIBILITY:
                 self.capture_screenshot(identifier=locator, action="verify_visibility")
                 current_state = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
