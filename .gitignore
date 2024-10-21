@@ -21,8 +21,6 @@ venv/
 .vscode/
 
 # Local
-screenshots/*
 logs/pytest.log
-reports/*
 main.py
 
