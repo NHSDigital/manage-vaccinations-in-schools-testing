@@ -1,15 +1,15 @@
-from libs import CurrentExecution, file_ops
+from libs import CurrentExecution, testdata_ops
 from libs.constants import data_values, test_data_file_paths
 from pages import pg_parental_consent
 
 
 class parental_consent_helper:
     ce = CurrentExecution()
-    fo = file_ops.file_operations()
+    tdo = testdata_ops.testdata_operations()
     pc = pg_parental_consent.pg_parental_consent()
 
     def __init__(self):
-        self.df = self.fo.read_excel_to_df(file_path=test_data_file_paths.PARENTAL_CONSENT)
+        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT)
 
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data

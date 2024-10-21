@@ -125,3 +125,14 @@ class pg_programmes:
         self.click_Imports()
         self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
+
+    def upload_invalid_files(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_HPV()
+        self.click_Imports()
+        self.click_ImportRecords()
+        self.select_VaccinationRecords()
+        self.click_Continue()
+        self.choose_file_vaccination_records(file_path=_input_file_path)
+        self.click_Continue()
+        self.verify_upload_output(file_path=_output_file_path)
