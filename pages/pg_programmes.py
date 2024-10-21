@@ -136,3 +136,23 @@ class pg_programmes:
         self.choose_file_vaccination_records(file_path=_input_file_path)
         self.click_Continue()
         self.verify_upload_output(file_path=_output_file_path)
+
+    def upload_invalid_cohorts(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_HPV()
+        self.click_Cohorts()
+        self.click_ImportCohortRecords()
+        self.choose_file_child_records(file_path=_input_file_path)
+        self.click_Continue()
+        self.verify_upload_output(file_path=_output_file_path)
+
+    def upload_invalid_hpv_child_records(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_HPV()
+        self.click_Imports()
+        self.click_ImportRecords()
+        self.select_ChildRecords()
+        self.click_Continue()
+        self.choose_file_child_records(file_path=_input_file_path)
+        self.click_Continue()
+        self.verify_upload_output(file_path=_output_file_path)

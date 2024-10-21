@@ -31,7 +31,7 @@ class Test_Regression_Child_List_Upload:
     def test_reg_cohorts_file_structure(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE)
+        self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE)
 
     @pytest.mark.childlist
     @pytest.mark.regression
@@ -39,7 +39,7 @@ class Test_Regression_Child_List_Upload:
     def test_reg_cohorts_no_record(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.CHILD_HEADER_ONLY)
+        self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_HEADER_ONLY)
 
     @pytest.mark.childlist
     @pytest.mark.regression
@@ -47,4 +47,4 @@ class Test_Regression_Child_List_Upload:
     def test_reg_cohorts_empty_file(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
+        self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)

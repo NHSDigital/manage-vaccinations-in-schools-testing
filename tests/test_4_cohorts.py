@@ -31,7 +31,7 @@ class Test_Regression_Cohorts:
     def test_reg_cohorts_file_structure(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE)
+        self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE)
 
     @pytest.mark.cohorts
     @pytest.mark.regression
@@ -39,7 +39,7 @@ class Test_Regression_Cohorts:
     def test_reg_cohorts_no_record(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
+        self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
 
     @pytest.mark.cohorts
     @pytest.mark.regression
@@ -47,4 +47,4 @@ class Test_Regression_Cohorts:
     def test_reg_cohorts_empty_file(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
+        self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
