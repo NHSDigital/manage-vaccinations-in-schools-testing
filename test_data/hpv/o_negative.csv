@@ -19,7 +19,7 @@ Row 19 DATE_OF_VACCINATION: The vaccination date is outside the programme. Enter
 Row 20 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.
 Row 21 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil 9.
 Row 22 BATCH_NUMBER: Enter a batch number.
-Row 23 BATCH_EXPIRY_DATA: Enter a batch expiry date.
+Row 23 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 24 ANATOMICAL_SITE: Enter an anatomical site.
 Row 26 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
 Row 27 DOSE_SEQUENCE: must be less than or equal to 3
