@@ -12,6 +12,7 @@ class actions:
     SELECT_FILE = "select_file"
     SELECT_FROM_LIST = "select_from_list"
     CHECKBOX_CHECK = "checkbox_check"
+    CLICK_LINK_INDEX_FOR_ROW = "click_link_index_for_row"
 
 
 class screenshot_types:
@@ -42,6 +43,7 @@ class playwright_roles:
     LINK = "link"
     BUTTON = "button"
     OPTION = "option"
+    ROW = "row"
 
 
 class wait_time:

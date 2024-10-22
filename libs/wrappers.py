@@ -1,6 +1,8 @@
 import time
 from datetime import datetime
 
+from libs.constants import escape_characters
+
 
 def convert_time_units_to_seconds(time_unit: str) -> int:
     """
@@ -38,5 +40,17 @@ def get_link_formatted_date_time():
     return f"{_dt}{_ampm}"
 
 
-def get_new_datetime(self) -> str:
+def get_new_datetime() -> str:
     return datetime.now().strftime("%Y%m%d%H%M%S")
+
+
+def clean_text(text: str) -> str:
+    for _chr in escape_characters.UI_FORMATTING:
+        text = text.replace(_chr, "")
+    return text
+
+
+def clean_file_name(file_name: str) -> str:
+    for _chr in escape_characters.FILE_NAME:
+        file_name = file_name.replace(_chr, "")
+    return file_name

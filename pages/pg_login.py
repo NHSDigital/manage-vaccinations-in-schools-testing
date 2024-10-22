@@ -1,6 +1,5 @@
-from libs import playwright_ops
-from libs.constants import object_properties, actions
-from libs import CurrentExecution
+from libs import CurrentExecution, playwright_ops
+from libs.constants import actions, object_properties
 
 
 class pg_login:
@@ -42,4 +41,4 @@ class pg_login:
         self.enter_username(username=user)
         self.enter_password(password=pwd)
         self.click_login()
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=expected_message)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=expected_message, exact=True)
