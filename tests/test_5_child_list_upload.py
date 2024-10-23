@@ -12,6 +12,7 @@ class Test_Regression_Child_List_Upload:
     @pytest.mark.childlist
     @pytest.mark.regression
     @pytest.mark.order(501)
+    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_file_upload_positive(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
@@ -20,6 +21,7 @@ class Test_Regression_Child_List_Upload:
     @pytest.mark.childlist
     @pytest.mark.regression
     @pytest.mark.order(502)
+    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_file_upload_negative(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
@@ -28,7 +30,8 @@ class Test_Regression_Child_List_Upload:
     @pytest.mark.childlist
     @pytest.mark.regression
     @pytest.mark.order(503)
-    def test_reg_cohorts_file_structure(self, create_browser_page):
+    @pytest.mark.skip(reason="Covered by cohort uploads")
+    def test_reg_child_list_file_structure(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
         self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE)
@@ -36,7 +39,8 @@ class Test_Regression_Child_List_Upload:
     @pytest.mark.childlist
     @pytest.mark.regression
     @pytest.mark.order(504)
-    def test_reg_cohorts_no_record(self, create_browser_page):
+    @pytest.mark.skip(reason="Covered by cohort uploads")
+    def test_reg_child_list_no_record(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
         self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_HEADER_ONLY)
@@ -44,7 +48,8 @@ class Test_Regression_Child_List_Upload:
     @pytest.mark.childlist
     @pytest.mark.regression
     @pytest.mark.order(505)
-    def test_reg_cohorts_empty_file(self, create_browser_page):
+    @pytest.mark.skip(reason="Covered by cohort uploads")
+    def test_reg_child_list_empty_file(self, create_browser_page):
         self.login_page.perform_login()
         self.home_page.click_programmes()
         self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)

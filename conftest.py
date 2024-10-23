@@ -8,14 +8,14 @@ from libs.constants import workflow_type
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser_name", action="store", default="chrome")
+    parser.addoption("--browser_or_device", action="store", default="chromium")
 
 
 @pytest.fixture(scope="session")
 def start_exe_session(request):
     ce.execution_start_time = datetime.now()
     ce.get_env_values()
-    _browser_name = request.config.getoption("browser_name")
+    _browser_name = request.config.getoption("browser_or_device")
     ce.session_screenshots_dir = create_session_screenshot_dir()
     ce.start_browser(browser_name=_browser_name)
     yield

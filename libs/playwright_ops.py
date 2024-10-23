@@ -1,6 +1,6 @@
 import os
 
-from libs import CurrentExecution, testdata_ops
+from libs import CurrentExecution
 from libs.constants import (
     actions,
     data_values,
@@ -8,22 +8,22 @@ from libs.constants import (
     playwright_roles,
     screenshot_types,
 )
+from libs.wrappers import *
 
 
 class playwright_operations:
     ce = CurrentExecution()
-    tdo = testdata_ops.testdata_operations()
 
     def capture_screenshot(self, identifier: str, action: str) -> None:
         if self.ce.capture_screenshot_flag:
             self.ce.screenshot_sequence += 1
-            _ss_path = self.tdo.clean_file_name(
+            _ss_path = clean_file_name(
                 os.path.join(
                     self.ce.session_screenshots_dir,
-                    f"{self.ce.screenshot_sequence}-{action}-{identifier}.{screenshot_types.JPEG}",
+                    f"{self.ce.screenshot_sequence}-{action}-{identifier}-{self.ce.current_browser_name}.{screenshot_types.JPEG}",
                 )
             )
-            self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
+            # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
             self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
 
     def verify(self, locator: str, property: str, value: str, exact: bool = False, by_test_id: bool = False) -> None:
@@ -32,11 +32,9 @@ class playwright_operations:
                 self.capture_screenshot(identifier=locator, action="verify_text")
                 text = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
                 if exact:
-                    assert value == text, f"Exact match failed. Expected; '{value}' but actual '{text}'."
+                    assert value == text, f"Exact match failed. Expected: '{value}' but actual: '{text}'."
                 else:
-                    assert self.tdo.clean_text(text=value) in self.tdo.clean_text(
-                        text=text
-                    ), f"Text '{value}' not found in '{text}'."
+                    assert clean_text(text=value) in clean_text(text=text), f"Text '{value}' not found in '{text}'."
             case object_properties.VISIBILITY:
                 self.capture_screenshot(identifier=locator, action="verify_visibility")
                 current_state = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
@@ -94,3 +92,14 @@ class playwright_operations:
                 elem = self.ce.page.get_by_label(locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.check()
+            case actions.CLICK_LINK_INDEX_FOR_ROW:
+                elem = (
+                    self.ce.page.get_by_role(
+                        playwright_roles.ROW,
+                        name=locator,
+                    )
+                    .get_by_role(playwright_roles.LINK)
+                    .nth(value)
+                )
+                elem.scroll_into_view_if_needed()
+                elem.click()

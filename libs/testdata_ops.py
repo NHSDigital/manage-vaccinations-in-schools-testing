@@ -20,16 +20,6 @@ class testdata_operations:
         _df = self.fo.read_excel_to_df(file_path=file_path)
         return self.clean_df(df=_df)
 
-    def clean_text(self, text: str) -> str:
-        for _chr in escape_characters.UI_FORMATTING:
-            text = text.replace(_chr, "")
-        return text
-
-    def clean_file_name(self, file_name: str) -> str:
-        for _chr in escape_characters.FILE_NAME:
-            file_name = file_name.replace(_chr, "")
-        return file_name
-
     def clean_df(self, df: pd.DataFrame) -> pd.DataFrame:
         pd.set_option("future.no_silent_downcasting", True)
         _df = df.fillna(value="0", inplace=False)
