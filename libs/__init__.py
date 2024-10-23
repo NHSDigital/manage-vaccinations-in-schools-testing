@@ -14,9 +14,6 @@ class CurrentExecution:
     current_browser_name: str = ""
     headless_mode: bool = False
     playwright: bool = None
-    execution_start_time = None
-    execution_end_time = None
-    execution_duration = None
     session_screenshots_dir: str = ""
     screenshot_sequence: int = 0
     capture_screenshot_flag: bool = False
