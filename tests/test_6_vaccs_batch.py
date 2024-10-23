@@ -15,8 +15,6 @@ class Test_Regression_Cohorts:
         self.login_page.perform_login()
         self.home_page.click_vaccines()
         self.vaccines_page.add_batch()
-        self.vaccines_page.change_batch()
-        self.vaccines_page.archive_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.regression
@@ -43,4 +41,5 @@ class Test_Regression_Cohorts:
         self.login_page.perform_login()
         self.home_page.click_vaccines()
         self.vaccines_page.add_batch()
+        self.vaccines_page.change_batch()
         self.vaccines_page.archive_batch()
