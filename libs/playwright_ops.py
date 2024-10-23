@@ -50,56 +50,106 @@ class playwright_operations:
                 elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
             case object_properties.VISIBILITY:
-                elem = self.ce.page.get_by_role(locator).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_role(locator).nth(0)
                 return elem.is_visible()
 
     def perform_action(self, locator, action, value=None) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
-                elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_BUTTON:
-                elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_LABEL:
-                elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
-            case actions.FILL:
-                elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
+            case actions.FILL | actions.TYPE:
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
                 if value != data_values.EMPTY:
                     elem.fill(value)
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.RADIO_BUTTON_SELECT:
-                elem = self.ce.page.get_by_text(locator, exact=True).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_text(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.SELECT_FILE:
-                elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:
                 self.perform_action(locator=locator, action=actions.FILL, value=value)
-                elem = self.ce.page.get_by_role(playwright_roles.OPTION, name=value)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_role(playwright_roles.OPTION, name=value)
                 elem.click()
             case actions.CHECKBOX_CHECK:
-                elem = self.ce.page.get_by_label(locator).nth(0)
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_label(locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.check()
             case actions.CLICK_LINK_INDEX_FOR_ROW:
-                elem = (
-                    self.ce.page.get_by_role(
-                        playwright_roles.ROW,
-                        name=locator,
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = (
+                        self.ce.page.get_by_role(
+                            playwright_roles.ROW,
+                            name=locator,
+                        )
+                        .get_by_role(playwright_roles.LINK)
+                        .nth(value)
                     )
-                    .get_by_role(playwright_roles.LINK)
-                    .nth(value)
-                )
                 elem.scroll_into_view_if_needed()
                 elem.click()
