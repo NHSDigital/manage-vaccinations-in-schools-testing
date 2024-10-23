@@ -8,6 +8,7 @@ class actions:
     CLICK_BUTTON = "click_button"
     CLICK_LABEL = "click_label"
     FILL = "fill"
+    TYPE = "type"
     RADIO_BUTTON_SELECT = "radio_select"
     SELECT_FILE = "select_file"
     SELECT_FROM_LIST = "select_from_list"
@@ -53,6 +54,7 @@ class wait_time:
 
 
 class escape_characters:
+    SEPARATOR = "||"  # Used only in code
     SPACE = " "
     NEW_LINE = "\n"
     CARRIAGE_RETURN = "\r"
@@ -76,25 +78,35 @@ class escape_characters:
         SINGLE_QUOTE_CLOSE,
         TAB,
     ]
-    FILE_NAME = [COLON]
+    FILE_NAME = [SEPARATOR, COLON]
 
 
 class test_data_file_paths:
     PARENTAL_CONSENT = "test_data/ParentalConsent.xlsx"
-    VACCS_HPV_POSITIVE = "test_data/hpv/i_positive.csv||test_data/hpv/o_positive.csv"
-    VACCS_HPV_NEGATIVE = "test_data/hpv/i_negative.csv||test_data/hpv/o_negative.csv"
-    VACCS_HPV_DUP_1 = "test_data/hpv/i_dup_1.csv||test_data/hpv/o_dup_1.csv"
-    VACCS_HPV_DUP_2 = "test_data/hpv/i_dup_2.csv||test_data/hpv/o_dup_2.csv"
-    VACCS_HPV_INVALID_STRUCTURE = "test_data/hpv/i_invalid_structure.csv||test_data/hpv/o_invalid_structure.csv"
-    VACCS_HPV_EMPTY_FILE = "test_data/hpv/i_empty.csv||test_data/hpv/o_empty.csv"
-    VACCS_HPV_HEADER_ONLY = "test_data/hpv/i_header_only.csv||test_data/hpv/o_header_only.csv"
-    COHORTS_POSITIVE = "test_data/cohorts/i_positive.csv||test_data/cohorts/o_positive.csv"
-    COHORTS_NEGATIVE = "test_data/cohorts/i_negative.csv||test_data/cohorts/o_negative.csv"
-    COHORTS_INVALID_STRUCTURE = "test_data/cohorts/i_invalid_structure.csv||test_data/cohorts/o_invalid_structure.csv"
-    COHORTS_EMPTY_FILE = "test_data/cohorts/i_empty.csv||test_data/cohorts/o_empty.csv"
-    COHORTS_HEADER_ONLY = "test_data/cohorts/i_header_only.csv||test_data/cohorts/o_header_only.csv"
-    CHILD_POSITIVE = "test_data/child/i_positive.csv||test_data/child/o_positive.csv"
-    CHILD_NEGATIVE = "test_data/child/i_negative.csv||test_data/child/o_negative.csv"
-    CHILD_INVALID_STRUCTURE = "test_data/child/i_invalid_structure.csv||test_data/child/o_invalid_structure.csv"
-    CHILD_EMPTY_FILE = "test_data/child/i_empty.csv||test_data/child/o_empty.csv"
-    CHILD_HEADER_ONLY = "test_data/child/i_header_only.csv||test_data/child/o_header_only.csv"
+    VACCS_HPV_POSITIVE = f"test_data/hpv/i_positive.csv{escape_characters.SEPARATOR}test_data/hpv/o_positive.csv"
+    VACCS_HPV_NEGATIVE = f"test_data/hpv/i_negative.csv{escape_characters.SEPARATOR}test_data/hpv/o_negative.csv"
+    VACCS_HPV_DUP_1 = f"test_data/hpv/i_dup_1.csv{escape_characters.SEPARATOR}test_data/hpv/o_dup_1.csv"
+    VACCS_HPV_DUP_2 = f"test_data/hpv/i_dup_2.csv{escape_characters.SEPARATOR}test_data/hpv/o_dup_2.csv"
+    VACCS_HPV_INVALID_STRUCTURE = (
+        f"test_data/hpv/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/hpv/o_invalid_structure.csv"
+    )
+    VACCS_HPV_EMPTY_FILE = f"test_data/hpv/i_empty.csv{escape_characters.SEPARATOR}test_data/hpv/o_empty.csv"
+    VACCS_HPV_HEADER_ONLY = (
+        f"test_data/hpv/i_header_only.csv{escape_characters.SEPARATOR}test_data/hpv/o_header_only.csv"
+    )
+    COHORTS_POSITIVE = f"test_data/cohorts/i_positive.csv{escape_characters.SEPARATOR}test_data/cohorts/o_positive.csv"
+    COHORTS_NEGATIVE = f"test_data/cohorts/i_negative.csv{escape_characters.SEPARATOR}test_data/cohorts/o_negative.csv"
+    COHORTS_INVALID_STRUCTURE = f"test_data/cohorts/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/cohorts/o_invalid_structure.csv"
+    COHORTS_EMPTY_FILE = f"test_data/cohorts/i_empty.csv{escape_characters.SEPARATOR}test_data/cohorts/o_empty.csv"
+    COHORTS_HEADER_ONLY = (
+        f"test_data/cohorts/i_header_only.csv{escape_characters.SEPARATOR}test_data/cohorts/o_header_only.csv"
+    )
+    CHILD_POSITIVE = f"test_data/child/i_positive.csv{escape_characters.SEPARATOR}test_data/child/o_positive.csv"
+    CHILD_NEGATIVE = f"test_data/child/i_negative.csv{escape_characters.SEPARATOR}test_data/child/o_negative.csv"
+    CHILD_INVALID_STRUCTURE = (
+        f"test_data/child/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/child/o_invalid_structure.csv"
+    )
+    CHILD_EMPTY_FILE = f"test_data/child/i_empty.csv{escape_characters.SEPARATOR}test_data/child/o_empty.csv"
+    CHILD_HEADER_ONLY = (
+        f"test_data/child/i_header_only.csv{escape_characters.SEPARATOR}test_data/child/o_header_only.csv"
+    )

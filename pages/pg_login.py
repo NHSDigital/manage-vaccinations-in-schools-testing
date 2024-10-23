@@ -29,7 +29,7 @@ class pg_login:
     def verify_login_successful(self):
         self.po.verify(locator=self.LBL_BANNER, property=object_properties.TEXT, value=self.LBL_USER)
 
-    def perform_login(self):
+    def perform_valid_login(self):
         self.click_start()
         self.enter_username(username=self.ce.login_username)
         self.enter_password(password=self.ce.login_password)

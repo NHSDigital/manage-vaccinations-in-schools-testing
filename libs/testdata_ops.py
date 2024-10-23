@@ -33,4 +33,4 @@ class testdata_operations:
         return _df
 
     def split_file_paths(self, file_paths: str) -> tuple[str, str]:
-        return file_paths.split("||")[0], file_paths.split("||")[1]
+        return file_paths.split(escape_characters.SEPARATOR)[0], file_paths.split(escape_characters.SEPARATOR)[1]
