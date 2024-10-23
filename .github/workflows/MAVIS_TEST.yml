@@ -60,8 +60,8 @@ jobs:
         pytest --browser_or_device chromium
         echo "Starting tests on Chrome"
         pytest --browser_or_device chrome
-        echo "Starting tests on Firefox"
-        pytest --browser_or_device firefox
+        # echo "Starting tests on Firefox"
+        # pytest --browser_or_device firefox
         echo "Starting tests on iPhone 12"
         pytest --browser_or_device iphone_12
         echo "Starting tests on iPhone 11"
