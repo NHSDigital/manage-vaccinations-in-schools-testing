@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from libs.constants import escape_characters
 
@@ -54,3 +54,10 @@ def clean_file_name(file_name: str) -> str:
     for _chr in escape_characters.FILE_NAME:
         file_name = file_name.replace(_chr, "")
     return file_name
+
+
+def get_future_date(offset_days: int) -> str:
+    _future_date = datetime.now() + timedelta(days=offset_days)
+    while _future_date.weekday() >= 5:
+        _future_date = _future_date + timedelta(days=1)
+    return _future_date.strftime("%Y%m%d")

@@ -1,6 +1,6 @@
-Row 1 ORGANISATION_CODE: Enter an organisation code that matches the current team.
-Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current team.
-Row 3 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support team.
+Row 1 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
+Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
+Row 3 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
 Row 4 SCHOOL_NAME: Enter a school name.
 Row 6 NHS_NUMBER: Enter an NHS number with 10 characters.
 Row 7 NHS_NUMBER: Enter an NHS number with 10 characters.

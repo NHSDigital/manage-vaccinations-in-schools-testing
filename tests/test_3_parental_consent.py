@@ -9,7 +9,7 @@ class Test_Regression_Consent:
     helper = parental_consent_helper.parental_consent_helper()
 
     @pytest.mark.consent
-    @pytest.mark.regression
+    @pytest.mark.mobile
     @pytest.mark.order(301)
     @pytest.mark.parametrize("scenario_", helper.df.iterrows())
     def test_reg_parental_consent_workflow(self, start_consent_workflow, scenario_):
