@@ -68,16 +68,16 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(locator).nth(0)
                 return elem.is_visible()
 
-    def perform_action(self, locator, action, value=None) -> None:
+    def perform_action(self, locator, action, value=None, exact: bool = False) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
                 if escape_characters.SEPARATOR in locator:
                     _location = locator.split(escape_characters.SEPARATOR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(0)
                 else:
-                    elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator).nth(0)
+                    elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator, exact=exact).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_BUTTON:
@@ -126,7 +126,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
+                    elem = self.ce.page.get_by_label(locator, exact=False).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:

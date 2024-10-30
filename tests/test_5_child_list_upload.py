@@ -11,7 +11,6 @@ class Test_Regression_Child_List_Upload:
 
     @pytest.mark.childlist
     @pytest.mark.order(501)
-    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_file_upload_positive(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.home_page.click_programmes()
@@ -19,7 +18,6 @@ class Test_Regression_Child_List_Upload:
 
     @pytest.mark.childlist
     @pytest.mark.order(502)
-    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_file_upload_negative(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.home_page.click_programmes()
@@ -27,7 +25,6 @@ class Test_Regression_Child_List_Upload:
 
     @pytest.mark.childlist
     @pytest.mark.order(503)
-    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_file_structure(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.home_page.click_programmes()
@@ -35,7 +32,6 @@ class Test_Regression_Child_List_Upload:
 
     @pytest.mark.childlist
     @pytest.mark.order(504)
-    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_no_record(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.home_page.click_programmes()
@@ -43,7 +39,6 @@ class Test_Regression_Child_List_Upload:
 
     @pytest.mark.childlist
     @pytest.mark.order(505)
-    @pytest.mark.skip(reason="Covered by cohort uploads")
     def test_reg_child_list_empty_file(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.home_page.click_programmes()

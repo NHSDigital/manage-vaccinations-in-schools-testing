@@ -11,6 +11,7 @@ class pg_dashboard:
     LNK_CHILDREN = f"heading{escape_characters.SEPARATOR}Children"
     LNK_NOTICES = f"heading{escape_characters.SEPARATOR}Important Notices"
     LNK_ORGANISATION = f"heading{escape_characters.SEPARATOR}Your organisation"
+    LNK_DASHBOARD = "Manage vaccinations in schools"
 
     def click_programmes(self):
         self.po.perform_action(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
@@ -30,9 +31,12 @@ class pg_dashboard:
     def click_your_organisation(self):
         self.po.perform_action(locator=self.LNK_ORGANISATION, action=actions.CLICK_LINK)
 
+    def go_to_dashboard(self):
+        self.po.perform_action(locator=self.LNK_DASHBOARD, action=actions.CLICK_LINK)
+
     def verify_all_expected_links(self):
         self.po.verify(locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, value=True, exact=True)
-        self.po.verify(locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, value=True, exact=True)
+        # self.po.verify(locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, value=True, exact=True) # Out of scope for 1a
         self.po.verify(locator=self.LNK_SESSIONS, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_CHILDREN, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, value=True, exact=True)
