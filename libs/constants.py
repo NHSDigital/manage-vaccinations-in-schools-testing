@@ -66,7 +66,7 @@ class escape_characters:
     TAB = "\t"
     COLON = ":"
     BACKSLASH = "\\"
-    FRONTSLASH = "/"
+    STROKE = "/"
     UI_FORMATTING = [
         SPACE,
         NEW_LINE,
@@ -109,4 +109,15 @@ class test_data_file_paths:
     CHILD_EMPTY_FILE = f"test_data/child/i_empty.csv{escape_characters.SEPARATOR}test_data/child/o_empty.csv"
     CHILD_HEADER_ONLY = (
         f"test_data/child/i_header_only.csv{escape_characters.SEPARATOR}test_data/child/o_header_only.csv"
+    )
+    CLASS_POSITIVE = (
+        f"test_data/class_list/i_positive.csv{escape_characters.SEPARATOR}test_data/class_list/o_positive.csv"
+    )
+    CLASS_NEGATIVE = (
+        f"test_data/class_list/i_negative.csv{escape_characters.SEPARATOR}test_data/class_list/o_negative.csv"
+    )
+    CLASS_INVALID_STRUCTURE = f"test_data/class_list/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/class_list/o_invalid_structure.csv"
+    CLASS_EMPTY_FILE = f"test_data/class_list/i_empty.csv{escape_characters.SEPARATOR}test_data/class_list/o_empty.csv"
+    CLASS_HEADER_ONLY = (
+        f"test_data/class_list/i_header_only.csv{escape_characters.SEPARATOR}test_data/class_list/o_header_only.csv"
     )

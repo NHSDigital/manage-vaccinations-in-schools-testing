@@ -1,5 +1,5 @@
 from libs import playwright_ops
-from libs.constants import object_properties, actions, data_values
+from libs.constants import actions, data_values, object_properties
 
 
 class pg_parental_consent:
@@ -10,7 +10,8 @@ class pg_parental_consent:
     TXT_CHILD_LAST_NAME = "Last name"
     RDO_KNOWN_BY_ANOTHER_NAME_YES = "Yes"
     RDO_KNOWN_BY_ANOTHER_NAME_NO = "No"
-    TXT_KNOWN_AS = "Known as"
+    TXT_KNOWN_AS_FIRST = "Preferred first name (optional)"
+    TXT_KNOWN_AS_LAST = "Preferred last name (optional)"
     BTN_CONTINUE = "Continue"
     TXT_DOB_DAY = "Day"
     TXT_DOB_MONTH = "Month"
@@ -53,15 +54,20 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
 
     def fill_child_name_details(
-        self, child_first_name: str, child_last_name: str, known_as: str = data_values.EMPTY
+        self,
+        child_first_name: str,
+        child_last_name: str,
+        known_as_first: str = data_values.EMPTY,
+        known_as_last: str = data_values.EMPTY,
     ) -> None:
         self.po.perform_action(locator=self.TXT_CHILD_FIRST_NAME, action=actions.FILL, value=child_first_name)
         self.po.perform_action(locator=self.TXT_CHILD_LAST_NAME, action=actions.FILL, value=child_last_name)
-        if known_as == data_values.EMPTY:
+        if known_as_first == data_values.EMPTY and known_as_last == data_values.EMPTY:
             self.po.perform_action(locator=self.RDO_KNOWN_BY_ANOTHER_NAME_NO, action=actions.RADIO_BUTTON_SELECT)
         else:
             self.po.perform_action(locator=self.RDO_KNOWN_BY_ANOTHER_NAME_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.perform_action(locator=self.TXT_KNOWN_AS, action=actions.FILL, value=known_as)
+            self.po.perform_action(locator=self.TXT_KNOWN_AS_FIRST, action=actions.FILL, value=known_as_first)
+            self.po.perform_action(locator=self.TXT_KNOWN_AS_LAST, action=actions.FILL, value=known_as_last)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_child_dob(self, dob_day: str, dob_month: str, dob_year: str) -> None:

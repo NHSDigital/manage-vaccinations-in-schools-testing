@@ -1,0 +1,13 @@
+Invalid
+Details
+Imported by	Nurse Joy
+Type	Class list
+Records could not be imported
+The records cannot be uploaded due to errors in the CSV file. When fixing these errors, note that the header does not count as a row.
+Row 1 CHILD_FIRST_NAME: is required but missing
+Row 2 CHILD_LAST_NAME: is required but missing
+Row 3 CHILD_DATE_OF_BIRTH: is required but missing
+Row 4 CHILD_NHS_NUMBER: is the wrong length (should be 10 characters)
+Row 5 CHILD_POSTCODE: Enter a valid postcode, such as SW1A 1AA
+Row 6 PARENT_1_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
+Row 7 PARENT_2_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com

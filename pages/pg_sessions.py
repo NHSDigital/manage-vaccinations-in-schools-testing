@@ -17,9 +17,11 @@ class pg_sessions:
 
     LNK_SCHEDULED = "Scheduled"
     LNK_UNSCHEDULED = "Unscheduled"
-    LNK_SCHOOL = "The Ruiz Centre"
+    # LNK_SCHOOL = "The Ruiz Centre"
+    LNK_SCHOOL = "Grange School"
     LNK_IMPORT_CLASS_LIST = "Import class list"
-    LBL_CHOOSE_COHORT_FILE = "The Ruiz CentreImport class"
+    # LBL_CHOOSE_COHORT_FILE = "The Ruiz CentreImport class"
+    LBL_CHOOSE_COHORT_FILE = "Grange SchoolImport class"
     BTN_CONTINUE = "Continue"
     LNK_ADD_SESSION_DATES = "Add session dates"
     LNK_RECORD_VACCINATIONS = "Record vaccinations"
@@ -44,6 +46,18 @@ class pg_sessions:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
         _formatted_date = _parsed_date.strftime("%A %d %B %Y").replace(" 0", " ")
         return _formatted_date
+
+    def record_upload_time(self):
+        self.upload_time = get_link_formatted_date_time()
+
+    def click_uploaded_file_datetime(self):
+        self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
+
+    def verify_upload_output(self, file_path: str):
+        _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
+        if _expected_errors is not None:
+            for _msg in _expected_errors:
+                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
 
     def click_Scheduled(self):
         self.po.perform_action(locator=self.LNK_SCHEDULED, action=actions.CLICK_LINK, exact=True)
@@ -82,7 +96,7 @@ class pg_sessions:
     def click_Save_Triage(self):
         self.po.perform_action(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
 
-    def __schedule_session(self, future_date: str, expect_error: bool):
+    def __schedule_session(self, future_date: str, expect_error: bool = False):
         _day = future_date[-2:]
         _month = future_date[4:6]
         _year = future_date[:4]
@@ -158,3 +172,24 @@ class pg_sessions:
         self.click_Unscheduled()
         self.click_School()
         self.__schedule_session(future_date=_future_date, expect_error=True)
+
+    def upload_class_list(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_Unscheduled()
+        self.click_School()
+        self.click_Import_Class_List()
+        self.choose_file_child_records(file_path=_input_file_path)
+        self.click_Continue()
+        self.record_upload_time()
+        wait(timeout=wait_time.MED)
+        self.click_uploaded_file_datetime()
+        self.verify_upload_output(file_path=_output_file_path)
+
+    def upload_invalid_class_list_records(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_Unscheduled()
+        self.click_School()
+        self.click_Import_Class_List()
+        self.choose_file_child_records(file_path=_input_file_path)
+        self.click_Continue()
+        self.verify_upload_output(file_path=_output_file_path)
