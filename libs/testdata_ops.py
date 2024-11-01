@@ -13,10 +13,13 @@ class testdata_operations:
     def create_file_from_template(self, template_path: str) -> str:
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
+        _ctr = 0
         for _ln in _template_text.split(escape_characters.NEW_LINE):
-            _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no())
-            _ln = _ln.replace("<<FNAME>>", f"F{get_new_datetime()}")
-            _ln = _ln.replace("<<LNAME>>", f"L{get_new_datetime()}")
+            _ctr += 1
+            _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
+            _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
+            _ln = _ln.replace("<<FNAME>>", f"F{get_new_datetime()}{_ctr}")
+            _ln = _ln.replace("<<LNAME>>", f"L{get_new_datetime()}{_ctr}")
             _file_text.append(_ln)
         return self.fo.create_file(content=escape_characters.NEW_LINE.join(_file_text))
 

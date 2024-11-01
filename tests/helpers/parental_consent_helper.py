@@ -15,7 +15,8 @@ class parental_consent_helper:
         _, _row = scenario_data
         self.child_first_name = str(_row["ChildFirstName"])
         self.child_last_name = str(_row["ChildLastName"])
-        self.child_aka = str(_row["ChildAKA"])
+        self.child_aka_first = str(_row["ChildAKAFirst"])
+        self.child_aka_last = str(_row["ChildAKALast"])
         self.child_dob_day = str(_row["ChildDobDay"])
         self.child_dob_month = str(_row["ChildDobMonth"])
         self.child_dob_month = str(_row["ChildDobMonth"])
@@ -41,7 +42,10 @@ class parental_consent_helper:
     def enter_details(self) -> None:
         self.pc.click_start_now()
         self.pc.fill_child_name_details(
-            child_first_name=self.child_first_name, child_last_name=self.child_last_name, known_as=self.child_aka
+            child_first_name=self.child_first_name,
+            child_last_name=self.child_last_name,
+            known_as_first=self.child_aka_first,
+            known_as_last=self.child_aka_last,
         )
         self.pc.fill_child_dob(
             dob_day=self.child_dob_day, dob_month=self.child_dob_month, dob_year=self.child_dob_year
