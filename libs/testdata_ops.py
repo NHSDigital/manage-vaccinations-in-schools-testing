@@ -15,12 +15,12 @@ class testdata_operations:
         _file_text = []
         _ctr = 0
         for _ln in _template_text.split(escape_characters.NEW_LINE):
-            _ctr += 1
             _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
             _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
             _ln = _ln.replace("<<FNAME>>", f"F{get_new_datetime()}{_ctr}")
             _ln = _ln.replace("<<LNAME>>", f"L{get_new_datetime()}{_ctr}")
             _file_text.append(_ln)
+            _ctr += 1
         return self.fo.create_file(content=escape_characters.NEW_LINE.join(_file_text))
 
     def get_new_nhs_no(self, valid=True) -> str:

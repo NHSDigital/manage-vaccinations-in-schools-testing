@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
+from libs import api_ops
 from libs.constants import workflow_type
 
 
@@ -63,12 +64,6 @@ class CurrentExecution:
 
     @staticmethod
     def start_page(w_type: workflow_type):
-        CurrentExecution.context = CurrentExecution.browser.new_context(
-            http_credentials={
-                "username": CurrentExecution.base_auth_username,
-                "password": CurrentExecution.base_auth_password,
-            }
-        )
         CurrentExecution.page = CurrentExecution.context.new_page()
         match w_type.lower():
             case workflow_type.PARENTAL_CONSENT:
@@ -83,6 +78,8 @@ class CurrentExecution:
 
     @staticmethod
     def close_page():
+        if CurrentExecution.page.query_selector("Log out") is not None:
+            CurrentExecution.page.get_by_role("button", name="Log out").click()
         CurrentExecution.page.close()
 
     @staticmethod
@@ -90,6 +87,12 @@ class CurrentExecution:
         try:
             CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
                 headless=CurrentExecution.headless_mode, args=["--fullscreen"]
+            )
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={
+                    "username": CurrentExecution.base_auth_username,
+                    "password": CurrentExecution.base_auth_password,
+                }
             )
         except Exception as e:
             raise AssertionError(f"Error launching Chromium: {e}")
@@ -100,6 +103,13 @@ class CurrentExecution:
             CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
                 channel="msedge", headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={
+                    "username": CurrentExecution.base_auth_username,
+                    "password": CurrentExecution.base_auth_password,
+                }
+            )
+
         except Exception as e:
             raise AssertionError(f"Error launching Edge: {e}")
 
@@ -109,6 +119,13 @@ class CurrentExecution:
             CurrentExecution.browser = CurrentExecution.playwright.firefox.launch(
                 headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={
+                    "username": CurrentExecution.base_auth_username,
+                    "password": CurrentExecution.base_auth_password,
+                }
+            )
+
         except Exception as e:
             raise AssertionError(f"Error launching Firefox: {e}")
 
@@ -118,6 +135,13 @@ class CurrentExecution:
             CurrentExecution.browser = CurrentExecution.playwright.chromium.launch(
                 channel="chrome", headless=CurrentExecution.headless_mode, args=["--fullscreen"]
             )
+            CurrentExecution.context = CurrentExecution.browser.new_context(
+                http_credentials={
+                    "username": CurrentExecution.base_auth_username,
+                    "password": CurrentExecution.base_auth_password,
+                }
+            )
+
         except Exception as e:
             raise AssertionError(f"Error launching Chrome: {e}")
 
@@ -157,7 +181,6 @@ class CurrentExecution:
                     CurrentExecution.context = CurrentExecution.browser.new_context(
                         **CurrentExecution.playwright.devices["Galaxy S9+"], http_credentials=_http_credentials
                     )
-            CurrentExecution.page = CurrentExecution.context.new_page()
         except Exception as e:
             raise AssertionError(f"Error launching device browser {device_name}: {e}")
 

@@ -24,7 +24,7 @@ class Test_Regression_Sessions:
 
     @pytest.mark.sessions
     @pytest.mark.order(203)
-    def test_reg_create_invalid_schedule(self, create_browser_page):
+    def test_reg_create_invalid_session(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.create_invalid_session()

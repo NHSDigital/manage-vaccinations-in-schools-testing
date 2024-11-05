@@ -17,11 +17,11 @@ class pg_sessions:
 
     LNK_SCHEDULED = "Scheduled"
     LNK_UNSCHEDULED = "Unscheduled"
-    # LNK_SCHOOL = "The Ruiz Centre"
-    LNK_SCHOOL = "Grange School"
+    LNK_SCHOOL_1 = "Sidney Stringer Academy"
+    LNK_SCHOOL_2 = "Grange School"
     LNK_IMPORT_CLASS_LIST = "Import class list"
-    # LBL_CHOOSE_COHORT_FILE = "The Ruiz CentreImport class"
-    LBL_CHOOSE_COHORT_FILE = "Grange SchoolImport class"
+    LBL_CHOOSE_COHORT_FILE_1 = "Sidney Stringer AcademyImport class"
+    LBL_CHOOSE_COHORT_FILE_2 = "Grange SchoolImport class"
     BTN_CONTINUE = "Continue"
     LNK_ADD_SESSION_DATES = "Add session dates"
     LNK_RECORD_VACCINATIONS = "Record vaccinations"
@@ -41,6 +41,7 @@ class pg_sessions:
     BTN_DELETE = "Delete"
     LNK_CANCEL = "Cancel"
     LNK_CONTINUE = "Continue"
+    LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
 
     def get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -53,7 +54,7 @@ class pg_sessions:
     def click_uploaded_file_datetime(self):
         self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
 
-    def verify_upload_output(self, file_path: str):
+    def __verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
@@ -66,7 +67,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.LNK_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
 
     def click_School(self):
-        self.po.perform_action(locator=self.LNK_SCHOOL, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
 
     def click_Import_Class_List(self):
         self.po.perform_action(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
@@ -76,7 +77,7 @@ class pg_sessions:
 
     def choose_file_child_records(self, file_path: str):
         self.po.perform_action(
-            locator=self.LBL_CHOOSE_COHORT_FILE,
+            locator=self.LBL_CHOOSE_COHORT_FILE_1,
             action=actions.SELECT_FILE,
             value=file_path,
         )
@@ -118,7 +119,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.BTN_DELETE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.LNK_CANCEL, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
-        # TODO: Use the common verify function
+        # FIXME: Use the common verify function
         expect(
             self.ce.page.locator("div")
             .filter(has_text=re.compile(r"^Session datesNot provided$"))
@@ -183,7 +184,7 @@ class pg_sessions:
         self.record_upload_time()
         wait(timeout=wait_time.MED)
         self.click_uploaded_file_datetime()
-        self.verify_upload_output(file_path=_output_file_path)
+        self.__verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_class_list_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
@@ -192,4 +193,4 @@ class pg_sessions:
         self.click_Import_Class_List()
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_Continue()
-        self.verify_upload_output(file_path=_output_file_path)
+        self.__verify_upload_output(file_path=_output_file_path)
