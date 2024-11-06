@@ -5,7 +5,7 @@ from pages import pg_dashboard, pg_login, pg_vaccines
 
 class Test_Regression_Cohorts:
     login_page = pg_login.pg_login()
-    home_page = pg_dashboard.pg_dashboard()
+    dashboard_page = pg_dashboard.pg_dashboard()
     vaccines_page = pg_vaccines.pg_vaccines()
 
     @pytest.mark.vaccsbatch
@@ -14,7 +14,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_add_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
 
     @pytest.mark.vaccsbatch
@@ -23,7 +23,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_change_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()
 
@@ -33,7 +33,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_archive_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
         self.vaccines_page.archive_batch()
 
@@ -43,7 +43,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_add_change_archive_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()
         self.vaccines_page.archive_batch()

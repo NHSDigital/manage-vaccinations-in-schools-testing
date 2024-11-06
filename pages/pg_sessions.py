@@ -15,8 +15,9 @@ class pg_sessions:
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    LNK_SCHEDULED = "Scheduled"
-    LNK_UNSCHEDULED = "Unscheduled"
+    LNK_TAB_TODAY = "Today"
+    LNK_TAB_SCHEDULED = "Scheduled"
+    LNK_TAB_UNSCHEDULED = "Unscheduled"
     LNK_SCHOOL_1 = "Sidney Stringer Academy"
     LNK_SCHOOL_2 = "Grange School"
     LNK_IMPORT_CLASS_LIST = "Import class list"
@@ -42,6 +43,12 @@ class pg_sessions:
     LNK_CANCEL = "Cancel"
     LNK_CONTINUE = "Continue"
     LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
+    BTN_CHECK_CONSENT_RESPONSES = "Check consent responses"
+    LNK_GIVE_GILLICK_CONSENT = "Give your assessment"
+    RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
+    RDO_NO_GILLICK_COMPETENT = "No"
+    TXT_GILLICK_ASSESSMENT_DETAILS = "Details of your assessment"
+    BTN_SAVE_CHANGES = "Save changes"
 
     def get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -60,11 +67,14 @@ class pg_sessions:
             for _msg in _expected_errors:
                 self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
 
+    def click_Today(self):
+        self.po.perform_action(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
+
     def click_Scheduled(self):
-        self.po.perform_action(locator=self.LNK_SCHEDULED, action=actions.CLICK_LINK, exact=True)
+        self.po.perform_action(locator=self.LNK_TAB_SCHEDULED, action=actions.CLICK_LINK, exact=True)
 
     def click_Unscheduled(self):
-        self.po.perform_action(locator=self.LNK_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
+        self.po.perform_action(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
 
     def click_School(self):
         self.po.perform_action(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
@@ -96,6 +106,28 @@ class pg_sessions:
 
     def click_Save_Triage(self):
         self.po.perform_action(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
+
+    def click_Check_Consent_Responses(self):
+        self.po.perform_action(locator=self.BTN_CHECK_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
+
+    def click_Give_Gillick_Consent(self):
+        self.po.perform_action(locator=self.LNK_GIVE_GILLICK_CONSENT, action=actions.CLICK_LINK)
+
+    def __set_gillick_consent(self, is_competent: bool, competency_details: str) -> None:
+        _expected_text = f"Gillick assessment Are they Gillick competent?Yes, they are Gillick competent Details of your assessment{competency_details}"
+        self.po.perform_action(locator=self.LNK_GIVE_GILLICK_CONSENT, action=actions.CLICK_BUTTON)
+        if is_competent:
+            self.po.perform_action(locator=self.RDO_YES_GILLICK_COMPETENT, action=actions.RADIO_BUTTON_SELECT)
+        else:
+            self.po.perform_action(locator=self.RDO_NO_GILLICK_COMPETENT, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        if is_competent:
+            self.po.perform_action(
+                locator=self.TXT_GILLICK_ASSESSMENT_DETAILS, action=actions.FILL, value=competency_details
+            )
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_expected_text, exact=False)
 
     def __schedule_session(self, future_date: str, expect_error: bool = False):
         _day = future_date[-2:]
@@ -194,3 +226,11 @@ class pg_sessions:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_Continue()
         self.__verify_upload_output(file_path=_output_file_path)
+
+    def set_gillick_competency_for_student(self):
+        self.click_Today()
+        self.click_School()
+        self.click_Check_Consent_Responses()
+        self.click_child_full_name()
+        self.click_Give_Gillick_Consent()
+        self.__set_gillick_consent(is_competent=True, competency_details="Gillick competent")
