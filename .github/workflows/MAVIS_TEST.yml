@@ -57,7 +57,7 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        echo "Starting tests on Chromium"
+        echo "Starting tests on Chromium on $vars.TEST_URL"
         pytest --browser_or_device chromium
         # echo "Starting tests on Chrome"
         # pytest --browser_or_device chrome
