@@ -11,7 +11,6 @@ class Test_Regression_Record_a_Vaccine_Using_UI:
 
     @pytest.mark.rav
     @pytest.mark.order(701)
-    @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_rav_triage_positive(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()

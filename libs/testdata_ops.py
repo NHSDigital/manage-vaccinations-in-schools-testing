@@ -15,7 +15,7 @@ class testdata_operations:
         _file_text = []
         _ctr = 0
         for _ln in _template_text.split(escape_characters.NEW_LINE):
-            _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
+            _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
             _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
             _ln = _ln.replace("<<FNAME>>", f"F{get_new_datetime()}{_ctr}")
             _ln = _ln.replace("<<LNAME>>", f"L{get_new_datetime()}{_ctr}")
@@ -47,6 +47,8 @@ class testdata_operations:
         return _df
 
     def split_file_paths(self, file_paths: str) -> tuple[str, str]:
-        _i = self.create_file_from_template(template_path=file_paths.split(escape_characters.SEPARATOR)[0])
-        _o = file_paths.split(escape_characters.SEPARATOR)[1]
-        return _i, _o
+        _input_file_path = self.create_file_from_template(
+            template_path=file_paths.split(escape_characters.SEPARATOR)[0]
+        )
+        _output_file_path = file_paths.split(escape_characters.SEPARATOR)[1]
+        return _input_file_path, _output_file_path

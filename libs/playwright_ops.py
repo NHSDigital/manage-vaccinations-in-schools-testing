@@ -163,3 +163,5 @@ class playwright_operations:
                     )
                 elem.scroll_into_view_if_needed()
                 elem.click()
+            case actions.CLICK_WILDCARD:
+                elem = self.ce.page.click(f"text={locator}")

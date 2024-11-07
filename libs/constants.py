@@ -14,6 +14,7 @@ class actions:
     SELECT_FROM_LIST = "select_from_list"
     CHECKBOX_CHECK = "checkbox_check"
     CLICK_LINK_INDEX_FOR_ROW = "click_link_index_for_row"
+    CLICK_WILDCARD = "click_wildcard"
 
 
 class screenshot_types:

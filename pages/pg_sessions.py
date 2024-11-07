@@ -15,24 +15,26 @@ class pg_sessions:
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
 
+    LNK_SCHOOL_1 = "Abigail's Place"
+    LNK_SCHOOL_2 = "Grange School"
+
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
     LNK_TAB_UNSCHEDULED = "Unscheduled"
-    LNK_SCHOOL_1 = "Sidney Stringer Academy"
-    LNK_SCHOOL_2 = "Grange School"
+    LNK_TAB_ACTIVITY_LOG = "Activity log"
     LNK_IMPORT_CLASS_LIST = "Import class list"
-    LBL_CHOOSE_COHORT_FILE_1 = "Sidney Stringer AcademyImport class"
-    LBL_CHOOSE_COHORT_FILE_2 = "Grange SchoolImport class"
+    LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
+    LBL_CHOOSE_COHORT_FILE_2 = f"{LNK_SCHOOL_2}Import class"
     BTN_CONTINUE = "Continue"
     LNK_ADD_SESSION_DATES = "Add session dates"
     LNK_RECORD_VACCINATIONS = "Record vaccinations"
-    LNK_CHILD_FULL_NAME = "ChildFirst28 ChildLast28"
+    LNK_CHILD_FULL_NAME = "CF"
     LNK_UPDATE_TRIAGE_OUTCOME = "Update triage outcome"
     LNK_SCHEDULE_SESSIONS = "Schedule sessions"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
     BTN_SAVE_TRIAGE = "Save triage"
     LBL_PARAGRAPH = "paragraph"
-    LBL_TRIAGE_UPDATED_MESSAGE = "Triage outcome updated for ChildFirst28 ChildLast28"
+    LBL_TRIAGE_UPDATED_MESSAGE = "Triage outcome updated for CF"
     LBL_MAIN = "main"
     TXT_DAY = "Day"
     TXT_MONTH = "Month"
@@ -47,8 +49,9 @@ class pg_sessions:
     LNK_GIVE_GILLICK_CONSENT = "Give your assessment"
     RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT = "No"
-    TXT_GILLICK_ASSESSMENT_DETAILS = "Details of your assessment"
+    TXT_GILLICK_ASSESSMENT_DETAILS = "CF"  # "Details of your assessment"
     BTN_SAVE_CHANGES = "Save changes"
+    LBL_ACTIVITY_LOG_ENTRY = f"Triaged decision: Safe to vaccinate {get_link_formatted_date_time()}"
 
     def get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -76,6 +79,9 @@ class pg_sessions:
     def click_Unscheduled(self):
         self.po.perform_action(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
 
+    def click_Activity_Log(self):
+        self.po.perform_action(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
+
     def click_School(self):
         self.po.perform_action(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
 
@@ -96,7 +102,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
 
     def click_child_full_name(self):
-        self.po.perform_action(locator=self.LNK_CHILD_FULL_NAME, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_CHILD_FULL_NAME, action=actions.CLICK_WILDCARD)
 
     def click_Update_Triage_Outcome(self):
         self.po.perform_action(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
@@ -108,7 +114,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
 
     def click_Check_Consent_Responses(self):
-        self.po.perform_action(locator=self.BTN_CHECK_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
     def click_Give_Gillick_Consent(self):
         self.po.perform_action(locator=self.LNK_GIVE_GILLICK_CONSENT, action=actions.CLICK_LINK)
@@ -163,7 +169,12 @@ class pg_sessions:
             locator=self.LBL_PARAGRAPH,
             property=object_properties.TEXT,
             value=self.LBL_TRIAGE_UPDATED_MESSAGE,
-            exact=True,
+            exact=False,
+        )
+
+    def verify_Activity_Log_entry(self):
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_ACTIVITY_LOG_ENTRY, exact=False
         )
 
     def verify_scheduled_date(self, message: str):
@@ -186,6 +197,9 @@ class pg_sessions:
         self.select_Yes_Safe_To_Vaccinate()
         self.click_Save_Triage()
         self.verify_Triage_Updated()
+        self.click_child_full_name()
+        self.click_Activity_Log()
+        self.verify_Activity_Log_entry()
 
     def schedule_a_valid_session(self):
         _future_date = get_future_date(offset_days=10)
