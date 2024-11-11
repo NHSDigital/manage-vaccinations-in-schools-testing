@@ -78,7 +78,7 @@ class CurrentExecution:
 
     @staticmethod
     def close_page():
-        if CurrentExecution.page.query_selector("Log out") is not None:
+        if CurrentExecution.page.get_by_role("button", name="Log out").is_visible():
             CurrentExecution.page.get_by_role("button", name="Log out").click()
         CurrentExecution.page.close()
 

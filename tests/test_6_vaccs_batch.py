@@ -11,7 +11,6 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(601)
-    @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_add_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
@@ -20,7 +19,6 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(602)
-    @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_change_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
@@ -30,7 +28,6 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(603)
-    @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_archive_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
@@ -40,7 +37,6 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(604)
-    @pytest.mark.skip(reason="Out of scope for 1a")
     def test_reg_batch_add_change_archive_batch(self, create_browser_page):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
