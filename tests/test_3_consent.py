@@ -22,7 +22,7 @@ class Test_Regression_Consent:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(302)
-    def test_reg_gillick_consent(self, create_browser_page):
+    def test_reg_gillick_consent(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.set_gillick_competency_for_student()
