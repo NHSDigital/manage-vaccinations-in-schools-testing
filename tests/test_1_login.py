@@ -17,12 +17,12 @@ class Test_Regression_Login:
     @pytest.mark.mobile
     @pytest.mark.order(101)
     @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
-    def test_reg_invalid_login(self, create_browser_page, user, pwd, expected_message):
+    def test_reg_invalid_login(self, start_mavis, user, pwd, expected_message):
         self.login_page.perform_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
 
     @pytest.mark.login
     @pytest.mark.mobile
     @pytest.mark.order(102)
-    def test_reg_home_page_links(self, create_browser_page):
+    def test_reg_home_page_links(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.verify_all_expected_links()

@@ -11,7 +11,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(601)
-    def test_reg_batch_add_batch(self, create_browser_page):
+    def test_reg_batch_add_batch(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
@@ -19,7 +19,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(602)
-    def test_reg_batch_change_batch(self, create_browser_page):
+    def test_reg_batch_change_batch(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
@@ -28,7 +28,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(603)
-    def test_reg_batch_archive_batch(self, create_browser_page):
+    def test_reg_batch_archive_batch(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
@@ -37,7 +37,7 @@ class Test_Regression_Cohorts:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(604)
-    def test_reg_batch_add_change_archive_batch(self, create_browser_page):
+    def test_reg_batch_add_change_archive_batch(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
