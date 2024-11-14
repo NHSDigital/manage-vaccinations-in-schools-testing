@@ -36,7 +36,7 @@ class pg_dashboard:
 
     def verify_all_expected_links(self):
         self.po.verify(locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, value=True, exact=True)
-        # self.po.verify(locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, value=True, exact=True) # Out of scope for 1a
+        self.po.verify(locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_SESSIONS, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_CHILDREN, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, value=True, exact=True)

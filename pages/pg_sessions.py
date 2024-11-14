@@ -15,8 +15,8 @@ class pg_sessions:
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    LNK_SCHOOL_1 = "Abigail's Place"
-    LNK_SCHOOL_2 = "Grange School"
+    LNK_SCHOOL_1 = "Bohunt School Wokingham"
+    LNK_SCHOOL_2 = "Bothal Middle School"
 
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
@@ -42,7 +42,7 @@ class pg_sessions:
     LNK_EDIT_SESSION = "Edit session"
     LNK_CHANGE_SESSION_DATES = "Change session dates"
     BTN_DELETE = "Delete"
-    LNK_CANCEL = "Cancel"
+    LNK_BACK = "Back"
     LNK_CONTINUE = "Continue"
     LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
     BTN_CHECK_CONSENT_RESPONSES = "Check consent responses"
@@ -53,42 +53,45 @@ class pg_sessions:
     BTN_SAVE_CHANGES = "Save changes"
     LBL_ACTIVITY_LOG_ENTRY = f"Triaged decision: Safe to vaccinate {get_link_formatted_date_time()}"
 
-    def get_display_formatted_date(self, date_to_format: str) -> str:
+    def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
         _formatted_date = _parsed_date.strftime("%A %d %B %Y").replace(" 0", " ")
         return _formatted_date
 
-    def record_upload_time(self):
+    def __record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
 
     def click_uploaded_file_datetime(self):
         self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
 
-    def __verify_upload_output(self, file_path: str):
+    def verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
 
-    def click_Today(self):
+    def click_today(self):
         self.po.perform_action(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
 
-    def click_Scheduled(self):
+    def click_scheduled(self):
         self.po.perform_action(locator=self.LNK_TAB_SCHEDULED, action=actions.CLICK_LINK, exact=True)
 
-    def click_Unscheduled(self):
+    def click_unscheduled(self):
         self.po.perform_action(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
 
-    def click_Activity_Log(self):
+    def click_activity_log(self):
         self.po.perform_action(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
 
-    def click_School(self):
+    def click_school1(self):
         self.po.perform_action(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
 
-    def click_Import_Class_List(self):
+    def click_school2(self):
+        self.po.perform_action(locator=self.LNK_SCHOOL_2, action=actions.CLICK_LINK)
+
+    def click_import_class_list(self):
         self.po.perform_action(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
 
-    def click_Continue(self):
+    def click_continue(self):
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def choose_file_child_records(self, file_path: str):
@@ -98,25 +101,25 @@ class pg_sessions:
             value=file_path,
         )
 
-    def click_Record_Vaccinations(self):
+    def click_record_vaccinations(self):
         self.po.perform_action(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
 
     def click_child_full_name(self):
         self.po.perform_action(locator=self.LNK_CHILD_FULL_NAME, action=actions.CLICK_WILDCARD)
 
-    def click_Update_Triage_Outcome(self):
+    def click_update_triage_outcome(self):
         self.po.perform_action(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
 
-    def select_Yes_Safe_To_Vaccinate(self):
+    def select_yes_safe_to_vaccinate(self):
         self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
 
-    def click_Save_Triage(self):
+    def click_save_triage(self):
         self.po.perform_action(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
 
-    def click_Check_Consent_Responses(self):
+    def click_check_consent_responses(self):
         self.po.perform_action(locator=self.BTN_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
-    def click_Give_Gillick_Consent(self):
+    def click_give_gillick_consent(self):
         self.po.perform_action(locator=self.LNK_GIVE_GILLICK_CONSENT, action=actions.CLICK_LINK)
 
     def __set_gillick_consent(self, is_competent: bool, competency_details: str) -> None:
@@ -135,7 +138,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_expected_text, exact=False)
 
-    def __schedule_session(self, future_date: str, expect_error: bool = False):
+    def schedule_session(self, future_date: str, expect_error: bool = False):
         _day = future_date[-2:]
         _month = future_date[4:6]
         _year = future_date[:4]
@@ -151,11 +154,11 @@ class pg_sessions:
                 locator=self.LBL_MAIN, property=object_properties.TEXT, value=_expected_message, exact=False
             )
 
-    def __delete_all_sessions(self):
+    def __delete_sessions(self):
         self.po.perform_action(locator=self.LNK_EDIT_SESSION, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CHANGE_SESSION_DATES, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.BTN_DELETE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.LNK_CANCEL, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_BACK, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
         # FIXME: Use the common verify function
         expect(
@@ -164,7 +167,7 @@ class pg_sessions:
             .get_by_role("definition")
         ).to_be_visible()
 
-    def verify_Triage_Updated(self):
+    def verify_triage_updated(self):
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=object_properties.TEXT,
@@ -172,79 +175,80 @@ class pg_sessions:
             exact=False,
         )
 
-    def verify_Activity_Log_entry(self):
+    def verify_activity_log_entry(self):
         self.po.verify(
             locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_ACTIVITY_LOG_ENTRY, exact=False
         )
 
     def verify_scheduled_date(self, message: str):
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=message, exact=False)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
 
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
-        self.click_Scheduled()
-        self.click_School()
-        self.click_Import_Class_List()
+        self.click_scheduled()
+        self.click_school1()
+        self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)
-        self.click_Continue()
+        self.click_continue()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.click_Scheduled()
-        self.click_School()
-        self.click_Record_Vaccinations()
+        self.click_scheduled()
+        self.click_school1()
+        self.click_record_vaccinations()
         self.click_child_full_name()
-        self.click_Update_Triage_Outcome()
-        self.select_Yes_Safe_To_Vaccinate()
-        self.click_Save_Triage()
-        self.verify_Triage_Updated()
+        self.click_update_triage_outcome()
+        self.select_yes_safe_to_vaccinate()
+        self.click_save_triage()
+        self.verify_triage_updated()
         self.click_child_full_name()
-        self.click_Activity_Log()
-        self.verify_Activity_Log_entry()
+        self.click_activity_log()
+        self.verify_activity_log_entry()
 
     def schedule_a_valid_session(self):
         _future_date = get_future_date(offset_days=10)
-        _expected_message = f"Session dates	{self.get_display_formatted_date(date_to_format=_future_date)}"
-        self.click_Unscheduled()
-        self.click_School()
-        self.__schedule_session(future_date=_future_date, expect_error=False)
+        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
+        self.click_unscheduled()
+        self.click_school1()
+        self.schedule_session(future_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
     def delete_all_sessions(self):
-        self.click_Scheduled()
-        self.click_School()
-        self.__delete_all_sessions()
+        self.click_scheduled()
+        self.click_school1()
+        self.__delete_sessions()
 
     def create_invalid_session(self):
         _future_date = "20241332"
-        self.click_Unscheduled()
-        self.click_School()
-        self.__schedule_session(future_date=_future_date, expect_error=True)
+        self.click_unscheduled()
+        self.click_school2()
+        self.schedule_session(future_date=_future_date, expect_error=True)
 
     def upload_class_list(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
-        self.click_Unscheduled()
-        self.click_School()
-        self.click_Import_Class_List()
+        self.click_unscheduled()
+        self.click_school1()
+        self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)
-        self.click_Continue()
-        self.record_upload_time()
+        self.click_continue()
+        self.__record_upload_time()
         wait(timeout=wait_time.MED)
         self.click_uploaded_file_datetime()
-        self.__verify_upload_output(file_path=_output_file_path)
+        self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_class_list_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
-        self.click_Unscheduled()
-        self.click_School()
-        self.click_Import_Class_List()
+        self.click_unscheduled()
+        self.click_school1()
+        self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)
-        self.click_Continue()
-        self.__verify_upload_output(file_path=_output_file_path)
+        self.click_continue()
+        self.verify_upload_output(file_path=_output_file_path)
 
     def set_gillick_competency_for_student(self):
-        self.click_Today()
-        self.click_School()
-        self.click_Check_Consent_Responses()
+        self.click_today()
+        self.click_school1()
+        self.click_check_consent_responses()
         self.click_child_full_name()
-        self.click_Give_Gillick_Consent()
+        self.click_give_gillick_consent()
         self.__set_gillick_consent(is_competent=True, competency_details="Gillick competent")
