@@ -7,6 +7,7 @@ from libs import api_ops
 
 class CurrentExecution:
     page = None
+    browser = None
     service_url: str = ""
     base_auth_username: str = ""
     base_auth_password: str = ""

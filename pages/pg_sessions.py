@@ -226,7 +226,7 @@ class pg_sessions:
 
     def upload_class_list(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
-        self.click_unscheduled()
+        self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)
@@ -238,7 +238,7 @@ class pg_sessions:
 
     def upload_invalid_class_list_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
-        self.click_unscheduled()
+        self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)

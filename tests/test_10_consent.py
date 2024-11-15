@@ -13,7 +13,7 @@ class Test_Regression_Consent:
 
     @pytest.mark.consent
     @pytest.mark.mobile
-    @pytest.mark.order(301)
+    @pytest.mark.order(1001)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[_tc[0] for _tc in helper.df.iterrows()])
     def test_reg_parental_consent_workflow(self, start_consent_workflow, scenario_data):
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
@@ -21,7 +21,7 @@ class Test_Regression_Consent:
 
     @pytest.mark.consent
     @pytest.mark.mobile
-    @pytest.mark.order(302)
+    @pytest.mark.order(1002)
     def test_reg_gillick_consent(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()

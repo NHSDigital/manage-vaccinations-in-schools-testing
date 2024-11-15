@@ -28,6 +28,7 @@ def start_playwright():
 @pytest.fixture()
 def start_mavis(start_exe_session, start_playwright):
     _browser, _context = start_browser(pw=start_playwright, browser_or_device=ce.current_browser_name)
+    ce.browser = _browser
     ce.page = _context.new_page()
     ce.page.goto(url=ce.service_url)
     yield
