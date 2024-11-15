@@ -1,5 +1,6 @@
 from libs import playwright_ops
-from libs.constants import actions, escape_characters, object_properties
+from libs.constants import actions, escape_characters, object_properties, wait_time
+from libs.wrappers import wait
 
 
 class pg_dashboard:
@@ -32,6 +33,7 @@ class pg_dashboard:
         self.po.perform_action(locator=self.LNK_ORGANISATION, action=actions.CLICK_LINK)
 
     def go_to_dashboard(self):
+        wait(timeout=wait_time.MIN)  # Scripts sometimes error out without this wait when called as a teardown action
         self.po.perform_action(locator=self.LNK_DASHBOARD, action=actions.CLICK_LINK)
 
     def verify_all_expected_links(self):

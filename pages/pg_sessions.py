@@ -5,7 +5,7 @@ from playwright.sync_api import expect
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.constants import actions, object_properties, wait_time
 from libs.wrappers import *
-from pages import pg_dashboard
+from pages import pg_dashboard, pg_parental_consent
 
 
 class pg_sessions:
@@ -14,6 +14,7 @@ class pg_sessions:
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
+    consent_page = pg_parental_consent.pg_parental_consent()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
     LNK_SCHOOL_2 = "Bothal Middle School"
@@ -51,7 +52,8 @@ class pg_sessions:
     RDO_NO_GILLICK_COMPETENT = "No"
     TXT_GILLICK_ASSESSMENT_DETAILS = "CF"  # "Details of your assessment"
     BTN_SAVE_CHANGES = "Save changes"
-    LBL_ACTIVITY_LOG_ENTRY = f"Triaged decision: Safe to vaccinate {get_link_formatted_date_time()}"
+    LBL_ACTIVITY_LOG_ENTRY = f"Triaged decision: Safe to vaccinate"
+    BTN_GET_CONSENT_RESPONSES = "Get consent response"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -184,6 +186,9 @@ class pg_sessions:
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=message, exact=False)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
 
+    def click_get_consent_responses(self):
+        self.po.perform_action(locator=self.BTN_GET_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
+
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
         self.click_scheduled()
@@ -191,6 +196,14 @@ class pg_sessions:
         self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.click_scheduled()
+        self.click_school1()
+        self.click_check_consent_responses()
+        self.click_child_full_name()
+        self.click_get_consent_responses()
+        self.consent_page.service_give_consent()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.click_scheduled()

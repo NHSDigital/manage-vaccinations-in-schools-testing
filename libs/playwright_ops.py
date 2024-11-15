@@ -165,3 +165,5 @@ class playwright_operations:
                 elem.click()
             case actions.CLICK_WILDCARD:
                 elem = self.ce.page.click(f"text={locator}")
+            case actions.CHAIN_LOCATOR_ACTION:
+                eval(f"self.ce.page.{locator}")

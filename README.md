@@ -14,7 +14,7 @@ This test pack requires Python 3.10 installed on the system or greater to run.
 
 To execute the tests from your system, please follow the 4 easy steps below:
 
-1. Clone the repo to any local folder
+1. Clone the repository to any local folder
 
    ```console
    git clone https://github.com/NHSDigital/manage-vaccinations-in-schools-testing.git

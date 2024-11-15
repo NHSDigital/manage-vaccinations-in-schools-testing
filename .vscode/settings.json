@@ -12,7 +12,8 @@
   "cSpell.words": [
     "dotenv",
     "downcasting",
-    "fillna"
+    "fillna",
+    "venv"
   ],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",

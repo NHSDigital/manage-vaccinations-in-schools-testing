@@ -44,7 +44,5 @@ class pg_login:
         self.click_login()
         self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=expected_message, exact=True)
 
-    def logout(self):
+    def perform_logout(self):
         self.po.perform_action(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
-        self.ce.page.close()
-        # self.ce.browser.close()

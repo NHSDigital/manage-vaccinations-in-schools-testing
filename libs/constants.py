@@ -18,6 +18,7 @@ class actions:
     CHECKBOX_CHECK: Final[str] = "checkbox_check"
     CLICK_LINK_INDEX_FOR_ROW: Final[str] = "click_link_index_for_row"
     CLICK_WILDCARD: Final[str] = "click_wildcard"
+    CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
 
 
 class screenshot_types:

@@ -25,4 +25,4 @@ logs/pytest.log
 main.py
 reports/*
 working/*
-
+.vscode/*
