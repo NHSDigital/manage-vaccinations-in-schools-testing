@@ -47,13 +47,18 @@ class pg_sessions:
     LNK_CONTINUE = "Continue"
     LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
     BTN_CHECK_CONSENT_RESPONSES = "Check consent responses"
-    LNK_GIVE_GILLICK_CONSENT = "Give your assessment"
+    LNK_ASSESS_GILLICK_COMPETENT = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT = "No"
-    TXT_GILLICK_ASSESSMENT_DETAILS = "CF"  # "Details of your assessment"
+    TXT_GILLICK_ASSESSMENT_DETAILS = "Assessment notes (optional)"
     BTN_SAVE_CHANGES = "Save changes"
     LBL_ACTIVITY_LOG_ENTRY = f"Triaged decision: Safe to vaccinate"
     BTN_GET_CONSENT_RESPONSES = "Get consent response"
+    BTN_COMPLETE_GILLICK_ASSESSMENT = "Complete your assessment"
+    LBL_CHILD_COMPETENT = "Child assessed as Gillick competent"
+    LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
+    LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
+    BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -121,24 +126,77 @@ class pg_sessions:
     def click_check_consent_responses(self):
         self.po.perform_action(locator=self.BTN_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
-    def click_give_gillick_consent(self):
-        self.po.perform_action(locator=self.LNK_GIVE_GILLICK_CONSENT, action=actions.CLICK_LINK)
+    def click_assess_gillick_competent(self):
+        self.po.perform_action(locator=self.LNK_ASSESS_GILLICK_COMPETENT, action=actions.CLICK_LINK)
 
-    def __set_gillick_consent(self, is_competent: bool, competency_details: str) -> None:
-        _expected_text = f"Gillick assessment Are they Gillick competent?Yes, they are Gillick competent Details of your assessment{competency_details}"
-        self.po.perform_action(locator=self.LNK_GIVE_GILLICK_CONSENT, action=actions.CLICK_BUTTON)
-        if is_competent:
-            self.po.perform_action(locator=self.RDO_YES_GILLICK_COMPETENT, action=actions.RADIO_BUTTON_SELECT)
-        else:
-            self.po.perform_action(locator=self.RDO_NO_GILLICK_COMPETENT, action=actions.RADIO_BUTTON_SELECT)
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+    def click_edit_gillick_competence(self):
+        self.po.perform_action(locator=self.LNK_EDIT_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
+
+    def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
+        self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
+
+    def edit_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
+        self.__set_gillick_consent(is_add=False, is_competent=is_competent, competence_details=competence_details)
+
+    def __set_gillick_consent(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
         if is_competent:
             self.po.perform_action(
-                locator=self.TXT_GILLICK_ASSESSMENT_DETAILS, action=actions.FILL, value=competency_details
+                locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
             )
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_expected_text, exact=False)
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows which disease').get_by_label('Yes').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows what could').get_by_label('Yes').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows how the').get_by_label('Yes').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows which side').get_by_label('Yes').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+        else:
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows which disease').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows what could').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows how the').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.perform_action(
+                locator="get_by_role('group', name='The child knows which side').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+        self.po.perform_action(
+            locator=self.TXT_GILLICK_ASSESSMENT_DETAILS, action=actions.FILL, value=competence_details
+        )
+        if is_add:
+            self.po.perform_action(locator=self.BTN_COMPLETE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
+        else:
+            self.po.perform_action(locator=self.BTN_UPDATE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
+        if is_competent:
+            self.po.verify(
+                locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_COMPETENT, exact=False
+            )
+        else:
+            self.po.verify(
+                locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_NOT_COMPETENT, exact=False
+            )
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=competence_details, exact=False)
 
     def schedule_session(self, future_date: str, expect_error: bool = False):
         _day = future_date[-2:]
@@ -189,6 +247,14 @@ class pg_sessions:
     def click_get_consent_responses(self):
         self.po.perform_action(locator=self.BTN_GET_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
 
+    def upload_valid_class_list(self, file_paths: str):
+        _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_scheduled()
+        self.click_school1()
+        self.click_import_class_list()
+        self.choose_file_child_records(file_path=_input_file_path)
+        self.click_continue()
+
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
         self.click_scheduled()
@@ -218,8 +284,8 @@ class pg_sessions:
         self.click_activity_log()
         self.verify_activity_log_entry()
 
-    def schedule_a_valid_session(self):
-        _future_date = get_future_date(offset_days=10)
+    def schedule_a_valid_session(self, for_today: bool = False):
+        _future_date = get_future_date(offset_days=0) if for_today else get_future_date(offset_days=10)
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_school1()
@@ -258,10 +324,12 @@ class pg_sessions:
         self.click_continue()
         self.verify_upload_output(file_path=_output_file_path)
 
-    def set_gillick_competency_for_student(self):
+    def set_gillick_competence_for_student(self):
         self.click_today()
         self.click_school1()
         self.click_check_consent_responses()
         self.click_child_full_name()
-        self.click_give_gillick_consent()
-        self.__set_gillick_consent(is_competent=True, competency_details="Gillick competent")
+        self.click_assess_gillick_competent()
+        self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
+        self.click_edit_gillick_competence()
+        self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
