@@ -46,3 +46,10 @@ class pg_login:
 
     def perform_logout(self):
         self.po.perform_action(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
+
+    def go_to_url(self, url: str) -> None:
+        _full_url = f"{self.ce.service_url.replace("/start","")}{url}" if url.startswith("/") else url
+        self.ce.page.goto(_full_url)
+
+    def go_to_login_page(self) -> None:
+        self.ce.page.goto(self.ce.service_url)

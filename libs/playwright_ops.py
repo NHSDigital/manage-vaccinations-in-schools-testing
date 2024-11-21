@@ -67,6 +67,9 @@ class playwright_operations:
                 else:
                     elem = self.ce.page.get_by_role(locator).nth(0)
                 return elem.is_visible()
+            case object_properties.HREF:
+                elem = self.ce.page.get_by_role("link", name=locator).nth(0)
+                return elem.get_attribute(object_properties.HREF)
 
     def perform_action(self, locator, action, value=None, exact: bool = False) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")

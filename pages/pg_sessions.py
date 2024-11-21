@@ -59,6 +59,7 @@ class pg_sessions:
     LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
     LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
+    LNK_CONSENT_FORM = "View parental consent form ("
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -333,3 +334,6 @@ class pg_sessions:
         self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
         self.click_edit_gillick_competence()
         self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
+
+    def get_consent_url(self) -> str:
+        return self.po.get_object_property(locator=self.LNK_CONSENT_FORM, property=object_properties.HREF)

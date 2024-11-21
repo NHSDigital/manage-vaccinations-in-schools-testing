@@ -35,6 +35,15 @@ def start_mavis(start_exe_session, start_playwright):
     close_browser(browser=_browser, page=ce.page)
 
 
+# @pytest.fixture
+# def start_consent_workflow(start_exe_session, start_playwright):
+#     _browser, _context = start_browser(pw=start_playwright, browser_or_device=ce.current_browser_name)
+#     ce.page = _context.new_page()
+#     ce.page.goto(url=ce.parental_consent_url)
+#     yield
+#     close_browser(browser=_browser, page=ce.page)
+
+
 @pytest.fixture
 def start_consent_workflow(start_exe_session, start_playwright):
     _browser, _context = start_browser(pw=start_playwright, browser_or_device=ce.current_browser_name)

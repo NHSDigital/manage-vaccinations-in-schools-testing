@@ -13,7 +13,7 @@ N_FutureDOB,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20
 N_NonLeapYearDOB,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100229,Male,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
 N_EmptyGender,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
 N_InvalidGender,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Transgender,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
-N_EmptyPostCode,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
+N_EmptyPostCode,R1L,142181,Bohunt School Wokingham,,<<FNAME>>,<<LNAME>>,20100228,Female,,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
 N_InvalidPostCode,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,1AA AA1,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
 N_EmptyVaccDate,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
 N_FutureVaccDate,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,20301231,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,Clinic,12:00,
@@ -31,6 +31,6 @@ N_InvalidProfSName,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNA
 N_InvalidProfEmail,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@invalid-example.com,Clinic,12:00,
 N_InvalidClinic,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,2,,,nurse.joy@example.com,Invalid Clinic,12:00,
 N_InvalidTime,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,,32:00,
-N_InvalidReason,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,,32:00,Did not attend1
-N_InvalidVaccinatedFlag,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,X,1,,,nurse.joy@example.com,,32:00,
-N_InvalidCareSetting,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,10,,,nurse.joy@example.com,,32:00,
+N_InvalidReason,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,,12:00,Did not attend1
+N_InvalidVaccinatedFlag,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,X,1,,,nurse.joy@example.com,,12:00,
+N_InvalidCareSetting,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,10,,,nurse.joy@example.com,,12:00,
