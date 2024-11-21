@@ -10,6 +10,7 @@ class pg_login:
     TXT_EMAIL_ADDRESS = "Email address"
     TXT_PASSWORD = "Password"
     BTN_LOGIN = "Log in"
+    BTN_LOGOUT = "Log out"
     LBL_BANNER = "banner"
     LBL_USER = "Nurse Joy"
     LBL_PARAGRAPH = "paragraph"
@@ -42,3 +43,6 @@ class pg_login:
         self.enter_password(password=pwd)
         self.click_login()
         self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=expected_message, exact=True)
+
+    def perform_logout(self):
+        self.po.perform_action(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)

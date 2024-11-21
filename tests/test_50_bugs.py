@@ -10,7 +10,7 @@ class Test_Regression_Bugs:
 
     @pytest.mark.bugs
     @pytest.mark.order(5001)
-    def test_reg_children_page(self, create_browser_page):
+    def test_reg_children_page(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_children()
         self.children_page.verify_headers()

@@ -10,10 +10,14 @@
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "cSpell.words": [
-    "dotenv"
+    "dotenv",
+    "downcasting",
+    "fillna",
+    "venv"
   ],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
-  }
+  },
+  "python.analysis.autoImportCompletions": true
 }

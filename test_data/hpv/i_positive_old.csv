@@ -1,0 +1,17 @@
+TEST_DESC_IGNORED,ORGANISATION_CODE,SCHOOL_URN,SCHOOL_NAME,NHS_NUMBER,PERSON_FORENAME,PERSON_SURNAME,PERSON_DOB,PERSON_GENDER_CODE,PERSON_POSTCODE,DATE_OF_VACCINATION,VACCINE_GIVEN,BATCH_NUMBER,BATCH_EXPIRY_DATE,ANATOMICAL_SITE,DOSE_SEQUENCE,LOCAL_PATIENT_ID,LOCAL_PATIENT_ID_URI,CARE_SETTING,VACCINATED
+P_Gardasil9,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,DN9 1PB,20240514,Gardasil9,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Gardasil,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100819,Male,DN38 6JP,20240514,Gardasil,123013325,20220730,Left Thigh,2,LocalPatient3,www.LocalPatient3,1,Y
+P_Cervarix,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100808,Male,N8 7RE,20240514,Cervarix,123013325,20220730,Left Thigh,3,LocalPatient3,www.LocalPatient3,1,Y
+P_Gardasil9,R1L,888888,Test-Auto School,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100818,Female,HD9 2DD,20240514,Gardasil9,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Gardasil,R1L,999999,Homeschooled,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100813,Female,DN17 1UE,20240514,Gardasil,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Cervarix,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100817,Female,LA22 9SJ,20240514,Cervarix,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_NFA,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,ZZ99 3VZ,20240514,Gardasil9,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Add_Not_Known,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,ZZ99 3WZ,20240514,Gardasil9,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Site_LB,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,DN34 4SE,20240514,Gardasil9,123013325,20220730,Left Buttock,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Site_RB,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100831,Male,TS8 9EF,20240514,Gardasil9,123013325,20220730,Right Buttock,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Site_LT,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100829,Not Known,HU5 3SG,20240514,Gardasil9,123013325,20220730,Left Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Site_LUA,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100821,Female,ZZ99 3AZ,20240514,Gardasil9,123013325,20220730,Left Upper Arm,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Site_RUA,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100830,Male,NE39 1AD,20240514,Gardasil9,123013325,20220730,Right Upper Arm,1,LocalPatient3,www.LocalPatient3,1,Y
+P_Site_RT,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100808,Male,SK16 4HT,20240514,Gardasil9,123013325,20220730,Right Thigh,1,LocalPatient3,www.LocalPatient3,1,Y
+P_AllowPastExpiryDate,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100827,Female,BH23 8BY,20240514,Gardasil9,123013325,20120730,Left Thigh,1,www.LocalPatient3,www.LocalPatient3,1,Y
+P_NotVaccinated,R1L,110158,Eton College,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100827,Female,BH23 8BY,20240514,Gardasil9,123013325,20120730,Left Thigh,1,www.LocalPatient3,www.LocalPatient3,1,N

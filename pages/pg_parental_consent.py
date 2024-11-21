@@ -49,6 +49,11 @@ class pg_parental_consent:
     RDO_VACCINE_MEDICAL_REASONS = "Medical reasons"
     RDO_PERSONAL_CHOICE = "Personal choice"
     RDO_OTHER = "Other"
+    RDO_ONLINE = "Online"
+    RDO_YES_THEY_AGREE = "Yes, they agree"
+    RDO_NO_THEY_DO_NOT_AGREE = "No, they do not agree"
+    RDO_NO_RESPONSE = "No response"
+    RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
 
     def click_start_now(self):
         self.po.perform_action(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
@@ -175,3 +180,39 @@ class pg_parental_consent:
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
                 self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+
+    def service_give_consent(self):
+        from libs import CurrentExecution as ce
+
+        self.po.perform_action(locator="Parent1Name1 (Dad)", action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.perform_action(locator=self.RDO_ONLINE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        # self.po.perform_action(locator=self.RDO_NO_THEY_DO_NOT_AGREE , action=actions.RADIO_BUTTON_SELECT)
+        # self.po.perform_action(locator=self.RDO_NO_RESPONSE , action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        # page.get_by_role("group", name="Does your child have any severe allergies?").get_by_label("Yes").check()
+        # page.get_by_role("textbox", name="Give details").click()
+        # page.get_by_role("textbox", name="Give details").fill("asdfaf")
+        self.po.perform_action(
+            locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(
+            locator="get_by_role('group', name='Does your child have any medical conditions for which they receive treatment?').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(
+            locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(
+            locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)

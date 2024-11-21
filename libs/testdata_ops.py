@@ -13,14 +13,16 @@ class testdata_operations:
     def create_file_from_template(self, template_path: str) -> str:
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
-        _ctr = 0
+        _ctr = -1
+        _dt = get_new_datetime()
         for _ln in _template_text.split(escape_characters.NEW_LINE):
-            _ctr += 1
-            _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
+            _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
             _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
-            _ln = _ln.replace("<<FNAME>>", f"F{get_new_datetime()}{_ctr}")
-            _ln = _ln.replace("<<LNAME>>", f"L{get_new_datetime()}{_ctr}")
+            _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
+            _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
+            _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
             _file_text.append(_ln)
+            _ctr += 1
         return self.fo.create_file(content=escape_characters.NEW_LINE.join(_file_text))
 
     def get_new_nhs_no(self, valid=True) -> str:
@@ -47,6 +49,8 @@ class testdata_operations:
         return _df
 
     def split_file_paths(self, file_paths: str) -> tuple[str, str]:
-        _i = self.create_file_from_template(template_path=file_paths.split(escape_characters.SEPARATOR)[0])
-        _o = file_paths.split(escape_characters.SEPARATOR)[1]
-        return _i, _o
+        _input_file_path = self.create_file_from_template(
+            template_path=file_paths.split(escape_characters.SEPARATOR)[0]
+        )
+        _output_file_path = file_paths.split(escape_characters.SEPARATOR)[1]
+        return _input_file_path, _output_file_path

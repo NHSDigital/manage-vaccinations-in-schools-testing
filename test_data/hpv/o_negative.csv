@@ -2,26 +2,29 @@ Row 1 ORGANISATION_CODE: Enter an organisation code that matches the current org
 Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
 Row 3 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
 Row 4 SCHOOL_NAME: Enter a school name.
+Row 5 NHS_NUMBER: Enter an NHS number with 10 characters.
 Row 6 NHS_NUMBER: Enter an NHS number with 10 characters.
-Row 7 NHS_NUMBER: Enter an NHS number with 10 characters.
-Row 8 PERSON_FORENAME: Enter a first name.
-Row 9 PERSON_SURNAME: Enter a last name.
+Row 7 PERSON_FORENAME: Enter a first name.
+Row 8 PERSON_SURNAME: Enter a last name.
+Row 9 PERSON_DOB: Enter a date of birth in the correct format.
 Row 10 PERSON_DOB: Enter a date of birth in the correct format.
-Row 11 PERSON_DOB: Enter a date of birth in the correct format.
-Row 12 PERSON_DOB: is not part of this programme
-Row 13 PERSON_DOB: Enter a date of birth in the correct format.
+Row 11 PERSON_DOB: is not part of this programme
+Row 12 PERSON_DOB: Enter a date of birth in the correct format.
+Row 13 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.
 Row 14 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.
-Row 15 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.
+Row 15 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 16 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
-Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
-Row 18 DATE_OF_VACCINATION: Enter a date in the correct format.
-Row 19 DATE_OF_VACCINATION: The vaccination date is outside the programme. Enter a date before today.
-Row 20 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.
-Row 21 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil 9.
-Row 22 BATCH_NUMBER: Enter a batch number.
-Row 23 BATCH_EXPIRY_DATE: Enter a batch expiry date.
-Row 24 ANATOMICAL_SITE: Enter an anatomical site.
-Row 26 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
-Row 27 DOSE_SEQUENCE: must be less than or equal to 3
-Row 28 CARE_SETTING: Enter a care setting.
-Row 29 CARE_SETTING: Enter a valid care setting.
+Row 17 DATE_OF_VACCINATION: Enter a date in the correct format
+Row 18 DATE_OF_VACCINATION: The vaccination date is outside the programme. Enter a date before today.
+Row 19 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil 9.
+Row 20 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil 9.
+Row 21 BATCH_NUMBER: Enter a batch number.
+Row 22 BATCH_EXPIRY_DATE: Enter a batch expiry date.
+Row 23 ANATOMICAL_SITE: Enter an anatomical site.
+Row 25 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
+Row 26 DOSE_SEQUENCE: must be less than or equal to 3
+Row 27 CARE_SETTING: Enter a care setting.
+Row 28 CARE_SETTING: Enter a valid care setting.
+Row 32 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
+Row 34 TIME_OF_VACCINATION: Enter a time in the correct format
+Row 35 REASON_NOT_VACCINATED: Enter a reason

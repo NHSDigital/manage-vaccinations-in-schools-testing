@@ -10,21 +10,21 @@ class Test_Regression_Sessions:
 
     @pytest.mark.sessions
     @pytest.mark.order(201)
-    def test_reg_create_valid_session(self, create_browser_page):
+    def test_reg_create_valid_session(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session()
 
     @pytest.mark.sessions
     @pytest.mark.order(202)
-    def test_reg_delete_all_sessions(self, create_browser_page):
+    def test_reg_delete_all_sessions(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
 
     @pytest.mark.sessions
     @pytest.mark.order(203)
-    def test_reg_create_invalid_schedule(self, create_browser_page):
+    def test_reg_create_invalid_session(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.create_invalid_session()

@@ -5,45 +5,41 @@ from pages import pg_dashboard, pg_login, pg_vaccines
 
 class Test_Regression_Cohorts:
     login_page = pg_login.pg_login()
-    home_page = pg_dashboard.pg_dashboard()
+    dashboard_page = pg_dashboard.pg_dashboard()
     vaccines_page = pg_vaccines.pg_vaccines()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(601)
-    @pytest.mark.skip(reason="Out of scope for 1a")
-    def test_reg_batch_add_batch(self, create_browser_page):
+    def test_reg_batch_add_batch(self, start_mavis):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(602)
-    @pytest.mark.skip(reason="Out of scope for 1a")
-    def test_reg_batch_change_batch(self, create_browser_page):
+    def test_reg_batch_change_batch(self, start_mavis):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(603)
-    @pytest.mark.skip(reason="Out of scope for 1a")
-    def test_reg_batch_archive_batch(self, create_browser_page):
+    def test_reg_batch_archive_batch(self, start_mavis):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
         self.vaccines_page.archive_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(604)
-    @pytest.mark.skip(reason="Out of scope for 1a")
-    def test_reg_batch_add_change_archive_batch(self, create_browser_page):
+    def test_reg_batch_add_change_archive_batch(self, start_mavis):
         self.login_page.perform_valid_login()
-        self.home_page.click_vaccines()
+        self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()
         self.vaccines_page.archive_batch()

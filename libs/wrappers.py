@@ -58,6 +58,7 @@ def clean_file_name(file_name: str) -> str:
 
 def get_future_date(offset_days: int) -> str:
     _future_date = datetime.now() + timedelta(days=offset_days)
-    while _future_date.weekday() >= 5:
-        _future_date = _future_date + timedelta(days=1)
+    if offset_days != 0:
+        while _future_date.weekday() >= 5:
+            _future_date = _future_date + timedelta(days=1)
     return _future_date.strftime("%Y%m%d")
