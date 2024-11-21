@@ -4,6 +4,7 @@ from typing import Final
 class object_properties:
     TEXT: Final[str] = "text"
     VISIBILITY: Final[str] = "visibility"
+    HREF: Final[str] = "href"
 
 
 class actions:

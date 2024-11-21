@@ -11,7 +11,7 @@ class Test_Regression_Vaccinations_Upload:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture()
-    def create_session(self, start_mavis: None):
+    def test_setup(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session(for_today=True)
@@ -24,17 +24,17 @@ class Test_Regression_Vaccinations_Upload:
 
     @pytest.mark.vaccinations
     @pytest.mark.order(801)
-    def test_reg_hpv_positive_file_upload(self, start_mavis):
+    def test_reg_hpv_positive_file_upload(self, test_setup):
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_POSITIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(802)
-    def test_reg_hpv_negative_file_upload(self, create_session):
+    def test_reg_hpv_negative_file_upload(self, test_setup):
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_NEGATIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(803)
-    def test_reg_hpv_duplicate_record_upload(self, start_mavis):
+    def test_reg_hpv_duplicate_record_upload(self, test_setup):
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DUP_1)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
@@ -42,15 +42,15 @@ class Test_Regression_Vaccinations_Upload:
 
     @pytest.mark.vaccinations
     @pytest.mark.order(804)
-    def test_reg_hpv_file_structure(self, start_mavis):
+    def test_reg_hpv_file_structure(self, test_setup):
         self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_INVALID_STRUCTURE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(805)
-    def test_reg_hpv_no_record(self, start_mavis):
+    def test_reg_hpv_no_record(self, test_setup):
         self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_HEADER_ONLY)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(806)
-    def test_reg_hpv_empty_file(self, start_mavis):
+    def test_reg_hpv_empty_file(self, test_setup):
         self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_EMPTY_FILE)
