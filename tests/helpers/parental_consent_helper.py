@@ -35,6 +35,7 @@ class parental_consent_helper:
         self.allergy_details = str(_row["AllergyDetails"])
         self.medical_condition_details = str(_row["MedicalConditionDetails"])
         self.reaction_details = str(_row["ReactionDetails"])
+        self.extra_support_details = str(_row["ExtraSupportDetails"])
         self.consent_not_given_reason = str(_row["ConsentNotGivenReason"])
         self.consent_not_given_details = str(_row["ConsentNotGivenDetails"])
         self.expected_message = str(_row["ExpectedFinalMessage"])
@@ -66,10 +67,11 @@ class parental_consent_helper:
             self.pc.select_severe_allergies(allergy_details=self.allergy_details)
             self.pc.select_medical_condition(medical_condition_details=self.medical_condition_details)
             self.pc.select_severe_reaction(reaction_details=self.reaction_details)
+            self.pc.select_extra_support(extra_support_details=self.extra_support_details)
         else:
             self.pc.select_consent_not_given_reason(
                 reason=self.consent_not_given_reason, reason_details=self.consent_not_given_details
             )
         self.pc.click_confirm_details()
         self.pc.verify_final_message(expected_message=self.expected_message)
-        self.ce.end_test()
+        # self.ce.end_test()

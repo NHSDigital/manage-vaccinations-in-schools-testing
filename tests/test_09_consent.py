@@ -13,7 +13,7 @@ class Test_Regression_Consent:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture()
-    def test_setup(self, start_mavis: None):
+    def test_setup(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session(for_today=True)
@@ -27,7 +27,7 @@ class Test_Regression_Consent:
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
 
-    @pytest.fixture
+    @pytest.fixture()
     def get_session_link(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
@@ -35,23 +35,15 @@ class Test_Regression_Consent:
         link = self.sessions_page.get_consent_url()
         self.login_page.perform_logout()
         yield link
-        self.login_page.go_to_login_page
+        self.login_page.go_to_login_page()
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
-
-    # @pytest.mark.consent
-    # @pytest.mark.mobile
-    # @pytest.mark.order(901)
-    # @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[_tc[0] for _tc in helper.df.iterrows()])
-    # def test_reg_parental_consent_workflow(self, start_consent_workflow, scenario_data):
-    #     self.helper.read_data_for_scenario(scenario_data=scenario_data)
-    #     self.helper.enter_details()
+        self.login_page.perform_logout()
 
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(901)
-    @pytest.mark.skip(reason="Under maintenance")
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[_tc[0] for _tc in helper.df.iterrows()])
     def test_reg_parental_consent_workflow(self, get_session_link, scenario_data):
         self.login_page.go_to_url(url=get_session_link)

@@ -151,6 +151,14 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reaction_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
+    def select_extra_support(self, extra_support_details: str = data_values.EMPTY) -> None:
+        if extra_support_details == data_values.EMPTY:
+            self.po.perform_action(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
+        else:
+            self.po.perform_action(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
+            self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=extra_support_details)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+
     def click_confirm_details(self) -> None:
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
@@ -182,9 +190,7 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def service_give_consent(self):
-        from libs import CurrentExecution as ce
-
-        self.po.perform_action(locator="Parent1Name1 (Dad)", action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator="Parent1 (Dad)", action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
         self.po.perform_action(locator=self.RDO_ONLINE, action=actions.RADIO_BUTTON_SELECT)
