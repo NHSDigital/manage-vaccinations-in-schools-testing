@@ -1,3 +1,4 @@
+from re import ASCII
 from typing import Final
 
 
@@ -157,3 +158,7 @@ class test_data_file_paths:
     CLASS_HEADER_ONLY: Final[str] = (
         f"test_data/class_list/i_header_only.csv{escape_characters.SEPARATOR}test_data/class_list/o_header_only.csv"
     )
+
+
+class file_encoding:
+    ASCII = "ascii"

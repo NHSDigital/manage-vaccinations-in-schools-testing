@@ -1,7 +1,9 @@
+import base64
+import os
 import time
 from datetime import datetime, timedelta
 
-from libs.constants import escape_characters
+from libs.constants import escape_characters, file_encoding
 
 
 def convert_time_units_to_seconds(time_unit: str) -> int:
@@ -32,12 +34,12 @@ def wait(timeout: str):
 
 
 def get_link_formatted_date_time():
-    _ampm = datetime.now().strftime(format="%p").lower()
+    _am_or_pm = datetime.now().strftime(format="%p").lower()
     try:
         _dt = datetime.now().strftime(format="%-d %B %Y at %-I:%M")  # Linux (Github Action)
     except:
         _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev VDI)
-    return f"{_dt}{_ampm}"
+    return f"{_dt}{_am_or_pm}"
 
 
 def get_new_datetime() -> str:
@@ -62,3 +64,20 @@ def get_offset_date(offset_days: int) -> str:
         while _offset_date.weekday() >= 5:
             _offset_date = _offset_date + timedelta(days=1)
     return _offset_date.strftime("%Y%m%d")
+
+
+def get_project_root() -> str:
+    _project_root = os.path.dirname(__file__)
+    while os.path.basename(_project_root.lower()) != "manage-vaccinations-in-schools-testing":
+        _project_root = os.path.dirname(_project_root)
+    return _project_root
+
+
+def get_base64_encoded_string(text):
+    text_bytes = text.encode(file_encoding.ASCII)
+    return base64.b64encode(text_bytes).decode(file_encoding.ASCII)
+
+
+def get_base64_decoded_string(encoded_string):
+    base64_bytes = encoded_string.encode(file_encoding.ASCII)
+    return base64.b64decode(base64_bytes).decode(file_encoding.ASCII)
