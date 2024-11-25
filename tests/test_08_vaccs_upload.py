@@ -54,3 +54,13 @@ class Test_Regression_Vaccinations_Upload:
     @pytest.mark.order(806)
     def test_reg_hpv_empty_file(self, test_setup):
         self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_EMPTY_FILE)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(807)
+    def test_reg_hpv_historic_positive_file_upload(self, test_setup):
+        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_HPV_POSITIVE)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(808)
+    def test_reg_hpv_historic_negative_file_upload(self, test_setup):
+        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_HPV_NEGATIVE)

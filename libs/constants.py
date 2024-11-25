@@ -1,3 +1,4 @@
+from re import ASCII
 from typing import Final
 
 
@@ -95,6 +96,12 @@ class test_data_file_paths:
     VACCS_HPV_NEGATIVE: Final[str] = (
         f"test_data/hpv/i_negative.csv{escape_characters.SEPARATOR}test_data/hpv/o_negative.csv"
     )
+    VACCS_HIST_HPV_POSITIVE: Final[str] = (
+        f"test_data/hpv/i_hist_positive.csv{escape_characters.SEPARATOR}test_data/hpv/o_hist_positive.csv"
+    )
+    VACCS_HIST_HPV_NEGATIVE: Final[str] = (
+        f"test_data/hpv/i_hist_negative.csv{escape_characters.SEPARATOR}test_data/hpv/o_hist_negative.csv"
+    )
     VACCS_HPV_DUP_1: Final[str] = f"test_data/hpv/i_dup_1.csv{escape_characters.SEPARATOR}test_data/hpv/o_dup_1.csv"
     VACCS_HPV_DUP_2: Final[str] = f"test_data/hpv/i_dup_2.csv{escape_characters.SEPARATOR}test_data/hpv/o_dup_2.csv"
     VACCS_HPV_INVALID_STRUCTURE: Final[str] = (
@@ -151,3 +158,7 @@ class test_data_file_paths:
     CLASS_HEADER_ONLY: Final[str] = (
         f"test_data/class_list/i_header_only.csv{escape_characters.SEPARATOR}test_data/class_list/o_header_only.csv"
     )
+
+
+class file_encoding:
+    ASCII = "ascii"

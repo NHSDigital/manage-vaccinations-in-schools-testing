@@ -21,15 +21,9 @@ Row 20 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil9.
 Row 21 BATCH_NUMBER: Enter a batch number.
 Row 22 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 23 ANATOMICAL_SITE: Enter an anatomical site.
-Row 24 ANATOMICAL_SITE: Enter a anatomical site that is appropriate for the vaccine.
 Row 25 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
 Row 26 DOSE_SEQUENCE: must be less than or equal to 3
 Row 27 CARE_SETTING: Enter a care setting.
-Row 28 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
-Row 29 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
-Row 30 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
-Row 31 CLINIC_NAME: Enter a clinic name
 Row 32 TIME_OF_VACCINATION: Enter a time in the correct format
 Row 34 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reasonVACCINE_GIVEN: must be blank
 Row 35 CARE_SETTING: Enter a valid care setting.
-Row 36 TIME_OF_VACCINATION: Enter a time in the past
