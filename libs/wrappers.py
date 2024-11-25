@@ -36,7 +36,7 @@ def get_link_formatted_date_time():
     try:
         _dt = datetime.now().strftime(format="%-d %B %Y at %-I:%M")  # Linux (Github Action)
     except:
-        _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev PC)
+        _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev VDI)
     return f"{_dt}{_ampm}"
 
 
@@ -56,9 +56,9 @@ def clean_file_name(file_name: str) -> str:
     return file_name
 
 
-def get_future_date(offset_days: int) -> str:
-    _future_date = datetime.now() + timedelta(days=offset_days)
+def get_offset_date(offset_days: int) -> str:
+    _offset_date = datetime.now() + timedelta(days=offset_days)
     if offset_days != 0:
-        while _future_date.weekday() >= 5:
-            _future_date = _future_date + timedelta(days=1)
-    return _future_date.strftime("%Y%m%d")
+        while _offset_date.weekday() >= 5:
+            _offset_date = _offset_date + timedelta(days=1)
+    return _offset_date.strftime("%Y%m%d")

@@ -286,7 +286,7 @@ class pg_sessions:
         self.verify_activity_log_entry()
 
     def schedule_a_valid_session(self, for_today: bool = False):
-        _future_date = get_future_date(offset_days=0) if for_today else get_future_date(offset_days=10)
+        _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_school1()
