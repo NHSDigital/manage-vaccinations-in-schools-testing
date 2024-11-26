@@ -41,7 +41,7 @@ class pg_parental_consent:
     TXT_ADDRESS_POSTCODE = "Postcode"
     RDO_YES = "Yes"
     RDO_NO = "No"
-    TXT_DETAILS = "Give details"
+    TXT_GIVE_DETAILS = "Give details"
     BTN_CONFIRM = "Confirm"
     LBL_SCHOOL_NAME = "school-name"
     RDO_VACCINE_ALREADY_RECEIVED = "Vaccine already received"
@@ -54,6 +54,8 @@ class pg_parental_consent:
     RDO_NO_THEY_DO_NOT_AGREE = "No, they do not agree"
     RDO_NO_RESPONSE = "No response"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
+    LBL_CONSENT_RECORDED = "Consent recorded for CF"
+    LBL_MAIN = "main"
 
     def click_start_now(self):
         self.po.perform_action(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
@@ -132,7 +134,7 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         else:
             self.po.perform_action(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=allergy_details)
+            self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=allergy_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_medical_condition(self, medical_condition_details: str = data_values.EMPTY) -> None:
@@ -140,7 +142,7 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         else:
             self.po.perform_action(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=medical_condition_details)
+            self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=medical_condition_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_severe_reaction(self, reaction_details: str = data_values.EMPTY) -> None:
@@ -148,7 +150,7 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         else:
             self.po.perform_action(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reaction_details)
+            self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reaction_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_extra_support(self, extra_support_details: str = data_values.EMPTY) -> None:
@@ -156,7 +158,7 @@ class pg_parental_consent:
             self.po.perform_action(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         else:
             self.po.perform_action(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=extra_support_details)
+            self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=extra_support_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def click_confirm_details(self) -> None:
@@ -170,23 +172,23 @@ class pg_parental_consent:
             case "vaccine already received":
                 self.po.perform_action(locator=self.RDO_VACCINE_ALREADY_RECEIVED, action=actions.RADIO_BUTTON_SELECT)
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+                self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
             case "vaccine will be given elsewhere":
                 self.po.perform_action(
                     locator=self.RDO_VACCINE_WILL_BE_GIVEN_ELSEWHERE, action=actions.RADIO_BUTTON_SELECT
                 )
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+                self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
             case "medical reasons":
                 self.po.perform_action(locator=self.RDO_VACCINE_MEDICAL_REASONS, action=actions.RADIO_BUTTON_SELECT)
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+                self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
             case "personal choice":
                 self.po.perform_action(locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT)
             case _:  # Other
                 self.po.perform_action(locator=self.RDO_OTHER, action=actions.RADIO_BUTTON_SELECT)
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.perform_action(locator=self.TXT_DETAILS, action=actions.FILL, value=reason_details)
+                self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def service_give_consent(self):
@@ -222,3 +224,21 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
+    def service_refuse_consent(self):
+        self.po.perform_action(locator="Parent1 (Dad)", action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.perform_action(locator=self.RDO_ONLINE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_NO_THEY_DO_NOT_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        # self.po.perform_action(locator=self.RDO_NO_RESPONSE , action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_VACCINE_ALREADY_RECEIVED, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value="Given elsewhere")
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CONSENT_RECORDED, exact=False
+        )
