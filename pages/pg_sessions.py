@@ -1,4 +1,5 @@
 import re
+from pickle import TRUE
 
 from playwright.sync_api import expect
 
@@ -52,7 +53,8 @@ class pg_sessions:
     RDO_NO_GILLICK_COMPETENT = "No"
     TXT_GILLICK_ASSESSMENT_DETAILS = "Assessment notes (optional)"
     BTN_SAVE_CHANGES = "Save changes"
-    LBL_ACTIVITY_LOG_ENTRY = f"Triaged decision: Safe to vaccinate"
+    LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN = "Triaged decision: Safe to vaccinate"
+    LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED = "Consent refused by Parent1 (Dad)"
     BTN_GET_CONSENT_RESPONSES = "Get consent response"
     BTN_COMPLETE_GILLICK_ASSESSMENT = "Complete your assessment"
     LBL_CHILD_COMPETENT = "Child assessed as Gillick competent"
@@ -60,6 +62,7 @@ class pg_sessions:
     LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
     LNK_CONSENT_FORM = "View parental consent form ("
+    LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -132,6 +135,9 @@ class pg_sessions:
 
     def click_edit_gillick_competence(self):
         self.po.perform_action(locator=self.LNK_EDIT_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
+
+    def click_could_not_vaccinate(self):
+        self.po.perform_action(locator=self.LNK_COULD_NOT_VACCINATE, action=actions.CLICK_LINK)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
         self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
@@ -236,10 +242,21 @@ class pg_sessions:
             exact=False,
         )
 
-    def verify_activity_log_entry(self):
-        self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_ACTIVITY_LOG_ENTRY, exact=False
-        )
+    def verify_activity_log_entry(self, consent_given: bool):
+        if consent_given:
+            self.po.verify(
+                locator=self.LBL_MAIN,
+                property=object_properties.TEXT,
+                value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN,
+                exact=False,
+            )
+        else:
+            self.po.verify(
+                locator=self.LBL_MAIN,
+                property=object_properties.TEXT,
+                value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED,
+                exact=False,
+            )
 
     def verify_scheduled_date(self, message: str):
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=message, exact=False)
@@ -283,7 +300,32 @@ class pg_sessions:
         self.verify_triage_updated()
         self.click_child_full_name()
         self.click_activity_log()
-        self.verify_activity_log_entry()
+        self.verify_activity_log_entry(consent_given=True)
+
+    def update_triage_outcome_consent_refused(self, file_paths):
+        _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
+        self.click_scheduled()
+        self.click_school1()
+        self.click_import_class_list()
+        self.choose_file_child_records(file_path=_input_file_path)
+        self.click_continue()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.click_scheduled()
+        self.click_school1()
+        self.click_check_consent_responses()
+        self.click_child_full_name()
+        self.click_get_consent_responses()
+        self.consent_page.service_refuse_consent()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.click_scheduled()
+        self.click_school1()
+        self.click_record_vaccinations()
+        self.click_could_not_vaccinate()
+        self.click_child_full_name()
+        self.click_activity_log()
+        self.verify_activity_log_entry(consent_given=False)
 
     def schedule_a_valid_session(self, for_today: bool = False):
         _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
