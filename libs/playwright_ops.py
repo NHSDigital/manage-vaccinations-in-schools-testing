@@ -1,4 +1,5 @@
 import os
+import re
 
 from libs import CurrentExecution
 from libs.constants import (
@@ -7,6 +8,7 @@ from libs.constants import (
     object_properties,
     playwright_roles,
     screenshot_types,
+    wait_time,
 )
 from libs.wrappers import *
 
@@ -26,37 +28,55 @@ class playwright_operations:
             # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
             self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
 
-    def verify(self, locator: str, property: str, value: str, exact: bool = False, by_test_id: bool = False) -> None:
+    def verify(
+        self,
+        locator: str,
+        property: str,
+        value: str,
+        exact: bool = False,
+        by_test_id: bool = False,
+        chain_locator: bool = False,
+    ) -> None:
+        current_value = self.get_object_property(
+            locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
+        )
         match property.lower():
             case object_properties.TEXT:
-                text = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
                 if exact:
-                    if value == text:
+                    if value == current_value:
                         self.capture_screenshot(identifier=locator, action="verify_text_passed")
                     else:
                         self.capture_screenshot(identifier=locator, action="verify_text_failed")
-                    assert value == text, f"Exact match failed. Expected: '{value}' but actual: '{text}'."
+                    assert (
+                        value == current_value
+                    ), f"Exact match failed. Expected: '{value}' but actual: '{current_value}'."
                 else:
-                    if clean_text(text=value) in clean_text(text=text):
+                    if clean_text(text=value) in clean_text(text=current_value):
                         self.capture_screenshot(identifier=locator, action="verify_text_passed")
                     else:
                         self.capture_screenshot(identifier=locator, action="verify_text_failed")
-                    assert clean_text(text=value) in clean_text(text=text), f"Text '{value}' not found in '{text}'."
+                    assert clean_text(text=value) in clean_text(
+                        text=current_value
+                    ), f"Text '{value}' not found in '{current_value}'."
             case object_properties.VISIBILITY:
-                current_state = self.get_object_property(locator=locator, property=property, by_test_id=by_test_id)
-                if current_state == value:
+                if current_value == value:
                     self.capture_screenshot(identifier=locator, action="verify_visibility_passed")
                 else:
                     self.capture_screenshot(identifier=locator, action="verify_visibility_failed")
-                assert value == current_state, f"{locator} is not visible."
+                assert value == current_value, f"{locator} is not visible."
 
-    def get_object_property(self, locator: str, property: str, by_test_id: bool = False) -> str:
+    def get_object_property(
+        self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False
+    ) -> str:
         match property:
             case object_properties.TEXT:
                 if by_test_id:
                     elem = self.ce.page.get_by_test_id(locator)
                 else:
-                    elem = self.ce.page.get_by_role(locator).nth(0)
+                    if chain_locator:
+                        elem = eval(f"self.ce.page.{locator}")
+                    else:
+                        elem = self.ce.page.get_by_role(locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
             case object_properties.VISIBILITY:
@@ -65,10 +85,17 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
-                    elem = self.ce.page.get_by_role(locator).nth(0)
+                    if chain_locator:
+                        wait(timeout=wait_time.MIN)
+                        elem = eval(f"self.ce.page.{locator}")
+                    else:
+                        elem = self.ce.page.get_by_role(locator).nth(0)
                 return elem.is_visible()
             case object_properties.HREF:
-                elem = self.ce.page.get_by_role("link", name=locator).nth(0)
+                if chain_locator:
+                    elem = eval(f"self.ce.page.{locator}")
+                else:
+                    elem = self.ce.page.get_by_role("link", name=locator).nth(0)
                 return elem.get_attribute(object_properties.HREF)
 
     def perform_action(self, locator, action, value=None, exact: bool = False) -> None:
