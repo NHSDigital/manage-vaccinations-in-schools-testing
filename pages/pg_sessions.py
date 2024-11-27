@@ -58,6 +58,7 @@ class pg_sessions:
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
     LNK_CONSENT_FORM = "View parental consent form ("
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
+    LNK_CONSENT_REFUSED = "Consent refused"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -133,6 +134,9 @@ class pg_sessions:
 
     def click_could_not_vaccinate(self):
         self.po.perform_action(locator=self.LNK_COULD_NOT_VACCINATE, action=actions.CLICK_LINK)
+
+    def click_consent_refused(self):
+        self.po.perform_action(locator=self.LNK_CONSENT_REFUSED, action=actions.CLICK_LINK)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
         self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
@@ -315,12 +319,13 @@ class pg_sessions:
         self.click_child_full_name()
         self.click_get_consent_responses()
         self.consent_page.service_refuse_consent()
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_school1()
-        self.click_record_vaccinations()
-        self.click_could_not_vaccinate()
+        # self.dashboard_page.go_to_dashboard()
+        # self.dashboard_page.click_sessions()
+        # self.click_scheduled()
+        # self.click_school1()
+        # self.click_record_vaccinations()
+        # self.click_could_not_vaccinate()
+        self.click_consent_refused()
         self.click_child_full_name()
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)

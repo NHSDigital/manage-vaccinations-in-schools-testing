@@ -9,34 +9,42 @@ class Test_Regression_Cohorts:
     dashboard_page = pg_dashboard.pg_dashboard()
     programmes_page = pg_programmes.pg_programmes()
 
-    @pytest.fixture()
+    @pytest.fixture(scope="class", autouse=True)
     def test_setup(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_programmes()
         yield
         self.login_page.perform_logout()
 
+    @pytest.fixture(scope="function", autouse=True)
+    def reset_navigation(self):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_programmes()
+        yield
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_programmes()
+
     @pytest.mark.cohorts
     @pytest.mark.order(401)
-    def test_reg_cohort_upload_positive(self, test_setup):
+    def test_reg_cohort_upload_positive(self):
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_POSITIVE)
 
     @pytest.mark.cohorts
     @pytest.mark.order(402)
-    def test_reg_cohort_upload_negative(self, test_setup):
+    def test_reg_cohort_upload_negative(self):
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_NEGATIVE)
 
     @pytest.mark.cohorts
     @pytest.mark.order(403)
-    def test_reg_cohorts_file_structure(self, test_setup):
+    def test_reg_cohorts_file_structure(self):
         self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE)
 
     @pytest.mark.cohorts
     @pytest.mark.order(404)
-    def test_reg_cohorts_no_record(self, test_setup):
+    def test_reg_cohorts_no_record(self):
         self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
 
     @pytest.mark.cohorts
     @pytest.mark.order(405)
-    def test_reg_cohorts_empty_file(self, test_setup):
+    def test_reg_cohorts_empty_file(self):
         self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
