@@ -12,7 +12,7 @@ class Test_Regression_Consent:
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture()
+    @pytest.fixture
     def test_setup(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
@@ -26,8 +26,9 @@ class Test_Regression_Consent:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
+        self.login_page.perform_logout()
 
-    @pytest.fixture()
+    @pytest.fixture
     def get_session_link(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
@@ -44,7 +45,7 @@ class Test_Regression_Consent:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(901)
-    @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[_tc[0] for _tc in helper.df.iterrows()])
+    @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
     def test_reg_parental_consent_workflow(self, get_session_link, scenario_data):
         self.login_page.go_to_url(url=get_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)

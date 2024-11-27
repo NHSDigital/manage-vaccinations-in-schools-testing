@@ -1,8 +1,3 @@
-import re
-from pickle import TRUE
-
-from playwright.sync_api import expect
-
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.constants import actions, object_properties, wait_time
 from libs.wrappers import *
@@ -63,6 +58,7 @@ class pg_sessions:
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
     LNK_CONSENT_FORM = "View parental consent form ("
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
+    LNK_CONSENT_REFUSED = "Consent refused"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -138,6 +134,9 @@ class pg_sessions:
 
     def click_could_not_vaccinate(self):
         self.po.perform_action(locator=self.LNK_COULD_NOT_VACCINATE, action=actions.CLICK_LINK)
+
+    def click_consent_refused(self):
+        self.po.perform_action(locator=self.LNK_CONSENT_REFUSED, action=actions.CLICK_LINK)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
         self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
@@ -227,12 +226,14 @@ class pg_sessions:
         self.po.perform_action(locator=self.BTN_DELETE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.LNK_BACK, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
-        # FIXME: Use the common verify function
-        expect(
-            self.ce.page.locator("div")
-            .filter(has_text=re.compile(r"^Session datesNot provided$"))
-            .get_by_role("definition")
-        ).to_be_visible()
+        self.po.verify(
+            locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
+            property=object_properties.VISIBILITY,
+            value=True,
+            exact=False,
+            by_test_id=False,
+            chain_locator=True,
+        )
 
     def verify_triage_updated(self):
         self.po.verify(
@@ -243,6 +244,7 @@ class pg_sessions:
         )
 
     def verify_activity_log_entry(self, consent_given: bool):
+        wait(wait_time.MIN)
         if consent_given:
             self.po.verify(
                 locator=self.LBL_MAIN,
@@ -317,12 +319,13 @@ class pg_sessions:
         self.click_child_full_name()
         self.click_get_consent_responses()
         self.consent_page.service_refuse_consent()
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_school1()
-        self.click_record_vaccinations()
-        self.click_could_not_vaccinate()
+        # self.dashboard_page.go_to_dashboard()
+        # self.dashboard_page.click_sessions()
+        # self.click_scheduled()
+        # self.click_school1()
+        # self.click_record_vaccinations()
+        # self.click_could_not_vaccinate()
+        self.click_consent_refused()
         self.click_child_full_name()
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)

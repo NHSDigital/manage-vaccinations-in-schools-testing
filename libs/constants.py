@@ -55,7 +55,7 @@ class playwright_roles:
 
 
 class wait_time:
-    MIN: Final[str] = "3s"
+    MIN: Final[str] = "1s"
     MED: Final[str] = "10s"
     MAX: Final[str] = "30s"
 

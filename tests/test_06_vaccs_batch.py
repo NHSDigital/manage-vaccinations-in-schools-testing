@@ -8,37 +8,45 @@ class Test_Regression_Cohorts:
     dashboard_page = pg_dashboard.pg_dashboard()
     vaccines_page = pg_vaccines.pg_vaccines()
 
-    @pytest.fixture
-    def test_setup(self, start_mavis):
+    @pytest.fixture(scope="class", autouse=True)
+    def test_setup(self, start_mavis: None):
         self.login_page.perform_valid_login()
-        self.dashboard_page.click_vaccines()
+        self.dashboard_page.click_programmes()
         yield
         self.login_page.perform_logout()
+
+    @pytest.fixture(scope="function", autouse=True)
+    def reset_navigation(self):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_vaccines()
+        yield
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_vaccines()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(601)
-    def test_reg_batch_add_batch(self, test_setup):
+    def test_reg_batch_add_batch(self):
         self.vaccines_page.add_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(602)
-    def test_reg_batch_change_batch(self, test_setup):
+    def test_reg_batch_change_batch(self):
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(603)
-    def test_reg_batch_archive_batch(self, test_setup):
+    def test_reg_batch_archive_batch(self):
         self.vaccines_page.add_batch()
         self.vaccines_page.archive_batch()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(604)
-    def test_reg_batch_add_change_archive_batch(self, test_setup):
+    def test_reg_batch_add_change_archive_batch(self):
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()
         self.vaccines_page.archive_batch()
