@@ -354,10 +354,10 @@ class pg_sessions:
 
     def edit_a_session_to_today(self):
         _future_date = get_offset_date(offset_days=0)
-        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_scheduled()
         self.click_school1()
         self.edit_session(to_date=_future_date)
+        # _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         # self.verify_scheduled_date(message=_expected_message)
 
     def delete_all_sessions(self):
