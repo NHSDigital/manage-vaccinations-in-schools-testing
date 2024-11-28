@@ -28,11 +28,16 @@ class Test_Regression_Sessions:
         self.sessions_page.schedule_a_valid_session()
 
     @pytest.mark.sessions
-    @pytest.mark.order(202)
+    @pytest.mark.order(201)
+    def test_reg_edit_session(self):
+        self.sessions_page.edit_a_session_to_today()
+
+    @pytest.mark.sessions
+    @pytest.mark.order(203)
     def test_reg_delete_all_sessions(self):
         self.sessions_page.delete_all_sessions()
 
     @pytest.mark.sessions
-    @pytest.mark.order(203)
+    @pytest.mark.order(204)
     def test_reg_create_invalid_session(self):
         self.sessions_page.create_invalid_session()
