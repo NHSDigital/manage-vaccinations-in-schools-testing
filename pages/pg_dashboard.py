@@ -12,7 +12,8 @@ class pg_dashboard:
     LNK_CHILDREN = f"heading{escape_characters.SEPARATOR}Children"
     LNK_NOTICES = f"heading{escape_characters.SEPARATOR}Important Notices"
     LNK_ORGANISATION = f"heading{escape_characters.SEPARATOR}Your organisation"
-    LNK_DASHBOARD = "Manage vaccinations in schools"
+    LNK_NHS_LOGO = "Manage vaccinations in schools"
+    LNK_GUIDE = "Service guidance (opens in a"
 
     def click_programmes(self):
         self.po.perform_action(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
@@ -34,7 +35,7 @@ class pg_dashboard:
 
     def go_to_dashboard(self):
         wait(timeout=wait_time.MIN)  # Scripts sometimes error out without this wait when called as a teardown action
-        self.po.perform_action(locator=self.LNK_DASHBOARD, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_NHS_LOGO, action=actions.CLICK_LINK)
 
     def verify_all_expected_links(self):
         self.po.verify(locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, value=True, exact=True)
@@ -46,5 +47,11 @@ class pg_dashboard:
             locator=self.LNK_ORGANISATION,
             property=object_properties.VISIBILITY,
             value=True,
+            exact=True,
+        )
+        self.po.verify(
+            locator=self.LNK_GUIDE,
+            property=object_properties.HREF,
+            value="https://guide.manage-vaccinations-in-schools.nhs.uk/",
             exact=True,
         )

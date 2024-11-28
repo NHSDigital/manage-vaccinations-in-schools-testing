@@ -235,6 +235,26 @@ class pg_sessions:
             chain_locator=True,
         )
 
+    def edit_session(self, to_date: str):
+        _day = to_date[-2:]
+        _month = to_date[4:6]
+        _year = to_date[:4]
+        self.po.perform_action(locator=self.LNK_EDIT_SESSION, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_CHANGE_SESSION_DATES, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.TXT_DAY, action=actions.FILL, value=_day)
+        self.po.perform_action(locator=self.TXT_MONTH, action=actions.FILL, value=_month)
+        self.po.perform_action(locator=self.TXT_YEAR, action=actions.FILL, value=_year)
+        self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
+        self.po.verify(
+            locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
+            property=object_properties.VISIBILITY,
+            value=False,
+            exact=False,
+            by_test_id=False,
+            chain_locator=True,
+        )
+
     def verify_triage_updated(self):
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
@@ -319,12 +339,6 @@ class pg_sessions:
         self.click_child_full_name()
         self.click_get_consent_responses()
         self.consent_page.service_refuse_consent()
-        # self.dashboard_page.go_to_dashboard()
-        # self.dashboard_page.click_sessions()
-        # self.click_scheduled()
-        # self.click_school1()
-        # self.click_record_vaccinations()
-        # self.click_could_not_vaccinate()
         self.click_consent_refused()
         self.click_child_full_name()
         self.click_activity_log()
@@ -337,6 +351,14 @@ class pg_sessions:
         self.click_school1()
         self.schedule_session(future_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
+
+    def edit_a_session_to_today(self):
+        _future_date = get_offset_date(offset_days=0)
+        self.click_scheduled()
+        self.click_school1()
+        self.edit_session(to_date=_future_date)
+        # _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
+        # self.verify_scheduled_date(message=_expected_message)
 
     def delete_all_sessions(self):
         self.click_scheduled()
