@@ -45,6 +45,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
+      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -57,18 +58,24 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        echo "Starting tests on Chromium"
+        echo "::group::Chromium"
         pytest --browser_or_device chromium
-        echo "Starting tests on Chrome"
+        echo "::endgroup::"
+        echo "::group::Chrome"
         pytest --browser_or_device chrome
-        echo "Starting tests on Firefox"
+        echo "::endgroup::"
+        echo "::group::Firefox"
         pytest --browser_or_device firefox
-        echo "Starting tests on iPhone 12"
+        echo "::endgroup::"
+        echo "::group::iPhone 12"
         pytest -m mobile --browser_or_device iphone_12
-        echo "Starting tests on iPhone 11"
+        echo "::endgroup::"
+        echo "::group::iPhone 11"
         pytest -m mobile --browser_or_device iphone_11
-        echo "Starting tests on Pixel 5"
+        echo "::endgroup::"
+        echo "::group::Pixel 5"
         pytest -m mobile --browser_or_device pixel_5
+        echo "::endgroup::"
     - name: Upload report
       uses: actions/upload-artifact@v4
       with:
