@@ -20,8 +20,6 @@ class Test_Regression_Cohorts:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_vaccines()
         yield
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_vaccines()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile

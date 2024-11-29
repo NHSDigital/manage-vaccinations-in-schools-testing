@@ -11,7 +11,7 @@ class pg_vaccines:
     LBL_MAIN = "main"
     LBL_PARAGRAPH = "paragraph"
     LBL_BATCH_ARCHIVED = "Batch archived."
-    LNK_ADD_NEW_BATCH = "Add a batch"
+    LNK_ADD_NEW_BATCH = "Add a new batch"
     TXT_BATCH_NAME = "Batch"
     TXT_EXPIRY_DAY = "Day"
     TXT_EXPIRY_MONTH = "Month"
