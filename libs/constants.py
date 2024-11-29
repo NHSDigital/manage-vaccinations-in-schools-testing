@@ -74,7 +74,13 @@ class escape_characters:
     COLON: Final[str] = ":"
     BACKSLASH: Final[str] = "\\"
     STROKE: Final[str] = "/"
-    UI_FORMATTING = [
+    DOUBLE_QUOTE: Final[str] = '"'
+    LESS_THAN: Final[str] = "<"
+    GREATER_THAN: Final[str] = ">"
+    PIPE: Final[str] = "|"
+    ASTERISK: Final[str] = "*"
+    QUESTION_MARK: Final[str] = "?"
+    UI_FORMATTING: Final[str] = [
         SPACE,
         NEW_LINE,
         CARRIAGE_RETURN,
@@ -85,7 +91,19 @@ class escape_characters:
         SINGLE_QUOTE_CLOSE,
         TAB,
     ]
-    FILE_NAME = [SEPARATOR, COLON]
+    FILE_NAME = [
+        SEPARATOR,
+        COLON,
+        DOUBLE_QUOTE,
+        LESS_THAN,
+        GREATER_THAN,
+        PIPE,
+        ASTERISK,
+        QUESTION_MARK,
+        NEW_LINE,
+        CARRIAGE_RETURN,
+        NEW_LINE_CARRIAGE_RETURN,
+    ]
 
 
 class test_data_file_paths:
