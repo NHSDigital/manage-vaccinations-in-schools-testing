@@ -23,8 +23,6 @@ class Test_Regression_Class_List_Upload:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
 
     @pytest.mark.classlist
     @pytest.mark.order(301)

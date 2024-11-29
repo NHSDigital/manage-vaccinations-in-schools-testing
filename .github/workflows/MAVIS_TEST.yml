@@ -44,8 +44,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      continue-on-error: true
+    - name: Test on Chromium
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -61,18 +60,83 @@ jobs:
         echo "::group::Chromium"
         pytest --browser_or_device chromium
         echo "::endgroup::"
+    - name: Test on Chrome
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
         echo "::group::Chrome"
         pytest --browser_or_device chrome
         echo "::endgroup::"
+    - name: Test on Firefox
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
         echo "::group::Firefox"
         pytest --browser_or_device firefox
         echo "::endgroup::"
+    - name: Test on iPhone 12
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
         echo "::group::iPhone 12"
         pytest -m mobile --browser_or_device iphone_12
         echo "::endgroup::"
+    - name: Test on iPhone 11
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
         echo "::group::iPhone 11"
         pytest -m mobile --browser_or_device iphone_11
         echo "::endgroup::"
+    - name: Test on Google Pixel 5
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
         echo "::group::Pixel 5"
         pytest -m mobile --browser_or_device pixel_5
         echo "::endgroup::"

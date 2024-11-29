@@ -19,8 +19,6 @@ class Test_Regression_Sessions:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
 
     @pytest.mark.sessions
     @pytest.mark.order(201)

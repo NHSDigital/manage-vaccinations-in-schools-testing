@@ -21,8 +21,6 @@ class Test_Regression_Child_List_Upload:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
         yield
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_programmes()
 
     @pytest.mark.childlist
     @pytest.mark.order(501)
