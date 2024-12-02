@@ -12,6 +12,7 @@ class actions:
     CLICK_LINK: Final[str] = "click_link"
     CLICK_BUTTON: Final[str] = "click_button"
     CLICK_LABEL: Final[str] = "click_label"
+    CLICK_TEXT: Final[str] = "click_text"
     FILL: Final[str] = "fill"
     TYPE: Final[str] = "type"
     RADIO_BUTTON_SELECT: Final[str] = "radio_select"

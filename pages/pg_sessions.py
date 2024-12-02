@@ -378,9 +378,9 @@ class pg_sessions:
         self.click_import_class_list()
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
-        self.__record_upload_time()
+        # self.__record_upload_time()
         wait(timeout=wait_time.MED)
-        self.click_uploaded_file_datetime()
+        # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_class_list_records(self, file_paths: str):
