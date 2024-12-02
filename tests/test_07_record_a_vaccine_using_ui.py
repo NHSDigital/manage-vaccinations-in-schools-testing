@@ -24,10 +24,10 @@ class Test_Record_a_Vaccine_Using_UI:
 
     @pytest.mark.rav
     @pytest.mark.order(701)
-    def test_reg_rav_triage_positive(self):
+    def test_rav_triage_positive(self):
         self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_POSITIVE)
 
     @pytest.mark.rav
     @pytest.mark.order(702)
-    def test_reg_rav_triage_consent_refused(self):
+    def test_rav_triage_consent_refused(self):
         self.sessions_page.update_triage_outcome_consent_refused(file_paths=test_data_file_paths.COHORTS_POSITIVE)

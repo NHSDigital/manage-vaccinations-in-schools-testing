@@ -142,7 +142,16 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
+                elem.scroll_into_view_if_needed()
+                elem.click()
+            case actions.CLICK_TEXT:
+                if escape_characters.SEPARATOR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR)[1]
+                    elem = self.ce.page.get_by_text(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.FILL | actions.TYPE:
@@ -151,7 +160,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=True).nth(0)
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
                 if value != data_values.EMPTY:
@@ -163,7 +172,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
-                    elem = self.ce.page.get_by_text(locator, exact=True).nth(0)
+                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
@@ -173,7 +182,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=False).nth(0)
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
                 elem.scroll_into_view_if_needed()
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:

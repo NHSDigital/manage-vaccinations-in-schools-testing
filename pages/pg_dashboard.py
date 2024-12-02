@@ -20,20 +20,29 @@ class pg_dashboard:
     def click_programmes(self):
         self.po.perform_action(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
 
-    def click_vaccines(self):
-        self.po.perform_action(locator=self.LNK_VACCINES, action=actions.CLICK_LINK)
-
     def click_sessions(self):
         self.po.perform_action(locator=self.LNK_SESSIONS, action=actions.CLICK_LINK)
 
     def click_children(self):
         self.po.perform_action(locator=self.LNK_CHILDREN, action=actions.CLICK_LINK)
 
+    def click_vaccines(self):
+        self.po.perform_action(locator=self.LNK_VACCINES, action=actions.CLICK_LINK)
+
+    def click_unmatched_consent_responses(self):
+        self.po.perform_action(locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, action=actions.CLICK_LINK)
+
+    def click_school_moves(self):
+        self.po.perform_action(locator=self.LNK_SCHOOL_MOVES, action=actions.CLICK_LINK)
+
     def click_important_notices(self):
         self.po.perform_action(locator=self.LNK_NOTICES, action=actions.CLICK_LINK)
 
     def click_your_organisation(self):
         self.po.perform_action(locator=self.LNK_ORGANISATION, action=actions.CLICK_LINK)
+
+    def click_service_guidance(self):
+        self.po.perform_action(locator=self.LNK_SERVICE_GUIDANCE, action=actions.CLICK_LINK)
 
     def go_to_dashboard(self):
         wait(timeout=wait_time.MIN)  # Scripts sometimes error out without this wait when called as a teardown action

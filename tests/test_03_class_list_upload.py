@@ -24,25 +24,25 @@ class Test_Class_List_Upload:
 
     @pytest.mark.classlist
     @pytest.mark.order(301)
-    def test_reg_class_list_file_upload_positive(self):
+    def test_class_list_file_upload_positive(self):
         self.sessions_page.upload_class_list(file_paths=test_data_file_paths.CLASS_POSITIVE)
 
     @pytest.mark.classlist
     @pytest.mark.order(302)
-    def test_reg_class_list_file_upload_negative(self):
+    def test_class_list_file_upload_negative(self):
         self.sessions_page.upload_class_list(file_paths=test_data_file_paths.CLASS_NEGATIVE)
 
     @pytest.mark.classlist
     @pytest.mark.order(303)
-    def test_reg_class_list_file_structure(self):
+    def test_class_list_file_structure(self):
         self.sessions_page.upload_invalid_class_list_records(file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE)
 
     @pytest.mark.classlist
     @pytest.mark.order(304)
-    def test_reg_class_list_no_record(self):
+    def test_class_list_no_record(self):
         self.sessions_page.upload_invalid_class_list_records(file_paths=test_data_file_paths.CLASS_HEADER_ONLY)
 
     @pytest.mark.classlist
     @pytest.mark.order(305)
-    def test_reg_class_list_empty_file(self):
+    def test_class_list_empty_file(self):
         self.sessions_page.upload_invalid_class_list_records(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)
