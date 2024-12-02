@@ -10,22 +10,18 @@ class Test_Regression_Vaccinations_Upload:
     programmes_page = pg_programmes.pg_programmes()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture(scope="class", autouse=True)
-    def test_setup(self, start_mavis: None):
+    @pytest.fixture(scope="function", autouse=True)
+    def setup_tests(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session(for_today=True)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_programmes()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
         self.login_page.perform_logout()
-
-    @pytest.fixture(scope="function", autouse=True)
-    def reset_navigation(self):
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_programmes()
-        yield
 
     @pytest.mark.vaccinations
     @pytest.mark.order(801)

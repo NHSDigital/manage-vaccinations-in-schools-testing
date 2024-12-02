@@ -13,7 +13,7 @@ class Test_Regression_Consent:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture
-    def test_setup(self, start_mavis):
+    def setup_tests(self, start_mavis):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session(for_today=True)
@@ -54,5 +54,5 @@ class Test_Regression_Consent:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(902)
-    def test_reg_gillick_competence(self, test_setup):
+    def test_reg_gillick_competence(self, setup_tests):
         self.sessions_page.set_gillick_competence_for_student()
