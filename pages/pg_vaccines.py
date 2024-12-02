@@ -32,10 +32,14 @@ class pg_vaccines:
         self.batch_name = f"Auto{get_new_datetime()}"
         self.po.perform_action(locator=self.TXT_BATCH_NAME, action=actions.FILL, value=self.batch_name)
 
-    def enter_batch_expiry(self):
-        self.po.perform_action(locator=self.TXT_EXPIRY_DAY, action=actions.FILL, value="31")
-        self.po.perform_action(locator=self.TXT_EXPIRY_MONTH, action=actions.FILL, value="12")
-        self.po.perform_action(locator=self.TXT_EXPIRY_YEAR, action=actions.FILL, value="2030")
+    def enter_batch_expiry(self, expiry_date: str = ""):
+        _future_expiry_date = get_offset_date(offset_days=730) if expiry_date == "" else expiry_date
+        _day = _future_expiry_date[-2:]
+        _month = _future_expiry_date[4:6]
+        _year = _future_expiry_date[:4]
+        self.po.perform_action(locator=self.TXT_EXPIRY_DAY, action=actions.FILL, value=_day)
+        self.po.perform_action(locator=self.TXT_EXPIRY_MONTH, action=actions.FILL, value=_month)
+        self.po.perform_action(locator=self.TXT_EXPIRY_YEAR, action=actions.FILL, value=_year)
 
     def add_batch(self):
         self.po.perform_action(locator=self.LNK_ADD_NEW_BATCH, action=actions.CLICK_LINK)

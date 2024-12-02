@@ -3,7 +3,7 @@ import pytest
 from pages import pg_dashboard, pg_login, pg_vaccines
 
 
-class Test_Regression_Cohorts:
+class Test_Regression_Vaccines:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     vaccines_page = pg_vaccines.pg_vaccines()

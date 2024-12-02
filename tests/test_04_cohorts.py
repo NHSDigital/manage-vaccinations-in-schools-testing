@@ -4,7 +4,7 @@ from libs.constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_programmes
 
 
-class Test_Regression_Cohorts:
+class Test_Cohorts:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     programmes_page = pg_programmes.pg_programmes()

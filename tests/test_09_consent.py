@@ -5,7 +5,7 @@ from pages import pg_dashboard, pg_login, pg_parental_consent, pg_sessions
 from tests.helpers import parental_consent_helper
 
 
-class Test_Regression_Consent:
+class Test_Consent:
     pc = pg_parental_consent.pg_parental_consent()
     helper = parental_consent_helper.parental_consent_helper()
     login_page = pg_login.pg_login()
@@ -46,7 +46,7 @@ class Test_Regression_Consent:
     @pytest.mark.mobile
     @pytest.mark.order(901)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
-    def test_reg_parental_consent_workflow(self, get_session_link, scenario_data):
+    def test_parental_consent_workflow(self, get_session_link, scenario_data):
         self.login_page.go_to_url(url=get_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
         self.helper.enter_details()
@@ -54,5 +54,5 @@ class Test_Regression_Consent:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(902)
-    def test_reg_gillick_competence(self, setup_tests):
+    def test_gillick_competence(self, setup_tests):
         self.sessions_page.set_gillick_competence_for_student()
