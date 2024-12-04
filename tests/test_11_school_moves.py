@@ -9,7 +9,7 @@ class Test_School_Moves:
     school_moves_page = pg_school_moves.pg_school_moves()
 
     @pytest.fixture(scope="function", autouse=True)
-    def setup_tests(self, start_mavis):
+    def setup_tests(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_school_moves()
         yield

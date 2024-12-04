@@ -35,7 +35,7 @@ class Test_Smoke:
     # CHECK APPLICATION ACCESS
     @pytest.mark.smoke
     @pytest.mark.order(3)
-    def test_smoke_homepage_loads(self, start_mavis):
+    def test_smoke_homepage_loads(self, start_mavis: None):
         self.po.verify(
             locator="heading",
             property=object_properties.TEXT,
