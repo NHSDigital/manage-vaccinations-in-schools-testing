@@ -9,7 +9,7 @@ class Test_Sessions:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture(scope="function", autouse=True)
-    def setup_tests(self, start_mavis):
+    def setup_tests(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()

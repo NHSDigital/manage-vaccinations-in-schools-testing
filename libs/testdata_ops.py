@@ -10,7 +10,7 @@ class testdata_operations:
     fo = file_ops.file_operations()
     ce = CurrentExecution()
 
-    def create_file_from_template(self, template_path: str) -> str:
+    def create_file_from_template(self, template_path: str, file_name_prefix: str) -> str:
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
         _ctr = -1
@@ -25,7 +25,9 @@ class testdata_operations:
             _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
             _file_text.append(_ln)
             _ctr += 1
-        return self.fo.create_file(content=escape_characters.NEW_LINE.join(_file_text))
+        return self.fo.create_file(
+            content=escape_characters.NEW_LINE.join(_file_text), file_name_prefix=file_name_prefix
+        )
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1)[0]
@@ -51,8 +53,9 @@ class testdata_operations:
         return _df
 
     def split_file_paths(self, file_paths: str) -> tuple[str, str]:
+        file_for = file_paths.split(escape_characters.SEPARATOR)[2]
         _input_file_path = self.create_file_from_template(
-            template_path=file_paths.split(escape_characters.SEPARATOR)[0]
+            template_path=file_paths.split(escape_characters.SEPARATOR)[0], file_name_prefix=file_for
         )
         _output_file_path = file_paths.split(escape_characters.SEPARATOR)[1]
         return _input_file_path, _output_file_path

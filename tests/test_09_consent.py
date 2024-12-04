@@ -1,4 +1,7 @@
+from typing import Hashable, Iterable
+
 import pytest
+from pandas.core.series import Series
 
 from libs.constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_parental_consent, pg_sessions
@@ -13,7 +16,7 @@ class Test_Consent:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture
-    def setup_tests(self, start_mavis):
+    def setup_tests(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session(for_today=True)
@@ -29,7 +32,7 @@ class Test_Consent:
         self.login_page.perform_logout()
 
     @pytest.fixture
-    def get_session_link(self, start_mavis):
+    def get_session_link(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session()
@@ -46,7 +49,7 @@ class Test_Consent:
     @pytest.mark.mobile
     @pytest.mark.order(901)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
-    def test_parental_consent_workflow(self, get_session_link, scenario_data):
+    def test_parental_consent_workflow(self, get_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
         self.login_page.go_to_url(url=get_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
         self.helper.enter_details()
@@ -54,5 +57,5 @@ class Test_Consent:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(902)
-    def test_gillick_competence(self, setup_tests):
+    def test_gillick_competence(self, setup_tests: None):
         self.sessions_page.set_gillick_competence_for_student()

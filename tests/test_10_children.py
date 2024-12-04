@@ -9,7 +9,7 @@ class Test_Children:
     children_page = pg_children.pg_children()
 
     @pytest.fixture(scope="function", autouse=True)
-    def setup_tests(self, start_mavis):
+    def setup_tests(self, start_mavis: None):
         self.login_page.perform_valid_login()
         self.dashboard_page.click_children()
         yield
