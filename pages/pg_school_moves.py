@@ -9,6 +9,10 @@ class pg_school_moves:
 
     LBL_HEADERS = "Updated	Full name	Move	Actions"
     LBL_MAIN = "main"
+    LBL_COUNT = "5 school moves"
 
     def verify_headers(self):
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_HEADERS, exact=False)
+
+    def verify_counts(self):
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_COUNT, exact=False)
