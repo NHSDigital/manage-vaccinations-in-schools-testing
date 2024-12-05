@@ -1,4 +1,3 @@
-from re import ASCII
 from typing import Final
 
 
@@ -62,7 +61,9 @@ class wait_time:
 
 
 class escape_characters:
-    SEPARATOR: Final[str] = "||"  # Used only in code
+    SEPARATOR_CHAR: Final[str] = "||"  # Used only in code
+    COMMENT_OPERATOR: Final[str] = "#"  # Used only in code
+    NOT_OPERATOR: Final[str] = "!"  # Used only in code
     SPACE: Final[str] = " "
     NEW_LINE: Final[str] = "\n"
     CARRIAGE_RETURN: Final[str] = "\r"
@@ -93,7 +94,7 @@ class escape_characters:
         TAB,
     ]
     FILE_NAME = [
-        SEPARATOR,
+        SEPARATOR_CHAR,
         COLON,
         DOUBLE_QUOTE,
         LESS_THAN,
@@ -110,76 +111,76 @@ class escape_characters:
 class test_data_file_paths:
     PARENTAL_CONSENT: Final[str] = "test_data/ParentalConsent.xlsx"
     VACCS_HPV_POSITIVE: Final[str] = (
-        f"test_data/hpv/i_positive.csv{escape_characters.SEPARATOR}test_data/hpv/o_positive.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_positive.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HPV_NEGATIVE: Final[str] = (
-        f"test_data/hpv/i_negative.csv{escape_characters.SEPARATOR}test_data/hpv/o_negative.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_negative.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HIST_HPV_POSITIVE: Final[str] = (
-        f"test_data/hpv/i_hist_positive.csv{escape_characters.SEPARATOR}test_data/hpv/o_hist_positive.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_hist_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_hist_positive.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HIST_HPV_NEGATIVE: Final[str] = (
-        f"test_data/hpv/i_hist_negative.csv{escape_characters.SEPARATOR}test_data/hpv/o_hist_negative.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_hist_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_hist_negative.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HPV_DUP_1: Final[str] = (
-        f"test_data/hpv/i_dup_1.csv{escape_characters.SEPARATOR}test_data/hpv/o_dup_1.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_dup_1.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_dup_1.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HPV_DUP_2: Final[str] = (
-        f"test_data/hpv/i_dup_2.csv{escape_characters.SEPARATOR}test_data/hpv/o_dup_2.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_dup_2.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_dup_2.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HPV_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/hpv/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/hpv/o_invalid_structure.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HPV_EMPTY_FILE: Final[str] = (
-        f"test_data/hpv/i_empty.csv{escape_characters.SEPARATOR}test_data/hpv/o_empty.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_empty.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     VACCS_HPV_HEADER_ONLY: Final[str] = (
-        f"test_data/hpv/i_header_only.csv{escape_characters.SEPARATOR}test_data/hpv/o_header_only.csv{escape_characters.SEPARATOR}hpv"
+        f"test_data/hpv/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_header_only.csv{escape_characters.SEPARATOR_CHAR}hpv"
     )
     COHORTS_POSITIVE: Final[str] = (
-        f"test_data/cohorts/i_positive.csv{escape_characters.SEPARATOR}test_data/cohorts/o_positive.csv{escape_characters.SEPARATOR}cohort"
+        f"test_data/cohorts/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_positive.csv{escape_characters.SEPARATOR_CHAR}cohort"
     )
     COHORTS_NEGATIVE: Final[str] = (
-        f"test_data/cohorts/i_negative.csv{escape_characters.SEPARATOR}test_data/cohorts/o_negative.csv{escape_characters.SEPARATOR}cohort"
+        f"test_data/cohorts/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_negative.csv{escape_characters.SEPARATOR_CHAR}cohort"
     )
     COHORTS_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/cohorts/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/cohorts/o_invalid_structure.csv{escape_characters.SEPARATOR}cohort"
+        f"test_data/cohorts/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}cohort"
     )
     COHORTS_EMPTY_FILE: Final[str] = (
-        f"test_data/cohorts/i_empty.csv{escape_characters.SEPARATOR}test_data/cohorts/o_empty.csv{escape_characters.SEPARATOR}cohort"
+        f"test_data/cohorts/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_empty.csv{escape_characters.SEPARATOR_CHAR}cohort"
     )
     COHORTS_HEADER_ONLY: Final[str] = (
-        f"test_data/cohorts/i_header_only.csv{escape_characters.SEPARATOR}test_data/cohorts/o_header_only.csv{escape_characters.SEPARATOR}cohort"
+        f"test_data/cohorts/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_header_only.csv{escape_characters.SEPARATOR_CHAR}cohort"
     )
     CHILD_POSITIVE: Final[str] = (
-        f"test_data/child/i_positive.csv{escape_characters.SEPARATOR}test_data/child/o_positive.csv{escape_characters.SEPARATOR}child"
+        f"test_data/child/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_positive.csv{escape_characters.SEPARATOR_CHAR}child"
     )
     CHILD_NEGATIVE: Final[str] = (
-        f"test_data/child/i_negative.csv{escape_characters.SEPARATOR}test_data/child/o_negative.csv{escape_characters.SEPARATOR}child"
+        f"test_data/child/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_negative.csv{escape_characters.SEPARATOR_CHAR}child"
     )
     CHILD_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/child/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/child/o_invalid_structure.csv{escape_characters.SEPARATOR}child"
+        f"test_data/child/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}child"
     )
     CHILD_EMPTY_FILE: Final[str] = (
-        f"test_data/child/i_empty.csv{escape_characters.SEPARATOR}test_data/child/o_empty.csv{escape_characters.SEPARATOR}child"
+        f"test_data/child/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_empty.csv{escape_characters.SEPARATOR_CHAR}child"
     )
     CHILD_HEADER_ONLY: Final[str] = (
-        f"test_data/child/i_header_only.csv{escape_characters.SEPARATOR}test_data/child/o_header_only.csv{escape_characters.SEPARATOR}child"
+        f"test_data/child/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_header_only.csv{escape_characters.SEPARATOR_CHAR}child"
     )
     CLASS_POSITIVE: Final[str] = (
-        f"test_data/class_list/i_positive.csv{escape_characters.SEPARATOR}test_data/class_list/o_positive.csv{escape_characters.SEPARATOR}class"
+        f"test_data/class_list/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_positive.csv{escape_characters.SEPARATOR_CHAR}class"
     )
     CLASS_NEGATIVE: Final[str] = (
-        f"test_data/class_list/i_negative.csv{escape_characters.SEPARATOR}test_data/class_list/o_negative.csv{escape_characters.SEPARATOR}class"
+        f"test_data/class_list/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_negative.csv{escape_characters.SEPARATOR_CHAR}class"
     )
     CLASS_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/class_list/i_invalid_structure.csv{escape_characters.SEPARATOR}test_data/class_list/o_invalid_structure.csv{escape_characters.SEPARATOR}class"
+        f"test_data/class_list/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}class"
     )
     CLASS_EMPTY_FILE: Final[str] = (
-        f"test_data/class_list/i_empty.csv{escape_characters.SEPARATOR}test_data/class_list/o_empty.csv{escape_characters.SEPARATOR}class"
+        f"test_data/class_list/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_empty.csv{escape_characters.SEPARATOR_CHAR}class"
     )
     CLASS_HEADER_ONLY: Final[str] = (
-        f"test_data/class_list/i_header_only.csv{escape_characters.SEPARATOR}test_data/class_list/o_header_only.csv{escape_characters.SEPARATOR}class"
+        f"test_data/class_list/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_header_only.csv{escape_characters.SEPARATOR_CHAR}class"
     )
 
 

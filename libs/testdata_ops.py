@@ -53,9 +53,9 @@ class testdata_operations:
         return _df
 
     def split_file_paths(self, file_paths: str) -> tuple[str, str]:
-        file_for = file_paths.split(escape_characters.SEPARATOR)[2]
+        file_for = file_paths.split(escape_characters.SEPARATOR_CHAR)[2]
         _input_file_path = self.create_file_from_template(
-            template_path=file_paths.split(escape_characters.SEPARATOR)[0], file_name_prefix=file_for
+            template_path=file_paths.split(escape_characters.SEPARATOR_CHAR)[0], file_name_prefix=file_for
         )
-        _output_file_path = file_paths.split(escape_characters.SEPARATOR)[1]
+        _output_file_path = file_paths.split(escape_characters.SEPARATOR_CHAR)[1]
         return _input_file_path, _output_file_path

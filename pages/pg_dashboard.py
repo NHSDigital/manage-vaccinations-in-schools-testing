@@ -6,15 +6,15 @@ from libs.wrappers import wait
 class pg_dashboard:
     po = playwright_ops.playwright_operations()
 
-    LNK_PROGRAMMES = f"heading{escape_characters.SEPARATOR}Programmes"
-    LNK_SESSIONS = f"heading{escape_characters.SEPARATOR}Sessions"
-    LNK_CHILDREN = f"heading{escape_characters.SEPARATOR}Children"
-    LNK_VACCINES = f"heading{escape_characters.SEPARATOR}Vaccines"
-    LNK_UNMATCHED_CONSENT_RESPONSES = f"heading{escape_characters.SEPARATOR}Unmatched consent responses"
-    LNK_SCHOOL_MOVES = f"heading{escape_characters.SEPARATOR}School moves"
-    LNK_NOTICES = f"heading{escape_characters.SEPARATOR}Important Notices"
-    LNK_ORGANISATION = f"heading{escape_characters.SEPARATOR}Your organisation"
-    LNK_SERVICE_GUIDANCE = f"heading{escape_characters.SEPARATOR}Service guidance"
+    LNK_PROGRAMMES = f"heading{escape_characters.SEPARATOR_CHAR}Programmes"
+    LNK_SESSIONS = f"heading{escape_characters.SEPARATOR_CHAR}Sessions"
+    LNK_CHILDREN = f"heading{escape_characters.SEPARATOR_CHAR}Children"
+    LNK_VACCINES = f"heading{escape_characters.SEPARATOR_CHAR}Vaccines"
+    LNK_UNMATCHED_CONSENT_RESPONSES = f"heading{escape_characters.SEPARATOR_CHAR}Unmatched consent responses"
+    LNK_SCHOOL_MOVES = f"heading{escape_characters.SEPARATOR_CHAR}School moves"
+    LNK_NOTICES = f"heading{escape_characters.SEPARATOR_CHAR}Important Notices"
+    LNK_ORGANISATION = f"heading{escape_characters.SEPARATOR_CHAR}Your organisation"
+    LNK_SERVICE_GUIDANCE = f"heading{escape_characters.SEPARATOR_CHAR}Service guidance"
     LNK_NHS_LOGO = "Manage vaccinations in schools"
 
     def click_programmes(self):

@@ -45,7 +45,6 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test on Chromium
-      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -62,7 +61,6 @@ jobs:
         pytest --browser_or_device chromium
         echo "::endgroup::"
     - name: Test on Chrome
-      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -79,7 +77,6 @@ jobs:
         pytest --browser_or_device chrome
         echo "::endgroup::"
     - name: Test on Firefox
-      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -96,7 +93,6 @@ jobs:
         pytest --browser_or_device firefox
         echo "::endgroup::"
     - name: Test on iPhone 12
-      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -113,7 +109,6 @@ jobs:
         pytest -m mobile --browser_or_device iphone_12
         echo "::endgroup::"
     - name: Test on iPhone 11
-      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -130,7 +125,6 @@ jobs:
         pytest -m mobile --browser_or_device iphone_11
         echo "::endgroup::"
     - name: Test on Google Pixel 5
-      continue-on-error: true
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}

@@ -23,7 +23,6 @@ class Test_Record_a_Vaccine_Using_UI:
         self.login_page.perform_logout()
 
     @pytest.mark.rav
-    @pytest.mark.dependency(name="rav_positive")
     @pytest.mark.order(701)
     def test_rav_triage_positive(self):
         self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_POSITIVE)
