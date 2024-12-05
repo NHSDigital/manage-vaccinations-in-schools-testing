@@ -23,7 +23,6 @@ class Test_Class_List_Upload:
         self.login_page.perform_logout()
 
     @pytest.mark.classlist
-    @pytest.mark.dependency(name="class_list_positive")
     @pytest.mark.order(301)
     def test_class_list_file_upload_positive(self):
         self.sessions_page.upload_class_list(file_paths=test_data_file_paths.CLASS_POSITIVE)

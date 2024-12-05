@@ -25,7 +25,7 @@ class playwright_operations:
                     f"{self.ce.screenshot_sequence}-{action}-{identifier}-{self.ce.current_browser_name}.{screenshot_types.JPEG}",
                 )
             )
-            # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})
+            # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})  # Not prudent for mobile screenshots
             self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
 
     def verify(
