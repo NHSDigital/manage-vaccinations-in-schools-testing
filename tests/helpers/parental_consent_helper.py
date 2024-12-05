@@ -62,7 +62,7 @@ class parental_consent_helper:
             self.pc.check_phone_options()
         self.pc.select_consent_for_vaccination(consented=self.consent)
         if self.consent:
-            self.pc.fill_gp_details(gp_name=self.gp)
+            # self.pc.fill_gp_details(gp_name=self.gp)  # Removed on 04/12/2024 as GP details are to be retrieved from PDS now.
             self.pc.fill_address_details(line1=self.addr1, line2=self.addr2, city=self.city, postcode=self.postcode)
             self.pc.select_severe_allergies(allergy_details=self.allergy_details)
             self.pc.select_medical_condition(medical_condition_details=self.medical_condition_details)
