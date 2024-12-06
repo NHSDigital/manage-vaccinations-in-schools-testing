@@ -37,7 +37,6 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         playwright install
-        playwright install-deps
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -49,10 +48,11 @@ jobs:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -65,10 +65,11 @@ jobs:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -81,10 +82,11 @@ jobs:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -92,15 +94,33 @@ jobs:
         echo "::group::Firefox"
         pytest --browser_or_device firefox
         echo "::endgroup::"
+    - name: Test on Edge
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
+        echo "::group::Edge"
+        pytest --browser_or_device msedge
+        echo "::endgroup::"
     - name: Test on iPhone 14
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -113,10 +133,11 @@ jobs:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -129,10 +150,11 @@ jobs:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -145,10 +167,11 @@ jobs:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
         TEST_URL: ${{ vars.TEST_URL }}
-        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}

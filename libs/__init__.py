@@ -20,7 +20,6 @@ class CurrentExecution:
     nurse_password: str = ""
     superuser_username: str = ""
     superuser_password: str = ""
-    parental_consent_url: str = ""
     reset_endpoint: str = ""
     api_token: str = ""
 
@@ -36,7 +35,6 @@ class CurrentExecution:
         CurrentExecution.superuser_password = os.getenv("SUPERUSER_PASSWORD")
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
-        CurrentExecution.parental_consent_url = os.getenv("PARENTAL_CONSENT_URL")
         CurrentExecution.reset_endpoint = os.getenv("RESET_ENDPOINT")
         CurrentExecution.api_token = os.getenv("API_TOKEN")
 
