@@ -33,8 +33,8 @@ class pg_login:
 
     def login_as_nurse(self):
         self.click_start()
-        self.enter_username(username=self.ce.login_username)
-        self.enter_password(password=self.ce.login_password)
+        self.enter_username(username=self.ce.nurse_username)
+        self.enter_password(password=self.ce.nurse_password)
         self.click_login()
         self.verify_login_successful()
 
