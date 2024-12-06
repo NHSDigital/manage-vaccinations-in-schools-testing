@@ -38,11 +38,6 @@ class api_constants:
     API_SUCCESS_STATUS_CODE_MAX: Final[int] = 299
 
 
-class workflow_type:
-    APPLICATION: Final[str] = "application"
-    PARENTAL_CONSENT: Final[str] = "parental_consent"
-
-
 class data_values:
     EMPTY: Final[str] = "<empty>"
 
@@ -108,81 +103,33 @@ class escape_characters:
     ]
 
 
-class test_data_file_paths:
-    PARENTAL_CONSENT: Final[str] = "test_data/ParentalConsent.xlsx"
-    VACCS_HPV_POSITIVE: Final[str] = (
-        f"test_data/hpv/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_positive.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HPV_NEGATIVE: Final[str] = (
-        f"test_data/hpv/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_negative.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HIST_HPV_POSITIVE: Final[str] = (
-        f"test_data/hpv/i_hist_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_hist_positive.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HIST_HPV_NEGATIVE: Final[str] = (
-        f"test_data/hpv/i_hist_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_hist_negative.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HPV_DUP_1: Final[str] = (
-        f"test_data/hpv/i_dup_1.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_dup_1.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HPV_DUP_2: Final[str] = (
-        f"test_data/hpv/i_dup_2.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_dup_2.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HPV_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/hpv/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HPV_EMPTY_FILE: Final[str] = (
-        f"test_data/hpv/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_empty.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    VACCS_HPV_HEADER_ONLY: Final[str] = (
-        f"test_data/hpv/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/hpv/o_header_only.csv{escape_characters.SEPARATOR_CHAR}hpv"
-    )
-    COHORTS_POSITIVE: Final[str] = (
-        f"test_data/cohorts/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_positive.csv{escape_characters.SEPARATOR_CHAR}cohort"
-    )
-    COHORTS_NEGATIVE: Final[str] = (
-        f"test_data/cohorts/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_negative.csv{escape_characters.SEPARATOR_CHAR}cohort"
-    )
-    COHORTS_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/cohorts/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}cohort"
-    )
-    COHORTS_EMPTY_FILE: Final[str] = (
-        f"test_data/cohorts/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_empty.csv{escape_characters.SEPARATOR_CHAR}cohort"
-    )
-    COHORTS_HEADER_ONLY: Final[str] = (
-        f"test_data/cohorts/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/cohorts/o_header_only.csv{escape_characters.SEPARATOR_CHAR}cohort"
-    )
-    CHILD_POSITIVE: Final[str] = (
-        f"test_data/child/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_positive.csv{escape_characters.SEPARATOR_CHAR}child"
-    )
-    CHILD_NEGATIVE: Final[str] = (
-        f"test_data/child/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_negative.csv{escape_characters.SEPARATOR_CHAR}child"
-    )
-    CHILD_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/child/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}child"
-    )
-    CHILD_EMPTY_FILE: Final[str] = (
-        f"test_data/child/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_empty.csv{escape_characters.SEPARATOR_CHAR}child"
-    )
-    CHILD_HEADER_ONLY: Final[str] = (
-        f"test_data/child/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/child/o_header_only.csv{escape_characters.SEPARATOR_CHAR}child"
-    )
-    CLASS_POSITIVE: Final[str] = (
-        f"test_data/class_list/i_positive.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_positive.csv{escape_characters.SEPARATOR_CHAR}class"
-    )
-    CLASS_NEGATIVE: Final[str] = (
-        f"test_data/class_list/i_negative.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_negative.csv{escape_characters.SEPARATOR_CHAR}class"
-    )
-    CLASS_INVALID_STRUCTURE: Final[str] = (
-        f"test_data/class_list/i_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_invalid_structure.csv{escape_characters.SEPARATOR_CHAR}class"
-    )
-    CLASS_EMPTY_FILE: Final[str] = (
-        f"test_data/class_list/i_empty.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_empty.csv{escape_characters.SEPARATOR_CHAR}class"
-    )
-    CLASS_HEADER_ONLY: Final[str] = (
-        f"test_data/class_list/i_header_only.csv{escape_characters.SEPARATOR_CHAR}test_data/class_list/o_header_only.csv{escape_characters.SEPARATOR_CHAR}class"
-    )
-
-
 class file_encoding:
     ASCII = "ascii"
+
+
+class test_data_file_paths:
+    PARENTAL_CONSENT: Final[str] = "test_data/ParentalConsent.xlsx"
+    VACCS_HPV_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
+    VACCS_HPV_NEGATIVE: Final[str] = "VACCS_HPV_NEGATIVE"
+    VACCS_HIST_HPV_POSITIVE: Final[str] = "VACCS_HIST_HPV_POSITIVE"
+    VACCS_HIST_HPV_NEGATIVE: Final[str] = "VACCS_HIST_HPV_NEGATIVE"
+    VACCS_HPV_DUP_1: Final[str] = "VACCS_HPV_DUP_1"
+    VACCS_HPV_DUP_2: Final[str] = "VACCS_HPV_DUP_2"
+    VACCS_HPV_INVALID_STRUCTURE: Final[str] = "VACCS_HPV_INVALID_STRUCTURE"
+    VACCS_HPV_EMPTY_FILE: Final[str] = "VACCS_HPV_EMPTY_FILE"
+    VACCS_HPV_HEADER_ONLY: Final[str] = "VACCS_HPV_HEADER_ONLY"
+    COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
+    COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
+    COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
+    COHORTS_EMPTY_FILE: Final[str] = "COHORTS_EMPTY_FILE"
+    COHORTS_HEADER_ONLY: Final[str] = "COHORTS_HEADER_ONLY"
+    CHILD_POSITIVE: Final[str] = "CHILD_POSITIVE"
+    CHILD_NEGATIVE: Final[str] = "CHILD_NEGATIVE"
+    CHILD_INVALID_STRUCTURE: Final[str] = "CHILD_INVALID_STRUCTURE"
+    CHILD_EMPTY_FILE: Final[str] = "CHILD_EMPTY_FILE"
+    CHILD_HEADER_ONLY: Final[str] = "CHILD_HEADER_ONLY"
+    CLASS_POSITIVE: Final[str] = "CLASS_POSITIVE"
+    CLASS_NEGATIVE: Final[str] = "CLASS_NEGATIVE"
+    CLASS_INVALID_STRUCTURE: Final[str] = "CLASS_INVALID_STRUCTURE"
+    CLASS_EMPTY_FILE: Final[str] = "CLASS_EMPTY_FILE"
+    CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"

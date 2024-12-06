@@ -57,7 +57,7 @@ class pg_dashboard:
             locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, property=object_properties.VISIBILITY, value=True, exact=True
         )
         self.po.verify(locator=self.LNK_SCHOOL_MOVES, property=object_properties.VISIBILITY, value=True, exact=True)
-        self.po.verify(locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, value=True, exact=True)
+        # self.po.verify(locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, value=True, exact=True)  # Superuser only
         self.po.verify(locator=self.LNK_ORGANISATION, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE, property=object_properties.VISIBILITY, value=True, exact=True
