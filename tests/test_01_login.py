@@ -29,6 +29,6 @@ class Test_Login:
     @pytest.mark.order(102)
     def test_home_page_links(self):
         self.login_page.go_to_login_page()
-        self.login_page.perform_valid_login()
+        self.login_page.login_as_nurse()
         self.dashboard_page.verify_all_expected_links()
         self.login_page.perform_logout()

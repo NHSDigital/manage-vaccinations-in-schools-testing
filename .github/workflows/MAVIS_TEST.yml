@@ -92,7 +92,7 @@ jobs:
         echo "::group::Firefox"
         pytest --browser_or_device firefox
         echo "::endgroup::"
-    - name: Test on iPhone 12
+    - name: Test on iPhone 14
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -105,10 +105,10 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        echo "::group::iPhone 12"
-        pytest -m mobile --browser_or_device iphone_12
+        echo "::group::iPhone 14"
+        pytest -m mobile --browser_or_device iphone_14
         echo "::endgroup::"
-    - name: Test on iPhone 11
+    - name: Test on iPhone 15
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -121,8 +121,24 @@ jobs:
         TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
-        echo "::group::iPhone 11"
-        pytest -m mobile --browser_or_device iphone_11
+        echo "::group::iPhone 15"
+        pytest -m mobile --browser_or_device iphone_15
+        echo "::endgroup::"
+    - name: Test on iPad Gen 7
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        PARENTAL_CONSENT_URL: ${{ vars.PARENTAL_CONSENT_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
+        echo "::group::iPad Gen 7"
+        pytest -m mobile --browser_or_device ipad_7
         echo "::endgroup::"
     - name: Test on Google Pixel 5
       env:

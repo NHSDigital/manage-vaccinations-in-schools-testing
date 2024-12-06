@@ -18,6 +18,8 @@ class CurrentExecution:
     capture_screenshot_flag: bool = False
     login_username: str = ""
     login_password: str = ""
+    superuser_username: str = ""
+    superuser_password: str = ""
     parental_consent_url: str = ""
     reset_endpoint: str = ""
     api_token: str = ""

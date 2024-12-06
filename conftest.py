@@ -49,12 +49,17 @@ def start_browser(pw, browser_or_device: str):
     }
     try:
         match browser_or_device.lower():
-            case "iphone_12":
+            case "iphone_14":
                 _browser = pw.webkit.launch(headless=ce.headless_mode)
-                _context = _browser.new_context(**pw.devices["iPhone 12"], http_credentials=_http_credentials)
-            case "iphone_11":
+                _context = _browser.new_context(**pw.devices["iPhone 14"], http_credentials=_http_credentials)
+            case "iphone_15":
                 _browser = pw.chromium.launch(channel="chrome", headless=ce.headless_mode)
-                _context = _browser.new_context(**pw.devices["iPhone 11"], http_credentials=_http_credentials)
+                _context = _browser.new_context(**pw.devices["iPhone 15"], http_credentials=_http_credentials)
+            case "ipad_7":
+                _browser = pw.chromium.launch(headless=ce.headless_mode)
+                _context = _browser.new_context(
+                    **pw.devices["iPad (gen 7) landscape"], http_credentials=_http_credentials
+                )
             case "pixel_5":
                 _browser = pw.webkit.launch(headless=ce.headless_mode)
                 _context = _browser.new_context(**pw.devices["Pixel 5"], http_credentials=_http_credentials)

@@ -10,7 +10,7 @@ class Test_Sessions:
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
-        self.login_page.perform_valid_login()
+        self.login_page.login_as_nurse()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
