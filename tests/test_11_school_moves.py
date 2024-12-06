@@ -12,7 +12,7 @@ class Test_School_Moves:
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
-        self.login_page.perform_valid_login()
+        self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session()
         self.dashboard_page.go_to_dashboard()
@@ -24,6 +24,9 @@ class Test_School_Moves:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_school_moves()
         yield
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.delete_all_sessions()
         self.login_page.perform_logout()
 
     @pytest.mark.schoolmoves

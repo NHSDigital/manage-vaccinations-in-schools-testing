@@ -14,7 +14,9 @@ class api_operations:
             resp = requests.get(url=endpoint, params=param)
         else:
             resp = requests.get(url=endpoint, params=param, headers=header)
-        assert api_operations.__verify_response_code(resp.status_code), f"API GET failed for {endpoint}."
+        assert api_operations.__verify_response_code(
+            resp.status_code
+        ), f"API GET failed for {endpoint} - {resp.status_code}."
         return resp
 
     @staticmethod

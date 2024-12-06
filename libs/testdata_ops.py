@@ -10,6 +10,9 @@ class testdata_operations:
     fo = file_ops.file_operations()
     ce = CurrentExecution()
 
+    def __init__(self):
+        self.mapping_df: pd.DataFrame = self.fo.read_csv_to_df(file_path="test_data/file_mapping.csv")
+
     def create_file_from_template(self, template_path: str, file_name_prefix: str) -> str:
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
@@ -34,7 +37,7 @@ class testdata_operations:
 
     def get_expected_errors(self, file_path: str) -> list[str]:
         _file_content = self.fo.get_file_text(file_path=file_path)
-        return _file_content.split("\n") if _file_content is not None else None
+        return _file_content.split(escape_characters.NEW_LINE) if _file_content is not None else None
 
     def read_spreadsheet(self, file_path: str) -> pd.DataFrame:
         _df = self.fo.read_excel_to_df(file_path=file_path)
@@ -52,10 +55,11 @@ class testdata_operations:
         _df.replace(to_replace="", value=data_values.EMPTY, inplace=True)
         return _df
 
-    def split_file_paths(self, file_paths: str) -> tuple[str, str]:
-        file_for = file_paths.split(escape_characters.SEPARATOR_CHAR)[2]
-        _input_file_path = self.create_file_from_template(
-            template_path=file_paths.split(escape_characters.SEPARATOR_CHAR)[0], file_name_prefix=file_for
+    def get_file_paths(self, file_paths: str) -> tuple[str, str]:
+        _input_template_path: str = self.mapping_df.query("ID==@file_paths")["INPUT_TEMPLATE"].to_string(index=False)
+        _output_template_path: str = self.mapping_df.query("ID==@file_paths")["OUTPUT_TEMPLATE"].to_string(index=False)
+        _file_prefix: str = self.mapping_df.query("ID==@file_paths")["FILE_PREFIX"].to_string(index=False)
+        _input_file_path: str = self.create_file_from_template(
+            template_path=_input_template_path, file_name_prefix=_file_prefix
         )
-        _output_file_path = file_paths.split(escape_characters.SEPARATOR_CHAR)[1]
-        return _input_file_path, _output_file_path
+        return _input_file_path, _output_template_path

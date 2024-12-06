@@ -288,7 +288,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.BTN_GET_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
 
     def upload_valid_class_list(self, file_paths: str):
-        _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
@@ -296,7 +296,7 @@ class pg_sessions:
         self.click_continue()
 
     def update_triage_outcome_positive(self, file_paths):
-        _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
@@ -325,7 +325,7 @@ class pg_sessions:
         self.verify_activity_log_entry(consent_given=True)
 
     def update_triage_outcome_consent_refused(self, file_paths):
-        _input_file_path, _ = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
@@ -372,7 +372,7 @@ class pg_sessions:
         self.schedule_session(future_date=_future_date, expect_error=True)
 
     def upload_class_list(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
@@ -384,7 +384,7 @@ class pg_sessions:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_class_list_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()

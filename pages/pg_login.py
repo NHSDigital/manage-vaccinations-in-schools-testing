@@ -12,7 +12,8 @@ class pg_login:
     BTN_LOGIN = "Log in"
     BTN_LOGOUT = "Log out"
     LBL_BANNER = "banner"
-    LBL_USER = "Nurse Joy"
+    LBL_NURSE = "Nurse Joy"
+    LBL_SUPERUSER = "Superuser Superuser"
     LBL_PARAGRAPH = "paragraph"
 
     def click_start(self):
@@ -28,12 +29,19 @@ class pg_login:
         self.po.perform_action(locator=self.BTN_LOGIN, action=actions.CLICK_BUTTON)
 
     def verify_login_successful(self):
-        self.po.verify(locator=self.LBL_BANNER, property=object_properties.TEXT, value=self.LBL_USER)
+        self.po.verify(locator=self.LBL_BANNER, property=object_properties.TEXT, value=self.LBL_NURSE)
 
-    def perform_valid_login(self):
+    def login_as_nurse(self):
         self.click_start()
-        self.enter_username(username=self.ce.login_username)
-        self.enter_password(password=self.ce.login_password)
+        self.enter_username(username=self.ce.nurse_username)
+        self.enter_password(password=self.ce.nurse_password)
+        self.click_login()
+        self.verify_login_successful()
+
+    def login_as_superuser(self):
+        self.click_start()
+        self.enter_username(username=self.ce.superuser_username)
+        self.enter_password(password=self.ce.superuser_password)
         self.click_login()
         self.verify_login_successful()
 

@@ -17,7 +17,7 @@ class Test_Consent:
 
     @pytest.fixture
     def setup_tests(self, start_mavis: None):
-        self.login_page.perform_valid_login()
+        self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session(for_today=True)
         self.dashboard_page.go_to_dashboard()
@@ -33,14 +33,14 @@ class Test_Consent:
 
     @pytest.fixture
     def get_session_link(self, start_mavis: None):
-        self.login_page.perform_valid_login()
+        self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session()
         link = self.sessions_page.get_consent_url()
         self.login_page.perform_logout()
         yield link
         self.login_page.go_to_login_page()
-        self.login_page.perform_valid_login()
+        self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
         self.login_page.perform_logout()

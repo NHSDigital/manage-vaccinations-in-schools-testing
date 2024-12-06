@@ -83,7 +83,7 @@ class pg_programmes:
                 self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
 
     def upload_hpv_vaccination_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_imports()
         self.click_import_records()
@@ -99,7 +99,7 @@ class pg_programmes:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_hpv_child_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_imports()
         self.click_import_records()
@@ -114,7 +114,7 @@ class pg_programmes:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_cohorts(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_cohorts()
         self.click_import_cohort_records()
@@ -127,7 +127,7 @@ class pg_programmes:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_files(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_imports()
         self.click_import_records()
@@ -138,7 +138,7 @@ class pg_programmes:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_cohorts(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_cohorts()
         self.click_import_cohort_records()
@@ -147,7 +147,7 @@ class pg_programmes:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_hpv_child_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.split_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_imports()
         self.click_import_records()
