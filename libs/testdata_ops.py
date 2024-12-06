@@ -10,6 +10,9 @@ class testdata_operations:
     fo = file_ops.file_operations()
     ce = CurrentExecution()
 
+    def __init__(self):
+        self.mapping_df: pd.DataFrame = self.fo.read_csv_to_df(file_path="test_data/file_mapping.csv")
+
     def create_file_from_template(self, template_path: str, file_name_prefix: str) -> str:
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
@@ -53,10 +56,9 @@ class testdata_operations:
         return _df
 
     def get_file_paths(self, file_paths: str) -> tuple[str, str]:
-        _mapping_df: pd.DataFrame = self.fo.read_csv_to_df(file_path="test_data/file_mapping.csv")
-        _input_template_path: str = _mapping_df.query("ID==@file_paths")["INPUT_TEMPLATE"].to_string(index=False)
-        _output_template_path: str = _mapping_df.query("ID==@file_paths")["OUTPUT_TEMPLATE"].to_string(index=False)
-        _file_prefix: str = _mapping_df.query("ID==@file_paths")["FILE_PREFIX"].to_string(index=False)
+        _input_template_path: str = self.mapping_df.query("ID==@file_paths")["INPUT_TEMPLATE"].to_string(index=False)
+        _output_template_path: str = self.mapping_df.query("ID==@file_paths")["OUTPUT_TEMPLATE"].to_string(index=False)
+        _file_prefix: str = self.mapping_df.query("ID==@file_paths")["FILE_PREFIX"].to_string(index=False)
         _input_file_path: str = self.create_file_from_template(
             template_path=_input_template_path, file_name_prefix=_file_prefix
         )
