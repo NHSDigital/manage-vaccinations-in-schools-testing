@@ -32,7 +32,7 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.login_as_nurse()
         self.dashboard_page.verify_all_expected_links_for_nurse()
-        self.login_page.logout_from_the_service()
+        self.login_page.logout_of_mavis()
 
     @pytest.mark.login
     @pytest.mark.mobile
@@ -41,4 +41,4 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.login_as_superuser()
         self.dashboard_page.verify_all_expected_links_for_superuser()
-        self.login_page.logout_from_the_service()
+        self.login_page.logout_of_mavis()
