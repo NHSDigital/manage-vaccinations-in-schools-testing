@@ -45,14 +45,14 @@ class pg_login:
         self.click_login()
         self.verify_login_successful()
 
-    def perform_invalid_login(self, user: str, pwd: str, expected_message: str) -> str:
+    def try_invalid_login(self, user: str, pwd: str, expected_message: str) -> str:
         self.click_start()
         self.enter_username(username=user)
         self.enter_password(password=pwd)
         self.click_login()
         self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=expected_message, exact=True)
 
-    def perform_logout(self):
+    def logout_from_the_service(self):
         self.po.perform_action(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
 
     def go_to_url(self, url: str) -> None:

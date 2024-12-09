@@ -23,7 +23,7 @@ class Test_Login:
     @pytest.mark.order(101)
     @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
     def test_invalid_login(self, user, pwd, expected_message):
-        self.login_page.perform_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
+        self.login_page.try_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
 
     @pytest.mark.login
     @pytest.mark.mobile
@@ -32,7 +32,7 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.login_as_nurse()
         self.dashboard_page.verify_all_expected_links_for_nurse()
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
 
     @pytest.mark.login
     @pytest.mark.mobile
@@ -41,4 +41,4 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.login_as_superuser()
         self.dashboard_page.verify_all_expected_links_for_superuser()
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()

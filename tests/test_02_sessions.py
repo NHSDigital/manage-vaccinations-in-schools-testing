@@ -14,7 +14,7 @@ class Test_Sessions:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
 
     @pytest.mark.sessions
     @pytest.mark.order(201)

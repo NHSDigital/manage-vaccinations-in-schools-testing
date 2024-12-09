@@ -21,7 +21,7 @@ class Test_Vaccinations_Upload:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
 
     @pytest.mark.vaccinations
     @pytest.mark.order(801)

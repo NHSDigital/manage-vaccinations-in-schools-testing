@@ -13,7 +13,7 @@ class Test_Children:
         self.login_page.login_as_nurse()
         self.dashboard_page.click_children()
         yield
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
 
     @pytest.mark.children
     @pytest.mark.order(1001)

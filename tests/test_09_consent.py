@@ -29,7 +29,7 @@ class Test_Consent:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
 
     @pytest.fixture
     def get_session_link(self, start_mavis: None):
@@ -37,13 +37,13 @@ class Test_Consent:
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session()
         link = self.sessions_page.get_consent_url()
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
         yield link
         self.login_page.go_to_login_page()
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
-        self.login_page.perform_logout()
+        self.login_page.logout_from_the_service()
 
     @pytest.mark.consent
     @pytest.mark.mobile
