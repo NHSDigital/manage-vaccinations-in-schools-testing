@@ -13,6 +13,7 @@ COHORTS_NEGATIVE,test_data/cohorts/i_negative.csv,test_data/cohorts/o_negative.c
 COHORTS_INVALID_STRUCTURE,test_data/cohorts/i_invalid_structure.csv,test_data/cohorts/o_invalid_structure.csv,cohort
 COHORTS_EMPTY_FILE,test_data/cohorts/i_empty.csv,test_data/cohorts/o_empty.csv,cohort
 COHORTS_HEADER_ONLY,test_data/cohorts/i_header_only.csv,test_data/cohorts/o_header_only.csv,cohort
+COHORTS_NO_APPROVAL,test_data/cohorts/i_no_consent.csv,,cohort
 CHILD_POSITIVE,test_data/child/i_positive.csv,test_data/child/o_positive.csv,child
 CHILD_NEGATIVE,test_data/child/i_negative.csv,test_data/child/o_negative.csv,child
 CHILD_INVALID_STRUCTURE,test_data/child/i_invalid_structure.csv,test_data/child/o_invalid_structure.csv,child
