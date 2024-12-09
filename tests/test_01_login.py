@@ -15,6 +15,7 @@ class Test_Login:
         ("invalid_user", "invalid_password", "Invalid Email or password."),
         ("invalid_user", "", "Invalid Email or password."),
         ("", "invalid_password", "Invalid Email or password."),
+        ("", "", "Invalid Email or password."),
     ]
 
     @pytest.mark.login
