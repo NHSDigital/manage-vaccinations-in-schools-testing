@@ -48,7 +48,7 @@ class pg_dashboard:
         wait(timeout=wait_time.MIN)  # Scripts sometimes error out without this wait when called as a teardown action
         self.po.perform_action(locator=self.LNK_NHS_LOGO, action=actions.CLICK_LINK)
 
-    def verify_all_expected_links(self):
+    def verify_all_expected_links_for_nurse(self):
         self.po.verify(locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_SESSIONS, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(locator=self.LNK_CHILDREN, property=object_properties.VISIBILITY, value=True, exact=True)
@@ -58,6 +58,29 @@ class pg_dashboard:
         )
         self.po.verify(locator=self.LNK_SCHOOL_MOVES, property=object_properties.VISIBILITY, value=True, exact=True)
         # self.po.verify(locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, value=True, exact=True)  # Superuser only
+        self.po.verify(locator=self.LNK_ORGANISATION, property=object_properties.VISIBILITY, value=True, exact=True)
+        self.po.verify(
+            locator=self.LNK_SERVICE_GUIDANCE, property=object_properties.VISIBILITY, value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_SERVICE_GUIDANCE,
+            property=object_properties.HREF,
+            value="https://guide.manage-vaccinations-in-schools.nhs.uk/",
+            exact=True,
+        )
+
+    def verify_all_expected_links_for_superuser(self):
+        self.po.verify(locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, value=True, exact=True)
+        self.po.verify(locator=self.LNK_SESSIONS, property=object_properties.VISIBILITY, value=True, exact=True)
+        self.po.verify(locator=self.LNK_CHILDREN, property=object_properties.VISIBILITY, value=True, exact=True)
+        self.po.verify(locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, value=True, exact=True)
+        self.po.verify(
+            locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, property=object_properties.VISIBILITY, value=True, exact=True
+        )
+        self.po.verify(locator=self.LNK_SCHOOL_MOVES, property=object_properties.VISIBILITY, value=True, exact=True)
+        self.po.verify(
+            locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, value=True, exact=True
+        )  # Superuser only
         self.po.verify(locator=self.LNK_ORGANISATION, property=object_properties.VISIBILITY, value=True, exact=True)
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE, property=object_properties.VISIBILITY, value=True, exact=True
