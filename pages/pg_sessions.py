@@ -18,6 +18,7 @@ class pg_sessions:
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
     LNK_TAB_UNSCHEDULED = "Unscheduled"
+    LNK_TAB_NO_RESPONSE = "No response"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
     LNK_IMPORT_CLASS_LIST = "Import class list"
     LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
@@ -26,6 +27,7 @@ class pg_sessions:
     LNK_ADD_SESSION_DATES = "Add session dates"
     LNK_RECORD_VACCINATIONS = "Record vaccinations"
     LNK_CHILD_FULL_NAME = "CF"
+    LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
     LNK_UPDATE_TRIAGE_OUTCOME = "Update triage outcome"
     LNK_SCHEDULE_SESSIONS = "Schedule sessions"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
@@ -42,7 +44,6 @@ class pg_sessions:
     LNK_BACK = "Back"
     LNK_CONTINUE = "Continue"
     LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
-    BTN_CHECK_CONSENT_RESPONSES = "Check consent responses"
     LNK_ASSESS_GILLICK_COMPETENT = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT = "No"
@@ -50,7 +51,8 @@ class pg_sessions:
     BTN_SAVE_CHANGES = "Save changes"
     LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN = "Triaged decision: Safe to vaccinate"
     LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED = "Consent refused by Parent1 (Dad)"
-    BTN_GET_CONSENT_RESPONSES = "Get consent response"
+    BTN_GET_CONSENT_RESPONSE = "Get consent response"
+    LNK_CHECK_CONSENT_RESPONSES = "Check consent responses"
     BTN_COMPLETE_GILLICK_ASSESSMENT = "Complete your assessment"
     LBL_CHILD_COMPETENT = "Child assessed as Gillick competent"
     LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
@@ -59,6 +61,9 @@ class pg_sessions:
     LNK_CONSENT_FORM = "View parental consent form ("
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
     LNK_CONSENT_REFUSED = "Consent refused"
+    LNK_MARK_AS_INVALID = "Mark as invalid"
+    LNK_PARENT2 = "Parent2"
+    TXT_NOTES = "Notes"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -85,6 +90,9 @@ class pg_sessions:
 
     def click_unscheduled(self):
         self.po.perform_action(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
+
+    def click_no_response(self):
+        self.po.perform_action(locator=self.LNK_TAB_NO_RESPONSE, action=actions.CLICK_LINK, exact=False)
 
     def click_activity_log(self):
         self.po.perform_action(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
@@ -114,6 +122,9 @@ class pg_sessions:
     def click_child_full_name(self):
         self.po.perform_action(locator=self.LNK_CHILD_FULL_NAME, action=actions.CLICK_WILDCARD)
 
+    def click_child_no_consent(self):
+        self.po.perform_action(locator=self.LNK_CHILD_NO_CONSENT, action=actions.CLICK_LINK)
+
     def click_update_triage_outcome(self):
         self.po.perform_action(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
 
@@ -124,7 +135,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
 
     def click_check_consent_responses(self):
-        self.po.perform_action(locator=self.BTN_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
     def click_assess_gillick_competent(self):
         self.po.perform_action(locator=self.LNK_ASSESS_GILLICK_COMPETENT, action=actions.CLICK_LINK)
@@ -280,12 +291,30 @@ class pg_sessions:
                 exact=False,
             )
 
+    def invalidate_parent2_refusal(self):
+        self.po.perform_action(locator=self.LNK_PARENT2, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.TXT_NOTES, action=actions.FILL, value="Invalidation notes.")
+        self.po.perform_action(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent refusedInvalid")
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Invalidation notes.")
+        self.po.perform_action(locator=self.LNK_BACK, action=actions.CLICK_LINK)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent refusedInvalid")
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            value="No-one responded to our requests for consent.",
+        )
+
     def verify_scheduled_date(self, message: str):
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=message, exact=False)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
 
+    def click_get_consent_response(self):
+        self.po.perform_action(locator=self.BTN_GET_CONSENT_RESPONSE, action=actions.CLICK_BUTTON)
+
     def click_get_consent_responses(self):
-        self.po.perform_action(locator=self.BTN_GET_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
 
     def upload_valid_class_list(self, file_paths: str):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
@@ -308,7 +337,7 @@ class pg_sessions:
         self.click_school1()
         self.click_check_consent_responses()
         self.click_child_full_name()
-        self.click_get_consent_responses()
+        self.click_get_consent_response()
         self.consent_page.service_give_consent()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -337,7 +366,7 @@ class pg_sessions:
         self.click_school1()
         self.click_check_consent_responses()
         self.click_child_full_name()
-        self.click_get_consent_responses()
+        self.click_get_consent_response()
         self.consent_page.service_refuse_consent()
         self.click_consent_refused()
         self.click_child_full_name()
@@ -404,3 +433,28 @@ class pg_sessions:
 
     def get_consent_url(self) -> str:
         return self.po.get_object_property(locator=self.LNK_CONSENT_FORM, property=object_properties.HREF)
+
+    def disparate_consent_scenario(self):
+        self.click_no_response()
+        self.click_child_no_consent()
+        self.click_get_consent_response()
+        self.consent_page.parent_1_verbal_no_response()
+        self.click_no_response()
+        self.click_child_no_consent()
+        self.click_get_consent_response()
+        self.consent_page.parent_2_verbal_refuse_consent()
+        self.click_consent_refused()
+        self.click_child_no_consent()
+        self.invalidate_parent2_refusal()
+        self.click_activity_log()
+        wait(timeout=wait_time.MIN)
+        # FIXME: Make the following generic
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent from Parent2 invalidated"
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent refused by Parent2 (Mum)"
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent not_provided by Parent1 (Dad)"
+        )

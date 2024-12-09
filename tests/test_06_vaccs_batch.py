@@ -13,7 +13,7 @@ class Test_Regression_Vaccines:
         self.login_page.login_as_nurse()
         self.dashboard_page.click_vaccines()
         yield
-        self.login_page.perform_logout()
+        self.login_page.logout_of_mavis()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile

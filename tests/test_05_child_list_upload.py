@@ -14,7 +14,7 @@ class Test_Child_List_Upload:
         self.login_page.login_as_nurse()
         self.dashboard_page.click_programmes()
         yield
-        self.login_page.perform_logout()
+        self.login_page.logout_of_mavis()
 
     @pytest.mark.childlist
     @pytest.mark.order(501)

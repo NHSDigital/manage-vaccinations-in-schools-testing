@@ -50,12 +50,15 @@ class pg_parental_consent:
     RDO_PERSONAL_CHOICE = "Personal choice"
     RDO_OTHER = "Other"
     RDO_ONLINE = "Online"
+    RDO_IN_PERSON = "In person"
     RDO_YES_THEY_AGREE = "Yes, they agree"
     RDO_NO_THEY_DO_NOT_AGREE = "No, they do not agree"
     RDO_NO_RESPONSE = "No response"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
     LBL_CONSENT_RECORDED = "Consent recorded for CF"
     LBL_MAIN = "main"
+    RDO_PARENT1_DAD = "Parent1 (Dad)"
+    RDO_PARENT2_MUM = "Parent2 (Mum)"
 
     def click_start_now(self):
         self.po.perform_action(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
@@ -192,7 +195,7 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def service_give_consent(self):
-        self.po.perform_action(locator="Parent1 (Dad)", action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
         self.po.perform_action(locator=self.RDO_ONLINE, action=actions.RADIO_BUTTON_SELECT)
@@ -226,7 +229,7 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
     def service_refuse_consent(self):
-        self.po.perform_action(locator="Parent1 (Dad)", action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
         self.po.perform_action(locator=self.RDO_ONLINE, action=actions.RADIO_BUTTON_SELECT)
@@ -242,3 +245,25 @@ class pg_parental_consent:
         self.po.verify(
             locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CONSENT_RECORDED, exact=False
         )
+
+    def parent_1_verbal_no_response(self):
+        self.po.perform_action(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.perform_action(locator=self.RDO_IN_PERSON, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_NO_RESPONSE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
+    def parent_2_verbal_refuse_consent(self):
+        self.po.perform_action(locator=self.RDO_PARENT2_MUM, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.perform_action(locator=self.RDO_IN_PERSON, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_NO_THEY_DO_NOT_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)

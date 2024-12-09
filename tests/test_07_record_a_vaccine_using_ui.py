@@ -20,7 +20,7 @@ class Test_Record_a_Vaccine_Using_UI:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
-        self.login_page.perform_logout()
+        self.login_page.logout_of_mavis()
 
     @pytest.mark.rav
     @pytest.mark.order(701)

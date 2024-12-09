@@ -27,7 +27,7 @@ class Test_School_Moves:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
-        self.login_page.perform_logout()
+        self.login_page.logout_of_mavis()
 
     @pytest.mark.schoolmoves
     @pytest.mark.order(1101)

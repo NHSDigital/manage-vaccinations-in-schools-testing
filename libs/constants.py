@@ -88,7 +88,7 @@ class escape_characters:
         SINGLE_QUOTE_CLOSE,
         TAB,
     ]
-    FILE_NAME = [
+    FILE_NAME: Final[str] = [
         SEPARATOR_CHAR,
         COLON,
         DOUBLE_QUOTE,
@@ -104,7 +104,7 @@ class escape_characters:
 
 
 class file_encoding:
-    ASCII = "ascii"
+    ASCII: Final[str] = "ascii"
 
 
 class test_data_file_paths:
@@ -123,6 +123,7 @@ class test_data_file_paths:
     COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
     COHORTS_EMPTY_FILE: Final[str] = "COHORTS_EMPTY_FILE"
     COHORTS_HEADER_ONLY: Final[str] = "COHORTS_HEADER_ONLY"
+    COHORTS_NO_APPROVAL: Final[str] = "COHORTS_NO_APPROVAL"
     CHILD_POSITIVE: Final[str] = "CHILD_POSITIVE"
     CHILD_NEGATIVE: Final[str] = "CHILD_NEGATIVE"
     CHILD_INVALID_STRUCTURE: Final[str] = "CHILD_INVALID_STRUCTURE"

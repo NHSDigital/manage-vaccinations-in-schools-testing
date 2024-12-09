@@ -15,6 +15,7 @@ class Test_Login:
         ("invalid_user", "invalid_password", "Invalid Email or password."),
         ("invalid_user", "", "Invalid Email or password."),
         ("", "invalid_password", "Invalid Email or password."),
+        ("", "", "Invalid Email or password."),
     ]
 
     @pytest.mark.login
@@ -22,13 +23,22 @@ class Test_Login:
     @pytest.mark.order(101)
     @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
     def test_invalid_login(self, user, pwd, expected_message):
-        self.login_page.perform_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
+        self.login_page.try_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
 
     @pytest.mark.login
     @pytest.mark.mobile
     @pytest.mark.order(102)
-    def test_home_page_links(self):
+    def test_home_page_links_for_nurse(self):
         self.login_page.go_to_login_page()
         self.login_page.login_as_nurse()
-        self.dashboard_page.verify_all_expected_links()
-        self.login_page.perform_logout()
+        self.dashboard_page.verify_all_expected_links_for_nurse()
+        self.login_page.logout_of_mavis()
+
+    @pytest.mark.login
+    @pytest.mark.mobile
+    @pytest.mark.order(103)
+    def test_home_page_links_for_superuser(self):
+        self.login_page.go_to_login_page()
+        self.login_page.login_as_superuser()
+        self.dashboard_page.verify_all_expected_links_for_superuser()
+        self.login_page.logout_of_mavis()
