@@ -39,7 +39,6 @@ class Test_Consent:
         self.helper.enter_details()
 
     @pytest.mark.consent
-    @pytest.mark.mobile
     @pytest.mark.order(902)
     def test_gillick_competence(self, start_mavis: None):
         self.login_page.login_as_nurse()
@@ -57,8 +56,6 @@ class Test_Consent:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.consent
-    @pytest.mark.mobile
-    @pytest.mark.bugs  # MAVIS-1696
     @pytest.mark.order(903)
     def test_invalid_consent(self, start_mavis: None):
         self.login_page.login_as_nurse()
@@ -72,7 +69,7 @@ class Test_Consent:
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
         self.sessions_page.click_check_consent_responses()
-        self.sessions_page.disparate_consent_scenario()
+        self.sessions_page.disparate_consent_scenario()  # Bug: MAVIS-1696
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions()
