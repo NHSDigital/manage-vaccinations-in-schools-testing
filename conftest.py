@@ -16,6 +16,8 @@ def start_exe_session(request):
     ce.reset_environment()
     ce.session_screenshots_dir = create_session_screenshot_dir()
     ce.current_browser_name = request.config.getoption("browser_or_device")
+    yield
+    # ce.reset_environment()  # Clean up the environment after execution
 
 
 @pytest.fixture(scope="session")
