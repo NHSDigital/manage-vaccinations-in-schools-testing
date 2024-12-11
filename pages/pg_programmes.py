@@ -11,6 +11,7 @@ class pg_programmes:
 
     LNK_HPV = "HPV"
     LNK_IMPORTS = "Imports"
+    LNK_VACCINATIONS = "Vaccinations"
     LNK_COHORTS = "Cohorts"
     LNK_IMPORT_CHILD_RECORDS = "Import child records"
     LNK_IMPORT_RECORDS = "Import records"
@@ -32,10 +33,7 @@ class pg_programmes:
         self.po.perform_action(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
 
     def click_vaccinations(self):
-        self.po.perform_action(
-            locator="get_by_label('Secondary menu').get_by_role('link', name='Vaccinations').click()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
+        self.po.perform_action(locator=self.LNK_VACCINATIONS, action=actions.CLICK_LINK, exact=True)
 
     def click_cohorts(self):
         self.po.perform_action(locator=self.LNK_COHORTS, action=actions.CLICK_LINK)
