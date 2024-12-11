@@ -31,3 +31,6 @@ class pg_school_moves:
         self.po.perform_action(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
         _success_message = "’s school move ignored"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=_success_message)
+
+    def upload_new_student_to_closed_session(self):
+        pass
