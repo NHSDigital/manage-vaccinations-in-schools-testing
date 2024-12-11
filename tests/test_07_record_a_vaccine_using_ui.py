@@ -35,7 +35,7 @@ class Test_Record_a_Vaccine_Using_UI:
 
     @pytest.mark.rav
     @pytest.mark.order(703)
-    @pytest.mark.skip(reason="Under construction")
+    @pytest.mark.skip(reason="Development in progress")
     def test_rav_edit_dose_to_not_given(self, start_mavis):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
