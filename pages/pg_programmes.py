@@ -24,7 +24,10 @@ class pg_programmes:
     LBL_PARAGRAPH = "paragraph"
     LBL_MAIN = "main"
     LNK_DOSE2_CHILD = "Dose2 Dose2"
+    LNK_CHANGE_OUTCOME = "Change   outcome"
+    RDO_THEY_REFUSED_IT = "They refused it"
     BTN_EDIT_VACCINATION_RECORD = "Edit vaccination record"
+    BTN_SAVE_CHANGES = "Save changes"
 
     def click_hpv(self):
         self.po.perform_action(locator=self.LNK_HPV, action=actions.CLICK_LINK)
@@ -174,15 +177,13 @@ class pg_programmes:
         self.click_vaccinations()
         self.click_dose2_child()
         self.click_edit_vaccination_record()
-        self.po.perform_action(locator="Change   outcome", action=actions.CLICK_LINK)
-        self.po.perform_action(locator="They refused it", action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.LNK_CHANGE_OUTCOME, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.RDO_THEY_REFUSED_IT, action=actions.RADIO_BUTTON_SELECT)
         self.click_continue()
-        self.po.perform_action(locator="Save changes", action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_MAIN,
             property=object_properties.TEXT,
             value="!Sorry, there’s a problem with the service",
             exact=False,
-            by_test_id=False,
-            chain_locator=False,
         )
