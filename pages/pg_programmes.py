@@ -22,6 +22,8 @@ class pg_programmes:
     LBL_IMPORT_STARTED = "Import processing started"
     LBL_PARAGRAPH = "paragraph"
     LBL_MAIN = "main"
+    LNK_DOSE2_CHILD = "Dose2 Dose2"
+    BTN_EDIT_VACCINATION_RECORD = "Edit vaccination record"
 
     def click_hpv(self):
         self.po.perform_action(locator=self.LNK_HPV, action=actions.CLICK_LINK)
@@ -29,8 +31,17 @@ class pg_programmes:
     def click_imports(self):
         self.po.perform_action(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
 
+    def click_vaccinations(self):
+        self.po.perform_action(
+            locator="get_by_label('Secondary menu').get_by_role('link', name='Vaccinations').click()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+
     def click_cohorts(self):
         self.po.perform_action(locator=self.LNK_COHORTS, action=actions.CLICK_LINK)
+
+    def click_edit_vaccination_record(self):
+        self.po.perform_action(locator=self.BTN_EDIT_VACCINATION_RECORD, action=actions.CLICK_BUTTON)
 
     def click_import_records(self):
         self.po.perform_action(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
@@ -75,6 +86,9 @@ class pg_programmes:
 
     def record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
+
+    def click_dose2_child(self):
+        self.po.perform_action(locator=self.LNK_DOSE2_CHILD, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
@@ -156,3 +170,21 @@ class pg_programmes:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.verify_upload_output(file_path=_output_file_path)
+
+    def edit_dose_to_not_given(self):
+        self.click_hpv()
+        self.click_vaccinations()
+        self.click_dose2_child()
+        self.click_edit_vaccination_record()
+        self.po.perform_action(locator="Change   outcome", action=actions.CLICK_LINK)
+        self.po.perform_action(locator="They refused it", action=actions.RADIO_BUTTON_SELECT)
+        self.click_continue()
+        self.po.perform_action(locator="Save changes", action=actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            value="!Sorry, there’s a problem with the service",
+            exact=False,
+            by_test_id=False,
+            chain_locator=False,
+        )
