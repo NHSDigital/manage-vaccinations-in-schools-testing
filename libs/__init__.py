@@ -35,7 +35,7 @@ class CurrentExecution:
         CurrentExecution.superuser_password = os.getenv("SUPERUSER_PASSWORD")
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
-        CurrentExecution.reset_endpoint = os.getenv("RESET_ENDPOINT")
+        CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{os.getenv('RESET_ENDPOINT')}"
         CurrentExecution.api_token = os.getenv("API_TOKEN")
 
     @staticmethod

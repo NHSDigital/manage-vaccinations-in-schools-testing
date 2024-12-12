@@ -13,7 +13,7 @@ class pg_sessions:
     consent_page = pg_parental_consent.pg_parental_consent()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
-    LNK_SCHOOL_2 = "Bothal Middle School"
+    LNK_SCHOOL_2 = "Barn End Centre"
 
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
@@ -39,6 +39,7 @@ class pg_sessions:
     TXT_MONTH = "Month"
     TXT_YEAR = "Year"
     LNK_EDIT_SESSION = "Edit session"
+    LNK_CLOSE_SESSION = "Close session"
     LNK_CHANGE_SESSION_DATES = "Change session dates"
     BTN_DELETE = "Delete"
     LNK_BACK = "Back"
@@ -215,10 +216,10 @@ class pg_sessions:
             )
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=competence_details, exact=False)
 
-    def schedule_session(self, future_date: str, expect_error: bool = False):
-        _day = future_date[-2:]
-        _month = future_date[4:6]
-        _year = future_date[:4]
+    def __schedule_session(self, on_date: str, expect_error: bool = False):
+        _day = on_date[-2:]
+        _month = on_date[4:6]
+        _year = on_date[:4]
         self.po.perform_action(locator=self.LNK_SCHEDULE_SESSIONS, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_ADD_SESSION_DATES, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.TXT_DAY, action=actions.FILL, value=_day)
@@ -246,7 +247,7 @@ class pg_sessions:
             chain_locator=True,
         )
 
-    def edit_session(self, to_date: str):
+    def __edit_session(self, to_date: str):
         _day = to_date[-2:]
         _month = to_date[4:6]
         _year = to_date[:4]
@@ -265,6 +266,12 @@ class pg_sessions:
             by_test_id=False,
             chain_locator=True,
         )
+
+    def __close_session(self):
+        # self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Session closed.")
 
     def verify_triage_updated(self):
         self.po.verify(
@@ -373,32 +380,54 @@ class pg_sessions:
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)
 
-    def schedule_a_valid_session(self, for_today: bool = False):
+    def schedule_a_valid_session_in_school_1(self, for_today: bool = False):
         _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_school1()
-        self.schedule_session(future_date=_future_date)
+        self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
+
+    def schedule_a_valid_session_in_school_2(self, for_today: bool = False):
+        _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
+        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
+        self.click_unscheduled()
+        self.click_school2()
+        self.__schedule_session(on_date=_future_date)
+        self.verify_scheduled_date(message=_expected_message)
+
+    def schedule_a_closed_session_in_school_2(self):
+        _past_date = get_offset_date(offset_days=-1)
+        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_past_date)}"
+        self.click_unscheduled()
+        self.click_school2()
+        self.__schedule_session(on_date=_past_date)
+        self.verify_scheduled_date(message=_expected_message)
+        self.__close_session()
 
     def edit_a_session_to_today(self):
         _future_date = get_offset_date(offset_days=0)
         self.click_scheduled()
         self.click_school1()
-        self.edit_session(to_date=_future_date)
+        self.__edit_session(to_date=_future_date)
         # _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         # self.verify_scheduled_date(message=_expected_message)
 
-    def delete_all_sessions(self):
+    def delete_all_sessions_for_school_1(self):
         self.click_scheduled()
         self.click_school1()
+        self.__delete_sessions()
+
+    def delete_all_sessions_for_school_2(self):
+        self.click_scheduled()
+        self.click_school2()
         self.__delete_sessions()
 
     def create_invalid_session(self):
         _future_date = "20241332"
         self.click_unscheduled()
-        self.click_school2()
-        self.schedule_session(future_date=_future_date, expect_error=True)
+        self.click_school1()
+        self.__schedule_session(on_date=_future_date, expect_error=True)
 
     def upload_class_list(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)

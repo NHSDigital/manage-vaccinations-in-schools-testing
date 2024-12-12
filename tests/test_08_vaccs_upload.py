@@ -14,13 +14,13 @@ class Test_Vaccinations_Upload:
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
-        self.sessions_page.schedule_a_valid_session(for_today=True)
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.delete_all_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
     @pytest.mark.vaccinations

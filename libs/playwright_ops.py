@@ -223,3 +223,7 @@ class playwright_operations:
                 elem = self.ce.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
                 eval(f"self.ce.page.{locator}")
+
+    def go_to_url(self, url: str) -> None:
+        _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
+        self.ce.page.goto(_full_url)
