@@ -14,13 +14,13 @@ class Test_Record_a_Vaccine_Using_UI:
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
-        self.sessions_page.schedule_a_valid_session()
+        self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.delete_all_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
     @pytest.mark.rav
@@ -39,7 +39,7 @@ class Test_Record_a_Vaccine_Using_UI:
     def test_rav_edit_dose_to_not_given(self, start_mavis):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
-        self.sessions_page.schedule_a_valid_session(for_today=True)
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
@@ -48,5 +48,5 @@ class Test_Record_a_Vaccine_Using_UI:
         self.programmes_page.edit_dose_to_not_given()  # MAVIS-1729
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.delete_all_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()

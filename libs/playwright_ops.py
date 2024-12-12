@@ -88,7 +88,12 @@ class playwright_operations:
                     if chain_locator:
                         elem = eval(f"self.ce.page.{locator}")
                     else:
-                        elem = self.ce.page.get_by_role(locator).nth(0)
+                        if escape_characters.SEPARATOR_CHAR in locator:
+                            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                            elem = self.ce.page.get_by_role(_location, name=_locator).locator(playwright_roles.SPAN)
+                        else:
+                            elem = self.ce.page.get_by_role(locator).nth(0)
                 elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
             case object_properties.VISIBILITY:
@@ -223,3 +228,7 @@ class playwright_operations:
                 elem = self.ce.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
                 eval(f"self.ce.page.{locator}")
+
+    def go_to_url(self, url: str) -> None:
+        _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
+        self.ce.page.goto(_full_url)

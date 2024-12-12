@@ -14,10 +14,16 @@ class Test_School_Moves:
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
-        self.sessions_page.schedule_a_valid_session()
+        self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.upload_class_list(file_paths=test_data_file_paths.CLASS_POSITIVE)
+        self.sessions_page.schedule_a_valid_session_in_school_2()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_MOVES_ONE)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.upload_class_list_to_school_2(file_paths=test_data_file_paths.CLASS_MOVES_TWO)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_POSITIVE)
@@ -26,7 +32,10 @@ class Test_School_Moves:
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.delete_all_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.delete_all_sessions_for_school_2()
         self.login_page.logout_of_mavis()
 
     @pytest.mark.schoolmoves
@@ -37,7 +46,7 @@ class Test_School_Moves:
     @pytest.mark.schoolmoves
     @pytest.mark.order(1102)
     def test_school_moves_update_school_movers(self):
-        self.school_moves_page.update_school_move()
+        self.school_moves_page.confirm_school_move()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_school_moves()
         self.school_moves_page.ignore_school_move()

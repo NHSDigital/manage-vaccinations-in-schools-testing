@@ -47,6 +47,7 @@ class playwright_roles:
     BUTTON: Final[str] = "button"
     OPTION: Final[str] = "option"
     ROW: Final[str] = "row"
+    SPAN: Final[str] = "span"
 
 
 class wait_time:
@@ -135,3 +136,5 @@ class test_data_file_paths:
     CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"
     COHORTS_NO_APPROVAL: Final[str] = "COHORTS_NO_APPROVAL"
     VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
+    CLASS_MOVES_ONE: Final[str] = "CLASS_MOVES_ONE"
+    CLASS_MOVES_TWO: Final[str] = "CLASS_MOVES_TWO"

@@ -19,7 +19,7 @@ class Test_Sessions:
     @pytest.mark.sessions
     @pytest.mark.order(201)
     def test_create_valid_session(self):
-        self.sessions_page.schedule_a_valid_session()
+        self.sessions_page.schedule_a_valid_session_in_school_1()
 
     @pytest.mark.sessions
     @pytest.mark.order(201)
@@ -29,7 +29,7 @@ class Test_Sessions:
     @pytest.mark.sessions
     @pytest.mark.order(203)
     def test_delete_all_sessions(self):
-        self.sessions_page.delete_all_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
 
     @pytest.mark.sessions
     @pytest.mark.order(204)
