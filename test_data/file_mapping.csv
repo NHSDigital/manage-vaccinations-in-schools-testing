@@ -25,3 +25,5 @@ CLASS_EMPTY_FILE,test_data/class_list/i_empty.csv,test_data/class_list/o_empty.c
 CLASS_HEADER_ONLY,test_data/class_list/i_header_only.csv,test_data/class_list/o_header_only.csv,class
 COHORTS_NO_APPROVAL,test_data/cohorts/i_no_consent.csv,,cohort
 VACCS_HPV_DOSE_TWO,test_data/hpv/i_dose_two.csv,,hpv
+CLASS_MOVES_ONE,test_data/class_list/i_moves_1.csv,,class
+CLASS_MOVES_TWO,test_data/class_list/i_moves_2.csv,,class

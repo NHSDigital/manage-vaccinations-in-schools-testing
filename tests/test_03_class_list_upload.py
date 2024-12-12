@@ -25,12 +25,12 @@ class Test_Class_List_Upload:
     @pytest.mark.classlist
     @pytest.mark.order(301)
     def test_class_list_file_upload_positive(self):
-        self.sessions_page.upload_class_list(file_paths=test_data_file_paths.CLASS_POSITIVE)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_POSITIVE)
 
     @pytest.mark.classlist
     @pytest.mark.order(302)
     def test_class_list_file_upload_negative(self):
-        self.sessions_page.upload_class_list(file_paths=test_data_file_paths.CLASS_NEGATIVE)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_NEGATIVE)
 
     @pytest.mark.classlist
     @pytest.mark.order(303)

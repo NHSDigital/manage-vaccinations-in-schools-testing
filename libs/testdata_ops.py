@@ -19,15 +19,16 @@ class testdata_operations:
         _ctr = -1
         _dt = get_new_datetime()
         _hist_dt = get_offset_date(offset_days=-730)
-        for _ln in _template_text.split(escape_characters.NEW_LINE):
-            _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
-            _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
-            _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
-            _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
-            _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
-            _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
-            _file_text.append(_ln)
-            _ctr += 1
+        if _template_text is not None:
+            for _ln in _template_text.split(escape_characters.NEW_LINE):
+                _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
+                _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
+                _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
+                _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
+                _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
+                _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
+                _file_text.append(_ln)
+                _ctr += 1
         return self.fo.create_file(
             content=escape_characters.NEW_LINE.join(_file_text), file_name_prefix=file_name_prefix
         )

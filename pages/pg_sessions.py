@@ -110,9 +110,16 @@ class pg_sessions:
     def click_continue(self):
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def choose_file_child_records(self, file_path: str):
+    def choose_file_child_records_for_school_1(self, file_path: str):
         self.po.perform_action(
             locator=self.LBL_CHOOSE_COHORT_FILE_1,
+            action=actions.SELECT_FILE,
+            value=file_path,
+        )
+
+    def choose_file_child_records_for_school_2(self, file_path: str):
+        self.po.perform_action(
+            locator=self.LBL_CHOOSE_COHORT_FILE_2,
             action=actions.SELECT_FILE,
             value=file_path,
         )
@@ -328,7 +335,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
 
     def update_triage_outcome_positive(self, file_paths):
@@ -336,7 +343,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -365,7 +372,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -429,12 +436,24 @@ class pg_sessions:
         self.click_school1()
         self.__schedule_session(on_date=_future_date, expect_error=True)
 
-    def upload_class_list(self, file_paths: str):
+    def upload_class_list_to_school_1(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
+        self.click_continue()
+        # self.__record_upload_time()
+        wait(timeout=wait_time.MED)
+        # self.click_uploaded_file_datetime()
+        self.verify_upload_output(file_path=_output_file_path)
+
+    def upload_class_list_to_school_2(self, file_paths: str):
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        self.click_scheduled()
+        self.click_school2()
+        self.click_import_class_list()
+        self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         # self.__record_upload_time()
         wait(timeout=wait_time.MED)
@@ -446,7 +465,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.verify_upload_output(file_path=_output_file_path)
 
