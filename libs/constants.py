@@ -47,6 +47,7 @@ class playwright_roles:
     BUTTON: Final[str] = "button"
     OPTION: Final[str] = "option"
     ROW: Final[str] = "row"
+    SPAN: Final[str] = "span"
 
 
 class wait_time:
