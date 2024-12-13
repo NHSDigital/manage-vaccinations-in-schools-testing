@@ -40,19 +40,15 @@ class Test_School_Moves:
 
     @pytest.mark.schoolmoves
     @pytest.mark.order(1101)
-    def test_school_moves_verify_headers(self):
-        self.school_moves_page.verify_headers()
-
-    @pytest.mark.schoolmoves
-    @pytest.mark.order(1102)
     def test_school_moves_update_school_movers(self):
+        self.school_moves_page.verify_headers()
         self.school_moves_page.confirm_school_move()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_school_moves()
         self.school_moves_page.ignore_school_move()
 
     @pytest.mark.schoolmoves
-    @pytest.mark.order(1103)
+    @pytest.mark.order(1102)
     @pytest.mark.skip(reason="Under construction")
     def test_school_moves_new_student_to_closed_session(self):
         self.school_moves_page.upload_new_student_to_closed_session()
