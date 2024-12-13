@@ -31,18 +31,8 @@ class Test_Consent:
         self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
-    @pytest.mark.consent
-    @pytest.mark.mobile
-    @pytest.mark.order(901)
-    @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
-    def test_parental_consent_workflow(self, get_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
-        self.po.go_to_url(url=get_session_link)
-        self.helper.read_data_for_scenario(scenario_data=scenario_data)
-        self.helper.enter_details()
-
-    @pytest.mark.consent
-    @pytest.mark.order(902)
-    def test_gillick_competence(self, start_mavis: None):
+    @pytest.fixture(scope="function", autouse=False)
+    def setup_gillick(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -51,15 +41,14 @@ class Test_Consent:
         self.sessions_page.upload_valid_class_list(file_paths=test_data_file_paths.COHORTS_POSITIVE)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.set_gillick_competence_for_student()
+        yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
-    @pytest.mark.consent
-    @pytest.mark.order(903)
-    def test_invalid_consent(self, start_mavis: None):
+    @pytest.fixture(scope="function", autouse=False)
+    def setup_invalidated_consent(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1()
@@ -71,8 +60,27 @@ class Test_Consent:
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
         self.sessions_page.click_check_consent_responses()
-        self.sessions_page.disparate_consent_scenario()  # Bug: MAVIS-1696
+        yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
+
+    @pytest.mark.consent
+    @pytest.mark.mobile
+    @pytest.mark.order(901)
+    @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
+    def test_parental_consent_workflow(self, get_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
+        self.po.go_to_url(url=get_session_link)
+        self.helper.read_data_for_scenario(scenario_data=scenario_data)
+        self.helper.enter_details()
+
+    @pytest.mark.consent
+    @pytest.mark.order(902)
+    def test_gillick_competence(self, setup_gillick: None):
+        self.sessions_page.set_gillick_competence_for_student()
+
+    @pytest.mark.consent
+    @pytest.mark.order(903)
+    def test_invalid_consent(self, setup_invalidated_consent: None):
+        self.sessions_page.disparate_consent_scenario()  # Bug: MAVIS-1696

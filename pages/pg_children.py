@@ -7,8 +7,8 @@ class pg_children:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
 
-    CHILD1 = "ChildFirst1"
-    LBL_CHILD_RECORD = f"1 child matching “{CHILD1}”"
+    CHILD1 = "CF"
+    LBL_CHILD_RECORD = f"4 children matching “{CHILD1}”"
 
     LBL_CHILDREN = "Children"
     LBL_HEADING = "heading"

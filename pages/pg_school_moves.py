@@ -41,8 +41,4 @@ class pg_school_moves:
         _success_message = f"{_child_full_name}’s school move ignored"
         self.po.perform_action(locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-
         self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=_success_message)
-
-    def upload_new_student_to_closed_session(self):
-        pass

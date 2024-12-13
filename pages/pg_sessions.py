@@ -275,7 +275,6 @@ class pg_sessions:
         )
 
     def __close_session(self):
-        # self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_BUTTON)
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Session closed.")
@@ -403,13 +402,16 @@ class pg_sessions:
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
-    def schedule_a_closed_session_in_school_2(self):
+    def close_active_session_in_school_2(self):
         _past_date = get_offset_date(offset_days=-1)
-        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_past_date)}"
-        self.click_unscheduled()
+        self.click_scheduled()
         self.click_school2()
-        self.__schedule_session(on_date=_past_date)
-        self.verify_scheduled_date(message=_expected_message)
+        self.__edit_session(to_date=_past_date)
+        self.__close_session()
+
+    def close_active_session_in_school_1(self):
+        self.click_scheduled()
+        self.click_school1()
         self.__close_session()
 
     def edit_a_session_to_today(self):
