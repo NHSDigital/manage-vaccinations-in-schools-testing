@@ -13,15 +13,19 @@ class pg_login:
     BTN_LOGOUT = "Log out"
     LBL_BANNER = "banner"
     LBL_NURSE = "Nurse Joy"
+    BTN_NURSE_ROLE = "SAIS Organisation 1 (R1L)"
+    BTN_SUPERUSER_ROLE = "SAIS Organisation 1 (R1L)"
     LBL_SUPERUSER = "Superuser Superuser"
     LBL_PARAGRAPH = "paragraph"
 
     def login_as_nurse(self):
         self.__login_actions(username=self.ce.nurse_username, password=self.ce.nurse_password)
+        self.po.perform_action(locator=self.BTN_NURSE_ROLE, action=actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.LBL_NURSE)
 
     def login_as_superuser(self):
         self.__login_actions(username=self.ce.superuser_username, password=self.ce.superuser_password)
+        self.po.perform_action(locator=self.BTN_SUPERUSER_ROLE, action=actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.LBL_SUPERUSER)
 
     def try_invalid_login(self, user: str, pwd: str, expected_message: str) -> str:
