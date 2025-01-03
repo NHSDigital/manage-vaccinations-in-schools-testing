@@ -59,6 +59,13 @@ class pg_parental_consent:
     LBL_MAIN = "main"
     RDO_PARENT1_DAD = "Parent1 (Dad)"
     RDO_PARENT2_MUM = "Parent2 (Mum)"
+    LBL_HEADING = "heading"
+
+    # CONSTANTS
+    VACCINE_ALREADY_RECEIVED = "vaccine already received"
+    VACCINE_WILL_BE_GIVEN_ELSEWHERE = "vaccine will be given elsewhere"
+    MEDICAL_REASONS = "medical reasons"
+    PERSONAL_CHOICE = "personal choice"
 
     def click_start_now(self):
         self.po.perform_action(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
@@ -168,25 +175,25 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
     def verify_final_message(self, expected_message: str) -> None:
-        self.po.verify(locator="heading", property=object_properties.TEXT, value=expected_message)
+        self.po.verify(locator=self.LBL_HEADING, property=object_properties.TEXT, value=expected_message)
 
     def select_consent_not_given_reason(self, reason: str, reason_details: str) -> None:
         match reason.lower():
-            case "vaccine already received":
+            case self.VACCINE_ALREADY_RECEIVED:
                 self.po.perform_action(locator=self.RDO_VACCINE_ALREADY_RECEIVED, action=actions.RADIO_BUTTON_SELECT)
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
                 self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
-            case "vaccine will be given elsewhere":
+            case self.VACCINE_WILL_BE_GIVEN_ELSEWHERE:
                 self.po.perform_action(
                     locator=self.RDO_VACCINE_WILL_BE_GIVEN_ELSEWHERE, action=actions.RADIO_BUTTON_SELECT
                 )
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
                 self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
-            case "medical reasons":
+            case self.MEDICAL_REASONS:
                 self.po.perform_action(locator=self.RDO_VACCINE_MEDICAL_REASONS, action=actions.RADIO_BUTTON_SELECT)
                 self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
                 self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=reason_details)
-            case "personal choice":
+            case self.PERSONAL_CHOICE:
                 self.po.perform_action(locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT)
             case _:  # Other
                 self.po.perform_action(locator=self.RDO_OTHER, action=actions.RADIO_BUTTON_SELECT)
@@ -239,7 +246,9 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.RDO_VACCINE_ALREADY_RECEIVED, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value="Given elsewhere")
+        self.po.perform_action(
+            locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=self.VACCINE_WILL_BE_GIVEN_ELSEWHERE
+        )
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
         self.po.verify(
@@ -267,3 +276,9 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
+    def change_parent_phone(self, phone: str):  # MAVIS-1778
+        # 7700900000
+        if phone != data_values.EMPTY:
+            self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value=phone)
+            self.po.perform_action(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
