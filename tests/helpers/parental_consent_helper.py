@@ -13,6 +13,7 @@ class parental_consent_helper:
 
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data
+        self.scenario_id = _row.name
         self.child_first_name = str(_row["ChildFirstName"])
         self.child_last_name = str(_row["ChildLastName"])
         self.child_aka_first = str(_row["ChildAKAFirst"])
@@ -40,38 +41,58 @@ class parental_consent_helper:
         self.consent_not_given_details = str(_row["ConsentNotGivenDetails"])
         self.expected_message = str(_row["ExpectedFinalMessage"])
 
-    def enter_details(self) -> None:
+    def enter_details_on_mavis(self) -> None:
         self.pc.click_start_now()
         self.pc.fill_child_name_details(
+            scenario_id=self.scenario_id,
             child_first_name=self.child_first_name,
             child_last_name=self.child_last_name,
             known_as_first=self.child_aka_first,
             known_as_last=self.child_aka_last,
         )
         self.pc.fill_child_dob(
-            dob_day=self.child_dob_day, dob_month=self.child_dob_month, dob_year=self.child_dob_year
+            scenario_id=self.scenario_id,
+            dob_day=self.child_dob_day,
+            dob_month=self.child_dob_month,
+            dob_year=self.child_dob_year,
         )
-        self.pc.select_child_school(school_name=self.school_name)
+        self.pc.select_child_school(scenario_id=self.scenario_id, school_name=self.school_name)
         self.pc.fill_parent_details(
+            scenario_id=self.scenario_id,
             parent_name=self.parent_name,
             relation=self.relation,
             email=self.email,
             phone=self.phone,
         )
         if self.phone != data_values.EMPTY:
-            self.pc.check_phone_options()
-        self.pc.select_consent_for_vaccination(consented=self.consent)
+            self.pc.check_phone_options(
+                scenario_id=self.scenario_id,
+            )
+        self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consented=self.consent)
         if self.consent:
             # self.pc.fill_gp_details(gp_name=self.gp)  # Removed on 04/12/2024 as GP details are to be retrieved from PDS now.
-            self.pc.fill_address_details(line1=self.addr1, line2=self.addr2, city=self.city, postcode=self.postcode)
-            self.pc.select_severe_allergies(allergy_details=self.allergy_details)
-            self.pc.select_medical_condition(medical_condition_details=self.medical_condition_details)
-            self.pc.select_severe_reaction(reaction_details=self.reaction_details)
-            self.pc.select_extra_support(extra_support_details=self.extra_support_details)
+            self.pc.fill_address_details(
+                scenario_id=self.scenario_id,
+                line1=self.addr1,
+                line2=self.addr2,
+                city=self.city,
+                postcode=self.postcode,
+            )
+            self.pc.select_severe_allergies(scenario_id=self.scenario_id, allergy_details=self.allergy_details)
+            self.pc.select_medical_condition(
+                scenario_id=self.scenario_id, medical_condition_details=self.medical_condition_details
+            )
+            self.pc.select_severe_reaction(scenario_id=self.scenario_id, reaction_details=self.reaction_details)
+            self.pc.select_extra_support(
+                scenario_id=self.scenario_id, extra_support_details=self.extra_support_details
+            )
         else:
             self.pc.select_consent_not_given_reason(
-                reason=self.consent_not_given_reason, reason_details=self.consent_not_given_details
+                scenario_id=self.scenario_id,
+                reason=self.consent_not_given_reason,
+                reason_details=self.consent_not_given_details,
             )
-        self.pc.click_confirm_details()
-        self.pc.verify_final_message(expected_message=self.expected_message)
-        # self.ce.end_test()
+        self.pc.click_confirm_details(
+            scenario_id=self.scenario_id,
+        )
+        self.pc.verify_final_message(scenario_id=self.scenario_id, expected_message=self.expected_message)

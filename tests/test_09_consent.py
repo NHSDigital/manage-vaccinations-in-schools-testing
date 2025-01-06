@@ -73,7 +73,7 @@ class Test_Consent:
     def test_parental_consent_workflow(self, get_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
         self.po.go_to_url(url=get_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
-        self.helper.enter_details()
+        self.helper.enter_details_on_mavis()
 
     @pytest.mark.consent
     @pytest.mark.order(902)

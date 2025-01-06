@@ -11,25 +11,20 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="session")
-def start_exe_session(request):
+def start_playwright_session(request):
     ce.get_env_values()
     ce.reset_environment()
     ce.session_screenshots_dir = create_session_screenshot_dir()
     ce.current_browser_name = request.config.getoption("browser_or_device")
-    yield
-    # ce.reset_environment()  # Clean up the environment after execution
-
-
-@pytest.fixture(scope="session")
-def start_playwright():
     with sync_playwright() as _playwright:
         _playwright.selectors.set_test_id_attribute("data-qa")
         yield _playwright
+    # ce.reset_environment()  # Clean up the environment after execution
 
 
 @pytest.fixture(scope="function")
-def start_mavis(start_exe_session, start_playwright):
-    _browser, _context = start_browser(pw=start_playwright, browser_or_device=ce.current_browser_name)
+def start_mavis(start_playwright_session):
+    _browser, _context = start_browser(pw=start_playwright_session, browser_or_device=ce.current_browser_name)
     ce.browser = _browser
     ce.page = _context.new_page()
     ce.page.goto(url=ce.service_url)
