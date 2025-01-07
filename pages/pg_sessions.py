@@ -484,7 +484,7 @@ class pg_sessions:
     def get_consent_url(self) -> str:
         return self.po.get_object_property(locator=self.LNK_CONSENT_FORM, property=object_properties.HREF)
 
-    def disparate_consent_scenario(self):
+    def bug_mavis_1696(self):
         self.click_no_response()
         self.click_child_no_consent()
         self.click_get_consent_response()
@@ -508,3 +508,9 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent not_provided by Parent1 (Dad)"
         )
+
+    def bug_mavis_1801(self):
+        self.click_no_response()
+        self.click_child_no_consent()
+        self.click_get_consent_response()
+        self.consent_page.parent_1_verbal_positive()

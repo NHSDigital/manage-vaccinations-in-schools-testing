@@ -24,8 +24,10 @@ class pg_parental_consent:
     RDO_RELATION_MUM = "Mum"
     RDO_RELATION_GUARDIAN = "Guardian"
     TXT_EMAIL_ADDRESS = "Email address"
-    TXT_PHONE = "Phone number (optional)"
+    TXT_PHONE_OPTIONAL = "Phone number (optional)"
+    TXT_PHONE = "Phone number"
     CHK_TEXT_ALERTS = "Tick this box if you’d like"
+    CHK_TEXT_UPDATES = "Get updates by text message"
     CHK_MOBILE_ONLY_TEXT = "I can only receive text"
     CHK_MOBILE_ONLY_VOICE = "I can only receive voice calls"
     CHK_MOBILE_OTHER = "Other"
@@ -60,7 +62,8 @@ class pg_parental_consent:
     RDO_PARENT1_DAD = "Parent1 (Dad)"
     RDO_PARENT2_MUM = "Parent2 (Mum)"
     LBL_HEADING = "heading"
-    TXT_CHANGE_PHONE = "Change   your phone"
+    LNK_CHANGE_PHONE = "Change   your phone"
+    LNK_ADD_PHONE_NUMBER = "Add phone number"
 
     # CONSTANTS
     VACCINE_ALREADY_RECEIVED = "vaccine already received"
@@ -111,7 +114,7 @@ class pg_parental_consent:
         self.po.perform_action(locator=relation, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=email)
         if phone != data_values.EMPTY:
-            self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value=phone)
+            self.po.perform_action(locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value=phone)
             self.po.perform_action(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
@@ -181,7 +184,7 @@ class pg_parental_consent:
         scenario_id: str,
     ) -> None:
         if "mavis-1778" in scenario_id.lower():
-            self.po.perform_action(locator=self.TXT_CHANGE_PHONE, action=actions.CLICK_LINK)
+            self.po.perform_action(locator=self.LNK_CHANGE_PHONE, action=actions.CLICK_LINK)
             self.change_parent_phone()
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
@@ -225,22 +228,7 @@ class pg_parental_consent:
         # page.get_by_role("group", name="Does your child have any severe allergies?").get_by_label("Yes").check()
         # page.get_by_role("textbox", name="Give details").click()
         # page.get_by_role("textbox", name="Give details").fill("Severe allergies")
-        self.po.perform_action(
-            locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.perform_action(
-            locator="get_by_role('group', name='Does your child have any medical conditions for which they receive treatment?').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.perform_action(
-            locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.perform_action(
-            locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
+        self.set_health_questions_no()
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
@@ -289,8 +277,44 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
     def change_parent_phone(self):  # MAVIS-1778
-        # 7700900000
-        self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
+        self.po.perform_action(locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value="7700900000")
         self.po.perform_action(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.check_phone_options(scenario_id="")
+
+    def parent_1_verbal_positive(self):
+        self.po.perform_action(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.perform_action(locator=self.RDO_IN_PERSON, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.set_health_questions_no()
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
+        self.po.perform_action(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.check_phone_options(scenario_id="")
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
+    def set_health_questions_no(self):
+        self.po.perform_action(
+            locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(
+            locator="get_by_role('group', name='Does your child have any medical conditions for which they receive treatment?').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(
+            locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
+        self.po.perform_action(
+            locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
+            action=actions.CHAIN_LOCATOR_ACTION,
+        )
