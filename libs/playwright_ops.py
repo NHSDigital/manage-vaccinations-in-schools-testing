@@ -130,7 +130,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(0)
                 else:
                     elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator, exact=exact).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_BUTTON:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -139,7 +139,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_LABEL:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -148,7 +148,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_TEXT:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -157,7 +157,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_text(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_text(locator, exact=exact).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.FILL | actions.TYPE:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -166,7 +166,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
                 if value != data_values.EMPTY:
                     elem.fill(value)
@@ -178,7 +178,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_text(locator, exact=exact).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.SELECT_FILE:
@@ -188,7 +188,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:
                 self.perform_action(locator=locator, action=actions.FILL, value=value)
@@ -206,7 +206,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
                 else:
                     elem = self.ce.page.get_by_label(locator).nth(0)
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.check()
             case actions.CLICK_LINK_INDEX_FOR_ROW:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -222,7 +222,7 @@ class playwright_operations:
                         .get_by_role(playwright_roles.LINK)
                         .nth(value)
                     )
-                elem.scroll_into_view_if_needed()
+                # elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_WILDCARD:
                 elem = self.ce.page.click(f"text={locator}")

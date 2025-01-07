@@ -228,22 +228,7 @@ class pg_parental_consent:
         # page.get_by_role("group", name="Does your child have any severe allergies?").get_by_label("Yes").check()
         # page.get_by_role("textbox", name="Give details").click()
         # page.get_by_role("textbox", name="Give details").fill("Severe allergies")
-        self.po.perform_action(
-            locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.perform_action(
-            locator="get_by_role('group', name='Does your child have any medical conditions for which they receive treatment?').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.perform_action(
-            locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.perform_action(
-            locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
+        self.set_health_questions_no()
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
@@ -305,6 +290,18 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.set_health_questions_no()
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
+        self.po.perform_action(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.check_phone_options(scenario_id="")
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
+    def set_health_questions_no(self):
         self.po.perform_action(
             locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",
             action=actions.CHAIN_LOCATOR_ACTION,
@@ -321,12 +318,3 @@ class pg_parental_consent:
             locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
             action=actions.CHAIN_LOCATOR_ACTION,
         )
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
-        self.po.perform_action(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.check_phone_options(scenario_id="")
-        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
