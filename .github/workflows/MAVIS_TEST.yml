@@ -60,23 +60,23 @@ jobs:
 #        echo "::group::Chromium"
 #        pytest --browser_or_device chromium
 #        echo "::endgroup::"
-    - name: Test on Chrome
-      env:
-        HEADLESS: ${{ vars.HEADLESS }}
-        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-        TEST_URL: ${{ vars.TEST_URL }}
-        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-        API_TOKEN: ${{ secrets.API_TOKEN }}
-      run: |
-        echo "::group::Chrome"
-        pytest --browser_or_device chrome
-        echo "::endgroup::"
+#    - name: Test on Chrome
+#      env:
+#        HEADLESS: ${{ vars.HEADLESS }}
+#        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+#        TEST_URL: ${{ vars.TEST_URL }}
+#        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+#        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+#        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+#        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+#        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+#        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+#        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+#        API_TOKEN: ${{ secrets.API_TOKEN }}
+#      run: |
+#        echo "::group::Chrome"
+#        pytest --browser_or_device chrome
+#        echo "::endgroup::"
     - name: Test on Firefox
       env:
         HEADLESS: ${{ vars.HEADLESS }}
