@@ -83,4 +83,10 @@ class Test_Consent:
     @pytest.mark.consent
     @pytest.mark.order(903)
     def test_invalid_consent(self, setup_invalidated_consent: None):
-        self.sessions_page.disparate_consent_scenario()  # Bug: MAVIS-1696
+        self.sessions_page.bug_mavis_1696()
+
+    @pytest.mark.consent
+    @pytest.mark.order(904)
+    @pytest.mark.skip(reason="Development in progress")
+    def test_phone_number_added_later_shows_phone_options(self, setup_invalidated_consent: None):
+        self.sessions_page.bug_mavis_1801()
