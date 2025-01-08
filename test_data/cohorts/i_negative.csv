@@ -1,13 +1,17 @@
-CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_COMMON_NAME,CHILD_DATE_OF_BIRTH,CHILD_SCHOOL_URN,CHILD_NHS_NUMBER,CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_TOWN,CHILD_POSTCODE,PARENT_1_NAME,PARENT_1_RELATIONSHIP,PARENT_1_EMAIL,PARENT_1_PHONE,PARENT_2_NAME,PARENT_2_RELATIONSHIP,PARENT_2_EMAIL,PARENT_2_PHONE
-,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,888888,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,ABCDEF,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2000,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
-C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,ABC DEF,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,
+CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_COMMON_NAME,CHILD_DATE_OF_BIRTH,CHILD_SCHOOL_URN,CHILD_NHS_NUMBER,CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_TOWN,CHILD_POSTCODE,PARENT_1_NAME,PARENT_1_RELATIONSHIP,PARENT_1_EMAIL,PARENT_1_PHONE,PARENT_2_NAME,PARENT_2_RELATIONSHIP,PARENT_2_EMAIL,PARENT_2_PHONE,CHILD_YEAR_GROUP
+,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,888888,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,ABCDEF,,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2000,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,ABC DEF,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,9
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,19
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,X
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,-5
+C<<FNAME>>,C<<LNAME>>,ChildCommon,1-1-2010,142181,<<NHS_NO>>,Addr1,Add2,City,AA1 1AA,Parent1Name,Dad,dad@example.com,,Parent2Name,Mum,mum@example.com,,1/0
