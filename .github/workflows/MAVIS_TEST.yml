@@ -43,57 +43,57 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-#    - name: Test on Chromium
-#      env:
-#        HEADLESS: ${{ vars.HEADLESS }}
-#        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-#        TEST_URL: ${{ vars.TEST_URL }}
-#        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-#        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-#        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-#        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-#        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-#        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-#        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-#        API_TOKEN: ${{ secrets.API_TOKEN }}
-#      run: |
-#        echo "::group::Chromium"
-#        pytest --browser_or_device chromium
-#        echo "::endgroup::"
-#    - name: Test on Chrome
-#      env:
-#        HEADLESS: ${{ vars.HEADLESS }}
-#        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-#        TEST_URL: ${{ vars.TEST_URL }}
-#        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-#        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-#        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-#        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-#        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-#        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-#        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-#        API_TOKEN: ${{ secrets.API_TOKEN }}
-#      run: |
-#        echo "::group::Chrome"
-#        pytest --browser_or_device chrome
-#        echo "::endgroup::"
-#    - name: Test on Firefox
-#      env:
-#        HEADLESS: ${{ vars.HEADLESS }}
-#        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-#        TEST_URL: ${{ vars.TEST_URL }}
-#        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-#        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-#        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-#        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-#        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-#        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-#        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-#        API_TOKEN: ${{ secrets.API_TOKEN }}
-#      run: |
-#        echo "::group::Firefox"
-#        pytest --browser_or_device firefox
-#        echo "::endgroup::"
+    - name: Test on Chromium
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
+        echo "::group::Chromium"
+        pytest --browser_or_device chromium
+        echo "::endgroup::"
+    - name: Test on Chrome
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
+        echo "::group::Chrome"
+        pytest --browser_or_device chrome
+        echo "::endgroup::"
+    - name: Test on Firefox
+      env:
+        HEADLESS: ${{ vars.HEADLESS }}
+        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+        TEST_URL: ${{ vars.TEST_URL }}
+        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+      run: |
+        echo "::group::Firefox"
+        pytest --browser_or_device firefox
+        echo "::endgroup::"
     - name: Test on Edge
       env:
         HEADLESS: ${{ vars.HEADLESS }}
