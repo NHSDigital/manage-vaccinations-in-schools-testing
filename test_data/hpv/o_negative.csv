@@ -8,7 +8,7 @@ Row 7 PERSON_FORENAME: Enter a first name.
 Row 8 PERSON_SURNAME: Enter a last name.
 Row 9 PERSON_DOB: Enter a date of birth in the correct format.
 Row 10 PERSON_DOB: Enter a date of birth in the correct format.
-Row 11 PERSON_DOB: is not part of this programme
+Row 11 PERSON_DOB: Enter a date of birth in the past.
 Row 12 PERSON_DOB: Enter a date of birth in the correct format.
 Row 13 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.
 Row 14 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.

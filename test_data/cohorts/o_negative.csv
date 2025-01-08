@@ -7,5 +7,9 @@ Row 7 CHILD_SCHOOL_URN: The school URN is not recognised. If you’ve checked th
 Row 8 CHILD_POSTCODE: is required but missing
 Row 9 PARENT_1_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
 Row 10 PARENT_2_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
-Row 11 Year group: is not part of this programme
+Row 11 CHILD_YEAR_GROUP: is not part of this programme
 Row 12 CHILD_POSTCODE: Enter a valid postcode, such as SW1A 1AA
+Row 13 CHILD_YEAR_GROUP: is not part of this programme
+Row 14 CHILD_YEAR_GROUP: is required but missing
+Row 15 CHILD_YEAR_GROUP: is not part of this programme
+Row 16 CHILD_YEAR_GROUP: is required but missing
