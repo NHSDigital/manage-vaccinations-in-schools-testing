@@ -31,6 +31,7 @@ class Test_Smoke:
         assert "pytest" in packages
         assert "dotenv" in packages
         assert "playwright" in packages
+        assert "requests" in packages
 
     # CHECK APPLICATION ACCESS
     @pytest.mark.smoke

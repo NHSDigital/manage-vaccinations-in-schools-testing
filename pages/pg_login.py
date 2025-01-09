@@ -35,11 +35,9 @@ class pg_login:
     def logout_of_mavis(self):
         self.po.perform_action(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
 
-    def verify_login(self, is_successful_login: bool = True, verify_text: str = ""):
-        if is_successful_login:
-            self.po.verify(locator=self.LBL_BANNER, property=object_properties.TEXT, value=verify_text)
-        else:
-            self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=verify_text)
+    def verify_login(self, is_successful_login: bool, verify_text: str):
+        _locator = self.LBL_BANNER if is_successful_login else self.LBL_PARAGRAPH
+        self.po.verify(locator=_locator, property=object_properties.TEXT, value=verify_text)
 
     def __login_actions(self, username: str, password: str) -> None:
         self.po.perform_action(locator=self.LNK_START_NOW, action=actions.CLICK_LINK)
