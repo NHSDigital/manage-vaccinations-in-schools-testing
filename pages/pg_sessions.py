@@ -1,7 +1,7 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.constants import actions, object_properties, wait_time
 from libs.wrappers import *
-from pages import pg_dashboard, pg_parental_consent
+from pages import pg_children, pg_dashboard, pg_parental_consent
 
 
 class pg_sessions:
@@ -11,6 +11,7 @@ class pg_sessions:
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
     consent_page = pg_parental_consent.pg_parental_consent()
+    children_page = pg_children.pg_children()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
     LNK_SCHOOL_2 = "Barn End Centre"
@@ -440,6 +441,7 @@ class pg_sessions:
 
     def upload_class_list_to_school_1(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
@@ -449,6 +451,7 @@ class pg_sessions:
         wait(timeout=wait_time.MED)
         # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
+        self.children_page.search_child(child_list=_child_list)
 
     def upload_class_list_to_school_2(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)

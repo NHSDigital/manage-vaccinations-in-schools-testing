@@ -64,3 +64,11 @@ class testdata_operations:
             template_path=_input_template_path, file_name_prefix=_file_prefix
         )
         return _input_file_path, _output_template_path
+
+    def create_child_list_from_file(self, file_path: str):
+        if "positive" in file_path.lower():
+            _file_df = self.fo.read_csv_to_df(file_path=file_path)
+            _child_list = _file_df[["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]]
+            return _child_list["CHILD_FIRST_NAME"] + " " + _child_list["CHILD_LAST_NAME"].values.tolist()
+        else:
+            return None
