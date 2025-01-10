@@ -208,6 +208,15 @@ class playwright_operations:
                     elem = self.ce.page.get_by_label(locator).nth(0)
                 # elem.scroll_into_view_if_needed()
                 elem.check()
+            case actions.CHECKBOX_UNCHECK:
+                if escape_characters.SEPARATOR_CHAR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                else:
+                    elem = self.ce.page.get_by_label(locator).nth(0)
+                # elem.scroll_into_view_if_needed()
+                elem.uncheck()
             case actions.CLICK_LINK_INDEX_FOR_ROW:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]

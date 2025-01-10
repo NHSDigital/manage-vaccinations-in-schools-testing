@@ -1,7 +1,7 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.constants import actions, object_properties, wait_time
 from libs.wrappers import *
-from pages import pg_dashboard, pg_parental_consent
+from pages import pg_children, pg_dashboard, pg_parental_consent
 
 
 class pg_sessions:
@@ -11,6 +11,7 @@ class pg_sessions:
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
     consent_page = pg_parental_consent.pg_parental_consent()
+    children_page = pg_children.pg_children()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
     LNK_SCHOOL_2 = "Barn End Centre"
@@ -65,6 +66,9 @@ class pg_sessions:
     LNK_MARK_AS_INVALID = "Mark as invalid"
     LNK_PARENT2 = "Parent2"
     TXT_NOTES = "Notes"
+    LNK_REGISTER_ATTENDANCE = "Register attendance"
+    LBL_CAPTION = "caption"
+    CHK_YEAR8 = "Year 8"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -440,6 +444,7 @@ class pg_sessions:
 
     def upload_class_list_to_school_1(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
@@ -449,6 +454,7 @@ class pg_sessions:
         wait(timeout=wait_time.MED)
         # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
+        # self.children_page.search_child()
 
     def upload_class_list_to_school_2(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
@@ -514,3 +520,15 @@ class pg_sessions:
         self.click_child_no_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive()
+
+    def verify_attendance_filters(self):
+        self.po.perform_action(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
+        self.po.verify(locator=self.LBL_CAPTION, property=object_properties.TEXT, value="5 children still to register")
+        self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
+        wait(timeout=wait_time.MIN)
+        self.po.verify(
+            locator=self.LBL_CAPTION, property=object_properties.TEXT, value="No children still to register"
+        )
+        self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
+        wait(timeout=wait_time.MIN)
+        self.po.verify(locator=self.LBL_CAPTION, property=object_properties.TEXT, value="5 children still to register")

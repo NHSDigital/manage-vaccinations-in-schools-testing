@@ -22,6 +22,7 @@ class CurrentExecution:
     superuser_password: str = ""
     reset_endpoint: str = ""
     api_token: str = ""
+    child_list: list[str] = []
 
     @staticmethod
     def get_env_values():
