@@ -30,11 +30,11 @@ class pg_children:
         wait(timeout=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_RECORD)
 
-    def search_child(self, child_list: str) -> None:
-        if child_list is not None:
+    def search_child(self) -> None:
+        if len(self.ce.child_list) < 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
-            for child_name in child_list:
+            for child_name in self.ce.child_list:
                 self.po.perform_action(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
                 self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
                 wait(timeout=wait_time.MIN)
