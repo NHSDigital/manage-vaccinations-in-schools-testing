@@ -31,7 +31,7 @@ class pg_children:
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_RECORD)
 
     def search_child(self) -> None:
-        if len(self.ce.child_list) < 1:
+        if len(self.ce.child_list) >= 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             for child_name in self.ce.child_list:
