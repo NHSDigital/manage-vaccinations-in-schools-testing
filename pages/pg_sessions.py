@@ -69,6 +69,7 @@ class pg_sessions:
     LNK_REGISTER_ATTENDANCE = "Register attendance"
     LBL_CAPTION = "caption"
     CHK_YEAR8 = "Year 8"
+    TXT_FILTER_NAME = "Name"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -454,7 +455,7 @@ class pg_sessions:
         wait(timeout=wait_time.MED)
         # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
-        # self.children_page.search_child()
+        self.children_page.search_child()
 
     def upload_class_list_to_school_2(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
@@ -522,6 +523,7 @@ class pg_sessions:
         self.consent_page.parent_1_verbal_positive()
 
     def verify_attendance_filters(self):
+        # Check year filters
         self.po.perform_action(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
         self.po.verify(locator=self.LBL_CAPTION, property=object_properties.TEXT, value="5 children still to register")
         self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
@@ -532,3 +534,10 @@ class pg_sessions:
         self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
         wait(timeout=wait_time.MIN)
         self.po.verify(locator=self.LBL_CAPTION, property=object_properties.TEXT, value="5 children still to register")
+        # Check name filters
+        if len(self.ce.child_list) >= 1:
+            for child_name in self.ce.child_list:
+                self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
+                wait(timeout=wait_time.MIN)
+                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=child_name)
+                self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value="")

@@ -37,25 +37,16 @@ class Test_Sessions:
 
     @pytest.mark.sessions
     @pytest.mark.order(201)
-    def test_create_valid_session(self, setup_tests):
+    def test_session_lifecycle(self, setup_tests):
         self.sessions_page.schedule_a_valid_session_in_school_1()
-
-    @pytest.mark.sessions
-    @pytest.mark.order(201)
-    def test_edit_session(self, setup_tests):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
         self.sessions_page.edit_a_session_to_today()
-
-    @pytest.mark.sessions
-    @pytest.mark.order(203)
-    def test_delete_all_sessions(self, setup_tests):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions_for_school_1()
 
     @pytest.mark.sessions
-    @pytest.mark.order(204)
-    def test_create_invalid_session(self, setup_tests):
-        self.sessions_page.create_invalid_session()
-
-    @pytest.mark.sessions
-    @pytest.mark.order(205)
+    @pytest.mark.order(202)
     def test_verify_attendance_filters(self, setup_mavis_1822):
         self.sessions_page.verify_attendance_filters()

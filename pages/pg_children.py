@@ -9,8 +9,8 @@ class pg_children:
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    CHILD1 = "CF"
-    LBL_CHILD_RECORD = f"5 children matching “{CHILD1}”"
+    CHILD1 = "NoConsent1"
+    LBL_CHILD_RECORD = f"1 child matching “{CHILD1}”"
 
     LBL_CHILDREN = "Children"
     LBL_HEADING = "heading"
@@ -31,7 +31,7 @@ class pg_children:
         self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_RECORD)
 
     def search_child(self) -> None:
-        if len(self.ce.child_list) < 1:
+        if len(self.ce.child_list) >= 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             for child_name in self.ce.child_list:
