@@ -189,7 +189,7 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
     def verify_final_message(self, scenario_id: str, expected_message: str) -> None:
-        self.po.verify(locator=self.LBL_HEADING, property=object_properties.TEXT, value=expected_message)
+        self.po.verify(locator=self.LBL_HEADING, property=object_properties.TEXT, expected_value=expected_message)
 
     def select_consent_not_given_reason(self, scenario_id: str, reason: str, reason_details: str) -> None:
         match reason.lower():
@@ -251,7 +251,10 @@ class pg_parental_consent:
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CONSENT_RECORDED, exact=False
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            expected_value=self.LBL_CONSENT_RECORDED,
+            exact=False,
         )
 
     def parent_1_verbal_no_response(self):

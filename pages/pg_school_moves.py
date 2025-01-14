@@ -17,7 +17,9 @@ class pg_school_moves:
     BTN_UPDATE_SCHOOL = "Update child record"
 
     def verify_headers(self):
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_HEADERS, exact=False)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=self.LBL_HEADERS, exact=False
+        )
 
     def confirm_school_move(self):
         self.po.perform_action(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
@@ -29,7 +31,7 @@ class pg_school_moves:
         _success_message = f"{_child_full_name}’s school record updated"
         self.po.perform_action(locator=self.RDO_UPDATE_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=_success_message)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=_success_message)
 
     def ignore_school_move(self):
         self.po.perform_action(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
@@ -41,4 +43,4 @@ class pg_school_moves:
         _success_message = f"{_child_full_name}’s school move ignored"
         self.po.perform_action(locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT)
         self.po.perform_action(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=_success_message)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=_success_message)

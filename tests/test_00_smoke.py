@@ -40,5 +40,5 @@ class Test_Smoke:
         self.po.verify(
             locator="heading",
             property=object_properties.TEXT,
-            value="Manage vaccinations in schools (Mavis)",
+            expected_value="Manage vaccinations in schools (Mavis)",
         )

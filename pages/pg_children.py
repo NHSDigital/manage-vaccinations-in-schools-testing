@@ -21,14 +21,16 @@ class pg_children:
     LNK_CLEAR_FILTERS = "Clear filters"
 
     def verify_headers(self):
-        self.po.verify(locator=self.LBL_HEADING, property=object_properties.TEXT, value=self.LBL_CHILDREN, exact=True)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_TABLE_HEADERS)
+        self.po.verify(
+            locator=self.LBL_HEADING, property=object_properties.TEXT, expected_value=self.LBL_CHILDREN, exact=True
+        )
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=self.LBL_TABLE_HEADERS)
 
     def verify_filter(self):
         self.po.perform_action(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
         self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=self.CHILD1)
         wait(timeout=wait_time.MIN)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_RECORD)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
     def search_child(self) -> None:
         if len(self.ce.child_list) >= 1:
@@ -38,5 +40,5 @@ class pg_children:
                 self.po.perform_action(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
                 self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
                 wait(timeout=wait_time.MIN)
-                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=child_name)
+                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=child_name)
                 self.po.perform_action(locator=self.LNK_CLEAR_FILTERS, action=actions.CLICK_LINK)

@@ -1,5 +1,6 @@
 import os
 import re
+from sys import prefix
 
 from libs import CurrentExecution
 from libs.constants import (
@@ -32,7 +33,7 @@ class playwright_operations:
         self,
         locator: str,
         property: str,
-        value: str,
+        expected_value: str,
         exact: bool = False,
         by_test_id: bool = False,
         chain_locator: bool = False,
@@ -42,40 +43,41 @@ class playwright_operations:
         )
         match property.lower():
             case object_properties.TEXT:
-                if value != "":
-                    if value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
+                if expected_value != "":
+                    if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
                         return
                 if exact:
-                    if value == current_value:
+                    if expected_value == current_value:
                         self.capture_screenshot(identifier=locator, action="verify_text_passed")
                     else:
                         self.capture_screenshot(identifier=locator, action="verify_text_failed")
                     assert (
-                        value == current_value
-                    ), f"Exact match failed. Expected: '{value}' but actual: '{current_value}'."
+                        expected_value == current_value
+                    ), f"Exact match failed. Expected: '{expected_value}' but actual: '{current_value}'."
                 else:
-                    if value.startswith(escape_characters.NOT_OPERATOR):
-                        if clean_text(text=value) not in clean_text(text=current_value):
+                    if expected_value.startswith(escape_characters.NOT_OPERATOR):
+                        expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
+                        if clean_text(text=expected_value) not in clean_text(text=current_value):
                             self.capture_screenshot(identifier=locator, action="verify_text_passed")
                         else:
                             self.capture_screenshot(identifier=locator, action="verify_text_failed")
-                        assert clean_text(text=value) not in clean_text(
+                        assert clean_text(text=expected_value) not in clean_text(
                             text=current_value
-                        ), f"Text '{value}' found in '{current_value}'."
+                        ), f"Text '{expected_value}' found in '{current_value}'."
                     else:
-                        if clean_text(text=value) in clean_text(text=current_value):
+                        if clean_text(text=expected_value) in clean_text(text=current_value):
                             self.capture_screenshot(identifier=locator, action="verify_text_passed")
                         else:
                             self.capture_screenshot(identifier=locator, action="verify_text_failed")
-                        assert clean_text(text=value) in clean_text(
+                        assert clean_text(text=expected_value) in clean_text(
                             text=current_value
-                        ), f"Text '{value}' not found in '{current_value}'."
+                        ), f"Text '{expected_value}' not found in '{current_value}'."
             case object_properties.VISIBILITY:
-                if current_value == value:
+                if current_value == expected_value:
                     self.capture_screenshot(identifier=locator, action="verify_visibility_passed")
                 else:
                     self.capture_screenshot(identifier=locator, action="verify_visibility_failed")
-                assert value == current_value, f"{locator} is not visible."
+                assert expected_value == current_value, f"{locator} is not visible."
 
     def get_object_property(
         self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False
