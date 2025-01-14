@@ -80,7 +80,9 @@ class pg_programmes:
         )
 
     def verify_import_processing_started(self):
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=self.LBL_IMPORT_STARTED)
+        self.po.verify(
+            locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=self.LBL_IMPORT_STARTED
+        )
 
     def click_uploaded_file_datetime(self):
         self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
@@ -95,7 +97,9 @@ class pg_programmes:
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
-                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
+                self.po.verify(
+                    locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_msg, exact=False
+                )
 
     def upload_hpv_vaccination_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
@@ -184,6 +188,6 @@ class pg_programmes:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=object_properties.TEXT,
-            value="!Sorry, there’s a problem with the service",
+            expected_value="!Sorry, there’s a problem with the service",
             exact=False,
         )

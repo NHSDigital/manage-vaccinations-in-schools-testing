@@ -86,7 +86,9 @@ class pg_sessions:
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
-                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=_msg, exact=False)
+                self.po.verify(
+                    locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_msg, exact=False
+                )
 
     def click_today(self):
         self.po.perform_action(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
@@ -220,13 +222,21 @@ class pg_sessions:
             self.po.perform_action(locator=self.BTN_UPDATE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
         if is_competent:
             self.po.verify(
-                locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_COMPETENT, exact=False
+                locator=self.LBL_MAIN,
+                property=object_properties.TEXT,
+                expected_value=self.LBL_CHILD_COMPETENT,
+                exact=False,
             )
         else:
             self.po.verify(
-                locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_CHILD_NOT_COMPETENT, exact=False
+                locator=self.LBL_MAIN,
+                property=object_properties.TEXT,
+                expected_value=self.LBL_CHILD_NOT_COMPETENT,
+                exact=False,
             )
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=competence_details, exact=False)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=competence_details, exact=False
+        )
 
     def __schedule_session(self, on_date: str, expect_error: bool = False):
         _day = on_date[-2:]
@@ -241,7 +251,7 @@ class pg_sessions:
         if expect_error:
             _expected_message = "There is a problem Enter a date"
             self.po.verify(
-                locator=self.LBL_MAIN, property=object_properties.TEXT, value=_expected_message, exact=False
+                locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_expected_message, exact=False
             )
 
     def __delete_sessions(self):
@@ -253,7 +263,7 @@ class pg_sessions:
         self.po.verify(
             locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
             property=object_properties.VISIBILITY,
-            value=True,
+            expected_value=True,
             exact=False,
             by_test_id=False,
             chain_locator=True,
@@ -273,7 +283,7 @@ class pg_sessions:
         self.po.verify(
             locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
             property=object_properties.VISIBILITY,
-            value=False,
+            expected_value=False,
             exact=False,
             by_test_id=False,
             chain_locator=True,
@@ -282,13 +292,13 @@ class pg_sessions:
     def __close_session(self):
         self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Session closed.")
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Session closed.")
 
     def verify_triage_updated(self):
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=object_properties.TEXT,
-            value=self.LBL_TRIAGE_UPDATED_MESSAGE,
+            expected_value=self.LBL_TRIAGE_UPDATED_MESSAGE,
             exact=False,
         )
 
@@ -298,14 +308,14 @@ class pg_sessions:
             self.po.verify(
                 locator=self.LBL_MAIN,
                 property=object_properties.TEXT,
-                value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN,
+                expected_value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN,
                 exact=False,
             )
         else:
             self.po.verify(
                 locator=self.LBL_MAIN,
                 property=object_properties.TEXT,
-                value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED,
+                expected_value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED,
                 exact=False,
             )
 
@@ -314,18 +324,18 @@ class pg_sessions:
         self.po.perform_action(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_LINK)
         self.po.perform_action(locator=self.TXT_NOTES, action=actions.FILL, value="Invalidation notes.")
         self.po.perform_action(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent refusedInvalid")
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Invalidation notes.")
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent refusedInvalid")
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Invalidation notes.")
         self.po.perform_action(locator=self.LNK_BACK, action=actions.CLICK_LINK)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent refusedInvalid")
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent refusedInvalid")
         self.po.verify(
             locator=self.LBL_MAIN,
             property=object_properties.TEXT,
-            value="No-one responded to our requests for consent.",
+            expected_value="No-one responded to our requests for consent.",
         )
 
     def verify_scheduled_date(self, message: str):
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=message, exact=False)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=message, exact=False)
         self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
 
     def click_get_consent_response(self):
@@ -507,13 +517,15 @@ class pg_sessions:
         wait(timeout=wait_time.MIN)
         # FIXME: Make the following generic
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent from Parent2 invalidated"
+            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent from Parent2 invalidated"
         )
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent refused by Parent2 (Mum)"
+            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent refused by Parent2 (Mum)"
         )
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value="Consent not_provided by Parent1 (Dad)"
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            expected_value="Consent not_provided by Parent1 (Dad)",
         )
 
     def bug_mavis_1801(self):
@@ -525,19 +537,23 @@ class pg_sessions:
     def verify_attendance_filters(self):
         # Check year filters
         self.po.perform_action(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
-        self.po.verify(locator=self.LBL_CAPTION, property=object_properties.TEXT, value="5 children still to register")
+        self.po.verify(
+            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="5 children still to register"
+        )
         self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
         wait(timeout=wait_time.MIN)
         self.po.verify(
-            locator=self.LBL_CAPTION, property=object_properties.TEXT, value="No children still to register"
+            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="No children still to register"
         )
         self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
-        wait(timeout=wait_time.MIN)
-        self.po.verify(locator=self.LBL_CAPTION, property=object_properties.TEXT, value="5 children still to register")
+        wait(timeout=wait_time.MED)
+        self.po.verify(
+            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="5 children still to register"
+        )
         # Check name filters
         if len(self.ce.child_list) >= 1:
             for child_name in self.ce.child_list:
                 self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
                 wait(timeout=wait_time.MIN)
-                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, value=child_name)
+                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=child_name)
                 self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value="")

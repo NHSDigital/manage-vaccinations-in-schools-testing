@@ -22,10 +22,13 @@ class pg_vaccines:
 
     def verify_current_vaccine(self):
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_VACCINE_NAME, exact=False
+            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=self.LBL_VACCINE_NAME, exact=False
         )
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, value=self.LBL_VACCINE_MANUFACTURER, exact=False
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            expected_value=self.LBL_VACCINE_MANUFACTURER,
+            exact=False,
         )
 
     def enter_batch_name(self):
@@ -47,7 +50,7 @@ class pg_vaccines:
         self.enter_batch_expiry()
         self.po.perform_action(locator=self.BTN_ADD_BATCH, action=actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} added"
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=_success_message)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=_success_message)
 
     def change_batch(self):
         self.po.perform_action(
@@ -56,11 +59,13 @@ class pg_vaccines:
         self.po.perform_action(locator=self.TXT_EXPIRY_YEAR, action=actions.FILL, value="2031")
         self.po.perform_action(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} updated"
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=_success_message)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=_success_message)
 
     def archive_batch(self):
         self.po.perform_action(
             locator=self.batch_name, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=1
         )  # ARCHIVE link
         self.po.perform_action(locator=self.BTN_CONFIRM_ARCHIVE, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, value=self.LBL_BATCH_ARCHIVED)
+        self.po.verify(
+            locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=self.LBL_BATCH_ARCHIVED
+        )
