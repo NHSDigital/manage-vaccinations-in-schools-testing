@@ -6,7 +6,7 @@
 
 This is a test automation project to test the manage vaccinations in schools (MAVIS) project.  It contains several positive and negative functional as well as regression tests.
 
-It is currently configured to run on the TEST environment.  The project utilizes the PyTest framework along with Playwright to manage and execute the tests.
+It is currently configured to run on the QA environment.  The project utilizes the PyTest framework along with Playwright to manage and execute the tests.
 
 ## Installation
 
