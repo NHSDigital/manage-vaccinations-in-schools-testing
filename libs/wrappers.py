@@ -1,5 +1,6 @@
 import base64
 import os
+import subprocess
 import time
 from datetime import datetime, timedelta
 
@@ -81,3 +82,7 @@ def get_base64_encoded_string(text):
 def get_base64_decoded_string(encoded_string):
     base64_bytes = encoded_string.encode(file_encoding.ASCII)
     return base64.b64decode(base64_bytes).decode(file_encoding.ASCII)
+
+
+def run_shell_command(command: str) -> str:
+    subprocess.run(command)

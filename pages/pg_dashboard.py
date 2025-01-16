@@ -16,8 +16,6 @@ class pg_dashboard:
     LNK_ORGANISATION = f"heading{escape_characters.SEPARATOR_CHAR}Your organisation"
     LNK_SERVICE_GUIDANCE = f"heading{escape_characters.SEPARATOR_CHAR}Service guidance"
     LNK_NHS_LOGO = "Manage vaccinations in schools"
-    LNK_NAVIGATION_RESPONSES = f"list{escape_characters.SEPARATOR_CHAR}Responses (0)"
-    LNK_NAVIGATION_SCHOOL_MOVES = f"list{escape_characters.SEPARATOR_CHAR}School moves (0)"
 
     def click_programmes(self):
         self.po.perform_action(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
@@ -78,18 +76,6 @@ class pg_dashboard:
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE, property=object_properties.VISIBILITY, expected_value=True, exact=True
         )
-        # self.po.verify(
-        #     locator=self.LNK_NAVIGATION_RESPONSES,
-        #     property=object_properties.VISIBILITY,
-        #     expected_value=True,
-        #     exact=True,
-        # )
-        # self.po.verify(
-        #     locator=self.LNK_NAVIGATION_SCHOOL_MOVES,
-        #     property=object_properties.VISIBILITY,
-        #     expected_value=True,
-        #     exact=True,
-        # )
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE,
             property=object_properties.HREF,

@@ -83,12 +83,23 @@ class pg_sessions:
         self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
+        # Verify messages separately
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 self.po.verify(
                     locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_msg, exact=False
                 )
+        # Verify all messages together - NEEDS MORE THOUGHT
+        # _all_errors = "".join(
+        #     [
+        #         x
+        #         for x in _expected_errors
+        #         if not x.startswith(escape_characters.COMMENT_OPERATOR)
+        #         and not x.startswith(escape_characters.NOT_OPERATOR)
+        #     ]
+        # )
+        # self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_all_errors, exact=False)
 
     def click_today(self):
         self.po.perform_action(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
