@@ -3,13 +3,14 @@ from typing import Hashable, Iterable
 import pytest
 from pandas.core.series import Series
 
-from libs import playwright_ops
+from libs import CurrentExecution, playwright_ops
 from libs.constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_parental_consent, pg_sessions
 from tests.helpers import parental_consent_helper
 
 
 class Test_Consent:
+    ce = CurrentExecution()
     po = playwright_ops.playwright_operations()
     pc = pg_parental_consent.pg_parental_consent()
     helper = parental_consent_helper.parental_consent_helper()
@@ -67,6 +68,7 @@ class Test_Consent:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.consent
+    @pytest.mark.consentworkflow
     @pytest.mark.mobile
     @pytest.mark.order(901)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
@@ -74,6 +76,7 @@ class Test_Consent:
         self.po.go_to_url(url=get_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
         self.helper.enter_details_on_mavis()
+        self.ce.consent_workflow_run = True
 
     @pytest.mark.consent
     @pytest.mark.order(902)

@@ -80,7 +80,7 @@ class playwright_operations:
                 assert expected_value == current_value, f"{locator} is not visible."
 
     def get_object_property(
-        self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False
+        self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False, index: int = 0
     ) -> str:
         match property:
             case object_properties.TEXT:
@@ -95,14 +95,14 @@ class playwright_operations:
                             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                             elem = self.ce.page.get_by_role(_location, name=_locator).locator(playwright_roles.SPAN)
                         else:
-                            elem = self.ce.page.get_by_role(locator).nth(0)
+                            elem = self.ce.page.get_by_role(locator).nth(index)
                 elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
             case object_properties.VISIBILITY:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
                     if chain_locator:
                         wait(timeout=wait_time.MIN)
@@ -114,61 +114,56 @@ class playwright_operations:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
                     if chain_locator:
                         elem = eval(f"self.ce.page.{locator}")
                     else:
-                        elem = self.ce.page.get_by_role("link", name=locator).nth(0)
+                        elem = self.ce.page.get_by_role("link", name=locator).nth(index)
                 return elem.get_attribute(object_properties.HREF)
 
-    def perform_action(self, locator, action, value=None, exact: bool = False) -> None:
+    def perform_action(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
                 else:
-                    elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator, exact=exact).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator, exact=exact).nth(index)
                 elem.click()
             case actions.CLICK_BUTTON:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(index)
                 elem.click()
             case actions.CLICK_LABEL:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
                 elem.click()
             case actions.CLICK_TEXT:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_text(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_text(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
                 elem.click()
             case actions.FILL | actions.TYPE:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
                 elem.click()
                 if value != data_values.EMPTY:
                     elem.fill(value)
@@ -177,27 +172,25 @@ class playwright_operations:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.SELECT_FILE:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:
                 self.perform_action(locator=locator, action=actions.FILL, value=value)
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
                     elem = self.ce.page.get_by_role(playwright_roles.OPTION, name=value)
                 elem.click()
@@ -205,25 +198,23 @@ class playwright_operations:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_label(locator).nth(0)
-                # elem.scroll_into_view_if_needed()
+                    elem = self.ce.page.get_by_label(locator).nth(index)
                 elem.check()
             case actions.CHECKBOX_UNCHECK:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
                     elem = self.ce.page.get_by_label(locator).nth(0)
-                # elem.scroll_into_view_if_needed()
                 elem.uncheck()
             case actions.CLICK_LINK_INDEX_FOR_ROW:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(0)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
                     elem = (
                         self.ce.page.get_by_role(
@@ -233,7 +224,6 @@ class playwright_operations:
                         .get_by_role(playwright_roles.LINK)
                         .nth(value)
                     )
-                # elem.scroll_into_view_if_needed()
                 elem.click()
             case actions.CLICK_WILDCARD:
                 elem = self.ce.page.click(f"text={locator}")
