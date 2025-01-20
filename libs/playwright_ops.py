@@ -63,7 +63,7 @@ class playwright_operations:
                             self.capture_screenshot(identifier=locator, action="verify_text_failed")
                         assert clean_text(text=expected_value) not in clean_text(
                             text=current_value
-                        ), f"Text '{expected_value}' found in '{current_value}'."
+                        ), f"Text '{expected_value}' not found in '{current_value}'."
                     else:
                         if clean_text(text=expected_value) in clean_text(text=current_value):
                             self.capture_screenshot(identifier=locator, action="verify_text_passed")

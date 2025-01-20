@@ -15,8 +15,6 @@ class Test_Unmatched_Consent_Responses:
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
-        if not self.ce.consent_workflow_run:
-            run_shell_command(command="pytest -m consentworkflow")
         self.login_page.login_as_nurse()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_unmatched_consent_responses()
@@ -25,11 +23,12 @@ class Test_Unmatched_Consent_Responses:
 
     @pytest.mark.unmatchedconsentresponses
     @pytest.mark.order(1201)
-    def test_ucr_archive_record(self):
+    @pytest.mark.dependency(name="ucr_records_exist")
+    def test_ucr_check_records_exist(self):
         self.unmatched_page.verify_records_exist()
-        # self.unmatched_page.archive_record()  # Skipped till 1.4 release
 
     @pytest.mark.unmatchedconsentresponses
     @pytest.mark.order(1202)
+    @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_archive_record2(self):
-        pass
+        self.unmatched_page.archive_record()  # Skipped till 1.4 release

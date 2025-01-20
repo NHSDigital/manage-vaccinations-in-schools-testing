@@ -23,7 +23,6 @@ class CurrentExecution:
     reset_endpoint: str = ""
     api_token: str = ""
     child_list: list[str] = []
-    consent_workflow_run: bool = False
 
     @staticmethod
     def get_env_values():
