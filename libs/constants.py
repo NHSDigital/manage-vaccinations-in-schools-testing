@@ -5,6 +5,7 @@ class object_properties:
     TEXT: Final[str] = "text"
     VISIBILITY: Final[str] = "visibility"
     HREF: Final[str] = "href"
+    EXISTS: Final[str] = "exists"
 
 
 class actions:

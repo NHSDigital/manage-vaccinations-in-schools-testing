@@ -31,4 +31,4 @@ class Test_Unmatched_Consent_Responses:
     @pytest.mark.order(1202)
     @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_archive_record2(self):
-        self.unmatched_page.archive_record()  # Skipped till 1.4 release
+        self.unmatched_page.archive_record()

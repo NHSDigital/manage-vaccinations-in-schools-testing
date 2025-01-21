@@ -122,6 +122,8 @@ class playwright_operations:
                     else:
                         elem = self.ce.page.get_by_role("link", name=locator).nth(index)
                 return elem.get_attribute(object_properties.HREF)
+            case object_properties.EXISTS:
+                return self.ce.page.query_selector(locator) is not None
 
     def perform_action(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
