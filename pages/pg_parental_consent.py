@@ -304,6 +304,28 @@ class pg_parental_consent:
         self.check_phone_options(scenario_id="")
         self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
+    def parent_1_online_positive(self):
+        self.po.perform_action(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.perform_action(locator=self.RDO_ONLINE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.set_health_questions_no()
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
+        self.po.perform_action(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Online consent
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Yes they agree
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Health questions again
+        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Safe to vaccinate
+        self.po.perform_action(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
     def set_health_questions_no(self):
         self.po.perform_action(
             locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",

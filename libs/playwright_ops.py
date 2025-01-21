@@ -8,6 +8,7 @@ from libs.constants import (
     data_values,
     object_properties,
     playwright_roles,
+    screenshot_actions,
     screenshot_types,
     wait_time,
 )
@@ -48,9 +49,9 @@ class playwright_operations:
                         return
                 if exact:
                     if expected_value == current_value:
-                        self.capture_screenshot(identifier=locator, action="verify_text_passed")
+                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                     else:
-                        self.capture_screenshot(identifier=locator, action="verify_text_failed")
+                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
                     assert (
                         expected_value == current_value
                     ), f"Exact match failed. Expected: '{expected_value}' but actual: '{current_value}'."
@@ -58,25 +59,25 @@ class playwright_operations:
                     if expected_value.startswith(escape_characters.NOT_OPERATOR):
                         expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
                         if clean_text(text=expected_value) not in clean_text(text=current_value):
-                            self.capture_screenshot(identifier=locator, action="verify_text_passed")
+                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                         else:
-                            self.capture_screenshot(identifier=locator, action="verify_text_failed")
+                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
                         assert clean_text(text=expected_value) not in clean_text(
                             text=current_value
                         ), f"Text '{expected_value}' not found in '{current_value}'."
                     else:
                         if clean_text(text=expected_value) in clean_text(text=current_value):
-                            self.capture_screenshot(identifier=locator, action="verify_text_passed")
+                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                         else:
-                            self.capture_screenshot(identifier=locator, action="verify_text_failed")
+                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
                         assert clean_text(text=expected_value) in clean_text(
                             text=current_value
                         ), f"Text '{expected_value}' not found in '{current_value}'."
             case object_properties.VISIBILITY:
                 if current_value == expected_value:
-                    self.capture_screenshot(identifier=locator, action="verify_visibility_passed")
+                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
                 else:
-                    self.capture_screenshot(identifier=locator, action="verify_visibility_failed")
+                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
                 assert expected_value == current_value, f"{locator} is not visible."
 
     def get_object_property(
@@ -121,6 +122,8 @@ class playwright_operations:
                     else:
                         elem = self.ce.page.get_by_role("link", name=locator).nth(index)
                 return elem.get_attribute(object_properties.HREF)
+            case object_properties.EXISTS:
+                return self.ce.page.query_selector(locator) is not None
 
     def perform_action(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")

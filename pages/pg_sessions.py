@@ -545,6 +545,15 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive()
 
+    def bug_mavis_1864(self):
+        self.click_no_response()
+        self.click_child_no_consent()
+        self.click_get_consent_response()
+        self.consent_page.parent_1_online_positive()
+        self.click_no_response()
+        self.click_child_no_consent()
+        self.click_get_consent_response()
+
     def verify_attendance_filters(self):
         # Check year filters
         self.po.perform_action(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)

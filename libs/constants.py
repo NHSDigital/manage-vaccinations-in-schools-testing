@@ -5,6 +5,7 @@ class object_properties:
     TEXT: Final[str] = "text"
     VISIBILITY: Final[str] = "visibility"
     HREF: Final[str] = "href"
+    EXISTS: Final[str] = "exists"
 
 
 class actions:
@@ -22,6 +23,13 @@ class actions:
     CLICK_LINK_INDEX_FOR_ROW: Final[str] = "click_link_index_for_row"
     CLICK_WILDCARD: Final[str] = "click_wildcard"
     CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
+
+
+class screenshot_actions:
+    VERIFY_TEXT_PASSED = "verify_text_passed"
+    VERIFY_TEXT_FAILED = "verify_text_failed"
+    VERIFY_VISIBILITY_PASSED = "verify_visibility_passed"
+    VERIFY_VISIBILITY_FAILED = "verify_visibility_failed"
 
 
 class screenshot_types:
