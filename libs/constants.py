@@ -24,6 +24,13 @@ class actions:
     CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
 
 
+class screenshot_actions:
+    VERIFY_TEXT_PASSED = "verify_text_passed"
+    VERIFY_TEXT_FAILED = "verify_text_failed"
+    VERIFY_VISIBILITY_PASSED = "verify_visibility_passed"
+    VERIFY_VISIBILITY_FAILED = "verify_visibility_failed"
+
+
 class screenshot_types:
     JPEG: Final[str] = "jpeg"
 
