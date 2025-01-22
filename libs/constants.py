@@ -57,6 +57,7 @@ class playwright_roles:
     OPTION: Final[str] = "option"
     ROW: Final[str] = "row"
     SPAN: Final[str] = "span"
+    CELL: Final[str] = "cell"
 
 
 class wait_time:

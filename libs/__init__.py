@@ -22,14 +22,15 @@ class CurrentExecution:
     superuser_password: str = ""
     reset_endpoint: str = ""
     api_token: str = ""
+    reset_env_before_execution: bool = False
     child_list: list[str] = []
 
     @staticmethod
     def get_env_values():
         load_dotenv()
-        CurrentExecution.service_url = os.getenv("TEST_URL")
-        CurrentExecution.base_auth_username = os.getenv("TEST_USERNAME")
-        CurrentExecution.base_auth_password = os.getenv("TEST_PASSWORD")
+        CurrentExecution.service_url = os.getenv("BASE_URL")
+        CurrentExecution.base_auth_username = os.getenv("BASIC_AUTH_USERNAME")
+        CurrentExecution.base_auth_password = os.getenv("BASIC_AUTH_PASSWORD")
         CurrentExecution.nurse_username = os.getenv("NURSE_USERNAME")
         CurrentExecution.nurse_password = os.getenv("NURSE_PASSWORD")
         CurrentExecution.superuser_username = os.getenv("SUPERUSER_USERNAME")
@@ -38,8 +39,10 @@ class CurrentExecution:
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
         CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{os.getenv('RESET_ENDPOINT')}"
         CurrentExecution.api_token = os.getenv("API_TOKEN")
+        CurrentExecution.reset_env_before_execution = os.getenv("RESET_ENV_BEFORE_EXECUTION").lower() == "true"
 
     @staticmethod
     def reset_environment():
         _headers = {"Authorization": CurrentExecution.api_token}
-        _ = api_ops.api_operations().api_get(endpoint=CurrentExecution.reset_endpoint, header=_headers, param=None)
+        if CurrentExecution.reset_env_before_execution:
+            _ = api_ops.api_operations().api_get(endpoint=CurrentExecution.reset_endpoint, header=_headers, param=None)

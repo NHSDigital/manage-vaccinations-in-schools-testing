@@ -236,3 +236,8 @@ class playwright_operations:
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
         self.ce.page.goto(_full_url)
+
+    def get_table_row_for_value(self, locator: str, col_header: str, row_value: str) -> int:
+        row_locator = self.ce.page.locator(f'tr:has-text("{row_value}")')
+        c = row_locator.count()
+        return c
