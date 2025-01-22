@@ -177,7 +177,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.SELECT_FILE:
