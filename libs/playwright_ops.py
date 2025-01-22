@@ -177,7 +177,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
+                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
                 elem.click()
                 self.capture_screenshot(identifier=locator, action=f"after-{action}")
             case actions.SELECT_FILE:
@@ -236,3 +236,8 @@ class playwright_operations:
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
         self.ce.page.goto(_full_url)
+
+    def get_table_row_for_value(self, locator: str, col_header: str, row_value: str) -> int:
+        row_locator = self.ce.page.locator(f'tr:has-text("{row_value}")')
+        c = row_locator.count()
+        return c

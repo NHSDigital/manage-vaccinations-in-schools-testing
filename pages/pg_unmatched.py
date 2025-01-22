@@ -15,8 +15,12 @@ class pg_unmatched:
     LBL_ARCHIVE_SUCCESS_MESSAGE = "Consent response from Parent Full archived"
     LNK_MATCH_WITH_RECORD = "Match with record"
     LNK_ARCHIVE_RECORD = "Archive"
+    LNK_CREATE_RECORD = "Create record"
     TXT_NOTES = "Notes"
     BTN_ARCHIVE_RESPONSE = "Archive response"
+    TBL_CHILDREN = "unmatched consent responses Response dateChildParent or guardianAction"
+    LBL_CHILD_COL = "Child"
+    LBL_CHILD_NAME = "ULI JACKSON"
 
     def verify_records_exist(self):
         self.po.verify(
@@ -34,4 +38,9 @@ class pg_unmatched:
             locator=self.LBL_PARAGRAPH,
             property=object_properties.TEXT,
             expected_value=self.LBL_ARCHIVE_SUCCESS_MESSAGE,
+        )
+
+    def create_record(self):
+        _row_num = self.po.get_table_row_for_value(
+            locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NAME
         )
