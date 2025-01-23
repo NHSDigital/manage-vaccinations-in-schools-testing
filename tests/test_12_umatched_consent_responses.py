@@ -35,7 +35,12 @@ class Test_Unmatched_Consent_Responses:
 
     @pytest.mark.unmatchedconsentresponses
     @pytest.mark.order(1203)
-    # @pytest.mark.dependency(depends=["ucr_records_exist"])
-    # @pytest.mark.skip(reason="script under construction")
+    @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_create_record(self):
-        self.unmatched_page.create_record()
+        self.unmatched_page.create_record()  # Covers MAVIS-1812
+
+    @pytest.mark.unmatchedconsentresponses
+    @pytest.mark.order(1204)
+    @pytest.mark.dependency(depends=["ucr_records_exist"])
+    def test_ucr_match_record(self):
+        self.unmatched_page.match_with_record()

@@ -6,6 +6,7 @@ from libs import CurrentExecution
 from libs.constants import (
     actions,
     data_values,
+    html_tags,
     object_properties,
     playwright_roles,
     screenshot_actions,
@@ -237,18 +238,20 @@ class playwright_operations:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
         self.ce.page.goto(_full_url)
 
-    def get_table_row_for_value(self, locator: str, col_header: str, row_value: str):
+    def get_table_cell_location_for_value(self, table_locator: str, col_header: str, row_value: str):
         wait(timeout=wait_time.MED)
-        table = self.ce.page.locator("table")
+        table = self.ce.page.locator(table_locator)
         col_counter = 0
-        for c in table.locator("th").all():
+        for c in table.locator(html_tags.TH).all():
             if c.inner_text() == col_header:
                 break
             col_counter += 1
 
         row_counter = 1
-        for _ in table.locator("tr").all():
-            row_locator = table.locator("tr").nth(row_counter).locator("td").nth(col_counter).inner_text()
+        for _ in range(table.locator(html_tags.TR).count()):
+            row_locator = (
+                table.locator(html_tags.TR).nth(row_counter).locator(html_tags.TD).nth(col_counter).inner_text()
+            )
             if row_locator == row_value:
                 break
             row_counter += 1
