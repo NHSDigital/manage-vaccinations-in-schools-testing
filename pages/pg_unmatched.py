@@ -41,6 +41,6 @@ class pg_unmatched:
         )
 
     def create_record(self):
-        _row_num = self.po.get_table_row_for_value(
+        _row_num, _ = self.po.get_table_row_for_value(
             locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NAME
         )

@@ -237,7 +237,19 @@ class playwright_operations:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
         self.ce.page.goto(_full_url)
 
-    def get_table_row_for_value(self, locator: str, col_header: str, row_value: str) -> int:
-        row_locator = self.ce.page.locator(f'tr:has-text("{row_value}")')
-        c = row_locator.count()
-        return c
+    def get_table_row_for_value(self, locator: str, col_header: str, row_value: str):
+        wait(timeout=wait_time.MED)
+        table = self.ce.page.locator("table")
+        col_counter = 0
+        for c in table.locator("th").all():
+            if c.inner_text() == col_header:
+                break
+            col_counter += 1
+
+        row_counter = 1
+        for _ in table.locator("tr").all():
+            row_locator = table.locator("tr").nth(row_counter).locator("td").nth(col_counter).inner_text()
+            if row_locator == row_value:
+                break
+            row_counter += 1
+        return row_counter, col_counter
