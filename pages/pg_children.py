@@ -19,6 +19,7 @@ class pg_children:
     TXT_FILTER_NAME = "Name"
     LNK_FILTER_CHILDREN = "Filter children"
     LNK_CLEAR_FILTERS = "Clear filters"
+    LNK_ACTIVITY_LOG = "Activity log"
 
     def verify_headers(self):
         self.po.verify(
@@ -42,3 +43,22 @@ class pg_children:
                 wait(timeout=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=child_name)
                 self.po.perform_action(locator=self.LNK_CLEAR_FILTERS, action=actions.CLICK_LINK)
+
+    def verify_activity_log_for_created_child(self, child_name: str):
+        self.po.perform_action(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
+        self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
+        wait(timeout=wait_time.MIN)
+        self.po.perform_action(locator=child_name, action=actions.CLICK_LINK)
+        self.po.perform_action(locator=self.LNK_ACTIVITY_LOG, action=actions.CLICK_TEXT)
+        wait(timeout=wait_time.MIN)
+        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent given")
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            expected_value="Added to session at Bohunt School Wokingham",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=object_properties.TEXT,
+            expected_value="Consent response manually matched with child record",
+        )

@@ -60,6 +60,13 @@ class playwright_roles:
     CELL: Final[str] = "cell"
 
 
+class html_tags:
+    TH: Final[str] = "th"
+    TABLE: Final[str] = "table"
+    TR: Final[str] = "tr"
+    TD: Final[str] = "td"
+
+
 class wait_time:
     MIN: Final[str] = "1s"
     MED: Final[str] = "10s"
