@@ -44,7 +44,12 @@ class pg_children:
                 self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=child_name)
                 self.po.perform_action(locator=self.LNK_CLEAR_FILTERS, action=actions.CLICK_LINK)
 
-    def verify_activity_log_for_created_child(self, child_name: str):
+    def verify_activity_log_for_created_or_matched_child(self, child_name: str, is_created: bool):
+        _log_text: str = ""
+        if is_created:
+            _log_text = "Consent response manually created with child record"
+        else:
+            _log_text = "Consent response manually matched with child record"
         self.po.perform_action(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
         self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
         wait(timeout=wait_time.MIN)
@@ -60,5 +65,5 @@ class pg_children:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=object_properties.TEXT,
-            expected_value="Consent response manually matched with child record",
+            expected_value=_log_text,
         )

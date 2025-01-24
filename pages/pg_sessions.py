@@ -558,7 +558,7 @@ class pg_sessions:
         # Check year filters
         self.po.perform_action(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
         self.po.verify(
-            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="5 children still to register"
+            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="6 children still to register"
         )
         self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
         wait(timeout=wait_time.MIN)
@@ -568,7 +568,7 @@ class pg_sessions:
         self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
         wait(timeout=wait_time.MED)
         self.po.verify(
-            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="5 children still to register"
+            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="6 children still to register"
         )
         # Check name filters
         if len(self.ce.child_list) >= 1:
