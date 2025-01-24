@@ -1,3 +1,5 @@
+from inspect import isclass
+
 from libs import CurrentExecution, playwright_ops
 from libs.constants import actions, object_properties, wait_time
 from libs.wrappers import *
@@ -14,7 +16,7 @@ class pg_unmatched:
     LBL_MAIN = "main"
     LBL_PARAGRAPH = "paragraph"
     LBL_ARCHIVE_SUCCESS_MESSAGE = "Consent response from Parent Full archived"
-    LBL_CREATE_SUCCESS_MESSAGE = "BERYL TWIST’s record created from a consent response from Parent Full"
+    LBL_CREATE_SUCCESS_MESSAGE = "HELENA HOYTE’s record created from a consent response from Parent Full"
     LNK_MATCH_WITH_RECORD = "Match with record"
     LNK_ARCHIVE_RECORD = "Archive"
     LNK_CREATE_RECORD = "Create record"
@@ -24,8 +26,8 @@ class pg_unmatched:
     # TBL_CHILDREN = "unmatched consent responses Response dateChildParent or guardianAction"
     TBL_CHILDREN = "table"
     LBL_CHILD_COL = "Child"
-    LBL_CHILD_NAME_FOR_CREATION = "BERYL TWIST"
-    LBL_CHILD_NAME_FOR_MATCHING = "ULI JACKSON"
+    LBL_CHILD_NAME_FOR_CREATION = "HELENA HOYTE"
+    LBL_CHILD_NAME_FOR_MATCHING = "BERYL TWIST"
     LBL_CHILD_NAME_TO_MATCH = "ChildFirst1"
     TXT_FILTER_NAME = "Name"
     LNK_SELECT_FILTERED_CHILD = "Select"
@@ -56,7 +58,9 @@ class pg_unmatched:
         )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
-        self.children_page.verify_activity_log_for_created_child(child_name=self.LBL_CHILD_NAME_TO_MATCH)  # MAVIS-1812
+        self.children_page.verify_activity_log_for_created_or_matched_child(
+            child_name=self.LBL_CHILD_NAME_TO_MATCH, is_created=False
+        )  # MAVIS-1812
 
     def archive_record(self):
         self.po.perform_action(locator=self.LNK_ARCHIVE_RECORD, action=actions.CLICK_LINK)
@@ -81,6 +85,6 @@ class pg_unmatched:
         )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
-        self.children_page.verify_activity_log_for_created_child(
-            child_name=self.LBL_CHILD_NAME_FOR_CREATION
-        )  # MAVIS-1812
+        self.children_page.verify_activity_log_for_created_or_matched_child(
+            child_name=self.LBL_CHILD_NAME_FOR_CREATION, is_created=True
+        )  # MAVIS-1896
