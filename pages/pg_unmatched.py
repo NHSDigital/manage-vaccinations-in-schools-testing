@@ -54,6 +54,9 @@ class pg_unmatched:
             property=object_properties.TEXT,
             expected_value=f"!{self.LBL_CHILD_NAME_FOR_MATCHING}",
         )
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_children()
+        self.children_page.verify_activity_log_for_created_child(child_name=self.LBL_CHILD_NAME_TO_MATCH)  # MAVIS-1812
 
     def archive_record(self):
         self.po.perform_action(locator=self.LNK_ARCHIVE_RECORD, action=actions.CLICK_LINK)

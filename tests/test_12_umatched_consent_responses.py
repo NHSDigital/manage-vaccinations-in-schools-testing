@@ -43,4 +43,4 @@ class Test_Unmatched_Consent_Responses:
     @pytest.mark.order(1204)
     @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_match_record(self):
-        self.unmatched_page.match_with_record()
+        self.unmatched_page.match_with_record()  # Covers MAVIS-1812
