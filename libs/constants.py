@@ -51,7 +51,7 @@ class data_values:
     EMPTY: Final[str] = "<empty>"
 
 
-class playwright_roles:
+class aria_roles:
     LINK: Final[str] = "link"
     BUTTON: Final[str] = "button"
     OPTION: Final[str] = "option"

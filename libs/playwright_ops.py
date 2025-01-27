@@ -5,10 +5,10 @@ from sys import prefix
 from libs import CurrentExecution
 from libs.constants import (
     actions,
+    aria_roles,
     data_values,
     element_properties,
     html_tags,
-    playwright_roles,
     screenshot_actions,
     screenshot_file_types,
     wait_time,
@@ -96,10 +96,9 @@ class playwright_operations:
                         if escape_characters.SEPARATOR_CHAR in locator:
                             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                            elem = self.ce.page.get_by_role(_location, name=_locator).locator(playwright_roles.SPAN)
+                            elem = self.ce.page.get_by_role(_location, name=_locator).locator(aria_roles.SPAN)
                         else:
                             elem = self.ce.page.get_by_role(locator).nth(index)
-                elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
             case element_properties.VISIBILITY:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -122,7 +121,7 @@ class playwright_operations:
                     if chain_locator:
                         elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
-                        elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator).nth(index)
+                        elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
                 return elem.get_attribute(element_properties.HREF)
             case element_properties.EXISTS:
                 return self.ce.page.query_selector(locator) is not None
@@ -136,7 +135,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
                 else:
-                    elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator, exact=exact).nth(index)
+                    elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
                 elem.click()
             case actions.CLICK_BUTTON:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -144,7 +143,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_role(playwright_roles.BUTTON, name=locator).nth(index)
+                    elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator).nth(index)
                 elem.click()
             case actions.CLICK_LABEL:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -197,7 +196,7 @@ class playwright_operations:
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
-                    elem = self.ce.page.get_by_role(playwright_roles.OPTION, name=value)
+                    elem = self.ce.page.get_by_role(aria_roles.OPTION, name=value)
                 elem.click()
             case actions.CHECKBOX_CHECK:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -223,10 +222,10 @@ class playwright_operations:
                 else:
                     elem = (
                         self.ce.page.get_by_role(
-                            playwright_roles.ROW,
+                            aria_roles.ROW,
                             name=locator,
                         )
-                        .get_by_role(playwright_roles.LINK)
+                        .get_by_role(aria_roles.LINK)
                         .nth(value)
                     )
                 elem.click()
