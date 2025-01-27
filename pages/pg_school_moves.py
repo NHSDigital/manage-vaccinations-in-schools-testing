@@ -1,5 +1,5 @@
 from libs import CurrentExecution, playwright_ops
-from libs.constants import actions, escape_characters, object_properties
+from libs.constants import actions, element_properties, escape_characters
 from libs.wrappers import *
 
 
@@ -18,29 +18,29 @@ class pg_school_moves:
 
     def verify_headers(self):
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=self.LBL_HEADERS, exact=False
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_HEADERS, exact=False
         )
 
     def confirm_school_move(self):
-        self.po.perform_action(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
+        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
         _child_full_name: str = (
-            self.po.get_object_property(locator=self.LBL_CHILD_NAME, property=object_properties.TEXT)
+            self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=element_properties.TEXT)
             .replace(self.LBL_CHILD_NAME, "")
             .strip()
         )
         _success_message = f"{_child_full_name}’s school record updated"
-        self.po.perform_action(locator=self.RDO_UPDATE_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
-        self.po.perform_action(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=_success_message)
+        self.po.act(locator=self.RDO_UPDATE_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def ignore_school_move(self):
-        self.po.perform_action(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
+        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
         _child_full_name: str = (
-            self.po.get_object_property(locator=self.LBL_CHILD_NAME, property=object_properties.TEXT)
+            self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=element_properties.TEXT)
             .replace(self.LBL_CHILD_NAME, "")
             .strip()
         )
         _success_message = f"{_child_full_name}’s school move ignored"
-        self.po.perform_action(locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT)
-        self.po.perform_action(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=_success_message)
+        self.po.act(locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)

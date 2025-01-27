@@ -1,5 +1,5 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.constants import actions, object_properties, wait_time
+from libs.constants import actions, element_properties, wait_time
 from libs.wrappers import *
 
 
@@ -30,50 +30,50 @@ class pg_programmes:
     BTN_SAVE_CHANGES = "Save changes"
 
     def click_hpv(self):
-        self.po.perform_action(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
 
     def click_imports(self):
-        self.po.perform_action(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
 
     def click_vaccinations(self):
-        self.po.perform_action(locator=self.LNK_VACCINATIONS, action=actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_VACCINATIONS, action=actions.CLICK_LINK, exact=True)
 
     def click_cohorts(self):
-        self.po.perform_action(locator=self.LNK_COHORTS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_COHORTS, action=actions.CLICK_LINK)
 
     def click_edit_vaccination_record(self):
-        self.po.perform_action(locator=self.BTN_EDIT_VACCINATION_RECORD, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_EDIT_VACCINATION_RECORD, action=actions.CLICK_BUTTON)
 
     def click_import_records(self):
-        self.po.perform_action(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
 
     def click_import_cohort_records(self):
-        self.po.perform_action(locator=self.LNK_IMPORT_CHILD_RECORDS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_CHILD_RECORDS, action=actions.CLICK_LINK)
 
     def select_child_records(self):
-        self.po.perform_action(locator=self.RDO_CHILD_RECORDS, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_CHILD_RECORDS, action=actions.RADIO_BUTTON_SELECT)
 
     def select_vaccination_records(self):
-        self.po.perform_action(locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT)
 
     def click_continue(self):
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def click_choose_file_child_records(self):
-        self.po.perform_action(locator=self.LBL_CHOOSE_COHORT_FILE, action=actions.CLICK_LABEL)
+        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=actions.CLICK_LABEL)
 
     def choose_file_child_records(self, file_path: str):
-        self.po.perform_action(
+        self.po.act(
             locator=self.LBL_CHOOSE_COHORT_FILE,
             action=actions.SELECT_FILE,
             value=file_path,
         )
 
     def click_choose_file_vaccination_records(self):
-        self.po.perform_action(locator=self.LBL_CHOOSE_COHORT_FILE, action=actions.CLICK_LABEL)
+        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=actions.CLICK_LABEL)
 
     def choose_file_vaccination_records(self, file_path: str):
-        self.po.perform_action(
+        self.po.act(
             locator=self.LBL_CHOOSE_VACCS_FILE,
             action=actions.SELECT_FILE,
             value=file_path,
@@ -81,24 +81,24 @@ class pg_programmes:
 
     def verify_import_processing_started(self):
         self.po.verify(
-            locator=self.LBL_PARAGRAPH, property=object_properties.TEXT, expected_value=self.LBL_IMPORT_STARTED
+            locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_IMPORT_STARTED
         )
 
     def click_uploaded_file_datetime(self):
-        self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
+        self.po.act(locator=self.upload_time, action=actions.CLICK_LINK)
 
     def record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
 
     def click_dose2_child(self):
-        self.po.perform_action(locator=self.LNK_DOSE2_CHILD, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_DOSE2_CHILD, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 self.po.verify(
-                    locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_msg, exact=False
+                    locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
 
     def upload_hpv_vaccination_records(self, file_paths: str):
@@ -181,13 +181,13 @@ class pg_programmes:
         self.click_vaccinations()
         self.click_dose2_child()
         self.click_edit_vaccination_record()
-        self.po.perform_action(locator=self.LNK_CHANGE_OUTCOME, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.RDO_THEY_REFUSED_IT, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.LNK_CHANGE_OUTCOME, action=actions.CLICK_LINK)
+        self.po.act(locator=self.RDO_THEY_REFUSED_IT, action=actions.RADIO_BUTTON_SELECT)
         self.click_continue()
-        self.po.perform_action(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_MAIN,
-            property=object_properties.TEXT,
+            property=element_properties.TEXT,
             expected_value="!Sorry, there’s a problem with the service",
             exact=False,
         )

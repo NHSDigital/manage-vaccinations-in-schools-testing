@@ -1,5 +1,5 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.constants import actions, object_properties, wait_time
+from libs.constants import actions, element_properties, wait_time
 from libs.wrappers import *
 from pages import pg_children, pg_dashboard, pg_parental_consent
 
@@ -80,7 +80,7 @@ class pg_sessions:
         self.upload_time = get_link_formatted_date_time()
 
     def click_uploaded_file_datetime(self):
-        self.po.perform_action(locator=self.upload_time, action=actions.CLICK_LINK)
+        self.po.act(locator=self.upload_time, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
         # Verify messages separately
@@ -88,7 +88,7 @@ class pg_sessions:
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 self.po.verify(
-                    locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_msg, exact=False
+                    locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
         # Verify all messages together - NEEDS MORE THOUGHT
         # _all_errors = "".join(
@@ -102,78 +102,78 @@ class pg_sessions:
         # self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_all_errors, exact=False)
 
     def click_today(self):
-        self.po.perform_action(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
 
     def click_scheduled(self):
-        self.po.perform_action(locator=self.LNK_TAB_SCHEDULED, action=actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_TAB_SCHEDULED, action=actions.CLICK_LINK, exact=True)
 
     def click_unscheduled(self):
-        self.po.perform_action(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
 
     def click_no_response(self):
-        self.po.perform_action(locator=self.LNK_TAB_NO_RESPONSE, action=actions.CLICK_LINK, exact=False)
+        self.po.act(locator=self.LNK_TAB_NO_RESPONSE, action=actions.CLICK_LINK, exact=False)
 
     def click_activity_log(self):
-        self.po.perform_action(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
 
     def click_school1(self):
-        self.po.perform_action(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
 
     def click_school2(self):
-        self.po.perform_action(locator=self.LNK_SCHOOL_2, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SCHOOL_2, action=actions.CLICK_LINK)
 
     def click_import_class_list(self):
-        self.po.perform_action(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
 
     def click_continue(self):
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def choose_file_child_records_for_school_1(self, file_path: str):
-        self.po.perform_action(
+        self.po.act(
             locator=self.LBL_CHOOSE_COHORT_FILE_1,
             action=actions.SELECT_FILE,
             value=file_path,
         )
 
     def choose_file_child_records_for_school_2(self, file_path: str):
-        self.po.perform_action(
+        self.po.act(
             locator=self.LBL_CHOOSE_COHORT_FILE_2,
             action=actions.SELECT_FILE,
             value=file_path,
         )
 
     def click_record_vaccinations(self):
-        self.po.perform_action(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
 
     def click_child_full_name(self):
-        self.po.perform_action(locator=self.LNK_CHILD_FULL_NAME, action=actions.CLICK_WILDCARD)
+        self.po.act(locator=self.LNK_CHILD_FULL_NAME, action=actions.CLICK_WILDCARD)
 
     def click_child_no_consent(self):
-        self.po.perform_action(locator=self.LNK_CHILD_NO_CONSENT, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=actions.CLICK_LINK)
 
     def click_update_triage_outcome(self):
-        self.po.perform_action(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
 
     def select_yes_safe_to_vaccinate(self):
-        self.po.perform_action(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
 
     def click_save_triage(self):
-        self.po.perform_action(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
 
     def click_check_consent_responses(self):
-        self.po.perform_action(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
     def click_assess_gillick_competent(self):
-        self.po.perform_action(locator=self.LNK_ASSESS_GILLICK_COMPETENT, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_ASSESS_GILLICK_COMPETENT, action=actions.CLICK_LINK)
 
     def click_edit_gillick_competence(self):
-        self.po.perform_action(locator=self.LNK_EDIT_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_EDIT_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
 
     def click_could_not_vaccinate(self):
-        self.po.perform_action(locator=self.LNK_COULD_NOT_VACCINATE, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_COULD_NOT_VACCINATE, action=actions.CLICK_LINK)
 
     def click_consent_refused(self):
-        self.po.perform_action(locator=self.LNK_CONSENT_REFUSED, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CONSENT_REFUSED, action=actions.CLICK_LINK)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
         self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
@@ -183,97 +183,95 @@ class pg_sessions:
 
     def __set_gillick_consent(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
         if is_competent:
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows which disease').get_by_label('Yes').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows what could').get_by_label('Yes').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows how the').get_by_label('Yes').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows which side').get_by_label('Yes').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
         else:
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('No').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows which disease').get_by_label('No').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows what could').get_by_label('No').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows how the').get_by_label('No').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.perform_action(
+            self.po.act(
                 locator="get_by_role('group', name='The child knows which side').get_by_label('No').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-        self.po.perform_action(
-            locator=self.TXT_GILLICK_ASSESSMENT_DETAILS, action=actions.FILL, value=competence_details
-        )
+        self.po.act(locator=self.TXT_GILLICK_ASSESSMENT_DETAILS, action=actions.FILL, value=competence_details)
         if is_add:
-            self.po.perform_action(locator=self.BTN_COMPLETE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
+            self.po.act(locator=self.BTN_COMPLETE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
         else:
-            self.po.perform_action(locator=self.BTN_UPDATE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
+            self.po.act(locator=self.BTN_UPDATE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
         if is_competent:
             self.po.verify(
                 locator=self.LBL_MAIN,
-                property=object_properties.TEXT,
+                property=element_properties.TEXT,
                 expected_value=self.LBL_CHILD_COMPETENT,
                 exact=False,
             )
         else:
             self.po.verify(
                 locator=self.LBL_MAIN,
-                property=object_properties.TEXT,
+                property=element_properties.TEXT,
                 expected_value=self.LBL_CHILD_NOT_COMPETENT,
                 exact=False,
             )
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=competence_details, exact=False
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=competence_details, exact=False
         )
 
     def __schedule_session(self, on_date: str, expect_error: bool = False):
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
-        self.po.perform_action(locator=self.LNK_SCHEDULE_SESSIONS, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.LNK_ADD_SESSION_DATES, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.TXT_DAY, action=actions.FILL, value=_day)
-        self.po.perform_action(locator=self.TXT_MONTH, action=actions.FILL, value=_month)
-        self.po.perform_action(locator=self.TXT_YEAR, action=actions.FILL, value=_year)
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_SCHEDULE_SESSIONS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_ADD_SESSION_DATES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.TXT_DAY, action=actions.FILL, value=_day)
+        self.po.act(locator=self.TXT_MONTH, action=actions.FILL, value=_month)
+        self.po.act(locator=self.TXT_YEAR, action=actions.FILL, value=_year)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         if expect_error:
             _expected_message = "There is a problem Enter a date"
             self.po.verify(
-                locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_expected_message, exact=False
+                locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_expected_message, exact=False
             )
 
     def __delete_sessions(self):
-        self.po.perform_action(locator=self.LNK_EDIT_SESSION, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.LNK_CHANGE_SESSION_DATES, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.BTN_DELETE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.LNK_BACK, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_EDIT_SESSION, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHANGE_SESSION_DATES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_DELETE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_BACK, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
         self.po.verify(
             locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
-            property=object_properties.VISIBILITY,
+            property=element_properties.VISIBILITY,
             expected_value=True,
             exact=False,
             by_test_id=False,
@@ -284,16 +282,16 @@ class pg_sessions:
         _day = to_date[-2:]
         _month = to_date[4:6]
         _year = to_date[:4]
-        self.po.perform_action(locator=self.LNK_EDIT_SESSION, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.LNK_CHANGE_SESSION_DATES, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.TXT_DAY, action=actions.FILL, value=_day)
-        self.po.perform_action(locator=self.TXT_MONTH, action=actions.FILL, value=_month)
-        self.po.perform_action(locator=self.TXT_YEAR, action=actions.FILL, value=_year)
-        self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.perform_action(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_EDIT_SESSION, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHANGE_SESSION_DATES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.TXT_DAY, action=actions.FILL, value=_day)
+        self.po.act(locator=self.TXT_MONTH, action=actions.FILL, value=_month)
+        self.po.act(locator=self.TXT_YEAR, action=actions.FILL, value=_year)
+        self.po.act(locator=self.LNK_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_CONTINUE, action=actions.CLICK_LINK)
         self.po.verify(
             locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
-            property=object_properties.VISIBILITY,
+            property=element_properties.VISIBILITY,
             expected_value=False,
             exact=False,
             by_test_id=False,
@@ -301,14 +299,14 @@ class pg_sessions:
         )
 
     def __close_session(self):
-        self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Session closed.")
+        self.po.act(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Session closed.")
 
     def verify_triage_updated(self):
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
-            property=object_properties.TEXT,
+            property=element_properties.TEXT,
             expected_value=self.LBL_TRIAGE_UPDATED_MESSAGE,
             exact=False,
         )
@@ -318,42 +316,46 @@ class pg_sessions:
         if consent_given:
             self.po.verify(
                 locator=self.LBL_MAIN,
-                property=object_properties.TEXT,
+                property=element_properties.TEXT,
                 expected_value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN,
                 exact=False,
             )
         else:
             self.po.verify(
                 locator=self.LBL_MAIN,
-                property=object_properties.TEXT,
+                property=element_properties.TEXT,
                 expected_value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED,
                 exact=False,
             )
 
     def invalidate_parent2_refusal(self):
-        self.po.perform_action(locator=self.LNK_PARENT2, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_LINK)
-        self.po.perform_action(locator=self.TXT_NOTES, action=actions.FILL, value="Invalidation notes.")
-        self.po.perform_action(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent refusedInvalid")
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Invalidation notes.")
-        self.po.perform_action(locator=self.LNK_BACK, action=actions.CLICK_LINK)
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent refusedInvalid")
+        self.po.act(locator=self.LNK_PARENT2, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_LINK)
+        self.po.act(locator=self.TXT_NOTES, action=actions.FILL, value="Invalidation notes.")
+        self.po.act(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent refusedInvalid"
+        )
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Invalidation notes.")
+        self.po.act(locator=self.LNK_BACK, action=actions.CLICK_LINK)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent refusedInvalid"
+        )
         self.po.verify(
             locator=self.LBL_MAIN,
-            property=object_properties.TEXT,
+            property=element_properties.TEXT,
             expected_value="No-one responded to our requests for consent.",
         )
 
     def verify_scheduled_date(self, message: str):
-        self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=message, exact=False)
-        self.po.perform_action(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=message, exact=False)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_LINK)
 
     def click_get_consent_response(self):
-        self.po.perform_action(locator=self.BTN_GET_CONSENT_RESPONSE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=actions.CLICK_BUTTON)
 
     def click_get_consent_responses(self):
-        self.po.perform_action(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_BUTTON)
 
     def upload_valid_class_list(self, file_paths: str):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
@@ -510,7 +512,7 @@ class pg_sessions:
         self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
 
     def get_consent_url(self) -> str:
-        return self.po.get_object_property(locator=self.LNK_CONSENT_FORM, property=object_properties.HREF)
+        return self.po.get_element_property(locator=self.LNK_CONSENT_FORM, property=element_properties.HREF)
 
     def bug_mavis_1696(self):
         self.click_no_response()
@@ -528,14 +530,14 @@ class pg_sessions:
         wait(timeout=wait_time.MIN)
         # FIXME: Make the following generic
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent from Parent2 invalidated"
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent from Parent2 invalidated"
         )
         self.po.verify(
-            locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value="Consent refused by Parent2 (Mum)"
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent refused by Parent2 (Mum)"
         )
         self.po.verify(
             locator=self.LBL_MAIN,
-            property=object_properties.TEXT,
+            property=element_properties.TEXT,
             expected_value="Consent not_provided by Parent1 (Dad)",
         )
 
@@ -556,24 +558,24 @@ class pg_sessions:
 
     def verify_attendance_filters(self):
         # Check year filters
-        self.po.perform_action(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
         self.po.verify(
-            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="6 children still to register"
+            locator=self.LBL_CAPTION, property=element_properties.TEXT, expected_value="6 children still to register"
         )
-        self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
         wait(timeout=wait_time.MIN)
         self.po.verify(
-            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="No children still to register"
+            locator=self.LBL_CAPTION, property=element_properties.TEXT, expected_value="No children still to register"
         )
-        self.po.perform_action(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
+        self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
         wait(timeout=wait_time.MED)
         self.po.verify(
-            locator=self.LBL_CAPTION, property=object_properties.TEXT, expected_value="6 children still to register"
+            locator=self.LBL_CAPTION, property=element_properties.TEXT, expected_value="6 children still to register"
         )
         # Check name filters
         if len(self.ce.child_list) >= 1:
             for child_name in self.ce.child_list:
-                self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
+                self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
                 wait(timeout=wait_time.MIN)
-                self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=child_name)
-                self.po.perform_action(locator=self.TXT_FILTER_NAME, action=actions.FILL, value="")
+                self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
+                self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value="")

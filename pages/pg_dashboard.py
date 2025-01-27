@@ -1,5 +1,5 @@
 from libs import playwright_ops
-from libs.constants import actions, escape_characters, object_properties, wait_time
+from libs.constants import actions, element_properties, escape_characters, wait_time
 from libs.wrappers import wait
 
 
@@ -18,105 +18,105 @@ class pg_dashboard:
     LNK_NHS_LOGO = "Manage vaccinations in schools"
 
     def click_programmes(self):
-        self.po.perform_action(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)
 
     def click_sessions(self):
-        self.po.perform_action(locator=self.LNK_SESSIONS, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SESSIONS, action=actions.CLICK_LINK)
 
     def click_children(self):
-        self.po.perform_action(locator=self.LNK_CHILDREN, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHILDREN, action=actions.CLICK_LINK)
 
     def click_vaccines(self):
-        self.po.perform_action(locator=self.LNK_VACCINES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_VACCINES, action=actions.CLICK_LINK)
 
     def click_unmatched_consent_responses(self):
-        self.po.perform_action(locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
     def click_school_moves(self):
-        self.po.perform_action(locator=self.LNK_SCHOOL_MOVES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SCHOOL_MOVES, action=actions.CLICK_LINK)
 
     def click_important_notices(self):
-        self.po.perform_action(locator=self.LNK_NOTICES, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_NOTICES, action=actions.CLICK_LINK)
 
     def click_your_organisation(self):
-        self.po.perform_action(locator=self.LNK_ORGANISATION, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_ORGANISATION, action=actions.CLICK_LINK)
 
     def click_service_guidance(self):
-        self.po.perform_action(locator=self.LNK_SERVICE_GUIDANCE, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SERVICE_GUIDANCE, action=actions.CLICK_LINK)
 
     def go_to_dashboard(self):
         wait(timeout=wait_time.MIN)  # Scripts sometimes error out without this wait when called as a teardown action
-        self.po.perform_action(locator=self.LNK_NHS_LOGO, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_NHS_LOGO, action=actions.CLICK_LINK)
 
     def verify_all_expected_links_for_nurse(self):
         self.po.verify(
-            locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_PROGRAMMES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_SESSIONS, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_SESSIONS, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_CHILDREN, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_CHILDREN, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_VACCINES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
             locator=self.LNK_UNMATCHED_CONSENT_RESPONSES,
-            property=object_properties.VISIBILITY,
+            property=element_properties.VISIBILITY,
             expected_value=True,
             exact=True,
         )
         self.po.verify(
-            locator=self.LNK_SCHOOL_MOVES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_SCHOOL_MOVES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_ORGANISATION, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_ORGANISATION, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_SERVICE_GUIDANCE, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_SERVICE_GUIDANCE, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE,
-            property=object_properties.HREF,
+            property=element_properties.HREF,
             expected_value="https://guide.manage-vaccinations-in-schools.nhs.uk/",
             exact=True,
         )
 
     def verify_all_expected_links_for_superuser(self):
         self.po.verify(
-            locator=self.LNK_PROGRAMMES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_PROGRAMMES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_SESSIONS, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_SESSIONS, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_CHILDREN, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_CHILDREN, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_VACCINES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_VACCINES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
             locator=self.LNK_UNMATCHED_CONSENT_RESPONSES,
-            property=object_properties.VISIBILITY,
+            property=element_properties.VISIBILITY,
             expected_value=True,
             exact=True,
         )
         self.po.verify(
-            locator=self.LNK_SCHOOL_MOVES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_SCHOOL_MOVES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_NOTICES, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_NOTICES, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )  # Superuser only
         self.po.verify(
-            locator=self.LNK_ORGANISATION, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_ORGANISATION, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
-            locator=self.LNK_SERVICE_GUIDANCE, property=object_properties.VISIBILITY, expected_value=True, exact=True
+            locator=self.LNK_SERVICE_GUIDANCE, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE,
-            property=object_properties.HREF,
+            property=element_properties.HREF,
             expected_value="https://guide.manage-vaccinations-in-schools.nhs.uk/",
             exact=True,
         )
