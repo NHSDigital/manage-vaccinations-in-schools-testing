@@ -18,7 +18,7 @@ from libs.wrappers import *
 
 class playwright_operations:
     ce = CurrentExecution()
-    page_object_path = "self.ce.page."
+    PAGE_ELEMENT_PATH = "self.ce.page."
 
     def capture_screenshot(self, identifier: str, action: str) -> None:
         if self.ce.capture_screenshot_flag:
@@ -91,7 +91,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_test_id(locator)
                 else:
                     if chain_locator:
-                        elem = eval(f"{self.page_object_path}{locator}")
+                        elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         if escape_characters.SEPARATOR_CHAR in locator:
                             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
@@ -109,7 +109,7 @@ class playwright_operations:
                 else:
                     if chain_locator:
                         wait(timeout=wait_time.MIN)
-                        elem = eval(f"{self.page_object_path}{locator}")
+                        elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         elem = self.ce.page.get_by_role(locator).nth(0)
                 return elem.is_visible()
@@ -120,7 +120,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
                 else:
                     if chain_locator:
-                        elem = eval(f"{self.page_object_path}{locator}")
+                        elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         elem = self.ce.page.get_by_role(playwright_roles.LINK, name=locator).nth(index)
                 return elem.get_attribute(element_properties.HREF)
@@ -233,7 +233,7 @@ class playwright_operations:
             case actions.CLICK_WILDCARD:
                 elem = self.ce.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
-                eval(f"{self.page_object_path}{locator}")
+                eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
 
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url

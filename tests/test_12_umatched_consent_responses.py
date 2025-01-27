@@ -49,4 +49,4 @@ class Test_Unmatched_Consent_Responses:
     @pytest.mark.order(1205)
     @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_create_record_with_no_nhs_number(self):
-        self.unmatched_page.create_record_with_no_nhs_number()  # Covers MAVIS-1781
+        self.unmatched_page.create_record_with_no_nhs_number()  # MAVIS-1781
