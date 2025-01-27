@@ -1,7 +1,7 @@
 from typing import Final
 
 
-class object_properties:
+class element_properties:
     TEXT: Final[str] = "text"
     VISIBILITY: Final[str] = "visibility"
     HREF: Final[str] = "href"
@@ -32,7 +32,7 @@ class screenshot_actions:
     VERIFY_VISIBILITY_FAILED = "verify_visibility_failed"
 
 
-class screenshot_types:
+class screenshot_file_types:
     JPEG: Final[str] = "jpeg"
 
 
@@ -42,9 +42,9 @@ class file_mode:
     APPEND: Final[str] = "a"
 
 
-class api_constants:
-    API_SUCCESS_STATUS_CODE_MIN: Final[int] = 200
-    API_SUCCESS_STATUS_CODE_MAX: Final[int] = 299
+class api_response_codes:
+    SUCCESS_STATUS_CODE_MIN: Final[int] = 200
+    SUCCESS_STATUS_CODE_MAX: Final[int] = 299
 
 
 class data_values:

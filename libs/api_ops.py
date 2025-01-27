@@ -1,6 +1,6 @@
 import requests
 
-from libs.constants import api_constants
+from libs.constants import api_response_codes
 
 
 class api_operations:
@@ -76,6 +76,8 @@ class api_operations:
     def __verify_response_code(response_code: int) -> bool:
         return (
             True
-            if api_constants.API_SUCCESS_STATUS_CODE_MIN <= response_code <= api_constants.API_SUCCESS_STATUS_CODE_MAX
+            if api_response_codes.SUCCESS_STATUS_CODE_MIN
+            <= response_code
+            <= api_response_codes.SUCCESS_STATUS_CODE_MAX
             else False
         )

@@ -6,11 +6,11 @@ from libs import CurrentExecution
 from libs.constants import (
     actions,
     data_values,
+    element_properties,
     html_tags,
-    object_properties,
     playwright_roles,
     screenshot_actions,
-    screenshot_types,
+    screenshot_file_types,
     wait_time,
 )
 from libs.wrappers import *
@@ -25,11 +25,11 @@ class playwright_operations:
             _ss_path = clean_file_name(
                 os.path.join(
                     self.ce.session_screenshots_dir,
-                    f"{self.ce.screenshot_sequence}-{action}-{identifier}-{self.ce.current_browser_name}.{screenshot_types.JPEG}",
+                    f"{self.ce.screenshot_sequence}-{action}-{identifier}-{self.ce.current_browser_name}.{screenshot_file_types.JPEG}",
                 )
             )
             # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})  # Not prudent for mobile screenshots
-            self.ce.page.screenshot(path=_ss_path, type=screenshot_types.JPEG)
+            self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG)
 
     def verify(
         self,
@@ -40,11 +40,11 @@ class playwright_operations:
         by_test_id: bool = False,
         chain_locator: bool = False,
     ) -> None:
-        current_value = self.get_object_property(
+        current_value = self.get_element_property(
             locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
         )
         match property.lower():
-            case object_properties.TEXT:
+            case element_properties.TEXT:
                 if expected_value != "":
                     if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
                         return
@@ -74,18 +74,18 @@ class playwright_operations:
                         assert clean_text(text=expected_value) in clean_text(
                             text=current_value
                         ), f"Text '{expected_value}' not found in '{current_value}'."
-            case object_properties.VISIBILITY:
+            case element_properties.VISIBILITY:
                 if current_value == expected_value:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
                 assert expected_value == current_value, f"{locator} is not visible."
 
-    def get_object_property(
+    def get_element_property(
         self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False, index: int = 0
     ) -> str:
         match property:
-            case object_properties.TEXT:
+            case element_properties.TEXT:
                 if by_test_id:
                     elem = self.ce.page.get_by_test_id(locator)
                 else:
@@ -100,7 +100,7 @@ class playwright_operations:
                             elem = self.ce.page.get_by_role(locator).nth(index)
                 elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
-            case object_properties.VISIBILITY:
+            case element_properties.VISIBILITY:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
@@ -112,7 +112,7 @@ class playwright_operations:
                     else:
                         elem = self.ce.page.get_by_role(locator).nth(0)
                 return elem.is_visible()
-            case object_properties.HREF:
+            case element_properties.HREF:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
@@ -122,11 +122,11 @@ class playwright_operations:
                         elem = eval(f"self.ce.page.{locator}")
                     else:
                         elem = self.ce.page.get_by_role("link", name=locator).nth(index)
-                return elem.get_attribute(object_properties.HREF)
-            case object_properties.EXISTS:
+                return elem.get_attribute(element_properties.HREF)
+            case element_properties.EXISTS:
                 return self.ce.page.query_selector(locator) is not None
 
-    def perform_action(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
+    def act(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
@@ -190,7 +190,7 @@ class playwright_operations:
                     elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
                 elem.set_input_files(value)
             case actions.SELECT_FROM_LIST:
-                self.perform_action(locator=locator, action=actions.FILL, value=value)
+                self.act(locator=locator, action=actions.FILL, value=value)
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
