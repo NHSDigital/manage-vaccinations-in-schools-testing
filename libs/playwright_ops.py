@@ -41,7 +41,7 @@ class playwright_operations:
         by_test_id: bool = False,
         chain_locator: bool = False,
     ) -> None:
-        current_value = self.get_element_property(
+        actual_value = self.get_element_property(
             locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
         )
         match property.lower():
@@ -50,37 +50,37 @@ class playwright_operations:
                     if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
                         return
                 if exact:
-                    if expected_value == current_value:
+                    if expected_value == actual_value:
                         self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                     else:
                         self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
                     assert (
-                        expected_value == current_value
-                    ), f"Exact match failed. Expected: '{expected_value}' but actual: '{current_value}'."
+                        expected_value == actual_value
+                    ), f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
                 else:
                     if expected_value.startswith(escape_characters.NOT_OPERATOR):
                         expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
-                        if clean_text(text=expected_value) not in clean_text(text=current_value):
+                        if clean_text(text=expected_value) not in clean_text(text=actual_value):
                             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                         else:
                             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
                         assert clean_text(text=expected_value) not in clean_text(
-                            text=current_value
-                        ), f"Text '{expected_value}' not found in '{current_value}'."
+                            text=actual_value
+                        ), f"Text '{expected_value}' not found in '{actual_value}'."
                     else:
-                        if clean_text(text=expected_value) in clean_text(text=current_value):
+                        if clean_text(text=expected_value) in clean_text(text=actual_value):
                             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                         else:
                             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
                         assert clean_text(text=expected_value) in clean_text(
-                            text=current_value
-                        ), f"Text '{expected_value}' not found in '{current_value}'."
+                            text=actual_value
+                        ), f"Text '{expected_value}' not found in '{actual_value}'."
             case element_properties.VISIBILITY:
-                if current_value == expected_value:
+                if actual_value == expected_value:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
-                assert expected_value == current_value, f"{locator} is not visible."
+                assert expected_value == actual_value, f"{locator} is not visible."
 
     def get_element_property(
         self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False, index: int = 0
@@ -99,6 +99,7 @@ class playwright_operations:
                             elem = self.ce.page.get_by_role(_location, name=_locator).locator(aria_roles.SPAN)
                         else:
                             elem = self.ce.page.get_by_role(locator).nth(index)
+                elem.scroll_into_view_if_needed()
                 return "".join(elem.all_text_contents()).strip()
             case element_properties.VISIBILITY:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -111,6 +112,7 @@ class playwright_operations:
                         elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         elem = self.ce.page.get_by_role(locator).nth(0)
+                elem.scroll_into_view_if_needed()
                 return elem.is_visible()
             case element_properties.HREF:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -122,9 +124,12 @@ class playwright_operations:
                         elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
+                elem.scroll_into_view_if_needed()
                 return elem.get_attribute(element_properties.HREF)
             case element_properties.EXISTS:
-                return self.ce.page.query_selector(locator) is not None
+                elem = self.ce.page.query_selector(locator)
+                elem.scroll_into_view_if_needed()
+                return elem is not None
 
     def act(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
@@ -241,12 +246,14 @@ class playwright_operations:
     def get_table_cell_location_for_value(self, table_locator: str, col_header: str, row_value: str):
         wait(timeout=wait_time.MED)
         table = self.ce.page.locator(table_locator)
+        # Get the column index from the column name
         col_counter = 0
         for c in table.locator(html_tags.TH).all():
             if c.inner_text() == col_header:
                 break
             col_counter += 1
 
+        # Find out the row for the text in that column
         row_counter = 1
         for _ in range(table.locator(html_tags.TR).count()):
             row_locator = (
