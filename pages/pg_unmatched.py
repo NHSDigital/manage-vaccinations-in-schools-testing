@@ -1,4 +1,5 @@
 from inspect import isclass
+from math import exp
 
 from libs import CurrentExecution, playwright_ops
 from libs.constants import actions, element_properties, wait_time
@@ -26,6 +27,7 @@ class pg_unmatched:
     # TBL_CHILDREN = "unmatched consent responses Response dateChildParent or guardianAction"
     TBL_CHILDREN = "table"
     LBL_CHILD_COL = "Child"
+    LBL_CHILD_NAME_FOR_ARCHIVAL = "NonMatching ConsentRecord"
     LBL_CHILD_NAME_FOR_CREATION = "HELENA HOYTE"
     LBL_CHILD_NAME_FOR_MATCHING = "BERYL TWIST"
     LBL_CHILD_NO_NHS_NUMBER = "NoNHS NoNumber"
@@ -64,13 +66,22 @@ class pg_unmatched:
         )  # MAVIS-1812
 
     def archive_record(self):
-        self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=actions.CLICK_LINK)
+        _row_num, _ = self.po.get_table_cell_location_for_value(
+            table_locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NAME_FOR_ARCHIVAL
+        )
+        self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=actions.CLICK_LINK, index=(_row_num - 1))
         self.po.act(locator=self.TXT_NOTES, action=actions.FILL, value="Archiving")
         self.po.act(locator=self.BTN_ARCHIVE_RESPONSE, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=element_properties.TEXT,
             expected_value=self.LBL_ARCHIVE_SUCCESS_MESSAGE,
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value=f"!{self.LBL_CHILD_NAME_FOR_ARCHIVAL}",
+            exact=False,
         )
 
     def create_record(self):

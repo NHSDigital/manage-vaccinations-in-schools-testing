@@ -112,7 +112,6 @@ class playwright_operations:
                         elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         elem = self.ce.page.get_by_role(locator).nth(0)
-                elem.scroll_into_view_if_needed()
                 return elem.is_visible()
             case element_properties.HREF:
                 if escape_characters.SEPARATOR_CHAR in locator:
@@ -124,12 +123,9 @@ class playwright_operations:
                         elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
                     else:
                         elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
-                elem.scroll_into_view_if_needed()
                 return elem.get_attribute(element_properties.HREF)
             case element_properties.EXISTS:
-                elem = self.ce.page.query_selector(locator)
-                elem.scroll_into_view_if_needed()
-                return elem is not None
+                return self.ce.page.query_selector(locator) is not None
 
     def act(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
@@ -238,6 +234,7 @@ class playwright_operations:
                 elem = self.ce.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
                 eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+        self.capture_screenshot(identifier=locator, action=f"after-{action}")
 
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
