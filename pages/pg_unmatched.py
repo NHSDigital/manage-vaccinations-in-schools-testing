@@ -82,7 +82,7 @@ class pg_unmatched:
             property=element_properties.TEXT,
             expected_value=f"!{self.LBL_CHILD_NAME_FOR_ARCHIVAL}",
             exact=False,
-        )
+        )  # MAVIS-1782
 
     def create_record(self):
         _row_num, _ = self.po.get_table_cell_location_for_value(
