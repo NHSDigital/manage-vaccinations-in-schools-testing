@@ -55,7 +55,26 @@ class Test_Consent:
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.upload_valid_class_list(file_paths=test_data_file_paths.COHORTS_NO_APPROVAL)
+        self.sessions_page.upload_valid_class_list(file_paths=test_data_file_paths.COHORTS_NO_CONSENT)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.click_scheduled()
+        self.sessions_page.click_school1()
+        self.sessions_page.click_check_consent_responses()
+        yield
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
+        self.login_page.logout_of_mavis()
+
+    @pytest.fixture(scope="function", autouse=False)
+    def setup_conflicting_consent(self, start_mavis: None):
+        self.login_page.login_as_nurse()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.upload_valid_class_list(file_paths=test_data_file_paths.COHORTS_CONFLICTING_CONSENT)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
@@ -68,7 +87,6 @@ class Test_Consent:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.consent
-    @pytest.mark.consentworkflow
     @pytest.mark.mobile
     @pytest.mark.order(901)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
@@ -98,3 +116,9 @@ class Test_Consent:
     @pytest.mark.skip(reason="Script in progress")
     def test_parent_provides_consent_twice(self, setup_invalidated_consent: None):
         self.sessions_page.bug_mavis_1864()
+
+    @pytest.mark.consent
+    @pytest.mark.order(906)
+    @pytest.mark.skip(reason="Script in progress")
+    def test_conflicting_consent_with_gillick_consent(self, setup_conflicting_consent: None):
+        self.sessions_page.bug_mavis_1818()
