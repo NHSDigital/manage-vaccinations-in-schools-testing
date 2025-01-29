@@ -20,6 +20,8 @@ class pg_sessions:
     LNK_TAB_SCHEDULED = "Scheduled"
     LNK_TAB_UNSCHEDULED = "Unscheduled"
     LNK_TAB_NO_RESPONSE = "No response"
+    LNK_TAB_CONSENT_GIVEN = "Consent given"
+    LNK_TAB_CONFLICTING_CONSENT = "Conflicting consent"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
     LNK_IMPORT_CLASS_LIST = "Import class list"
     LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
@@ -29,6 +31,7 @@ class pg_sessions:
     LNK_RECORD_VACCINATIONS = "Record vaccinations"
     LNK_CHILD_FULL_NAME = "CF"
     LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
+    LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
     LNK_UPDATE_TRIAGE_OUTCOME = "Update triage outcome"
     LNK_SCHEDULE_SESSIONS = "Schedule sessions"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
@@ -46,7 +49,7 @@ class pg_sessions:
     LNK_BACK = "Back"
     LNK_CONTINUE = "Continue"
     LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
-    LNK_ASSESS_GILLICK_COMPETENT = "Assess Gillick competence"
+    LNK_ASSESS_GILLICK_COMPETENCE = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT = "No"
     TXT_GILLICK_ASSESSMENT_DETAILS = "Assessment notes (optional)"
@@ -113,8 +116,15 @@ class pg_sessions:
     def click_no_response(self):
         self.po.act(locator=self.LNK_TAB_NO_RESPONSE, action=actions.CLICK_LINK, exact=False)
 
+    def click_consent_given(self):
+        self.po.act(locator=self.LNK_TAB_CONSENT_GIVEN, action=actions.CLICK_LINK, exact=False)
+
+    def click_conflicting_consent(self):
+        self.po.act(locator=self.LNK_TAB_CONFLICTING_CONSENT, action=actions.CLICK_LINK, exact=False)
+
     def click_activity_log(self):
         self.po.act(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
+        wait(timeout=wait_time.MIN)
 
     def click_school1(self):
         self.po.act(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
@@ -151,6 +161,9 @@ class pg_sessions:
     def click_child_no_consent(self):
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=actions.CLICK_LINK)
 
+    def click_child_conflicting_consent(self):
+        self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=actions.CLICK_LINK)
+
     def click_update_triage_outcome(self):
         self.po.act(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
 
@@ -163,8 +176,8 @@ class pg_sessions:
     def click_check_consent_responses(self):
         self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=actions.CLICK_LINK)
 
-    def click_assess_gillick_competent(self):
-        self.po.act(locator=self.LNK_ASSESS_GILLICK_COMPETENT, action=actions.CLICK_LINK)
+    def click_assess_gillick_competence(self):
+        self.po.act(locator=self.LNK_ASSESS_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
 
     def click_edit_gillick_competence(self):
         self.po.act(locator=self.LNK_EDIT_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
@@ -506,7 +519,7 @@ class pg_sessions:
         self.click_school1()
         self.click_check_consent_responses()
         self.click_child_full_name()
-        self.click_assess_gillick_competent()
+        self.click_assess_gillick_competence()
         self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
         self.click_edit_gillick_competence()
         self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
@@ -579,3 +592,59 @@ class pg_sessions:
                 wait(timeout=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
                 self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value="")
+
+    def bug_mavis_1818(self):
+        self.click_no_response()
+        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.click_get_consent_response()
+        self.consent_page.parent_1_verbal_positive(change_phone=False)
+        self.click_consent_given()
+        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.click_get_consent_response()
+        self.consent_page.parent_2_verbal_refuse_consent()
+        self.click_conflicting_consent()  # Tab
+        wait(timeout=wait_time.MIN)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="1 child with conflicting consent responses",
+        )
+        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Conflicting consent",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="You can only vaccinate if all respondents give consent.",
+        )
+        self.click_assess_gillick_competence()
+        self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Triaged decision: Safe to vaccinate",
+        )
+        self.click_activity_log()
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Completed Gillick assessment as Gillick competent",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Consent refused by Parent2 (Mum)",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Consent given by Parent1 (Dad)",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Triaged decision: Safe to vaccinate",
+        )

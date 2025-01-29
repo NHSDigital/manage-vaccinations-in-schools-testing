@@ -281,7 +281,7 @@ class pg_parental_consent:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.check_phone_options(scenario_id="")
 
-    def parent_1_verbal_positive(self):
+    def parent_1_verbal_positive(self, change_phone: bool = True):
         self.po.act(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
@@ -293,11 +293,12 @@ class pg_parental_consent:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
-        self.po.act(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
-        self.po.act(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.check_phone_options(scenario_id="")
+        if change_phone:
+            self.po.act(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
+            self.po.act(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
+            self.po.act(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
+            self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+            self.check_phone_options(scenario_id="")
         self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
     def parent_1_online_positive(self):
