@@ -648,3 +648,4 @@ class pg_sessions:
             property=element_properties.TEXT,
             expected_value="Triaged decision: Safe to vaccinate",
         )
+        # TODO: Confirm that the above messages are valid.
