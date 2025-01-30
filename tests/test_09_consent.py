@@ -119,6 +119,6 @@ class Test_Consent:
 
     @pytest.mark.consent
     @pytest.mark.order(906)
-    @pytest.mark.skip(reason="Script in progress")
+    # @pytest.mark.skip(reason="Script in progress")
     def test_conflicting_consent_with_gillick_consent(self, setup_conflicting_consent: None):
         self.sessions_page.bug_mavis_1818()
