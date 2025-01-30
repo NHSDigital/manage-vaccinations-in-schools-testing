@@ -64,6 +64,8 @@ class pg_parental_consent:
     LBL_HEADING = "heading"
     LNK_CHANGE_PHONE = "Change   your phone"
     LNK_ADD_PHONE_NUMBER = "Add phone number"
+    RDO_CHILD_GILLICK_COMPETENT = "Child (Gillick competent)"
+    BTN_SAVE_TRIAGE = "Save triage"
 
     # CONSTANTS
     VACCINE_ALREADY_RECEIVED = "vaccine already received"
@@ -340,3 +342,35 @@ class pg_parental_consent:
             locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
             action=actions.CHAIN_LOCATOR_ACTION,
         )
+
+    def child_consent_verbal_positive(self):
+        self.po.act(locator=self.RDO_CHILD_GILLICK_COMPETENT, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)  # Yes send notification to parents
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.set_health_questions_no()
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+
+    def update_triage_outcome_positive(self):
+        self.po.act(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Triage outcome updated for"
+        )
+
+    def parent_1_verbal_refuse_consent(self):
+        self.po.act(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)  # Parent contact details page
+        self.po.act(locator=self.RDO_IN_PERSON, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_NO_THEY_DO_NOT_AGREE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)

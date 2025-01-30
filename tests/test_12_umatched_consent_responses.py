@@ -13,6 +13,10 @@ class Test_Unmatched_Consent_Responses:
     dashboard_page = pg_dashboard.pg_dashboard()
     unmatched_page = pg_unmatched.pg_unmatched()
 
+    # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS TO HAVE RUN FIRST
+    # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS
+    # SET THE 'RESET_ENV_BEFORE_EXECUTION' FLAG (in .env) TO 'false' IF RUNNING ONLY CONSENT TESTS
+
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()

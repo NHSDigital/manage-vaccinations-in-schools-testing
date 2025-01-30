@@ -565,9 +565,30 @@ class pg_sessions:
         self.click_child_no_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_online_positive()
-        self.click_no_response()
+        self.click_consent_given()
+        self.click_child_no_consent()
+        self.click_update_triage_outcome()
+        self.consent_page.update_triage_outcome_positive()
         self.click_child_no_consent()
         self.click_get_consent_response()
+        self.consent_page.parent_1_verbal_refuse_consent()
+        self.click_consent_refused()
+        self.click_child_no_consent()
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Dad refused to give consent."
+        )
+        self.click_activity_log()
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent refused by Parent1 (Dad)"
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Triaged decision: Safe to vaccinate",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given by Parent1 (Dad)"
+        )
 
     def verify_attendance_filters(self):
         # Check year filters
@@ -627,25 +648,29 @@ class pg_sessions:
             property=element_properties.TEXT,
             expected_value="Triaged decision: Safe to vaccinate",
         )
+        self.click_get_consent_response()
+        self.consent_page.child_consent_verbal_positive()
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value=f"Consent recorded for {self.LNK_CHILD_CONFLICTING_CONSENT}",
+        )
+        self.click_consent_given()
+        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Ready for nurse",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value=f"Nurse Joy decided that {self.LNK_CHILD_CONFLICTING_CONSENT} is ready for the nurse.",
+        )
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.click_activity_log()
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value="Completed Gillick assessment as Gillick competent",
+            expected_value=f"Consent given by {self.LNK_CHILD_CONFLICTING_CONSENT} (Child (Gillick competent))",
         )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
-            expected_value="Consent refused by Parent2 (Mum)",
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
-            expected_value="Consent given by Parent1 (Dad)",
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
-            expected_value="Triaged decision: Safe to vaccinate",
-        )
-        # TODO: Confirm that the above messages are valid.

@@ -107,18 +107,16 @@ class Test_Consent:
 
     @pytest.mark.consent
     @pytest.mark.order(904)
-    @pytest.mark.skip(reason="Development in progress")
+    @pytest.mark.skip(reason="Development card in backlog")
     def test_phone_number_added_later_shows_phone_options(self, setup_invalidated_consent: None):
         self.sessions_page.bug_mavis_1801()
 
     @pytest.mark.consent
     @pytest.mark.order(905)
-    @pytest.mark.skip(reason="Script in progress")
     def test_parent_provides_consent_twice(self, setup_invalidated_consent: None):
         self.sessions_page.bug_mavis_1864()
 
     @pytest.mark.consent
     @pytest.mark.order(906)
-    @pytest.mark.skip(reason="Script in progress")
     def test_conflicting_consent_with_gillick_consent(self, setup_conflicting_consent: None):
         self.sessions_page.bug_mavis_1818()
