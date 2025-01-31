@@ -18,7 +18,7 @@ class Test_Children:
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
-        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_POSITIVE)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_CHILDREN_FILTER)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
         yield
