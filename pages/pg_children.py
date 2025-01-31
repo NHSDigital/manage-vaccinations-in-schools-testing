@@ -9,7 +9,7 @@ class pg_children:
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    CHILD1 = "NoConsent1"
+    CHILD1 = "CFilter1"
     LBL_CHILD_RECORD = f"1 child matching “{CHILD1}”"
 
     LBL_CHILDREN = "Children"

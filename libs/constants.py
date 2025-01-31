@@ -26,10 +26,10 @@ class actions:
 
 
 class screenshot_actions:
-    VERIFY_TEXT_PASSED = "verify_text_passed"
-    VERIFY_TEXT_FAILED = "verify_text_failed"
-    VERIFY_VISIBILITY_PASSED = "verify_visibility_passed"
-    VERIFY_VISIBILITY_FAILED = "verify_visibility_failed"
+    VERIFY_TEXT_PASSED: Final[str] = "verify_text_passed"
+    VERIFY_TEXT_FAILED: Final[str] = "verify_text_failed"
+    VERIFY_VISIBILITY_PASSED: Final[str] = "verify_visibility_passed"
+    VERIFY_VISIBILITY_FAILED: Final[str] = "verify_visibility_failed"
 
 
 class screenshot_file_types:
@@ -95,7 +95,7 @@ class escape_characters:
     PIPE: Final[str] = "|"
     ASTERISK: Final[str] = "*"
     QUESTION_MARK: Final[str] = "?"
-    UI_FORMATTING: Final[str] = [
+    UI_FORMATTING: Final[list[str]] = [
         SPACE,
         NEW_LINE,
         CARRIAGE_RETURN,
@@ -106,7 +106,7 @@ class escape_characters:
         SINGLE_QUOTE_CLOSE,
         TAB,
     ]
-    FILE_NAME: Final[str] = [
+    FILE_NAME: Final[list[str]] = [
         SEPARATOR_CHAR,
         COLON,
         DOUBLE_QUOTE,
@@ -151,8 +151,10 @@ class test_data_file_paths:
     CLASS_INVALID_STRUCTURE: Final[str] = "CLASS_INVALID_STRUCTURE"
     CLASS_EMPTY_FILE: Final[str] = "CLASS_EMPTY_FILE"
     CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"
+    CLASS_CHILDREN_FILTER: Final[str] = "CLASS_CHILDREN_FILTER"
     COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
     COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
+    COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
     VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
     CLASS_MOVES_ONE: Final[str] = "CLASS_MOVES_ONE"
     CLASS_MOVES_TWO: Final[str] = "CLASS_MOVES_TWO"
