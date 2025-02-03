@@ -5,5 +5,19 @@
       "path": "."
     }
   ],
-  "settings": {}
+  "settings": {
+    "[python]": {
+      "diffEditor.ignoreTrimWhitespace": false,
+      "editor.defaultColorDecorators": "always",
+      "gitlens.codeLens.symbolScopes": [
+        "!Module"
+      ],
+      "editor.formatOnType": true,
+      "editor.wordBasedSuggestions": "off",
+      "editor.autoIndent": "advanced",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+      }
+    }
+  }
 }
