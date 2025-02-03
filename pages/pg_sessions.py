@@ -16,6 +16,11 @@ class pg_sessions:
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
     LNK_SCHOOL_2 = "Barn End Centre"
 
+    LNK_CHILD_FULL_NAME = "CF"
+    LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
+    LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
+    LNK_CHILD_E2E1 = "CE2E1 CE2E1"
+
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
     LNK_TAB_UNSCHEDULED = "Unscheduled"
@@ -29,9 +34,6 @@ class pg_sessions:
     BTN_CONTINUE = "Continue"
     LNK_ADD_SESSION_DATES = "Add session dates"
     LNK_RECORD_VACCINATIONS = "Record vaccinations"
-    LNK_CHILD_FULL_NAME = "CF"
-    LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
-    LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
     LNK_UPDATE_TRIAGE_OUTCOME = "Update triage outcome"
     LNK_SCHEDULE_SESSIONS = "Schedule sessions"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
@@ -163,6 +165,9 @@ class pg_sessions:
 
     def click_child_conflicting_consent(self):
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=actions.CLICK_LINK)
+
+    def click_child_e2e1(self):
+        self.po.act(locator=self.LNK_CHILD_E2E1, action=actions.CLICK_LINK)
 
     def click_update_triage_outcome(self):
         self.po.act(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
@@ -674,3 +679,9 @@ class pg_sessions:
             property=element_properties.TEXT,
             expected_value=f"Consent given by {self.LNK_CHILD_CONFLICTING_CONSENT} (Child (Gillick competent))",
         )
+
+    def give_consent_for_e2e1_child_by_parent_1(self):
+        self.click_check_consent_responses()
+        self.click_child_e2e1()
+        self.click_get_consent_response()
+        self.consent_page.parent_1_verbal_positive(change_phone=False)
