@@ -1,5 +1,6 @@
 import os
 import re
+from itertools import chain
 from sys import prefix
 
 from libs import CurrentExecution
@@ -32,15 +33,12 @@ class playwright_operations:
             # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})  # Not prudent for mobile screenshots
             self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG)
 
-    def verify(
-        self,
-        locator: str,
-        property: str,
-        expected_value: str,
-        exact: bool = False,
-        by_test_id: bool = False,
-        chain_locator: bool = False,
-    ) -> None:
+    def verify(self, locator: str, property: str, expected_value: str, **kwargs) -> None:
+        # Unpack keyword arguments
+        exact: bool = kwargs.get("exact", False)
+        by_test_id: bool = kwargs.get("by_test_id", False)
+        chain_locator: bool = kwargs.get("chain_locator", False)
+        # Act
         actual_value = self.get_element_property(
             locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
         )
@@ -82,9 +80,12 @@ class playwright_operations:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
                 assert expected_value == actual_value, f"{locator} is not visible."
 
-    def get_element_property(
-        self, locator: str, property: str, by_test_id: bool = False, chain_locator: bool = False, index: int = 0
-    ) -> str:
+    def get_element_property(self, locator: str, property: str, **kwargs) -> str:
+        # Unpack keyword arguments
+        by_test_id: bool = kwargs.get("by_test_id", False)
+        chain_locator: bool = kwargs.get("chain_locator", False)
+        index: int = kwargs.get("index", 0)
+        # Act
         match property:
             case element_properties.TEXT:
                 if by_test_id:
@@ -127,7 +128,11 @@ class playwright_operations:
             case element_properties.EXISTS:
                 return self.ce.page.query_selector(locator) is not None
 
-    def act(self, locator, action, value=None, exact: bool = False, index: int = 0) -> None:
+    def act(self, locator, action, value=None, **kwargs) -> None:
+        # Unpack keyword arguments
+        exact: bool = kwargs.get("exact", False)
+        index: int = kwargs.get("index", 0)
+        # Act
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:

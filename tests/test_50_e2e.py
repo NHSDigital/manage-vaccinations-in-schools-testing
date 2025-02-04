@@ -24,7 +24,6 @@ class Test_E2E:
 
     @pytest.mark.e2e
     @pytest.mark.order(5001)
-    # @pytest.mark.skip(reason="Under construction")
     def test_e2e(self):
         self.dashboard_page.click_programmes()
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_E2E_1)
