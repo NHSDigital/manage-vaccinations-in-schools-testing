@@ -24,14 +24,12 @@ class playwright_operations:
     def capture_screenshot(self, identifier: str, action: str) -> None:
         if self.ce.capture_screenshot_flag:
             self.ce.screenshot_sequence += 1
-            _ss_path = clean_file_name(
-                os.path.join(
-                    self.ce.session_screenshots_dir,
-                    f"{self.ce.screenshot_sequence}-{action}-{identifier}-{self.ce.current_browser_name}.{screenshot_file_types.JPEG}",
-                )
+            _ss_path = os.path.join(
+                self.ce.session_screenshots_dir,
+                f"{self.ce.screenshot_sequence}-{action}-{identifier}.{screenshot_file_types.JPEG}",
             )
-            # self.ce.page.set_viewport_size({"width": 1500, "height": 1500})  # Not prudent for mobile screenshots
-            self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG)
+            _ss_cleaned_path = clean_file_name(_ss_path)
+            self.ce.page.screenshot(path=_ss_cleaned_path, type=screenshot_file_types.JPEG, full_page=True)
 
     def verify(self, locator: str, property: str, expected_value: str, **kwargs) -> None:
         # Unpack keyword arguments

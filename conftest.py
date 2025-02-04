@@ -14,8 +14,8 @@ def pytest_addoption(parser):
 def start_playwright_session(request):
     ce.get_env_values()
     ce.reset_environment()
-    ce.session_screenshots_dir = create_session_screenshot_dir()
     ce.current_browser_name = request.config.getoption("browser_or_device")
+    ce.session_screenshots_dir = create_session_screenshot_dir()
     with sync_playwright() as _playwright:
         _playwright.selectors.set_test_id_attribute("data-qa")
         yield _playwright
