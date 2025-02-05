@@ -134,110 +134,141 @@ class playwright_operations:
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case actions.CLICK_LINK:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
-                else:
-                    elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
-                elem.click()
+                self._click_link(locator=locator, exact=exact, index=index)
             case actions.CLICK_BUTTON:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator).nth(index)
-                elem.click()
+                self._click_button(locator=locator, exact=exact, index=index)
             case actions.CLICK_LABEL:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-                elem.click()
+                self._click_label(locator=locator, exact=exact, index=index)
             case actions.CLICK_TEXT:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_text(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
-                elem.click()
+                self._click_text(locator=locator, exact=exact, index=index)
             case actions.FILL | actions.TYPE:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-                elem.click()
-                if value != data_values.EMPTY:
-                    elem.fill(value)
-                self.capture_screenshot(identifier=locator, action=f"after-{action}")
+                self._fill(locator=locator, value=value, exact=exact, index=index)
             case actions.RADIO_BUTTON_SELECT:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-                elem.click()
-                self.capture_screenshot(identifier=locator, action=f"after-{action}")
+                self._radio_button_select(locator=locator, exact=exact, index=index)
             case actions.SELECT_FILE:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-                elem.set_input_files(value)
+                self._select_file(locator=locator, value=value, exact=exact, index=index)
             case actions.SELECT_FROM_LIST:
-                self.act(locator=locator, action=actions.FILL, value=value)
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_role(aria_roles.OPTION, name=value)
-                elem.click()
+                self._select_from_list(locator=locator, value=value, index=index)
             case actions.CHECKBOX_CHECK:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_label(locator).nth(index)
-                elem.check()
+                self._checkbox_check(locator=locator, index=index)
             case actions.CHECKBOX_UNCHECK:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = self.ce.page.get_by_label(locator).nth(0)
-                elem.uncheck()
+                self._checkbox_uncheck(locator=locator, index=index)
             case actions.CLICK_LINK_INDEX_FOR_ROW:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    elem = (
-                        self.ce.page.get_by_role(
-                            aria_roles.ROW,
-                            name=locator,
-                        )
-                        .get_by_role(aria_roles.LINK)
-                        .nth(value)
-                    )
-                elem.click()
+                self._click_index_for_row(locator=locator, value=value, index=index)
             case actions.CLICK_WILDCARD:
-                elem = self.ce.page.click(f"text={locator}")
+                self.ce.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
                 eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
         self.capture_screenshot(identifier=locator, action=f"after-{action}")
+
+    def _click_link(self, locator: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
+        else:
+            elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
+        elem.click()
+
+    def _click_button(self, locator: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator, exact=exact).nth(index)
+        elem.click()
+
+    def _click_label(self, locator: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+        elem.click()
+
+    def _click_text(self, locator: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_text(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
+        elem.click()
+
+    def _fill(self, locator: str, value: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+        elem.click()
+        if value != data_values.EMPTY:
+            elem.fill(value)
+
+    def _radio_button_select(self, locator: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+        elem.click()
+
+    def _select_file(self, locator: str, value: str, exact: bool, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+        elem.set_input_files(value)
+
+    def _select_from_list(self, locator: str, value: str, index: int):
+        self._fill(locator=locator, value=value, exact=False, index=index)
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_role(aria_roles.OPTION, name=value)
+        elem.click()
+
+    def _checkbox_check(self, locator: str, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_label(locator).nth(index)
+        elem.check()
+
+    def _checkbox_uncheck(self, locator: str, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = self.ce.page.get_by_label(locator).nth(0)
+        elem.uncheck()
+
+    def _click_index_for_row(self, locator: str, value: str, index: int):
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            elem = (
+                self.ce.page.get_by_role(
+                    aria_roles.ROW,
+                    name=locator,
+                )
+                .get_by_role(aria_roles.LINK)
+                .nth(value)
+            )
+        elem.click()
 
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url

@@ -665,14 +665,13 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value="Ready for nurse",
+            expected_value="Conflicting consent",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Nurse Joy decided that {self.LNK_CHILD_CONFLICTING_CONSENT} is ready for the nurse.",
+            expected_value=f"You can only vaccinate if all respondents give consent.",
         )
-        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.click_activity_log()
         self.po.verify(
             locator=self.LBL_MAIN,
