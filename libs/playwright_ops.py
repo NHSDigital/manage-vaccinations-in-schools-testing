@@ -5,9 +5,9 @@ from sys import prefix
 
 from libs import CurrentExecution
 from libs.constants import (
-    actions,
     aria_roles,
     data_values,
+    element_actions,
     element_properties,
     html_tags,
     screenshot_actions,
@@ -133,31 +133,31 @@ class playwright_operations:
         # Act
         self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
-            case actions.CLICK_LINK:
+            case element_actions.CLICK_LINK:
                 self._click_link(locator=locator, exact=exact, index=index)
-            case actions.CLICK_BUTTON:
+            case element_actions.CLICK_BUTTON:
                 self._click_button(locator=locator, exact=exact, index=index)
-            case actions.CLICK_LABEL:
+            case element_actions.CLICK_LABEL:
                 self._click_label(locator=locator, exact=exact, index=index)
-            case actions.CLICK_TEXT:
+            case element_actions.CLICK_TEXT:
                 self._click_text(locator=locator, exact=exact, index=index)
-            case actions.FILL | actions.TYPE:
+            case element_actions.FILL | element_actions.TYPE:
                 self._fill(locator=locator, value=value, exact=exact, index=index)
-            case actions.RADIO_BUTTON_SELECT:
+            case element_actions.RADIO_BUTTON_SELECT:
                 self._radio_button_select(locator=locator, exact=exact, index=index)
-            case actions.SELECT_FILE:
+            case element_actions.SELECT_FILE:
                 self._select_file(locator=locator, value=value, exact=exact, index=index)
-            case actions.SELECT_FROM_LIST:
+            case element_actions.SELECT_FROM_LIST:
                 self._select_from_list(locator=locator, value=value, index=index)
-            case actions.CHECKBOX_CHECK:
+            case element_actions.CHECKBOX_CHECK:
                 self._checkbox_check(locator=locator, index=index)
-            case actions.CHECKBOX_UNCHECK:
+            case element_actions.CHECKBOX_UNCHECK:
                 self._checkbox_uncheck(locator=locator, index=index)
-            case actions.CLICK_LINK_INDEX_FOR_ROW:
+            case element_actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
-            case actions.CLICK_WILDCARD:
+            case element_actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
-            case actions.CHAIN_LOCATOR_ACTION:
+            case element_actions.CHAIN_LOCATOR_ACTION:
                 eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
         self.capture_screenshot(identifier=locator, action=f"after-{action}")
 

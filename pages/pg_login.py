@@ -1,5 +1,5 @@
 from libs import CurrentExecution, playwright_ops
-from libs.constants import actions, element_properties
+from libs.constants import element_actions, element_properties
 
 
 class pg_login:
@@ -20,12 +20,12 @@ class pg_login:
 
     def login_as_nurse(self):
         self.__login_actions(username=self.ce.nurse_username, password=self.ce.nurse_password)
-        self.po.act(locator=self.BTN_NURSE_ROLE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_NURSE_ROLE, action=element_actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.LBL_NURSE)
 
     def login_as_superuser(self):
         self.__login_actions(username=self.ce.superuser_username, password=self.ce.superuser_password)
-        self.po.act(locator=self.BTN_SUPERUSER_ROLE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_SUPERUSER_ROLE, action=element_actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.LBL_SUPERUSER)
 
     def try_invalid_login(self, user: str, pwd: str, expected_message: str) -> str:
@@ -33,17 +33,17 @@ class pg_login:
         self.verify_login(is_successful_login=False, verify_text=expected_message)
 
     def logout_of_mavis(self):
-        self.po.act(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_LOGOUT, action=element_actions.CLICK_BUTTON)
 
     def verify_login(self, is_successful_login: bool, verify_text: str):
         _locator = self.LBL_BANNER if is_successful_login else self.LBL_PARAGRAPH
         self.po.verify(locator=_locator, property=element_properties.TEXT, expected_value=verify_text)
 
     def __login_actions(self, username: str, password: str) -> None:
-        self.po.act(locator=self.LNK_START_NOW, action=actions.CLICK_LINK)
-        self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=username)
-        self.po.act(locator=self.TXT_PASSWORD, action=actions.FILL, value=password)
-        self.po.act(locator=self.BTN_LOGIN, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_START_NOW, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=element_actions.FILL, value=username)
+        self.po.act(locator=self.TXT_PASSWORD, action=element_actions.FILL, value=password)
+        self.po.act(locator=self.BTN_LOGIN, action=element_actions.CLICK_BUTTON)
 
     def go_to_login_page(self) -> None:
         self.ce.page.goto(self.ce.service_url)
