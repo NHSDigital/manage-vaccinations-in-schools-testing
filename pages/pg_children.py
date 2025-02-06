@@ -1,5 +1,5 @@
 from libs import CurrentExecution, playwright_ops
-from libs.constants import actions, element_properties, wait_time
+from libs.constants import element_actions, element_properties, wait_time
 from libs.wrappers import *
 from pages import pg_dashboard
 
@@ -28,8 +28,8 @@ class pg_children:
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_TABLE_HEADERS)
 
     def verify_filter(self):
-        self.po.act(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
-        self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=self.CHILD1)
+        self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)
+        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.CHILD1)
         wait(timeout=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
@@ -38,11 +38,11 @@ class pg_children:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             for child_name in self.ce.child_list:
-                self.po.act(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
-                self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
+                self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)
+                self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=child_name)
                 wait(timeout=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
-                self.po.act(locator=self.LNK_CLEAR_FILTERS, action=actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_CLEAR_FILTERS, action=element_actions.CLICK_LINK)
 
     def verify_activity_log_for_created_or_matched_child(self, child_name: str, is_created: bool):
         _log_text: str = ""
@@ -50,11 +50,11 @@ class pg_children:
             _log_text = "Consent response manually created with child record"  # FIXME: Update this text when MAVIS-1896 is closed
         else:
             _log_text = "Consent response manually matched with child record"
-        self.po.act(locator=self.LNK_FILTER_CHILDREN, action=actions.CLICK_TEXT)
-        self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
+        self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)
+        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=child_name)
         wait(timeout=wait_time.MIN)
-        self.po.act(locator=child_name, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_ACTIVITY_LOG, action=actions.CLICK_TEXT)
+        self.po.act(locator=child_name, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_ACTIVITY_LOG, action=element_actions.CLICK_TEXT)
         wait(timeout=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.po.verify(

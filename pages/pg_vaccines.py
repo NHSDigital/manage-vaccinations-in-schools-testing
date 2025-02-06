@@ -1,5 +1,5 @@
 from libs import playwright_ops
-from libs.constants import actions, element_properties
+from libs.constants import element_actions, element_properties
 from libs.wrappers import *
 
 
@@ -33,35 +33,35 @@ class pg_vaccines:
 
     def enter_batch_name(self):
         self.batch_name = f"Auto{get_new_datetime()}"
-        self.po.act(locator=self.TXT_BATCH_NAME, action=actions.FILL, value=self.batch_name)
+        self.po.act(locator=self.TXT_BATCH_NAME, action=element_actions.FILL, value=self.batch_name)
 
     def enter_batch_expiry(self, expiry_date: str = ""):
         _future_expiry_date = get_offset_date(offset_days=730) if expiry_date == "" else expiry_date
         _day = _future_expiry_date[-2:]
         _month = _future_expiry_date[4:6]
         _year = _future_expiry_date[:4]
-        self.po.act(locator=self.TXT_EXPIRY_DAY, action=actions.FILL, value=_day)
-        self.po.act(locator=self.TXT_EXPIRY_MONTH, action=actions.FILL, value=_month)
-        self.po.act(locator=self.TXT_EXPIRY_YEAR, action=actions.FILL, value=_year)
+        self.po.act(locator=self.TXT_EXPIRY_DAY, action=element_actions.FILL, value=_day)
+        self.po.act(locator=self.TXT_EXPIRY_MONTH, action=element_actions.FILL, value=_month)
+        self.po.act(locator=self.TXT_EXPIRY_YEAR, action=element_actions.FILL, value=_year)
 
     def add_batch(self):
-        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=element_actions.CLICK_LINK)
         self.enter_batch_name()
         self.enter_batch_expiry()
-        self.po.act(locator=self.BTN_ADD_BATCH, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_ADD_BATCH, action=element_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} added"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def change_batch(self):
-        self.po.act(locator=self.batch_name, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=0)  # CHANGE link
-        self.po.act(locator=self.TXT_EXPIRY_YEAR, action=actions.FILL, value="2031")
-        self.po.act(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.batch_name, action=element_actions.CLICK_LINK_INDEX_FOR_ROW, value=0)  # CHANGE link
+        self.po.act(locator=self.TXT_EXPIRY_YEAR, action=element_actions.FILL, value="2031")
+        self.po.act(locator=self.BTN_SAVE_CHANGES, action=element_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} updated"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def archive_batch(self):
-        self.po.act(locator=self.batch_name, action=actions.CLICK_LINK_INDEX_FOR_ROW, value=1)  # ARCHIVE link
-        self.po.act(locator=self.BTN_CONFIRM_ARCHIVE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.batch_name, action=element_actions.CLICK_LINK_INDEX_FOR_ROW, value=1)  # ARCHIVE link
+        self.po.act(locator=self.BTN_CONFIRM_ARCHIVE, action=element_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_BATCH_ARCHIVED
         )

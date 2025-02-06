@@ -8,7 +8,7 @@ class element_properties:
     EXISTS: Final[str] = "exists"
 
 
-class actions:
+class element_actions:
     CLICK_LINK: Final[str] = "click_link"
     CLICK_BUTTON: Final[str] = "click_button"
     CLICK_LABEL: Final[str] = "click_label"
