@@ -45,38 +45,12 @@ class playwright_operations:
                 if expected_value != "":
                     if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
                         return
-                if exact:
-                    if expected_value == actual_value:
-                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                     else:
-                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                    assert (
-                        expected_value == actual_value
-                    ), f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
-                else:
-                    if expected_value.startswith(escape_characters.NOT_OPERATOR):
-                        expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
-                        if clean_text(text=expected_value) not in clean_text(text=actual_value):
-                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
-                        else:
-                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                        assert clean_text(text=expected_value) not in clean_text(
-                            text=actual_value
-                        ), f"Text '{expected_value}' not found in '{actual_value}'."
-                    else:
-                        if clean_text(text=expected_value) in clean_text(text=actual_value):
-                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
-                        else:
-                            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                        assert clean_text(text=expected_value) in clean_text(
-                            text=actual_value
-                        ), f"Text '{expected_value}' not found in '{actual_value}'."
+                        self._verify_text(
+                            locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
+                        )
             case element_properties.VISIBILITY:
-                if actual_value == expected_value:
-                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
-                else:
-                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
-                assert expected_value == actual_value, f"{locator} is not visible."
+                self._verify_visibility(locator=locator, expected_value=expected_value, actual_value=actual_value)
 
     def get_element_property(self, locator: str, property: str, **kwargs) -> str:
         # Unpack keyword arguments
@@ -86,43 +60,13 @@ class playwright_operations:
         # Act
         match property:
             case element_properties.TEXT:
-                if by_test_id:
-                    elem = self.ce.page.get_by_test_id(locator)
-                else:
-                    if chain_locator:
-                        elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
-                    else:
-                        if escape_characters.SEPARATOR_CHAR in locator:
-                            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                            elem = self.ce.page.get_by_role(_location, name=_locator).locator(aria_roles.SPAN)
-                        else:
-                            elem = self.ce.page.get_by_role(locator).nth(index)
-                elem.scroll_into_view_if_needed()
-                return "".join(elem.all_text_contents()).strip()
+                return self._get_element_text(
+                    locator=locator, index=index, by_test_id=by_test_id, chain_locator=chain_locator
+                )
             case element_properties.VISIBILITY:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    if chain_locator:
-                        wait(timeout=wait_time.MIN)
-                        elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
-                    else:
-                        elem = self.ce.page.get_by_role(locator).nth(0)
-                return elem.is_visible()
+                return self._get_element_visibility(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.HREF:
-                if escape_characters.SEPARATOR_CHAR in locator:
-                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-                else:
-                    if chain_locator:
-                        elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
-                    else:
-                        elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
-                return elem.get_attribute(element_properties.HREF)
+                return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.EXISTS:
                 return self.ce.page.query_selector(locator) is not None
 
@@ -269,6 +213,82 @@ class playwright_operations:
                 .nth(value)
             )
         elem.click()
+
+    def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
+        if exact:
+            if expected_value == actual_value:
+                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+            else:
+                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
+            assert (
+                expected_value == actual_value
+            ), f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
+        else:
+            if expected_value.startswith(escape_characters.NOT_OPERATOR):
+                expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
+                if clean_text(text=expected_value) not in clean_text(text=actual_value):
+                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                else:
+                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
+                assert clean_text(text=expected_value) not in clean_text(
+                    text=actual_value
+                ), f"Text '{expected_value}' not found in '{actual_value}'."
+            else:
+                if clean_text(text=expected_value) in clean_text(text=actual_value):
+                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                else:
+                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
+                assert clean_text(text=expected_value) in clean_text(
+                    text=actual_value
+                ), f"Text '{expected_value}' not found in '{actual_value}'."
+
+    def _verify_visibility(self, locator: str, expected_value: str, actual_value: str):
+        if actual_value == expected_value:
+            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
+        else:
+            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
+        assert expected_value == actual_value, f"{locator} is not visible."
+
+    def _get_element_text(self, locator: str, index: int, by_test_id: bool, chain_locator: bool) -> str:
+        if by_test_id:
+            elem = self.ce.page.get_by_test_id(locator)
+        else:
+            if chain_locator:
+                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+            else:
+                if escape_characters.SEPARATOR_CHAR in locator:
+                    _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                    _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                    elem = self.ce.page.get_by_role(_location, name=_locator).locator(aria_roles.SPAN)
+                else:
+                    elem = self.ce.page.get_by_role(locator).nth(index)
+        elem.scroll_into_view_if_needed()
+        return "".join(elem.all_text_contents()).strip()
+
+    def _get_element_visibility(self, locator: str, index: int, chain_locator: bool) -> str:
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            if chain_locator:
+                wait(timeout=wait_time.MIN)
+                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+            else:
+                elem = self.ce.page.get_by_role(locator).nth(0)
+        return elem.is_visible()
+
+    def _get_element_href(self, locator: str, index: int, chain_locator: bool) -> str:
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            if chain_locator:
+                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+            else:
+                elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
+        return elem.get_attribute(element_properties.HREF)
 
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
