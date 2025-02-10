@@ -35,6 +35,7 @@ class Test_Sessions:
         self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
+    @pytest.mark.mobile
     @pytest.mark.sessions
     @pytest.mark.order(201)
     def test_session_lifecycle(self, setup_tests):
