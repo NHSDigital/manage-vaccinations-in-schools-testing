@@ -37,3 +37,4 @@ Row 34 VACCINATED: You need to record whether the child was vaccinated or not. E
 !Row 35 DATE_OF_VACCINATION: Enter a date for a current session
 Row 35 CARE_SETTING: Enter a valid care setting.
 Row 36 TIME_OF_VACCINATION: Enter a time in the past
+Row 37 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.

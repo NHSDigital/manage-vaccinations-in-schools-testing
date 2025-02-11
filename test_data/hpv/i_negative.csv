@@ -35,3 +35,4 @@ N_InvalidReason,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>
 N_InvalidVaccinatedFlag,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,X,1,,,nurse.joy@example.com,,00:01,
 N_InvalidCareSetting,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,10,,,nurse.joy@example.com,,00:01,
 N_TimeInFuture,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,Y,1,,,nurse.joy@example.com,,23:00,
+N_VaccinatedFlagEmpty,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100228,Female,DN9 1PB,<<VACCS_DATE>>,Gardasil9,Batch1,20301231,left thigh,1,,1,,,nurse.joy@example.com,,00:01,Did not attend
