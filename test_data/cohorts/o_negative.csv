@@ -1,15 +1,15 @@
 Records could not be imported
-Row 1 CHILD_FIRST_NAME: is required but missing
-Row 2 CHILD_LAST_NAME: is required but missing
-Row 4 CHILD_DATE_OF_BIRTH: is required but missing
-Row 6 CHILD_SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
+Row 2 CHILD_FIRST_NAME: is required but missing
+Row 3 CHILD_LAST_NAME: is required but missing
+Row 5 CHILD_DATE_OF_BIRTH: is required but missing
 Row 7 CHILD_SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
-Row 8 CHILD_POSTCODE: is required but missing
-Row 9 PARENT_1_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
-Row 10 PARENT_2_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
-Row 11 CHILD_YEAR_GROUP: is not part of this programme
-Row 12 CHILD_POSTCODE: Enter a valid postcode, such as SW1A 1AA
-Row 13 CHILD_YEAR_GROUP: is not part of this programme
-Row 14 CHILD_YEAR_GROUP: is required but missing
-Row 15 CHILD_YEAR_GROUP: is not part of this programme
-Row 16 CHILD_YEAR_GROUP: is required but missing
+Row 8 CHILD_SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
+Row 9 CHILD_POSTCODE: is required but missing
+Row 10 PARENT_1_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
+Row 11 PARENT_2_EMAIL: ‘example.com’ should be a valid email address, like j.doe@example.com
+Row 12 CHILD_YEAR_GROUP: is not part of this programme
+Row 13 CHILD_POSTCODE: Enter a valid postcode, such as SW1A 1AA
+Row 14 CHILD_YEAR_GROUP: is not part of this programme
+Row 15 CHILD_YEAR_GROUP: is required but missing
+Row 16 CHILD_YEAR_GROUP: is not part of this programme
+Row 17 CHILD_YEAR_GROUP: is required but missing
