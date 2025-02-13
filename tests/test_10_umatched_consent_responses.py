@@ -26,31 +26,31 @@ class Test_Unmatched_Consent_Responses:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.unmatchedconsentresponses
-    @pytest.mark.order(1201)
+    @pytest.mark.order(1001)
     @pytest.mark.dependency(name="ucr_records_exist")
     def test_ucr_check_records_exist(self):
         self.unmatched_page.verify_records_exist()
 
     @pytest.mark.unmatchedconsentresponses
-    @pytest.mark.order(1202)
+    @pytest.mark.order(1002)
     @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_archive_record(self):
         self.unmatched_page.archive_record()  # Covers MAVIS-1782
 
     @pytest.mark.unmatchedconsentresponses
-    @pytest.mark.order(1203)
+    @pytest.mark.order(1003)
     @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_create_record(self):
         self.unmatched_page.create_record()  # Covers MAVIS-1812
 
     @pytest.mark.unmatchedconsentresponses
-    @pytest.mark.order(1204)
-    @pytest.mark.dependency(depends=["ucr_records_exist"])
+    @pytest.mark.order(1004)
+    # @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_match_record(self):
         self.unmatched_page.match_with_record()  # Covers MAVIS-1812
 
     @pytest.mark.unmatchedconsentresponses
-    @pytest.mark.order(1205)
+    @pytest.mark.order(1005)
     @pytest.mark.dependency(depends=["ucr_records_exist"])
     def test_ucr_create_record_with_no_nhs_number(self):
         self.unmatched_page.create_record_with_no_nhs_number()  # MAVIS-1781

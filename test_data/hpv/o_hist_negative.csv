@@ -1,5 +1,5 @@
-Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
-Row 3 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
+#Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
+Row 3 ORGANISATION_CODE: Enter an organisation code
 Row 4 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
 Row 5 SCHOOL_NAME: Enter a school name.
 Row 6 NHS_NUMBER: Enter an NHS number with 10 characters.
@@ -21,9 +21,9 @@ Row 21 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil9.
 Row 22 BATCH_NUMBER: Enter a batch number.
 Row 23 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 24 ANATOMICAL_SITE: Enter an anatomical site.
-Row 25 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
+Row 28 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
 Row 29 DOSE_SEQUENCE: must be less than or equal to 3
 Row 30 CARE_SETTING: Enter a care setting.
-Row 31 TIME_OF_VACCINATION: Enter a time in the correct format
-Row 37 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reasonVACCINE_GIVEN: must be blank
+Row 35 TIME_OF_VACCINATION: Enter a time in the correct format
+Row 37 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
 Row 38 CARE_SETTING: Enter a valid care setting.
