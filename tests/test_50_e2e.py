@@ -14,7 +14,7 @@ class Test_E2E:
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
-        self.ce.reset_environment()
+        # self.ce.reset_environment()
         self.login_page.login_as_nurse()
         yield
         self.dashboard_page.go_to_dashboard()

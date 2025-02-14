@@ -31,11 +31,11 @@ class pg_unmatched:
     LBL_CHILD_NAME_FOR_CREATION = "HELENA HOYTE"
     LBL_CHILD_NAME_FOR_MATCHING = "BERYL TWIST"
     LBL_CHILD_NO_NHS_NUMBER = "NoNHS NoNumber"
-    LBL_CHILD_NAME_TO_MATCH = "ChildFirst1"
+    LBL_CHILD_NAME_TO_MATCH = "CMatch1"
     TXT_FILTER_NAME = "Name"
     LNK_SELECT_FILTERED_CHILD = "Select"
     BTN_LINK_RESPONSE_WITH_RECORD = "Link response with record"
-    LBL_CONSENT_MATCHED = "Consent matched for ChildFirst1 ChildLast1"
+    LBL_CONSENT_MATCHED = f"Consent matched for {LBL_CHILD_NAME_TO_MATCH}"
 
     def verify_records_exist(self):
         self.po.verify(

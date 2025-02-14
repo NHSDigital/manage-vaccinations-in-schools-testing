@@ -158,3 +158,4 @@ class test_data_file_paths:
     VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
     CLASS_MOVES_ONE: Final[str] = "CLASS_MOVES_ONE"
     CLASS_MOVES_TWO: Final[str] = "CLASS_MOVES_TWO"
+    COHORTS_UCR_MATCH: Final[str] = "COHORTS_UCR_MATCH"
