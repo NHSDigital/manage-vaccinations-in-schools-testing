@@ -1,6 +1,7 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.constants import element_actions, element_properties, wait_time
 from libs.wrappers import *
+from pages import pg_sessions
 
 
 class pg_programmes:
@@ -8,6 +9,7 @@ class pg_programmes:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
+    sessions_page = pg_sessions.pg_sessions()
 
     LNK_HPV = "HPV"
     LNK_IMPORTS = "Imports"
@@ -106,6 +108,7 @@ class pg_programmes:
         self.click_hpv()
         self.click_imports()
         self.click_import_records()
+        self.sessions_page.__select_all_year_groups()
         self.select_vaccination_records()
         self.click_continue()
         self.choose_file_vaccination_records(file_path=_input_file_path)
@@ -141,8 +144,8 @@ class pg_programmes:
         self.click_continue()
         self.record_upload_time()
         wait(timeout=wait_time.MED)
-        self.click_imports()
-        self.click_uploaded_file_datetime()
+        # self.click_imports()
+        # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_files(self, file_paths: str):

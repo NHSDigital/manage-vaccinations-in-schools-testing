@@ -35,14 +35,14 @@ class Test_Class_List_Upload:
     @pytest.mark.classlist
     @pytest.mark.order(303)
     def test_class_list_file_structure(self):
-        self.sessions_page.upload_invalid_class_list_records(file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE)
 
     @pytest.mark.classlist
     @pytest.mark.order(304)
     def test_class_list_no_record(self):
-        self.sessions_page.upload_invalid_class_list_records(file_paths=test_data_file_paths.CLASS_HEADER_ONLY)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_HEADER_ONLY)
 
     @pytest.mark.classlist
     @pytest.mark.order(305)
     def test_class_list_empty_file(self):
-        self.sessions_page.upload_invalid_class_list_records(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)

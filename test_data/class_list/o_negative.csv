@@ -1,9 +1,3 @@
-Invalid
-Details
-Imported by	Nurse Joy
-Type	Class list
-Records could not be imported
-The records cannot be uploaded due to errors in the CSV file. When fixing these errors, note that the header does not count as a row.
 Row 2 CHILD_FIRST_NAME: is required but missing
 Row 3 CHILD_LAST_NAME: is required but missing
 Row 4 CHILD_DATE_OF_BIRTH: is required but missing

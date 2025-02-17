@@ -113,6 +113,7 @@ class playwright_operations:
         else:
             elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
         elem.click()
+        self._check_for_app_crash(locator_info=locator)
 
     def _click_button(self, locator: str, exact: bool, index: int):
         if escape_characters.SEPARATOR_CHAR in locator:
@@ -122,6 +123,7 @@ class playwright_operations:
         else:
             elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator, exact=exact).nth(index)
         elem.click()
+        self._check_for_app_crash(locator_info=locator)
 
     def _click_label(self, locator: str, exact: bool, index: int):
         if escape_characters.SEPARATOR_CHAR in locator:
@@ -289,6 +291,12 @@ class playwright_operations:
             else:
                 elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
         return elem.get_attribute(element_properties.HREF)
+
+    def _check_for_app_crash(self, locator_info: str):
+        _actual_title = self.ce.page.title()
+        if "Sorry, there’s a problem with the service" in _actual_title:
+            self.ce.reset_environment()
+            assert False, f"Application has crashed after: {locator_info}"
 
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url

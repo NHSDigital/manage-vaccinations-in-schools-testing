@@ -74,6 +74,9 @@ class pg_sessions:
     LNK_REGISTER_ATTENDANCE = "Register attendance"
     LBL_CAPTION = "caption"
     CHK_YEAR8 = "Year 8"
+    CHK_YEAR9 = "Year 9"
+    CHK_YEAR10 = "Year 10"
+    CHK_YEAR11 = "Year 11"
     TXT_FILTER_NAME = "Name"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
@@ -96,15 +99,17 @@ class pg_sessions:
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
         # Verify all messages together - NEEDS MORE THOUGHT
-        # _all_errors = "".join(
-        #     [
-        #         x
-        #         for x in _expected_errors
-        #         if not x.startswith(escape_characters.COMMENT_OPERATOR)
-        #         and not x.startswith(escape_characters.NOT_OPERATOR)
-        #     ]
-        # )
-        # self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_all_errors, exact=False)
+        _all_errors = "".join(
+            [
+                x
+                for x in _expected_errors
+                if not x.startswith(escape_characters.COMMENT_OPERATOR)
+                and not x.startswith(escape_characters.NOT_OPERATOR)
+            ]
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_all_errors, exact=False
+        )
 
     def click_today(self):
         self.po.act(locator=self.LNK_TAB_TODAY, action=element_actions.CLICK_LINK, exact=True)
@@ -375,19 +380,21 @@ class pg_sessions:
     def click_get_consent_responses(self):
         self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=element_actions.CLICK_BUTTON)
 
-    def upload_valid_class_list(self, file_paths: str):
-        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_scheduled()
-        self.click_school1()
-        self.click_import_class_list()
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
-        self.click_continue()
+    # def upload_valid_class_list(self, file_paths: str):
+    #     _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
+    #     self.click_scheduled()
+    #     self.click_school1()
+    #     self.click_import_class_list()
+    #     self.__select_all_year_groups()
+    #     self.choose_file_child_records_for_school_1(file_path=_input_file_path)
+    #     self.click_continue()
 
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
+        self.__select_all_year_groups()
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -417,6 +424,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
+        self.__select_all_year_groups()
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -484,25 +492,29 @@ class pg_sessions:
         self.click_school1()
         self.__schedule_session(on_date=_future_date, expect_error=True)
 
-    def upload_class_list_to_school_1(self, file_paths: str):
+    def upload_class_list_to_school_1(self, file_paths: str, verify_on_children: bool = False):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
+        if verify_on_children:
+            self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
+        self.__select_all_year_groups()
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         # self.__record_upload_time()
         wait(timeout=wait_time.MED)
         # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
-        self.children_page.search_child()
+        if verify_on_children:
+            self.children_page.search_child()
 
     def upload_class_list_to_school_2(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school2()
         self.click_import_class_list()
+        self.__select_all_year_groups()
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         # self.__record_upload_time()
@@ -510,14 +522,16 @@ class pg_sessions:
         # self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
-    def upload_invalid_class_list_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_scheduled()
-        self.click_school1()
-        self.click_import_class_list()
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
-        self.click_continue()
-        self.verify_upload_output(file_path=_output_file_path)
+    # DEPRECATED
+    # def upload_invalid_class_list_records(self, file_paths: str):
+    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+    #     self.click_scheduled()
+    #     self.click_school1()
+    #     self.click_import_class_list()
+    #     self.__select_all_year_groups()
+    #     self.choose_file_child_records_for_school_1(file_path=_input_file_path)
+    #     self.click_continue()
+    #     self.verify_upload_output(file_path=_output_file_path)
 
     def set_gillick_competence_for_student(self):
         self.click_today()
@@ -685,3 +699,10 @@ class pg_sessions:
         self.click_child_e2e1()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
+
+    def __select_all_year_groups(self):
+        self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
