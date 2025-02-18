@@ -47,7 +47,7 @@ class pg_children:
     def verify_activity_log_for_created_or_matched_child(self, child_name: str, is_created: bool):
         _log_text: str = ""
         if is_created:
-            _log_text = "Consent response manually created with child record"  # FIXME: Update this text when MAVIS-1896 is closed
+            _log_text = "Update this text when MAVIS-1896/MAV-253 is closed"  # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         else:
             _log_text = "Consent response manually matched with child record"
         self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)

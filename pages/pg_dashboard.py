@@ -17,6 +17,7 @@ class pg_dashboard:
     LNK_VACCINES = f"heading{escape_characters.SEPARATOR_CHAR}Vaccines"
     LNK_UNMATCHED_CONSENT_RESPONSES = f"heading{escape_characters.SEPARATOR_CHAR}Unmatched consent responses"
     LNK_SCHOOL_MOVES = f"heading{escape_characters.SEPARATOR_CHAR}School moves"
+    LNK_IMPORT_RECORDS = f"heading{escape_characters.SEPARATOR_CHAR}Import records"
     LNK_NOTICES = f"heading{escape_characters.SEPARATOR_CHAR}Important Notices"
     LNK_ORGANISATION = f"heading{escape_characters.SEPARATOR_CHAR}Your organisation"
     LNK_SERVICE_GUIDANCE = f"heading{escape_characters.SEPARATOR_CHAR}Service guidance"
@@ -39,6 +40,9 @@ class pg_dashboard:
 
     def click_school_moves(self):
         self.po.act(locator=self.LNK_SCHOOL_MOVES, action=element_actions.CLICK_LINK)
+
+    def click_import_records(self):
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=element_actions.CLICK_LINK)
 
     def click_important_notices(self):
         self.po.act(locator=self.LNK_NOTICES, action=element_actions.CLICK_LINK)
@@ -65,6 +69,9 @@ class pg_dashboard:
         )
         self.po.verify(
             locator=self.LNK_VACCINES, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_IMPORT_RECORDS, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
             locator=self.LNK_UNMATCHED_CONSENT_RESPONSES,

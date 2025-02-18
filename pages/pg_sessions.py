@@ -50,7 +50,7 @@ class pg_sessions:
     BTN_DELETE = "Delete"
     LNK_BACK = "Back"
     LNK_CONTINUE = "Continue"
-    LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
+    LNK_HPV_CONSENT_FORM = "View parental consent form (opens in new tab)"
     LNK_ASSESS_GILLICK_COMPETENCE = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT = "No"
@@ -65,7 +65,9 @@ class pg_sessions:
     LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
     LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
-    LNK_CONSENT_FORM = "View parental consent form ("
+    LNK_HPV_CONSENT_FORM = "View HPV parental consent form ("
+    LNK_TDIPV_CONSENT_FORM = "View Td/IPV parental consent form ("
+    LNK_MENACWY_CONSENT_FORM = "View MenACWY parental consent form ("
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
     LNK_CONSENT_REFUSED = "Consent refused"
     LNK_MARK_AS_INVALID = "Mark as invalid"
@@ -98,18 +100,18 @@ class pg_sessions:
                 self.po.verify(
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
-        # Verify all messages together - NEEDS MORE THOUGHT
-        _all_errors = "".join(
-            [
-                x
-                for x in _expected_errors
-                if not x.startswith(escape_characters.COMMENT_OPERATOR)
-                and not x.startswith(escape_characters.NOT_OPERATOR)
-            ]
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_all_errors, exact=False
-        )
+            # Verify all messages together - NEEDS MORE THOUGHT
+            _all_errors = "".join(
+                [
+                    x
+                    for x in _expected_errors
+                    if not x.startswith(escape_characters.COMMENT_OPERATOR)
+                    and not x.startswith(escape_characters.NOT_OPERATOR)
+                ]
+            )
+            self.po.verify(
+                locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_all_errors, exact=False
+            )
 
     def click_today(self):
         self.po.act(locator=self.LNK_TAB_TODAY, action=element_actions.CLICK_LINK, exact=True)
@@ -394,7 +396,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.__select_all_year_groups()
+        self.select_all_year_groups()
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -424,7 +426,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.__select_all_year_groups()
+        # self.select_all_year_groups()
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -499,7 +501,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.__select_all_year_groups()
+        self.select_all_year_groups()
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         # self.__record_upload_time()
@@ -514,7 +516,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school2()
         self.click_import_class_list()
-        self.__select_all_year_groups()
+        self.select_all_year_groups()
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         # self.__record_upload_time()
@@ -543,8 +545,8 @@ class pg_sessions:
         self.click_edit_gillick_competence()
         self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
 
-    def get_consent_url(self) -> str:
-        return self.po.get_element_property(locator=self.LNK_CONSENT_FORM, property=element_properties.HREF)
+    def get_hpv_consent_url(self) -> str:
+        return self.po.get_element_property(locator=self.LNK_HPV_CONSENT_FORM, property=element_properties.HREF)
 
     def bug_mavis_1696(self):
         self.click_no_response()
@@ -700,7 +702,7 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
 
-    def __select_all_year_groups(self):
+    def select_all_year_groups(self):
         self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)

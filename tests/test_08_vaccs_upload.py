@@ -1,7 +1,7 @@
 import pytest
 
 from libs.constants import test_data_file_paths
-from pages import pg_dashboard, pg_login, pg_programmes, pg_sessions
+from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes, pg_sessions
 
 
 class Test_Vaccinations_Upload:
@@ -9,6 +9,7 @@ class Test_Vaccinations_Upload:
     dashboard_page = pg_dashboard.pg_dashboard()
     programmes_page = pg_programmes.pg_programmes()
     sessions_page = pg_sessions.pg_sessions()
+    import_records_page = pg_import_records.pg_import_records()
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
@@ -16,7 +17,9 @@ class Test_Vaccinations_Upload:
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_programmes()
+        self.dashboard_page.click_import_records()
+        self.import_records_page.click_import_records()
+        self.import_records_page.click_vaccination_records()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -38,23 +41,27 @@ class Test_Vaccinations_Upload:
     def test_hpv_duplicate_record_upload(self):
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DUP_1)
         self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_programmes()
+        self.dashboard_page.click_import_records()
+        self.import_records_page.click_import_records()
+        self.import_records_page.click_vaccination_records()
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DUP_2)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(804)
     def test_hpv_file_structure(self):
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_INVALID_STRUCTURE)
+        self.programmes_page.upload_hpv_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HPV_INVALID_STRUCTURE
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(805)
     def test_hpv_no_record(self):
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_HEADER_ONLY)
+        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_HEADER_ONLY)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(806)
     def test_hpv_empty_file(self):
-        self.programmes_page.upload_invalid_files(file_paths=test_data_file_paths.VACCS_HPV_EMPTY_FILE)
+        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_EMPTY_FILE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(807)
