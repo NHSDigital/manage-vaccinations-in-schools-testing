@@ -8,4 +8,3 @@ P_AllowPastExpiryDate,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<
 P_SiteRAU,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,DN9 1PB,<<VACCS_DATE>>,Gardasil9,AutoBatch1,20320730,right arm (upper position),1,Y,1,,,nurse.joy@example.com,Clinic,00:01,
 P_SiteRAL,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,DN9 1PB,<<VACCS_DATE>>,Gardasil9,AutoBatch1,20320730,right arm (lower position),1,Y,1,,,nurse.joy@example.com,Clinic,00:01,
 P_NotVaccinated,R1L,142181,Bohunt School Wokingham,<<NHS_NO>>,<<FNAME>>,<<LNAME>>,20100811,Male,DN9 1PB,<<VACCS_DATE>>,Gardasil9,,,,1,N,1,,,nurse.joy@example.com,Clinic,00:01,Did not attend
-

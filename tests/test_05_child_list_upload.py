@@ -1,18 +1,21 @@
 import pytest
 
 from libs.constants import test_data_file_paths
-from pages import pg_dashboard, pg_login, pg_programmes
+from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes
 
 
 class Test_Child_List_Upload:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     programmes_page = pg_programmes.pg_programmes()
+    import_records_page = pg_import_records.pg_import_records()
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
-        self.dashboard_page.click_programmes()
+        self.dashboard_page.click_import_records()
+        self.import_records_page.click_import_records()
+        self.import_records_page.click_child_records()
         yield
         self.login_page.logout_of_mavis()
 

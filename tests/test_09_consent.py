@@ -19,11 +19,11 @@ class Test_Consent:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture
-    def get_session_link(self, start_mavis: None):
+    def get_hpv_session_link(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1()
-        link = self.sessions_page.get_consent_url()
+        link = self.sessions_page.get_hpv_consent_url()
         self.login_page.logout_of_mavis()
         yield link
         self.login_page.go_to_login_page()
@@ -90,8 +90,10 @@ class Test_Consent:
     @pytest.mark.mobile
     @pytest.mark.order(901)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
-    def test_parental_consent_workflow(self, get_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
-        self.po.go_to_url(url=get_session_link)
+    def test_parental_consent_workflow(
+        self, get_hpv_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]
+    ):
+        self.po.go_to_url(url=get_hpv_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
         self.helper.enter_details_on_mavis()
 
