@@ -1,7 +1,7 @@
 import pytest
 
 from libs.constants import test_data_file_paths
-from pages import pg_dashboard, pg_login, pg_programmes, pg_sessions
+from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes, pg_sessions
 
 
 class Test_Record_a_Vaccine_Using_UI:
@@ -9,6 +9,7 @@ class Test_Record_a_Vaccine_Using_UI:
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
     programmes_page = pg_programmes.pg_programmes()
+    import_records_page = pg_import_records.pg_import_records()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis: None):
@@ -29,7 +30,9 @@ class Test_Record_a_Vaccine_Using_UI:
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_programmes()
+        self.dashboard_page.click_import_records()
+        self.import_records_page.click_import_records()
+        self.import_records_page.click_vaccination_records()
         self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()

@@ -34,7 +34,7 @@ def start_mavis(start_playwright_session):
 
 def create_session_screenshot_dir() -> str:
     if ce.capture_screenshot_flag:
-        _session_name = f"{get_new_datetime()}-{ce.current_browser_name}"
+        _session_name = f"{get_current_datetime()}-{ce.current_browser_name}"
         fo.file_operations().create_dir(dir_path=f"screenshots/{_session_name}")
         return f"screenshots/{_session_name}"
 

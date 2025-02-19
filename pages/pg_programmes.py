@@ -1,5 +1,7 @@
+from math import trunc
+
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.constants import element_actions, element_properties, wait_time
+from libs.constants import element_actions, element_properties, file_limit, wait_time
 from libs.wrappers import *
 from pages import pg_sessions
 
@@ -86,8 +88,9 @@ class pg_programmes:
             locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_IMPORT_STARTED
         )
 
-    def click_uploaded_file_datetime(self):
-        self.po.act(locator=self.upload_time, action=element_actions.CLICK_LINK)
+    def click_uploaded_file_datetime(self, truncated: bool = False):
+        _link_time = self.upload_time[3:] if truncated else self.upload_time
+        self.po.act(locator=_link_time, action=element_actions.CLICK_LINK)
 
     def record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
@@ -105,34 +108,22 @@ class pg_programmes:
 
     def upload_hpv_vaccination_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        # self.click_hpv()
-        # self.click_imports()
-        # self.click_import_records()
-        # self.select_vaccination_records()
-        # self.click_continue()
-        # self.sessions_page.select_all_year_groups()
         self.choose_file_vaccination_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
         wait(timeout=wait_time.MED)
-        # self.click_imports()
-        wait(timeout=wait_time.MIN)  # Required for Firefox
-        # self.click_uploaded_file_datetime()
+        if self.ce.get_file_record_count() > file_limit.FILE_RECORD_LIMIT:
+            self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_hpv_child_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        # self.click_hpv()
-        # self.click_imports()
-        # self.click_import_records()
-        # self.select_child_records()
-        # self.click_continue()
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
         wait(timeout=wait_time.MED)
-        # self.click_imports()
-        # self.click_uploaded_file_datetime()
+        if self.ce.get_file_record_count() > file_limit.FILE_RECORD_LIMIT:
+            self.click_uploaded_file_datetime(truncated=True)
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_cohorts(self, file_paths: str):
@@ -144,37 +135,15 @@ class pg_programmes:
         self.click_continue()
         self.record_upload_time()
         wait(timeout=wait_time.MED)
-        # self.click_imports()
-        # self.click_uploaded_file_datetime()
+        if self.ce.get_file_record_count() > file_limit.FILE_RECORD_LIMIT:
+            self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
-
-    # def upload_invalid_files(self, file_paths: str):
-    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-    #     self.click_hpv()
-    #     self.click_imports()
-    #     self.click_import_records()
-    #     self.select_vaccination_records()
-    #     self.click_continue()
-    #     self.choose_file_vaccination_records(file_path=_input_file_path)
-    #     self.click_continue()
-    #     self.verify_upload_output(file_path=_output_file_path)
 
     def upload_invalid_cohorts(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_cohorts()
         self.click_import_cohort_records()
-        self.choose_file_child_records(file_path=_input_file_path)
-        self.click_continue()
-        self.verify_upload_output(file_path=_output_file_path)
-
-    def upload_invalid_hpv_child_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_hpv()
-        self.click_imports()
-        self.click_import_records()
-        self.select_child_records()
-        self.click_continue()
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.verify_upload_output(file_path=_output_file_path)

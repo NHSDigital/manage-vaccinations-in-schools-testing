@@ -17,8 +17,12 @@ class testdata_operations:
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
         _ctr = -1
-        _dt = get_new_datetime()
-        _hist_dt = get_offset_date(offset_days=-730)
+        _dt = get_current_datetime()
+        _hist_dt = get_offset_date(offset_days=-(365 * 2))
+        _year_8_dob = get_offset_date(offset_days=-(365 * 13))
+        _year_9_dob = get_offset_date(offset_days=-(365 * 14))
+        _year_10_dob = get_offset_date(offset_days=-(365 * 15))
+        _year_11_dob = get_offset_date(offset_days=-(365 * 16))
         if _template_text is not None:
             for _ln in _template_text.split(escape_characters.NEW_LINE):
                 _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
@@ -27,8 +31,13 @@ class testdata_operations:
                 _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
                 _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
                 _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
+                _ln = _ln.replace("<<DOB_YEAR_8>>", _year_8_dob)
+                _ln = _ln.replace("<<DOB_YEAR_9>>", _year_9_dob)
+                _ln = _ln.replace("<<DOB_YEAR_10>>", _year_10_dob)
+                _ln = _ln.replace("<<DOB_YEAR_11>>", _year_11_dob)
                 _file_text.append(_ln)
                 _ctr += 1
+        self.ce.set_file_record_count(record_count=_ctr)
         return self.fo.create_file(
             content=escape_characters.NEW_LINE.join(_file_text), file_name_prefix=file_name_prefix
         )

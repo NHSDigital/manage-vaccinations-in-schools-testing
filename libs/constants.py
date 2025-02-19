@@ -125,6 +125,10 @@ class file_encoding:
     ASCII: Final[str] = "ascii"
 
 
+class file_limit:
+    FILE_RECORD_LIMIT: Final[int] = 15
+
+
 class test_data_file_paths:
     PARENTAL_CONSENT: Final[str] = "test_data/ParentalConsent.xlsx"
     VACCS_HPV_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
