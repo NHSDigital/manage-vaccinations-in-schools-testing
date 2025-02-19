@@ -24,6 +24,7 @@ class CurrentExecution:
     api_token: str = ""
     reset_env_before_execution: bool = False
     child_list: list[str] = []
+    file_record_count: int = 0
 
     @staticmethod
     def get_env_values():
@@ -46,3 +47,11 @@ class CurrentExecution:
         _headers = {"Authorization": CurrentExecution.api_token}
         if CurrentExecution.reset_env_before_execution:
             _ = api_ops.api_operations().api_get(endpoint=CurrentExecution.reset_endpoint, header=_headers, param=None)
+
+    @staticmethod
+    def set_file_record_count(record_count: int):
+        CurrentExecution.file_record_count = record_count
+
+    @staticmethod
+    def get_file_record_count() -> int:
+        return CurrentExecution.file_record_count

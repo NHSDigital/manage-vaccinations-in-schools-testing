@@ -32,14 +32,14 @@ class Test_Child_List_Upload:
     @pytest.mark.childlist
     @pytest.mark.order(503)
     def test_child_list_file_structure(self):
-        self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE)
+        self.programmes_page.upload_hpv_child_records(file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE)
 
     @pytest.mark.childlist
     @pytest.mark.order(504)
     def test_child_list_no_record(self):
-        self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_HEADER_ONLY)
+        self.programmes_page.upload_hpv_child_records(file_paths=test_data_file_paths.CHILD_HEADER_ONLY)
 
     @pytest.mark.childlist
     @pytest.mark.order(505)
     def test_child_list_empty_file(self):
-        self.programmes_page.upload_invalid_hpv_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
+        self.programmes_page.upload_hpv_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)

@@ -29,6 +29,7 @@ class testdata_operations:
                 _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
                 _file_text.append(_ln)
                 _ctr += 1
+        self.ce.set_file_record_count(record_count=_ctr)
         return self.fo.create_file(
             content=escape_characters.NEW_LINE.join(_file_text), file_name_prefix=file_name_prefix
         )

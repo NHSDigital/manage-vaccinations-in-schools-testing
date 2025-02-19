@@ -5,9 +5,9 @@ name: Run MAVIS tests on TEST
 
 on:
   push:
-    branches: [ "main","DoublesMain" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main","DoublesMain" ]
+    branches: [ "main" ]
   schedule:
     - cron: "0 7 * * *"
 

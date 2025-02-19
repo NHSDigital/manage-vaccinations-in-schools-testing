@@ -9,6 +9,6 @@ Row 11 PARENT_2_EMAIL: ‘example.com’ should be a valid email address, like j
 Row 12 CHILD_YEAR_GROUP: is not part of this programme
 Row 13 CHILD_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 14 CHILD_YEAR_GROUP: is not part of this programme
-Row 15 CHILD_YEAR_GROUP: is required but missing
+Row 15 CHILD_YEAR_GROUP: is not part of this programme
 Row 16 CHILD_YEAR_GROUP: is not part of this programme
-Row 17 CHILD_YEAR_GROUP: is required but missing
+Row 17 CHILD_YEAR_GROUP: is not part of this programme
