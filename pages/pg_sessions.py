@@ -1,5 +1,6 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.constants import element_actions, element_properties, wait_time
+from libs.generic_constants import element_actions, element_properties, wait_time
+from libs.mavis_constants import child_year_group, record_limit
 from libs.wrappers import *
 from pages import pg_children, pg_dashboard, pg_parental_consent
 
@@ -93,14 +94,14 @@ class pg_sessions:
         self.po.act(locator=self.upload_time, action=element_actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
-        # Verify messages separately
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
+            # Verify messages individually
             for _msg in _expected_errors:
                 self.po.verify(
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
-            # Verify all messages together - NEEDS MORE THOUGHT
+            # Verify all messages together
             _all_errors = "".join(
                 [
                     x
@@ -201,12 +202,12 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CONSENT_REFUSED, action=element_actions.CLICK_LINK)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
-        self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
+        self.__set_gillick_competence(is_add=True, is_competent=is_competent, competence_details=competence_details)
 
     def edit_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
-        self.__set_gillick_consent(is_add=False, is_competent=is_competent, competence_details=competence_details)
+        self.__set_gillick_competence(is_add=False, is_competent=is_competent, competence_details=competence_details)
 
-    def __set_gillick_consent(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
+    def __set_gillick_competence(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
         if is_competent:
             self.po.act(
                 locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
@@ -382,21 +383,12 @@ class pg_sessions:
     def click_get_consent_responses(self):
         self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=element_actions.CLICK_BUTTON)
 
-    # def upload_valid_class_list(self, file_paths: str):
-    #     _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
-    #     self.click_scheduled()
-    #     self.click_school1()
-    #     self.click_import_class_list()
-    #     self.__select_all_year_groups()
-    #     self.choose_file_child_records_for_school_1(file_path=_input_file_path)
-    #     self.click_continue()
-
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.select_all_year_groups()
+        self.select_year_group(year_group=child_year_group.ALL)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -426,7 +418,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.select_all_year_groups()
+        self.select_year_group(year_group=child_year_group.ALL)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -494,46 +486,47 @@ class pg_sessions:
         self.click_school1()
         self.__schedule_session(on_date=_future_date, expect_error=True)
 
-    def upload_class_list_to_school_1(self, file_paths: str, verify_on_children: bool = False):
+    def upload_class_list_to_school_1(
+        self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
+    ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         if verify_on_children:
             self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.select_all_year_groups()
+        self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
-        # self.__record_upload_time()
-        wait(timeout=wait_time.MED)
-        # self.click_uploaded_file_datetime()
+        self.__record_upload_time()
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+            wait(timeout=wait_time.MED)
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+            self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
             self.children_page.search_child()
 
-    def upload_class_list_to_school_2(self, file_paths: str):
+    def upload_class_list_to_school_2(
+        self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
+    ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        if verify_on_children:
+            self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_scheduled()
         self.click_school2()
         self.click_import_class_list()
-        self.select_all_year_groups()
-        self.choose_file_child_records_for_school_2(file_path=_input_file_path)
+        self.select_year_group(year_group=year_group)
+        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
-        # self.__record_upload_time()
-        wait(timeout=wait_time.MED)
-        # self.click_uploaded_file_datetime()
+        self.__record_upload_time()
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+            wait(timeout=wait_time.MED)
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+            self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
-
-    # DEPRECATED
-    # def upload_invalid_class_list_records(self, file_paths: str):
-    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-    #     self.click_scheduled()
-    #     self.click_school1()
-    #     self.click_import_class_list()
-    #     self.__select_all_year_groups()
-    #     self.choose_file_child_records_for_school_1(file_path=_input_file_path)
-    #     self.click_continue()
-    #     self.verify_upload_output(file_path=_output_file_path)
+        if verify_on_children:
+            self.children_page.search_child()
 
     def set_gillick_competence_for_student(self):
         self.click_today()
@@ -702,9 +695,19 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
 
-    def select_all_year_groups(self):
-        self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
+    def select_year_group(self, year_group: str) -> None:
+        match year_group:
+            case child_year_group.YEAR_8:
+                self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
+            case child_year_group.YEAR_9:
+                self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
+            case child_year_group.YEAR_10:
+                self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
+            case child_year_group.YEAR_11:
+                self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
+            case _:
+                self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
+                self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
+                self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
+                self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)

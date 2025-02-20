@@ -1,9 +1,7 @@
-from os import name
-
 import pytest
 
 from libs import CurrentExecution
-from libs.constants import test_data_file_paths
+from libs.mavis_constants import test_data_file_paths
 from libs.wrappers import *
 from pages import pg_dashboard, pg_login, pg_programmes, pg_unmatched
 

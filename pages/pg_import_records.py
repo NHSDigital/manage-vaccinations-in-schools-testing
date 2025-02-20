@@ -1,5 +1,5 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.constants import element_actions, element_properties, wait_time
+from libs.generic_constants import element_actions
 from libs.wrappers import *
 
 

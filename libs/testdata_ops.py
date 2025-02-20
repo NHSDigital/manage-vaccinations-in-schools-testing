@@ -2,7 +2,8 @@ import nhs_number
 import pandas as pd
 
 from libs import CurrentExecution, file_ops
-from libs.constants import data_values, escape_characters
+from libs.generic_constants import escape_characters
+from libs.mavis_constants import data_values
 from libs.wrappers import *
 
 

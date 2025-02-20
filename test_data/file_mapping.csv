@@ -24,6 +24,7 @@ CLASS_INVALID_STRUCTURE,test_data/class_list/i_invalid_structure.csv,test_data/c
 CLASS_EMPTY_FILE,test_data/class_list/i_empty.csv,test_data/class_list/o_empty.csv,class
 CLASS_HEADER_ONLY,test_data/class_list/i_header_only.csv,test_data/class_list/o_header_only.csv,class
 CLASS_CHILDREN_FILTER,test_data/class_list/i_children_filter.csv,test_data/class_list/o_children_filter.csv,class
+CLASS_YEAR_GROUP,test_data/class_list/i_year_group.csv,test_data/class_list/o_year_group.csv,class
 COHORTS_NO_CONSENT,test_data/cohorts/i_no_consent.csv,,cohort
 COHORTS_CONFLICTING_CONSENT,test_data/cohorts/i_conflicting_consent.csv,,cohort
 COHORTS_E2E_1,test_data/cohorts/i_e2e_1.csv,,cohort_e2e

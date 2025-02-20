@@ -47,10 +47,6 @@ class api_response_codes:
     SUCCESS_STATUS_CODE_MAX: Final[int] = 299
 
 
-class data_values:
-    EMPTY: Final[str] = "<empty>"
-
-
 class aria_roles:
     LINK: Final[str] = "link"
     BUTTON: Final[str] = "button"
@@ -123,43 +119,3 @@ class escape_characters:
 
 class file_encoding:
     ASCII: Final[str] = "ascii"
-
-
-class file_limit:
-    FILE_RECORD_LIMIT: Final[int] = 15
-
-
-class test_data_file_paths:
-    PARENTAL_CONSENT: Final[str] = "test_data/ParentalConsent.xlsx"
-    VACCS_HPV_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
-    VACCS_HPV_NEGATIVE: Final[str] = "VACCS_HPV_NEGATIVE"
-    VACCS_HIST_HPV_POSITIVE: Final[str] = "VACCS_HIST_HPV_POSITIVE"
-    VACCS_HIST_HPV_NEGATIVE: Final[str] = "VACCS_HIST_HPV_NEGATIVE"
-    VACCS_HPV_DUP_1: Final[str] = "VACCS_HPV_DUP_1"
-    VACCS_HPV_DUP_2: Final[str] = "VACCS_HPV_DUP_2"
-    VACCS_HPV_INVALID_STRUCTURE: Final[str] = "VACCS_HPV_INVALID_STRUCTURE"
-    VACCS_HPV_EMPTY_FILE: Final[str] = "VACCS_HPV_EMPTY_FILE"
-    VACCS_HPV_HEADER_ONLY: Final[str] = "VACCS_HPV_HEADER_ONLY"
-    COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
-    COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
-    COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
-    COHORTS_EMPTY_FILE: Final[str] = "COHORTS_EMPTY_FILE"
-    COHORTS_HEADER_ONLY: Final[str] = "COHORTS_HEADER_ONLY"
-    CHILD_POSITIVE: Final[str] = "CHILD_POSITIVE"
-    CHILD_NEGATIVE: Final[str] = "CHILD_NEGATIVE"
-    CHILD_INVALID_STRUCTURE: Final[str] = "CHILD_INVALID_STRUCTURE"
-    CHILD_EMPTY_FILE: Final[str] = "CHILD_EMPTY_FILE"
-    CHILD_HEADER_ONLY: Final[str] = "CHILD_HEADER_ONLY"
-    CLASS_POSITIVE: Final[str] = "CLASS_POSITIVE"
-    CLASS_NEGATIVE: Final[str] = "CLASS_NEGATIVE"
-    CLASS_INVALID_STRUCTURE: Final[str] = "CLASS_INVALID_STRUCTURE"
-    CLASS_EMPTY_FILE: Final[str] = "CLASS_EMPTY_FILE"
-    CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"
-    CLASS_CHILDREN_FILTER: Final[str] = "CLASS_CHILDREN_FILTER"
-    COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
-    COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
-    COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
-    VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
-    CLASS_MOVES_ONE: Final[str] = "CLASS_MOVES_ONE"
-    CLASS_MOVES_TWO: Final[str] = "CLASS_MOVES_TWO"
-    COHORTS_UCR_MATCH: Final[str] = "COHORTS_UCR_MATCH"

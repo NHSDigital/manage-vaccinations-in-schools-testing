@@ -1,6 +1,6 @@
 import requests
 
-from libs.constants import api_response_codes
+from libs.generic_constants import api_response_codes
 
 
 class api_operations:

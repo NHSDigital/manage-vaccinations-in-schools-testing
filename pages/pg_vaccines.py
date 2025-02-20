@@ -1,5 +1,5 @@
 from libs import playwright_ops
-from libs.constants import element_actions, element_properties
+from libs.generic_constants import element_actions, element_properties
 from libs.wrappers import *
 
 

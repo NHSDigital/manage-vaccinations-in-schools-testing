@@ -1,5 +1,5 @@
 from libs import playwright_ops
-from libs.constants import (
+from libs.generic_constants import (
     element_actions,
     element_properties,
     escape_characters,

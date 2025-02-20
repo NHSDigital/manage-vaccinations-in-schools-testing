@@ -1,5 +1,5 @@
 from libs import CurrentExecution, testdata_ops
-from libs.constants import data_values, test_data_file_paths
+from libs.mavis_constants import data_values, test_data_file_paths
 from pages import pg_parental_consent
 
 
