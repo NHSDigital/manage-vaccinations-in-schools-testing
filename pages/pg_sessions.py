@@ -94,14 +94,14 @@ class pg_sessions:
         self.po.act(locator=self.upload_time, action=element_actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
-        # Verify messages separately
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
+            # Verify messages individually
             for _msg in _expected_errors:
                 self.po.verify(
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
-            # Verify all messages together - NEEDS MORE THOUGHT
+            # Verify all messages together
             _all_errors = "".join(
                 [
                     x
@@ -202,12 +202,12 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CONSENT_REFUSED, action=element_actions.CLICK_LINK)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
-        self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
+        self.__set_gillick_competence(is_add=True, is_competent=is_competent, competence_details=competence_details)
 
     def edit_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
-        self.__set_gillick_consent(is_add=False, is_competent=is_competent, competence_details=competence_details)
+        self.__set_gillick_competence(is_add=False, is_competent=is_competent, competence_details=competence_details)
 
-    def __set_gillick_consent(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
+    def __set_gillick_competence(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
         if is_competent:
             self.po.act(
                 locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
