@@ -1,6 +1,6 @@
 import pytest
 
-from libs.constants import test_data_file_paths
+from libs.mavis_constants import child_year_group, test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_sessions
 
 
@@ -46,3 +46,10 @@ class Test_Class_List_Upload:
     @pytest.mark.order(305)
     def test_class_list_empty_file(self):
         self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)
+
+    @pytest.mark.classlist
+    @pytest.mark.order(306)
+    def test_class_list_year_group(self):
+        self.sessions_page.upload_class_list_to_school_1(
+            file_paths=test_data_file_paths.CLASS_YEAR_GROUP, year_group=child_year_group.YEAR_8
+        )

@@ -3,7 +3,7 @@ from os import path
 
 import pandas as pd
 
-from libs.constants import file_mode
+from libs.generic_constants import file_mode
 from libs.wrappers import *
 
 

@@ -1,12 +1,10 @@
 import os
 import re
 from itertools import chain
-from sys import prefix
 
 from libs import CurrentExecution
-from libs.constants import (
+from libs.generic_constants import (
     aria_roles,
-    data_values,
     element_actions,
     element_properties,
     html_tags,
@@ -14,6 +12,7 @@ from libs.constants import (
     screenshot_file_types,
     wait_time,
 )
+from libs.mavis_constants import data_values
 from libs.wrappers import *
 
 

@@ -3,7 +3,7 @@ import subprocess
 import pytest
 
 from libs import file_ops, playwright_ops
-from libs.constants import element_properties
+from libs.generic_constants import element_properties
 
 
 class Test_Smoke:

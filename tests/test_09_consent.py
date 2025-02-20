@@ -4,7 +4,7 @@ import pytest
 from pandas.core.series import Series
 
 from libs import CurrentExecution, playwright_ops
-from libs.constants import test_data_file_paths
+from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_parental_consent, pg_sessions
 from tests.helpers import parental_consent_helper
 

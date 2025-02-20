@@ -1,5 +1,6 @@
 from libs import playwright_ops
-from libs.constants import data_values, element_actions, element_properties
+from libs.generic_constants import element_actions, element_properties
+from libs.mavis_constants import data_values
 
 
 class pg_parental_consent:

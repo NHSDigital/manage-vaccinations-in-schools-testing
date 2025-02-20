@@ -1,6 +1,6 @@
 import pytest
 
-from libs.constants import test_data_file_paths
+from libs.mavis_constants import test_data_file_paths
 from pages import pg_children, pg_dashboard, pg_login, pg_sessions
 
 

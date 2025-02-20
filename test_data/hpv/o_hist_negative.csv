@@ -15,7 +15,7 @@ Row 15 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.
 Row 16 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 18 DATE_OF_VACCINATION: Enter a date in the correct format
-Row 19 DATE_OF_VACCINATION: The vaccination date is outside the programme. Enter a date before today.
+Row 19 DATE_OF_VACCINATION: The vaccination date is in the future
 Row 20 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil9.
 Row 21 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil9.
 Row 22 BATCH_NUMBER: Enter a batch number.

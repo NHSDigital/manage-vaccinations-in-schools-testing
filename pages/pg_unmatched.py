@@ -1,8 +1,5 @@
-from inspect import isclass
-from math import exp
-
 from libs import CurrentExecution, playwright_ops
-from libs.constants import element_actions, element_properties, wait_time
+from libs.generic_constants import element_actions, element_properties, wait_time
 from libs.wrappers import *
 from pages import pg_children, pg_dashboard
 

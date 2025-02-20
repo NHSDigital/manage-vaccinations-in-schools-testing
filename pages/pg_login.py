@@ -1,5 +1,5 @@
 from libs import CurrentExecution, playwright_ops
-from libs.constants import element_actions, element_properties
+from libs.generic_constants import element_actions, element_properties
 
 
 class pg_login:

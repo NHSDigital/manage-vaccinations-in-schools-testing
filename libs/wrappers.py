@@ -4,7 +4,7 @@ import subprocess
 import time
 from datetime import datetime, timedelta
 
-from libs.constants import escape_characters, file_encoding
+from libs.generic_constants import escape_characters, file_encoding
 
 
 def convert_time_units_to_seconds(time_unit: str) -> int:
