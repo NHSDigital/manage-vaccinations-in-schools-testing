@@ -28,47 +28,45 @@ class Test_Vaccinations_Upload:
 
     @pytest.mark.vaccinations
     @pytest.mark.order(801)
-    def test_hpv_positive_file_upload(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_POSITIVE)
+    def test_vaccs_positive_file_upload(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_POSITIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(802)
-    def test_hpv_negative_file_upload(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_NEGATIVE)
+    def test_vaccs_negative_file_upload(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_NEGATIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(803)
-    def test_hpv_duplicate_record_upload(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DUP_1)
+    def test_vaccs_duplicate_record_upload(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_1)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
         self.import_records_page.click_import_records()
         self.import_records_page.click_vaccination_records()
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DUP_2)
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_2)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(804)
-    def test_hpv_file_structure(self):
-        self.programmes_page.upload_hpv_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_HPV_INVALID_STRUCTURE
-        )
+    def test_vaccs_file_structure(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(805)
-    def test_hpv_no_record(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_HEADER_ONLY)
+    def test_vaccs_no_record(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_HEADER_ONLY)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(806)
-    def test_hpv_empty_file(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_EMPTY_FILE)
+    def test_vaccs_empty_file(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_EMPTY_FILE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(807)
-    def test_hpv_historic_positive_file_upload(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_HPV_POSITIVE)
+    def test_vaccs_historic_positive_file_upload(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_POSITIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(808)
-    def test_hpv_historic_negative_file_upload(self):
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_HPV_NEGATIVE)
+    def test_vaccs_historic_negative_file_upload(self):
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE)
