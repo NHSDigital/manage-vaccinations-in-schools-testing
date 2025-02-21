@@ -20,7 +20,7 @@ class pg_parental_consent:
     RDO_SELECT_SCHOOL = "Yes, they go to this school"
     RDO_SELECT_DIFFERENT_SCHOOL = "No, they go to a different school"
     TXT_SCHOOL_NAME = "Select a school"
-    TXT_PARENT_NAME = "Your name"
+    TXT_PARENT_FULL_NAME = "Full name"
     RDO_RELATION_DAD = "Dad"
     RDO_RELATION_MUM = "Mum"
     RDO_RELATION_GUARDIAN = "Guardian"
@@ -113,7 +113,7 @@ class pg_parental_consent:
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
 
     def fill_parent_details(self, scenario_id: str, parent_name: str, relation: str, email: str, phone: str) -> None:
-        self.po.act(locator=self.TXT_PARENT_NAME, action=element_actions.FILL, value=parent_name)
+        self.po.act(locator=self.TXT_PARENT_FULL_NAME, action=element_actions.FILL, value=parent_name)
         self.po.act(locator=relation, action=element_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=element_actions.FILL, value=email)
         if phone != data_values.EMPTY:

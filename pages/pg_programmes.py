@@ -105,7 +105,7 @@ class pg_programmes:
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
 
-    def upload_hpv_vaccination_records(self, file_paths: str):
+    def upload_vaccination_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.choose_file_vaccination_records(file_path=_input_file_path)
         self.click_continue()

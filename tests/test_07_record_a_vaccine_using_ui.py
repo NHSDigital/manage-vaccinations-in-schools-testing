@@ -33,7 +33,7 @@ class Test_Record_a_Vaccine_Using_UI:
         self.dashboard_page.click_import_records()
         self.import_records_page.click_import_records()
         self.import_records_page.click_vaccination_records()
-        self.programmes_page.upload_hpv_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
+        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
         yield
