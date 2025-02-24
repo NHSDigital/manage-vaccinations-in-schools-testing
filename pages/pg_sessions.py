@@ -21,6 +21,8 @@ class pg_sessions:
     LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
     LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
     LNK_CHILD_E2E1 = "CE2E1 CE2E1"
+    LNK_CHILD_CONFLICTING_GILLICK = "Conflicting1 Gillick1"
+    LNK_CHILD_CONSENT_TWICE = "Consent1 Twice1"
 
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
@@ -169,9 +171,27 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CHILD_FULL_NAME, action=element_actions.CLICK_WILDCARD)
 
     def click_child_no_consent(self):
+        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_NO_CONSENT)
+        wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=element_actions.CLICK_LINK)
 
+    def click_child_consent_twice(self):
+        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONSENT_TWICE)
+        wait(timeout=wait_time.MIN)
+        self.po.act(locator=self.LNK_CHILD_CONSENT_TWICE, action=element_actions.CLICK_LINK)
+
+    def click_child_conflicting_gillick(self):
+        self.po.act(
+            locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_GILLICK
+        )
+        wait(timeout=wait_time.MIN)
+        self.po.act(locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=element_actions.CLICK_LINK)
+
     def click_child_conflicting_consent(self):
+        self.po.act(
+            locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_CONSENT
+        )
+        wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK)
 
     def click_child_e2e1(self):
@@ -543,15 +563,15 @@ class pg_sessions:
 
     def bug_mavis_1696(self):
         self.click_no_response()
-        self.click_child_no_consent()
+        self.click_child_conflicting_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_no_response()
         self.click_no_response()
-        self.click_child_no_consent()
+        self.click_child_conflicting_consent()
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
         self.click_consent_refused()
-        self.click_child_no_consent()
+        self.click_child_conflicting_consent()
         self.invalidate_parent2_refusal()
         self.click_activity_log()
         wait(timeout=wait_time.MIN)
@@ -576,18 +596,19 @@ class pg_sessions:
 
     def bug_mavis_1864(self):
         self.click_no_response()
-        self.click_child_no_consent()
+        self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_online_positive()
         self.click_consent_given()
-        self.click_child_no_consent()
+        self.click_child_consent_twice()
         self.click_update_triage_outcome()
         self.consent_page.update_triage_outcome_positive()
-        self.click_child_no_consent()
+        self.click_consent_given()
+        self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_refuse_consent()
         self.click_consent_refused()
-        self.click_child_no_consent()
+        self.click_child_consent_twice()
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Dad refused to give consent."
         )
@@ -630,11 +651,11 @@ class pg_sessions:
 
     def bug_mavis_1818(self):
         self.click_no_response()
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.click_consent_given()
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
         self.click_conflicting_consent()  # Tab
@@ -644,7 +665,7 @@ class pg_sessions:
             property=element_properties.TEXT,
             expected_value="1 child with conflicting consent responses",
         )
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
@@ -667,10 +688,10 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Consent recorded for {self.LNK_CHILD_CONFLICTING_CONSENT}",
+            expected_value=f"Consent recorded for {self.LNK_CHILD_CONFLICTING_GILLICK}",
         )
         self.click_consent_given()
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
@@ -679,14 +700,14 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Nurse Joy decided that {self.LNK_CHILD_CONFLICTING_CONSENT} is ready for the nurse.",
+            expected_value=f"Nurse Joy decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse.",
         )
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.click_activity_log()
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Consent given by {self.LNK_CHILD_CONFLICTING_CONSENT} (Child (Gillick competent))",
+            expected_value=f"Consent given by {self.LNK_CHILD_CONFLICTING_GILLICK} (Child (Gillick competent))",
         )
 
     def give_consent_for_e2e1_child_by_parent_1(self):

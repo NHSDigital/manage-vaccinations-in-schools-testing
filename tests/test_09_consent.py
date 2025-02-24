@@ -68,13 +68,51 @@ class Test_Consent:
         self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_conflicting_consent(self, start_mavis: None):
+    def setup_mavis_1696(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.COHORTS_CONFLICTING_CONSENT)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.click_scheduled()
+        self.sessions_page.click_school1()
+        self.sessions_page.click_check_consent_responses()
+        yield
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
+        self.login_page.logout_of_mavis()
+
+    @pytest.fixture(scope="function", autouse=False)
+    def setup_mavis_1864(self, start_mavis: None):
+        self.login_page.login_as_nurse()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.click_scheduled()
+        self.sessions_page.click_school1()
+        self.sessions_page.click_check_consent_responses()
+        yield
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.delete_all_sessions_for_school_1()
+        self.login_page.logout_of_mavis()
+
+    @pytest.fixture(scope="function", autouse=False)
+    def setup_mavis_1818(self, start_mavis: None):
+        self.login_page.login_as_nurse()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.COHORTS_CONFLICTING_GILLICK)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
@@ -104,21 +142,21 @@ class Test_Consent:
 
     @pytest.mark.consent
     @pytest.mark.order(903)
-    def test_invalid_consent(self, setup_invalidated_consent: None):
+    def test_invalid_consent(self, setup_mavis_1696: None):
         self.sessions_page.bug_mavis_1696()
 
     @pytest.mark.consent
     @pytest.mark.order(904)
     @pytest.mark.skip(reason="Development card in backlog")
-    def test_phone_number_added_later_shows_phone_options(self, setup_invalidated_consent: None):
+    def test_phone_number_added_later_shows_phone_options(self, setup_mavis_1801: None):
         self.sessions_page.bug_mavis_1801()
 
     @pytest.mark.consent
     @pytest.mark.order(905)
-    def test_parent_provides_consent_twice(self, setup_invalidated_consent: None):
+    def test_parent_provides_consent_twice(self, setup_mavis_1864: None):
         self.sessions_page.bug_mavis_1864()
 
     @pytest.mark.consent
     @pytest.mark.order(906)
-    def test_conflicting_consent_with_gillick_consent(self, setup_conflicting_consent: None):
+    def test_conflicting_consent_with_gillick_consent(self, setup_mavis_1818: None):
         self.sessions_page.bug_mavis_1818()
