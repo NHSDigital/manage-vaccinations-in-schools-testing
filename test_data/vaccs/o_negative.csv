@@ -38,3 +38,7 @@ Row 35 VACCINATED: You need to record whether the child was vaccinated or not. E
 Row 37 CARE_SETTING: Enter a valid care setting.
 Row 37 TIME_OF_VACCINATION: Enter a time in the past
 Row 38 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.
+Row 39 DOSE_SEQUENCE: The dose sequence number cannot be greater than 5. Enter a dose sequence number, for example, 1, 2, 3, 4 or 5.
+Row 40 DOSE_SEQUENCE: must be less than or equal to 5
+Row 41 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
+Row 42 DOSE_SEQUENCE: must be less than or equal to 3
