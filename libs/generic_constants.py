@@ -6,6 +6,7 @@ class element_properties:
     VISIBILITY: Final[str] = "visibility"
     HREF: Final[str] = "href"
     EXISTS: Final[str] = "exists"
+    PAGE_URL: Final[str] = "page_url"
 
 
 class element_actions:
@@ -23,6 +24,7 @@ class element_actions:
     CLICK_LINK_INDEX_FOR_ROW: Final[str] = "click_link_index_for_row"
     CLICK_WILDCARD: Final[str] = "click_wildcard"
     CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
+    DOWNLOAD_FILE: Final[str] = "download_file"
 
 
 class screenshot_actions:

@@ -24,6 +24,7 @@ class testdata_operations:
         _year_9_dob = get_offset_date(offset_days=-(365 * 14))
         _year_10_dob = get_offset_date(offset_days=-(365 * 15))
         _year_11_dob = get_offset_date(offset_days=-(365 * 16))
+        _session_id = self.ce.get_session_id()
         if _template_text is not None:
             for _ln in _template_text.split(escape_characters.NEW_LINE):
                 _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
@@ -36,6 +37,7 @@ class testdata_operations:
                 _ln = _ln.replace("<<DOB_YEAR_9>>", _year_9_dob)
                 _ln = _ln.replace("<<DOB_YEAR_10>>", _year_10_dob)
                 _ln = _ln.replace("<<DOB_YEAR_11>>", _year_11_dob)
+                _ln = _ln.replace("<<SESSION_ID>>", _session_id)
                 _file_text.append(_ln)
                 _ctr += 1
         self.ce.set_file_record_count(record_count=_ctr)

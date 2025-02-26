@@ -461,6 +461,7 @@ class pg_sessions:
         self.click_school1()
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
+        self.save_session_id()
 
     def schedule_a_valid_session_in_school_2(self, for_today: bool = False):
         _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
@@ -469,6 +470,7 @@ class pg_sessions:
         self.click_school2()
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
+        self.save_session_id()
 
     def close_active_session_in_school_2(self):
         _past_date = get_offset_date(offset_days=-1)
@@ -732,3 +734,8 @@ class pg_sessions:
                 self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
                 self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
+
+    def save_session_id(self) -> None:
+        _page_url = self.po.get_element_property(locator=None, property=element_properties.PAGE_URL)
+        _session_id = _page_url.replace(f"{self.ce.service_url}/sessions/", "")
+        self.ce.set_session_id(session_id=_session_id)
