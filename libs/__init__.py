@@ -25,6 +25,7 @@ class CurrentExecution:
     reset_env_before_execution: bool = False
     child_list: list[str] = []
     file_record_count: int = 0
+    session_id: str = ""
 
     @staticmethod
     def get_env_values():
@@ -55,3 +56,11 @@ class CurrentExecution:
     @staticmethod
     def get_file_record_count() -> int:
         return CurrentExecution.file_record_count
+
+    @staticmethod
+    def set_session_id(session_id: str):
+        CurrentExecution.session_id = session_id
+
+    @staticmethod
+    def get_session_id() -> int:
+        return CurrentExecution.session_id

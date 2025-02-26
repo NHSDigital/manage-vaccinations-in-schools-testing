@@ -192,7 +192,7 @@ class pg_parental_consent:
         self.po.act(locator=self.BTN_CONFIRM, action=element_actions.CLICK_BUTTON)
 
     def verify_final_message(self, scenario_id: str, expected_message: str) -> None:
-        self.po.verify(locator=self.LBL_HEADING, property=element_properties.TEXT, expected_value=expected_message)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=expected_message)
 
     def select_consent_not_given_reason(self, scenario_id: str, reason: str, reason_details: str) -> None:
         match reason.lower():

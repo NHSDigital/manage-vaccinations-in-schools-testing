@@ -68,6 +68,8 @@ class playwright_operations:
                 return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.EXISTS:
                 return self.ce.page.query_selector(locator) is not None
+            case element_properties.PAGE_URL:
+                return self.ce.page.url
 
     def act(self, locator, action, value=None, **kwargs) -> None:
         # Unpack keyword arguments
@@ -98,6 +100,8 @@ class playwright_operations:
                 self._checkbox_uncheck(locator=locator, index=index)
             case element_actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
+            case element_actions.DOWNLOAD_FILE:
+                self._download_file(locator=locator, value=value, index=index)
             case element_actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
             case element_actions.CHAIN_LOCATOR_ACTION:
@@ -173,6 +177,7 @@ class playwright_operations:
 
     def _select_from_list(self, locator: str, value: str, index: int):
         self._fill(locator=locator, value=value, exact=False, index=index)
+        wait(timeout=wait_time.MIN)
         if escape_characters.SEPARATOR_CHAR in locator:
             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
@@ -214,6 +219,13 @@ class playwright_operations:
                 .nth(value)
             )
         elem.click()
+
+    def _download_file(self, locator: str, value: str, index: int):
+        with self.ce.page.expect_download() as download_info:
+            self.act(locator=locator, action=element_actions.CLICK_LINK, index=index)
+        download = download_info.value
+        # download.save_as("/path/to/save/at/" + download.suggested_filename)
+        download.save_as(value)
 
     def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
         if exact:
