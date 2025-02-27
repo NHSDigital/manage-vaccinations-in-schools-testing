@@ -9,6 +9,12 @@ class child_year_group:
     ALL = "ALL"
 
 
+class vaccine_index:
+    HPV = 1
+    MENACWY = 2
+    TDIPV = 3
+
+
 class data_values:
     EMPTY: Final[str] = "<empty>"
 
