@@ -42,12 +42,9 @@ class playwright_operations:
         match property.lower():
             case element_properties.TEXT:
                 if expected_value != "":
-                    if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
-                        return
-                    else:
-                        self._verify_text(
-                            locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
-                        )
+                    self._verify_text(
+                        locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
+                    )
             case element_properties.VISIBILITY:
                 self._verify_visibility(locator=locator, expected_value=expected_value, actual_value=actual_value)
 
@@ -228,39 +225,39 @@ class playwright_operations:
         download.save_as(value)
 
     def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
+        if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
+            return
         if exact:
-            if expected_value == actual_value:
+            _passed: bool = True if expected_value == actual_value else False
+            if _passed:
                 self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
             else:
                 self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-            assert (
-                expected_value == actual_value
-            ), f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
+            assert _passed, f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
         else:
             if expected_value.startswith(escape_characters.NOT_OPERATOR):
                 expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
-                if clean_text(text=expected_value) not in clean_text(text=actual_value):
+                _passed: bool = True if clean_text(text=expected_value) not in clean_text(text=actual_value) else False
+                if _passed:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert clean_text(text=expected_value) not in clean_text(
-                    text=actual_value
-                ), f"Text '{expected_value}' not found in '{actual_value}'."
+                assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
             else:
-                if clean_text(text=expected_value) in clean_text(text=actual_value):
+                _passed: bool = True if clean_text(text=expected_value) in clean_text(text=actual_value) else False
+                if _passed:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert clean_text(text=expected_value) in clean_text(
-                    text=actual_value
-                ), f"Text '{expected_value}' not found in '{actual_value}'."
+                assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
 
     def _verify_visibility(self, locator: str, expected_value: str, actual_value: str):
-        if actual_value == expected_value:
+        _passed: bool = True if actual_value == expected_value else False
+        if _passed:
             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
         else:
             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
-        assert expected_value == actual_value, f"{locator} is not visible."
+        assert _passed, f"{locator} is not visible."
 
     def _get_element_text(self, locator: str, index: int, by_test_id: bool, chain_locator: bool) -> str:
         if by_test_id:
