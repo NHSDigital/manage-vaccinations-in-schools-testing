@@ -52,9 +52,9 @@ class testdata_operations:
         _file_content = self.fo.get_file_text(file_path=file_path)
         return _file_content.split(escape_characters.NEW_LINE) if _file_content is not None else None
 
-    def read_spreadsheet(self, file_path: str) -> pd.DataFrame:
-        _df = self.fo.read_excel_to_df(file_path=file_path)
-        return self.clean_df(df=_df)
+    def read_spreadsheet(self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1") -> pd.DataFrame:
+        _df = self.fo.read_excel_to_df(file_path=file_path, sheet_name=sheet_name)
+        return self.clean_df(df=_df) if clean_df else _df
 
     def clean_df(self, df: pd.DataFrame) -> pd.DataFrame:
         pd.set_option("future.no_silent_downcasting", True)
@@ -84,3 +84,7 @@ class testdata_operations:
             return _child_list["CHILD_FIRST_NAME"] + " " + _child_list["CHILD_LAST_NAME"].values.tolist()
         else:
             return None
+
+    def get_session_id(self, excel_path: str) -> str:
+        _df = self.read_spreadsheet(file_path=excel_path, clean_df=False, sheet_name="Vaccinations")
+        return _df["SESSION_ID"].iloc[0]

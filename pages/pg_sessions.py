@@ -83,6 +83,7 @@ class pg_sessions:
     CHK_YEAR10 = "Year 10"
     CHK_YEAR11 = "Year 11"
     TXT_FILTER_NAME = "Name"
+    LNK_DOWNLOAD_EXCEL = "Record offline (Excel)"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -220,6 +221,12 @@ class pg_sessions:
 
     def click_consent_refused(self):
         self.po.act(locator=self.LNK_CONSENT_REFUSED, action=element_actions.CLICK_LINK)
+
+    def save_session_id(self):
+        _file_path = f"working/excel_{get_current_datetime()}.xlsx"
+        self.po.act(locator=self.LNK_DOWNLOAD_EXCEL, action=element_actions.DOWNLOAD_FILE, value=_file_path)
+        _session_id = self.tdo.get_session_id(excel_path=_file_path)
+        self.ce.set_session_id(session_id=_session_id)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
         self.__set_gillick_competence(is_add=True, is_competent=is_competent, competence_details=competence_details)
@@ -461,7 +468,6 @@ class pg_sessions:
         self.click_school1()
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
-        self.save_session_id()
 
     def schedule_a_valid_session_in_school_2(self, for_today: bool = False):
         _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
@@ -470,7 +476,6 @@ class pg_sessions:
         self.click_school2()
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
-        self.save_session_id()
 
     def close_active_session_in_school_2(self):
         _past_date = get_offset_date(offset_days=-1)
@@ -514,8 +519,6 @@ class pg_sessions:
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         if verify_on_children:
             self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
-        self.click_scheduled()
-        self.click_school1()
         self.click_import_class_list()
         self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
@@ -734,8 +737,3 @@ class pg_sessions:
                 self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
                 self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
-
-    def save_session_id(self) -> None:
-        _page_url = self.po.get_element_property(locator=None, property=element_properties.PAGE_URL)
-        _session_id = _page_url.replace(f"{self.ce.service_url}/sessions/", "")
-        self.ce.set_session_id(session_id=_session_id)

@@ -16,6 +16,8 @@ class Test_Class_List_Upload:
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
+        self.sessions_page.click_scheduled()
+        self.sessions_page.click_school1()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
