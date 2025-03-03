@@ -31,7 +31,7 @@ class pg_sessions:
     LNK_TAB_CONSENT_GIVEN = "Consent given"
     LNK_TAB_CONFLICTING_CONSENT = "Conflicting consent"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
-    LNK_IMPORT_CLASS_LIST = "Import class list"
+    LNK_IMPORT_CLASS_LIST = "Import class list records"
     LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
     LBL_CHOOSE_COHORT_FILE_2 = f"{LNK_SCHOOL_2}Import class"
     BTN_CONTINUE = "Continue"

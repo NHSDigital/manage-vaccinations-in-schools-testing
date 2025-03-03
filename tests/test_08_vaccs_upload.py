@@ -16,7 +16,7 @@ class Test_Vaccinations_Upload:
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_POSITIVE)
+        self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.VACCS_SESSION_ID)
         self.sessions_page.click_school1()
         self.sessions_page.save_session_id()
         self.dashboard_page.go_to_dashboard()
