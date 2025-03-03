@@ -15,6 +15,8 @@ class Test_Record_a_Vaccine_Using_UI:
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
+        self.sessions_page.click_unscheduled()
+        self.sessions_page.click_school1()
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -28,11 +30,13 @@ class Test_Record_a_Vaccine_Using_UI:
     def setup_mavis_1729(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
+        self.sessions_page.click_unscheduled()
+        self.sessions_page.click_school1()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
         self.import_records_page.click_import_records()
-        self.import_records_page.click_vaccination_records()
+        self.import_records_page.import_vaccination_records()
         self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()

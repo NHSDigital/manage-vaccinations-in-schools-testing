@@ -4,6 +4,7 @@ from libs.mavis_constants import child_year_group, test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_sessions
 
 
+@pytest.mark.skip(reason="Tested by test_03_import_records.py")
 class Test_Class_List_Upload:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
