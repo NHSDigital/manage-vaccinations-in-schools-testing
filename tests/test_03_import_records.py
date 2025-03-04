@@ -24,9 +24,8 @@ class Test_ImportRecords:
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.click_scheduled()
-        self.sessions_page.click_school1()
+        self.dashboard_page.click_import_records()
+        self.import_records_page.click_import_records()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -38,13 +37,14 @@ class Test_ImportRecords:
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.VACCS_SESSION_ID)
+        self.import_records_page.import_class_list_records_from_school_session(
+            file_paths=test_data_file_paths.CLASS_SESSION_ID
+        )
         self.import_records_page.click_school1()
         self.sessions_page.save_session_id()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
         self.import_records_page.click_import_records()
-        self.import_records_page.import_vaccination_records()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -110,17 +110,17 @@ class Test_ImportRecords:
 
     @pytest.mark.vaccinations
     @pytest.mark.order(351)
-    def test_vaccs_positive_file_upload(self):
+    def test_vaccs_positive_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_POSITIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(352)
-    def test_vaccs_negative_file_upload(self):
+    def test_vaccs_negative_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_NEGATIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(353)
-    def test_vaccs_duplicate_record_upload(self):
+    def test_vaccs_duplicate_record_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_1)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
@@ -129,25 +129,25 @@ class Test_ImportRecords:
 
     @pytest.mark.vaccinations
     @pytest.mark.order(354)
-    def test_vaccs_file_structure(self):
+    def test_vaccs_file_structure(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(355)
-    def test_vaccs_no_record(self):
+    def test_vaccs_no_record(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HEADER_ONLY)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(356)
-    def test_vaccs_empty_file(self):
+    def test_vaccs_empty_file(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_EMPTY_FILE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(357)
-    def test_vaccs_historic_positive_file_upload(self):
+    def test_vaccs_historic_positive_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_POSITIVE)
 
     @pytest.mark.vaccinations
     @pytest.mark.order(358)
-    def test_vaccs_historic_negative_file_upload(self):
+    def test_vaccs_historic_negative_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE)

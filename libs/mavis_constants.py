@@ -25,7 +25,8 @@ class record_limit:
 
 
 class test_data_file_paths:
-    PARENTAL_CONSENT: Final[str] = "test_data/ParentalConsent.xlsx"
+    PARENTAL_CONSENT_HPV: Final[str] = "test_data/ParentalConsent_HPV.xlsx"
+    PARENTAL_CONSENT_DOUBLES: Final[str] = "test_data/ParentalConsent_Doubles.xlsx"
     VACCS_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
     VACCS_NEGATIVE: Final[str] = "VACCS_HPV_NEGATIVE"
     VACCS_HIST_POSITIVE: Final[str] = "VACCS_HIST_HPV_POSITIVE"
@@ -35,7 +36,6 @@ class test_data_file_paths:
     VACCS_INVALID_STRUCTURE: Final[str] = "VACCS_HPV_INVALID_STRUCTURE"
     VACCS_EMPTY_FILE: Final[str] = "VACCS_HPV_EMPTY_FILE"
     VACCS_HEADER_ONLY: Final[str] = "VACCS_HPV_HEADER_ONLY"
-    VACCS_SESSION_ID: Final[str] = "VACCS_SESSION_ID"
     COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
     COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
     COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
@@ -53,6 +53,7 @@ class test_data_file_paths:
     CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"
     CLASS_CHILDREN_FILTER: Final[str] = "CLASS_CHILDREN_FILTER"
     CLASS_YEAR_GROUP: Final[str] = "CLASS_YEAR_GROUP"
+    CLASS_SESSION_ID: Final[str] = "CLASS_SESSION_ID"
     COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
     COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
     COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"

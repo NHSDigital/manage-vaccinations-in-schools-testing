@@ -9,7 +9,7 @@ class parental_consent_helper:
     pc = pg_parental_consent.pg_parental_consent()
 
     def __init__(self):
-        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT)
+        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT_HPV)
 
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data
