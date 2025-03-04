@@ -77,49 +77,49 @@ class Test_ImportRecords:
         self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
 
     @pytest.mark.classlist
-    @pytest.mark.order(306)
+    @pytest.mark.order(326)
     def test_class_list_file_upload_positive(self, setup_class_list):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_POSITIVE)
 
     @pytest.mark.classlist
-    @pytest.mark.order(307)
+    @pytest.mark.order(327)
     def test_class_list_file_upload_negative(self, setup_class_list):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_NEGATIVE)
 
     @pytest.mark.classlist
-    @pytest.mark.order(308)
+    @pytest.mark.order(328)
     def test_class_list_file_structure(self, setup_class_list):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE)
 
     @pytest.mark.classlist
-    @pytest.mark.order(309)
+    @pytest.mark.order(329)
     def test_class_list_no_record(self, setup_class_list):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_HEADER_ONLY)
 
     @pytest.mark.classlist
-    @pytest.mark.order(310)
+    @pytest.mark.order(330)
     def test_class_list_empty_file(self, setup_class_list):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)
 
     @pytest.mark.classlist
-    @pytest.mark.order(311)
+    @pytest.mark.order(331)
     def test_class_list_year_group(self, setup_class_list):
         self.import_records_page.import_class_list_records(
             file_paths=test_data_file_paths.CLASS_YEAR_GROUP, year_group=child_year_group.YEAR_8
         )
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(312)
+    @pytest.mark.order(351)
     def test_vaccs_positive_file_upload(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_POSITIVE)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(313)
+    @pytest.mark.order(352)
     def test_vaccs_negative_file_upload(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_NEGATIVE)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(314)
+    @pytest.mark.order(353)
     def test_vaccs_duplicate_record_upload(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_1)
         self.dashboard_page.go_to_dashboard()
@@ -128,26 +128,26 @@ class Test_ImportRecords:
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_2)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(315)
+    @pytest.mark.order(354)
     def test_vaccs_file_structure(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(316)
+    @pytest.mark.order(355)
     def test_vaccs_no_record(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HEADER_ONLY)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(317)
+    @pytest.mark.order(356)
     def test_vaccs_empty_file(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_EMPTY_FILE)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(318)
+    @pytest.mark.order(357)
     def test_vaccs_historic_positive_file_upload(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_POSITIVE)
 
     @pytest.mark.vaccinations
-    @pytest.mark.order(319)
+    @pytest.mark.order(358)
     def test_vaccs_historic_negative_file_upload(self):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE)
