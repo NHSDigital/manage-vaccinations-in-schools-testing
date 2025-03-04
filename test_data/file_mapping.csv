@@ -26,7 +26,7 @@ CLASS_HEADER_ONLY,test_data/class_list/i_header_only.csv,test_data/class_list/o_
 CLASS_CHILDREN_FILTER,test_data/class_list/i_children_filter.csv,test_data/class_list/o_children_filter.csv,class
 CLASS_YEAR_GROUP,test_data/class_list/i_year_group.csv,test_data/class_list/o_year_group.csv,class
 VACCS_HPV_DOSE_TWO,test_data/vaccs/i_dose_two.csv,test_data/vaccs/o_dose_two.csv,hpv
-VACCS_SESSION_ID,test_data/vaccs/i_session_id.csv,test_data/vaccs/o_session_id.csv,hpv
+CLASS_SESSION_ID,test_data/class_list/i_session_id.csv,test_data/class_list/o_session_id.csv,hpv
 COHORTS_NO_CONSENT,test_data/cohorts/i_no_consent.csv,test_data/cohorts/o_no_consent.csv,cohort
 COHORTS_CONFLICTING_CONSENT,test_data/cohorts/i_conflicting_consent.csv,test_data/cohorts/o_conflicting_consent.csv,cohort
 COHORTS_E2E_1,test_data/cohorts/i_e2e_1.csv,test_data/cohorts/o_e2e_1.csv,cohort_e2e

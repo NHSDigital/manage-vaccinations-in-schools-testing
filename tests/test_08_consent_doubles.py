@@ -6,14 +6,14 @@ from pandas.core.series import Series
 from libs import CurrentExecution, playwright_ops
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_parental_consent, pg_sessions
-from tests.helpers import parental_consent_helper
+from tests.helpers import parental_consent_helper_hpv
 
 
 class Test_Consent:
     ce = CurrentExecution()
     po = playwright_ops.playwright_operations()
     pc = pg_parental_consent.pg_parental_consent()
-    helper = parental_consent_helper.parental_consent_helper()
+    helper = parental_consent_helper_hpv.parental_consent_helper()
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
