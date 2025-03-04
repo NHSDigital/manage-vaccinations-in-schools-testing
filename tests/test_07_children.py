@@ -28,7 +28,7 @@ class Test_Children:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.children
-    @pytest.mark.order(1201)
+    @pytest.mark.order(701)
     def test_children_headers_and_filter(self):
         self.children_page.verify_headers()
         self.children_page.verify_filter()

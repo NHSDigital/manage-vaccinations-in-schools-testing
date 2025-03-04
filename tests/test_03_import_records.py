@@ -1,6 +1,8 @@
 import pytest
 
+from libs.generic_constants import wait_time
 from libs.mavis_constants import child_year_group, test_data_file_paths
+from libs.wrappers import wait
 from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
@@ -45,12 +47,14 @@ class Test_ImportRecords:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
         self.import_records_page.click_import_records()
+        # wait(timeout=wait_time.MAX)  # Wait for the vaccs file link to be unique
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
+    ########################################### CHILD LIST ###########################################
     @pytest.mark.childlist
     @pytest.mark.order(301)
     def test_child_list_file_upload_positive(self, setup_child_list):
@@ -75,6 +79,8 @@ class Test_ImportRecords:
     @pytest.mark.order(305)
     def test_child_list_empty_file(self, setup_child_list):
         self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
+
+    ########################################### CLASS LIST ###########################################
 
     @pytest.mark.classlist
     @pytest.mark.order(326)
@@ -107,6 +113,8 @@ class Test_ImportRecords:
         self.import_records_page.import_class_list_records(
             file_paths=test_data_file_paths.CLASS_YEAR_GROUP, year_group=child_year_group.YEAR_8
         )
+
+    ########################################### VACCINATIONS ###########################################
 
     @pytest.mark.vaccinations
     @pytest.mark.order(351)
