@@ -3,7 +3,7 @@ from libs.generic_constants import element_actions, element_properties
 from libs.mavis_constants import data_values
 
 
-class pg_parental_consent:
+class pg_consent_hpv:
     po = playwright_ops.playwright_operations()
 
     BTN_START_NOW = "Start now"

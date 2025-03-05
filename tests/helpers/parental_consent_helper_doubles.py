@@ -1,15 +1,15 @@
 from libs import CurrentExecution, testdata_ops
 from libs.mavis_constants import data_values, test_data_file_paths
-from pages import pg_parental_consent
+from pages import pg_consent_doubles
 
 
 class parental_consent_helper:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    pc = pg_parental_consent.pg_parental_consent()
+    pc = pg_consent_doubles.pg_consent_doubles()
 
     def __init__(self):
-        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT_HPV)
+        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT_DOUBLES)
 
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data
@@ -27,16 +27,18 @@ class parental_consent_helper:
         self.relation = str(_row["Relation"])
         self.email = str(_row["Email"])
         self.phone = str(_row["Phone"])
-        self.consent = str(_row["ConsentVaccine"]).lower() == "true"
+        self.consent = str(_row["ConsentVaccine"])
         self.gp = str(_row["GPName"])
         self.addr1 = str(_row["AddressLine1"])
         self.addr2 = str(_row["AddressLine2"])
         self.city = str(_row["City"])
         self.postcode = str(_row["PostCode"])
-        self.allergy_details = str(_row["AllergyDetails"])
-        self.medical_condition_details = str(_row["MedicalConditionDetails"])
+        self.bleeding_disorder_details = str(_row["BleedingDisorderDetails"])
+        self.severe_allergy_details = str(_row["SevereAllergyDetails"])
         self.reaction_details = str(_row["ReactionDetails"])
         self.extra_support_details = str(_row["ExtraSupportDetails"])
+        self.vaccinated_in_past_details = str(_row["VaccinatedInPastDetails"])
+        self.other_vaccs_in_past_details = str(_row["OtherVaccsInPastDetails"])
         self.consent_not_given_reason = str(_row["ConsentNotGivenReason"])
         self.consent_not_given_details = str(_row["ConsentNotGivenDetails"])
         self.expected_message = str(_row["ExpectedFinalMessage"])
@@ -69,8 +71,7 @@ class parental_consent_helper:
                 scenario_id=self.scenario_id,
             )
         self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consented=self.consent)
-        if self.consent:
-            # self.pc.fill_gp_details(gp_name=self.gp)  # Removed on 04/12/2024 as GP details are to be retrieved from PDS now.
+        if self._consented():
             self.pc.fill_address_details(
                 scenario_id=self.scenario_id,
                 line1=self.addr1,
@@ -78,13 +79,19 @@ class parental_consent_helper:
                 city=self.city,
                 postcode=self.postcode,
             )
-            self.pc.select_severe_allergies(scenario_id=self.scenario_id, allergy_details=self.allergy_details)
-            self.pc.select_medical_condition(
-                scenario_id=self.scenario_id, medical_condition_details=self.medical_condition_details
+            self.pc.select_bleeding_disorder(
+                scenario_id=self.scenario_id, bleeding_disorder_details=self.bleeding_disorder_details
             )
+            self.pc.select_severe_allergies(scenario_id=self.scenario_id, allergy_details=self.severe_allergy_details)
             self.pc.select_severe_reaction(scenario_id=self.scenario_id, reaction_details=self.reaction_details)
             self.pc.select_extra_support(
                 scenario_id=self.scenario_id, extra_support_details=self.extra_support_details
+            )
+            self.pc.vaccinated_in_past(
+                scenario_id=self.scenario_id, vaccs_in_past_details=self.vaccinated_in_past_details
+            )
+            self.pc.other_vaccs_in_past(
+                scenario_id=self.scenario_id, other_vaccs_in_past_details=self.other_vaccs_in_past_details
             )
         else:
             self.pc.select_consent_not_given_reason(
@@ -96,3 +103,10 @@ class parental_consent_helper:
             scenario_id=self.scenario_id,
         )
         self.pc.verify_final_message(scenario_id=self.scenario_id, expected_message=self.expected_message)
+
+    def _consented(self) -> bool:
+        _c = self.consent.lower()
+        if _c == "both" or _c == "menacwy" or _c == "td/ipv":
+            return True
+        else:
+            return False

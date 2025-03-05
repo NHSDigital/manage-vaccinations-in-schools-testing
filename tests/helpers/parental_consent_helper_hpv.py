@@ -1,12 +1,12 @@
 from libs import CurrentExecution, testdata_ops
 from libs.mavis_constants import data_values, test_data_file_paths
-from pages import pg_parental_consent
+from pages import pg_consent_hpv
 
 
 class parental_consent_helper:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    pc = pg_parental_consent.pg_parental_consent()
+    pc = pg_consent_hpv.pg_consent_hpv()
 
     def __init__(self):
         self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT_HPV)

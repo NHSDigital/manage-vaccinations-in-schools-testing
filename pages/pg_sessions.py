@@ -2,7 +2,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_actions, element_properties, wait_time
 from libs.mavis_constants import child_year_group, record_limit
 from libs.wrappers import *
-from pages import pg_children, pg_dashboard, pg_parental_consent
+from pages import pg_children, pg_consent_hpv, pg_dashboard
 
 
 class pg_sessions:
@@ -11,7 +11,7 @@ class pg_sessions:
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
-    consent_page = pg_parental_consent.pg_parental_consent()
+    consent_page = pg_consent_hpv.pg_consent_hpv()
     children_page = pg_children.pg_children()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
@@ -69,8 +69,7 @@ class pg_sessions:
     LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
     LNK_HPV_CONSENT_FORM = "View HPV parental consent form ("
-    LNK_TDIPV_CONSENT_FORM = "View Td/IPV parental consent form ("
-    LNK_MENACWY_CONSENT_FORM = "View MenACWY parental consent form ("
+    LNK_DOUBLES_CONSENT_FORM = "View MenACWY and Td/IPV parental consent form"
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
     LNK_CONSENT_REFUSED = "Consent refused"
     LNK_MARK_AS_INVALID = "Mark as invalid"
@@ -565,6 +564,9 @@ class pg_sessions:
 
     def get_hpv_consent_url(self) -> str:
         return self.po.get_element_property(locator=self.LNK_HPV_CONSENT_FORM, property=element_properties.HREF)
+
+    def get_doubles_consent_url(self) -> str:
+        return self.po.get_element_property(locator=self.LNK_DOUBLES_CONSENT_FORM, property=element_properties.HREF)
 
     def bug_mavis_1696(self):
         self.click_no_response()

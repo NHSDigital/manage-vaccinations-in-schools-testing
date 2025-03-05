@@ -12,10 +12,10 @@ class pg_login:
     BTN_LOGIN = "Log in"
     BTN_LOGOUT = "Log out"
     LBL_BANNER = "banner"
-    LBL_NURSE = "Nurse Joy"
+    LBL_NURSE = "JOY, Nurse"
     BTN_NURSE_ROLE = "SAIS Organisation 1 (R1L)"
     BTN_SUPERUSER_ROLE = "SAIS Organisation 1 (R1L)"
-    LBL_SUPERUSER = "Superuser Superuser"
+    LBL_SUPERUSER = "SUPERUSER, Superuser"
     LBL_PARAGRAPH = "paragraph"
 
     def login_as_nurse(self):
