@@ -128,9 +128,7 @@ class Test_Consent_HPV:
     @pytest.mark.mobile
     @pytest.mark.order(901)
     @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
-    def test_parental_consent_workflow(
-        self, get_hpv_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]
-    ):
+    def test_consent_workflow_hpv(self, get_hpv_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
         self.po.go_to_url(url=get_hpv_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
         self.helper.enter_details_on_mavis()
