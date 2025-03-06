@@ -31,7 +31,7 @@ class pg_sessions:
     LNK_TAB_CONSENT_GIVEN = "Consent given"
     LNK_TAB_CONFLICTING_CONSENT = "Conflicting consent"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
-    LNK_IMPORT_CLASS_LIST = "Import class list records"
+    LNK_IMPORT_CLASS_LIST = "Import class lists"
     LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
     LBL_CHOOSE_COHORT_FILE_2 = f"{LNK_SCHOOL_2}Import class"
     BTN_CONTINUE = "Continue"
@@ -75,14 +75,15 @@ class pg_sessions:
     LNK_MARK_AS_INVALID = "Mark as invalid"
     LNK_PARENT2 = "Parent2"
     TXT_NOTES = "Notes"
-    LNK_REGISTER_ATTENDANCE = "Register attendance"
+    LNK_REGISTER_ATTENDANCE = "Register"
     LBL_CAPTION = "caption"
     CHK_YEAR8 = "Year 8"
     CHK_YEAR9 = "Year 9"
     CHK_YEAR10 = "Year 10"
     CHK_YEAR11 = "Year 11"
     TXT_FILTER_NAME = "Name"
-    LNK_DOWNLOAD_EXCEL = "Record offline (Excel)"
+    LNK_DOWNLOAD_EXCEL = "Record offline"
+    LBL_NO_SESSIONS_SCHEDULED = "No sessions scheduled"
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -322,12 +323,7 @@ class pg_sessions:
         self.po.act(locator=self.LNK_BACK, action=element_actions.CLICK_LINK)
         self.po.act(locator=self.LNK_CONTINUE, action=element_actions.CLICK_LINK)
         self.po.verify(
-            locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
-            property=element_properties.VISIBILITY,
-            expected_value=True,
-            exact=False,
-            by_test_id=False,
-            chain_locator=True,
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_NO_SESSIONS_SCHEDULED
         )
 
     def __edit_session(self, to_date: str):

@@ -1,6 +1,6 @@
 Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
 Row 3 ORGANISATION_CODE: Enter an organisation code.
-Row 4 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
+#Row 4 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
 Row 5 SCHOOL_NAME: Enter a school name.
 Row 6 NHS_NUMBER: Enter an NHS number with 10 characters.
 Row 7 NHS_NUMBER: Enter an NHS number with 10 characters.
@@ -16,8 +16,8 @@ Row 16 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 18 DATE_OF_VACCINATION: Enter a date in the correct format
 Row 19 DATE_OF_VACCINATION: The vaccination date is in the future
-#Row 20 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil9.
-Row 21 VACCINE_GIVEN: Enter a valid vaccine, eg Gardasil9.
+Row 20 PROGRAMME: This programme is not available in this session
+Row 21 VACCINE_GIVEN: This vaccine is not available in this session
 Row 22 BATCH_NUMBER: Enter a batch number.
 Row 23 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 24 ANATOMICAL_SITE: Enter an anatomical site.

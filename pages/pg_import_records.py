@@ -28,7 +28,7 @@ class pg_import_records:
     CHK_YEAR9 = "Year 9"
     CHK_YEAR10 = "Year 10"
     CHK_YEAR11 = "Year 11"
-    LNK_IMPORT_CLASS_LIST_RECORDS = "Import class list records"
+    LNK_IMPORT_CLASS_LIST_RECORDS = "Import class lists"
 
     def click_import_records(self):
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=element_actions.CLICK_LINK)
