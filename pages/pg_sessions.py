@@ -17,7 +17,7 @@ class pg_sessions:
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
     LNK_SCHOOL_2 = "Barn End Centre"
 
-    LNK_CHILD_FULL_NAME = "CF"
+    LNK_CHILD_FULL_NAME = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
     LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
     LNK_CHILD_E2E1 = "CE2E1 CE2E1"
@@ -31,6 +31,7 @@ class pg_sessions:
     LNK_TAB_CONSENT_GIVEN = "Consent given"
     LNK_TAB_CONFLICTING_CONSENT = "Conflicting consent"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
+    LNK_TAB_REGISTER = "Register"
     LNK_IMPORT_CLASS_LIST = "Import class lists"
     LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
     LBL_CHOOSE_COHORT_FILE_2 = f"{LNK_SCHOOL_2}Import class"
@@ -42,7 +43,7 @@ class pg_sessions:
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
     BTN_SAVE_TRIAGE = "Save triage"
     LBL_PARAGRAPH = "paragraph"
-    LBL_TRIAGE_UPDATED_MESSAGE = "Triage outcome updated for CF"
+    LBL_TRIAGE_UPDATED_MESSAGE = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
     LBL_MAIN = "main"
     TXT_DAY = "Day"
     TXT_MONTH = "Month"
@@ -62,14 +63,14 @@ class pg_sessions:
     LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN = "Triaged decision: Safe to vaccinate"
     LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED = "Consent refused by Parent1 (Dad)"
     BTN_GET_CONSENT_RESPONSE = "Get consent response"
-    LNK_CHECK_CONSENT_RESPONSES = "Check consent responses"
+    LNK_CONSENT_TAB = "Consent"
     BTN_COMPLETE_GILLICK_ASSESSMENT = "Complete your assessment"
     LBL_CHILD_COMPETENT = "Child assessed as Gillick competent"
     LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
     LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
-    LNK_HPV_CONSENT_FORM = "View HPV parental consent form ("
-    LNK_DOUBLES_CONSENT_FORM = "View MenACWY and Td/IPV parental consent form"
+    LNK_HPV_CONSENT_FORM = "View the HPV online consent form"
+    LNK_DOUBLES_CONSENT_FORM = "View the MenACWY and Td/IPV online consent form"
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
     LNK_CONSENT_REFUSED = "Consent refused"
     LNK_MARK_AS_INVALID = "Mark as invalid"
@@ -134,6 +135,9 @@ class pg_sessions:
 
     def click_conflicting_consent(self):
         self.po.act(locator=self.LNK_TAB_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK, exact=False)
+
+    def click_register_tab(self):
+        self.po.act(locator=self.LNK_TAB_REGISTER, action=element_actions.CLICK_LINK, exact=False)
 
     def click_activity_log(self):
         self.po.act(locator=self.LNK_TAB_ACTIVITY_LOG, action=element_actions.CLICK_LINK, exact=True)
@@ -207,8 +211,8 @@ class pg_sessions:
     def click_save_triage(self):
         self.po.act(locator=self.BTN_SAVE_TRIAGE, action=element_actions.CLICK_BUTTON)
 
-    def click_check_consent_responses(self):
-        self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=element_actions.CLICK_LINK)
+    def click_consent_tab(self):
+        self.po.act(locator=self.LNK_CONSENT_TAB, action=element_actions.CLICK_LINK)
 
     def click_assess_gillick_competence(self):
         self.po.act(locator=self.LNK_ASSESS_GILLICK_COMPETENCE, action=element_actions.CLICK_LINK)
@@ -403,7 +407,7 @@ class pg_sessions:
         self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=element_actions.CLICK_BUTTON)
 
     def click_get_consent_responses(self):
-        self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_CONSENT_TAB, action=element_actions.CLICK_BUTTON)
 
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
@@ -417,7 +421,7 @@ class pg_sessions:
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_give_consent()
@@ -425,7 +429,7 @@ class pg_sessions:
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
-        self.click_record_vaccinations()
+        self.click_register_tab()
         self.click_child_full_name()
         self.click_update_triage_outcome()
         self.select_yes_safe_to_vaccinate()
@@ -447,7 +451,7 @@ class pg_sessions:
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_refuse_consent()
@@ -551,7 +555,7 @@ class pg_sessions:
     def set_gillick_competence_for_student(self):
         self.click_today()
         self.click_school1()
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_full_name()
         self.click_assess_gillick_competence()
         self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
@@ -714,7 +718,7 @@ class pg_sessions:
         )
 
     def give_consent_for_e2e1_child_by_parent_1(self):
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_e2e1()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)

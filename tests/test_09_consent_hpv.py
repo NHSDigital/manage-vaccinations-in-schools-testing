@@ -60,7 +60,7 @@ class Test_Consent_HPV:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        self.sessions_page.click_check_consent_responses()
+        self.sessions_page.click_consent_tab()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -79,7 +79,7 @@ class Test_Consent_HPV:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        self.sessions_page.click_check_consent_responses()
+        self.sessions_page.click_consent_tab()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -98,7 +98,7 @@ class Test_Consent_HPV:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        self.sessions_page.click_check_consent_responses()
+        self.sessions_page.click_consent_tab()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -117,7 +117,7 @@ class Test_Consent_HPV:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        self.sessions_page.click_check_consent_responses()
+        self.sessions_page.click_consent_tab()
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()

@@ -131,14 +131,14 @@ class pg_consent_doubles:
         self.po.act(locator=self.CHK_MOBILE_ONLY_TEXT, action=element_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
 
-    def select_consent_for_vaccination(self, scenario_id: str, consented: str) -> None:
-        match consented.lower():
+    def select_consent_for_vaccination(self, scenario_id: str, consent_for: str) -> None:
+        match consent_for.lower():
             case "both":
                 self.po.act(locator=self.RDO_CONSENT_BOTH, action=element_actions.RADIO_BUTTON_SELECT)
             case "menacwy":
                 self.po.act(locator=self.RDO_CONSENT_ONE, action=element_actions.RADIO_BUTTON_SELECT)
                 self.po.act(locator=self.RDO_CONSENT_MENACWY, action=element_actions.RADIO_BUTTON_SELECT)
-            case "tdipv":
+            case "td/ipv":
                 self.po.act(locator=self.RDO_CONSENT_ONE, action=element_actions.RADIO_BUTTON_SELECT)
                 self.po.act(locator=self.RDO_CONSENT_TDIPV, action=element_actions.RADIO_BUTTON_SELECT)
             case _:

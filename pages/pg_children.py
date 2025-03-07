@@ -9,15 +9,15 @@ class pg_children:
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    CHILD1 = "CFilter1"
-    LBL_CHILD_RECORD = f"1 child matching “{CHILD1}”"
+    CHILD1 = "CFILTER1, CFilter1"
+    LBL_CHILD_RECORD = "1 child"
 
     LBL_CHILDREN = "Children"
     LBL_HEADING = "heading"
     LBL_MAIN = "main"
-    LBL_TABLE_HEADERS = "Full name	NHS number	Date of birth	Postcode	School"
-    TXT_FILTER_NAME = "Name"
-    LNK_FILTER_CHILDREN = "Filter children"
+    LBL_TABLE_HEADERS = "Name and NHS number	Postcode	School	Date of birth"
+    TXT_SEARCH = "Search"
+    BTN_SEARCH = "Search"
     LNK_CLEAR_FILTERS = "Clear filters"
     LNK_ACTIVITY_LOG = "Activity log"
 
@@ -28,8 +28,8 @@ class pg_children:
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_TABLE_HEADERS)
 
     def verify_filter(self):
-        self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)
-        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.CHILD1)
+        self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=self.CHILD1)
+        self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
         wait(timeout=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
@@ -38,8 +38,8 @@ class pg_children:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             for child_name in self.ce.child_list:
-                self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)
-                self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=child_name)
+                self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=child_name)
+                self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
                 wait(timeout=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
                 self.po.act(locator=self.LNK_CLEAR_FILTERS, action=element_actions.CLICK_LINK)
@@ -50,8 +50,8 @@ class pg_children:
             _log_text = "Update this text when MAVIS-1896/MAV-253 is closed"  # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         else:
             _log_text = "Consent response manually matched with child record"
-        self.po.act(locator=self.LNK_FILTER_CHILDREN, action=element_actions.CLICK_TEXT)
-        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=child_name)
+        self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=child_name)
+        self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
         wait(timeout=wait_time.MIN)
         self.po.act(locator=child_name, action=element_actions.CLICK_LINK)
         self.po.act(locator=self.LNK_ACTIVITY_LOG, action=element_actions.CLICK_TEXT)
