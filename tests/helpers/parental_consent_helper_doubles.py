@@ -27,7 +27,7 @@ class parental_consent_helper:
         self.relation = str(_row["Relation"])
         self.email = str(_row["Email"])
         self.phone = str(_row["Phone"])
-        self.consent = str(_row["ConsentVaccine"])
+        self.consent_for = str(_row["ConsentVaccine"])
         self.gp = str(_row["GPName"])
         self.addr1 = str(_row["AddressLine1"])
         self.addr2 = str(_row["AddressLine2"])
@@ -70,8 +70,8 @@ class parental_consent_helper:
             self.pc.check_phone_options(
                 scenario_id=self.scenario_id,
             )
-        self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consented=self.consent)
-        if self._consented():
+        self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consent_for=self.consent_for)
+        if self.consent_for.lower() != data_values.EMPTY:  # None
             self.pc.fill_address_details(
                 scenario_id=self.scenario_id,
                 line1=self.addr1,
@@ -90,10 +90,11 @@ class parental_consent_helper:
             self.pc.vaccinated_in_past(
                 scenario_id=self.scenario_id, vaccs_in_past_details=self.vaccinated_in_past_details
             )
+        if self.consent_for.lower() == "both":
             self.pc.other_vaccs_in_past(
                 scenario_id=self.scenario_id, other_vaccs_in_past_details=self.other_vaccs_in_past_details
             )
-        else:
+        if self.consent_for.lower() != "both":
             self.pc.select_consent_not_given_reason(
                 scenario_id=self.scenario_id,
                 reason=self.consent_not_given_reason,
@@ -103,10 +104,3 @@ class parental_consent_helper:
             scenario_id=self.scenario_id,
         )
         self.pc.verify_final_message(scenario_id=self.scenario_id, expected_message=self.expected_message)
-
-    def _consented(self) -> bool:
-        _c = self.consent.lower()
-        if _c == "both" or _c == "menacwy" or _c == "td/ipv":
-            return True
-        else:
-            return False

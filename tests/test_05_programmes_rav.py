@@ -4,7 +4,7 @@ from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes, pg_sessions
 
 
-class Test_Record_a_Vaccine_Using_UI:
+class Test_Programmes_RAV:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
@@ -15,9 +15,7 @@ class Test_Record_a_Vaccine_Using_UI:
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
-        self.sessions_page.click_unscheduled()
-        self.sessions_page.click_school1()
-        self.sessions_page.schedule_a_valid_session_in_school_1()
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
@@ -30,8 +28,6 @@ class Test_Record_a_Vaccine_Using_UI:
     def setup_mavis_1729(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_sessions()
-        self.sessions_page.click_unscheduled()
-        self.sessions_page.click_school1()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
@@ -48,15 +44,15 @@ class Test_Record_a_Vaccine_Using_UI:
 
     @pytest.mark.rav
     @pytest.mark.order(701)
-    def test_rav_triage_positive(self, setup_tests):
-        self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_POSITIVE)
+    def test_programmes_rav_triage_positive(self, setup_tests):
+        self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
 
     @pytest.mark.rav
     @pytest.mark.order(702)
-    def test_rav_triage_consent_refused(self, setup_tests):
-        self.sessions_page.update_triage_outcome_consent_refused(file_paths=test_data_file_paths.COHORTS_POSITIVE)
+    def test_programmes_rav_triage_consent_refused(self, setup_tests):
+        self.sessions_page.update_triage_outcome_consent_refused(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
 
     @pytest.mark.rav
     @pytest.mark.order(703)
-    def test_rav_edit_dose_to_not_given(self, setup_mavis_1729):
+    def test_programmes_rav_edit_dose_to_not_given(self, setup_mavis_1729):
         self.programmes_page.edit_dose_to_not_given()  # MAVIS-1729

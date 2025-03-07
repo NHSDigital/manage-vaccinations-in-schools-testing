@@ -58,7 +58,7 @@ class pg_consent_hpv:
     RDO_NO_THEY_DO_NOT_AGREE = "No, they do not agree"
     RDO_NO_RESPONSE = "No response"
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
-    LBL_CONSENT_RECORDED = "Consent recorded for CF"
+    LBL_CONSENT_RECORDED = "Consent recorded for CLAST, CFirst"
     LBL_MAIN = "main"
     RDO_PARENT1_DAD = "Parent1 (Dad)"
     RDO_PARENT2_MUM = "Parent2 (Mum)"
