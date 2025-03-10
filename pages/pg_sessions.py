@@ -18,18 +18,18 @@ class pg_sessions:
     LNK_SCHOOL_2 = "Barn End Centre"
 
     LNK_CHILD_FULL_NAME = "CLAST, CFirst"
-    LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
-    LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
-    LNK_CHILD_E2E1 = "CE2E1 CE2E1"
-    LNK_CHILD_CONFLICTING_GILLICK = "Conflicting1 Gillick1"
-    LNK_CHILD_CONSENT_TWICE = "Consent1 Twice1"
+    LNK_CHILD_NO_CONSENT = "NOCONSENT1, NoConsent1"
+    LNK_CHILD_CONFLICTING_CONSENT = "CONFLICTINGCONSENT1, ConflictingConsent1"
+    LNK_CHILD_E2E1 = "CE2E1, Ce2e1"
+    LNK_CHILD_CONFLICTING_GILLICK = "GILLICK1, Conflicting1"
+    LNK_CHILD_CONSENT_TWICE = "TWICE1, Consent1"
 
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
     LNK_TAB_UNSCHEDULED = "Unscheduled"
-    LNK_TAB_NO_RESPONSE = "No response"
-    LNK_TAB_CONSENT_GIVEN = "Consent given"
-    LNK_TAB_CONFLICTING_CONSENT = "Conflicting consent"
+    RDO_NO_RESPONSE = "No response"
+    RDO_CONSENT_GIVEN = "Consent given"
+    RDO_CONFLICTING_CONSENT = "Conflicting consent"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
     LNK_TAB_REGISTER = "Register"
     LNK_IMPORT_CLASS_LIST = "Import class lists"
@@ -72,7 +72,7 @@ class pg_sessions:
     LNK_HPV_CONSENT_FORM = "View the HPV online consent form"
     LNK_DOUBLES_CONSENT_FORM = "View the MenACWY and Td/IPV online consent form"
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
-    LNK_CONSENT_REFUSED = "Consent refused"
+    RDO_CONSENT_REFUSED = "Consent refused"
     LNK_MARK_AS_INVALID = "Mark as invalid"
     LNK_PARENT2 = "Parent2"
     TXT_NOTES = "Notes"
@@ -127,14 +127,14 @@ class pg_sessions:
     def click_unscheduled(self):
         self.po.act(locator=self.LNK_TAB_UNSCHEDULED, action=element_actions.CLICK_LINK, exact=True)
 
-    def click_no_response(self):
-        self.po.act(locator=self.LNK_TAB_NO_RESPONSE, action=element_actions.CLICK_LINK, exact=False)
+    def select_no_response(self):
+        self.po.act(locator=self.RDO_NO_RESPONSE, action=element_actions.RADIO_BUTTON_SELECT)
 
-    def click_consent_given(self):
-        self.po.act(locator=self.LNK_TAB_CONSENT_GIVEN, action=element_actions.CLICK_LINK, exact=False)
+    def select_consent_given(self):
+        self.po.act(locator=self.RDO_CONSENT_GIVEN, action=element_actions.RADIO_BUTTON_SELECT)
 
-    def click_conflicting_consent(self):
-        self.po.act(locator=self.LNK_TAB_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK, exact=False)
+    def select_conflicting_consent(self):
+        self.po.act(locator=self.RDO_CONFLICTING_CONSENT, action=element_actions.RADIO_BUTTON_SELECT)
 
     def click_register_tab(self):
         self.po.act(locator=self.LNK_TAB_REGISTER, action=element_actions.CLICK_LINK, exact=False)
@@ -181,22 +181,22 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=element_actions.CLICK_LINK)
 
     def click_child_consent_twice(self):
-        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONSENT_TWICE)
-        wait(timeout=wait_time.MIN)
+        # self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONSENT_TWICE)
+        # wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONSENT_TWICE, action=element_actions.CLICK_LINK)
 
     def click_child_conflicting_gillick(self):
-        self.po.act(
-            locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_GILLICK
-        )
-        wait(timeout=wait_time.MIN)
+        # self.po.act(
+        #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_GILLICK
+        # )
+        # wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=element_actions.CLICK_LINK)
 
     def click_child_conflicting_consent(self):
-        self.po.act(
-            locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_CONSENT
-        )
-        wait(timeout=wait_time.MIN)
+        # self.po.act(
+        #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_CONSENT
+        # )
+        # wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK)
 
     def click_child_e2e1(self):
@@ -223,8 +223,8 @@ class pg_sessions:
     def click_could_not_vaccinate(self):
         self.po.act(locator=self.LNK_COULD_NOT_VACCINATE, action=element_actions.CLICK_LINK)
 
-    def click_consent_refused(self):
-        self.po.act(locator=self.LNK_CONSENT_REFUSED, action=element_actions.CLICK_LINK)
+    def select_consent_refused(self):
+        self.po.act(locator=self.RDO_CONSENT_REFUSED, action=element_actions.RADIO_BUTTON_SELECT)
 
     def save_session_id(self):
         _file_path = f"working/excel_{get_current_datetime()}.xlsx"
@@ -455,7 +455,7 @@ class pg_sessions:
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_refuse_consent()
-        self.click_consent_refused()
+        self.select_consent_refused()
         self.click_child_full_name()
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)
@@ -569,15 +569,14 @@ class pg_sessions:
         return self.po.get_element_property(locator=self.LNK_DOUBLES_CONSENT_FORM, property=element_properties.HREF)
 
     def bug_mavis_1696(self):
-        self.click_no_response()
+        self.select_no_response()
         self.click_child_conflicting_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_no_response()
-        self.click_no_response()
+        self.select_no_response()
         self.click_child_conflicting_consent()
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
-        self.click_consent_refused()
         self.click_child_conflicting_consent()
         self.invalidate_parent2_refusal()
         self.click_activity_log()
@@ -596,25 +595,26 @@ class pg_sessions:
         )
 
     def bug_mavis_1801(self):
-        self.click_no_response()
+        self.select_no_response()
         self.click_child_no_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive()
 
     def bug_mavis_1864(self):
-        self.click_no_response()
+        self.select_no_response()
         self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_online_positive()
-        self.click_consent_given()
+        self.select_consent_given()
         self.click_child_consent_twice()
         self.click_update_triage_outcome()
         self.consent_page.update_triage_outcome_positive()
-        self.click_consent_given()
-        self.click_child_consent_twice()
+        self.click_consent_tab()
+        # self.select_consent_given()
+        # self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_refuse_consent()
-        self.click_consent_refused()
+        self.select_consent_refused()
         self.click_child_consent_twice()
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Dad refused to give consent."
@@ -657,21 +657,16 @@ class pg_sessions:
                 self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value="")
 
     def bug_mavis_1818(self):
-        self.click_no_response()
+        self.select_no_response()
         self.click_child_conflicting_gillick()  # Click appropriate child name
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
-        self.click_consent_given()
+        self.select_consent_given()
         self.click_child_conflicting_gillick()  # Click appropriate child name
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
-        self.click_conflicting_consent()  # Tab
-        wait(timeout=wait_time.MIN)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
-            expected_value="1 child with conflicting consent responses",
-        )
+        self.select_conflicting_consent()
+        # wait(timeout=wait_time.MIN)
         self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
@@ -697,7 +692,7 @@ class pg_sessions:
             property=element_properties.TEXT,
             expected_value=f"Consent recorded for {self.LNK_CHILD_CONFLICTING_GILLICK}",
         )
-        self.click_consent_given()
+        self.select_consent_given()
         self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
@@ -707,7 +702,7 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Nurse Joy decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse.",
+            expected_value=f"JOY, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse.",
         )
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.click_activity_log()
