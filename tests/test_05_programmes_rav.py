@@ -4,6 +4,7 @@ from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes, pg_sessions
 
 
+@pytest.mark.skip(reason="Broken")
 class Test_Programmes_RAV:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()

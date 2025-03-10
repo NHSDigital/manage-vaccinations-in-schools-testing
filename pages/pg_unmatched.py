@@ -15,21 +15,23 @@ class pg_unmatched:
     LBL_PARAGRAPH = "paragraph"
     LBL_ARCHIVE_SUCCESS_MESSAGE = "Consent response from Parent Full archived"
     LBL_CREATE_SUCCESS_MESSAGE = "’s record created from a consent response from Parent Full"
-    LNK_MATCH_WITH_RECORD = "Match with record"
+    LNK_MATCH = "Match"
     LNK_ARCHIVE_RECORD = "Archive"
-    LNK_CREATE_RECORD = "Create record"
+    LNK_CREATE_RECORD = "Create new record"
+    LNK_PARENT_NAME = "Parent Full (Dad)"
     TXT_NOTES = "Notes"
     BTN_CREATE_RECORD_FROM = "Create a new record from"
     BTN_ARCHIVE_RESPONSE = "Archive response"
     # TBL_CHILDREN = "unmatched consent responses Response dateChildParent or guardianAction"
     TBL_CHILDREN = "table"
-    LBL_CHILD_COL = "Child"
-    LBL_CHILD_NAME_FOR_ARCHIVAL = "NonMatching ConsentRecord"
-    LBL_CHILD_NAME_FOR_CREATION = "HELENA HOYTE"
-    LBL_CHILD_NAME_FOR_MATCHING = "BERYL TWIST"
-    LBL_CHILD_NO_NHS_NUMBER = "NoNHS NoNumber"
-    LBL_CHILD_NAME_TO_MATCH = "CMatch1"
-    TXT_FILTER_NAME = "Name"
+    LBL_RESPONSE_COL = "Response"
+    LBL_CHILD_NAME_FOR_ARCHIVAL = "CONSENTRECORD, NonMatching"
+    LBL_CHILD_NAME_FOR_CREATION = "HOYTE, HELENA"
+    LBL_CHILD_NAME_FOR_MATCHING = "TWIST, BERYL"
+    LBL_CHILD_NO_NHS_NUMBER = "NONUMBER, NoNHS"
+    LBL_CHILD_NAME_TO_MATCH = "CMATCH1, CMatch1"
+    TXT_SEARCH = "Search"
+    BTN_SEARCH = "Search"
     LNK_SELECT_FILTERED_CHILD = "Select"
     BTN_LINK_RESPONSE_WITH_RECORD = "Link response with record"
     LBL_CONSENT_MATCHED = f"Consent matched for {LBL_CHILD_NAME_TO_MATCH}"
@@ -41,12 +43,15 @@ class pg_unmatched:
 
     def match_with_record(self):
         _row_num, _ = self.po.get_table_cell_location_for_value(
-            table_locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NAME_FOR_MATCHING
+            table_locator=self.TBL_CHILDREN,
+            col_header=self.LBL_RESPONSE_COL,
+            row_value=self.LBL_CHILD_NAME_FOR_MATCHING,
         )
-        self.po.act(locator=self.LNK_MATCH_WITH_RECORD, action=element_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
+        self.po.act(locator=self.LNK_MATCH, action=element_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
+        self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
         wait(timeout=wait_time.MIN)
-        self.po.act(locator=self.LNK_SELECT_FILTERED_CHILD, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LBL_CHILD_NAME_TO_MATCH, action=element_actions.CLICK_LINK, index=0)
         self.po.act(locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=element_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_CONSENT_MATCHED
@@ -64,7 +69,9 @@ class pg_unmatched:
 
     def archive_record(self):
         _row_num, _ = self.po.get_table_cell_location_for_value(
-            table_locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NAME_FOR_ARCHIVAL
+            table_locator=self.TBL_CHILDREN,
+            col_header=self.LBL_RESPONSE_COL,
+            row_value=self.LBL_CHILD_NAME_FOR_ARCHIVAL,
         )
         self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=element_actions.CLICK_LINK, index=(_row_num - 1))
         self.po.act(locator=self.TXT_NOTES, action=element_actions.FILL, value="Archiving")
@@ -83,9 +90,12 @@ class pg_unmatched:
 
     def create_record(self):
         _row_num, _ = self.po.get_table_cell_location_for_value(
-            table_locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NAME_FOR_CREATION
+            table_locator=self.TBL_CHILDREN,
+            col_header=self.LBL_RESPONSE_COL,
+            row_value=self.LBL_CHILD_NAME_FOR_CREATION,
         )
-        self.po.act(locator=self.LNK_CREATE_RECORD, action=element_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_PARENT_NAME, action=element_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_CREATE_RECORD, action=element_actions.CLICK_LINK)
         self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=element_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
@@ -100,9 +110,10 @@ class pg_unmatched:
 
     def create_record_with_no_nhs_number(self):
         _row_num, _ = self.po.get_table_cell_location_for_value(
-            table_locator=self.TBL_CHILDREN, col_header=self.LBL_CHILD_COL, row_value=self.LBL_CHILD_NO_NHS_NUMBER
+            table_locator=self.TBL_CHILDREN, col_header=self.LBL_RESPONSE_COL, row_value=self.LBL_CHILD_NO_NHS_NUMBER
         )
-        self.po.act(locator=self.LNK_CREATE_RECORD, action=element_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_PARENT_NAME, action=element_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_CREATE_RECORD, action=element_actions.CLICK_LINK)
         self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=element_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,

@@ -323,10 +323,10 @@ class playwright_operations:
         # Find out the row for the text in that column
         row_counter = 1
         for _ in range(table.locator(html_tags.TR).count()):
-            row_locator = (
+            row_locator = str(
                 table.locator(html_tags.TR).nth(row_counter).locator(html_tags.TD).nth(col_counter).inner_text()
             )
-            if row_locator == row_value:
+            if row_value.lower() in row_locator.lower():
                 break
             row_counter += 1
         return row_counter, col_counter
