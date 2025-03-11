@@ -4,7 +4,8 @@ from libs.generic_constants import (
     element_properties,
     escape_characters,
 )
-from libs.wrappers import *
+
+# from libs.wrappers import *
 
 
 class pg_school_moves:

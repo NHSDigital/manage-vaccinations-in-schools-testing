@@ -84,32 +84,32 @@ class Test_ImportRecords:
 
     @pytest.mark.classlist
     @pytest.mark.order(326)
-    def test_class_list_file_upload_positive(self, setup_class_list):
+    def test_class_list_file_upload_positive(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_POSITIVE)
 
     @pytest.mark.classlist
     @pytest.mark.order(327)
-    def test_class_list_file_upload_negative(self, setup_class_list):
+    def test_class_list_file_upload_negative(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_NEGATIVE)
 
     @pytest.mark.classlist
     @pytest.mark.order(328)
-    def test_class_list_file_structure(self, setup_class_list):
+    def test_class_list_file_structure(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE)
 
     @pytest.mark.classlist
     @pytest.mark.order(329)
-    def test_class_list_no_record(self, setup_class_list):
+    def test_class_list_no_record(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_HEADER_ONLY)
 
     @pytest.mark.classlist
     @pytest.mark.order(330)
-    def test_class_list_empty_file(self, setup_class_list):
+    def test_class_list_empty_file(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)
 
     @pytest.mark.classlist
     @pytest.mark.order(331)
-    def test_class_list_year_group(self, setup_class_list):
+    def test_class_list_year_group(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(
             file_paths=test_data_file_paths.CLASS_YEAR_GROUP, year_group=child_year_group.YEAR_8
         )

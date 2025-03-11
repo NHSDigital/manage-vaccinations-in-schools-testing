@@ -4,7 +4,6 @@ from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes, pg_sessions
 
 
-@pytest.mark.skip(reason="Broken")
 class Test_Programmes_RAV:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
@@ -33,8 +32,7 @@ class Test_Programmes_RAV:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
         self.import_records_page.click_import_records()
-        self.import_records_page.import_vaccination_records()
-        self.programmes_page.upload_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
         yield

@@ -26,7 +26,7 @@ class pg_programmes:
     LBL_IMPORT_STARTED = "Import processing started"
     LBL_PARAGRAPH = "paragraph"
     LBL_MAIN = "main"
-    LNK_DOSE2_CHILD = "Dose2 Dose2"
+    LNK_DOSE2_CHILD = "DOSE2, Dose2"
     LNK_CHANGE_OUTCOME = "Change   outcome"
     RDO_THEY_REFUSED_IT = "They refused it"
     BTN_EDIT_VACCINATION_RECORD = "Edit vaccination record"
@@ -105,15 +105,15 @@ class pg_programmes:
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
 
-    def upload_vaccination_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.choose_file_vaccination_records(file_path=_input_file_path)
-        self.click_continue()
-        self.record_upload_time()
-        wait(timeout=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
-            self.click_uploaded_file_datetime()
-        self.verify_upload_output(file_path=_output_file_path)
+    # def upload_vaccination_records(self, file_paths: str):
+    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+    #     self.choose_file_vaccination_records(file_path=_input_file_path)
+    #     self.click_continue()
+    #     self.record_upload_time()
+    #     wait(timeout=wait_time.MED)
+    #     if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+    #         self.click_uploaded_file_datetime()
+    #     self.verify_upload_output(file_path=_output_file_path)
 
     def upload_hpv_child_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)

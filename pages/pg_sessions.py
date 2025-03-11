@@ -1,7 +1,18 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.generic_constants import element_actions, element_properties, wait_time
+from libs.generic_constants import (
+    element_actions,
+    element_properties,
+    escape_characters,
+    wait_time,
+)
 from libs.mavis_constants import child_year_group, record_limit
-from libs.wrappers import *
+from libs.wrappers import (
+    datetime,
+    get_current_datetime,
+    get_link_formatted_date_time,
+    get_offset_date,
+    wait,
+)
 from pages import pg_children, pg_consent_hpv, pg_dashboard
 
 
@@ -20,7 +31,7 @@ class pg_sessions:
     LNK_CHILD_FULL_NAME = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT = "NOCONSENT1, NoConsent1"
     LNK_CHILD_CONFLICTING_CONSENT = "CONFLICTINGCONSENT1, ConflictingConsent1"
-    LNK_CHILD_E2E1 = "CE2E1, Ce2e1"
+    LNK_CHILD_E2E1 = "CE2E1, CE2E1"
     LNK_CHILD_CONFLICTING_GILLICK = "GILLICK1, Conflicting1"
     LNK_CHILD_CONSENT_TWICE = "TWICE1, Consent1"
 
@@ -85,6 +96,9 @@ class pg_sessions:
     TXT_FILTER_NAME = "Name"
     LNK_DOWNLOAD_EXCEL = "Record offline"
     LBL_NO_SESSIONS_SCHEDULED = "No sessions scheduled"
+
+    def __init__(self):
+        self.upload_time = ""
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
