@@ -39,7 +39,7 @@ class Test_Sessions:
     @pytest.mark.mobile
     @pytest.mark.sessions
     @pytest.mark.order(201)
-    def test_session_lifecycle(self, setup_tests):
+    def test_session_lifecycle(self, setup_tests: None):
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -51,5 +51,5 @@ class Test_Sessions:
     @pytest.mark.sessions
     @pytest.mark.order(202)
     @pytest.mark.skip(reason="Development in progress")
-    def test_verify_attendance_filters(self, setup_mavis_1822):
-        self.sessions_page.verify_attendance_filters()
+    def test_verify_attendance_filters(self, setup_mavis_1822: None):
+        self.sessions_page.verify_attendance_filters()  # MAVIS-1822
