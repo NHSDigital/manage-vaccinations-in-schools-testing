@@ -47,7 +47,7 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_MATCHING,
         )
-        self.po.act(locator=self.LNK_MATCH, action=element_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_MATCH, action=element_actions.CLICK_LINK, index=_row_num)
         self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
         self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
         wait(timeout=wait_time.MIN)

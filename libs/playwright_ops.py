@@ -242,7 +242,7 @@ class playwright_operations:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
+                assert _passed, f"Text '{expected_value}' not expected but found in '{actual_value}'."
             else:
                 _passed: bool = True if clean_text(text=expected_value) in clean_text(text=actual_value) else False
                 if _passed:
