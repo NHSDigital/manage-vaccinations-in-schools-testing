@@ -1,7 +1,19 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.constants import element_actions, element_properties, wait_time
-from libs.wrappers import *
-from pages import pg_children, pg_dashboard, pg_parental_consent
+from libs.generic_constants import (
+    element_actions,
+    element_properties,
+    escape_characters,
+    wait_time,
+)
+from libs.mavis_constants import child_year_group, record_limit
+from libs.wrappers import (
+    datetime,
+    get_current_datetime,
+    get_link_formatted_date_time,
+    get_offset_date,
+    wait,
+)
+from pages import pg_children, pg_consent_hpv, pg_dashboard
 
 
 class pg_sessions:
@@ -10,25 +22,28 @@ class pg_sessions:
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
-    consent_page = pg_parental_consent.pg_parental_consent()
+    consent_page = pg_consent_hpv.pg_consent_hpv()
     children_page = pg_children.pg_children()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
     LNK_SCHOOL_2 = "Barn End Centre"
 
-    LNK_CHILD_FULL_NAME = "CF"
-    LNK_CHILD_NO_CONSENT = "NoConsent1 NoConsent1"
-    LNK_CHILD_CONFLICTING_CONSENT = "ConflictingConsent1 ConflictingConsent1"
-    LNK_CHILD_E2E1 = "CE2E1 CE2E1"
+    LNK_CHILD_FULL_NAME = "CLAST, CFirst"
+    LNK_CHILD_NO_CONSENT = "NOCONSENT1, NoConsent1"
+    LNK_CHILD_CONFLICTING_CONSENT = "CONFLICTINGCONSENT1, ConflictingConsent1"
+    LNK_CHILD_E2E1 = "CE2E1, CE2E1"
+    LNK_CHILD_CONFLICTING_GILLICK = "GILLICK1, Conflicting1"
+    LNK_CHILD_CONSENT_TWICE = "TWICE1, Consent1"
 
     LNK_TAB_TODAY = "Today"
     LNK_TAB_SCHEDULED = "Scheduled"
     LNK_TAB_UNSCHEDULED = "Unscheduled"
-    LNK_TAB_NO_RESPONSE = "No response"
-    LNK_TAB_CONSENT_GIVEN = "Consent given"
-    LNK_TAB_CONFLICTING_CONSENT = "Conflicting consent"
+    RDO_NO_RESPONSE = "No response"
+    RDO_CONSENT_GIVEN = "Consent given"
+    RDO_CONFLICTING_CONSENT = "Conflicting consent"
     LNK_TAB_ACTIVITY_LOG = "Activity log"
-    LNK_IMPORT_CLASS_LIST = "Import class list"
+    LNK_TAB_REGISTER = "Register"
+    LNK_IMPORT_CLASS_LIST = "Import class lists"
     LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
     LBL_CHOOSE_COHORT_FILE_2 = f"{LNK_SCHOOL_2}Import class"
     BTN_CONTINUE = "Continue"
@@ -39,7 +54,7 @@ class pg_sessions:
     RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
     BTN_SAVE_TRIAGE = "Save triage"
     LBL_PARAGRAPH = "paragraph"
-    LBL_TRIAGE_UPDATED_MESSAGE = "Triage outcome updated for CF"
+    LBL_TRIAGE_UPDATED_MESSAGE = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
     LBL_MAIN = "main"
     TXT_DAY = "Day"
     TXT_MONTH = "Month"
@@ -50,7 +65,7 @@ class pg_sessions:
     BTN_DELETE = "Delete"
     LNK_BACK = "Back"
     LNK_CONTINUE = "Continue"
-    LNK_CONSENT_FORM = "View parental consent form (opens in new tab)"
+    LNK_HPV_CONSENT_FORM = "View parental consent form (opens in new tab)"
     LNK_ASSESS_GILLICK_COMPETENCE = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT = "No"
@@ -59,22 +74,31 @@ class pg_sessions:
     LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN = "Triaged decision: Safe to vaccinate"
     LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED = "Consent refused by Parent1 (Dad)"
     BTN_GET_CONSENT_RESPONSE = "Get consent response"
-    LNK_CHECK_CONSENT_RESPONSES = "Check consent responses"
+    LNK_CONSENT_TAB = "Consent"
     BTN_COMPLETE_GILLICK_ASSESSMENT = "Complete your assessment"
     LBL_CHILD_COMPETENT = "Child assessed as Gillick competent"
     LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
     LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
-    LNK_CONSENT_FORM = "View parental consent form ("
+    LNK_HPV_CONSENT_FORM = "View the HPV online consent form"
+    LNK_DOUBLES_CONSENT_FORM = "View the MenACWY and Td/IPV online consent form"
     LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
-    LNK_CONSENT_REFUSED = "Consent refused"
+    RDO_CONSENT_REFUSED = "Consent refused"
     LNK_MARK_AS_INVALID = "Mark as invalid"
     LNK_PARENT2 = "Parent2"
     TXT_NOTES = "Notes"
-    LNK_REGISTER_ATTENDANCE = "Register attendance"
+    LNK_REGISTER_ATTENDANCE = "Register"
     LBL_CAPTION = "caption"
     CHK_YEAR8 = "Year 8"
+    CHK_YEAR9 = "Year 9"
+    CHK_YEAR10 = "Year 10"
+    CHK_YEAR11 = "Year 11"
     TXT_FILTER_NAME = "Name"
+    LNK_DOWNLOAD_EXCEL = "Record offline"
+    LBL_NO_SESSIONS_SCHEDULED = "No sessions scheduled"
+
+    def __init__(self):
+        self.upload_time = ""
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -88,23 +112,25 @@ class pg_sessions:
         self.po.act(locator=self.upload_time, action=element_actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
-        # Verify messages separately
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
+            # Verify messages individually
             for _msg in _expected_errors:
                 self.po.verify(
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
-        # Verify all messages together - NEEDS MORE THOUGHT
-        # _all_errors = "".join(
-        #     [
-        #         x
-        #         for x in _expected_errors
-        #         if not x.startswith(escape_characters.COMMENT_OPERATOR)
-        #         and not x.startswith(escape_characters.NOT_OPERATOR)
-        #     ]
-        # )
-        # self.po.verify(locator=self.LBL_MAIN, property=object_properties.TEXT, expected_value=_all_errors, exact=False)
+            # Verify all messages together
+            _all_errors = "".join(
+                [
+                    x
+                    for x in _expected_errors
+                    if not x.startswith(escape_characters.COMMENT_OPERATOR)
+                    and not x.startswith(escape_characters.NOT_OPERATOR)
+                ]
+            )
+            self.po.verify(
+                locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_all_errors, exact=False
+            )
 
     def click_today(self):
         self.po.act(locator=self.LNK_TAB_TODAY, action=element_actions.CLICK_LINK, exact=True)
@@ -115,14 +141,17 @@ class pg_sessions:
     def click_unscheduled(self):
         self.po.act(locator=self.LNK_TAB_UNSCHEDULED, action=element_actions.CLICK_LINK, exact=True)
 
-    def click_no_response(self):
-        self.po.act(locator=self.LNK_TAB_NO_RESPONSE, action=element_actions.CLICK_LINK, exact=False)
+    def select_no_response(self):
+        self.po.act(locator=self.RDO_NO_RESPONSE, action=element_actions.RADIO_BUTTON_SELECT)
 
-    def click_consent_given(self):
-        self.po.act(locator=self.LNK_TAB_CONSENT_GIVEN, action=element_actions.CLICK_LINK, exact=False)
+    def select_consent_given(self):
+        self.po.act(locator=self.RDO_CONSENT_GIVEN, action=element_actions.RADIO_BUTTON_SELECT)
 
-    def click_conflicting_consent(self):
-        self.po.act(locator=self.LNK_TAB_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK, exact=False)
+    def select_conflicting_consent(self):
+        self.po.act(locator=self.RDO_CONFLICTING_CONSENT, action=element_actions.RADIO_BUTTON_SELECT)
+
+    def click_register_tab(self):
+        self.po.act(locator=self.LNK_TAB_REGISTER, action=element_actions.CLICK_LINK, exact=False)
 
     def click_activity_log(self):
         self.po.act(locator=self.LNK_TAB_ACTIVITY_LOG, action=element_actions.CLICK_LINK, exact=True)
@@ -161,9 +190,27 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CHILD_FULL_NAME, action=element_actions.CLICK_WILDCARD)
 
     def click_child_no_consent(self):
+        self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_NO_CONSENT)
+        wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=element_actions.CLICK_LINK)
 
+    def click_child_consent_twice(self):
+        # self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONSENT_TWICE)
+        # wait(timeout=wait_time.MIN)
+        self.po.act(locator=self.LNK_CHILD_CONSENT_TWICE, action=element_actions.CLICK_LINK)
+
+    def click_child_conflicting_gillick(self):
+        # self.po.act(
+        #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_GILLICK
+        # )
+        # wait(timeout=wait_time.MIN)
+        self.po.act(locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=element_actions.CLICK_LINK)
+
     def click_child_conflicting_consent(self):
+        # self.po.act(
+        #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_CONSENT
+        # )
+        # wait(timeout=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK)
 
     def click_child_e2e1(self):
@@ -178,8 +225,8 @@ class pg_sessions:
     def click_save_triage(self):
         self.po.act(locator=self.BTN_SAVE_TRIAGE, action=element_actions.CLICK_BUTTON)
 
-    def click_check_consent_responses(self):
-        self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=element_actions.CLICK_LINK)
+    def click_consent_tab(self):
+        self.po.act(locator=self.LNK_CONSENT_TAB, action=element_actions.CLICK_LINK)
 
     def click_assess_gillick_competence(self):
         self.po.act(locator=self.LNK_ASSESS_GILLICK_COMPETENCE, action=element_actions.CLICK_LINK)
@@ -190,16 +237,22 @@ class pg_sessions:
     def click_could_not_vaccinate(self):
         self.po.act(locator=self.LNK_COULD_NOT_VACCINATE, action=element_actions.CLICK_LINK)
 
-    def click_consent_refused(self):
-        self.po.act(locator=self.LNK_CONSENT_REFUSED, action=element_actions.CLICK_LINK)
+    def select_consent_refused(self):
+        self.po.act(locator=self.RDO_CONSENT_REFUSED, action=element_actions.RADIO_BUTTON_SELECT)
+
+    def save_session_id(self):
+        _file_path = f"working/excel_{get_current_datetime()}.xlsx"
+        self.po.act(locator=self.LNK_DOWNLOAD_EXCEL, action=element_actions.DOWNLOAD_FILE, value=_file_path)
+        _session_id = self.tdo.get_session_id(excel_path=_file_path)
+        self.ce.set_session_id(session_id=_session_id)
 
     def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
-        self.__set_gillick_consent(is_add=True, is_competent=is_competent, competence_details=competence_details)
+        self.__set_gillick_competence(is_add=True, is_competent=is_competent, competence_details=competence_details)
 
     def edit_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
-        self.__set_gillick_consent(is_add=False, is_competent=is_competent, competence_details=competence_details)
+        self.__set_gillick_competence(is_add=False, is_competent=is_competent, competence_details=competence_details)
 
-    def __set_gillick_consent(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
+    def __set_gillick_competence(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
         if is_competent:
             self.po.act(
                 locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
@@ -288,12 +341,7 @@ class pg_sessions:
         self.po.act(locator=self.LNK_BACK, action=element_actions.CLICK_LINK)
         self.po.act(locator=self.LNK_CONTINUE, action=element_actions.CLICK_LINK)
         self.po.verify(
-            locator="locator('div').filter(has_text=re.compile(r'^Session datesNot provided$')).get_by_role('definition')",
-            property=element_properties.VISIBILITY,
-            expected_value=True,
-            exact=False,
-            by_test_id=False,
-            chain_locator=True,
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_NO_SESSIONS_SCHEDULED
         )
 
     def __edit_session(self, to_date: str):
@@ -373,28 +421,21 @@ class pg_sessions:
         self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=element_actions.CLICK_BUTTON)
 
     def click_get_consent_responses(self):
-        self.po.act(locator=self.LNK_CHECK_CONSENT_RESPONSES, action=element_actions.CLICK_BUTTON)
-
-    def upload_valid_class_list(self, file_paths: str):
-        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_scheduled()
-        self.click_school1()
-        self.click_import_class_list()
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
-        self.click_continue()
+        self.po.act(locator=self.LNK_CONSENT_TAB, action=element_actions.CLICK_BUTTON)
 
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
+        self.select_year_group(year_group=child_year_group.ALL)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_give_consent()
@@ -402,7 +443,7 @@ class pg_sessions:
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
-        self.click_record_vaccinations()
+        self.click_register_tab()
         self.click_child_full_name()
         self.click_update_triage_outcome()
         self.select_yes_safe_to_vaccinate()
@@ -417,17 +458,18 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
+        self.select_year_group(year_group=child_year_group.ALL)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_refuse_consent()
-        self.click_consent_refused()
+        self.select_consent_refused()
         self.click_child_full_name()
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)
@@ -484,65 +526,72 @@ class pg_sessions:
         self.click_school1()
         self.__schedule_session(on_date=_future_date, expect_error=True)
 
-    def upload_class_list_to_school_1(self, file_paths: str):
+    def upload_class_list_to_school_1(
+        self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
+    ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
-        self.click_scheduled()
-        self.click_school1()
+        if verify_on_children:
+            self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_import_class_list()
+        self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
-        # self.__record_upload_time()
-        wait(timeout=wait_time.MED)
-        # self.click_uploaded_file_datetime()
+        self.__record_upload_time()
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+            wait(timeout=wait_time.MED)
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+            self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
-        self.children_page.search_child()
+        if verify_on_children:
+            self.children_page.search_child()
 
-    def upload_class_list_to_school_2(self, file_paths: str):
+    def upload_class_list_to_school_2(
+        self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
+    ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        if verify_on_children:
+            self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
         self.click_scheduled()
         self.click_school2()
         self.click_import_class_list()
-        self.choose_file_child_records_for_school_2(file_path=_input_file_path)
-        self.click_continue()
-        # self.__record_upload_time()
-        wait(timeout=wait_time.MED)
-        # self.click_uploaded_file_datetime()
-        self.verify_upload_output(file_path=_output_file_path)
-
-    def upload_invalid_class_list_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_scheduled()
-        self.click_school1()
-        self.click_import_class_list()
+        self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
+        self.__record_upload_time()
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+            wait(timeout=wait_time.MED)
+        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+            self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
+        if verify_on_children:
+            self.children_page.search_child()
 
     def set_gillick_competence_for_student(self):
         self.click_today()
         self.click_school1()
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_full_name()
         self.click_assess_gillick_competence()
         self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
         self.click_edit_gillick_competence()
         self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
 
-    def get_consent_url(self) -> str:
-        return self.po.get_element_property(locator=self.LNK_CONSENT_FORM, property=element_properties.HREF)
+    def get_hpv_consent_url(self) -> str:
+        return self.po.get_element_property(locator=self.LNK_HPV_CONSENT_FORM, property=element_properties.HREF)
+
+    def get_doubles_consent_url(self) -> str:
+        return self.po.get_element_property(locator=self.LNK_DOUBLES_CONSENT_FORM, property=element_properties.HREF)
 
     def bug_mavis_1696(self):
-        self.click_no_response()
-        self.click_child_no_consent()
+        self.select_no_response()
+        self.click_child_conflicting_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_no_response()
-        self.click_no_response()
-        self.click_child_no_consent()
+        self.select_no_response()
+        self.click_child_conflicting_consent()
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
-        self.click_consent_refused()
-        self.click_child_no_consent()
+        self.click_child_conflicting_consent()
         self.invalidate_parent2_refusal()
         self.click_activity_log()
         wait(timeout=wait_time.MIN)
@@ -560,25 +609,27 @@ class pg_sessions:
         )
 
     def bug_mavis_1801(self):
-        self.click_no_response()
+        self.select_no_response()
         self.click_child_no_consent()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive()
 
     def bug_mavis_1864(self):
-        self.click_no_response()
-        self.click_child_no_consent()
+        self.select_no_response()
+        self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_online_positive()
-        self.click_consent_given()
-        self.click_child_no_consent()
+        self.select_consent_given()
+        self.click_child_consent_twice()
         self.click_update_triage_outcome()
         self.consent_page.update_triage_outcome_positive()
-        self.click_child_no_consent()
+        self.click_consent_tab()
+        # self.select_consent_given()
+        # self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_refuse_consent()
-        self.click_consent_refused()
-        self.click_child_no_consent()
+        self.select_consent_refused()
+        self.click_child_consent_twice()
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Dad refused to give consent."
         )
@@ -620,22 +671,17 @@ class pg_sessions:
                 self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value="")
 
     def bug_mavis_1818(self):
-        self.click_no_response()
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.select_no_response()
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
-        self.click_consent_given()
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.select_consent_given()
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
-        self.click_conflicting_consent()  # Tab
-        wait(timeout=wait_time.MIN)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
-            expected_value="1 child with conflicting consent responses",
-        )
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.select_conflicting_consent()
+        # wait(timeout=wait_time.MIN)
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
@@ -658,10 +704,10 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Consent recorded for {self.LNK_CHILD_CONFLICTING_CONSENT}",
+            expected_value=f"Consent recorded for {self.LNK_CHILD_CONFLICTING_GILLICK}",
         )
-        self.click_consent_given()
-        self.click_child_conflicting_consent()  # Click appropriate child name
+        self.select_consent_given()
+        self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
@@ -670,18 +716,35 @@ class pg_sessions:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Nurse Joy decided that {self.LNK_CHILD_CONFLICTING_CONSENT} is ready for the nurse.",
+            expected_value=f"JOY, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse.",
         )
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.click_activity_log()
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value=f"Consent given by {self.LNK_CHILD_CONFLICTING_CONSENT} (Child (Gillick competent))",
+            expected_value=f"Consent given by {self.LNK_CHILD_CONFLICTING_GILLICK} (Child (Gillick competent))",
         )
 
     def give_consent_for_e2e1_child_by_parent_1(self):
-        self.click_check_consent_responses()
+        self.click_consent_tab()
         self.click_child_e2e1()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
+
+    def select_year_group(self, year_group: str) -> None:
+        match year_group:
+            case child_year_group.YEAR_8:
+                self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
+            case child_year_group.YEAR_9:
+                self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
+            case child_year_group.YEAR_10:
+                self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
+            case child_year_group.YEAR_11:
+                self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
+            case _:
+                self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
+                self.po.act(locator=self.CHK_YEAR9, action=element_actions.CHECKBOX_CHECK)
+                self.po.act(locator=self.CHK_YEAR10, action=element_actions.CHECKBOX_CHECK)
+                self.po.act(locator=self.CHK_YEAR11, action=element_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)

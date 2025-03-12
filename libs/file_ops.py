@@ -3,7 +3,7 @@ from os import path
 
 import pandas as pd
 
-from libs.constants import file_mode
+from libs.generic_constants import file_mode
 from libs.wrappers import *
 
 
@@ -25,12 +25,12 @@ class file_operations:
         if self.check_if_path_exists(file_or_folder_path=file_path):
             return pd.read_csv(filepath_or_buffer=file_path)
 
-    def read_excel_to_df(self, file_path: str) -> pd.DataFrame:
+    def read_excel_to_df(self, file_path: str, sheet_name: str) -> pd.DataFrame:
         if self.check_if_path_exists(file_or_folder_path=file_path):
-            return pd.read_excel(file_path, sheet_name="Sheet1", header=0, dtype="str", index_col=0)
+            return pd.read_excel(file_path, sheet_name=sheet_name, header=0, dtype="str", index_col=0)
 
     def create_file(self, content: str, file_name_prefix: str = "") -> str:
-        _file_name = f"working/{file_name_prefix}{get_new_datetime()}.csv"
+        _file_name = f"working/{file_name_prefix}{get_current_datetime()}.csv"
         with open(file=_file_name, mode=file_mode.WRITE) as f:
             f.writelines(content)
         return _file_name

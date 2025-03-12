@@ -1,5 +1,5 @@
 from libs import playwright_ops
-from libs.constants import element_actions, element_properties
+from libs.generic_constants import element_actions, element_properties
 from libs.wrappers import *
 
 
@@ -32,7 +32,7 @@ class pg_vaccines:
         )
 
     def enter_batch_name(self):
-        self.batch_name = f"Auto{get_new_datetime()}"
+        self.batch_name = f"Auto{get_current_datetime()}"
         self.po.act(locator=self.TXT_BATCH_NAME, action=element_actions.FILL, value=self.batch_name)
 
     def enter_batch_expiry(self, expiry_date: str = ""):

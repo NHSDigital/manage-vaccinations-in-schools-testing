@@ -1,12 +1,10 @@
 import os
 import re
 from itertools import chain
-from sys import prefix
 
 from libs import CurrentExecution
-from libs.constants import (
+from libs.generic_constants import (
     aria_roles,
-    data_values,
     element_actions,
     element_properties,
     html_tags,
@@ -14,6 +12,7 @@ from libs.constants import (
     screenshot_file_types,
     wait_time,
 )
+from libs.mavis_constants import data_values
 from libs.wrappers import *
 
 
@@ -43,12 +42,9 @@ class playwright_operations:
         match property.lower():
             case element_properties.TEXT:
                 if expected_value != "":
-                    if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
-                        return
-                    else:
-                        self._verify_text(
-                            locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
-                        )
+                    self._verify_text(
+                        locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
+                    )
             case element_properties.VISIBILITY:
                 self._verify_visibility(locator=locator, expected_value=expected_value, actual_value=actual_value)
 
@@ -69,6 +65,8 @@ class playwright_operations:
                 return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.EXISTS:
                 return self.ce.page.query_selector(locator) is not None
+            case element_properties.PAGE_URL:
+                return self.ce.page.url
 
     def act(self, locator, action, value=None, **kwargs) -> None:
         # Unpack keyword arguments
@@ -99,6 +97,8 @@ class playwright_operations:
                 self._checkbox_uncheck(locator=locator, index=index)
             case element_actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
+            case element_actions.DOWNLOAD_FILE:
+                self._download_file(locator=locator, value=value, index=index)
             case element_actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
             case element_actions.CHAIN_LOCATOR_ACTION:
@@ -113,6 +113,7 @@ class playwright_operations:
         else:
             elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
         elem.click()
+        self._check_for_app_crash(locator_info=locator)
 
     def _click_button(self, locator: str, exact: bool, index: int):
         if escape_characters.SEPARATOR_CHAR in locator:
@@ -122,6 +123,7 @@ class playwright_operations:
         else:
             elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator, exact=exact).nth(index)
         elem.click()
+        self._check_for_app_crash(locator_info=locator)
 
     def _click_label(self, locator: str, exact: bool, index: int):
         if escape_characters.SEPARATOR_CHAR in locator:
@@ -172,6 +174,7 @@ class playwright_operations:
 
     def _select_from_list(self, locator: str, value: str, index: int):
         self._fill(locator=locator, value=value, exact=False, index=index)
+        wait(timeout=wait_time.MIN)
         if escape_characters.SEPARATOR_CHAR in locator:
             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
@@ -214,40 +217,47 @@ class playwright_operations:
             )
         elem.click()
 
+    def _download_file(self, locator: str, value: str, index: int):
+        with self.ce.page.expect_download() as download_info:
+            self.act(locator=locator, action=element_actions.CLICK_LINK, index=index)
+        download = download_info.value
+        # download.save_as("/path/to/save/at/" + download.suggested_filename)
+        download.save_as(value)
+
     def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
+        if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
+            return
         if exact:
-            if expected_value == actual_value:
+            _passed: bool = True if expected_value == actual_value else False
+            if _passed:
                 self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
             else:
                 self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-            assert (
-                expected_value == actual_value
-            ), f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
+            assert _passed, f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
         else:
             if expected_value.startswith(escape_characters.NOT_OPERATOR):
                 expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
-                if clean_text(text=expected_value) not in clean_text(text=actual_value):
+                _passed: bool = True if clean_text(text=expected_value) not in clean_text(text=actual_value) else False
+                if _passed:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert clean_text(text=expected_value) not in clean_text(
-                    text=actual_value
-                ), f"Text '{expected_value}' not found in '{actual_value}'."
+                assert _passed, f"Text '{expected_value}' not expected but found in '{actual_value}'."
             else:
-                if clean_text(text=expected_value) in clean_text(text=actual_value):
+                _passed: bool = True if clean_text(text=expected_value) in clean_text(text=actual_value) else False
+                if _passed:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert clean_text(text=expected_value) in clean_text(
-                    text=actual_value
-                ), f"Text '{expected_value}' not found in '{actual_value}'."
+                assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
 
     def _verify_visibility(self, locator: str, expected_value: str, actual_value: str):
-        if actual_value == expected_value:
+        _passed: bool = True if actual_value == expected_value else False
+        if _passed:
             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
         else:
             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
-        assert expected_value == actual_value, f"{locator} is not visible."
+        assert _passed, f"{locator} is not visible."
 
     def _get_element_text(self, locator: str, index: int, by_test_id: bool, chain_locator: bool) -> str:
         if by_test_id:
@@ -290,6 +300,12 @@ class playwright_operations:
                 elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
         return elem.get_attribute(element_properties.HREF)
 
+    def _check_for_app_crash(self, locator_info: str):
+        _actual_title = self.ce.page.title()
+        if "Sorry, there’s a problem with the service" in _actual_title:
+            self.ce.reset_environment()
+            assert False, f"Application has crashed after: {locator_info}"
+
     def go_to_url(self, url: str) -> None:
         _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
         self.ce.page.goto(_full_url)
@@ -307,10 +323,10 @@ class playwright_operations:
         # Find out the row for the text in that column
         row_counter = 1
         for _ in range(table.locator(html_tags.TR).count()):
-            row_locator = (
+            row_locator = str(
                 table.locator(html_tags.TR).nth(row_counter).locator(html_tags.TD).nth(col_counter).inner_text()
             )
-            if row_locator == row_value:
+            if row_value.lower() in row_locator.lower():
                 break
             row_counter += 1
         return row_counter, col_counter

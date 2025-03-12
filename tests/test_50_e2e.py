@@ -1,7 +1,7 @@
 import pytest
 
 from libs import CurrentExecution
-from libs.constants import test_data_file_paths
+from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_programmes, pg_sessions
 
 
@@ -14,7 +14,7 @@ class Test_E2E:
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
-        self.ce.reset_environment()
+        # self.ce.reset_environment()
         self.login_page.login_as_nurse()
         yield
         self.dashboard_page.go_to_dashboard()

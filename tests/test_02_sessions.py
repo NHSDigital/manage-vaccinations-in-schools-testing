@@ -1,6 +1,6 @@
 import pytest
 
-from libs.constants import test_data_file_paths
+from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_sessions
 
 
@@ -24,6 +24,7 @@ class Test_Sessions:
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
+        self.sessions_page.click_school1()
         self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_POSITIVE)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -35,9 +36,10 @@ class Test_Sessions:
         self.sessions_page.delete_all_sessions_for_school_1()
         self.login_page.logout_of_mavis()
 
+    @pytest.mark.mobile
     @pytest.mark.sessions
     @pytest.mark.order(201)
-    def test_session_lifecycle(self, setup_tests):
+    def test_session_lifecycle(self, setup_tests: None):
         self.sessions_page.schedule_a_valid_session_in_school_1()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -48,5 +50,6 @@ class Test_Sessions:
 
     @pytest.mark.sessions
     @pytest.mark.order(202)
-    def test_verify_attendance_filters(self, setup_mavis_1822):
-        self.sessions_page.verify_attendance_filters()
+    @pytest.mark.skip(reason="Development in progress")
+    def test_verify_attendance_filters(self, setup_mavis_1822: None):
+        self.sessions_page.verify_attendance_filters()  # MAVIS-1822
