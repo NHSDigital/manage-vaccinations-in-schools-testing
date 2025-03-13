@@ -26,7 +26,7 @@ class pg_sessions:
     children_page = pg_children.pg_children()
 
     LNK_SCHOOL_1 = "Bohunt School Wokingham"
-    LNK_SCHOOL_2 = "Barn End Centre"
+    LNK_SCHOOL_2 = "Ashlawn School"
 
     LNK_CHILD_FULL_NAME = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT = "NOCONSENT1, NoConsent1"
@@ -551,11 +551,9 @@ class pg_sessions:
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         if verify_on_children:
             self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
-        self.click_scheduled()
-        self.click_school2()
         self.click_import_class_list()
         self.select_year_group(year_group=year_group)
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
+        self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         self.__record_upload_time()
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
