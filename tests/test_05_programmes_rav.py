@@ -42,16 +42,16 @@ class Test_Programmes_RAV:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.rav
-    @pytest.mark.order(701)
+    @pytest.mark.order(501)
     def test_programmes_rav_triage_positive(self, setup_tests):
         self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
 
     @pytest.mark.rav
-    @pytest.mark.order(702)
+    @pytest.mark.order(502)
     def test_programmes_rav_triage_consent_refused(self, setup_tests):
         self.sessions_page.update_triage_outcome_consent_refused(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
 
     @pytest.mark.rav
-    @pytest.mark.order(703)
+    @pytest.mark.order(503)
     def test_programmes_rav_edit_dose_to_not_given(self, setup_mavis_1729):
         self.programmes_page.edit_dose_to_not_given()  # MAVIS-1729

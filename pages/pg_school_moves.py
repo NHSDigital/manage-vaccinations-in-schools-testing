@@ -1,9 +1,12 @@
+from math import exp
+
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import (
     element_actions,
     element_properties,
     escape_characters,
 )
+from pages import pg_dashboard
 
 # from libs.wrappers import *
 
@@ -11,6 +14,7 @@ from libs.generic_constants import (
 class pg_school_moves:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
+    dashboard_page = pg_dashboard.pg_dashboard()
 
     LBL_HEADERS = "Updated	Full name	Move	Actions"
     LBL_MAIN = "main"
@@ -49,3 +53,25 @@ class pg_school_moves:
         self.po.act(locator=self.RDO_IGNORE_INFORMATION, action=element_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=element_actions.CLICK_BUTTON)
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
+
+    def confirm_and_ignore_moves(self):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_school_moves()
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Full name CLMOVES1, CFMoves1"
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Move Class list updated Bohunt School Wokingham to Ashlawn School",
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Full name CLMOVES2, CFMoves2"
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Class list updated Bohunt School Wokingham to Ashlawn School",
+        )
+        self.confirm_school_move()
+        self.ignore_school_move()
