@@ -10,6 +10,7 @@
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "cSpell.words": [
+    "childlist",
     "consentworkflow",
     "dotenv",
     "downcasting",
