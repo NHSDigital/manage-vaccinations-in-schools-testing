@@ -4,6 +4,7 @@ import pytest
 from pandas.core.series import Series
 
 from libs import CurrentExecution, playwright_ops
+from libs.generic_constants import fixture_scope
 from pages import pg_consent_hpv, pg_dashboard, pg_login, pg_sessions
 from tests.helpers import parental_consent_helper_doubles
 
@@ -17,7 +18,7 @@ class Test_Consent_Doubles:
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture
+    @pytest.fixture(scope=fixture_scope.FUNCTION)
     def get_doubles_session_link(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

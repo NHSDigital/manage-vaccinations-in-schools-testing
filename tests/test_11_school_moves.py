@@ -1,5 +1,6 @@
 import pytest
 
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_school_moves, pg_sessions
 
@@ -10,13 +11,13 @@ class Test_School_Moves:
     sessions_page = pg_sessions.pg_sessions()
     school_moves_page = pg_school_moves.pg_school_moves()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_move_and_ignore(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()

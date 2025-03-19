@@ -1,5 +1,6 @@
 import pytest
 
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_programmes
 
@@ -9,7 +10,7 @@ class Test_Cohorts:
     dashboard_page = pg_dashboard.pg_dashboard()
     programmes_page = pg_programmes.pg_programmes()
 
-    @pytest.fixture(scope="function", autouse=True)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=True)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_programmes()

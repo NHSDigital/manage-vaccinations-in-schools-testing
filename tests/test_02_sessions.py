@@ -1,5 +1,6 @@
 import pytest
 
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_sessions
 
@@ -9,7 +10,7 @@ class Test_Sessions:
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.go_to_dashboard()
@@ -17,7 +18,7 @@ class Test_Sessions:
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_mavis_1822(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

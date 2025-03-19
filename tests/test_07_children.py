@@ -1,5 +1,6 @@
 import pytest
 
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_children, pg_dashboard, pg_login, pg_sessions
 
@@ -10,7 +11,7 @@ class Test_Children:
     children_page = pg_children.pg_children()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture(scope="function", autouse=True)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=True)
     def setup_tests(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

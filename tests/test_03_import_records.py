@@ -1,8 +1,7 @@
 import pytest
 
-from libs.generic_constants import wait_time
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import child_year_group, test_data_file_paths
-from libs.wrappers import wait
 from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
@@ -12,7 +11,7 @@ class Test_ImportRecords:
     import_records_page = pg_import_records.pg_import_records()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_child_list(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_import_records()
@@ -20,7 +19,7 @@ class Test_ImportRecords:
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_class_list(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -36,7 +35,7 @@ class Test_ImportRecords:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_vaccs(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

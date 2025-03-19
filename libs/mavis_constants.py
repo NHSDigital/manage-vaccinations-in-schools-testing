@@ -1,18 +1,26 @@
 from typing import Final
 
 
+class playwright_constants:
+    TEST_ID_ATTRIBUTE: Final[str] = "data-qa"
+
+
+class browsers_and_devices:
+    CHROMIUM: Final[str] = "chromium"
+
+
 class child_year_group:
-    YEAR_8 = "YEAR_8"
-    YEAR_9 = "YEAR_9"
-    YEAR_10 = "YEAR_10"
-    YEAR_11 = "YEAR_11"
-    ALL = "ALL"
+    YEAR_8: Final[str] = "YEAR_8"
+    YEAR_9: Final[str] = "YEAR_9"
+    YEAR_10: Final[str] = "YEAR_10"
+    YEAR_11: Final[str] = "YEAR_11"
+    ALL: Final[str] = "ALL"
 
 
 class vaccine_index:
-    HPV = 1
-    MENACWY = 2
-    TDIPV = 3
+    HPV: Final[int] = 1
+    MENACWY: Final[int] = 2
+    TDIPV: Final[int] = 3
 
 
 class data_values:

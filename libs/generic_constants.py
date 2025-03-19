@@ -1,6 +1,11 @@
 from typing import Final
 
 
+class fixture_scope:
+    SESSION: Final[str] = "session"
+    FUNCTION: Final[str] = "function"
+
+
 class element_properties:
     TEXT: Final[str] = "text"
     VISIBILITY: Final[str] = "visibility"
