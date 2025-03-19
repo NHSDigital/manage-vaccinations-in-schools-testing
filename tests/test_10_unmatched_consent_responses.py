@@ -1,6 +1,7 @@
 import pytest
 
 from libs import CurrentExecution
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from libs.wrappers import *
 from pages import pg_dashboard, pg_login, pg_programmes, pg_unmatched
@@ -13,11 +14,11 @@ class Test_Unmatched_Consent_Responses:
     unmatched_page = pg_unmatched.pg_unmatched()
     programmes_page = pg_programmes.pg_programmes()
 
-    # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS TO HAVE RUN FIRST
+    # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS (HPV) TO HAVE RUN FIRST
     # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS
     # SET THE 'RESET_ENV_BEFORE_EXECUTION' FLAG (in .env) TO 'false' IF RUNNING ONLY CONSENT TESTS
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.go_to_dashboard()
@@ -25,16 +26,18 @@ class Test_Unmatched_Consent_Responses:
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_ucr_match(self, start_mavis: None):
-        self.login_page.login_as_nurse()
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_programmes()
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_UCR_MATCH)
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_unmatched_consent_responses()
-        yield
-        self.login_page.logout_of_mavis()
+        try:
+            self.login_page.login_as_nurse()
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_programmes()
+            self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_UCR_MATCH)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_unmatched_consent_responses()
+            yield
+        finally:
+            self.login_page.logout_of_mavis()
 
     @pytest.mark.unmatchedconsentresponses
     @pytest.mark.order(1001)

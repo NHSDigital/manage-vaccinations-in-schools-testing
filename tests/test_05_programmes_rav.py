@@ -1,5 +1,6 @@
 import pytest
 
+from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_import_records, pg_login, pg_programmes, pg_sessions
 
@@ -11,7 +12,7 @@ class Test_Programmes_RAV:
     programmes_page = pg_programmes.pg_programmes()
     import_records_page = pg_import_records.pg_import_records()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_tests(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -26,7 +27,7 @@ class Test_Programmes_RAV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope="function", autouse=False)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_mavis_1729(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

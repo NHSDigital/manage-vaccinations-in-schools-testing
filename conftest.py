@@ -3,26 +3,28 @@ from playwright.sync_api import sync_playwright
 
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
+from libs.generic_constants import fixture_scope
+from libs.mavis_constants import browsers_and_devices, playwright_constants
 from libs.wrappers import *
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser_or_device", action="store", default="chromium")
+    parser.addoption("--browser_or_device", action="store", default=browsers_and_devices.CHROMIUM)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope=fixture_scope.SESSION)
 def start_playwright_session(request):
     ce.get_env_values()
     ce.reset_environment()
     ce.current_browser_name = request.config.getoption("browser_or_device")
     ce.session_screenshots_dir = create_session_screenshot_dir()
     with sync_playwright() as _playwright:
-        _playwright.selectors.set_test_id_attribute("data-qa")
+        _playwright.selectors.set_test_id_attribute(playwright_constants.TEST_ID_ATTRIBUTE)
         yield _playwright
-    # ce.reset_environment()  # Clean up the environment after execution
+    ce.reset_environment()  # Clean up the environment after execution
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope=fixture_scope.FUNCTION)
 def start_mavis(start_playwright_session):
     _browser, _context = start_browser(pw=start_playwright_session, browser_or_device=ce.current_browser_name)
     ce.browser = _browser
