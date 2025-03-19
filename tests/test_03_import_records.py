@@ -22,37 +22,40 @@ class Test_ImportRecords:
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_class_list(self, start_mavis: None):
-        self.login_page.login_as_nurse()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.schedule_a_valid_session_in_school_1()
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_import_records()
-        self.import_records_page.click_import_records()
-        yield
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.delete_all_sessions_for_school_1()
-        self.login_page.logout_of_mavis()
+        try:
+            self.login_page.login_as_nurse()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1()
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_import_records()
+            self.import_records_page.click_import_records()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+            self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_vaccs(self, start_mavis: None):
-        self.login_page.login_as_nurse()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        self.import_records_page.import_class_list_records_from_school_session(
-            file_paths=test_data_file_paths.CLASS_SESSION_ID
-        )
-        self.import_records_page.click_school1()
-        self.sessions_page.save_session_id()
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_import_records()
-        self.import_records_page.click_import_records()
-        # wait(timeout=wait_time.MAX)  # Wait for the vaccs file link to be unique
-        yield
-        self.dashboard_page.go_to_dashboard()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.delete_all_sessions_for_school_1()
-        self.login_page.logout_of_mavis()
+        try:
+            self.login_page.login_as_nurse()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.import_records_page.import_class_list_records_from_school_session(
+                file_paths=test_data_file_paths.CLASS_SESSION_ID
+            )
+            self.import_records_page.click_school1()
+            self.sessions_page.save_session_id()
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_import_records()
+            self.import_records_page.click_import_records()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+            self.login_page.logout_of_mavis()
 
     ########################################### CHILD LIST ###########################################
     @pytest.mark.childlist
