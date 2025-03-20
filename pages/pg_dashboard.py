@@ -5,7 +5,6 @@ from libs.generic_constants import (
     escape_characters,
     wait_time,
 )
-from libs.wrappers import wait
 
 
 class pg_dashboard:
@@ -54,7 +53,9 @@ class pg_dashboard:
         self.po.act(locator=self.LNK_SERVICE_GUIDANCE, action=element_actions.CLICK_LINK)
 
     def go_to_dashboard(self):
-        wait(timeout=wait_time.MIN)  # Scripts sometimes error out without this wait when called as a teardown action
+        self.po.act(
+            locator=None, action=element_actions.WAIT, value=wait_time.MIN
+        )  # Scripts sometimes error out without this wait when called as a teardown action
         self.po.act(locator=self.LNK_NHS_LOGO, action=element_actions.CLICK_LINK)
 
     def verify_all_expected_links_for_nurse(self):

@@ -11,7 +11,6 @@ from libs.wrappers import (
     get_current_datetime,
     get_link_formatted_date_time,
     get_offset_date,
-    wait,
 )
 from pages import pg_children, pg_consent_hpv, pg_dashboard
 
@@ -155,7 +154,7 @@ class pg_sessions:
 
     def click_activity_log(self):
         self.po.act(locator=self.LNK_TAB_ACTIVITY_LOG, action=element_actions.CLICK_LINK, exact=True)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
 
     def click_school1(self):
         self.po.act(locator=self.LNK_SCHOOL_1, action=element_actions.CLICK_LINK)
@@ -191,26 +190,26 @@ class pg_sessions:
 
     def click_child_no_consent(self):
         self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_NO_CONSENT)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=element_actions.CLICK_LINK)
 
     def click_child_consent_twice(self):
         # self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONSENT_TWICE)
-        # wait(timeout=wait_time.MIN)
+        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONSENT_TWICE, action=element_actions.CLICK_LINK)
 
     def click_child_conflicting_gillick(self):
         # self.po.act(
         #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_GILLICK
         # )
-        # wait(timeout=wait_time.MIN)
+        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=element_actions.CLICK_LINK)
 
     def click_child_conflicting_consent(self):
         # self.po.act(
         #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_CONSENT
         # )
-        # wait(timeout=wait_time.MIN)
+        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=element_actions.CLICK_LINK)
 
     def click_child_e2e1(self):
@@ -378,7 +377,7 @@ class pg_sessions:
         )
 
     def verify_activity_log_entry(self, consent_given: bool):
-        wait(wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         if consent_given:
             self.po.verify(
                 locator=self.LBL_MAIN,
@@ -538,7 +537,7 @@ class pg_sessions:
         self.click_continue()
         self.__record_upload_time()
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
-            wait(timeout=wait_time.MED)
+            self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
@@ -557,7 +556,7 @@ class pg_sessions:
         self.click_continue()
         self.__record_upload_time()
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
-            wait(timeout=wait_time.MED)
+            self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
@@ -592,7 +591,7 @@ class pg_sessions:
         self.click_child_conflicting_consent()
         self.invalidate_parent2_refusal()
         self.click_activity_log()
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         # FIXME: Make the following generic
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent from Parent2 invalidated"
@@ -651,12 +650,12 @@ class pg_sessions:
             locator=self.LBL_CAPTION, property=element_properties.TEXT, expected_value="6 children still to register"
         )
         self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_CHECK)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.verify(
             locator=self.LBL_CAPTION, property=element_properties.TEXT, expected_value="No children still to register"
         )
         self.po.act(locator=self.CHK_YEAR8, action=element_actions.CHECKBOX_UNCHECK)
-        wait(timeout=wait_time.MED)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         self.po.verify(
             locator=self.LBL_CAPTION, property=element_properties.TEXT, expected_value="6 children still to register"
         )
@@ -664,7 +663,7 @@ class pg_sessions:
         if len(self.ce.child_list) >= 1:
             for child_name in self.ce.child_list:
                 self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=child_name)
-                wait(timeout=wait_time.MIN)
+                self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
                 self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value="")
 
@@ -678,7 +677,7 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
         self.select_conflicting_consent()
-        # wait(timeout=wait_time.MIN)
+        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,

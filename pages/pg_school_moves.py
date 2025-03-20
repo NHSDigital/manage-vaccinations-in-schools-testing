@@ -8,8 +8,6 @@ from libs.generic_constants import (
 )
 from pages import pg_dashboard
 
-# from libs.wrappers import *
-
 
 class pg_school_moves:
     po = playwright_ops.playwright_operations()

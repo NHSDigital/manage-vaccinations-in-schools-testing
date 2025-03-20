@@ -1,6 +1,7 @@
 import os
 import re
 from itertools import chain
+from socket import timeout
 
 from libs import CurrentExecution
 from libs.generic_constants import (
@@ -73,7 +74,8 @@ class playwright_operations:
         exact: bool = kwargs.get("exact", False)
         index: int = kwargs.get("index", 0)
         # Act
-        self.capture_screenshot(identifier=locator, action=f"before-{action}")
+        if locator is not None:
+            self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case element_actions.CLICK_LINK:
                 self._click_link(locator=locator, exact=exact, index=index)
@@ -103,7 +105,10 @@ class playwright_operations:
                 self.ce.page.click(f"text={locator}")
             case element_actions.CHAIN_LOCATOR_ACTION:
                 eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
-        self.capture_screenshot(identifier=locator, action=f"after-{action}")
+            case element_actions.WAIT:
+                self._wait(time_out=value)
+        if locator is not None:
+            self.capture_screenshot(identifier=locator, action=f"after-{action}")
 
     def _click_link(self, locator: str, exact: bool, index: int):
         if escape_characters.SEPARATOR_CHAR in locator:
@@ -174,7 +179,7 @@ class playwright_operations:
 
     def _select_from_list(self, locator: str, value: str, index: int):
         self._fill(locator=locator, value=value, exact=False, index=index)
-        wait(timeout=wait_time.MIN)
+        self._wait(time_out=wait_time.MIN)
         if escape_characters.SEPARATOR_CHAR in locator:
             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
@@ -282,7 +287,7 @@ class playwright_operations:
             elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                wait(timeout=wait_time.MIN)
+                self.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
                 elem = self.ce.page.get_by_role(locator).nth(0)
@@ -300,6 +305,10 @@ class playwright_operations:
                 elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
         return elem.get_attribute(element_properties.HREF)
 
+    def _wait(self, time_out: str):
+        _seconds = convert_time_units_to_seconds(time_unit=time_out)
+        time.sleep(_seconds)
+
     def _check_for_app_crash(self, locator_info: str):
         _actual_title = self.ce.page.title()
         if "Sorry, there’s a problem with the service" in _actual_title:
@@ -311,7 +320,7 @@ class playwright_operations:
         self.ce.page.goto(_full_url)
 
     def get_table_cell_location_for_value(self, table_locator: str, col_header: str, row_value: str):
-        wait(timeout=wait_time.MED)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         table = self.ce.page.locator(table_locator)
         # Get the column index from the column name
         col_counter = 0

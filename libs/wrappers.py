@@ -29,11 +29,6 @@ def convert_time_units_to_seconds(time_unit: str) -> int:
     return seconds
 
 
-def wait(timeout: str):
-    seconds = convert_time_units_to_seconds(time_unit=timeout)
-    time.sleep(seconds)
-
-
 def get_link_formatted_date_time():
     _am_or_pm = datetime.now().strftime(format="%p").lower()
     try:

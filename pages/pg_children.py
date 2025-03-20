@@ -30,7 +30,7 @@ class pg_children:
     def verify_filter(self):
         self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=self.CHILD1)
         self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
     def search_child(self) -> None:
@@ -40,7 +40,7 @@ class pg_children:
             for child_name in self.ce.child_list:
                 self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=child_name)
                 self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
-                wait(timeout=wait_time.MIN)
+                self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
                 self.po.act(locator=self.LNK_CLEAR_FILTERS, action=element_actions.CLICK_LINK)
 
@@ -52,10 +52,10 @@ class pg_children:
             _log_text = "Consent response manually matched with child record"
         self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=child_name, action=element_actions.CLICK_LINK)
         self.po.act(locator=self.LNK_ACTIVITY_LOG, action=element_actions.CLICK_TEXT)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Consent given")
         self.po.verify(
             locator=self.LBL_MAIN,
