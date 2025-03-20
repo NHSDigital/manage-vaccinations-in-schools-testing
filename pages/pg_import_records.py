@@ -47,7 +47,7 @@ class pg_import_records:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
         self._record_upload_time()
-        wait(timeout=wait_time.MED)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)
@@ -66,7 +66,7 @@ class pg_import_records:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
         self._record_upload_time()
-        wait(timeout=wait_time.MED)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)
@@ -82,7 +82,7 @@ class pg_import_records:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
         self._record_upload_time()
-        wait(timeout=wait_time.MED)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)
@@ -98,7 +98,7 @@ class pg_import_records:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
         self._record_upload_time()
-        wait(timeout=wait_time.MAX)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MAX)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)

@@ -30,6 +30,7 @@ class element_actions:
     CLICK_WILDCARD: Final[str] = "click_wildcard"
     CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
     DOWNLOAD_FILE: Final[str] = "download_file"
+    WAIT: Final[str] = "wait"
 
 
 class screenshot_actions:

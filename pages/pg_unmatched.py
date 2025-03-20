@@ -50,7 +50,7 @@ class pg_unmatched:
         self.po.act(locator=self.LNK_MATCH, action=element_actions.CLICK_LINK, index=_row_num)
         self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
         self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
-        wait(timeout=wait_time.MIN)
+        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LBL_CHILD_NAME_TO_MATCH, action=element_actions.CLICK_LINK, index=0)
         self.po.act(locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=element_actions.CLICK_BUTTON)
         self.po.verify(
