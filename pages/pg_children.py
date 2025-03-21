@@ -1,3 +1,5 @@
+from typing import Final
+
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.wrappers import *
@@ -9,17 +11,17 @@ class pg_children:
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    CHILD1 = "CFILTER1, CFilter1"
-    LBL_CHILD_RECORD = "1 child"
+    CHILD1: Final[str] = "CFILTER1, CFilter1"
+    LBL_CHILD_RECORD: Final[str] = "1 child"
 
-    LBL_CHILDREN = "Children"
-    LBL_HEADING = "heading"
-    LBL_MAIN = "main"
-    LBL_TABLE_HEADERS = "Name and NHS number	Postcode	School	Date of birth"
-    TXT_SEARCH = "Search"
-    BTN_SEARCH = "Search"
-    LNK_CLEAR_FILTERS = "Clear filters"
-    LNK_ACTIVITY_LOG = "Activity log"
+    LBL_CHILDREN: Final[str] = "Children"
+    LBL_HEADING: Final[str] = "heading"
+    LBL_MAIN: Final[str] = "main"
+    LBL_TABLE_HEADERS: Final[str] = "Name and NHS number	Postcode	School	Date of birth"
+    TXT_SEARCH: Final[str] = "Search"
+    BTN_SEARCH: Final[str] = "Search"
+    LNK_CLEAR_FILTERS: Final[str] = "Clear filters"
+    LNK_ACTIVITY_LOG: Final[str] = "Activity log"
 
     def verify_headers(self):
         self.po.verify(

@@ -1,4 +1,4 @@
-from math import exp
+from typing import Final
 
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import (
@@ -14,14 +14,14 @@ class pg_school_moves:
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
-    LBL_HEADERS = "Updated	Full name	Move	Actions"
-    LBL_MAIN = "main"
-    LBL_PARAGRAPH = "paragraph"
-    LNK_REVIEW = "Review"
-    LBL_CHILD_NAME = f"heading{escape_characters.SEPARATOR_CHAR}Review school move"
-    RDO_UPDATE_SCHOOL = "Update record with new school"
-    RDO_IGNORE_INFORMATION = "Ignore new information"
-    BTN_UPDATE_SCHOOL = "Update child record"
+    LBL_HEADERS: Final[str] = "Updated	Full name	Move	Actions"
+    LBL_MAIN: Final[str] = "main"
+    LBL_PARAGRAPH: Final[str] = "paragraph"
+    LNK_REVIEW: Final[str] = "Review"
+    LBL_CHILD_NAME: str = f"heading{escape_characters.SEPARATOR_CHAR}Review school move"
+    RDO_UPDATE_SCHOOL: Final[str] = "Update record with new school"
+    RDO_IGNORE_INFORMATION: Final[str] = "Ignore new information"
+    BTN_UPDATE_SCHOOL: Final[str] = "Update child record"
 
     def verify_headers(self):
         self.po.verify(

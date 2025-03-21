@@ -1,3 +1,5 @@
+from typing import Final
+
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import child_year_group, record_limit
@@ -10,25 +12,25 @@ class pg_import_records:
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
 
-    LNK_SCHOOL_1 = "Bohunt School Wokingham"
-    LNK_SCHOOL_2 = "Barn End Centre"
+    LNK_SCHOOL_1: Final[str] = "Bohunt School Wokingham"
+    LNK_SCHOOL_2: Final[str] = "Barn End Centre"
 
-    LNK_IMPORT_RECORDS = "Import records"
-    RDO_CHILD_RECORDS = "Child records"
-    RDO_CLASS_LIST_RECORDS = "Class list records"
-    RDO_VACCINATION_RECORDS = "Vaccination records"
-    BTN_CONTINUE = "Continue"
-    LBL_CHILD_RECORDS = "Child records"
-    LBL_CLASS_LIST_RECORDS = f"{LNK_SCHOOL_1}Import"
-    LBL_VACCINATION_RECORDS = "Vaccination records"
-    LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1 = f"{LNK_SCHOOL_1}Import"
-    LBL_SCHOOL_NAME = "Which school is this class"
-    LBL_MAIN = "main"
-    CHK_YEAR8 = "Year 8"
-    CHK_YEAR9 = "Year 9"
-    CHK_YEAR10 = "Year 10"
-    CHK_YEAR11 = "Year 11"
-    LNK_IMPORT_CLASS_LIST_RECORDS = "Import class lists"
+    LNK_IMPORT_RECORDS: Final[str] = "Import records"
+    RDO_CHILD_RECORDS: Final[str] = "Child records"
+    RDO_CLASS_LIST_RECORDS: Final[str] = "Class list records"
+    RDO_VACCINATION_RECORDS: Final[str] = "Vaccination records"
+    BTN_CONTINUE: Final[str] = "Continue"
+    LBL_CHILD_RECORDS: Final[str] = "Child records"
+    LBL_CLASS_LIST_RECORDS: Final[str] = f"{LNK_SCHOOL_1}Import"
+    LBL_VACCINATION_RECORDS: Final[str] = "Vaccination records"
+    LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1: Final[str] = f"{LNK_SCHOOL_1}Import"
+    LBL_SCHOOL_NAME: Final[str] = "Which school is this class"
+    LBL_MAIN: Final[str] = "main"
+    CHK_YEAR8: Final[str] = "Year 8"
+    CHK_YEAR9: Final[str] = "Year 9"
+    CHK_YEAR10: Final[str] = "Year 10"
+    CHK_YEAR11: Final[str] = "Year 11"
+    LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
 
     def click_import_records(self):
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)

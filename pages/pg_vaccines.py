@@ -1,3 +1,5 @@
+from typing import Final
+
 from libs import playwright_ops
 from libs.generic_constants import element_properties, framework_actions
 from libs.wrappers import *
@@ -6,19 +8,19 @@ from libs.wrappers import *
 class pg_vaccines:
     po = playwright_ops.playwright_operations()
 
-    LBL_VACCINE_NAME = "Gardasil 9 (HPV)"
-    LBL_VACCINE_MANUFACTURER = "Merck Sharp & Dohme"
-    LBL_MAIN = "main"
-    LBL_PARAGRAPH = "paragraph"
-    LBL_BATCH_ARCHIVED = "Batch archived."
-    LNK_ADD_NEW_BATCH = "Add a new batch"
-    TXT_BATCH_NAME = "Batch"
-    TXT_EXPIRY_DAY = "Day"
-    TXT_EXPIRY_MONTH = "Month"
-    TXT_EXPIRY_YEAR = "Year"
-    BTN_ADD_BATCH = "Add batch"
-    BTN_SAVE_CHANGES = "Save changes"
-    BTN_CONFIRM_ARCHIVE = "Yes, archive this batch"
+    LBL_VACCINE_NAME: Final[str] = "Gardasil 9 (HPV)"
+    LBL_VACCINE_MANUFACTURER: Final[str] = "Merck Sharp & Dohme"
+    LBL_MAIN: Final[str] = "main"
+    LBL_PARAGRAPH: Final[str] = "paragraph"
+    LBL_BATCH_ARCHIVED: Final[str] = "Batch archived."
+    LNK_ADD_NEW_BATCH: Final[str] = "Add a new batch"
+    TXT_BATCH_NAME: Final[str] = "Batch"
+    TXT_EXPIRY_DAY: Final[str] = "Day"
+    TXT_EXPIRY_MONTH: Final[str] = "Month"
+    TXT_EXPIRY_YEAR: Final[str] = "Year"
+    BTN_ADD_BATCH: Final[str] = "Add batch"
+    BTN_SAVE_CHANGES: Final[str] = "Save changes"
+    BTN_CONFIRM_ARCHIVE: Final[str] = "Yes, archive this batch"
 
     def verify_current_vaccine(self):
         self.po.verify(

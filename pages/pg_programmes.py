@@ -1,3 +1,5 @@
+from typing import Final
+
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import record_limit
@@ -12,25 +14,25 @@ class pg_programmes:
     fo = file_ops.file_operations()
     sessions_page = pg_sessions.pg_sessions()
 
-    LNK_HPV = "HPV"
-    LNK_IMPORTS = "Imports"
-    LNK_VACCINATIONS = "Vaccinations"
-    LNK_COHORTS = "Cohorts"
-    LNK_IMPORT_CHILD_RECORDS = "Import child records"
-    LNK_IMPORT_RECORDS = "Import records"
-    RDO_CHILD_RECORDS = "Child records"
-    RDO_VACCINATION_RECORDS = "Vaccination records"
-    BTN_CONTINUE = "Continue"
-    LBL_CHOOSE_VACCS_FILE = "Import vaccination records"
-    LBL_CHOOSE_COHORT_FILE = "Import child records"
-    LBL_IMPORT_STARTED = "Import processing started"
-    LBL_PARAGRAPH = "paragraph"
-    LBL_MAIN = "main"
-    LNK_DOSE2_CHILD = "DOSE2, Dose2"
-    LNK_CHANGE_OUTCOME = "Change   outcome"
-    RDO_THEY_REFUSED_IT = "They refused it"
-    BTN_EDIT_VACCINATION_RECORD = "Edit vaccination record"
-    BTN_SAVE_CHANGES = "Save changes"
+    LNK_HPV: Final[str] = "HPV"
+    LNK_IMPORTS: Final[str] = "Imports"
+    LNK_VACCINATIONS: Final[str] = "Vaccinations"
+    LNK_COHORTS: Final[str] = "Cohorts"
+    LNK_IMPORT_CHILD_RECORDS: Final[str] = "Import child records"
+    LNK_IMPORT_RECORDS: Final[str] = "Import records"
+    RDO_CHILD_RECORDS: Final[str] = "Child records"
+    RDO_VACCINATION_RECORDS: Final[str] = "Vaccination records"
+    BTN_CONTINUE: Final[str] = "Continue"
+    LBL_CHOOSE_VACCS_FILE: Final[str] = "Import vaccination records"
+    LBL_CHOOSE_COHORT_FILE: Final[str] = "Import child records"
+    LBL_IMPORT_STARTED: Final[str] = "Import processing started"
+    LBL_PARAGRAPH: Final[str] = "paragraph"
+    LBL_MAIN: Final[str] = "main"
+    LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
+    LNK_CHANGE_OUTCOME: Final[str] = "Change   outcome"
+    RDO_THEY_REFUSED_IT: Final[str] = "They refused it"
+    BTN_EDIT_VACCINATION_RECORD: Final[str] = "Edit vaccination record"
+    BTN_SAVE_CHANGES: Final[str] = "Save changes"
 
     def click_hpv(self):
         self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -104,16 +106,6 @@ class pg_programmes:
                 self.po.verify(
                     locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
                 )
-
-    # def upload_vaccination_records(self, file_paths: str):
-    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-    #     self.choose_file_vaccination_records(file_path=_input_file_path)
-    #     self.click_continue()
-    #     self.record_upload_time()
-    #     self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
-    #     if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
-    #         self.click_uploaded_file_datetime()
-    #     self.verify_upload_output(file_path=_output_file_path)
 
     def upload_hpv_child_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)

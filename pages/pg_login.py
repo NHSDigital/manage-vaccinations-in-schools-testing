@@ -1,3 +1,5 @@
+from typing import Final
+
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import element_properties, framework_actions
 
@@ -6,17 +8,17 @@ class pg_login:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
 
-    LNK_START_NOW = "Start now"
-    TXT_EMAIL_ADDRESS = "Email address"
-    TXT_PASSWORD = "Password"
-    BTN_LOGIN = "Log in"
-    BTN_LOGOUT = "Log out"
-    LBL_BANNER = "banner"
-    LBL_NURSE = "JOY, Nurse"
-    BTN_NURSE_ROLE = "SAIS Organisation 1 (R1L)"
-    BTN_SUPERUSER_ROLE = "SAIS Organisation 1 (R1L)"
-    LBL_SUPERUSER = "SUPERUSER, Superuser"
-    LBL_PARAGRAPH = "paragraph"
+    LNK_START_NOW: Final[str] = "Start now"
+    TXT_EMAIL_ADDRESS: Final[str] = "Email address"
+    TXT_PASSWORD: Final[str] = "Password"
+    BTN_LOGIN: Final[str] = "Log in"
+    BTN_LOGOUT: Final[str] = "Log out"
+    LBL_BANNER: Final[str] = "banner"
+    LBL_NURSE: Final[str] = "JOY, Nurse"
+    BTN_NURSE_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
+    BTN_SUPERUSER_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
+    LBL_SUPERUSER: Final[str] = "SUPERUSER, Superuser"
+    LBL_PARAGRAPH: Final[str] = "paragraph"
 
     def login_as_nurse(self):
         self.__login_actions(username=self.ce.nurse_username, password=self.ce.nurse_password)

@@ -1,3 +1,5 @@
+from typing import Final
+
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import (
     element_properties,
@@ -24,78 +26,78 @@ class pg_sessions:
     consent_page = pg_consent_hpv.pg_consent_hpv()
     children_page = pg_children.pg_children()
 
-    LNK_SCHOOL_1 = "Bohunt School Wokingham"
-    LNK_SCHOOL_2 = "Ashlawn School"
+    LNK_SCHOOL_1: Final[str] = "Bohunt School Wokingham"
+    LNK_SCHOOL_2: Final[str] = "Ashlawn School"
 
-    LNK_CHILD_FULL_NAME = "CLAST, CFirst"
-    LNK_CHILD_NO_CONSENT = "NOCONSENT1, NoConsent1"
-    LNK_CHILD_CONFLICTING_CONSENT = "CONFLICTINGCONSENT1, ConflictingConsent1"
-    LNK_CHILD_E2E1 = "CE2E1, CE2E1"
-    LNK_CHILD_CONFLICTING_GILLICK = "GILLICK1, Conflicting1"
-    LNK_CHILD_CONSENT_TWICE = "TWICE1, Consent1"
+    LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
+    LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
+    LNK_CHILD_CONFLICTING_CONSENT: Final[str] = "CONFLICTINGCONSENT1, ConflictingConsent1"
+    LNK_CHILD_E2E1: Final[str] = "CE2E1, CE2E1"
+    LNK_CHILD_CONFLICTING_GILLICK: Final[str] = "GILLICK1, Conflicting1"
+    LNK_CHILD_CONSENT_TWICE: Final[str] = "TWICE1, Consent1"
 
-    LNK_TAB_TODAY = "Today"
-    LNK_TAB_SCHEDULED = "Scheduled"
-    LNK_TAB_UNSCHEDULED = "Unscheduled"
-    RDO_NO_RESPONSE = "No response"
-    RDO_CONSENT_GIVEN = "Consent given"
-    RDO_CONFLICTING_CONSENT = "Conflicting consent"
-    LNK_TAB_ACTIVITY_LOG = "Activity log"
-    LNK_TAB_REGISTER = "Register"
-    LNK_IMPORT_CLASS_LIST = "Import class lists"
-    LBL_CHOOSE_COHORT_FILE_1 = f"{LNK_SCHOOL_1}Import class"
-    LBL_CHOOSE_COHORT_FILE_2 = f"{LNK_SCHOOL_2}Import class"
-    BTN_CONTINUE = "Continue"
-    LNK_ADD_SESSION_DATES = "Add session dates"
-    LNK_RECORD_VACCINATIONS = "Record vaccinations"
-    LNK_UPDATE_TRIAGE_OUTCOME = "Update triage outcome"
-    LNK_SCHEDULE_SESSIONS = "Schedule sessions"
-    RDO_YES_SAFE_TO_VACCINATE = "Yes, it’s safe to vaccinate"
-    BTN_SAVE_TRIAGE = "Save triage"
-    LBL_PARAGRAPH = "paragraph"
-    LBL_TRIAGE_UPDATED_MESSAGE = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
-    LBL_MAIN = "main"
-    TXT_DAY = "Day"
-    TXT_MONTH = "Month"
-    TXT_YEAR = "Year"
-    LNK_EDIT_SESSION = "Edit session"
-    LNK_CLOSE_SESSION = "Close session"
-    LNK_CHANGE_SESSION_DATES = "Change session dates"
-    BTN_DELETE = "Delete"
-    LNK_BACK = "Back"
-    LNK_CONTINUE = "Continue"
-    LNK_HPV_CONSENT_FORM = "View parental consent form (opens in new tab)"
-    LNK_ASSESS_GILLICK_COMPETENCE = "Assess Gillick competence"
-    RDO_YES_GILLICK_COMPETENT = "Yes, they are Gillick competent"
-    RDO_NO_GILLICK_COMPETENT = "No"
-    TXT_GILLICK_ASSESSMENT_DETAILS = "Assessment notes (optional)"
-    BTN_SAVE_CHANGES = "Save changes"
-    LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN = "Triaged decision: Safe to vaccinate"
-    LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED = "Consent refused by Parent1 (Dad)"
-    BTN_GET_CONSENT_RESPONSE = "Get consent response"
-    LNK_CONSENT_TAB = "Consent"
-    BTN_COMPLETE_GILLICK_ASSESSMENT = "Complete your assessment"
-    LBL_CHILD_COMPETENT = "Child assessed as Gillick competent"
-    LBL_CHILD_NOT_COMPETENT = "Child assessed as not Gillick competent"
-    LNK_EDIT_GILLICK_COMPETENCE = "Edit Gillick competence"
-    BTN_UPDATE_GILLICK_ASSESSMENT = "Update your assessment"
-    LNK_HPV_CONSENT_FORM = "View the HPV online consent form"
-    LNK_DOUBLES_CONSENT_FORM = "View the MenACWY and Td/IPV online consent form"
-    LNK_COULD_NOT_VACCINATE = "Could not vaccinate"
-    RDO_CONSENT_REFUSED = "Consent refused"
-    LNK_MARK_AS_INVALID = "Mark as invalid"
-    LNK_PARENT2 = "Parent2"
-    TXT_NOTES = "Notes"
-    LNK_REGISTER_ATTENDANCE = "Register"
-    LBL_CAPTION = "caption"
-    CHK_YEAR8 = "Year 8"
-    CHK_YEAR9 = "Year 9"
-    CHK_YEAR10 = "Year 10"
-    CHK_YEAR11 = "Year 11"
-    TXT_FILTER_NAME = "Name"
-    LNK_DOWNLOAD_EXCEL = "Record offline"
-    LBL_NO_SESSIONS_SCHEDULED = "No sessions scheduled"
-    BTN_UPDATE_RESULTS = "Update results"
+    LNK_TAB_TODAY: Final[str] = "Today"
+    LNK_TAB_SCHEDULED: Final[str] = "Scheduled"
+    LNK_TAB_UNSCHEDULED: Final[str] = "Unscheduled"
+    RDO_NO_RESPONSE: Final[str] = "No response"
+    RDO_CONSENT_GIVEN: Final[str] = "Consent given"
+    RDO_CONFLICTING_CONSENT: Final[str] = "Conflicting consent"
+    LNK_TAB_ACTIVITY_LOG: Final[str] = "Activity log"
+    LNK_TAB_REGISTER: Final[str] = "Register"
+    LNK_IMPORT_CLASS_LIST: Final[str] = "Import class lists"
+    LBL_CHOOSE_COHORT_FILE_1: Final[str] = f"{LNK_SCHOOL_1}Import class"
+    LBL_CHOOSE_COHORT_FILE_2: Final[str] = f"{LNK_SCHOOL_2}Import class"
+    BTN_CONTINUE: Final[str] = "Continue"
+    LNK_ADD_SESSION_DATES: Final[str] = "Add session dates"
+    LNK_RECORD_VACCINATIONS: Final[str] = "Record vaccinations"
+    LNK_UPDATE_TRIAGE_OUTCOME: Final[str] = "Update triage outcome"
+    LNK_SCHEDULE_SESSIONS: Final[str] = "Schedule sessions"
+    RDO_YES_SAFE_TO_VACCINATE: Final[str] = "Yes, it’s safe to vaccinate"
+    BTN_SAVE_TRIAGE: Final[str] = "Save triage"
+    LBL_PARAGRAPH: Final[str] = "paragraph"
+    LBL_TRIAGE_UPDATED_MESSAGE: Final[str] = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
+    LBL_MAIN: Final[str] = "main"
+    TXT_DAY: Final[str] = "Day"
+    TXT_MONTH: Final[str] = "Month"
+    TXT_YEAR: Final[str] = "Year"
+    LNK_EDIT_SESSION: Final[str] = "Edit session"
+    LNK_CLOSE_SESSION: Final[str] = "Close session"
+    LNK_CHANGE_SESSION_DATES: Final[str] = "Change session dates"
+    BTN_DELETE: Final[str] = "Delete"
+    LNK_BACK: Final[str] = "Back"
+    LNK_CONTINUE: Final[str] = "Continue"
+    LNK_HPV_CONSENT_FORM: Final[str] = "View parental consent form (opens in new tab)"
+    LNK_ASSESS_GILLICK_COMPETENCE: Final[str] = "Assess Gillick competence"
+    RDO_YES_GILLICK_COMPETENT: Final[str] = "Yes, they are Gillick competent"
+    RDO_NO_GILLICK_COMPETENT: Final[str] = "No"
+    TXT_GILLICK_ASSESSMENT_DETAILS: Final[str] = "Assessment notes (optional)"
+    BTN_SAVE_CHANGES: Final[str] = "Save changes"
+    LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN: Final[str] = "Triaged decision: Safe to vaccinate"
+    LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED: Final[str] = "Consent refused by Parent1 (Dad)"
+    BTN_GET_CONSENT_RESPONSE: Final[str] = "Get consent response"
+    LNK_CONSENT_TAB: Final[str] = "Consent"
+    BTN_COMPLETE_GILLICK_ASSESSMENT: Final[str] = "Complete your assessment"
+    LBL_CHILD_COMPETENT: Final[str] = "Child assessed as Gillick competent"
+    LBL_CHILD_NOT_COMPETENT: Final[str] = "Child assessed as not Gillick competent"
+    LNK_EDIT_GILLICK_COMPETENCE: Final[str] = "Edit Gillick competence"
+    BTN_UPDATE_GILLICK_ASSESSMENT: Final[str] = "Update your assessment"
+    LNK_HPV_CONSENT_FORM: Final[str] = "View the HPV online consent form"
+    LNK_DOUBLES_CONSENT_FORM: Final[str] = "View the MenACWY and Td/IPV online consent form"
+    LNK_COULD_NOT_VACCINATE: Final[str] = "Could not vaccinate"
+    RDO_CONSENT_REFUSED: Final[str] = "Consent refused"
+    LNK_MARK_AS_INVALID: Final[str] = "Mark as invalid"
+    LNK_PARENT2: Final[str] = "Parent2"
+    TXT_NOTES: Final[str] = "Notes"
+    LNK_REGISTER_ATTENDANCE: Final[str] = "Register"
+    LBL_CAPTION: Final[str] = "caption"
+    CHK_YEAR8: Final[str] = "Year 8"
+    CHK_YEAR9: Final[str] = "Year 9"
+    CHK_YEAR10: Final[str] = "Year 10"
+    CHK_YEAR11: Final[str] = "Year 11"
+    TXT_FILTER_NAME: Final[str] = "Name"
+    LNK_DOWNLOAD_EXCEL: Final[str] = "Record offline"
+    LBL_NO_SESSIONS_SCHEDULED: Final[str] = "No sessions scheduled"
+    BTN_UPDATE_RESULTS: Final[str] = "Update results"
 
     def __init__(self):
         self.upload_time = ""
@@ -195,22 +197,12 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=framework_actions.CLICK_LINK)
 
     def click_child_consent_twice(self):
-        # self.po.act(locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONSENT_TWICE)
-        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONSENT_TWICE, action=framework_actions.CLICK_LINK)
 
     def click_child_conflicting_gillick(self):
-        # self.po.act(
-        #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_GILLICK
-        # )
-        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=framework_actions.CLICK_LINK)
 
     def click_child_conflicting_consent(self):
-        # self.po.act(
-        #     locator=self.TXT_FILTER_NAME, action=element_actions.FILL, value=self.LNK_CHILD_CONFLICTING_CONSENT
-        # )
-        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=framework_actions.CLICK_LINK)
 
     def click_child_e2e1(self):
@@ -509,8 +501,6 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.__edit_session(to_date=_future_date)
-        # _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
-        # self.verify_scheduled_date(message=_expected_message)
 
     def delete_all_sessions_for_school_1(self):
         self.click_scheduled()
@@ -624,8 +614,6 @@ class pg_sessions:
         self.click_update_triage_outcome()
         self.consent_page.update_triage_outcome_positive()
         self.click_consent_tab()
-        # self.select_consent_given()
-        # self.click_child_consent_twice()
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_refuse_consent()
         self.select_consent_refused()
@@ -676,7 +664,6 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
         self.select_conflicting_consent()
-        # self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
         self.click_child_conflicting_gillick()  # Click appropriate child name
         self.po.verify(
             locator=self.LBL_MAIN,
