@@ -1,5 +1,5 @@
 from libs import CurrentExecution, playwright_ops
-from libs.generic_constants import element_actions, element_properties, wait_time
+from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.wrappers import *
 from pages import pg_children, pg_dashboard
 
@@ -47,12 +47,12 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_MATCHING,
         )
-        self.po.act(locator=self.LNK_MATCH, action=element_actions.CLICK_LINK, index=_row_num)
-        self.po.act(locator=self.TXT_SEARCH, action=element_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
-        self.po.act(locator=self.BTN_SEARCH, action=element_actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.LBL_CHILD_NAME_TO_MATCH, action=element_actions.CLICK_LINK, index=0)
-        self.po.act(locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_MATCH, action=framework_actions.CLICK_LINK, index=_row_num)
+        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
+        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.LBL_CHILD_NAME_TO_MATCH, action=framework_actions.CLICK_LINK, index=0)
+        self.po.act(locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_CONSENT_MATCHED
         )
@@ -73,9 +73,9 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_ARCHIVAL,
         )
-        self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=element_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.TXT_NOTES, action=element_actions.FILL, value="Archiving")
-        self.po.act(locator=self.BTN_ARCHIVE_RESPONSE, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=framework_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.TXT_NOTES, action=framework_actions.FILL, value="Archiving")
+        self.po.act(locator=self.BTN_ARCHIVE_RESPONSE, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=element_properties.TEXT,
@@ -94,9 +94,9 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_CREATION,
         )
-        self.po.act(locator=self.LNK_PARENT_NAME, action=element_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.LNK_CREATE_RECORD, action=element_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_PARENT_NAME, action=framework_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_CREATE_RECORD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=element_properties.TEXT,
@@ -112,9 +112,9 @@ class pg_unmatched:
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN, col_header=self.LBL_RESPONSE_COL, row_value=self.LBL_CHILD_NO_NHS_NUMBER
         )
-        self.po.act(locator=self.LNK_PARENT_NAME, action=element_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.LNK_CREATE_RECORD, action=element_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_PARENT_NAME, action=framework_actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_CREATE_RECORD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=element_properties.TEXT,

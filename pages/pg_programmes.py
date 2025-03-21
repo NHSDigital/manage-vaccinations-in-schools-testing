@@ -1,5 +1,5 @@
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.generic_constants import element_actions, element_properties, wait_time
+from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import record_limit
 from libs.wrappers import *
 from pages import pg_sessions
@@ -33,52 +33,52 @@ class pg_programmes:
     BTN_SAVE_CHANGES = "Save changes"
 
     def click_hpv(self):
-        self.po.act(locator=self.LNK_HPV, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
 
     def click_imports(self):
-        self.po.act(locator=self.LNK_IMPORTS, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORTS, action=framework_actions.CLICK_LINK)
 
     def click_vaccinations(self):
-        self.po.act(locator=self.LNK_VACCINATIONS, action=element_actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_VACCINATIONS, action=framework_actions.CLICK_LINK, exact=True)
 
     def click_cohorts(self):
-        self.po.act(locator=self.LNK_COHORTS, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_COHORTS, action=framework_actions.CLICK_LINK)
 
     def click_edit_vaccination_record(self):
-        self.po.act(locator=self.BTN_EDIT_VACCINATION_RECORD, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_EDIT_VACCINATION_RECORD, action=framework_actions.CLICK_BUTTON)
 
     def click_import_records(self):
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
 
     def click_import_cohort_records(self):
-        self.po.act(locator=self.LNK_IMPORT_CHILD_RECORDS, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_CHILD_RECORDS, action=framework_actions.CLICK_LINK)
 
     def select_child_records(self):
-        self.po.act(locator=self.RDO_CHILD_RECORDS, action=element_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_CHILD_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
 
     def select_vaccination_records(self):
-        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=element_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
 
     def click_continue(self):
-        self.po.act(locator=self.BTN_CONTINUE, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
     def click_choose_file_child_records(self):
-        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=element_actions.CLICK_LABEL)
+        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=framework_actions.CLICK_LABEL)
 
     def choose_file_child_records(self, file_path: str):
         self.po.act(
             locator=self.LBL_CHOOSE_COHORT_FILE,
-            action=element_actions.SELECT_FILE,
+            action=framework_actions.SELECT_FILE,
             value=file_path,
         )
 
     def click_choose_file_vaccination_records(self):
-        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=element_actions.CLICK_LABEL)
+        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=framework_actions.CLICK_LABEL)
 
     def choose_file_vaccination_records(self, file_path: str):
         self.po.act(
             locator=self.LBL_CHOOSE_VACCS_FILE,
-            action=element_actions.SELECT_FILE,
+            action=framework_actions.SELECT_FILE,
             value=file_path,
         )
 
@@ -89,13 +89,13 @@ class pg_programmes:
 
     def click_uploaded_file_datetime(self, truncated: bool = False):
         _link_time = self.upload_time[3:] if truncated else self.upload_time
-        self.po.act(locator=_link_time, action=element_actions.CLICK_LINK)
+        self.po.act(locator=_link_time, action=framework_actions.CLICK_LINK)
 
     def record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
 
     def click_dose2_child(self):
-        self.po.act(locator=self.LNK_DOSE2_CHILD, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_DOSE2_CHILD, action=framework_actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
@@ -120,7 +120,7 @@ class pg_programmes:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
-        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime(truncated=True)
         self.verify_upload_output(file_path=_output_file_path)
@@ -133,7 +133,7 @@ class pg_programmes:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
-        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
@@ -152,10 +152,10 @@ class pg_programmes:
         self.click_vaccinations()
         self.click_dose2_child()
         self.click_edit_vaccination_record()
-        self.po.act(locator=self.LNK_CHANGE_OUTCOME, action=element_actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_THEY_REFUSED_IT, action=element_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.LNK_CHANGE_OUTCOME, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.RDO_THEY_REFUSED_IT, action=framework_actions.RADIO_BUTTON_SELECT)
         self.click_continue()
-        self.po.act(locator=self.BTN_SAVE_CHANGES, action=element_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_SAVE_CHANGES, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,

@@ -6,8 +6,8 @@ from socket import timeout
 from libs import CurrentExecution
 from libs.generic_constants import (
     aria_roles,
-    element_actions,
     element_properties,
+    framework_actions,
     html_tags,
     screenshot_actions,
     screenshot_file_types,
@@ -77,35 +77,35 @@ class playwright_operations:
         if locator is not None:
             self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
-            case element_actions.CLICK_LINK:
+            case framework_actions.CLICK_LINK:
                 self._click_link(locator=locator, exact=exact, index=index)
-            case element_actions.CLICK_BUTTON:
+            case framework_actions.CLICK_BUTTON:
                 self._click_button(locator=locator, exact=exact, index=index)
-            case element_actions.CLICK_LABEL:
+            case framework_actions.CLICK_LABEL:
                 self._click_label(locator=locator, exact=exact, index=index)
-            case element_actions.CLICK_TEXT:
+            case framework_actions.CLICK_TEXT:
                 self._click_text(locator=locator, exact=exact, index=index)
-            case element_actions.FILL | element_actions.TYPE:
+            case framework_actions.FILL | framework_actions.TYPE:
                 self._fill(locator=locator, value=value, exact=exact, index=index)
-            case element_actions.RADIO_BUTTON_SELECT:
+            case framework_actions.RADIO_BUTTON_SELECT:
                 self._radio_button_select(locator=locator, exact=exact, index=index)
-            case element_actions.SELECT_FILE:
+            case framework_actions.SELECT_FILE:
                 self._select_file(locator=locator, value=value, exact=exact, index=index)
-            case element_actions.SELECT_FROM_LIST:
+            case framework_actions.SELECT_FROM_LIST:
                 self._select_from_list(locator=locator, value=value, index=index)
-            case element_actions.CHECKBOX_CHECK:
+            case framework_actions.CHECKBOX_CHECK:
                 self._checkbox_check(locator=locator, index=index)
-            case element_actions.CHECKBOX_UNCHECK:
+            case framework_actions.CHECKBOX_UNCHECK:
                 self._checkbox_uncheck(locator=locator, index=index)
-            case element_actions.CLICK_LINK_INDEX_FOR_ROW:
+            case framework_actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
-            case element_actions.DOWNLOAD_FILE:
+            case framework_actions.DOWNLOAD_FILE:
                 self._download_file(locator=locator, value=value, index=index)
-            case element_actions.CLICK_WILDCARD:
+            case framework_actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
-            case element_actions.CHAIN_LOCATOR_ACTION:
+            case framework_actions.CHAIN_LOCATOR_ACTION:
                 eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
-            case element_actions.WAIT:
+            case framework_actions.WAIT:
                 self._wait(time_out=value)
         if locator is not None:
             self.capture_screenshot(identifier=locator, action=f"after-{action}")
@@ -224,7 +224,7 @@ class playwright_operations:
 
     def _download_file(self, locator: str, value: str, index: int):
         with self.ce.page.expect_download() as download_info:
-            self.act(locator=locator, action=element_actions.CLICK_LINK, index=index)
+            self.act(locator=locator, action=framework_actions.CLICK_LINK, index=index)
         download = download_info.value
         # download.save_as("/path/to/save/at/" + download.suggested_filename)
         download.save_as(value)
@@ -287,7 +287,7 @@ class playwright_operations:
             elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                self.act(locator=None, action=element_actions.WAIT, value=wait_time.MIN)
+                self.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
                 elem = self.ce.page.get_by_role(locator).nth(0)
@@ -320,7 +320,7 @@ class playwright_operations:
         self.ce.page.goto(_full_url)
 
     def get_table_cell_location_for_value(self, table_locator: str, col_header: str, row_value: str):
-        self.po.act(locator=None, action=element_actions.WAIT, value=wait_time.MED)
+        self.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         table = self.ce.page.locator(table_locator)
         # Get the column index from the column name
         col_counter = 0

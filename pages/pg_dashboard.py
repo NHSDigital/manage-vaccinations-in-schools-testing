@@ -1,8 +1,8 @@
 from libs import playwright_ops
 from libs.generic_constants import (
-    element_actions,
     element_properties,
     escape_characters,
+    framework_actions,
     wait_time,
 )
 
@@ -23,40 +23,40 @@ class pg_dashboard:
     LNK_NHS_LOGO = "Manage vaccinations in schools"
 
     def click_programmes(self):
-        self.po.act(locator=self.LNK_PROGRAMMES, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_PROGRAMMES, action=framework_actions.CLICK_LINK)
 
     def click_sessions(self):
-        self.po.act(locator=self.LNK_SESSIONS, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SESSIONS, action=framework_actions.CLICK_LINK)
 
     def click_children(self):
-        self.po.act(locator=self.LNK_CHILDREN, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHILDREN, action=framework_actions.CLICK_LINK)
 
     def click_vaccines(self):
-        self.po.act(locator=self.LNK_VACCINES, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_VACCINES, action=framework_actions.CLICK_LINK)
 
     def click_unmatched_consent_responses(self):
-        self.po.act(locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_UNMATCHED_CONSENT_RESPONSES, action=framework_actions.CLICK_LINK)
 
     def click_school_moves(self):
-        self.po.act(locator=self.LNK_SCHOOL_MOVES, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SCHOOL_MOVES, action=framework_actions.CLICK_LINK)
 
     def click_import_records(self):
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
 
     def click_important_notices(self):
-        self.po.act(locator=self.LNK_NOTICES, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_NOTICES, action=framework_actions.CLICK_LINK)
 
     def click_your_organisation(self):
-        self.po.act(locator=self.LNK_ORGANISATION, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_ORGANISATION, action=framework_actions.CLICK_LINK)
 
     def click_service_guidance(self):
-        self.po.act(locator=self.LNK_SERVICE_GUIDANCE, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_SERVICE_GUIDANCE, action=framework_actions.CLICK_LINK)
 
     def go_to_dashboard(self):
         self.po.act(
-            locator=None, action=element_actions.WAIT, value=wait_time.MIN
+            locator=None, action=framework_actions.WAIT, value=wait_time.MIN
         )  # Scripts sometimes error out without this wait when called as a teardown action
-        self.po.act(locator=self.LNK_NHS_LOGO, action=element_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_NHS_LOGO, action=framework_actions.CLICK_LINK)
 
     def verify_all_expected_links_for_nurse(self):
         self.po.verify(
