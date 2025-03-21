@@ -53,6 +53,5 @@ class Test_Sessions:
 
     @pytest.mark.sessions
     @pytest.mark.order(202)
-    @pytest.mark.skip(reason="Development in progress")
     def test_verify_attendance_filters(self, setup_mavis_1822: None):
         self.sessions_page.verify_attendance_filters()  # MAVIS-1822

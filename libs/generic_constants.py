@@ -14,7 +14,7 @@ class element_properties:
     PAGE_URL: Final[str] = "page_url"
 
 
-class element_actions:
+class framework_actions:
     CLICK_LINK: Final[str] = "click_link"
     CLICK_BUTTON: Final[str] = "click_button"
     CLICK_LABEL: Final[str] = "click_label"
