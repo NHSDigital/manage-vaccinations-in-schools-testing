@@ -62,6 +62,7 @@ jobs:
         pytest --browser_or_device chromium
         echo "::endgroup::"
     - name: Test on Chrome
+      if: always()
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -98,6 +99,7 @@ jobs:
     #     pytest --browser_or_device firefox
     #     echo "::endgroup::"
     - name: Test on Edge
+      if: always()
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -116,6 +118,7 @@ jobs:
         pytest --browser_or_device msedge
         echo "::endgroup::"
     - name: Test on iPhone 14
+      if: always()
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -134,6 +137,7 @@ jobs:
         pytest -m mobile --browser_or_device iphone_14
         echo "::endgroup::"
     - name: Test on iPhone 15
+      if: always()
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -152,6 +156,7 @@ jobs:
         pytest -m mobile --browser_or_device iphone_15
         echo "::endgroup::"
     - name: Test on iPad Gen 7
+      if: always()
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -170,6 +175,7 @@ jobs:
         pytest -m mobile --browser_or_device ipad_7
         echo "::endgroup::"
     - name: Test on Google Pixel 5
+      if: always()
       env:
         HEADLESS: ${{ vars.HEADLESS }}
         CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
@@ -188,11 +194,13 @@ jobs:
         pytest -m mobile --browser_or_device pixel_5
         echo "::endgroup::"
     - name: Upload report
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: allure-reports
         path: reports
     - name: Upload screenshots
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: screenshots
