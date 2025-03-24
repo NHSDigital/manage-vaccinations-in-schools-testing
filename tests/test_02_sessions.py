@@ -51,7 +51,13 @@ class Test_Sessions:
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions_for_school_1()
 
+    @pytest.mark.mobile
     @pytest.mark.sessions
     @pytest.mark.order(202)
+    def test_invalid_session(self, setup_tests: None):
+        self.sessions_page.create_invalid_session()
+
+    @pytest.mark.sessions
+    @pytest.mark.order(203)
     def test_verify_attendance_filters(self, setup_mavis_1822: None):
         self.sessions_page.verify_attendance_filters()  # MAVIS-1822

@@ -45,8 +45,8 @@ class pg_sessions:
     LNK_TAB_ACTIVITY_LOG: Final[str] = "Activity log"
     LNK_TAB_REGISTER: Final[str] = "Register"
     LNK_IMPORT_CLASS_LIST: Final[str] = "Import class lists"
-    LBL_CHOOSE_COHORT_FILE_1: Final[str] = f"{LNK_SCHOOL_1}Import class"
-    LBL_CHOOSE_COHORT_FILE_2: Final[str] = f"{LNK_SCHOOL_2}Import class"
+    LBL_CHOOSE_COHORT_FILE_1: str = f"{LNK_SCHOOL_1}Import class"
+    LBL_CHOOSE_COHORT_FILE_2: str = f"{LNK_SCHOOL_2}Import class"
     BTN_CONTINUE: Final[str] = "Continue"
     LNK_ADD_SESSION_DATES: Final[str] = "Add session dates"
     LNK_RECORD_VACCINATIONS: Final[str] = "Record vaccinations"
@@ -55,7 +55,7 @@ class pg_sessions:
     RDO_YES_SAFE_TO_VACCINATE: Final[str] = "Yes, it’s safe to vaccinate"
     BTN_SAVE_TRIAGE: Final[str] = "Save triage"
     LBL_PARAGRAPH: Final[str] = "paragraph"
-    LBL_TRIAGE_UPDATED_MESSAGE: Final[str] = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
+    LBL_TRIAGE_UPDATED_MESSAGE: str = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
     LBL_MAIN: Final[str] = "main"
     TXT_DAY: Final[str] = "Day"
     TXT_MONTH: Final[str] = "Month"
@@ -513,10 +513,10 @@ class pg_sessions:
         self.__delete_sessions()
 
     def create_invalid_session(self):
-        _future_date = "20241332"
+        _invalid_date = "20251332"
         self.click_unscheduled()
         self.click_school1()
-        self.__schedule_session(on_date=_future_date, expect_error=True)
+        self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def upload_class_list_to_school_1(
         self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
