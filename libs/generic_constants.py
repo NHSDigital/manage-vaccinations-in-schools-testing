@@ -122,6 +122,8 @@ class escape_characters:
         NEW_LINE,
         CARRIAGE_RETURN,
         NEW_LINE_CARRIAGE_RETURN,
+        STROKE,
+        BACKSLASH,
     ]
 
 

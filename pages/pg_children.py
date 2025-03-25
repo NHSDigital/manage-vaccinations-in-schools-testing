@@ -22,6 +22,9 @@ class pg_children:
     BTN_SEARCH: Final[str] = "Search"
     LNK_CLEAR_FILTERS: Final[str] = "Clear filters"
     LNK_ACTIVITY_LOG: Final[str] = "Activity log"
+    LNK_CHILD_RECORD: Final[str] = "Child record"
+    LNK_CHILD_MAV_853: Final[str] = "MAV_853, Mav_853"
+    LNK_VACCS_DETAILS_MAV_853: Final[str] = "Gardasil 9 (HPV)"
 
     def verify_headers(self):
         self.po.verify(
@@ -68,4 +71,23 @@ class pg_children:
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
             expected_value=_log_text,
+        )
+
+    def verify_mav_853(self):
+        self.po.act(locator=self.LNK_CHILD_MAV_853, action=framework_actions.CLICK_LINK)
+        # Verify activity log
+        self.po.act(locator=self.LNK_ACTIVITY_LOG, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Vaccinated with Gardasil 9",
+        )
+        # Verify vaccination record
+        self.po.act(locator=self.LNK_CHILD_RECORD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_VACCS_DETAILS_MAV_853, action=framework_actions.CLICK_LINK)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Outcome	Vaccinated",
         )
