@@ -2,7 +2,7 @@ import pytest
 
 from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
-from pages import pg_children, pg_dashboard, pg_login, pg_sessions
+from pages import pg_children, pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
 class Test_Children:
@@ -10,12 +10,17 @@ class Test_Children:
     dashboard_page = pg_dashboard.pg_dashboard()
     children_page = pg_children.pg_children()
     sessions_page = pg_sessions.pg_sessions()
+    import_records_page = pg_import_records.pg_import_records()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=True)
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_tests(self, start_mavis: None):
+        self.login_page.login_as_nurse()
+        yield
+        self.login_page.logout_of_mavis()
+
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_children_page(self, setup_tests: None):
         try:
-            self.login_page.login_as_nurse()
-            self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -29,10 +34,36 @@ class Test_Children:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_mav_853(self, setup_tests: None):
+        try:
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.import_records_page.import_class_list_records_from_school_session(
+                file_paths=test_data_file_paths.CLASS_SESSION_ID
+            )
+            self.import_records_page.click_school1()
+            self.sessions_page.save_session_id()
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_import_records()
+            self.import_records_page.click_import_records()
+            self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_MAV_853)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_children()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
 
     @pytest.mark.children
     @pytest.mark.order(701)
-    def test_children_headers_and_filter(self):
+    def test_children_headers_and_filter(self, setup_children_page: None):
         self.children_page.verify_headers()
         self.children_page.verify_filter()
+
+    @pytest.mark.children
+    @pytest.mark.order(702)
+    def test_children_details_mav_853(self, setup_mav_853: None):
+        self.children_page.verify_mav_853()

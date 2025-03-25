@@ -12,17 +12,20 @@ class Test_ImportRecords:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
-    def setup_child_list(self, start_mavis: None):
+    def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
-        self.dashboard_page.click_import_records()
-        self.import_records_page.click_import_records()
         yield
         self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
-    def setup_class_list(self, start_mavis: None):
+    def setup_child_list(self, setup_tests: None):
+        self.dashboard_page.click_import_records()
+        self.import_records_page.click_import_records()
+        yield
+
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_class_list(self, setup_tests: None):
         try:
-            self.login_page.login_as_nurse()
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1()
             self.dashboard_page.go_to_dashboard()
@@ -33,12 +36,10 @@ class Test_ImportRecords:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
-    def setup_vaccs(self, start_mavis: None):
+    def setup_vaccs(self, setup_tests: None):
         try:
-            self.login_page.login_as_nurse()
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.import_records_page.import_class_list_records_from_school_session(
@@ -54,7 +55,6 @@ class Test_ImportRecords:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
 
     ########################################### CHILD LIST ###########################################
     @pytest.mark.childlist

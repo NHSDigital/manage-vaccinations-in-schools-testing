@@ -145,12 +145,18 @@ class pg_sessions:
 
     def select_no_response(self):
         self.po.act(locator=self.RDO_NO_RESPONSE, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_UPDATE_RESULTS, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
 
     def select_consent_given(self):
         self.po.act(locator=self.RDO_CONSENT_GIVEN, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_UPDATE_RESULTS, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
 
     def select_conflicting_consent(self):
         self.po.act(locator=self.RDO_CONFLICTING_CONSENT, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_UPDATE_RESULTS, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
 
     def click_register_tab(self):
         self.po.act(locator=self.LNK_TAB_REGISTER, action=framework_actions.CLICK_LINK, exact=False)
