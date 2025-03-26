@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs import playwright_ops
-from libs.generic_constants import element_properties, framework_actions
+from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import data_values
 
 
@@ -308,6 +308,8 @@ class pg_consent_hpv:
             self.po.act(locator=self.CHK_TEXT_UPDATES, action=framework_actions.CHECKBOX_CHECK)
             self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
             self.check_phone_options(scenario_id="")
+        else:
+            self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
 
     def parent_1_online_positive(self):

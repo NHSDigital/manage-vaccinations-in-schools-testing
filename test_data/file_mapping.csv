@@ -9,6 +9,7 @@ VACCS_HPV_INVALID_STRUCTURE,test_data/vaccs/i_invalid_structure.csv,test_data/va
 VACCS_HPV_EMPTY_FILE,test_data/vaccs/i_empty.csv,test_data/vaccs/o_empty.csv,hpv
 VACCS_HPV_HEADER_ONLY,test_data/vaccs/i_header_only.csv,test_data/vaccs/o_header_only.csv,hpv
 VACCS_HPV_MAV_853,test_data/vaccs/i_mav_853.csv,test_data/vaccs/o_mav_853.csv,hpv
+VACCS_HPV_DOSE_TWO,test_data/vaccs/i_dose_two.csv,test_data/vaccs/o_dose_two.csv,hpv
 COHORTS_POSITIVE,test_data/cohorts/i_positive.csv,test_data/cohorts/o_positive.csv,cohortpositive
 COHORTS_NEGATIVE,test_data/cohorts/i_negative.csv,test_data/cohorts/o_negative.csv,cohort
 COHORTS_INVALID_STRUCTURE,test_data/cohorts/i_invalid_structure.csv,test_data/cohorts/o_invalid_structure.csv,cohort
@@ -26,7 +27,7 @@ CLASS_EMPTY_FILE,test_data/class_list/i_empty.csv,test_data/class_list/o_empty.c
 CLASS_HEADER_ONLY,test_data/class_list/i_header_only.csv,test_data/class_list/o_header_only.csv,class
 CLASS_CHILDREN_FILTER,test_data/class_list/i_children_filter.csv,test_data/class_list/o_children_filter.csv,class
 CLASS_YEAR_GROUP,test_data/class_list/i_year_group.csv,test_data/class_list/o_year_group.csv,class
-VACCS_HPV_DOSE_TWO,test_data/vaccs/i_dose_two.csv,test_data/vaccs/o_dose_two.csv,hpv
+CLASS_MAV_854,test_data/class_list/i_mav_854.csv,test_data/class_list/o_mav_854.csv,class
 CLASS_SESSION_ID,test_data/class_list/i_session_id.csv,test_data/class_list/o_session_id.csv,hpv
 COHORTS_NO_CONSENT,test_data/cohorts/i_no_consent.csv,test_data/cohorts/o_no_consent.csv,cohort
 COHORTS_CONFLICTING_CONSENT,test_data/cohorts/i_conflicting_consent.csv,test_data/cohorts/o_conflicting_consent.csv,cohort

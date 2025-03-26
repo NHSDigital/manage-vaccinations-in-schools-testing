@@ -10,7 +10,7 @@ class element_properties:
     TEXT: Final[str] = "text"
     VISIBILITY: Final[str] = "visibility"
     HREF: Final[str] = "href"
-    EXISTS: Final[str] = "exists"
+    ELEMENT_EXISTS: Final[str] = "element_exists"
     PAGE_URL: Final[str] = "page_url"
 
 

@@ -4,7 +4,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import record_limit
 from libs.wrappers import *
-from pages import pg_sessions
+from pages import pg_dashboard, pg_sessions
 
 
 class pg_programmes:
@@ -13,6 +13,10 @@ class pg_programmes:
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
     sessions_page = pg_sessions.pg_sessions()
+    dashboard_page = pg_dashboard.pg_dashboard()
+
+    LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
+    LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
 
     LNK_HPV: Final[str] = "HPV"
     LNK_IMPORTS: Final[str] = "Imports"
@@ -28,11 +32,11 @@ class pg_programmes:
     LBL_IMPORT_STARTED: Final[str] = "Import processing started"
     LBL_PARAGRAPH: Final[str] = "paragraph"
     LBL_MAIN: Final[str] = "main"
-    LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_CHANGE_OUTCOME: Final[str] = "Change   outcome"
     RDO_THEY_REFUSED_IT: Final[str] = "They refused it"
     BTN_EDIT_VACCINATION_RECORD: Final[str] = "Edit vaccination record"
     BTN_SAVE_CHANGES: Final[str] = "Save changes"
+    LNK_COMMUNITY_CLINIC_HPV: Final[str] = "Community clinics"
 
     def click_hpv(self):
         self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -154,3 +158,14 @@ class pg_programmes:
             expected_value="!Sorry, there’s a problem with the service",
             exact=False,
         )
+
+    def verify_mav_854(self):
+        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_COMMUNITY_CLINIC_HPV, action=framework_actions.CLICK_LINK)
+        self.sessions_page._vaccinate_child_mav_854()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.click_scheduled()
+        self.sessions_page.click_school1()
+        _file_path = self.sessions_page.download_offline_recording_excel()
+        assert self.fo.check_if_path_exists(file_or_folder_path=_file_path), "Offline recording file not downloaded"
