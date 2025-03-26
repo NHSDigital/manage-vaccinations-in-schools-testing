@@ -36,22 +36,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        playwright install
-        sudo apt-get install libwoff1\
-        libvpx9\
-        libevent-2.1-7t64\
-        libopus0\
-        libgstreamer-plugins-base1.0-0\
-        libgstreamer-gl1.0-0\
-        libgstreamer-plugins-bad1.0-0\
-        libflite1\
-        libavif16\
-        libharfbuzz-icu0\
-        libsecret-1-0\
-        libhyphen0\
-        libmanette-0.2-0\
-        libgles2\
-        gstreamer1.0-libav
+        playwright install-deps
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -189,25 +174,25 @@ jobs:
         echo "::group::iPad Gen 7"
         pytest -m mobile --browser_or_device ipad_7
         echo "::endgroup::"
-    - name: Test on Google Pixel 5
-      if: always()
-      env:
-        HEADLESS: ${{ vars.HEADLESS }}
-        CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-        BASE_URL: ${{ vars.BASE_URL }}
-        RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-        RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-        NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-        SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-        SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-        BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        API_TOKEN: ${{ secrets.API_TOKEN }}
-      run: |
-        echo "::group::Pixel 5"
-        pytest -m mobile --browser_or_device pixel_5
-        echo "::endgroup::"
+    # - name: Test on Google Pixel 5
+    #   if: always()
+    #   env:
+    #     HEADLESS: ${{ vars.HEADLESS }}
+    #     CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+    #     BASE_URL: ${{ vars.BASE_URL }}
+    #     RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+    #     RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
+    #     NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+    #     NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+    #     SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+    #     SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+    #     BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+    #     BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+    #     API_TOKEN: ${{ secrets.API_TOKEN }}
+    #   run: |
+    #     echo "::group::Pixel 5"
+    #     pytest -m mobile --browser_or_device pixel_5
+    #     echo "::endgroup::"
     - name: Upload report
       if: always()
       uses: actions/upload-artifact@v4

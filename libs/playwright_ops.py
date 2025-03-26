@@ -64,7 +64,7 @@ class playwright_operations:
                 return self._get_element_visibility(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.HREF:
                 return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
-            case element_properties.EXISTS:
+            case element_properties.ELEMENT_EXISTS:
                 return self.ce.page.query_selector(locator) is not None
             case element_properties.PAGE_URL:
                 return self.ce.page.url

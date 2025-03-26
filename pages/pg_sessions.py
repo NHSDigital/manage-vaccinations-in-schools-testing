@@ -28,6 +28,7 @@ class pg_sessions:
 
     LNK_SCHOOL_1: Final[str] = "Bohunt School Wokingham"
     LNK_SCHOOL_2: Final[str] = "Ashlawn School"
+    LNK_COMMUNITY_CLINICS: Final[str] = "Community clinics"
 
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
@@ -35,6 +36,7 @@ class pg_sessions:
     LNK_CHILD_E2E1: Final[str] = "CE2E1, CE2E1"
     LNK_CHILD_CONFLICTING_GILLICK: Final[str] = "GILLICK1, Conflicting1"
     LNK_CHILD_CONSENT_TWICE: Final[str] = "TWICE1, Consent1"
+    LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
 
     LNK_TAB_TODAY: Final[str] = "Today"
     LNK_TAB_SCHEDULED: Final[str] = "Scheduled"
@@ -98,6 +100,17 @@ class pg_sessions:
     LNK_DOWNLOAD_EXCEL: Final[str] = "Record offline"
     LBL_NO_SESSIONS_SCHEDULED: Final[str] = "No sessions scheduled"
     BTN_UPDATE_RESULTS: Final[str] = "Update results"
+    BTN_ATTENDING: Final[str] = "Attending"
+    CHK_KNOW_VACCINATION: Final[str] = "know what the vaccination is"
+    CHK_NOT_ALREADY_HAD: Final[str] = "have not already had the"
+    CHK_ARE_FEELING_WELL: Final[str] = "are feeling well"
+    CHK_HAVE_NO_ALLERGIES: Final[str] = "have no allergies which would"
+    CHK_ARE_NOT_PREGNANT: Final[str] = "are not pregnant"
+    RDO_YES: Final[str] = "Yes"
+    RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
+    RDO_BATCH_AUTO: Final[str] = "Auto20"
+    RDO_CLINIC_WEIMANN: Final[str] = "The Weimann Institute Clinic"
+    BTN_CONFIRM: Final[str] = "Confirm"
 
     def __init__(self):
         self.upload_time = ""
@@ -171,6 +184,9 @@ class pg_sessions:
     def click_school2(self):
         self.po.act(locator=self.LNK_SCHOOL_2, action=framework_actions.CLICK_LINK)
 
+    def click_community_clinics(self):
+        self.po.act(locator=self.LNK_COMMUNITY_CLINICS, action=framework_actions.CLICK_LINK)
+
     def click_import_class_list(self):
         self.po.act(locator=self.LNK_IMPORT_CLASS_LIST, action=framework_actions.CLICK_LINK)
 
@@ -191,7 +207,7 @@ class pg_sessions:
             value=file_path,
         )
 
-    def click_record_vaccinations(self):
+    def click_record_vaccinations_tab(self):
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=framework_actions.CLICK_LINK)
 
     def click_child_full_name(self):
@@ -238,9 +254,13 @@ class pg_sessions:
     def select_consent_refused(self):
         self.po.act(locator=self.RDO_CONSENT_REFUSED, action=framework_actions.RADIO_BUTTON_SELECT)
 
-    def save_session_id(self):
+    def download_offline_recording_excel(self) -> str:
         _file_path = f"working/excel_{get_current_datetime()}.xlsx"
         self.po.act(locator=self.LNK_DOWNLOAD_EXCEL, action=framework_actions.DOWNLOAD_FILE, value=_file_path)
+        return _file_path
+
+    def save_session_id_from_offline_excel(self):
+        _file_path = self.download_offline_recording_excel()
         _session_id = self.tdo.get_session_id(excel_path=_file_path)
         self.ce.set_session_id(session_id=_session_id)
 
@@ -490,6 +510,14 @@ class pg_sessions:
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
+    def schedule_a_valid_session_in_community_clinics(self, for_today: bool = False):
+        _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
+        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
+        self.click_unscheduled()
+        self.click_community_clinics()
+        self.__schedule_session(on_date=_future_date)
+        self.verify_scheduled_date(message=_expected_message)
+
     def close_active_session_in_school_2(self):
         _past_date = get_offset_date(offset_days=-1)
         self.click_scheduled()
@@ -500,6 +528,11 @@ class pg_sessions:
     def close_active_session_in_school_1(self):
         self.click_scheduled()
         self.click_school1()
+        self.__close_session()
+
+    def close_active_session_in_community_clinics(self):
+        self.click_scheduled()
+        self.click_community_clinics()
         self.__close_session()
 
     def edit_a_session_to_today(self):
@@ -516,6 +549,11 @@ class pg_sessions:
     def delete_all_sessions_for_school_2(self):
         self.click_scheduled()
         self.click_school2()
+        self.__delete_sessions()
+
+    def delete_all_sessions_for_community_clinics(self):
+        self.click_scheduled()
+        self.click_community_clinics()
         self.__delete_sessions()
 
     def create_invalid_session(self):
@@ -737,3 +775,32 @@ class pg_sessions:
                 self.po.act(locator=self.CHK_YEAR10, action=framework_actions.CHECKBOX_CHECK)
                 self.po.act(locator=self.CHK_YEAR11, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+
+    def _answer_hpv_questions(self):
+        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
+
+    def _vaccinate_child_mav_854(self):
+        self.click_get_consent_response()
+        self.consent_page.parent_1_verbal_positive(change_phone=False)
+        self.click_register_tab()
+        self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
+        self.click_record_vaccinations_tab()
+        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
+        self._answer_hpv_questions()
+        self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_BATCH_AUTO, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_CLINIC_WEIMANN, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="Vaccination outcome recorded for HPV",
+        )

@@ -44,7 +44,7 @@ class Test_Children:
                 file_paths=test_data_file_paths.CLASS_SESSION_ID
             )
             self.import_records_page.click_school1()
-            self.sessions_page.save_session_id()
+            self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
             self.import_records_page.click_import_records()
@@ -66,4 +66,4 @@ class Test_Children:
     @pytest.mark.children
     @pytest.mark.order(702)
     def test_children_details_mav_853(self, setup_mav_853: None):
-        self.children_page.verify_mav_853()
+        self.children_page.verify_mav_853()  # MAV-853
