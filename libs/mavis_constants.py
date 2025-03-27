@@ -3,6 +3,7 @@ from typing import Final
 
 class playwright_constants:
     TEST_ID_ATTRIBUTE: Final[str] = "data-qa"
+    DEFAULT_TIMEOUT: Final[int] = 60000
 
 
 class browsers_and_devices:
@@ -43,8 +44,10 @@ class test_data_file_paths:
     VACCS_DUP_2: Final[str] = "VACCS_HPV_DUP_2"
     VACCS_INVALID_STRUCTURE: Final[str] = "VACCS_HPV_INVALID_STRUCTURE"
     VACCS_EMPTY_FILE: Final[str] = "VACCS_HPV_EMPTY_FILE"
+    VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
     VACCS_HEADER_ONLY: Final[str] = "VACCS_HPV_HEADER_ONLY"
     VACCS_MAV_853: Final[str] = "VACCS_HPV_MAV_853"
+    VACCS_HPV_MAV_855: Final[str] = "VACCS_HPV_MAV_855"
     COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
     COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
     COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
@@ -67,7 +70,6 @@ class test_data_file_paths:
     COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
     COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
     COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
-    VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
     CLASS_MOVES_ONE: Final[str] = "CLASS_MOVES_ONE"
     CLASS_MOVES_TWO: Final[str] = "CLASS_MOVES_TWO"
     COHORTS_UCR_MATCH: Final[str] = "COHORTS_UCR_MATCH"

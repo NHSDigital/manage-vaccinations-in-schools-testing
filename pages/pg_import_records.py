@@ -4,6 +4,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import child_year_group, record_limit
 from libs.wrappers import *
+from pages import pg_children, pg_dashboard, pg_sessions
 
 
 class pg_import_records:
@@ -11,9 +12,11 @@ class pg_import_records:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
+    sessions_page = pg_sessions.pg_sessions()
+    dashboard_page = pg_dashboard.pg_dashboard()
+    children_page = pg_children.pg_children()
 
-    LNK_SCHOOL_1: Final[str] = "Bohunt School Wokingham"
-    LNK_SCHOOL_2: Final[str] = "Barn End Centre"
+    LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 
     LNK_IMPORT_RECORDS: Final[str] = "Import records"
     RDO_CHILD_RECORDS: Final[str] = "Child records"
@@ -21,9 +24,9 @@ class pg_import_records:
     RDO_VACCINATION_RECORDS: Final[str] = "Vaccination records"
     BTN_CONTINUE: Final[str] = "Continue"
     LBL_CHILD_RECORDS: Final[str] = "Child records"
-    LBL_CLASS_LIST_RECORDS: Final[str] = f"{LNK_SCHOOL_1}Import"
+    LBL_CLASS_LIST_RECORDS: Final[str] = f"{sessions_page.LNK_SCHOOL_1}Import"
     LBL_VACCINATION_RECORDS: Final[str] = "Vaccination records"
-    LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1: Final[str] = f"{LNK_SCHOOL_1}Import"
+    LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1: Final[str] = f"{sessions_page.LNK_SCHOOL_1}Import"
     LBL_SCHOOL_NAME: Final[str] = "Which school is this class"
     LBL_MAIN: Final[str] = "main"
     CHK_YEAR8: Final[str] = "Year 8"
@@ -34,9 +37,6 @@ class pg_import_records:
 
     def click_import_records(self):
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
-
-    def click_school1(self):
-        self.po.act(locator=self.LNK_SCHOOL_1, action=framework_actions.CLICK_LINK)
 
     def import_child_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
@@ -58,7 +58,11 @@ class pg_import_records:
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.po.act(locator=self.RDO_CLASS_LIST_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.LBL_SCHOOL_NAME, action=framework_actions.SELECT_FROM_LIST, value=self.LNK_SCHOOL_1)
+        self.po.act(
+            locator=self.LBL_SCHOOL_NAME,
+            action=framework_actions.SELECT_FROM_LIST,
+            value=self.sessions_page.LNK_SCHOOL_1,
+        )
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self._select_year_group(year_group=year_group)
         self.po.act(
@@ -149,3 +153,10 @@ class pg_import_records:
                 self.po.act(locator=self.CHK_YEAR10, action=framework_actions.CHECKBOX_CHECK)
                 self.po.act(locator=self.CHK_YEAR11, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+
+    def verify_mav_855(self):
+        self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
+        self.po.act(locator=self.LNK_CHILD_MAV_855, action=framework_actions.CLICK_LINK)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.sessions_page.LNK_SCHOOL_1
+        )

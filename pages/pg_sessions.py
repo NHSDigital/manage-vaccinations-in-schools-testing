@@ -579,7 +579,7 @@ class pg_sessions:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.search_child()
+            self.children_page.search_children()
 
     def upload_class_list_to_school_2(
         self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
@@ -598,7 +598,7 @@ class pg_sessions:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.search_child()
+            self.children_page.search_children()
 
     def set_gillick_competence_for_student(self):
         self.click_today()
@@ -777,6 +777,7 @@ class pg_sessions:
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
     def _answer_hpv_questions(self):
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)

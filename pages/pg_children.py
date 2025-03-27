@@ -38,7 +38,7 @@ class pg_children:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
-    def search_child(self) -> None:
+    def search_children(self) -> None:
         if len(self.ce.child_list) >= 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
@@ -48,6 +48,12 @@ class pg_children:
                 self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
                 self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
                 self.po.act(locator=self.LNK_CLEAR_FILTERS, action=framework_actions.CLICK_LINK)
+
+    def search_for_a_child(self, child_name: str) -> None:
+        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=child_name)
+        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
 
     def verify_activity_log_for_created_or_matched_child(self, child_name: str, is_created: bool):
         _log_text: str = ""
@@ -74,6 +80,13 @@ class pg_children:
         )
 
     def verify_mav_853(self):
+        """
+        1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
+        2. Navigate to the patient, either in a session or from the global children view
+        3. Expected: patient details can be seen
+        Actual: crash
+        """
+        self.search_for_a_child(child_name=self.LNK_CHILD_MAV_853)
         self.po.act(locator=self.LNK_CHILD_MAV_853, action=framework_actions.CLICK_LINK)
         # Verify activity log
         self.po.act(locator=self.LNK_ACTIVITY_LOG, action=framework_actions.CLICK_LINK)

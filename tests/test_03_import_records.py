@@ -2,7 +2,7 @@ import pytest
 
 from libs.generic_constants import fixture_scope
 from libs.mavis_constants import child_year_group, test_data_file_paths
-from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
+from pages import pg_children, pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
 class Test_ImportRecords:
@@ -45,7 +45,7 @@ class Test_ImportRecords:
             self.import_records_page.import_class_list_records_from_school_session(
                 file_paths=test_data_file_paths.CLASS_SESSION_ID
             )
-            self.import_records_page.click_school1()
+            self.sessions_page.click_school1()
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
@@ -155,9 +155,19 @@ class Test_ImportRecords:
     @pytest.mark.vaccinations
     @pytest.mark.order(357)
     def test_vaccs_historic_positive_file_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_POSITIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HIST_POSITIVE
+        )  # Covers MAV-855
 
     @pytest.mark.vaccinations
     @pytest.mark.order(358)
     def test_vaccs_historic_negative_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(359)
+    def test_vaccs_historic_no_urn_mav_855(self, setup_vaccs):
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_MAV_855)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_children()
+        self.import_records_page.verify_mav_855()
