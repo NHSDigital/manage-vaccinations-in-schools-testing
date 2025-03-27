@@ -4,7 +4,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import record_limit
 from libs.wrappers import *
-from pages import pg_dashboard, pg_sessions
+from pages import pg_children, pg_dashboard, pg_sessions
 
 
 class pg_programmes:
@@ -14,6 +14,7 @@ class pg_programmes:
     fo = file_ops.file_operations()
     sessions_page = pg_sessions.pg_sessions()
     dashboard_page = pg_dashboard.pg_dashboard()
+    children_page = pg_children.pg_children()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
@@ -160,6 +161,16 @@ class pg_programmes:
         )
 
     def verify_mav_854(self):
+        """
+        1. Find a child who is in an HPV school session
+        2. Ensure there is a clinic session date for today
+        3. Navigate to the clinic, find the child, record a vaccination against that child
+        4. Navigate to that child's school
+        5. Download offline spreadsheet
+        6. Expected: offline spreadsheet downloaded
+        Actual: crash
+        """
+        self.children_page.search_for_a_child(child_name=self.LNK_MAV_854_CHILD)
         self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
         self.po.act(locator=self.LNK_COMMUNITY_CLINIC_HPV, action=framework_actions.CLICK_LINK)
         self.sessions_page._vaccinate_child_mav_854()
@@ -167,5 +178,4 @@ class pg_programmes:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        _file_path = self.sessions_page.download_offline_recording_excel()
-        assert self.fo.check_if_path_exists(file_or_folder_path=_file_path), "Offline recording file not downloaded"
+        self.sessions_page.save_session_id_from_offline_excel()

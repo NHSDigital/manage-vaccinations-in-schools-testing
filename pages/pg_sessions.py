@@ -579,7 +579,7 @@ class pg_sessions:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.search_child()
+            self.children_page.search_children()
 
     def upload_class_list_to_school_2(
         self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
@@ -598,7 +598,7 @@ class pg_sessions:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.search_child()
+            self.children_page.search_children()
 
     def set_gillick_competence_for_student(self):
         self.click_today()

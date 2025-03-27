@@ -155,7 +155,9 @@ class Test_ImportRecords:
     @pytest.mark.vaccinations
     @pytest.mark.order(357)
     def test_vaccs_historic_positive_file_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_POSITIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HIST_POSITIVE
+        )  # Covers MAV-855
 
     @pytest.mark.vaccinations
     @pytest.mark.order(358)

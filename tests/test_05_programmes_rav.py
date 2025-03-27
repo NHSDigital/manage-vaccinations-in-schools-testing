@@ -83,9 +83,6 @@ class Test_Programmes_RAV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            # self.dashboard_page.go_to_dashboard()
-            # self.dashboard_page.click_sessions()
-            # self.sessions_page.delete_all_sessions_for_community_clinics()
             self.login_page.logout_of_mavis()
 
     @pytest.mark.rav
