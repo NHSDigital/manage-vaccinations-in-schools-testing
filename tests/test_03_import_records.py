@@ -45,7 +45,7 @@ class Test_ImportRecords:
             self.import_records_page.import_class_list_records_from_school_session(
                 file_paths=test_data_file_paths.CLASS_SESSION_ID
             )
-            self.import_records_page.click_school1()
+            self.sessions_page.click_school1()
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
