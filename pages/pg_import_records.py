@@ -4,7 +4,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import child_year_group, record_limit
 from libs.wrappers import *
-from pages import pg_sessions
+from pages import pg_children, pg_dashboard, pg_sessions
 
 
 class pg_import_records:
@@ -13,6 +13,10 @@ class pg_import_records:
     tdo = testdata_ops.testdata_operations()
     fo = file_ops.file_operations()
     sessions_page = pg_sessions.pg_sessions()
+    dashboard_page = pg_dashboard.pg_dashboard()
+    children_page = pg_children.pg_children()
+
+    LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 
     LNK_IMPORT_RECORDS: Final[str] = "Import records"
     RDO_CHILD_RECORDS: Final[str] = "Child records"
@@ -149,3 +153,10 @@ class pg_import_records:
                 self.po.act(locator=self.CHK_YEAR10, action=framework_actions.CHECKBOX_CHECK)
                 self.po.act(locator=self.CHK_YEAR11, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+
+    def verify_mav_855(self):
+        self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
+        self.po.act(locator=self.LNK_CHILD_MAV_855, action=framework_actions.CLICK_LINK)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.sessions_page.LNK_SCHOOL_1
+        )

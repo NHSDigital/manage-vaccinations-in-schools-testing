@@ -2,7 +2,7 @@ import pytest
 
 from libs.generic_constants import fixture_scope
 from libs.mavis_constants import child_year_group, test_data_file_paths
-from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
+from pages import pg_children, pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
 class Test_ImportRecords:
@@ -163,3 +163,11 @@ class Test_ImportRecords:
     @pytest.mark.order(358)
     def test_vaccs_historic_negative_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(359)
+    def test_vaccs_historic_no_urn_mav_855(self, setup_vaccs):
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_MAV_855)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_children()
+        self.import_records_page.verify_mav_855()
