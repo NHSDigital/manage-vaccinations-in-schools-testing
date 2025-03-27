@@ -3,6 +3,7 @@ from typing import Final
 
 class playwright_constants:
     TEST_ID_ATTRIBUTE: Final[str] = "data-qa"
+    DEFAULT_TIMEOUT: Final[int] = 60000
 
 
 class browsers_and_devices:

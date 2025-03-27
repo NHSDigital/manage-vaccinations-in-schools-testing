@@ -29,6 +29,7 @@ def start_mavis(start_playwright_session):
     _browser, _context = start_browser(pw=start_playwright_session, browser_or_device=ce.current_browser_name)
     ce.browser = _browser
     ce.page = _context.new_page()
+    ce.page.set_default_timeout(playwright_constants.DEFAULT_TIMEOUT)
     ce.page.goto(url=ce.service_url)
     yield
     close_browser(browser=_browser, page=ce.page)

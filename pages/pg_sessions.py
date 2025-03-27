@@ -777,6 +777,7 @@ class pg_sessions:
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
     def _answer_hpv_questions(self):
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
