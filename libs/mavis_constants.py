@@ -8,6 +8,14 @@ class playwright_constants:
 
 class browsers_and_devices:
     CHROMIUM: Final[str] = "chromium"
+    FIREFOX: Final[str] = "firefox"
+    MSEDGE: Final[str] = "msedge"
+    CHROME: Final[str] = "chrome"
+    PIXEL_5: Final[str] = "pixel_5"
+    GALAXY_S9: Final[str] = "Galaxy S9+"
+    IPAD_7: Final[str] = "ipad_7"
+    IPHONE_15: Final[str] = "iphone_15"
+    IPHONE_14: Final[str] = "iphone_14"
 
 
 class child_year_group:

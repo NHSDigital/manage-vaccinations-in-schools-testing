@@ -59,7 +59,7 @@ class CurrentExecution:
                     break
                 time.sleep(3)
             else:
-                AssertionError(f"Reset endpoint failed with code: {_resp_code}")
+                raise AssertionError(f"Reset endpoint failed with code: {_resp_code}")
 
     @staticmethod
     def set_file_record_count(record_count: int):
