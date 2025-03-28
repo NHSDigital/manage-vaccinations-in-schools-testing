@@ -4,7 +4,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import child_year_group, record_limit
 from libs.wrappers import *
-from pages import pg_children, pg_dashboard, pg_sessions
+from pages import pg_children, pg_dashboard, pg_sessions, pg_vaccines
 
 
 class pg_import_records:
@@ -15,6 +15,7 @@ class pg_import_records:
     sessions_page = pg_sessions.pg_sessions()
     dashboard_page = pg_dashboard.pg_dashboard()
     children_page = pg_children.pg_children()
+    vaccines_page = pg_vaccines.pg_vaccines()
 
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 
@@ -157,6 +158,7 @@ class pg_import_records:
     def verify_mav_855(self):
         self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
         self.po.act(locator=self.LNK_CHILD_MAV_855, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.vaccines_page.LBL_VACCINE_NAME, action=framework_actions.CLICK_LINK)
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.sessions_page.LNK_SCHOOL_1
         )

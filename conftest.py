@@ -21,7 +21,7 @@ def start_playwright_session(request):
     with sync_playwright() as _playwright:
         _playwright.selectors.set_test_id_attribute(playwright_constants.TEST_ID_ATTRIBUTE)
         yield _playwright
-    ce.reset_environment()  # Clean up the environment after execution
+    # ce.reset_environment()  # Clean up the environment after execution
 
 
 @pytest.fixture(scope=fixture_scope.FUNCTION)

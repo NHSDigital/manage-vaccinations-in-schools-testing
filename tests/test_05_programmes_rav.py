@@ -102,5 +102,5 @@ class Test_Programmes_RAV:
 
     @pytest.mark.rav
     @pytest.mark.order(504)
-    def test_programmes_rav_verify_download_excel(self, setup_mav_854):
+    def test_programmes_rav_verify_excel_mav_854(self, setup_mav_854):
         self.programmes_page.verify_mav_854()  # MAV-854

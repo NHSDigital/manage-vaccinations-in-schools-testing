@@ -101,7 +101,7 @@ class pg_sessions:
     LBL_NO_SESSIONS_SCHEDULED: Final[str] = "No sessions scheduled"
     BTN_UPDATE_RESULTS: Final[str] = "Update results"
     BTN_ATTENDING: Final[str] = "Attending"
-    CHK_KNOW_VACCINATION: Final[str] = "know what the vaccination is"
+    CHK_KNOW_VACCINATION: Final[str] = "know what the vaccination"
     CHK_NOT_ALREADY_HAD: Final[str] = "have not already had the"
     CHK_ARE_FEELING_WELL: Final[str] = "are feeling well"
     CHK_HAVE_NO_ALLERGIES: Final[str] = "have no allergies which would"
@@ -777,9 +777,9 @@ class pg_sessions:
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
     def _answer_hpv_questions(self):
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)

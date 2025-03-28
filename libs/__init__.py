@@ -1,8 +1,10 @@
 import os
+import time
 
+import requests
 from dotenv import load_dotenv
 
-from libs import api_ops
+from libs.generic_constants import api_response_codes
 
 
 class CurrentExecution:
@@ -47,7 +49,17 @@ class CurrentExecution:
     def reset_environment():
         _headers = {"Authorization": CurrentExecution.api_token}
         if CurrentExecution.reset_env_before_execution:
-            _ = api_ops.api_operations().api_get(endpoint=CurrentExecution.reset_endpoint, header=_headers, param=None)
+            for _ in range(3):
+                _resp_code = requests.get(url=CurrentExecution.reset_endpoint, headers=_headers).status_code
+                if (
+                    api_response_codes.SUCCESS_STATUS_CODE_MIN
+                    <= _resp_code
+                    <= api_response_codes.SUCCESS_STATUS_CODE_MAX
+                ):
+                    break
+                time.sleep(3)
+            else:
+                AssertionError(f"Reset endpoint failed with code: {_resp_code}")
 
     @staticmethod
     def set_file_record_count(record_count: int):
