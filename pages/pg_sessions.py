@@ -253,6 +253,8 @@ class pg_sessions:
 
     def select_consent_refused(self):
         self.po.act(locator=self.RDO_CONSENT_REFUSED, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_UPDATE_RESULTS, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
 
     def download_offline_recording_excel(self) -> str:
         _file_path = f"working/excel_{get_current_datetime()}.xlsx"
