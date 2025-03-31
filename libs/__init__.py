@@ -25,6 +25,7 @@ class CurrentExecution:
     reset_endpoint: str = ""
     api_token: str = ""
     reset_env_before_execution: bool = False
+    slow_motion: int = 0
     child_list: list[str] = []
     file_record_count: int = 0
     session_id: str = ""
@@ -44,6 +45,7 @@ class CurrentExecution:
         CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{os.getenv('RESET_ENDPOINT')}"
         CurrentExecution.api_token = os.getenv("API_TOKEN")
         CurrentExecution.reset_env_before_execution = os.getenv("RESET_ENV_BEFORE_EXECUTION").lower() == "true"
+        CurrentExecution.slow_motion = int(os.getenv("SLOW_MOTION"))
 
     @staticmethod
     def reset_environment():
