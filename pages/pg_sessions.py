@@ -790,7 +790,12 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.click_register_tab()
-        self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
+        if self.po.get_element_property(
+            locator="button:has-text('Attending'):nth-child(1)", property=element_properties.ELEMENT_EXISTS
+        ):
+            self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON, index=1)
+        else:
+            self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
         self.click_record_vaccinations_tab()
         self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
         self._answer_hpv_questions()
