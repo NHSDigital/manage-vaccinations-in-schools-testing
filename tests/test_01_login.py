@@ -43,3 +43,12 @@ class Test_Login:
         self.login_page.login_as_superuser()
         self.dashboard_page.verify_all_expected_links_for_superuser()
         self.login_page.logout_of_mavis()
+
+    @pytest.mark.login
+    @pytest.mark.mobile
+    @pytest.mark.order(104)
+    def test_home_page_links_for_admin(self):
+        self.login_page.go_to_login_page()
+        self.login_page.login_as_admin()
+        self.dashboard_page.verify_all_expected_links_for_admin()
+        self.login_page.logout_of_mavis()

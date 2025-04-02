@@ -22,6 +22,8 @@ class CurrentExecution:
     nurse_password: str = ""
     superuser_username: str = ""
     superuser_password: str = ""
+    admin_username: str = ""
+    admin_password: str = ""
     reset_endpoint: str = ""
     api_token: str = ""
     reset_env_before_execution: bool = False
@@ -40,6 +42,8 @@ class CurrentExecution:
         CurrentExecution.nurse_password = os.getenv("NURSE_PASSWORD")
         CurrentExecution.superuser_username = os.getenv("SUPERUSER_USERNAME")
         CurrentExecution.superuser_password = os.getenv("SUPERUSER_PASSWORD")
+        CurrentExecution.admin_username = os.getenv("ADMIN_USERNAME")
+        CurrentExecution.admin_password = os.getenv("ADMIN_PASSWORD")
         CurrentExecution.headless_mode = os.getenv("HEADLESS").lower() == "true"
         CurrentExecution.capture_screenshot_flag = os.getenv("CAPTURE_SCREENSHOTS").lower() == "true"
         CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{os.getenv('RESET_ENDPOINT')}"
