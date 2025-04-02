@@ -47,11 +47,13 @@ jobs:
         BASE_URL: ${{ vars.BASE_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        SLOW_MOTION: ${{vars.SLOW_MOTION}}
+        SLOW_MOTION: ${{ vars.SLOW_MOTION }}
         NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
         NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
         SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
         SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -67,11 +69,13 @@ jobs:
         BASE_URL: ${{ vars.BASE_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        SLOW_MOTION: ${{vars.SLOW_MOTION}}
+        SLOW_MOTION: ${{ vars.SLOW_MOTION }}
         NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
         NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
         SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
         SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -81,19 +85,21 @@ jobs:
         echo "::endgroup::"
     # - name: Test on Firefox
     #   env:
-    #     HEADLESS: ${{ vars.HEADLESS }}
-    #     CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-    #     BASE_URL: ${{ vars.BASE_URL }}
-    #     RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-    #     RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-    #     SLOW_MOTION: ${{vars.SLOW_MOTION}}
-    #     NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-    #     NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-    #     SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-    #     SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-    #     BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-    #     BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-    #     API_TOKEN: ${{ secrets.API_TOKEN }}
+    #    HEADLESS: ${{ vars.HEADLESS }}
+    #    CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+    #    BASE_URL: ${{ vars.BASE_URL }}
+    #    RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+    #    RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
+    #    SLOW_MOTION: ${{ vars.SLOW_MOTION }}
+    #    NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+    #    NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+    #    SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+    #    SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+    #    ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+    #    ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+    #    BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+    #    BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+    #    API_TOKEN: ${{ secrets.API_TOKEN }}
     #   run: |
     #     echo "::group::Firefox"
     #     pytest --browser_or_device firefox
@@ -106,11 +112,13 @@ jobs:
         BASE_URL: ${{ vars.BASE_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        SLOW_MOTION: ${{vars.SLOW_MOTION}}
+        SLOW_MOTION: ${{ vars.SLOW_MOTION }}
         NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
         NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
         SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
         SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -126,11 +134,13 @@ jobs:
         BASE_URL: ${{ vars.BASE_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        SLOW_MOTION: ${{vars.SLOW_MOTION}}
+        SLOW_MOTION: ${{ vars.SLOW_MOTION }}
         NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
         NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
         SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
         SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -146,11 +156,13 @@ jobs:
         BASE_URL: ${{ vars.BASE_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        SLOW_MOTION: ${{vars.SLOW_MOTION}}
+        SLOW_MOTION: ${{ vars.SLOW_MOTION }}
         NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
         NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
         SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
         SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -166,11 +178,13 @@ jobs:
         BASE_URL: ${{ vars.BASE_URL }}
         RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
         RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-        SLOW_MOTION: ${{vars.SLOW_MOTION}}
+        SLOW_MOTION: ${{ vars.SLOW_MOTION }}
         NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
         NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
         SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
         SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -181,19 +195,21 @@ jobs:
     # - name: Test on Google Pixel 5
     #   if: always()
     #   env:
-    #     HEADLESS: ${{ vars.HEADLESS }}
-    #     CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
-    #     BASE_URL: ${{ vars.BASE_URL }}
-    #     RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-    #     RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
-    #     SLOW_MOTION: ${{vars.SLOW_MOTION}}
-    #     NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-    #     NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-    #     SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-    #     SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-    #     BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-    #     BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-    #     API_TOKEN: ${{ secrets.API_TOKEN }}
+    #    HEADLESS: ${{ vars.HEADLESS }}
+    #    CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
+    #    BASE_URL: ${{ vars.BASE_URL }}
+    #    RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
+    #    RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
+    #    SLOW_MOTION: ${{ vars.SLOW_MOTION }}
+    #    NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
+    #    NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
+    #    SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+    #    SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
+    #    ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+    #    ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+    #    BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+    #    BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+    #    API_TOKEN: ${{ secrets.API_TOKEN }}
     #   run: |
     #     echo "::group::Pixel 5"
     #     pytest -m mobile --browser_or_device pixel_5
