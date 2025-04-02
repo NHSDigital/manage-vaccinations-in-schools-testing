@@ -17,7 +17,9 @@ class pg_login:
     LBL_NURSE: Final[str] = "JOY, Nurse"
     BTN_NURSE_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
     BTN_SUPERUSER_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
+    BTN_ADMIN_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
     LBL_SUPERUSER: Final[str] = "SUPERUSER, Superuser"
+    LBL_ADMIN: Final[str] = "HOPE, Admin"
     LBL_PARAGRAPH: Final[str] = "paragraph"
 
     def login_as_nurse(self):
@@ -29,6 +31,11 @@ class pg_login:
         self.__login_actions(username=self.ce.superuser_username, password=self.ce.superuser_password)
         self.po.act(locator=self.BTN_SUPERUSER_ROLE, action=framework_actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.LBL_SUPERUSER)
+
+    def login_as_admin(self):
+        self.__login_actions(username=self.ce.admin_username, password=self.ce.admin_password)
+        self.po.act(locator=self.BTN_ADMIN_ROLE, action=framework_actions.CLICK_BUTTON)
+        self.verify_login(is_successful_login=True, verify_text=self.LBL_ADMIN)
 
     def try_invalid_login(self, user: str, pwd: str, expected_message: str) -> str:
         self.__login_actions(username=user, password=pwd)
@@ -49,3 +56,4 @@ class pg_login:
 
     def go_to_login_page(self) -> None:
         self.ce.page.goto(self.ce.service_url)
+        # self.ce.page.wait_for_url(self.ce.service_url)

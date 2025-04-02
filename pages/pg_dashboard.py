@@ -90,6 +90,9 @@ class pg_dashboard:
             locator=self.LNK_SERVICE_GUIDANCE, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
+            locator=self.LNK_IMPORT_RECORDS, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE,
             property=element_properties.HREF,
             expected_value="https://guide.manage-vaccinations-in-schools.nhs.uk/",
@@ -125,7 +128,48 @@ class pg_dashboard:
             locator=self.LNK_ORGANISATION, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
+            locator=self.LNK_IMPORT_RECORDS, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_SERVICE_GUIDANCE,
+            property=element_properties.HREF,
+            expected_value="https://guide.manage-vaccinations-in-schools.nhs.uk/",
+            exact=True,
+        )
+
+    def verify_all_expected_links_for_admin(self):
+        self.po.verify(
+            locator=self.LNK_PROGRAMMES, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_SESSIONS, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_CHILDREN, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_VACCINES, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_UNMATCHED_CONSENT_RESPONSES,
+            property=element_properties.VISIBILITY,
+            expected_value=True,
+            exact=True,
+        )
+        self.po.verify(
+            locator=self.LNK_SCHOOL_MOVES, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_ORGANISATION, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_SERVICE_GUIDANCE, property=element_properties.VISIBILITY, expected_value=True, exact=True
+        )
+        self.po.verify(
+            locator=self.LNK_IMPORT_RECORDS, property=element_properties.VISIBILITY, expected_value=True, exact=True
         )
         self.po.verify(
             locator=self.LNK_SERVICE_GUIDANCE,

@@ -85,6 +85,24 @@ class Test_Programmes_RAV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_mav_nnn(self, start_mavis: None):
+        try:
+            self.login_page.login_as_admin()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.import_records_page.import_class_list_records_from_school_session(
+                file_paths=test_data_file_paths.CLASS_SINGLE_VACC
+            )
+            self.sessions_page.click_school1()
+            self.sessions_page.save_session_id_from_offline_excel()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+            self.login_page.logout_of_mavis()
+
     @pytest.mark.rav
     @pytest.mark.order(501)
     def test_programmes_rav_triage_positive(self, setup_tests):
@@ -104,3 +122,9 @@ class Test_Programmes_RAV:
     @pytest.mark.order(504)
     def test_programmes_rav_verify_excel_mav_854(self, setup_mav_854):
         self.programmes_page.verify_mav_854()  # MAV-854
+
+    @pytest.mark.rav
+    @pytest.mark.order(505)
+    @pytest.mark.skip(reason="Test under construction")
+    def test_programmes_rav_verify_banners(self, setup_mav_nnn):
+        self.programmes_page.verify_mav_nnn()

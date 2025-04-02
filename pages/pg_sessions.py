@@ -475,6 +475,24 @@ class pg_sessions:
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=True)
 
+    def verify_mav_nnn(self):
+        self.click_scheduled()
+        self.click_school1()
+        self.click_consent_tab()
+        self.click_child_full_name()
+        self.click_get_consent_response()
+        self.consent_page.service_give_consent()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.click_scheduled()
+        self.click_school1()
+        self.click_register_tab()
+        self.click_child_full_name()
+        self.click_update_triage_outcome()
+        self.select_yes_safe_to_vaccinate()
+        self.click_save_triage()
+        self.verify_triage_updated()
+
     def update_triage_outcome_consent_refused(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
