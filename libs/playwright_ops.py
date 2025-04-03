@@ -99,8 +99,10 @@ class playwright_operations:
                 self._checkbox_uncheck(locator=locator, index=index)
             case framework_actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
-            case framework_actions.DOWNLOAD_FILE:
-                self._download_file(locator=locator, value=value, index=index)
+            case framework_actions.DOWNLOAD_FILE_USING_LINK:
+                self._download_file_using_link(locator=locator, value=value, index=index)
+            case framework_actions.DOWNLOAD_FILE_USING_BUTTON:
+                self._download_file_using_button(locator=locator, value=value, index=index)
             case framework_actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
             case framework_actions.CHAIN_LOCATOR_ACTION:
@@ -222,11 +224,16 @@ class playwright_operations:
             )
         elem.click()
 
-    def _download_file(self, locator: str, value: str, index: int):
+    def _download_file_using_link(self, locator: str, value: str, index: int):
         with self.ce.page.expect_download() as download_info:
             self.act(locator=locator, action=framework_actions.CLICK_LINK, index=index)
         download = download_info.value
-        # download.save_as("/path/to/save/at/" + download.suggested_filename)
+        download.save_as(value)
+
+    def _download_file_using_button(self, locator: str, value: str, index: int):
+        with self.ce.page.expect_download() as download_info:
+            self.act(locator=locator, action=framework_actions.CLICK_BUTTON, index=index)
+        download = download_info.value
         download.save_as(value)
 
     def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):

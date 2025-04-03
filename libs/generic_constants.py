@@ -29,7 +29,8 @@ class framework_actions:
     CLICK_LINK_INDEX_FOR_ROW: Final[str] = "click_link_index_for_row"
     CLICK_WILDCARD: Final[str] = "click_wildcard"
     CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
-    DOWNLOAD_FILE: Final[str] = "download_file"
+    DOWNLOAD_FILE_USING_LINK: Final[str] = "download_file_using_link"
+    DOWNLOAD_FILE_USING_BUTTON: Final[str] = "download_file_using_button"
     WAIT: Final[str] = "wait"
 
 
