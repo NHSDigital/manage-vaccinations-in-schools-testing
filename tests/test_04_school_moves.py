@@ -48,6 +48,8 @@ class Test_School_Moves:
             self.sessions_page.delete_all_sessions_for_school_2()
 
     @pytest.mark.schoolmoves
-    @pytest.mark.order(1101)
+    @pytest.mark.order(401)
     def test_school_moves_confirm_and_ignore(self, setup_move_and_ignore: None):
         self.school_moves_page.confirm_and_ignore_moves()
+
+    # Add tests for school moves between Homeschool or Unknown school

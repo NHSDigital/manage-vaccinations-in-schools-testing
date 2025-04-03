@@ -258,7 +258,9 @@ class pg_sessions:
 
     def download_offline_recording_excel(self) -> str:
         _file_path = f"working/excel_{get_current_datetime()}.xlsx"
-        self.po.act(locator=self.LNK_DOWNLOAD_EXCEL, action=framework_actions.DOWNLOAD_FILE, value=_file_path)
+        self.po.act(
+            locator=self.LNK_DOWNLOAD_EXCEL, action=framework_actions.DOWNLOAD_FILE_USING_LINK, value=_file_path
+        )
         return _file_path
 
     def save_session_id_from_offline_excel(self):

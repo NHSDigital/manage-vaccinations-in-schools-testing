@@ -26,10 +26,10 @@ class child_year_group:
     ALL: Final[str] = "ALL"
 
 
-class vaccine_index:
-    HPV: Final[int] = 1
-    MENACWY: Final[int] = 2
-    TDIPV: Final[int] = 3
+class programme_names:
+    HPV: Final[str] = "hpv"
+    MENACWY: Final[str] = "menacwy"
+    TDIPV: Final[str] = "tdipv"
 
 
 class data_values:
