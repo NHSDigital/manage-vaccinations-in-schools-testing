@@ -38,5 +38,5 @@ COHORTS_UCR_MATCH,test_data/cohorts/i_ucr_match.csv,test_data/cohorts/o_ucr_matc
 COHORTS_CONSENT_TWICE,test_data/cohorts/i_consent_twice.csv,test_data/cohorts/o_consent_twice.csv,cohort_twice
 COHORTS_CONFLICTING_GILLICK,test_data/cohorts/i_conflicting_gillick.csv,test_data/cohorts/o_conflicting_gillick.csv,cohort_gillick
 COHORTS_FULL_NAME,test_data/cohorts/i_full_name.csv,test_data/cohorts/o_full_name.csv,cohort_fullname
-CLASS_MOVES_ONE,test_data/class_list/i_moves_1.csv,test_data/class_list/o_moves_1.csv,class
-CLASS_MOVES_TWO,test_data/class_list/i_moves_2.csv,test_data/class_list/o_moves_2.csv,class
+CLASS_MOVES_CONFIRM_IGNORE,test_data/class_list/i_moves_1.csv,test_data/class_list/o_moves_1.csv,class
+CLASS_MOVES_UNKNOWN_HOMESCHOOLED,test_data/class_list/i_moves_2.csv,test_data/class_list/o_moves_2.csv,class

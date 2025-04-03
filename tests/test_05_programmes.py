@@ -12,7 +12,7 @@ from pages import (
 )
 
 
-class Test_Programmes_RAV:
+class Test_Programmes:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
