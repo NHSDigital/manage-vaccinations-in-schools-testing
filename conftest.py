@@ -49,30 +49,30 @@ def start_browser(pw, browser_or_device: str):
     }
     try:
         match browser_or_device.lower():
-            case "iphone_14":
+            case browsers_and_devices.IPHONE_14:
                 _browser = pw.webkit.launch(headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(**pw.devices["iPhone 14"], http_credentials=_http_credentials)
-            case "iphone_15":
+            case browsers_and_devices.IPHONE_15:
                 _browser = pw.chromium.launch(channel="chrome", headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(**pw.devices["iPhone 15"], http_credentials=_http_credentials)
-            case "ipad_7":
+            case browsers_and_devices.IPAD_7:
                 _browser = pw.chromium.launch(headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(
                     **pw.devices["iPad (gen 7) landscape"], http_credentials=_http_credentials
                 )
-            case "pixel_5":
+            case browsers_and_devices.PIXEL_5:
                 _browser = pw.webkit.launch(headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(**pw.devices["Pixel 5"], http_credentials=_http_credentials)
-            case "s9+":
+            case browsers_and_devices.GALAXY_S9_PLUS:
                 _browser = pw.chromium.launch(channel="chromium", headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(**pw.devices["Galaxy S9+"], http_credentials=_http_credentials)
-            case "chrome":
+            case browsers_and_devices.CHROME:
                 _browser = pw.chromium.launch(channel="chrome", headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(http_credentials=_http_credentials)
-            case "msedge":
+            case browsers_and_devices.MSEDGE:
                 _browser = pw.chromium.launch(channel="msedge", headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(http_credentials=_http_credentials)
-            case "firefox":
+            case browsers_and_devices.FIREFOX:
                 _browser = pw.firefox.launch(headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(http_credentials=_http_credentials)
             case _:  # Desktop Chromium for all other cases

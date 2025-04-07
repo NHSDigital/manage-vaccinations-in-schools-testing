@@ -801,9 +801,13 @@ class pg_sessions:
     def _answer_hpv_questions(self):
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
 
     def _vaccinate_child_mav_854(self):
@@ -817,7 +821,7 @@ class pg_sessions:
         else:
             self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
         self.click_record_vaccinations_tab()
-        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK, exact=False)
         self._answer_hpv_questions()
         self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)

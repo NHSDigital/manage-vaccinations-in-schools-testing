@@ -1,7 +1,6 @@
 import os
 import re
 from itertools import chain
-from socket import timeout
 
 from libs import CurrentExecution
 from libs.generic_constants import (
@@ -229,12 +228,14 @@ class playwright_operations:
             self.act(locator=locator, action=framework_actions.CLICK_LINK, index=index)
         download = download_info.value
         download.save_as(value)
+        self._check_for_app_crash(locator_info=locator)
 
     def _download_file_using_button(self, locator: str, value: str, index: int):
         with self.ce.page.expect_download() as download_info:
             self.act(locator=locator, action=framework_actions.CLICK_BUTTON, index=index)
         download = download_info.value
         download.save_as(value)
+        self._check_for_app_crash(locator_info=locator)
 
     def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
         if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check

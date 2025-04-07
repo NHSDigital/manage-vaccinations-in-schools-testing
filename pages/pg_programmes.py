@@ -2,7 +2,7 @@ from typing import Final
 
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
-from libs.mavis_constants import programme_names, record_limit
+from libs.mavis_constants import programme_names, record_limit, report_headers
 from libs.wrappers import *
 from pages import pg_children, pg_dashboard, pg_sessions
 
@@ -184,10 +184,9 @@ class pg_programmes:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        self.sessions_page.save_session_id_from_offline_excel()
+        self.sessions_page.save_session_id_from_offline_excel()  # If session ID is loaded, file was downloaded successfully
 
     def verify_careplus_report_format(self, for_programme: str):
-        expected_headers = "NHS Number,Surname,Forename,Date of Birth,Address Line 1,Person Giving Consent,Ethnicity,Date Attended,Time Attended,Venue Type,Venue Code,Staff Type,Staff Code,Attended,Reason Not Attended,Suspension End Date,Vaccine 1,Dose 1,Reason Not Given 1,Site 1,Manufacturer 1,Batch No 1,Vaccine 2,Dose 2,Reason Not Given 2,Site 2,Manufacturer 2,Batch No 2,Vaccine 3,Dose 3,Reason Not Given 3,Site 3,Manufacturer 3,Batch No 3,Vaccine 4,Dose 4,Reason Not Given 4,Site 4,Manufacturer 4,Batch No 4,Vaccine 5,Dose 5,Reason Not Given 5,Site 5,Manufacturer 5,Batch No 5"
         match for_programme.lower():
             case programme_names.MENACWY:
                 self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
@@ -198,10 +197,9 @@ class pg_programmes:
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_REPORT_CAREPLUS, action=framework_actions.RADIO_BUTTON_SELECT)
-        self._download_and_verify_report_headers(expected_headers=expected_headers)
+        self._download_and_verify_report_headers(expected_headers=report_headers.CAREPLUS)
 
     def verify_csv_report_format(self, for_programme: str):
-        expected_headers = "ORGANISATION_CODE,SCHOOL_URN,SCHOOL_NAME,CARE_SETTING,CLINIC_NAME,PERSON_FORENAME,PERSON_SURNAME,PERSON_DATE_OF_BIRTH,PERSON_DATE_OF_DEATH,YEAR_GROUP,PERSON_GENDER_CODE,PERSON_ADDRESS_LINE_1,PERSON_POSTCODE,NHS_NUMBER,NHS_NUMBER_STATUS_CODE,GP_ORGANISATION_CODE,GP_NAME,CONSENT_STATUS,CONSENT_DETAILS,HEALTH_QUESTION_ANSWERS,TRIAGE_STATUS,TRIAGED_BY,TRIAGE_DATE,TRIAGE_NOTES,GILLICK_STATUS,GILLICK_ASSESSMENT_DATE,GILLICK_ASSESSED_BY,GILLICK_ASSESSMENT_NOTES,VACCINATED,DATE_OF_VACCINATION,TIME_OF_VACCINATION,PROGRAMME_NAME,VACCINE_GIVEN,PERFORMING_PROFESSIONAL_EMAIL,PERFORMING_PROFESSIONAL_FORENAME,PERFORMING_PROFESSIONAL_SURNAME,BATCH_NUMBER,BATCH_EXPIRY_DATE,ANATOMICAL_SITE,ROUTE_OF_VACCINATION,DOSE_SEQUENCE,REASON_NOT_VACCINATED,LOCAL_PATIENT_ID,SNOMED_PROCEDURE_CODE,REASON_FOR_INCLUSION,RECORD_CREATED,RECORD_UPDATED"
         match for_programme.lower():
             case programme_names.MENACWY:
                 self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
@@ -212,10 +210,9 @@ class pg_programmes:
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_REPORT_CSV, action=framework_actions.RADIO_BUTTON_SELECT)
-        self._download_and_verify_report_headers(expected_headers=expected_headers)
+        self._download_and_verify_report_headers(expected_headers=report_headers.CSV)
 
     def verify_systmone_report_format(self, for_programme: str):
-        expected_headers = "Practice code,NHS number,Surname,Middle name,Forename,Gender,Date of Birth,House name,House number and road,Town,Postcode,Vaccination,Part,Admin date,Batch number,Expiry date,Dose,Reason,Site,Method,Notes"
         match for_programme.lower():
             case programme_names.MENACWY:
                 self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
@@ -226,7 +223,7 @@ class pg_programmes:
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_REPORT_SYSTMONE, action=framework_actions.RADIO_BUTTON_SELECT)
-        self._download_and_verify_report_headers(expected_headers=expected_headers)
+        self._download_and_verify_report_headers(expected_headers=report_headers.SYSTMONE)
 
     def _download_and_verify_report_headers(self, expected_headers: str):
         _file_path = f"working/rpt_{get_current_datetime()}.csv"

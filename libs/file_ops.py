@@ -28,6 +28,8 @@ class file_operations:
     def read_excel_to_df(self, file_path: str, sheet_name: str) -> pd.DataFrame:
         if self.check_if_path_exists(file_or_folder_path=file_path):
             return pd.read_excel(file_path, sheet_name=sheet_name, header=0, dtype="str", index_col=0)
+        else:
+            assert False, f"Cannot read excel file.  File not found: {file_path}"
 
     def create_file(self, content: str, file_name_prefix: str = "") -> str:
         _file_name = f"working/{file_name_prefix}{get_current_datetime()}.csv"
