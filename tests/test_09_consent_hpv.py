@@ -166,12 +166,6 @@ class Test_Consent_HPV:
         self.sessions_page.bug_mavis_1696()  # MAVIS-1696
 
     @pytest.mark.consent
-    @pytest.mark.order(904)
-    @pytest.mark.skip(reason="Development card in backlog")
-    def test_phone_number_added_later_shows_phone_options(self, setup_mavis_1801: None):
-        self.sessions_page.bug_mavis_1801()  # MAVIS-1801
-
-    @pytest.mark.consent
     @pytest.mark.order(905)
     def test_parent_provides_consent_twice(self, setup_mavis_1864: None):
         self.sessions_page.bug_mavis_1864()  # MAVIS-1864

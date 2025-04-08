@@ -664,12 +664,6 @@ class pg_sessions:
             expected_value="Consent not_provided by Parent1 (Dad)",
         )
 
-    def bug_mavis_1801(self):
-        self.select_no_response()
-        self.click_child_no_consent()
-        self.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive()
-
     def bug_mavis_1864(self):
         self.select_no_response()
         self.click_child_consent_twice()

@@ -1,1 +1,2 @@
-There is a problemThe file is missing the following headers: CHILD_DATE_OF_BIRTH, CHILD_FIRST_NAME, CHILD_LAST_NAME
+#There is a problemThe file is missing the following headers: CHILD_DATE_OF_BIRTH, CHILD_FIRST_NAME, CHILD_LAST_NAME
+Row 2 CHILD_DATE_OF_BIRTH: is required but missing CHILD_FIRST_NAME: is required but missing CHILD_LAST_NAME: is required but missing
