@@ -1,1 +1,2 @@
-The file is missing the following headers: CHILD_DATE_OF_BIRTH, CHILD_FIRST_NAME, CHILD_LAST_NAME, CHILD_POSTCODE, CHILD_SCHOOL_URN
+#The file is missing the following headers: CHILD_DATE_OF_BIRTH, CHILD_FIRST_NAME, CHILD_LAST_NAME, CHILD_POSTCODE, CHILD_SCHOOL_URN
+Row 2 CHILD_DATE_OF_BIRTH: is required but missing CHILD_FIRST_NAME: is required but missing CHILD_LAST_NAME: is required but missing CHILD_POSTCODE: is required but missingCHILD_SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
