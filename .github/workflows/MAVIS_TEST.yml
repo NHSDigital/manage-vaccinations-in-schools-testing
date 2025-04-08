@@ -5,7 +5,7 @@ name: Run MAVIS tests on TEST
 
 on:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "0 3 * * *"
 
 permissions:
   contents: write
