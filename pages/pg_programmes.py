@@ -32,6 +32,7 @@ class pg_programmes:
     BTN_CONTINUE: Final[str] = "Continue"
     LBL_CHOOSE_VACCS_FILE: Final[str] = "Import vaccination records"
     LBL_CHOOSE_COHORT_FILE: Final[str] = "Import child records"
+    LBL_UPLOAD_COHORT_FILE: Final[str] = "Upload file"
     LBL_IMPORT_STARTED: Final[str] = "Import processing started"
     LBL_PARAGRAPH: Final[str] = "paragraph"
     LBL_MAIN: Final[str] = "main"
@@ -80,7 +81,7 @@ class pg_programmes:
 
     def choose_file_child_records(self, file_path: str):
         self.po.act(
-            locator=self.LBL_CHOOSE_COHORT_FILE,
+            locator=self.LBL_UPLOAD_COHORT_FILE,
             action=framework_actions.SELECT_FILE,
             value=file_path,
         )
