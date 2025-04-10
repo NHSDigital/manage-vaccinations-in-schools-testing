@@ -23,12 +23,14 @@ class playwright_operations:
     def capture_screenshot(self, identifier: str, action: str) -> None:
         if self.ce.capture_screenshot_flag:
             self.ce.screenshot_sequence += 1
+            _ss_file_name = clean_file_name(
+                f"{self.ce.screenshot_sequence}-{action}-{identifier}.{screenshot_file_types.JPEG}"
+            )
             _ss_path = os.path.join(
                 self.ce.session_screenshots_dir,
-                f"{self.ce.screenshot_sequence}-{action}-{identifier}.{screenshot_file_types.JPEG}",
+                _ss_file_name,
             )
-            _ss_cleaned_path = clean_file_name(_ss_path)
-            self.ce.page.screenshot(path=_ss_cleaned_path, type=screenshot_file_types.JPEG, full_page=True)
+            self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG, full_page=True)
 
     def verify(self, locator: str, property: str, expected_value: str, **kwargs) -> None:
         # Unpack keyword arguments
@@ -73,8 +75,6 @@ class playwright_operations:
         exact: bool = kwargs.get("exact", False)
         index: int = kwargs.get("index", 0)
         # Act
-        if locator is not None:
-            self.capture_screenshot(identifier=locator, action=f"before-{action}")
         match action.lower():
             case framework_actions.CLICK_LINK:
                 self._click_link(locator=locator, exact=exact, index=index)
