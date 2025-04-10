@@ -35,7 +35,7 @@ Row 29 DOSE_SEQUENCE: must be less than 3
 #Row 30 CARE_SETTING: Enter a care setting.
 Row 33 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
 Row 35 TIME_OF_VACCINATION: Enter a time in the correct format.
-Row 36 REASON_NOT_VACCINATED: is not required
+Row 36 REASON_NOT_VACCINATED: must be blank
 #Row 37 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
-Row 37 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: is not requiredBATCH_NUMBER: is not requiredANATOMICAL_SITE: is not requiredREASON_NOT_VACCINATED: Enter a valid reason
+Row 37 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
 Row 38 CARE_SETTING: Enter a valid care setting.
