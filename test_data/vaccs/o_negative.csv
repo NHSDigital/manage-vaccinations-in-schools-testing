@@ -46,14 +46,14 @@ Row 31 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
 Row 32 CLINIC_NAME: Enter a clinic name
 Row 33 TIME_OF_VACCINATION: Enter a time in the correct format.
 !Row 33 TIME_OF_VACCINATION: Enter a time in the correct format.TIME_OF_VACCINATION: Enter a time in the correct format.
-Row 34 REASON_NOT_VACCINATED: is not required
+Row 34 REASON_NOT_VACCINATED: must be blank
 #Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
-Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: is not requiredBATCH_NUMBER: is not requiredANATOMICAL_SITE: is not requiredREASON_NOT_VACCINATED: Enter a valid reason
+Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
 !Row 36 DATE_OF_VACCINATION: Enter a date for a current session
 Row 36 CARE_SETTING: Enter a valid care setting.
 Row 37 TIME_OF_VACCINATION: Enter a time in the past.
 #Row 38 REASON_NOT_VACCINATED: must be blank
-Row 38 REASON_NOT_VACCINATED: is not required
+Row 38 REASON_NOT_VACCINATED: must be blank
 #Row 39 DOSE_SEQUENCE: The dose sequence number cannot be greater than 5. Enter a dose sequence number, for example, 1, 2, 3, 4 or 5.
 #Row 40 DOSE_SEQUENCE: must be less than or equal to 5
 Row 40 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
