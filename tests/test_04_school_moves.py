@@ -87,3 +87,10 @@ class Test_School_Moves:
     @pytest.mark.skip(reason="Test under construction")
     def test_school_moves_to_homeschool_and_unknown(self, setup_move_to_homeschool_and_unknown: None):
         pass
+
+    @pytest.mark.schoolmoves
+    @pytest.mark.order(403)
+    def test_school_moves_download_report(self, setup_move_and_ignore: None):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_school_moves()
+        self.school_moves_page.download_and_verify_report()

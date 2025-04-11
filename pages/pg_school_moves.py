@@ -1,16 +1,19 @@
 from typing import Final
 
-from libs import CurrentExecution, playwright_ops
+from libs import CurrentExecution, file_ops, playwright_ops
 from libs.generic_constants import (
     element_properties,
     escape_characters,
     framework_actions,
 )
+from libs.mavis_constants import report_headers
+from libs.wrappers import *
 from pages import pg_dashboard
 
 
 class pg_school_moves:
     po = playwright_ops.playwright_operations()
+    fo = file_ops.file_operations()
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
@@ -22,6 +25,9 @@ class pg_school_moves:
     RDO_UPDATE_SCHOOL: Final[str] = "Update record with new school"
     RDO_IGNORE_INFORMATION: Final[str] = "Ignore new information"
     BTN_UPDATE_SCHOOL: Final[str] = "Update child record"
+    LNK_DOWNLOAD_RECORDS: Final[str] = "Download records"
+    BTN_CONTINUE: Final[str] = "Continue"
+    BTN_DOWNLOAD_CSV: Final[str] = "Download CSV"
 
     def verify_headers(self):
         self.po.verify(
@@ -73,3 +79,17 @@ class pg_school_moves:
         )
         self.confirm_school_move()
         self.ignore_school_move()
+
+    def download_and_verify_report(self):
+        self.po.act(locator=self.LNK_DOWNLOAD_RECORDS, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self._download_and_verify_report_headers(expected_headers=report_headers.SCHOOL_MOVES)
+
+    def _download_and_verify_report_headers(self, expected_headers: str):
+        _file_path = f"working/rpt_{get_current_datetime()}.csv"
+        self.po.act(
+            locator=self.BTN_DOWNLOAD_CSV, action=framework_actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path
+        )
+        _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
+        actual_headers = ",".join(_actual_df.columns.tolist())
+        assert expected_headers == actual_headers, "Report headers do not match"

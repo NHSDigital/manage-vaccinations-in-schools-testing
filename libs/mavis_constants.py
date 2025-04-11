@@ -97,3 +97,6 @@ class report_headers:
     SYSTMONE: Final[str] = (
         "Practice code,NHS number,Surname,Middle name,Forename,Gender,Date of Birth,House name,House number and road,Town,Postcode,Vaccination,Part,Admin date,Batch number,Expiry date,Dose,Reason,Site,Method,Notes"
     )
+    SCHOOL_MOVES: Final[str] = (
+        "NHS_REF,SURNAME,FORENAME,GENDER,DOB,ADDRESS1,ADDRESS2,ADDRESS3,TOWN,POSTCODE,COUNTY,ETHNIC_OR,ETHNIC_DESCRIPTION,NATIONAL_URN_NO,BASE_NAME,STARTDATE,STUD_ID,DES_NUMBER"
+    )
