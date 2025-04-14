@@ -8,22 +8,39 @@ from libs.wrappers import *
 
 
 class testdata_operations:
+    """
+    A class to handle operations related to test data.
+    """
+
     fo = file_ops.file_operations()
     ce = CurrentExecution()
 
     def __init__(self):
+        """
+        Initialize the testdata_operations class.
+        """
         self.mapping_df: pd.DataFrame = self.fo.read_csv_to_df(file_path="test_data/file_mapping.csv")
 
     def create_file_from_template(self, template_path: str, file_name_prefix: str) -> str:
+        """
+        Create a file from a template.
+
+        Args:
+            template_path (str): Path to the template file.
+            file_name_prefix (str): Prefix for the generated file name.
+
+        Returns:
+            str: Path to the created file.
+        """
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
         _ctr = -1
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
-        _year_8_dob = get_offset_date(offset_days=-(365 * 13))
-        _year_9_dob = get_offset_date(offset_days=-(365 * 14))
-        _year_10_dob = get_offset_date(offset_days=-(365 * 15))
-        _year_11_dob = get_offset_date(offset_days=-(365 * 16))
+        _year_8_dob = get_dob_from_year(year_group=child_year_group.YEAR_8)
+        _year_9_dob = get_dob_from_year(year_group=child_year_group.YEAR_9)
+        _year_10_dob = get_dob_from_year(year_group=child_year_group.YEAR_10)
+        _year_11_dob = get_dob_from_year(year_group=child_year_group.YEAR_11)
         _session_id = self.ce.get_session_id()
         if _template_text is not None:
             for _ln in _template_text.split(escape_characters.NEW_LINE):
@@ -46,17 +63,55 @@ class testdata_operations:
         )
 
     def get_new_nhs_no(self, valid=True) -> str:
+        """
+        Generate a new NHS number.
+
+        Args:
+            valid (bool, optional): Whether to generate a valid NHS number. Defaults to True.
+
+        Returns:
+            str: Generated NHS number.
+        """
         return nhs_number.generate(valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1)[0]
 
     def get_expected_errors(self, file_path: str) -> list[str]:
+        """
+        Get expected errors from a file.
+
+        Args:
+            file_path (str): Path to the file.
+
+        Returns:
+            list[str]: List of expected errors.
+        """
         _file_content = self.fo.get_file_text(file_path=file_path)
         return _file_content.split(escape_characters.NEW_LINE) if _file_content is not None else None
 
     def read_spreadsheet(self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1") -> pd.DataFrame:
+        """
+        Read a spreadsheet into a DataFrame.
+
+        Args:
+            file_path (str): Path to the spreadsheet file.
+            clean_df (bool, optional): Whether to clean the DataFrame. Defaults to True.
+            sheet_name (str, optional): Name of the sheet to read. Defaults to "Sheet1".
+
+        Returns:
+            pd.DataFrame: DataFrame containing the spreadsheet data.
+        """
         _df = self.fo.read_excel_to_df(file_path=file_path, sheet_name=sheet_name)
         return self.clean_df(df=_df) if clean_df else _df
 
     def clean_df(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Clean a DataFrame by replacing unwanted values.
+
+        Args:
+            df (pd.DataFrame): DataFrame to clean.
+
+        Returns:
+            pd.DataFrame: Cleaned DataFrame.
+        """
         pd.set_option("future.no_silent_downcasting", True)
         _df = df.fillna(value="0", inplace=False)
         _df.replace(to_replace="True", value="true", inplace=True)
@@ -69,6 +124,15 @@ class testdata_operations:
         return _df
 
     def get_file_paths(self, file_paths: str) -> tuple[str, str]:
+        """
+        Get input and output file paths based on a mapping.
+
+        Args:
+            file_paths (str): Identifier for the file paths.
+
+        Returns:
+            tuple[str, str]: Input and output file paths.
+        """
         _input_template_path: str = self.mapping_df.query("ID==@file_paths")["INPUT_TEMPLATE"].to_string(index=False)
         _output_template_path: str = self.mapping_df.query("ID==@file_paths")["OUTPUT_TEMPLATE"].to_string(index=False)
         _file_prefix: str = self.mapping_df.query("ID==@file_paths")["FILE_PREFIX"].to_string(index=False)
@@ -78,6 +142,15 @@ class testdata_operations:
         return _input_file_path, _output_template_path
 
     def create_child_list_from_file(self, file_path: str):
+        """
+        Create a list of child names from a file.
+
+        Args:
+            file_path (str): Path to the file.
+
+        Returns:
+            list: List of child names.
+        """
         if "positive" in file_path.lower():
             _file_df = self.fo.read_csv_to_df(file_path=file_path)
             _child_list = _file_df[["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]]
@@ -86,5 +159,14 @@ class testdata_operations:
             return None
 
     def get_session_id(self, excel_path: str) -> str:
+        """
+        Get the session ID from an Excel file.
+
+        Args:
+            excel_path (str): Path to the Excel file.
+
+        Returns:
+            str: Session ID.
+        """
         _df = self.read_spreadsheet(file_path=excel_path, clean_df=False, sheet_name="Vaccinations")
         return _df["SESSION_ID"].iloc[0]

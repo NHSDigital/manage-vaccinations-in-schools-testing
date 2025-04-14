@@ -36,7 +36,7 @@ class pg_sessions:
     LNK_CHILD_E2E1: Final[str] = "CE2E1, CE2E1"
     LNK_CHILD_CONFLICTING_GILLICK: Final[str] = "GILLICK1, Conflicting1"
     LNK_CHILD_CONSENT_TWICE: Final[str] = "TWICE1, Consent1"
-    LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
+    LNK_MAV_854_CHILD: Final[str] = "MAV_854, Mav_854"
 
     LNK_TAB_TODAY: Final[str] = "Today"
     LNK_TAB_SCHEDULED: Final[str] = "Scheduled"
@@ -113,6 +113,8 @@ class pg_sessions:
     RDO_BATCH_AUTO: Final[str] = "Auto20"
     RDO_CLINIC_WEIMANN: Final[str] = "The Weimann Institute Clinic"
     BTN_CONFIRM: Final[str] = "Confirm"
+    BTN_SEARCH: Final[str] = "Search"
+    TXT_SEARCH: Final[str] = "Search"
 
     def __init__(self):
         self.upload_time = ""
@@ -445,9 +447,6 @@ class pg_sessions:
 
     def click_get_consent_response(self):
         self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=framework_actions.CLICK_BUTTON)
-
-    def click_get_consent_responses(self):
-        self.po.act(locator=self.LNK_CONSENT_TAB, action=framework_actions.CLICK_BUTTON)
 
     def update_triage_outcome_positive(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
@@ -817,7 +816,9 @@ class pg_sessions:
         else:
             self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
         self.click_record_vaccinations_tab()
-        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK, exact=False)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self._answer_hpv_questions()
         self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
@@ -831,4 +832,26 @@ class pg_sessions:
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
             expected_value="Vaccination outcome recorded for HPV",
+        )
+
+    def verify_search(self):
+        """
+        1. Find a session with patients
+        2. Go to any of the tabs at the top that allow users to search by name
+        3. Enter a search query that will result in no matches (for example "a very long string that won't match any names")
+        Expected: The user sees a page saying "No children matching search criteria found".
+        Actual: The user sees a page saying "An error has occurred."
+        """
+        self.click_consent_tab()
+        self.po.act(
+            locator=self.TXT_SEARCH,
+            action=framework_actions.FILL,
+            value="a very long string that won't match any names",
+        )
+        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=element_properties.TEXT,
+            expected_value="No children matching search criteria found",
+            exact=False,
         )

@@ -86,10 +86,10 @@ class pg_school_moves:
         self._download_and_verify_report_headers(expected_headers=report_headers.SCHOOL_MOVES)
 
     def _download_and_verify_report_headers(self, expected_headers: str):
-        _file_path = f"working/rpt_{get_current_datetime()}.csv"
+        _file_path = f"working/export_{get_current_datetime()}.csv"
         self.po.act(
             locator=self.BTN_DOWNLOAD_CSV, action=framework_actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path
         )
         _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
-        assert expected_headers == actual_headers, "Report headers do not match"
+        assert expected_headers == actual_headers, "School moves export headers do not match"
