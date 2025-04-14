@@ -39,6 +39,27 @@ class Test_Sessions:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_mav_1018(self, start_mavis: None):
+        try:
+            self.login_page.login_as_nurse()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.click_school1()
+            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_SESSION_ID)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.click_today()
+            self.sessions_page.click_school1()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+            self.login_page.logout_of_mavis()
+
     @pytest.mark.mobile
     @pytest.mark.sessions
     @pytest.mark.order(201)
@@ -61,3 +82,8 @@ class Test_Sessions:
     @pytest.mark.order(203)
     def test_verify_attendance_filters(self, setup_mavis_1822: None):
         self.sessions_page.verify_attendance_filters()  # MAVIS-1822
+
+    @pytest.mark.sessions
+    @pytest.mark.order(204)
+    def test_verify_search(self, setup_mav_1018):
+        self.sessions_page.verify_search()  # MAV-1018
