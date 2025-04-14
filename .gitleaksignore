@@ -1,3 +1,6 @@
 # SEE: https://github.com/gitleaks/gitleaks/blob/master/README.md#gitleaksignore
 
 cd9c0efec38c5d63053dd865e5d4e207c0760d91:docs/guides/Perform_static_analysis.md:generic-api-key:37
+5a5ab23e6ee6be6fef5e763b8b2e147ccff87a7a:performance-tests/reporting-journey.jmx:ipv4:37
+f1cac1f9296273ccd3cb0b8dda256f7dd61655a5:performance-tests/give-or-refuse-consent-journey.jmx:ipv4:75
+fd4f8b9c2aeecd04f7e0188a8c2b09f790e8f5a1:performance-tests/nurse-journey.jmx:ipv4:36
