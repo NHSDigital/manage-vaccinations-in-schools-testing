@@ -36,7 +36,7 @@ class pg_sessions:
     LNK_CHILD_E2E1: Final[str] = "CE2E1, CE2E1"
     LNK_CHILD_CONFLICTING_GILLICK: Final[str] = "GILLICK1, Conflicting1"
     LNK_CHILD_CONSENT_TWICE: Final[str] = "TWICE1, Consent1"
-    LNK_MAV_854_CHILD: Final[str] = "MAV_854, Mav_854"
+    LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
 
     LNK_TAB_TODAY: Final[str] = "Today"
     LNK_TAB_SCHEDULED: Final[str] = "Scheduled"
@@ -809,14 +809,17 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.click_register_tab()
-        if self.po.get_element_property(
-            locator="button:has-text('Attending'):nth-child(1)", property=element_properties.ELEMENT_EXISTS
-        ):
-            self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON, index=1)
-        else:
-            self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
-        self.click_record_vaccinations_tab()
+        # if self.po.get_element_property(
+        #     locator="button:has-text('Attending'):nth-child(1)", property=element_properties.ELEMENT_EXISTS
+        # ):
+        #     self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON, index=1)
+        # else:
+        #     self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=self.LNK_MAV_854_CHILD)
+        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
+        self.click_record_vaccinations_tab()
         self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self._answer_hpv_questions()
