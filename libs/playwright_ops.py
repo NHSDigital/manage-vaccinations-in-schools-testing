@@ -349,6 +349,7 @@ class playwright_operations:
                 .get_by_role(aria_roles.LINK)
                 .nth(value)
             )
+            elem.scroll_into_view_if_needed()
         elem.click()
 
     def _download_file_using_link(self, locator: str, value: str, index: int):
