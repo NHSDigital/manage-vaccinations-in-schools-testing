@@ -809,12 +809,6 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.click_register_tab()
-        # if self.po.get_element_property(
-        #     locator="button:has-text('Attending'):nth-child(1)", property=element_properties.ELEMENT_EXISTS
-        # ):
-        #     self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON, index=1)
-        # else:
-        #     self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=self.LNK_MAV_854_CHILD)
         self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
