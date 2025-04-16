@@ -56,6 +56,16 @@ def get_current_datetime() -> str:
     return datetime.now().strftime("%Y%m%d%H%M%S")
 
 
+def get_current_time() -> str:
+    """
+    Get the current time in a HH:MM:SS format.
+
+    Returns:
+        str: Current date and time in "HH:MM:SS" format.
+    """
+    return datetime.now().strftime("%H:%M:%S")
+
+
 def clean_text(text: str) -> str:
     """
     Remove unwanted characters from a string based on UI formatting rules.
@@ -116,13 +126,13 @@ def get_dob_from_year(year_group: str) -> str:
     """
     match year_group:
         case child_year_group.YEAR_8:
-            year_offset = 8
+            year_offset = 8  # In 2025, outputs a random date between 2011-09-01 and 2012-08-31
         case child_year_group.YEAR_9:
-            year_offset = 9
+            year_offset = 9  # In 2025, outputs a random date between 2010-09-01 and 2011-08-31
         case child_year_group.YEAR_10:
-            year_offset = 10
+            year_offset = 10  # In 2025, Outputs a random date between 2009-09-01 and 2010-08-31
         case child_year_group.YEAR_11:
-            year_offset = 11
+            year_offset = 11  # In 2025, outputs a random date between 2008-09-01 and 2009-08-31
 
     # Determine the academic year offset
     current_year = datetime.now().year

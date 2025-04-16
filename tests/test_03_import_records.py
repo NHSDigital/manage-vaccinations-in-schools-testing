@@ -56,6 +56,20 @@ class Test_ImportRecords:
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
 
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_vaccs_systmone(self, setup_tests: None):
+        try:
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_import_records()
+            self.import_records_page.click_import_records()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+
     ########################################### CHILD LIST ###########################################
     @pytest.mark.childlist
     @pytest.mark.order(301)
@@ -169,3 +183,8 @@ class Test_ImportRecords:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
         self.import_records_page.verify_mav_855()
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(360)
+    def test_vaccs_systmone_positive_file_upload(self, setup_vaccs_systmone):
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE)

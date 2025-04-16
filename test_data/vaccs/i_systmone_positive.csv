@@ -1,2 +1,3 @@
-Date of birth,NHS number,Vaccination area code,Vaccination batch number,Vaccination reason,Vaccination type,First name,Postcode,Sex,Surname,Event date,Event location type,Event time,Organisation ID,School,School code,Patient Count
-2010-08-01,<<NHS_NO>>,,Batch<<DATETIME>>,,HPV,C<<FNAME>>,AA1 1AA,Male,C<<LNAME>>,<<VACCS_DATE>>,,01:00,R1L,Bohunt School Wokingham,142181,1
+TEST_DESC_IGNORED,Date of birth,NHS number,Vaccination area code,Vaccination batch number,Vaccination reason,Vaccination type,First name,Postcode,Sex,Surname,Event date,Event location type,Event time,Organisation ID,School,School code,Patient Count
+P_AllValues,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Cervarix 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,R1L,Bohunt School Wokingham,142181,
+P_MandatoryValues,<<DOB_YEAR_10>>,,,,,Cervarix 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,,,,,,

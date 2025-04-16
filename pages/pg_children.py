@@ -71,7 +71,7 @@ class pg_children:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value="Added to session at Bohunt School Wokingham",
+            expected_value="Invited to the session at Bohunt School Wokingham",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
