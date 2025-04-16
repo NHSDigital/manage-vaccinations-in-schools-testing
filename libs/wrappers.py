@@ -56,6 +56,16 @@ def get_current_datetime() -> str:
     return datetime.now().strftime("%Y%m%d%H%M%S")
 
 
+def get_current_time() -> str:
+    """
+    Get the current time in a HH:MM:SS format.
+
+    Returns:
+        str: Current date and time in "HH:MM:SS" format.
+    """
+    return datetime.now().strftime("%H:%M:%S")
+
+
 def clean_text(text: str) -> str:
     """
     Remove unwanted characters from a string based on UI formatting rules.

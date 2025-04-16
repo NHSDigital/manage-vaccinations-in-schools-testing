@@ -49,6 +49,7 @@ class testdata_operations:
                 _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
                 _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
                 _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
+                _ln = _ln.replace("<<VACCS_TIME>>", get_current_time())
                 _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
                 _ln = _ln.replace("<<DOB_YEAR_8>>", _year_8_dob)
                 _ln = _ln.replace("<<DOB_YEAR_9>>", _year_9_dob)
