@@ -33,7 +33,7 @@ pip-system-certs==4.0
 platformdirs==4.3.6
 playwright==1.51.0
 pluggy==1.5.0
-prompt_toolkit==3.0.47
+prompt_toolkit==3.0.51
 psutil==6.0.0
 ptyprocess==0.7.0
 pure_eval==0.2.3
