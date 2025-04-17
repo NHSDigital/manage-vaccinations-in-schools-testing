@@ -77,19 +77,18 @@ jobs:
 
       - name: Run JMeter test
         run: |
-          jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx -l jmeter-nurse-journey.jtl -e -o jmeter-nurse-journey-report -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
-          ls -l
+          jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx -l jmeter-nurse-journey-$timestamp.jtl -e -o jmeter-nurse-journey-report-$timestamp -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
 
       - name: Upload JMeter test logs
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-nurse-journey-${{ env.timestamp }}
-          path: jmeter-nurse-journey.jtl
+          path: jmeter-nurse-journey-${{ env.timestamp }}.jtl
           if-no-files-found: error
 
       - name: Upload JMeter test results
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-nurse-journey-report-${{ env.timestamp }}
-          path: jmeter-nurse-journey-report
+          path: jmeter-nurse-journey-report-${{ env.timestamp }}
           if-no-files-found: error
