@@ -212,7 +212,7 @@ jobs:
           echo "::group::Samsung Galaxy S9+"
           pytest -m mobile --browser_or_device s9+
           echo "::endgroup::"
-      - name: Test on Samsung Galaxy S22
+      - name: Test on Samsung Galaxy S20
         if: always()
         env:
           HEADLESS: ${{ vars.HEADLESS }}
@@ -231,8 +231,8 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
           API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
-          echo "::group::Samsung Galaxy S22"
-          pytest -m mobile --browser_or_device s22
+          echo "::group::Samsung Galaxy S20"
+          pytest -m mobile --browser_or_device s20
           echo "::endgroup::"
       - name: Test on Google Pixel 7
         if: always()

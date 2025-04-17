@@ -11,7 +11,7 @@ class browsers_and_devices:
     FIREFOX: Final[str] = "firefox"
     MSEDGE: Final[str] = "msedge"
     CHROME: Final[str] = "chrome"
-    GALAXY_S22: Final[str] = "s22"
+    GALAXY_S20: Final[str] = "s20"
     PIXEL_7: Final[str] = "pixel_7"
     GALAXY_S9_PLUS: Final[str] = "s9+"
     IPAD_7: Final[str] = "ipad_7"
