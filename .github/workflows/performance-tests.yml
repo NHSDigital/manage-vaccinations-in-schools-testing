@@ -40,28 +40,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install JMeter plugins
-        run: |
-          wget -O ~/jmeter-plugins-manager.jar https://jmeter-plugins.org/get/
-          java -jar ~/jmeter-plugins-manager.jar install jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
+      # - name: Install JMeter
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt
+
+      # - name: Install JMeter plugins
+      #   run: |
+      #     wget -O ~/jmeter-plugins-manager.jar https://jmeter-plugins.org/get/
+      #     java -jar ~/jmeter-plugins-manager.jar install jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
 
       - name: Run JMeter test
-        uses: QAInsights/PerfAction@v5.6.2
+        uses: rbhadti94/apache-jmeter-action@v0.7.0
         with:
-          test-plan-path: performance-tests/nurse-journey.jmx
-          results-file: nurse-journey-results.jtl
-          args: "-e -o ./nurse-journey-report -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}"
+          jmeter-plugins: "jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv"
+          testFilePath: performance-tests/nurse-journey.jmx
+          outputReportsFolder: nurse-journey-reports/
+          plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
+          # args: "-e -o ./nurse-journey-report -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}"
 
       - name: Upload JMeter test results
         uses: actions/upload-artifact@v4
         with:
-          name: jmeter-nurse-journey-results
-          path: nurse-journey-results.jtl
+          name: Upload JMeter nurse journey results
+          path: nurse-journey-reports
           if-no-files-found: error
 
-      - name: Upload JMeter HTML test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jmeter-html-reports
-          path: nurse-journey-report
-          if-no-files-found: error
