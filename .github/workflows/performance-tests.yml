@@ -82,7 +82,7 @@ jobs:
       - name: Upload JMeter test logs
         uses: actions/upload-artifact@v4
         with:
-          path: jmeter-nurse-journey${{ env.timestamp }}.jtl
+          path: jmeter-nurse-journey-${{ env.timestamp }}.jtl
           if-no-files-found: error
 
       - name: Upload JMeter test results
