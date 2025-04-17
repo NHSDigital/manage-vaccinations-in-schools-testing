@@ -57,8 +57,9 @@ jobs:
           ls -lh jmeter
           ls -lh jmeter/lib
           ls -lh jmeter/lib/ext
-          java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
-          chmod +x jmeter/bin/PluginsManagerCMD.sh
+          cd jmeter
+          java -cp lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+          chmod +x bin/PluginsManagerCMD.sh
 
       - name: Install JMeter Plugins
         if: env.jmeter_plugins != ''
