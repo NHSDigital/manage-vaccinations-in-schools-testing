@@ -54,12 +54,8 @@ jobs:
           mv apache-jmeter-${{ env.jmeter_version }} jmeter
           curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
           curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
-          ls -lh jmeter
-          ls -lh jmeter/lib
-          ls -lh jmeter/lib/ext
-          cd jmeter
-          java -cp lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
-          chmod +x bin/PluginsManagerCMD.sh
+          java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+          chmod +x jmeter/bin/PluginsManagerCMD.sh
 
       - name: Install JMeter Plugins
         if: env.jmeter_plugins != ''
@@ -81,7 +77,7 @@ jobs:
 
       - name: Run JMeter test
         run: |
-          jmeter/bin/jmeter -n -t ./jmeter/test-plan/jmeter-nurse-journey.jmx -l jmeter-nurse-journey-${{ env.timestamp }}.jtl -e -o ./jmeter-nurse-journey-report-${{ env.timestamp }} -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
+          jmeter/bin/jmeter -n -t jmeter-nurse-journey.jmx -l jmeter-nurse-journey-${{ env.timestamp }}.jtl -e -o jmeter-nurse-journey-report-${{ env.timestamp }} -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
 
       - name: Upload JMeter test logs
         uses: actions/upload-artifact@v4
