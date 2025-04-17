@@ -53,7 +53,7 @@ jobs:
           tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
           mv apache-jmeter-${{ env.jmeter_version }} jmeter
           curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
-          curl -sSO --output-dir jmeter/lib/ext https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${{ env.jmeter_plugins_manager_version }}/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar
+          curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
           ls -lh jmeter
           ls -lh jmeter/lib
           ls -lh jmeter/lib/ext
