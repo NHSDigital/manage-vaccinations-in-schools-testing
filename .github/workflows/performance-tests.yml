@@ -73,7 +73,7 @@ jobs:
 
       - name: Set timestamp
         id: timestamp
-        run: echo "{timestamp}={$(date '+%Y%m%d%H%M%S')}" >> $GITHUB_ENV
+        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Run JMeter test
         run: |
