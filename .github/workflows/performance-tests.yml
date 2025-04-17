@@ -49,11 +49,14 @@ jobs:
 
       - name: Install JMeter
         run: |
-          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
-          tar xvzf apache-jmeter-${{ env.jmeter_version }}.tgz
+          curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
+          tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
           mv apache-jmeter-${{ env.jmeter_version }} jmeter
-          curl -O --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
-          curl -O --output-dir jmeter/lib/ext https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${{ env.jmeter_plugin_manager_version }}/jmeter-plugins-manager-${{ env.jmeter_plugin_manager_version }}.jar
+          curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
+          curl -sSO --output-dir jmeter/lib/ext https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${{ env.jmeter_plugin_manager_version }}/jmeter-plugins-manager-${{ env.jmeter_plugin_manager_version }}.jar
+          ls -lh jmeter
+          ls -lh jmeter/lib
+          ls -lh jmeter/lib/ext
           java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugin_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
           chmod +x jmeter/bin/PluginsManagerCMD.sh
 
