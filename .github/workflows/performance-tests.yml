@@ -77,7 +77,7 @@ jobs:
 
       - name: Run JMeter test
         run: |
-          jmeter/bin/jmeter -n -t jmeter-nurse-journey.jmx -l jmeter-nurse-journey-${{ env.timestamp }}.jtl -e -o jmeter-nurse-journey-report-${{ env.timestamp }} -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
+          jmeter/bin/jmeter -n -t performance-tests/jmeter-nurse-journey.jmx -l jmeter-nurse-journey-${{ env.timestamp }}.jtl -e -o jmeter-nurse-journey-report-${{ env.timestamp }} -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
 
       - name: Upload JMeter test logs
         uses: actions/upload-artifact@v4
