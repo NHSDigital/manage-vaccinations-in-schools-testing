@@ -19,26 +19,6 @@ class Test_Regression_Vaccines:
     @pytest.mark.vaccsbatch
     @pytest.mark.mobile
     @pytest.mark.order(601)
-    def test_batch_add_batch(self):
-        self.vaccines_page.add_batch()
-
-    @pytest.mark.vaccsbatch
-    @pytest.mark.mobile
-    @pytest.mark.order(602)
-    def test_batch_change_batch(self):
-        self.vaccines_page.add_batch()
-        self.vaccines_page.change_batch()
-
-    @pytest.mark.vaccsbatch
-    @pytest.mark.mobile
-    @pytest.mark.order(603)
-    def test_batch_archive_batch(self):
-        self.vaccines_page.add_batch()
-        self.vaccines_page.archive_batch()
-
-    @pytest.mark.vaccsbatch
-    @pytest.mark.mobile
-    @pytest.mark.order(604)
     def test_batch_add_change_archive_batch(self):
         self.vaccines_page.add_batch()
         self.vaccines_page.change_batch()

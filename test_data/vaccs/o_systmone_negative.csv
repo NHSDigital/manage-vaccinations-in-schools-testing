@@ -1,0 +1,19 @@
+Row 2 Date of birth: Enter a date of birth.
+Row 4 NHS number: Enter an NHS number with 10 characters.
+Row 5 NHS number: Enter an NHS number with 10 characters.
+Row 6 Vaccination type: This programme is not available in this session. Vaccination type: This vaccine is not available in this session.
+Row 7 Vaccination type: must be less than 3
+Row 8 Vaccination type: This programme is not available in this session. Vaccination type: This vaccine is not available in this session.
+Row 9 First name: Enter a first name.
+Row 10 Postcode: Enter a valid postcode, such as SW1A 1AA.
+Row 11 Postcode: Enter a valid postcode, such as SW1A 1AA.
+Row 12 Sex: Enter a gender or gender code.
+Row 13 Sex: Enter a valid gender or gender code.
+Row 14 Surname: Enter a last name.
+Row 15 Event date: Enter a date
+Row 16 Event date: Enter a date in the correct format
+Row 17 Event date: The vaccination date is in the future.
+Row 18 Event date: The vaccination date is before the date of birth.
+Row 19 Event time: Enter a time in the correct format.
+Row 20 Event time: Enter a time in the past.
+Row 21 School code: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.

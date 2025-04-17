@@ -188,3 +188,15 @@ class Test_ImportRecords:
     @pytest.mark.order(360)
     def test_vaccs_systmone_positive_file_upload(self, setup_vaccs_systmone):
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(361)
+    def test_vaccs_systmone_negative_file_upload(self, setup_vaccs_systmone):
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_NEGATIVE)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(362)
+    def test_vaccs_systmone_negative_historical_file_upload(self, setup_vaccs_systmone):
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE
+        )

@@ -60,9 +60,6 @@ def start_browser(pw, browser_or_device: str):
                 _context = _browser.new_context(
                     **pw.devices["iPad (gen 7) landscape"], http_credentials=_http_credentials
                 )
-            case browsers_and_devices.GALAXY_S22:
-                _browser = pw.webkit.launch(headless=ce.headless_mode, slow_mo=ce.slow_motion)
-                _context = _browser.new_context(**pw.devices["Samsung Galaxy S22"], http_credentials=_http_credentials)
             case browsers_and_devices.PIXEL_7:
                 _browser = pw.webkit.launch(headless=ce.headless_mode, slow_mo=ce.slow_motion)
                 _context = _browser.new_context(**pw.devices["Pixel 7"], http_credentials=_http_credentials)
