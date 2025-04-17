@@ -37,32 +37,56 @@ jobs:
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
 
+    env:
+      jmeter_version: 5.6.3
+      cmdrunner_version: 2.3
+      jmeter_plugins_manager_version: 1.7.0
+      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
+      # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
+
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Install JMeter
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt
+      - name: Install JMeter
+        run: |
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
+          tar xvzf apache-jmeter-${{ env.jmeter_version }}.tgz
+          mv apache-jmeter-${{ env.jmeter_version }} jmeter
+          curl -O --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ cmdrunner_version }}/cmdrunner-${{ cmdrunner_version }}.jar
+          curl -O --output-dir jmeter/lib/ext https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${{ jmeter_plugin_manager_version }}/jmeter-plugins-manager-${{jmeter_plugin_manager_version }}.jar
+          java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ jmeter_plugin_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+          chmod +x jmeter/bin/PluginsManagerCMD.sh
 
-      # - name: Install JMeter plugins
-      #   run: |
-      #     wget -O ~/jmeter-plugins-manager.jar https://jmeter-plugins.org/get/
-      #     java -jar ~/jmeter-plugins-manager.jar install jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
+      - name: Install JMeter Plugins
+        if: env.jmeter_plugins != ''
+        run: |
+          if [ -x "$(command -v parallel)" ]; then
+            echo "Using GNU parallel to install plugins"
+            parallel -d, -j 5 -n 1 jmeter/bin/PluginsManagerCMD.sh install {} ::: ${{ env.jmeter_plugins }}
+          else
+            echo "GNU parallel not found, installing plugins sequentially"
+            IFS=',' read -ra PLUGINS <<< "${{ env.jmeter_plugins }}"
+            for plugin in "${PLUGINS[@]}"; do
+              jmeter/bin/PluginsManagerCMD.sh install $plugin
+            done
+          fi
+
+      - name: Set timestamp
+        id: timestamp
+        run: echo "{timestamp}={$(date '+%Y%m%d%H%M%S')}" >> $GITHUB_ENV
 
       - name: Run JMeter test
-        uses: rbhadti94/apache-jmeter-action@v0.7.0
+        run: |
+          jmeter/bin/jmeter -n -t ./jmeter/test-plan/jmeter-nurse-journey.jmx -l jmeter-nurse-journey-${{ env.timestamp }}.jtl -e -o ./jmeter-nurse-journey-report-${{ env.timestamp }} -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}
+
+      - name: Upload JMeter test logs
+        uses: actions/upload-artifact@v4
         with:
-          jmeter-plugins: "jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv"
-          testFilePath: performance-tests/nurse-journey.jmx
-          outputReportsFolder: nurse-journey-reports/
-          plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
-          # args: "-e -o ./nurse-journey-report -JSessionSlug=${{inputs.session_slug}} -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} -JDuration=${{inputs.duration}} -JThreads=${{inputs.threads}} -JRampUp=${{inputs.ramp_up}} -JVaccinationLoop=${{inputs.vaccination_loop}}"
+          path: jmeter-nurse-journey${{ env.timestamp }}.jtl
+          if-no-files-found: error
 
       - name: Upload JMeter test results
         uses: actions/upload-artifact@v4
         with:
-          name: Upload JMeter nurse journey results
-          path: nurse-journey-reports
+          path: jmeter-nurse-journey-reports-${{ env.timestamp }}
           if-no-files-found: error
-
