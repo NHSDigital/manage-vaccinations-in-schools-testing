@@ -77,8 +77,8 @@ jobs:
 
       - name: Run JMeter test
         run: |
-          mkdir -p output-$timestamp
-          output_dir=nurse-journey-output-$timestamp
+          mkdir -p output
+          output_dir=output
           jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx \
               -l $output_dir/samples.jtl \
               -j $output_dir/jmeter.log \
@@ -94,5 +94,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
-          path: nurse-journey-output-${{ env.timestamp }}
+          path: output
           if-no-files-found: error
