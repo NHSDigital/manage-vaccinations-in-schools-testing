@@ -115,6 +115,9 @@ class pg_sessions:
     BTN_CONFIRM: Final[str] = "Confirm"
     BTN_SEARCH: Final[str] = "Search"
     TXT_SEARCH: Final[str] = "Search"
+    LNK_HPV_TAB: Final[str] = "HPV"
+    LNK_MENACWY_TAB: Final[str] = "MenACWY"
+    LNK_TDIPV_TAB: Final[str] = "Td/IPV"
 
     def __init__(self):
         self.upload_time = ""
@@ -174,6 +177,15 @@ class pg_sessions:
         self.po.act(locator=self.RDO_CONFLICTING_CONSENT, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+
+    def click_hpv_tab(self):
+        self.po.act(locator=self.LNK_HPV_TAB, action=framework_actions.CLICK_LINK)
+
+    def click_menacwy_tab(self):
+        self.po.act(locator=self.LNK_MENACWY_TAB, action=framework_actions.CLICK_LINK)
+
+    def click_tdipv_tab(self):
+        self.po.act(locator=self.LNK_TDIPV_TAB, action=framework_actions.CLICK_LINK)
 
     def click_register_tab(self):
         self.po.act(locator=self.LNK_TAB_REGISTER, action=framework_actions.CLICK_LINK, exact=False)
@@ -846,9 +858,20 @@ class pg_sessions:
             value="a very long string that won't match any names",
         )
         self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
             expected_value="No children matching search criteria found",
             exact=False,
         )
+
+    def search_child(self, child_name: str) -> None:
+        self.po.act(
+            locator=self.TXT_SEARCH,
+            action=framework_actions.FILL,
+            value=child_name,
+        )
+        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=child_name, action=framework_actions.CLICK_LINK)
