@@ -20,14 +20,12 @@ class Test_Login:
     ]
 
     @pytest.mark.login
-    @pytest.mark.mobile
     @pytest.mark.order(101)
     @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
     def test_invalid_login(self, user, pwd, expected_message):
         self.login_page.try_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
 
     @pytest.mark.login
-    @pytest.mark.mobile
     @pytest.mark.order(102)
     def test_home_page_links_for_nurse(self):
         self.login_page.go_to_login_page()
@@ -36,7 +34,6 @@ class Test_Login:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.login
-    @pytest.mark.mobile
     @pytest.mark.order(103)
     def test_home_page_links_for_superuser(self):
         self.login_page.go_to_login_page()
@@ -45,7 +42,6 @@ class Test_Login:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.login
-    @pytest.mark.mobile
     @pytest.mark.order(104)
     def test_home_page_links_for_admin(self):
         self.login_page.go_to_login_page()
