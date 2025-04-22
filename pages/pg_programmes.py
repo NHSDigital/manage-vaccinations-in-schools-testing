@@ -4,7 +4,13 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
 from libs.mavis_constants import programme_names, record_limit, report_headers
 from libs.wrappers import *
-from pages import pg_children, pg_dashboard, pg_sessions
+from pages import (
+    pg_children,
+    pg_consent_doubles,
+    pg_consent_hpv,
+    pg_dashboard,
+    pg_sessions,
+)
 
 
 class pg_programmes:
@@ -15,9 +21,12 @@ class pg_programmes:
     sessions_page = pg_sessions.pg_sessions()
     dashboard_page = pg_dashboard.pg_dashboard()
     children_page = pg_children.pg_children()
+    consent_hpv = pg_consent_hpv.pg_consent_hpv()
+    doubles_hpv = pg_consent_doubles.pg_consent_doubles()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
+    LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
 
     LNK_HPV: Final[str] = "HPV"
     LNK_TDIPV: Final[str] = "Td/IPV"
@@ -232,3 +241,33 @@ class pg_programmes:
         _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
         assert expected_headers == actual_headers, "Report headers do not match"
+
+    def _verify_mav_965_case_1(self):
+        pass
+
+    def _verify_mav_965_case_2(self):
+        pass
+
+    def _verify_mav_965_case_3(self):
+        pass
+
+    def verify_mav_965(self):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.click_school1()
+        self.sessions_page.click_consent_tab()
+        self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
+        self.sessions_page.click_hpv_tab()
+        self.sessions_page.click_get_consent_response()
+        self.consent_hpv.parent_1_verbal_positive(change_phone=False)
+        self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
+        self.sessions_page.click_menacwy_tab()
+        self.sessions_page.click_get_consent_response()
+        # self.consent_hpv.parent_1_verbal_positive(change_phone=False)
+        self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
+        self.sessions_page.click_tdipv_tab()
+        self.sessions_page.click_get_consent_response()
+        # self.consent_hpv.parent_1_verbal_positive(change_phone=False)
+        self._verify_mav_965_case_1()
+        self._verify_mav_965_case_2()
+        self._verify_mav_965_case_3()

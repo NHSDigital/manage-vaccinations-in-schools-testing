@@ -17,7 +17,6 @@ class Test_Regression_Vaccines:
         self.login_page.logout_of_mavis()
 
     @pytest.mark.vaccsbatch
-    @pytest.mark.mobile
     @pytest.mark.order(601)
     def test_batch_add_change_archive_batch(self):
         self.vaccines_page.add_batch()

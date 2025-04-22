@@ -80,6 +80,7 @@ class test_data_file_paths:
     CLASS_SESSION_ID: Final[str] = "CLASS_SESSION_ID"
     CLASS_SINGLE_VACC: Final[str] = "CLASS_SINGLE_VACC"
     CLASS_MAV_854: Final[str] = "CLASS_MAV_854"
+    CLASS_MAV_965: Final[str] = "CLASS_MAV_965"
     COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
     COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
     COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
