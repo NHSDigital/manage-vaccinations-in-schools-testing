@@ -1,5 +1,5 @@
 from libs import CurrentExecution, testdata_ops
-from libs.mavis_constants import data_values, test_data_file_paths
+from libs.mavis_constants import test_data_file_paths, test_data_values
 from pages import pg_consent_hpv
 
 
@@ -64,7 +64,7 @@ class parental_consent_helper:
             email=self.email,
             phone=self.phone,
         )
-        if self.phone != data_values.EMPTY:
+        if self.phone != test_data_values.EMPTY:
             self.pc.check_phone_options(
                 scenario_id=self.scenario_id,
             )

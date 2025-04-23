@@ -2,6 +2,7 @@ from typing import Final
 
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import element_properties, framework_actions
+from libs.mavis_constants import test_data_values
 
 
 class pg_login:
@@ -15,9 +16,9 @@ class pg_login:
     BTN_LOGOUT: Final[str] = "Log out"
     LBL_BANNER: Final[str] = "banner"
     LBL_NURSE: Final[str] = "JOY, Nurse"
-    BTN_NURSE_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
-    BTN_SUPERUSER_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
-    BTN_ADMIN_ROLE: Final[str] = "SAIS Organisation 1 (R1L)"
+    BTN_NURSE_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
+    BTN_SUPERUSER_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
+    BTN_ADMIN_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
     LBL_SUPERUSER: Final[str] = "SUPERUSER, Superuser"
     LBL_ADMIN: Final[str] = "HOPE, Admin"
     LBL_PARAGRAPH: Final[str] = "paragraph"

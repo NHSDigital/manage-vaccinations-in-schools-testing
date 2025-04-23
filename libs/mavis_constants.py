@@ -33,7 +33,11 @@ class programme_names:
     TDIPV: Final[str] = "tdipv"
 
 
-class data_values:
+class test_data_values:
+    SCHOOL_1_NAME: Final[str] = "Bohunt School Wokingham"
+    SCHOOL_2_NAME: Final[str] = "Ashlawn School"
+    SCHOOL_1_URN: Final[str] = "142181"
+    ORG_CODE: Final[str] = "R1L"
     EMPTY: Final[str] = "<empty>"
 
 

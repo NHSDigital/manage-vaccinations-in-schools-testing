@@ -2,7 +2,7 @@ from typing import Final
 
 from libs import playwright_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
-from libs.mavis_constants import data_values
+from libs.mavis_constants import test_data_values
 
 
 class pg_consent_hpv:
@@ -84,12 +84,12 @@ class pg_consent_hpv:
         scenario_id: str,
         child_first_name: str,
         child_last_name: str,
-        known_as_first: str = data_values.EMPTY,
-        known_as_last: str = data_values.EMPTY,
+        known_as_first: str = test_data_values.EMPTY,
+        known_as_last: str = test_data_values.EMPTY,
     ) -> None:
         self.po.act(locator=self.TXT_CHILD_FIRST_NAME, action=framework_actions.FILL, value=child_first_name)
         self.po.act(locator=self.TXT_CHILD_LAST_NAME, action=framework_actions.FILL, value=child_last_name)
-        if known_as_first == data_values.EMPTY and known_as_last == data_values.EMPTY:
+        if known_as_first == test_data_values.EMPTY and known_as_last == test_data_values.EMPTY:
             self.po.act(locator=self.RDO_KNOWN_BY_ANOTHER_NAME_NO, action=framework_actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_KNOWN_BY_ANOTHER_NAME_YES, action=framework_actions.RADIO_BUTTON_SELECT)
@@ -118,7 +118,7 @@ class pg_consent_hpv:
         self.po.act(locator=self.TXT_PARENT_FULL_NAME, action=framework_actions.FILL, value=parent_name)
         self.po.act(locator=relation, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=framework_actions.FILL, value=email)
-        if phone != data_values.EMPTY:
+        if phone != test_data_values.EMPTY:
             self.po.act(locator=self.TXT_PHONE_OPTIONAL, action=framework_actions.FILL, value=phone)
             self.po.act(locator=self.CHK_TEXT_ALERTS, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
@@ -137,8 +137,8 @@ class pg_consent_hpv:
             self.po.act(locator=self.CHK_CONSENT_DISAGREE, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
-    def fill_gp_details(self, scenario_id: str, gp_name: str = data_values.EMPTY) -> None:
-        if gp_name == data_values.EMPTY:
+    def fill_gp_details(self, scenario_id: str, gp_name: str = test_data_values.EMPTY) -> None:
+        if gp_name == test_data_values.EMPTY:
             self.po.act(locator=self.RDO_GP_NOT_KNOWN, action=framework_actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_GP_REGISTERED, action=framework_actions.RADIO_BUTTON_SELECT)
@@ -152,32 +152,34 @@ class pg_consent_hpv:
         self.po.act(locator=self.TXT_ADDRESS_POSTCODE, action=framework_actions.FILL, value=postcode)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
-    def select_severe_allergies(self, scenario_id: str, allergy_details: str = data_values.EMPTY) -> None:
-        if allergy_details == data_values.EMPTY:
+    def select_severe_allergies(self, scenario_id: str, allergy_details: str = test_data_values.EMPTY) -> None:
+        if allergy_details == test_data_values.EMPTY:
             self.po.act(locator=self.RDO_NO, action=framework_actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
             self.po.act(locator=self.TXT_GIVE_DETAILS, action=framework_actions.FILL, value=allergy_details)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
-    def select_medical_condition(self, scenario_id: str, medical_condition_details: str = data_values.EMPTY) -> None:
-        if medical_condition_details == data_values.EMPTY:
+    def select_medical_condition(
+        self, scenario_id: str, medical_condition_details: str = test_data_values.EMPTY
+    ) -> None:
+        if medical_condition_details == test_data_values.EMPTY:
             self.po.act(locator=self.RDO_NO, action=framework_actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
             self.po.act(locator=self.TXT_GIVE_DETAILS, action=framework_actions.FILL, value=medical_condition_details)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
-    def select_severe_reaction(self, scenario_id: str, reaction_details: str = data_values.EMPTY) -> None:
-        if reaction_details == data_values.EMPTY:
+    def select_severe_reaction(self, scenario_id: str, reaction_details: str = test_data_values.EMPTY) -> None:
+        if reaction_details == test_data_values.EMPTY:
             self.po.act(locator=self.RDO_NO, action=framework_actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
             self.po.act(locator=self.TXT_GIVE_DETAILS, action=framework_actions.FILL, value=reaction_details)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
-    def select_extra_support(self, scenario_id: str, extra_support_details: str = data_values.EMPTY) -> None:
-        if extra_support_details == data_values.EMPTY:
+    def select_extra_support(self, scenario_id: str, extra_support_details: str = test_data_values.EMPTY) -> None:
+        if extra_support_details == test_data_values.EMPTY:
             self.po.act(locator=self.RDO_NO, action=framework_actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)

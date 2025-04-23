@@ -6,7 +6,7 @@ from libs.generic_constants import (
     escape_characters,
     framework_actions,
 )
-from libs.mavis_constants import report_headers
+from libs.mavis_constants import report_headers, test_data_values
 from libs.wrappers import *
 from pages import pg_dashboard
 
@@ -67,7 +67,7 @@ class pg_school_moves:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value="Move Class list updated Bohunt School Wokingham to Ashlawn School",
+            expected_value=f"Move Class list updated {test_data_values.SCHOOL_1_NAME} to {test_data_values.SCHOOL_2_NAME}",
         )
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Full name CLMOVES2, CFMoves2"
@@ -75,7 +75,7 @@ class pg_school_moves:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value="Class list updated Bohunt School Wokingham to Ashlawn School",
+            expected_value=f"Class list updated {test_data_values.SCHOOL_1_NAME} to {test_data_values.SCHOOL_2_NAME}",
         )
         self.confirm_school_move()
         self.ignore_school_move()

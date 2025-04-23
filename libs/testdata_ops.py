@@ -3,7 +3,7 @@ import pandas as pd
 
 from libs import CurrentExecution, file_ops
 from libs.generic_constants import escape_characters
-from libs.mavis_constants import data_values
+from libs.mavis_constants import test_data_values
 from libs.wrappers import *
 
 
@@ -44,6 +44,10 @@ class testdata_operations:
         _session_id = self.ce.get_session_id()
         if _template_text is not None:
             for _ln in _template_text.split(escape_characters.NEW_LINE):
+                _ln = _ln.replace("<<SCHOOL_1_NAME>>", test_data_values.SCHOOL_1_NAME)
+                _ln = _ln.replace("<<SCHOOL_2_NAME>>", test_data_values.SCHOOL_2_NAME)
+                _ln = _ln.replace("<<SCHOOL_1_URN>>", test_data_values.SCHOOL_1_URN)
+                _ln = _ln.replace("<<ORG_CODE>>", test_data_values.ORG_CODE)
                 _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
                 _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
                 _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
@@ -117,11 +121,11 @@ class testdata_operations:
         _df = df.fillna(value="0", inplace=False)
         _df.replace(to_replace="True", value="true", inplace=True)
         _df.replace(to_replace="False", value="false", inplace=True)
-        _df.replace(to_replace="null", value=data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="None", value=data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="NaN", value=data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="0", value=data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="", value=data_values.EMPTY, inplace=True)
+        _df.replace(to_replace="null", value=test_data_values.EMPTY, inplace=True)
+        _df.replace(to_replace="None", value=test_data_values.EMPTY, inplace=True)
+        _df.replace(to_replace="NaN", value=test_data_values.EMPTY, inplace=True)
+        _df.replace(to_replace="0", value=test_data_values.EMPTY, inplace=True)
+        _df.replace(to_replace="", value=test_data_values.EMPTY, inplace=True)
         return _df
 
     def get_file_paths(self, file_paths: str) -> tuple[str, str]:

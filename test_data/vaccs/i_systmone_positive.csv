@@ -1,5 +1,5 @@
 TEST_DESC_IGNORED,Date of birth,NHS number,Vaccination area code,Vaccination batch number,Vaccination reason,Vaccination type,First name,Postcode,Sex,Surname,Event date,Event location type,Event time,Organisation ID,School,School code,Patient Count
-AllValuesCervarix,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Cervarix 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,R1L,Bohunt School Wokingham,142181,
-AllValuesG9,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,R1L,Bohunt School Wokingham,142181,
-AllValuesHistorical,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<HIST_VACCS_DATE>>,School,<<VACCS_TIME>>,R1L,Bohunt School Wokingham,142181,
+AllValuesCervarix,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Cervarix 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_1_NAME>>,<<SCHOOL_1_URN>>,
+AllValuesG9,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_1_NAME>>,<<SCHOOL_1_URN>>,
+AllValuesHistorical,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<HIST_VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_1_NAME>>,<<SCHOOL_1_URN>>,
 MandatoryValues,<<DOB_YEAR_10>>,,,,,Cervarix 1,C<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,,,,,,

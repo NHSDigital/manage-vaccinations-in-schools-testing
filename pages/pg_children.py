@@ -2,6 +2,7 @@ from typing import Final
 
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
+from libs.mavis_constants import test_data_values
 from libs.wrappers import *
 from pages import pg_dashboard
 
@@ -71,7 +72,7 @@ class pg_children:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
-            expected_value="Invited to the session at Bohunt School Wokingham",
+            expected_value=f"Invited to the session at {test_data_values.SCHOOL_1_NAME}",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
