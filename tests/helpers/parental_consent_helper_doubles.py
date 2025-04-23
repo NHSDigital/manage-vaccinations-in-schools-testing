@@ -1,5 +1,5 @@
 from libs import CurrentExecution, testdata_ops
-from libs.mavis_constants import data_values, test_data_file_paths
+from libs.mavis_constants import test_data_file_paths, test_data_values
 from pages import pg_consent_doubles
 
 
@@ -66,12 +66,12 @@ class parental_consent_helper:
             email=self.email,
             phone=self.phone,
         )
-        if self.phone != data_values.EMPTY:
+        if self.phone != test_data_values.EMPTY:
             self.pc.check_phone_options(
                 scenario_id=self.scenario_id,
             )
         self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consent_for=self.consent_for)
-        if self.consent_for.lower() != data_values.EMPTY:  # None
+        if self.consent_for.lower() != test_data_values.EMPTY:  # None
             self.pc.fill_address_details(
                 scenario_id=self.scenario_id,
                 line1=self.addr1,

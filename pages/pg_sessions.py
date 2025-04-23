@@ -7,7 +7,7 @@ from libs.generic_constants import (
     framework_actions,
     wait_time,
 )
-from libs.mavis_constants import child_year_group, record_limit
+from libs.mavis_constants import child_year_group, record_limit, test_data_values
 from libs.wrappers import (
     datetime,
     get_current_datetime,
@@ -26,8 +26,8 @@ class pg_sessions:
     consent_page = pg_consent_hpv.pg_consent_hpv()
     children_page = pg_children.pg_children()
 
-    LNK_SCHOOL_1: Final[str] = "Bohunt School Wokingham"
-    LNK_SCHOOL_2: Final[str] = "Ashlawn School"
+    LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
+    LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME
     LNK_COMMUNITY_CLINICS: Final[str] = "Community clinics"
 
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
@@ -820,11 +820,7 @@ class pg_sessions:
     def _vaccinate_child_mav_854(self):
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
-        self.click_register_tab()
-        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=self.LNK_MAV_854_CHILD)
-        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
+        self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
         self.click_record_vaccinations_tab()
         self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
@@ -842,6 +838,13 @@ class pg_sessions:
             property=element_properties.TEXT,
             expected_value="Vaccination outcome recorded for HPV",
         )
+
+    def register_child_as_attending(self, child_name: str):
+        self.click_register_tab()
+        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=child_name)
+        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.BTN_ATTENDING, action=framework_actions.CLICK_BUTTON)
 
     def verify_search(self):
         """

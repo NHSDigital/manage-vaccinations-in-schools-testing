@@ -22,7 +22,7 @@ class pg_programmes:
     dashboard_page = pg_dashboard.pg_dashboard()
     children_page = pg_children.pg_children()
     consent_hpv = pg_consent_hpv.pg_consent_hpv()
-    doubles_hpv = pg_consent_doubles.pg_consent_doubles()
+    consent_doubles = pg_consent_doubles.pg_consent_doubles()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
@@ -263,11 +263,12 @@ class pg_programmes:
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_menacwy_tab()
         self.sessions_page.click_get_consent_response()
-        # self.consent_hpv.parent_1_verbal_positive(change_phone=False)
+        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programme_names.MENACWY)
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_tdipv_tab()
         self.sessions_page.click_get_consent_response()
-        # self.consent_hpv.parent_1_verbal_positive(change_phone=False)
+        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programme_names.TDIPV)
+        self.sessions_page.register_child_as_attending(child_name=self.LNK_MAV_965_CHILD)
         self._verify_mav_965_case_1()
         self._verify_mav_965_case_2()
         self._verify_mav_965_case_3()

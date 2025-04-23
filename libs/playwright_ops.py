@@ -12,7 +12,7 @@ from libs.generic_constants import (
     screenshot_file_types,
     wait_time,
 )
-from libs.mavis_constants import data_values
+from libs.mavis_constants import test_data_values
 from libs.wrappers import *
 
 
@@ -238,7 +238,7 @@ class playwright_operations:
         else:
             elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
         elem.click()
-        if value != data_values.EMPTY:
+        if value != test_data_values.EMPTY:
             elem.fill(value)
 
     def _radio_button_select(self, locator: str, exact: bool, index: int):
