@@ -181,7 +181,7 @@ class Test_Programmes:
 
     @pytest.mark.rav
     @pytest.mark.order(531)
-    # @pytest.mark.skip(reason="Test under construction")
+    @pytest.mark.skip(reason="Test under construction")
     def test_programmes_rav_prescreening_questions(self, setup_mav_965):
         self.programmes_page.verify_mav_965()
 
