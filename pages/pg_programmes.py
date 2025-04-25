@@ -242,15 +242,6 @@ class pg_programmes:
         actual_headers = ",".join(_actual_df.columns.tolist())
         assert expected_headers == actual_headers, "Report headers do not match"
 
-    def _verify_mav_965_case_1(self):
-        pass
-
-    def _verify_mav_965_case_2(self):
-        pass
-
-    def _verify_mav_965_case_3(self):
-        pass
-
     def verify_mav_965(self):
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -269,6 +260,12 @@ class pg_programmes:
         self.sessions_page.click_get_consent_response()
         self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programme_names.TDIPV)
         self.sessions_page.register_child_as_attending(child_name=self.LNK_MAV_965_CHILD)
-        self._verify_mav_965_case_1()
-        self._verify_mav_965_case_2()
-        self._verify_mav_965_case_3()
+        self.sessions_page.record_vaccs_for_child(
+            child_name=self.LNK_MAV_965_CHILD, programme_name=programme_names.HPV
+        )
+        self.sessions_page.record_vaccs_for_child(
+            child_name=self.LNK_MAV_965_CHILD, programme_name=programme_names.MENACWY
+        )
+        self.sessions_page.record_vaccs_for_child(
+            child_name=self.LNK_MAV_965_CHILD, programme_name=programme_names.TDIPV
+        )

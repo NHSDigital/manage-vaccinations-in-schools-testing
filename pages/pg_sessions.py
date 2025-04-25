@@ -7,7 +7,12 @@ from libs.generic_constants import (
     framework_actions,
     wait_time,
 )
-from libs.mavis_constants import child_year_group, record_limit, test_data_values
+from libs.mavis_constants import (
+    child_year_group,
+    programme_names,
+    record_limit,
+    test_data_values,
+)
 from libs.wrappers import (
     datetime,
     get_current_datetime,
@@ -115,9 +120,6 @@ class pg_sessions:
     BTN_CONFIRM: Final[str] = "Confirm"
     BTN_SEARCH: Final[str] = "Search"
     TXT_SEARCH: Final[str] = "Search"
-    LNK_HPV_TAB: Final[str] = "HPV"
-    LNK_MENACWY_TAB: Final[str] = "MenACWY"
-    LNK_TDIPV_TAB: Final[str] = "Td/IPV"
 
     def __init__(self):
         self.upload_time = ""
@@ -179,13 +181,13 @@ class pg_sessions:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
 
     def click_hpv_tab(self):
-        self.po.act(locator=self.LNK_HPV_TAB, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=programme_names.HPV, action=framework_actions.CLICK_LINK)
 
     def click_menacwy_tab(self):
-        self.po.act(locator=self.LNK_MENACWY_TAB, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=programme_names.MENACWY, action=framework_actions.CLICK_LINK)
 
     def click_tdipv_tab(self):
-        self.po.act(locator=self.LNK_TDIPV_TAB, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=programme_names.TDIPV, action=framework_actions.CLICK_LINK)
 
     def click_register_tab(self):
         self.po.act(locator=self.LNK_TAB_REGISTER, action=framework_actions.CLICK_LINK, exact=False)
@@ -222,9 +224,6 @@ class pg_sessions:
             action=framework_actions.SELECT_FILE,
             value=file_path,
         )
-
-    def click_record_vaccinations_tab(self):
-        self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=framework_actions.CLICK_LINK)
 
     def click_child_full_name(self):
         self.po.act(locator=self.LNK_CHILD_FULL_NAME, action=framework_actions.CLICK_WILDCARD)
@@ -805,7 +804,7 @@ class pg_sessions:
                 self.po.act(locator=self.CHK_YEAR11, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
 
-    def _answer_hpv_questions(self):
+    def _answer_hpv_prescreening_questions(self):
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
@@ -821,15 +820,9 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
-        self.click_record_vaccinations_tab()
-        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-        self._answer_hpv_questions()
-        self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_BATCH_AUTO, action=framework_actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.record_vaccs_for_child(
+            child_name=self.LNK_MAV_854_CHILD, programme_name=programme_names.HPV, at_clinic=True
+        )
         self.po.act(locator=self.RDO_CLINIC_WEIMANN, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
@@ -870,11 +863,33 @@ class pg_sessions:
         )
 
     def search_child(self, child_name: str) -> None:
-        self.po.act(
-            locator=self.TXT_SEARCH,
-            action=framework_actions.FILL,
-            value=child_name,
-        )
+        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=child_name, action=framework_actions.CLICK_LINK)
+
+    def record_vaccs_for_child(
+        self, child_name: str, programme_name: str = programme_names.HPV, at_clinic: bool = False
+    ):
+        self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=framework_actions.CLICK_LINK)
+        self.search_child(child_name=child_name)
+        self.po.act(locator=programme_name, action=framework_actions.CLICK_LINK)
+        match programme_name:
+            case programme_names.HPV:
+                self._answer_hpv_prescreening_questions()
+            case programme_names.MENACWY:
+                self._answer_menacwy_prescreening_questions()
+            case programme_names.TDIPV:
+                self._answer_tdipv_prescreening_questions()
+        self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_BATCH_AUTO, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        if not at_clinic:  # only skips MAV-854
+            self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
+            self.po.verify(
+                locator=self.LBL_MAIN,
+                property=element_properties.TEXT,
+                expected_value=f"Vaccination outcome recorded for {programme_name}",
+            )
