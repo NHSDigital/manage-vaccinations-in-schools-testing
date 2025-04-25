@@ -28,9 +28,9 @@ class child_year_group:
 
 
 class programme_names:
-    HPV: Final[str] = "hpv"
-    MENACWY: Final[str] = "menacwy"
-    TDIPV: Final[str] = "tdipv"
+    HPV: Final[str] = "HPV"
+    MENACWY: Final[str] = "MenACWY"
+    TDIPV: Final[str] = "Td/IPV"
 
 
 class test_data_values:
