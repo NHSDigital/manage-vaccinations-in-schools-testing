@@ -19,6 +19,6 @@ class Test_Regression_Vaccines:
     @pytest.mark.vaccsbatch
     @pytest.mark.order(601)
     def test_batch_add_change_archive_batch(self):
-        self.vaccines_page.add_batch()
+        self.vaccines_page.add_gardasil9_batch()
         self.vaccines_page.change_batch()
         self.vaccines_page.archive_batch()

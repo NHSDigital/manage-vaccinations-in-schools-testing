@@ -69,6 +69,8 @@ class playwright_operations:
                     )
             case element_properties.VISIBILITY:
                 self._verify_visibility(locator=locator, expected_value=expected_value, actual_value=actual_value)
+            case element_properties.CHECKBOX_CHECKED:
+                self._verify_checkbox(locator=locator, expected_value=expected_value, actual_value=actual_value)
 
     def get_element_property(self, locator: str, property: str, **kwargs) -> str:
         """
@@ -96,6 +98,8 @@ class playwright_operations:
                 return self._get_element_visibility(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.HREF:
                 return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
+            case element_properties.CHECKBOX_CHECKED:
+                return self._get_checkbox_state(locator=locator, index=index, chain_locator=chain_locator)
             case element_properties.ELEMENT_EXISTS:
                 return self.ce.page.query_selector(locator) is not None
             case element_properties.PAGE_URL:
@@ -434,6 +438,23 @@ class playwright_operations:
             self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
         assert _passed, f"{locator} is not visible."
 
+    def _verify_checkbox(self, locator: str, expected_value: str, actual_value: str):
+        """
+        Verify the state of a checkbox.
+
+        Args:
+            locator (str): Locator of the checkbox.
+            expected_value (str): Expected checked state.
+            actual_value (str): Actual checked state.
+        """
+        _passed: bool = True if bool(actual_value) == bool(expected_value) else False
+        _checked: str = "" if bool(actual_value) else "not"
+        if _passed:
+            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_PASSED)
+        else:
+            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_FAILED)
+        assert _passed, f"{locator} is {_checked} checked."
+
     def _get_element_text(self, locator: str, index: int, by_test_id: bool, chain_locator: bool) -> str:
         """
         Get the text content of an element.
@@ -485,6 +506,30 @@ class playwright_operations:
             else:
                 elem = self.ce.page.get_by_role(locator).nth(0)
         return elem.is_visible()
+
+    def _get_checkbox_state(self, locator: str, index: int, chain_locator: bool) -> str:
+        """
+        Get the checked state of a checkbox.
+
+        Args:
+            locator (str): Locator of the checkbox.
+            index (int): Index of the checkbox if multiple matches are found.
+            chain_locator (bool): Whether to use a chained locator.
+
+        Returns:
+            str: Checked state of the checkbox.
+        """
+        if escape_characters.SEPARATOR_CHAR in locator:
+            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+        else:
+            if chain_locator:
+                self.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+            else:
+                elem = self.ce.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(0)
+        return elem.is_checked()
 
     def _get_element_href(self, locator: str, index: int, chain_locator: bool) -> str:
         """

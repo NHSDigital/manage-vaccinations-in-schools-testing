@@ -71,7 +71,7 @@ class Test_Programmes:
         try:
             self.login_page.login_as_nurse()
             self.dashboard_page.click_vaccines()
-            self.vaccines_page.add_batch()
+            self.vaccines_page.add_gardasil9_batch()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -103,24 +103,6 @@ class Test_Programmes:
             )
             self.sessions_page.click_school1()
             self.sessions_page.save_session_id_from_offline_excel()
-            yield
-        finally:
-            self.dashboard_page.go_to_dashboard()
-            self.dashboard_page.click_sessions()
-            self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
-
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
-    def setup_mav_965(self, start_mavis: None):
-        try:
-            self.login_page.login_as_nurse()
-            self.dashboard_page.click_sessions()
-            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-            self.import_records_page.import_class_list_records_from_school_session(
-                file_paths=test_data_file_paths.CLASS_MAV_965
-            )
-            self.dashboard_page.go_to_dashboard()
-            self.dashboard_page.click_sessions()
             yield
         finally:
             self.dashboard_page.go_to_dashboard()
@@ -178,12 +160,6 @@ class Test_Programmes:
     @pytest.mark.skip(reason="Test under construction")
     def test_programmes_rav_verify_banners(self, setup_mav_nnn):
         self.programmes_page.verify_mav_nnn()
-
-    @pytest.mark.rav
-    @pytest.mark.order(531)
-    @pytest.mark.skip(reason="Test under construction")
-    def test_programmes_rav_prescreening_questions(self, setup_mav_965):
-        self.programmes_page.verify_mav_965()
 
     @pytest.mark.reports
     @pytest.mark.order(551)

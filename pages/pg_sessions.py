@@ -113,6 +113,7 @@ class pg_sessions:
     CHK_ARE_FEELING_WELL: Final[str] = "are feeling well"
     CHK_HAVE_NO_ALLERGIES: Final[str] = "have no allergies which would"
     CHK_ARE_NOT_PREGNANT: Final[str] = "are not pregnant"
+    CHK_NOT_TAKING_MEDICATION: Final[str] = "are not taking any medication which prevents vaccination"
     RDO_YES: Final[str] = "Yes"
     RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
     RDO_BATCH_AUTO: Final[str] = "Auto20"
@@ -816,12 +817,51 @@ class pg_sessions:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
 
+    def _answer_menacwy_prescreening_questions(self, check_prefilled: bool = False):
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
+        self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_NOT_TAKING_MEDICATION, action=framework_actions.CHECKBOX_CHECK)
+        if check_prefilled:
+            self.po.verify(
+                locator=self.CHK_ARE_FEELING_WELL, property=element_properties.CHECKBOX_CHECKED, expected_value=True
+            )
+        else:
+            self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
+
+    def _answer_tdipv_prescreening_questions(self, check_prefilled: bool = False):
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
+        self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_NOT_TAKING_MEDICATION, action=framework_actions.CHECKBOX_CHECK)
+        if check_prefilled:
+            self.po.verify(
+                locator=self.CHK_ARE_FEELING_WELL, property=element_properties.CHECKBOX_CHECKED, expected_value=True
+            )
+            self.po.verify(
+                locator=self.CHK_ARE_NOT_PREGNANT, property=element_properties.CHECKBOX_CHECKED, expected_value=True
+            )
+        else:
+            self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
+            self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+            self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
+
     def _vaccinate_child_mav_854(self):
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
         self.record_vaccs_for_child(
-            child_name=self.LNK_MAV_854_CHILD, programme_name=programme_names.HPV, at_clinic=True
+            child_name=self.LNK_MAV_854_CHILD, programme_name=programme_names.HPV, at_school=False
         )
         self.po.act(locator=self.RDO_CLINIC_WEIMANN, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
@@ -869,7 +909,7 @@ class pg_sessions:
         self.po.act(locator=child_name, action=framework_actions.CLICK_LINK)
 
     def record_vaccs_for_child(
-        self, child_name: str, programme_name: str = programme_names.HPV, at_clinic: bool = False
+        self, child_name: str, programme_name: str = programme_names.HPV, at_school: bool = True
     ):
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=framework_actions.CLICK_LINK)
         self.search_child(child_name=child_name)
@@ -878,15 +918,15 @@ class pg_sessions:
             case programme_names.HPV:
                 self._answer_hpv_prescreening_questions()
             case programme_names.MENACWY:
-                self._answer_menacwy_prescreening_questions()
+                self._answer_menacwy_prescreening_questions(check_prefilled=True)
             case programme_names.TDIPV:
-                self._answer_tdipv_prescreening_questions()
+                self._answer_tdipv_prescreening_questions(check_prefilled=True)
         self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_BATCH_AUTO, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        if not at_clinic:  # only skips MAV-854
+        if at_school:  # only skips MAV-854
             self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
             self.po.verify(
                 locator=self.LBL_MAIN,

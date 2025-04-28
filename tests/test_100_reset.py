@@ -1,0 +1,57 @@
+import pytest
+
+from libs import CurrentExecution
+from libs.generic_constants import fixture_scope
+from libs.mavis_constants import test_data_file_paths
+from pages import (
+    pg_dashboard,
+    pg_import_records,
+    pg_login,
+    pg_programmes,
+    pg_sessions,
+    pg_vaccines,
+)
+
+
+class Test_Reset:
+    ce = CurrentExecution()
+    login_page = pg_login.pg_login()
+    dashboard_page = pg_dashboard.pg_dashboard()
+    programmes_page = pg_programmes.pg_programmes()
+    sessions_page = pg_sessions.pg_sessions()
+    vaccines_page = pg_vaccines.pg_vaccines()
+    import_records_page = pg_import_records.pg_import_records()
+
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_tests(self, start_mavis: None):
+        self.ce.reset_environment()
+        self.login_page.login_as_nurse()
+        yield
+        self.login_page.logout_of_mavis()
+        self.ce.reset_environment()
+
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_mav_965(self, setup_tests: None):
+        try:
+            self.dashboard_page.click_vaccines()
+            self.vaccines_page.add_gardasil9_batch()  # HPV
+            self.vaccines_page.add_menquadfi_batch()  # MenACWY
+            self.vaccines_page.add_revaxis_batch()  # Td/IPV
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.import_records_page.import_class_list_records_from_school_session(
+                file_paths=test_data_file_paths.CLASS_MAV_965
+            )
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+
+    @pytest.mark.rav
+    @pytest.mark.order(531)  # Programmes
+    def test_programmes_rav_prescreening_questions(self, setup_mav_965):
+        self.programmes_page.verify_mav_965()

@@ -46,8 +46,24 @@ class pg_vaccines:
         self.po.act(locator=self.TXT_EXPIRY_MONTH, action=framework_actions.FILL, value=_month)
         self.po.act(locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=_year)
 
-    def add_batch(self):
-        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK)
+    def add_gardasil9_batch(self):
+        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=0)
+        self.enter_batch_name()
+        self.enter_batch_expiry()
+        self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)
+        _success_message = f"Batch {self.batch_name} added"
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
+
+    def add_menquadfi_batch(self):
+        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=1)
+        self.enter_batch_name()
+        self.enter_batch_expiry()
+        self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)
+        _success_message = f"Batch {self.batch_name} added"
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
+
+    def add_revaxis_batch(self):
+        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=2)
         self.enter_batch_name()
         self.enter_batch_expiry()
         self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)

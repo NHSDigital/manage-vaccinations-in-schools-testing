@@ -243,6 +243,19 @@ class pg_programmes:
         assert expected_headers == actual_headers, "Report headers do not match"
 
     def verify_mav_965(self):
+        """
+        Steps to reproduce:
+        Patient setup: in a school session today, marked as attending, session has HPV and doubles, patients is eligible for all vaccines (has consent, correct year group, no history)
+        Complete pre-screening questions and vaccinate the patient for any one vaccine (eg. HPV)
+        Testing has confirmed the following:
+        Two vaccinations in same session
+        - If HPV is followed by MenACWY then "feeling well" is pre-filled
+        - If HPV is followed by Td/IPV  then both "feeling well" and "not pregnant" are pre-populated
+        - If MenACWY followed by Td/IPV then "feeling well" is pre-filled
+        - If MenCAWY followed by HPV then "feeling well" is pre-filled
+        - If Td/IPV followed by MenACWY  then "feeling well" is pre-filled
+        - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
+        """
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_school1()

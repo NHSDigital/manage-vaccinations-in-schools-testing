@@ -12,6 +12,7 @@ class element_properties:
     HREF: Final[str] = "href"
     ELEMENT_EXISTS: Final[str] = "element_exists"
     PAGE_URL: Final[str] = "page_url"
+    CHECKBOX_CHECKED: Final[str] = "checked"
 
 
 class framework_actions:
@@ -39,6 +40,8 @@ class screenshot_actions:
     VERIFY_TEXT_FAILED: Final[str] = "verify_text_failed"
     VERIFY_VISIBILITY_PASSED: Final[str] = "verify_visibility_passed"
     VERIFY_VISIBILITY_FAILED: Final[str] = "verify_visibility_failed"
+    VERIFY_CHECKED_PASSED: Final[str] = "verify_checked_passed"
+    VERIFY_CHECKED_FAILED: Final[str] = "verify_checked_failed"
 
 
 class screenshot_file_types:
@@ -63,6 +66,7 @@ class aria_roles:
     ROW: Final[str] = "row"
     SPAN: Final[str] = "span"
     CELL: Final[str] = "cell"
+    CHECKBOX: Final[str] = "checkbox"
 
 
 class html_tags:
