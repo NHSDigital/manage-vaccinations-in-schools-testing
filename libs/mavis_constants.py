@@ -94,6 +94,7 @@ class test_data_file_paths:
     COHORTS_CONSENT_TWICE: Final[str] = "COHORTS_CONSENT_TWICE"
     COHORTS_CONFLICTING_GILLICK: Final[str] = "COHORTS_CONFLICTING_GILLICK"
     COHORTS_FULL_NAME: Final[str] = "COHORTS_FULL_NAME"
+    COHORTS_MAV_927_PERF: Final[str] = "COHORTS_MAV_927_PERF"
 
 
 class report_headers:

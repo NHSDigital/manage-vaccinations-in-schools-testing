@@ -138,7 +138,7 @@ class pg_programmes:
             self.click_uploaded_file_datetime(truncated=True)
         self.verify_upload_output(file_path=_output_file_path)
 
-    def upload_cohorts(self, file_paths: str):
+    def upload_cohorts(self, file_paths: str, wait_long: bool = False):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_hpv()
         self.click_cohorts()
@@ -146,19 +146,22 @@ class pg_programmes:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
+        if wait_long:
+            self.po.act(locator=None, action=framework_actions.WAIT, value="10m")
+        else:
+            self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
-    def upload_invalid_cohorts(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_hpv()
-        self.click_cohorts()
-        self.click_import_cohort_records()
-        self.choose_file_child_records(file_path=_input_file_path)
-        self.click_continue()
-        self.verify_upload_output(file_path=_output_file_path)
+    # def upload_invalid_cohorts(self, file_paths: str):
+    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+    #     self.click_hpv()
+    #     self.click_cohorts()
+    #     self.click_import_cohort_records()
+    #     self.choose_file_child_records(file_path=_input_file_path)
+    #     self.click_continue()
+    #     self.verify_upload_output(file_path=_output_file_path)
 
     def edit_dose_to_not_given(self):
         self.click_hpv()

@@ -46,7 +46,18 @@ class Test_Reset:
         self.dashboard_page.click_sessions()
         yield
 
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_cohort_upload_and_reports(self, setup_tests: None):
+        self.dashboard_page.click_programmes()
+        yield
+
     @pytest.mark.rav
     @pytest.mark.order(9901)
     def test_programmes_rav_prescreening_questions(self, setup_mav_965):
         self.programmes_page.verify_mav_965()
+
+    @pytest.mark.cohorts
+    @pytest.mark.order(9902)
+    @pytest.mark.skip(reason="Need to fix duplicate NHS Numbers")
+    def test_cohort_upload_performance(self, setup_cohort_upload_and_reports):  # MAV-927
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_927_PERF, wait_long=True)

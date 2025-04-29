@@ -123,17 +123,17 @@ class Test_Programmes:
     @pytest.mark.cohorts
     @pytest.mark.order(503)
     def test_cohorts_file_structure(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE)
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE)
 
     @pytest.mark.cohorts
     @pytest.mark.order(504)
     def test_cohorts_no_record(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
 
     @pytest.mark.cohorts
     @pytest.mark.order(505)
     def test_cohorts_empty_file(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_invalid_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
 
     @pytest.mark.rav
     @pytest.mark.order(526)
