@@ -32,26 +32,21 @@ class Test_Reset:
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_mav_965(self, setup_tests: None):
-        try:
-            self.dashboard_page.click_vaccines()
-            self.vaccines_page.add_gardasil9_batch()  # HPV
-            self.vaccines_page.add_menquadfi_batch()  # MenACWY
-            self.vaccines_page.add_revaxis_batch()  # Td/IPV
-            self.dashboard_page.go_to_dashboard()
-            self.dashboard_page.click_sessions()
-            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-            self.import_records_page.import_class_list_records_from_school_session(
-                file_paths=test_data_file_paths.CLASS_MAV_965
-            )
-            self.dashboard_page.go_to_dashboard()
-            self.dashboard_page.click_sessions()
-            yield
-        finally:
-            self.dashboard_page.go_to_dashboard()
-            self.dashboard_page.click_sessions()
-            self.sessions_page.delete_all_sessions_for_school_1()
+        self.dashboard_page.click_vaccines()
+        self.vaccines_page.add_gardasil9_batch()  # HPV
+        self.vaccines_page.add_menquadfi_batch()  # MenACWY
+        self.vaccines_page.add_revaxis_batch()  # Td/IPV
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        self.import_records_page.import_class_list_records_from_school_session(
+            file_paths=test_data_file_paths.CLASS_MAV_965
+        )
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        yield
 
     @pytest.mark.rav
-    @pytest.mark.order(531)  # Programmes
+    @pytest.mark.order(9901)
     def test_programmes_rav_prescreening_questions(self, setup_mav_965):
         self.programmes_page.verify_mav_965()
