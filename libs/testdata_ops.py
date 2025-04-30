@@ -50,6 +50,7 @@ class testdata_operations:
                 _ln = _ln.replace("<<ORG_CODE>>", test_data_values.ORG_CODE)
                 _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
                 _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
+                _ln = _ln.replace("<<NHS_NO_PERF>>", f"9{_ctr:09d}")
                 _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
                 _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
                 _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])

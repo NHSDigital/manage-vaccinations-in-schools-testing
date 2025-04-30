@@ -147,7 +147,7 @@ class pg_programmes:
         self.click_continue()
         self.record_upload_time()
         if wait_long:
-            self.po.act(locator=None, action=framework_actions.WAIT, value="10m")
+            self.po.act(locator=None, action=framework_actions.WAIT, value="14m")
         else:
             self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
