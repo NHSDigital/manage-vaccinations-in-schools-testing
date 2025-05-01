@@ -1,6 +1,6 @@
 Row 2 Date of birth: Enter a date of birth.
-Row 4 NHS number: Enter an NHS number with 10 characters.
-Row 5 NHS number: Enter an NHS number with 10 characters.
+Row 4 NHS number: should be a valid NHS number with 10 characters
+Row 5 NHS number: should be a valid NHS number with 10 characters
 Row 6 Vaccination type: This programme is not available in this session. Vaccination type: This vaccine is not available in this session.
 Row 7 Vaccination type: must be less than 3
 Row 8 Vaccination type: This programme is not available in this session. Vaccination type: This vaccine is not available in this session.

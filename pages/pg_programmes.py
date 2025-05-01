@@ -154,15 +154,6 @@ class pg_programmes:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
 
-    # def upload_invalid_cohorts(self, file_paths: str):
-    #     _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-    #     self.click_hpv()
-    #     self.click_cohorts()
-    #     self.click_import_cohort_records()
-    #     self.choose_file_child_records(file_path=_input_file_path)
-    #     self.click_continue()
-    #     self.verify_upload_output(file_path=_output_file_path)
-
     def edit_dose_to_not_given(self):
         self.click_hpv()
         self.click_vaccinations()
