@@ -58,6 +58,6 @@ class Test_Reset:
 
     @pytest.mark.cohorts
     @pytest.mark.order(9902)
-    # @pytest.mark.skip(reason="Need to fix duplicate NHS Numbers")
+    @pytest.mark.skip(reason="Covered in performance testing")
     def test_cohort_upload_performance(self, setup_cohort_upload_and_reports):  # MAV-927
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_927_PERF, wait_long=True)

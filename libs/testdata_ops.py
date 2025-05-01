@@ -23,7 +23,7 @@ class testdata_operations:
 
     def create_file_from_template(self, template_path: str, file_name_prefix: str) -> str:
         """
-        Create a file from a template.
+        Create a file from a template while replacing placeholders with calculated values.
 
         Args:
             template_path (str): Path to the template file.
@@ -34,7 +34,7 @@ class testdata_operations:
         """
         _template_text = self.fo.get_file_text(file_path=template_path)
         _file_text = []
-        _ctr = -1
+        _ctr = 0
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
         _year_8_dob = get_dob_from_year(year_group=child_year_group.YEAR_8)
@@ -48,9 +48,9 @@ class testdata_operations:
                 _ln = _ln.replace("<<SCHOOL_2_NAME>>", test_data_values.SCHOOL_2_NAME)
                 _ln = _ln.replace("<<SCHOOL_1_URN>>", test_data_values.SCHOOL_1_URN)
                 _ln = _ln.replace("<<ORG_CODE>>", test_data_values.ORG_CODE)
-                _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
+                # _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
+                _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
                 _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
-                _ln = _ln.replace("<<NHS_NO_PERF>>", f"9{_ctr:09d}")
                 _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
                 _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
                 _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])

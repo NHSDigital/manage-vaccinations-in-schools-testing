@@ -814,8 +814,8 @@ class pg_sessions:
         self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
+        # self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        # self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK) # Removed in R2.2.1 MAV-976
 
     def _answer_menacwy_prescreening_questions(self, check_prefilled: bool = False):
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
@@ -844,17 +844,17 @@ class pg_sessions:
         self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=framework_actions.CHECKBOX_CHECK)
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_NOT_TAKING_MEDICATION, action=framework_actions.CHECKBOX_CHECK)
+        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
         if check_prefilled:
             self.po.verify(
                 locator=self.CHK_ARE_FEELING_WELL, property=element_properties.CHECKBOX_CHECKED, expected_value=True
             )
-            self.po.verify(
-                locator=self.CHK_ARE_NOT_PREGNANT, property=element_properties.CHECKBOX_CHECKED, expected_value=True
-            )
+            # self.po.verify(
+            #     locator=self.CHK_ARE_NOT_PREGNANT, property=element_properties.CHECKBOX_CHECKED, expected_value=True
+            # )   # Removed in R2.2.1 MAV-976
         else:
             self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=framework_actions.CHECKBOX_CHECK)
-            self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-            self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK)
 
     def _vaccinate_child_mav_854(self):
         self.click_get_consent_response()
