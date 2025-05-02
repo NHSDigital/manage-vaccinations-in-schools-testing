@@ -26,6 +26,10 @@ class pg_children:
     LNK_CHILD_RECORD: Final[str] = "Child record"
     LNK_CHILD_MAV_853: Final[str] = "MAV_853, Mav_853"
     LNK_VACCS_DETAILS_MAV_853: Final[str] = "Gardasil 9 (HPV)"
+    LNK_CHILD_CHANGE_NHSNO: Final[str] = "CHANGENHSNO, CHANGENHSNO"
+    LNK_EDIT_CHILD_RECORD: Final[str] = "Edit child record"
+    LNK_CHANGE_NHS_NO: Final[str] = "Change   NHS number"
+    BTN_CONTINUE: Final[str] = "Continue"
 
     def verify_headers(self):
         self.po.verify(
@@ -104,4 +108,19 @@ class pg_children:
             locator=self.LBL_MAIN,
             property=element_properties.TEXT,
             expected_value="Outcome	Vaccinated",
+        )
+
+    def change_nhs_no(self):
+        self.search_for_a_child(child_name=self.LNK_CHILD_CHANGE_NHSNO)
+        self.po.act(locator=self.LNK_CHILD_CHANGE_NHSNO, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_EDIT_CHILD_RECORD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_CHANGE_NHS_NO, action=framework_actions.CLICK_LINK)
+        # self.po.act(
+        #     locator="locator('div').filter(has_text=re.compile(r'What is the child’s NHS number\?$')).click()",
+        #     action=framework_actions.CHAIN_LOCATOR_ACTION,
+        # )
+        self.po.act(locator=self.LNK_CHILD_CHANGE_NHSNO, action=framework_actions.FILL, value="9123456789")
+        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Enter a valid NHS number"
         )

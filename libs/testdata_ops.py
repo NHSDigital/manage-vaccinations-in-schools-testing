@@ -37,10 +37,6 @@ class testdata_operations:
         _ctr = 0
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
-        _year_8_dob = get_dob_from_year(year_group=child_year_group.YEAR_8)
-        _year_9_dob = get_dob_from_year(year_group=child_year_group.YEAR_9)
-        _year_10_dob = get_dob_from_year(year_group=child_year_group.YEAR_10)
-        _year_11_dob = get_dob_from_year(year_group=child_year_group.YEAR_11)
         _session_id = self.ce.get_session_id()
         if _template_text is not None:
             for _ln in _template_text.split(escape_characters.NEW_LINE):
@@ -56,10 +52,10 @@ class testdata_operations:
                 _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
                 _ln = _ln.replace("<<VACCS_TIME>>", get_current_time())
                 _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
-                _ln = _ln.replace("<<DOB_YEAR_8>>", _year_8_dob)
-                _ln = _ln.replace("<<DOB_YEAR_9>>", _year_9_dob)
-                _ln = _ln.replace("<<DOB_YEAR_10>>", _year_10_dob)
-                _ln = _ln.replace("<<DOB_YEAR_11>>", _year_11_dob)
+                _ln = _ln.replace("<<DOB_YEAR_8>>", get_dob_from_year(year_group=child_year_group.YEAR_8))
+                _ln = _ln.replace("<<DOB_YEAR_9>>", get_dob_from_year(year_group=child_year_group.YEAR_9))
+                _ln = _ln.replace("<<DOB_YEAR_10>>", get_dob_from_year(year_group=child_year_group.YEAR_10))
+                _ln = _ln.replace("<<DOB_YEAR_11>>", get_dob_from_year(year_group=child_year_group.YEAR_11))
                 _ln = _ln.replace("<<SESSION_ID>>", _session_id)
                 _file_text.append(_ln)
                 _ctr += 1

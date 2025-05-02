@@ -18,7 +18,17 @@ class Test_Regression_Vaccines:
 
     @pytest.mark.vaccsbatch
     @pytest.mark.order(601)
-    def test_batch_add_change_archive_batch(self):
+    def test_batch_add_change_archive_hpv(self):
         self.vaccines_page.add_gardasil9_batch()
         self.vaccines_page.change_batch()
         self.vaccines_page.archive_batch()
+
+    @pytest.mark.vaccsbatch
+    @pytest.mark.order(602)
+    def test_batch_add_menacwy(self):
+        self.vaccines_page.add_menquadfi_batch()
+
+    @pytest.mark.vaccsbatch
+    @pytest.mark.order(603)
+    def test_batch_add_tdipv(self):
+        self.vaccines_page.add_revaxis_batch()
