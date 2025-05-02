@@ -91,7 +91,9 @@ class pg_sessions:
     LNK_EDIT_GILLICK_COMPETENCE: Final[str] = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT: Final[str] = "Update your assessment"
     LNK_HPV_CONSENT_FORM: Final[str] = "View the HPV online consent form"
-    LNK_DOUBLES_CONSENT_FORM: Final[str] = "View the MenACWY and Td/IPV online consent form"
+    LNK_DOUBLES_CONSENT_FORM: str = (
+        f"View the {programme_names.MENACWY} and {programme_names.TDIPV} online consent form"
+    )
     LNK_COULD_NOT_VACCINATE: Final[str] = "Could not vaccinate"
     RDO_CONSENT_REFUSED: Final[str] = "Consent refused"
     LNK_MARK_AS_INVALID: Final[str] = "Mark as invalid"

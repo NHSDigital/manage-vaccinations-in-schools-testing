@@ -36,6 +36,23 @@ class Test_Children:
             self.sessions_page.delete_all_sessions_for_school_1()
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    def setup_change_nhsno(self, setup_tests: None):
+        try:
+            self.dashboard_page.click_sessions()
+            self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.click_school1()
+            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_CHANGE_NHSNO)
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_children()
+            yield
+        finally:
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_sessions()
+            self.sessions_page.delete_all_sessions_for_school_1()
+
+    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_mav_853(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()
@@ -67,3 +84,8 @@ class Test_Children:
     @pytest.mark.order(702)
     def test_children_details_mav_853(self, setup_mav_853: None):
         self.children_page.verify_mav_853()  # MAV-853
+
+    @pytest.mark.children
+    @pytest.mark.order(703)
+    def test_children_change_nhsno(self, setup_change_nhsno: None):
+        self.children_page.change_nhs_no()

@@ -35,6 +35,7 @@ CLASS_MAV_854,test_data/class_list/i_mav_854.csv,test_data/class_list/o_mav_854.
 CLASS_SESSION_ID,test_data/class_list/i_session_id.csv,test_data/class_list/o_session_id.csv,classsessid
 CLASS_SINGLE_VACC,test_data/class_list/i_single_vacc.csv,test_data/class_list/o_single_vacc.csv,classsinglevacc
 CLASS_MAV_965,test_data/class_list/i_mav_965.csv,test_data/class_list/o_mav_965.csv,classmav965
+CLASS_CHANGE_NHSNO,test_data/class_list/i_change_nhsno.csv,test_data/class_list/o_change_nhsno.csv,classchangenhsno
 COHORTS_NO_CONSENT,test_data/cohorts/i_no_consent.csv,test_data/cohorts/o_no_consent.csv,cohortnoconsent
 COHORTS_CONFLICTING_CONSENT,test_data/cohorts/i_conflicting_consent.csv,test_data/cohorts/o_conflicting_consent.csv,cohortconflict
 COHORTS_E2E_1,test_data/cohorts/i_e2e_1.csv,test_data/cohorts/o_e2e_1.csv,cohort_e2e
