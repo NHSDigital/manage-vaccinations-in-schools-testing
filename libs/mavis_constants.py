@@ -34,11 +34,11 @@ class programme_names:
 
 
 class vaccine_names:
-    GARDASIL9: Final[str] = "Gardasil9"  # HPV
-    MENQUADFI: Final[str] = "MenQuadfi"  # MenACWY
+    GARDASIL9: Final[str] = ("Gardasil9", 0)  # HPV
+    MENQUADFI: Final[str] = ("MenQuadfi", 1)  # MenACWY
     MENVEO: Final[str] = "Menveo"  # MenACWY
     NIMENRIX: Final[str] = "Nimenrix"  # MenACWY
-    REVAXIS: Final[str] = "Revaxis"  # Td/IPV
+    REVAXIS: Final[str] = ("Revaxis", 4)  # Td/IPV
 
 
 class test_data_values:
