@@ -39,7 +39,7 @@ class pg_vaccines:
         self.po.act(locator=self.TXT_BATCH_NAME, action=framework_actions.FILL, value=self.batch_name)
 
     def _enter_batch_expiry(self, expiry_date: str = ""):
-        _future_expiry_date = get_offset_date(offset_days=730) if expiry_date == "" else expiry_date
+        _future_expiry_date = get_offset_date(offset_days=365) if expiry_date == "" else expiry_date
         _day = _future_expiry_date[-2:]
         _month = _future_expiry_date[4:6]
         _year = _future_expiry_date[:4]
@@ -65,7 +65,7 @@ class pg_vaccines:
     def change_batch(self):
         self.po.act(locator=self.batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, value=0)  # CHANGE link
         self.po.act(
-            locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=get_offset_date(offset_days=365)[:4]
+            locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=get_offset_date(offset_days=730)[:4]
         )
         self.po.act(locator=self.BTN_SAVE_CHANGES, action=framework_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} updated"
