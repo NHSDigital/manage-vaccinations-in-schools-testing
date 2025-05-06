@@ -118,7 +118,7 @@ class pg_sessions:
     CHK_NOT_TAKING_MEDICATION: Final[str] = "are not taking any medication which prevents vaccination"
     RDO_YES: Final[str] = "Yes"
     RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
-    RDO_BATCH_AUTO: Final[str] = "Auto20"
+    RDO_BATCH_NAME: Final[str] = "Batch20"
     RDO_CLINIC_WEIMANN: Final[str] = "The Weimann Institute Clinic"
     BTN_CONFIRM: Final[str] = "Confirm"
     BTN_SEARCH: Final[str] = "Search"
@@ -926,7 +926,7 @@ class pg_sessions:
         self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_BATCH_AUTO, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_BATCH_NAME, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         if at_school:  # only skips MAV-854
             self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
