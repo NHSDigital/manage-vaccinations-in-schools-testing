@@ -33,6 +33,14 @@ class programme_names:
     TDIPV: Final[str] = "Td/IPV"
 
 
+class vaccine_names:
+    GARDASIL9: Final[str] = "Gardasil9"  # HPV
+    MENQUADFI: Final[str] = "MenQuadfi"  # MenACWY
+    MENVEO: Final[str] = "Menveo"  # MenACWY
+    NIMENRIX: Final[str] = "Nimenrix"  # MenACWY
+    REVAXIS: Final[str] = "Revaxis"  # Td/IPV
+
+
 class test_data_values:
     SCHOOL_1_NAME: Final[str] = "Bohunt School Wokingham"
     SCHOOL_2_NAME: Final[str] = "Ashlawn School"

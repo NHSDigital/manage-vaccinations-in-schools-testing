@@ -2,6 +2,7 @@ from typing import Final
 
 from libs import playwright_ops
 from libs.generic_constants import element_properties, framework_actions
+from libs.mavis_constants import vaccine_names
 from libs.wrappers import *
 
 
@@ -33,8 +34,8 @@ class pg_vaccines:
             exact=False,
         )
 
-    def enter_batch_name(self):
-        self.batch_name = f"Auto{get_current_datetime()}"
+    def enter_batch_name(self, vaccine_name: str):
+        self.batch_name = f"{vaccine_name}{get_current_datetime()}"
         self.po.act(locator=self.TXT_BATCH_NAME, action=framework_actions.FILL, value=self.batch_name)
 
     def enter_batch_expiry(self, expiry_date: str = ""):
@@ -47,24 +48,30 @@ class pg_vaccines:
         self.po.act(locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=_year)
 
     def add_gardasil9_batch(self):
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=vaccine_names.GARDASIL9)
         self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=0)
-        self.enter_batch_name()
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=vaccine_names.GARDASIL9)
+        self.enter_batch_name(vaccine_name=vaccine_names.GARDASIL9)
         self.enter_batch_expiry()
         self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} added"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def add_menquadfi_batch(self):
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=vaccine_names.MENQUADFI)
         self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=1)
-        self.enter_batch_name()
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=vaccine_names.MENQUADFI)
+        self.enter_batch_name(vaccine_name=vaccine_names.MENQUADFI)
         self.enter_batch_expiry()
         self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} added"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def add_revaxis_batch(self):
-        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=2)
-        self.enter_batch_name()
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=vaccine_names.REVAXIS)
+        self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=4)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=vaccine_names.REVAXIS)
+        self.enter_batch_name(vaccine_name=vaccine_names.REVAXIS)
         self.enter_batch_expiry()
         self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} added"
