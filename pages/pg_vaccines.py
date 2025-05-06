@@ -34,30 +34,24 @@ class pg_vaccines:
             exact=False,
         )
 
-    def _enter_batch_name(self, vaccine_name: str):
-        self.batch_name = f"{vaccine_name}{get_current_datetime()}"
-        self.po.act(locator=self.TXT_BATCH_NAME, action=framework_actions.FILL, value=self.batch_name)
-
-    def _enter_batch_expiry(self, expiry_date: str = ""):
-        _future_expiry_date = get_offset_date(offset_days=365) if expiry_date == "" else expiry_date
-        _day = _future_expiry_date[-2:]
-        _month = _future_expiry_date[4:6]
-        _year = _future_expiry_date[:4]
-        self.po.act(locator=self.TXT_EXPIRY_DAY, action=framework_actions.FILL, value=_day)
-        self.po.act(locator=self.TXT_EXPIRY_MONTH, action=framework_actions.FILL, value=_month)
-        self.po.act(locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=_year)
-
-    def _get_batch_details(self, vacc_name: str):
+    def _calculate_batch_details(self, vacc_name: str):
         self.vacc_name = vacc_name[0]
         self.add_btn_index = vacc_name[1]
+        self.batch_name = f"Batch{get_current_datetime()}"
+        self.future_expiry_date = get_offset_date(offset_days=365)
+        self.day = self.future_expiry_date[-2:]
+        self.month = self.future_expiry_date[4:6]
+        self.year = self.future_expiry_date[:4]
 
     def add_batch(self, vaccine_name: str):
-        self._get_batch_details(vacc_name=vaccine_name)
+        self._calculate_batch_details(vacc_name=vaccine_name)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.vacc_name)
         self.po.act(locator=self.LNK_ADD_NEW_BATCH, action=framework_actions.CLICK_LINK, index=self.add_btn_index)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.vacc_name)
-        self._enter_batch_name(vaccine_name=self.vacc_name)
-        self._enter_batch_expiry()
+        self.po.act(locator=self.TXT_BATCH_NAME, action=framework_actions.FILL, value=self.batch_name)
+        self.po.act(locator=self.TXT_EXPIRY_DAY, action=framework_actions.FILL, value=self.day)
+        self.po.act(locator=self.TXT_EXPIRY_MONTH, action=framework_actions.FILL, value=self.month)
+        self.po.act(locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=self.year)
         self.po.act(locator=self.BTN_ADD_BATCH, action=framework_actions.CLICK_BUTTON)
         _success_message = f"Batch {self.batch_name} added"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
