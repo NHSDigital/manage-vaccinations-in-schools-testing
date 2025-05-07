@@ -37,7 +37,7 @@ class pg_vaccines:
     def _calculate_batch_details(self, vacc_name: str):
         self.vacc_name = vacc_name[0]
         self.add_btn_index = vacc_name[1]
-        self.batch_name = f"Batch{get_current_datetime()}"
+        self.batch_name = f"{self.vacc_name}{get_current_datetime()}"
         self.future_expiry_date = get_offset_date(offset_days=365)
         self.day = self.future_expiry_date[-2:]
         self.month = self.future_expiry_date[4:6]
@@ -56,8 +56,9 @@ class pg_vaccines:
         _success_message = f"Batch {self.batch_name} added"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
-    def change_batch(self):
-        self.po.act(locator=self.batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, value=0)  # CHANGE link
+    def change_batch(self, vaccine_name: str):
+        _batch_name = vaccine_name[0]
+        self.po.act(locator=_batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, index=0)  # CHANGE link
         self.po.act(
             locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=get_offset_date(offset_days=730)[:4]
         )
@@ -65,10 +66,9 @@ class pg_vaccines:
         _success_message = f"Batch {self.batch_name} updated"
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
-    def archive_batch(self):
-        self.po.act(
-            locator=self.batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, value=1
-        )  # ARCHIVE link
+    def archive_batch(self, vaccine_name: str):
+        _batch_name = vaccine_name[0]
+        self.po.act(locator=_batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, index=1)  # ARCHIVE link
         self.po.act(locator=self.BTN_CONFIRM_ARCHIVE, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_BATCH_ARCHIVED

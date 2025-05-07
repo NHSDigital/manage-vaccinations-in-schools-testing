@@ -9,6 +9,7 @@ class Test_Regression_Vaccines:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     vaccines_page = pg_vaccines.pg_vaccines()
+    doubles_vaccines = [vaccine_names.MENQUADFI, vaccine_names.MENVEO, vaccine_names.NIMENRIX, vaccine_names.REVAXIS]
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=True)
     def setup_tests(self, start_mavis: None):
@@ -21,15 +22,17 @@ class Test_Regression_Vaccines:
     @pytest.mark.order(601)
     def test_batch_add_change_archive_hpv(self):
         self.vaccines_page.add_batch(vaccine_name=vaccine_names.GARDASIL9)
-        self.vaccines_page.change_batch()
-        self.vaccines_page.archive_batch()
+        self.vaccines_page.change_batch(vaccine_name=vaccine_names.GARDASIL9)
+        self.vaccines_page.archive_batch(vaccine_name=vaccine_names.GARDASIL9)
 
     @pytest.mark.vaccsbatch
     @pytest.mark.order(602)
-    def test_batch_add_menacwy(self):
-        self.vaccines_page.add_batch(vaccine_name=vaccine_names.MENQUADFI)
-
-    @pytest.mark.vaccsbatch
-    @pytest.mark.order(603)
-    def test_batch_add_tdipv(self):
-        self.vaccines_page.add_batch(vaccine_name=vaccine_names.REVAXIS)
+    @pytest.mark.parametrize(
+        "vaccine_name",
+        doubles_vaccines,
+        ids=[id[0] for id in doubles_vaccines],
+    )
+    def test_batch_add_change_archive_doubles(self, vaccine_name):
+        self.vaccines_page.add_batch(vaccine_name=vaccine_name)
+        self.vaccines_page.change_batch(vaccine_name=vaccine_name)
+        self.vaccines_page.archive_batch(vaccine_name=vaccine_name)

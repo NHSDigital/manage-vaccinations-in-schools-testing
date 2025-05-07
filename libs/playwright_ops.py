@@ -351,7 +351,7 @@ class playwright_operations:
                     name=locator,
                 )
                 .get_by_role(aria_roles.LINK)
-                .nth(value)
+                .nth(index)
             )
             elem.scroll_into_view_if_needed()
         elem.click()
