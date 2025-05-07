@@ -35,7 +35,7 @@ class pg_school_moves:
         )
 
     def confirm_school_move(self):
-        self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
+        self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, index=0)
         _child_full_name: str = (
             self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=element_properties.TEXT)
             .replace(self.LBL_CHILD_NAME, "")
@@ -47,7 +47,7 @@ class pg_school_moves:
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def ignore_school_move(self):
-        self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, value=0)
+        self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, index=0)
         _child_full_name: str = (
             self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=element_properties.TEXT)
             .replace(self.LBL_CHILD_NAME, "")

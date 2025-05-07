@@ -22,7 +22,8 @@
     "SAIS",
     "schoolmoves",
     "unmatchedconsentresponses",
-    "venv"
+    "venv",
+    "GARDASIL","GARDASIL9","VACC","vacc","careplus","MENACWY","TDIPV","SYSTMONE","SYSTM"
   ],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",

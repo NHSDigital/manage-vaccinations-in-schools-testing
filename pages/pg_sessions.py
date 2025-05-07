@@ -12,6 +12,7 @@ from libs.mavis_constants import (
     programme_names,
     record_limit,
     test_data_values,
+    vaccine_names,
 )
 from libs.wrappers import (
     datetime,
@@ -118,7 +119,6 @@ class pg_sessions:
     CHK_NOT_TAKING_MEDICATION: Final[str] = "are not taking any medication which prevents vaccination"
     RDO_YES: Final[str] = "Yes"
     RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
-    RDO_BATCH_NAME: Final[str] = "Batch20"
     RDO_CLINIC_WEIMANN: Final[str] = "The Weimann Institute Clinic"
     BTN_CONFIRM: Final[str] = "Confirm"
     BTN_SEARCH: Final[str] = "Search"
@@ -910,23 +910,25 @@ class pg_sessions:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=child_name, action=framework_actions.CLICK_LINK)
 
-    def record_vaccs_for_child(
-        self, child_name: str, programme_name: str = programme_names.HPV, at_school: bool = True
-    ):
+    def record_vaccs_for_child(self, child_name: str, programme_name: str, at_school: bool = True):
+        _batch_name: str = ""
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=framework_actions.CLICK_LINK)
         self.search_child(child_name=child_name)
         self.po.act(locator=programme_name, action=framework_actions.CLICK_LINK)
         match programme_name:
             case programme_names.HPV:
                 self._answer_hpv_prescreening_questions()
+                _batch_name = vaccine_names.GARDASIL9[0]
             case programme_names.MENACWY:
                 self._answer_menacwy_prescreening_questions(check_prefilled=True)
+                _batch_name = vaccine_names.MENQUADFI[0]
             case programme_names.TDIPV:
                 self._answer_tdipv_prescreening_questions(check_prefilled=True)
+                _batch_name = vaccine_names.REVAXIS[0]
         self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_BATCH_NAME, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=_batch_name, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         if at_school:  # only skips MAV-854
             self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
