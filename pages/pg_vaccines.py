@@ -57,7 +57,7 @@ class pg_vaccines:
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def change_batch(self, vaccine_name: str):
-        _batch_name = vaccine_name[0]
+        _batch_name = vaccine_name[0] if self.batch_name == "" else self.batch_name
         self.po.act(locator=_batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, index=0)  # CHANGE link
         self.po.act(
             locator=self.TXT_EXPIRY_YEAR, action=framework_actions.FILL, value=get_offset_date(offset_days=730)[:4]
@@ -67,7 +67,7 @@ class pg_vaccines:
         self.po.verify(locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=_success_message)
 
     def archive_batch(self, vaccine_name: str):
-        _batch_name = vaccine_name[0]
+        _batch_name = vaccine_name[0] if self.batch_name == "" else self.batch_name
         self.po.act(locator=_batch_name, action=framework_actions.CLICK_LINK_INDEX_FOR_ROW, index=1)  # ARCHIVE link
         self.po.act(locator=self.BTN_CONFIRM_ARCHIVE, action=framework_actions.CLICK_BUTTON)
         self.po.verify(
