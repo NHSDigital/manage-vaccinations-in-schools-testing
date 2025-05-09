@@ -9,10 +9,10 @@ from libs.generic_constants import (
 )
 from libs.mavis_constants import (
     child_year_group,
-    programme_names,
+    programmes,
     record_limit,
     test_data_values,
-    vaccine_names,
+    vaccines,
 )
 from libs.wrappers import (
     datetime,
@@ -92,9 +92,7 @@ class pg_sessions:
     LNK_EDIT_GILLICK_COMPETENCE: Final[str] = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT: Final[str] = "Update your assessment"
     LNK_HPV_CONSENT_FORM: Final[str] = "View the HPV online consent form"
-    LNK_DOUBLES_CONSENT_FORM: str = (
-        f"View the {programme_names.MENACWY} and {programme_names.TDIPV} online consent form"
-    )
+    LNK_DOUBLES_CONSENT_FORM: str = f"View the {programmes.MENACWY} and {programmes.TDIPV} online consent form"
     LNK_COULD_NOT_VACCINATE: Final[str] = "Could not vaccinate"
     RDO_CONSENT_REFUSED: Final[str] = "Consent refused"
     LNK_MARK_AS_INVALID: Final[str] = "Mark as invalid"
@@ -184,13 +182,13 @@ class pg_sessions:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
 
     def click_hpv_tab(self):
-        self.po.act(locator=programme_names.HPV, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=programmes.HPV, action=framework_actions.CLICK_LINK)
 
     def click_menacwy_tab(self):
-        self.po.act(locator=programme_names.MENACWY, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=programmes.MENACWY, action=framework_actions.CLICK_LINK)
 
     def click_tdipv_tab(self):
-        self.po.act(locator=programme_names.TDIPV, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=programmes.TDIPV, action=framework_actions.CLICK_LINK)
 
     def click_register_tab(self):
         self.po.act(locator=self.LNK_TAB_REGISTER, action=framework_actions.CLICK_LINK, exact=False)
@@ -862,9 +860,7 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
-        self.record_vaccs_for_child(
-            child_name=self.LNK_MAV_854_CHILD, programme_name=programme_names.HPV, at_school=False
-        )
+        self.record_vaccs_for_child(child_name=self.LNK_MAV_854_CHILD, programme_name=programmes.HPV, at_school=False)
         self.po.act(locator=self.RDO_CLINIC_WEIMANN, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
@@ -916,15 +912,15 @@ class pg_sessions:
         self.search_child(child_name=child_name)
         self.po.act(locator=programme_name, action=framework_actions.CLICK_LINK)
         match programme_name:
-            case programme_names.HPV:
+            case programmes.HPV:
                 self._answer_hpv_prescreening_questions()
-                _batch_name = vaccine_names.GARDASIL9[0]
-            case programme_names.MENACWY:
+                _batch_name = vaccines.GARDASIL9[0]
+            case programmes.MENACWY:
                 self._answer_menacwy_prescreening_questions(check_prefilled=True)
-                _batch_name = vaccine_names.MENQUADFI[0]
-            case programme_names.TDIPV:
+                _batch_name = vaccines.MENQUADFI[0]
+            case programmes.TDIPV:
                 self._answer_tdipv_prescreening_questions(check_prefilled=True)
-                _batch_name = vaccine_names.REVAXIS[0]
+                _batch_name = vaccines.REVAXIS[0]
         self.po.act(locator=self.RDO_YES, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)

@@ -27,13 +27,13 @@ class child_year_group:
     ALL: Final[str] = "ALL"
 
 
-class programme_names:
+class programmes:
     HPV: Final[str] = "HPV"
     MENACWY: Final[str] = "MenACWY"
     TDIPV: Final[str] = "Td/IPV"
 
 
-class vaccine_names:
+class vaccines:
     GARDASIL9: Final[str] = ("Gardasil9", 0)  # HPV
     MENQUADFI: Final[str] = ("MenQuadfi", 1)  # MenACWY
     MENVEO: Final[str] = ("Menveo", 2)  # MenACWY

@@ -2,7 +2,7 @@ from typing import Final
 
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
-from libs.mavis_constants import programme_names, record_limit, report_headers
+from libs.mavis_constants import programmes, record_limit, report_headers
 from libs.wrappers import *
 from pages import (
     pg_children,
@@ -192,9 +192,9 @@ class pg_programmes:
 
     def verify_careplus_report_format(self, for_programme: str):
         match for_programme.lower():
-            case programme_names.MENACWY:
+            case programmes.MENACWY:
                 self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
-            case programme_names.TDIPV:
+            case programmes.TDIPV:
                 self.po.act(locator=self.LNK_TDIPV, action=framework_actions.CLICK_LINK)
             case _:
                 self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -205,9 +205,9 @@ class pg_programmes:
 
     def verify_csv_report_format(self, for_programme: str):
         match for_programme.lower():
-            case programme_names.MENACWY:
+            case programmes.MENACWY:
                 self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
-            case programme_names.TDIPV:
+            case programmes.TDIPV:
                 self.po.act(locator=self.LNK_TDIPV, action=framework_actions.CLICK_LINK)
             case _:
                 self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -218,9 +218,9 @@ class pg_programmes:
 
     def verify_systmone_report_format(self, for_programme: str):
         match for_programme.lower():
-            case programme_names.MENACWY:
+            case programmes.MENACWY:
                 self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
-            case programme_names.TDIPV:
+            case programmes.TDIPV:
                 self.po.act(locator=self.LNK_TDIPV, action=framework_actions.CLICK_LINK)
             case _:
                 self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -261,18 +261,12 @@ class pg_programmes:
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_menacwy_tab()
         self.sessions_page.click_get_consent_response()
-        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programme_names.MENACWY)
+        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programmes.MENACWY)
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_tdipv_tab()
         self.sessions_page.click_get_consent_response()
-        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programme_names.TDIPV)
+        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programmes.TDIPV)
         self.sessions_page.register_child_as_attending(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme_name=programme_names.HPV
-        )
-        self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme_name=programme_names.MENACWY
-        )
-        self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme_name=programme_names.TDIPV
-        )
+        self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.HPV)
+        self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.MENACWY)
+        self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.TDIPV)

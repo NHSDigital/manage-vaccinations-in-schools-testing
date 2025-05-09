@@ -2,7 +2,7 @@ import pytest
 
 from libs import CurrentExecution
 from libs.generic_constants import fixture_scope
-from libs.mavis_constants import test_data_file_paths, vaccine_names
+from libs.mavis_constants import test_data_file_paths, vaccines
 from pages import (
     pg_dashboard,
     pg_import_records,
@@ -33,9 +33,9 @@ class Test_Reset:
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_mav_965(self, setup_tests: None):
         self.dashboard_page.click_vaccines()
-        self.vaccines_page.add_batch(vaccine_name=vaccine_names.GARDASIL9)  # HPV
-        self.vaccines_page.add_batch(vaccine_name=vaccine_names.MENQUADFI)  # MenACWY
-        self.vaccines_page.add_batch(vaccine_name=vaccine_names.REVAXIS)  # Td/IPV
+        self.vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)  # HPV
+        self.vaccines_page.add_batch(vaccine_name=vaccines.MENQUADFI)  # MenACWY
+        self.vaccines_page.add_batch(vaccine_name=vaccines.REVAXIS)  # Td/IPV
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)

@@ -2,7 +2,7 @@ from typing import Final
 
 from libs import playwright_ops
 from libs.generic_constants import element_properties, framework_actions
-from libs.mavis_constants import vaccine_names
+from libs.mavis_constants import vaccines
 from libs.wrappers import *
 
 
