@@ -2,7 +2,7 @@ from typing import Final
 
 from libs import playwright_ops
 from libs.generic_constants import element_properties, framework_actions
-from libs.mavis_constants import programme_names, test_data_values
+from libs.mavis_constants import programmes, test_data_values
 
 
 class pg_consent_doubles:
@@ -320,7 +320,7 @@ class pg_consent_doubles:
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.check_phone_options(scenario_id="")
 
-    def parent_1_verbal_positive(self, change_phone: bool = True, programme_name: str = programme_names.MENACWY):
+    def parent_1_verbal_positive(self, change_phone: bool = True, programme_name: str = programmes.MENACWY):
         self.po.act(locator=self.RDO_PARENT1_DAD, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)  # Parent contact details page
@@ -363,7 +363,7 @@ class pg_consent_doubles:
         self.po.act(locator=self.BTN_CONFIRM, action=framework_actions.CLICK_BUTTON)
 
     def set_health_questions_no(self, programme_name: str):
-        if programme_name == programme_names.MENACWY:
+        if programme_name == programmes.MENACWY:
             self.po.act(
                 locator="get_by_role('group', name='Does your child have a bleeding disorder or another medical condition they').get_by_label('No').check()",
                 action=framework_actions.CHAIN_LOCATOR_ACTION,

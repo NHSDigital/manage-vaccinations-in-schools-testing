@@ -1,7 +1,7 @@
 import pytest
 
 from libs.generic_constants import fixture_scope
-from libs.mavis_constants import programme_names, test_data_file_paths, vaccine_names
+from libs.mavis_constants import programmes, test_data_file_paths, vaccines
 from pages import (
     pg_dashboard,
     pg_import_records,
@@ -71,7 +71,7 @@ class Test_Programmes:
         try:
             self.login_page.login_as_nurse()
             self.dashboard_page.click_vaccines()
-            self.vaccines_page.add_batch(vaccine_name=vaccine_names.GARDASIL9)
+            self.vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -135,6 +135,13 @@ class Test_Programmes:
     def test_cohorts_empty_file(self, setup_cohort_upload_and_reports):
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
 
+    @pytest.mark.cohorts
+    @pytest.mark.order(506)
+    # @pytest.mark.skip(reason="Test under construction")
+    def test_cohorts_readd_to_cohort(self, setup_cohort_upload_and_reports):  # MAV-909
+        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
+        self.programmes_page.verify_mav_909()
+
     @pytest.mark.rav
     @pytest.mark.order(526)
     def test_programmes_rav_triage_positive(self, setup_record_a_vaccine):
@@ -164,30 +171,30 @@ class Test_Programmes:
     @pytest.mark.reports
     @pytest.mark.order(551)
     def test_programmes_verify_careplus_report_for_hpv(self, setup_cohort_upload_and_reports):
-        self.programmes_page.verify_careplus_report_format(for_programme=programme_names.HPV)
+        self.programmes_page.verify_careplus_report_format(for_programme=programmes.HPV)
 
     @pytest.mark.reports
     @pytest.mark.order(552)
     def test_programmes_verify_careplus_report_for_doubles(self, setup_cohort_upload_and_reports):
-        self.programmes_page.verify_careplus_report_format(for_programme=programme_names.MENACWY)
+        self.programmes_page.verify_careplus_report_format(for_programme=programmes.MENACWY)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
-        self.programmes_page.verify_careplus_report_format(for_programme=programme_names.TDIPV)
+        self.programmes_page.verify_careplus_report_format(for_programme=programmes.TDIPV)
 
     @pytest.mark.reports
     @pytest.mark.order(553)
     def test_programmes_verify_csv_report_for_hpv(self, setup_cohort_upload_and_reports):
-        self.programmes_page.verify_csv_report_format(for_programme=programme_names.HPV)
+        self.programmes_page.verify_csv_report_format(for_programme=programmes.HPV)
 
     @pytest.mark.reports
     @pytest.mark.order(554)
     def test_programmes_verify_csv_report_for_doubles(self, setup_cohort_upload_and_reports):
-        self.programmes_page.verify_csv_report_format(for_programme=programme_names.MENACWY)
+        self.programmes_page.verify_csv_report_format(for_programme=programmes.MENACWY)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
-        self.programmes_page.verify_csv_report_format(for_programme=programme_names.TDIPV)
+        self.programmes_page.verify_csv_report_format(for_programme=programmes.TDIPV)
 
     @pytest.mark.reports
     @pytest.mark.order(555)
     def test_programmes_verify_systmone_report_for_hpv(self, setup_cohort_upload_and_reports):
-        self.programmes_page.verify_systmone_report_format(for_programme=programme_names.HPV)
+        self.programmes_page.verify_systmone_report_format(for_programme=programmes.HPV)
