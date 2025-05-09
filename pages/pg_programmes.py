@@ -2,7 +2,12 @@ from typing import Final
 
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import element_properties, framework_actions, wait_time
-from libs.mavis_constants import programmes, record_limit, report_headers
+from libs.mavis_constants import (
+    programmes,
+    record_limit,
+    report_headers,
+    test_data_file_paths,
+)
 from libs.wrappers import *
 from pages import (
     pg_children,
@@ -27,6 +32,7 @@ class pg_programmes:
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
     LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
+    LNK_MAV_909_CHILD: Final[str] = "MAV_909, MAV_909"
 
     LNK_HPV: Final[str] = "HPV"
     LNK_TDIPV: Final[str] = "Td/IPV"
@@ -54,6 +60,8 @@ class pg_programmes:
     RDO_REPORT_CAREPLUS: Final[str] = "CarePlus"
     RDO_REPORT_CSV: Final[str] = "CSV"
     RDO_REPORT_SYSTMONE: Final[str] = "SystmOne"
+    LBL_DUPLICATE_REVIEW_MESSAGE: Final[str] = "1 duplicate record needs review"
+    LNK_REVIEW: Final[str] = "Review"
 
     def click_hpv(self):
         self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -270,3 +278,18 @@ class pg_programmes:
         self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.HPV)
         self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.MENACWY)
         self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.TDIPV)
+
+    def verify_mav_909(self):
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_children()
+        self.children_page.remove_child_from_cohort(child_name=self.LNK_MAV_909_CHILD)
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_programmes()
+        self.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE
+        )
+        self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK)
+        self.po.verify(
+            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="!Not provided"
+        )  # NHS number for Existing Record

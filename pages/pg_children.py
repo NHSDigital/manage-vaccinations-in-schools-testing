@@ -30,6 +30,7 @@ class pg_children:
     LNK_EDIT_CHILD_RECORD: Final[str] = "Edit child record"
     LNK_CHANGE_NHS_NO: Final[str] = "Change   NHS number"
     BTN_CONTINUE: Final[str] = "Continue"
+    BTN_REMOVE_FROM_COHORT: Final[str] = "Remove from cohort"
 
     def verify_headers(self):
         self.po.verify(
@@ -43,15 +44,12 @@ class pg_children:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
-    def search_children(self) -> None:
+    def verify_child_exists(self) -> None:
         if len(self.ce.child_list) >= 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             for child_name in self.ce.child_list:
-                self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=child_name)
-                self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
-                self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-                self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=child_name)
+                self.search_for_a_child(child_name=child_name)
                 self.po.act(locator=self.LNK_CLEAR_FILTERS, action=framework_actions.CLICK_LINK)
 
     def search_for_a_child(self, child_name: str) -> None:
@@ -124,3 +122,10 @@ class pg_children:
         self.po.verify(
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="Enter a valid NHS number"
         )
+
+    def remove_child_from_cohort(self, child_name: str):
+        _expected_message = f"{child_name} removed from cohort"
+        self.search_for_a_child(child_name=child_name)
+        self.po.act(locator=child_name, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_REMOVE_FROM_COHORT, action=framework_actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_expected_message)
