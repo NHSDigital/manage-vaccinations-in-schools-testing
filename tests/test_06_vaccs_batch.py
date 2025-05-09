@@ -28,11 +28,11 @@ class Test_Regression_Vaccines:
     @pytest.mark.vaccsbatch
     @pytest.mark.order(602)
     @pytest.mark.parametrize(
-        "vaccine_name",
+        "vaccine",
         doubles_vaccines,
         ids=[id[0] for id in doubles_vaccines],
     )
-    def test_batch_add_change_archive_doubles(self, vaccine_name):
-        self.vaccines_page.add_batch(vaccine_name=vaccine_name)
-        self.vaccines_page.change_batch(vaccine_name=vaccine_name)
-        self.vaccines_page.archive_batch(vaccine_name=vaccine_name)
+    def test_batch_add_change_archive_doubles(self, vaccine):
+        self.vaccines_page.add_batch(vaccine_name=vaccine)
+        self.vaccines_page.change_batch(vaccine_name=vaccine)
+        self.vaccines_page.archive_batch(vaccine_name=vaccine)
