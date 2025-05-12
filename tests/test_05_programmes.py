@@ -137,7 +137,6 @@ class Test_Programmes:
 
     @pytest.mark.cohorts
     @pytest.mark.order(506)
-    # @pytest.mark.skip(reason="Test under construction")
     def test_cohorts_readd_to_cohort(self, setup_cohort_upload_and_reports):  # MAV-909
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
         self.programmes_page.verify_mav_909()

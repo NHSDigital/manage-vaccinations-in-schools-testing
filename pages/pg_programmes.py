@@ -62,6 +62,11 @@ class pg_programmes:
     RDO_REPORT_SYSTMONE: Final[str] = "SystmOne"
     LBL_DUPLICATE_REVIEW_MESSAGE: Final[str] = "1 duplicate record needs review"
     LNK_REVIEW: Final[str] = "Review"
+    RDO_USE_DUPLICATE: Final[str] = "Use duplicate record"
+    RDO_KEEP_EXISTING: Final[str] = "Keep previously uploaded record"
+    RDO_KEEP_BOTH: Final[str] = "Keep both records"
+    BTN_RESOLVE_DUPLICATE: Final[str] = "Resolve duplicate"
+    LBL_RECORD_UPDATED: Final[str] = "Record updated"
 
     def click_hpv(self):
         self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
@@ -280,6 +285,27 @@ class pg_programmes:
         self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.TDIPV)
 
     def verify_mav_909(self):
+        """
+        Steps to reproduce:
+        Find a patient in Year 8 and remove them from cohort using the button
+        Upload a cohort list with their first name, surname, URN, date of birth and postcode
+
+        Scenario 1
+            Duplicate review is not flagged
+
+            Expected result:
+            The child is added back into the cohort, and in all the relevant sessions
+            Actual Result:
+            Server error page and user cannot bring the child back into the cohort
+
+        Scenario 2
+            The import screen flags for duplicate review, and user clicks "Review" next to the child's name
+
+            Expected result:
+            System allows you to review the new details against the previous record (before removing from cohort) and lets you choose which record to keep. Once review confirmed, the child is added back into the cohort, and in all the relevant sessions.
+            Actual Result:
+            Server error page and user cannot bring the child back into the cohort
+        """
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
         self.children_page.remove_child_from_cohort(child_name=self.LNK_MAV_909_CHILD)
@@ -290,3 +316,6 @@ class pg_programmes:
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE
         )
         self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.RDO_USE_DUPLICATE, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_RESOLVE_DUPLICATE, action=framework_actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_RECORD_UPDATED)
