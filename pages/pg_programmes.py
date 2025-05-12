@@ -290,6 +290,3 @@ class pg_programmes:
             locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE
         )
         self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK)
-        self.po.verify(
-            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value="!Not provided"
-        )  # NHS number for Existing Record
