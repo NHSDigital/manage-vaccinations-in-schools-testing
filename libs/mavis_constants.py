@@ -105,6 +105,7 @@ class test_data_file_paths:
     COHORTS_FULL_NAME: Final[str] = "COHORTS_FULL_NAME"
     COHORTS_MAV_927_PERF: Final[str] = "COHORTS_MAV_927_PERF"
     COHORTS_MAV_909: Final[str] = "COHORTS_MAV_909"
+    COHORTS_MAV_853: Final[str] = "COHORTS_MAV_853"
 
 
 class report_headers:

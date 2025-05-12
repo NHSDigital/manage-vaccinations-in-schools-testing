@@ -24,7 +24,7 @@ class pg_children:
     LNK_CLEAR_FILTERS: Final[str] = "Clear filters"
     LNK_ACTIVITY_LOG: Final[str] = "Activity log"
     LNK_CHILD_RECORD: Final[str] = "Child record"
-    LNK_CHILD_MAV_853: Final[str] = "MAV_853, Mav_853"
+    LNK_CHILD_MAV_853: Final[str] = "MAV_853, MAV_853"
     LNK_VACCS_DETAILS_MAV_853: Final[str] = "Gardasil 9 (HPV)"
     LNK_CHILD_CHANGE_NHSNO: Final[str] = "CHANGENHSNO, CHANGENHSNO"
     LNK_EDIT_CHILD_RECORD: Final[str] = "Edit child record"

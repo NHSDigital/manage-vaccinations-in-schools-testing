@@ -2,7 +2,14 @@ import pytest
 
 from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
-from pages import pg_children, pg_dashboard, pg_import_records, pg_login, pg_sessions
+from pages import (
+    pg_children,
+    pg_dashboard,
+    pg_import_records,
+    pg_login,
+    pg_programmes,
+    pg_sessions,
+)
 
 
 class Test_Children:
@@ -11,6 +18,7 @@ class Test_Children:
     children_page = pg_children.pg_children()
     sessions_page = pg_sessions.pg_sessions()
     import_records_page = pg_import_records.pg_import_records()
+    programmes_page = pg_programmes.pg_programmes()
 
     @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
     def setup_tests(self, start_mavis: None):
@@ -62,6 +70,9 @@ class Test_Children:
             )
             self.sessions_page.click_school1()
             self.sessions_page.save_session_id_from_offline_excel()
+            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_programmes()
+            self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_853)
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
             self.import_records_page.click_import_records()
