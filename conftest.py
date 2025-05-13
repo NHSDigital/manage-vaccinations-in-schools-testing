@@ -1,9 +1,11 @@
+import datetime
+
 import pytest
 from playwright.sync_api import sync_playwright
 
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
-from libs.generic_constants import fixture_scope
+from libs.generic_constants import audit_log_paths, file_mode, fixture_scope
 from libs.mavis_constants import browsers_and_devices, playwright_constants
 from libs.wrappers import *
 
@@ -88,3 +90,40 @@ def close_browser(browser, page):
         page.get_by_role("button", name="Log out").click()
     page.close()
     browser.close()
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_sessionstart(session):
+    with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+        log_file.write(f"Test Session Started: {datetime.now()}\n")
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_sessionfinish(session, exitstatus):
+    with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+        log_file.write(f"Test Session Ended: {datetime.now()}\n")
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_logreport(report):
+    outcome = yield
+
+    if report.when == "call":  # Log only actual test results
+        test_name = report.nodeid
+        test_result = report.outcome.upper()  # 'passed', 'failed', or 'skipped'
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+            log_file.write(f"{timestamp} | {test_name} | {test_result}\n")
+
+
+# @pytest.fixture
+# def step_logger():
+#     """Fixture to log individual steps within a test."""
+
+#     def log_step(step_description):
+#         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#         with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+#             log_file.write(f"{timestamp} | STEP | {step_description}\n")
+
+#     return log_step
