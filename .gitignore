@@ -22,6 +22,7 @@ venv/
 
 # Local
 logs/pytest.log
+logs/test_level.log
 main.py
 reports/*
 working/*

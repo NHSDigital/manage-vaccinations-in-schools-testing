@@ -134,3 +134,7 @@ class escape_characters:
 
 class file_encoding:
     ASCII: Final[str] = "ascii"
+
+
+class audit_log_paths:
+    TEST_LEVEL_LOG: Final[str] = "logs/test_level.log"
