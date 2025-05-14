@@ -44,13 +44,14 @@ class pg_children:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
-    def verify_child_exists(self) -> None:
-        if len(self.ce.child_list) >= 1:
+    def verify_child_has_been_uploaded(self, child_list: list[str]) -> None:
+        if len(child_list) >= 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
-            for child_name in self.ce.child_list:
-                self.search_for_a_child(child_name=child_name)
-                self.po.act(locator=self.LNK_CLEAR_FILTERS, action=framework_actions.CLICK_LINK)
+            for _child_name in child_list:
+                _cn = _child_name.strip()
+                self.search_for_a_child(child_name=_cn)
+                # self.po.act(locator=self.LNK_CLEAR_FILTERS, action=framework_actions.CLICK_LINK)
 
     def search_for_a_child(self, child_name: str) -> None:
         self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=child_name)

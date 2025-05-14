@@ -3,4 +3,3 @@ C<<FNAME>>,C<<LNAME>>,<<SCHOOL_1_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town
 C<<FNAME>>,C<<LNAME>>,888888,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
 C<<FNAME>>,C<<LNAME>>,999999,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
 C<<FNAME>>,C<<LNAME>>,<<SCHOOL_1_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,
-

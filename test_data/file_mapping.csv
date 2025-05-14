@@ -24,6 +24,7 @@ CHILD_NEGATIVE,test_data/child/i_negative.csv,test_data/child/o_negative.csv,chi
 CHILD_INVALID_STRUCTURE,test_data/child/i_invalid_structure.csv,test_data/child/o_invalid_structure.csv,childstruc
 CHILD_EMPTY_FILE,test_data/child/i_empty.csv,test_data/child/o_empty.csv,childempty
 CHILD_HEADER_ONLY,test_data/child/i_header_only.csv,test_data/child/o_header_only.csv,childheadonly
+CHILD_MAV_1080,test_data/child/i_mav_1080.csv,test_data/child/o_mav_1080.csv,childmav1080
 CLASS_POSITIVE,test_data/class_list/i_positive.csv,test_data/class_list/o_positive.csv,classpos
 CLASS_NEGATIVE,test_data/class_list/i_negative.csv,test_data/class_list/o_negative.csv,classneg
 CLASS_INVALID_STRUCTURE,test_data/class_list/i_invalid_structure.csv,test_data/class_list/o_invalid_structure.csv,classstruc

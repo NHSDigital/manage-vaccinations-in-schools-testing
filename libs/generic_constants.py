@@ -104,6 +104,7 @@ class escape_characters:
     PIPE: Final[str] = "|"
     ASTERISK: Final[str] = "*"
     QUESTION_MARK: Final[str] = "?"
+    COMMA: Final[str] = ","
     UI_FORMATTING: Final[list[str]] = [
         SPACE,
         NEW_LINE,
@@ -114,6 +115,7 @@ class escape_characters:
         SINGLE_QUOTE_CLOSE_UNICODE,
         SINGLE_QUOTE_CLOSE,
         TAB,
+        COMMA,
     ]
     FILE_NAME: Final[list[str]] = [
         SEPARATOR_CHAR,
