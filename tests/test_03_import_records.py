@@ -96,6 +96,14 @@ class Test_ImportRecords:
     def test_child_list_empty_file(self, setup_child_list):
         self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
 
+    @pytest.mark.childlist
+    @pytest.mark.order(306)
+    @pytest.mark.skip(reason="Test under construction")
+    def test_child_list_space_normalisation(self, setup_child_list):
+        self.import_records_page.import_child_records(
+            file_paths=test_data_file_paths.CHILD_MAV_1080, verify_on_children_page=True
+        )
+
     ########################################### CLASS LIST ###########################################
 
     @pytest.mark.classlist

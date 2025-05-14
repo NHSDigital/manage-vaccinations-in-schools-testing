@@ -3,7 +3,7 @@ import pandas as pd
 
 from libs import CurrentExecution, file_ops
 from libs.generic_constants import escape_characters
-from libs.mavis_constants import test_data_values
+from libs.mavis_constants import mavis_file_types, test_data_values
 from libs.wrappers import *
 
 
@@ -143,7 +143,7 @@ class testdata_operations:
         )
         return _input_file_path, _output_template_path
 
-    def create_child_list_from_file(self, file_path: str):
+    def create_child_list_from_file(self, file_path: str, file_type: str):
         """
         Create a list of child names from a file.
 
@@ -153,12 +153,19 @@ class testdata_operations:
         Returns:
             list: List of child names.
         """
-        if "positive" in file_path.lower():
-            _file_df = self.fo.read_csv_to_df(file_path=file_path)
-            _child_list = _file_df[["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]]
-            return _child_list["CHILD_FIRST_NAME"] + " " + _child_list["CHILD_LAST_NAME"].values.tolist()
-        else:
-            return None
+        _file_df = self.fo.read_csv_to_df(file_path=file_path)
+        match file_type:
+            case mavis_file_types.CHILD_LIST | mavis_file_types.COHORT | mavis_file_types.CLASS_LIST:
+                _child_list = _file_df[["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]]
+                return _child_list["CHILD_LAST_NAME"] + " " + _child_list["CHILD_FIRST_NAME"].values.tolist()
+            case mavis_file_types.VACCS_MAVIS:
+                _child_list = _file_df[["PERSON_FORENAME", "PERSON_SURNAME"]]
+                return _child_list["PERSON_SURNAME"] + " " + _child_list["PERSON_FIRSTNAME"].values.tolist()
+            case mavis_file_types.VACCS_SYSTMONE:
+                _child_list = _file_df[["First name", "Surname"]]
+                return _child_list["Surname"] + " " + _child_list["First name"].values.tolist()
+            case _:
+                return None
 
     def get_session_id(self, excel_path: str) -> str:
         """

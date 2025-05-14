@@ -53,8 +53,6 @@ class pg_sessions:
     LNK_TAB_ACTIVITY_LOG: Final[str] = "Activity log"
     LNK_TAB_REGISTER: Final[str] = "Register"
     LNK_IMPORT_CLASS_LIST: Final[str] = "Import class lists"
-    # LBL_CHOOSE_COHORT_FILE_1: str = f"{LNK_SCHOOL_1}Import class"
-    # LBL_CHOOSE_COHORT_FILE_2: str = f"{LNK_SCHOOL_2}Import class"
     LBL_CHOOSE_COHORT_FILE_1: str = "Upload file"
     LBL_CHOOSE_COHORT_FILE_2: str = "Upload file"
     BTN_CONTINUE: Final[str] = "Continue"
@@ -130,7 +128,7 @@ class pg_sessions:
         _formatted_date = _parsed_date.strftime("%A %d %B %Y").replace(" 0", " ")
         return _formatted_date
 
-    def __record_upload_time(self):
+    def _record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
 
     def click_uploaded_file_datetime(self):
@@ -607,14 +605,13 @@ class pg_sessions:
         self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
-        self.__record_upload_time()
+        self._record_upload_time()
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
             self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.verify_child_exists()
+            self.children_page.verify_child_has_been_uploaded()
 
     def upload_class_list_to_school_2(
         self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
@@ -626,14 +623,13 @@ class pg_sessions:
         self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
-        self.__record_upload_time()
+        self._record_upload_time()
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
             self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.verify_child_exists()
+            self.children_page.verify_child_has_been_uploaded()
 
     def set_gillick_competence_for_student(self):
         self.click_today()

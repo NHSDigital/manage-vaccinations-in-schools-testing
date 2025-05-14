@@ -49,6 +49,14 @@ class test_data_values:
     EMPTY: Final[str] = "<empty>"
 
 
+class mavis_file_types:
+    CHILD_LIST: Final[str] = "childlist"
+    COHORT: Final[str] = "cohort"
+    CLASS_LIST: Final[str] = "classlist"
+    VACCS_MAVIS: Final[str] = "vaccsmavis"
+    VACCS_SYSTMONE: Final[str] = "vaccssystmone"
+
+
 class record_limit:
     FILE_RECORD_MIN_THRESHOLD: Final[int] = 15
     FILE_RECORD_MAX_THRESHOLD: Final[int] = 15
@@ -82,6 +90,7 @@ class test_data_file_paths:
     CHILD_INVALID_STRUCTURE: Final[str] = "CHILD_INVALID_STRUCTURE"
     CHILD_EMPTY_FILE: Final[str] = "CHILD_EMPTY_FILE"
     CHILD_HEADER_ONLY: Final[str] = "CHILD_HEADER_ONLY"
+    CHILD_MAV_1080: Final[str] = "CHILD_MAV_1080"
     CLASS_POSITIVE: Final[str] = "CLASS_POSITIVE"
     CLASS_NEGATIVE: Final[str] = "CLASS_NEGATIVE"
     CLASS_INVALID_STRUCTURE: Final[str] = "CLASS_INVALID_STRUCTURE"
