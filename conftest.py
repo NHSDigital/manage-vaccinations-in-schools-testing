@@ -93,19 +93,19 @@ def close_browser(browser, page):
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_sessionstart(session):
+def pytest_session_start(session):
     with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
         log_file.write(f"Test Session Started: {datetime.now()}\n")
 
 
 @pytest.hookimpl(trylast=True)
-def pytest_sessionfinish(session, exitstatus):
+def pytest_session_finish(session, exitstatus):
     with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
         log_file.write(f"Test Session Ended: {datetime.now()}\n")
 
 
 @pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_logreport(report):
+def pytest_runtest_log_report(report):
     outcome = yield
 
     if report.when == "call":  # Log only actual test results
