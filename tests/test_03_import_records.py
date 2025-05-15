@@ -1,8 +1,7 @@
 import pytest
 
-from libs.generic_constants import fixture_scope
 from libs.mavis_constants import child_year_group, test_data_file_paths
-from pages import pg_children, pg_dashboard, pg_import_records, pg_login, pg_sessions
+from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
 class Test_ImportRecords:
@@ -11,33 +10,31 @@ class Test_ImportRecords:
     import_records_page = pg_import_records.pg_import_records()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_child_list(self, setup_tests: None):
         self.dashboard_page.click_import_records()
-        self.import_records_page.click_import_records()
         yield
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_class_list(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
-            self.import_records_page.click_import_records()
             yield
         finally:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_vaccs(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()
@@ -49,21 +46,19 @@ class Test_ImportRecords:
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
-            self.import_records_page.click_import_records()
             yield
         finally:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_vaccs_systmone(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
-            self.import_records_page.click_import_records()
             yield
         finally:
             self.dashboard_page.go_to_dashboard()
@@ -98,7 +93,6 @@ class Test_ImportRecords:
 
     @pytest.mark.childlist
     @pytest.mark.order(306)
-    @pytest.mark.skip(reason="Test under construction")
     def test_child_list_space_normalisation(self, setup_child_list):
         self.import_records_page.import_child_records(
             file_paths=test_data_file_paths.CHILD_MAV_1080, verify_on_children_page=True
@@ -138,6 +132,13 @@ class Test_ImportRecords:
             file_paths=test_data_file_paths.CLASS_YEAR_GROUP, year_group=child_year_group.YEAR_8
         )
 
+    @pytest.mark.classlist
+    @pytest.mark.order(332)
+    def test_class_list_space_normalization(self, setup_class_list: None):
+        self.import_records_page.import_class_list_records(
+            file_paths=test_data_file_paths.CLASS_MAV_1080, verify_on_children_page=True
+        )
+
     ########################################### VACCINATIONS ###########################################
 
     @pytest.mark.vaccinations
@@ -156,7 +157,6 @@ class Test_ImportRecords:
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_1)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
-        self.import_records_page.click_import_records()
         self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_2)
 
     @pytest.mark.vaccinations
@@ -208,3 +208,13 @@ class Test_ImportRecords:
         self.import_records_page.import_vaccination_records(
             file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE
         )
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(363)
+    def test_vaccs_hpv_space_normalization(self, setup_vaccs):
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_MAV_1080)
+
+    @pytest.mark.vaccinations
+    @pytest.mark.order(364)
+    def test_vaccs_systmone_space_normalization(self, setup_vaccs_systmone):
+        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE)

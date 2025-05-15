@@ -1,38 +1,34 @@
+from enum import Enum, auto
 from typing import Final
 
 
-class fixture_scope:
-    SESSION: Final[str] = "session"
-    FUNCTION: Final[str] = "function"
+class element_properties(Enum):
+    TEXT = auto()
+    VISIBILITY = auto()
+    HREF = auto()
+    ELEMENT_EXISTS = auto()
+    PAGE_URL = auto()
+    CHECKBOX_CHECKED = auto()
 
 
-class element_properties:
-    TEXT: Final[str] = "text"
-    VISIBILITY: Final[str] = "visibility"
-    HREF: Final[str] = "href"
-    ELEMENT_EXISTS: Final[str] = "element_exists"
-    PAGE_URL: Final[str] = "page_url"
-    CHECKBOX_CHECKED: Final[str] = "checked"
-
-
-class framework_actions:
-    CLICK_LINK: Final[str] = "click_link"
-    CLICK_BUTTON: Final[str] = "click_button"
-    CLICK_LABEL: Final[str] = "click_label"
-    CLICK_TEXT: Final[str] = "click_text"
-    FILL: Final[str] = "fill"
-    TYPE: Final[str] = "type"
-    RADIO_BUTTON_SELECT: Final[str] = "radio_select"
-    SELECT_FILE: Final[str] = "select_file"
-    SELECT_FROM_LIST: Final[str] = "select_from_list"
-    CHECKBOX_CHECK: Final[str] = "checkbox_check"
-    CHECKBOX_UNCHECK: Final[str] = "checkbox_uncheck"
-    CLICK_LINK_INDEX_FOR_ROW: Final[str] = "click_link_index_for_row"
-    CLICK_WILDCARD: Final[str] = "click_wildcard"
-    CHAIN_LOCATOR_ACTION: Final[str] = "chain_locator"
-    DOWNLOAD_FILE_USING_LINK: Final[str] = "download_file_using_link"
-    DOWNLOAD_FILE_USING_BUTTON: Final[str] = "download_file_using_button"
-    WAIT: Final[str] = "wait"
+class framework_actions(Enum):
+    CLICK_LINK = auto()
+    CLICK_BUTTON = auto()
+    CLICK_LABEL = auto()
+    CLICK_TEXT = auto()
+    FILL = auto()
+    TYPE = auto()
+    RADIO_BUTTON_SELECT = auto()
+    SELECT_FILE = auto()
+    SELECT_FROM_LIST = auto()
+    CHECKBOX_CHECK = auto()
+    CHECKBOX_UNCHECK = auto()
+    CLICK_LINK_INDEX_FOR_ROW = auto()
+    CLICK_WILDCARD = auto()
+    CHAIN_LOCATOR_ACTION = auto()
+    DOWNLOAD_FILE_USING_LINK = auto()
+    DOWNLOAD_FILE_USING_BUTTON = auto()
+    WAIT = auto()
 
 
 class screenshot_actions:

@@ -1,3 +1,4 @@
+from enum import Enum, auto
 from typing import Final
 
 
@@ -34,11 +35,11 @@ class programmes:
 
 
 class vaccines:
-    GARDASIL9: Final[str] = ("Gardasil9", 0)  # HPV
-    MENQUADFI: Final[str] = ("MenQuadfi", 1)  # MenACWY
-    MENVEO: Final[str] = ("Menveo", 2)  # MenACWY
-    NIMENRIX: Final[str] = ("Nimenrix", 3)  # MenACWY
-    REVAXIS: Final[str] = ("Revaxis", 4)  # Td/IPV
+    GARDASIL9: Final[tuple[str, int]] = ("Gardasil9", 0)  # HPV
+    MENQUADFI: Final[tuple[str, int]] = ("MenQuadfi", 1)  # MenACWY
+    MENVEO: Final[tuple[str, int]] = ("Menveo", 2)  # MenACWY
+    NIMENRIX: Final[tuple[str, int]] = ("Nimenrix", 3)  # MenACWY
+    REVAXIS: Final[tuple[str, int]] = ("Revaxis", 4)  # Td/IPV
 
 
 class test_data_values:
@@ -49,12 +50,12 @@ class test_data_values:
     EMPTY: Final[str] = "<empty>"
 
 
-class mavis_file_types:
-    CHILD_LIST: Final[str] = "childlist"
-    COHORT: Final[str] = "cohort"
-    CLASS_LIST: Final[str] = "classlist"
-    VACCS_MAVIS: Final[str] = "vaccsmavis"
-    VACCS_SYSTMONE: Final[str] = "vaccssystmone"
+class mavis_file_types(Enum):
+    CHILD_LIST = auto()
+    COHORT = auto()
+    CLASS_LIST = auto()
+    VACCS_MAVIS = auto()
+    VACCS_SYSTMONE = auto()
 
 
 class record_limit:
@@ -80,6 +81,8 @@ class test_data_file_paths:
     VACCS_SYSTMONE_POSITIVE: Final[str] = "VACCS_SYSTMONE_POSITIVE"
     VACCS_SYSTMONE_NEGATIVE: Final[str] = "VACCS_SYSTMONE_NEGATIVE"
     VACCS_SYSTMONE_HIST_NEGATIVE: Final[str] = "VACCS_SYSTMONE_HIST_NEGATIVE"
+    VACCS_MAV_1080: Final[str] = "VACCS_MAV_1080"
+    VACCS_SYSTMONE_MAV_1080: Final[str] = "VACCS_SYSTMONE_MAV_1080"
     COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
     COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
     COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
@@ -102,6 +105,7 @@ class test_data_file_paths:
     CLASS_SINGLE_VACC: Final[str] = "CLASS_SINGLE_VACC"
     CLASS_MAV_854: Final[str] = "CLASS_MAV_854"
     CLASS_MAV_965: Final[str] = "CLASS_MAV_965"
+    CLASS_MAV_1080: Final[str] = "CLASS_MAV_1080"
     COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
     COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
     COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
@@ -119,7 +123,7 @@ class test_data_file_paths:
 
 class report_headers:
     CAREPLUS: Final[str] = (
-        "NHS Number,Surname,Forename,Date of Birth,Address Line 1,Person Giving Consent,Ethnicity,Date Attended,Time Attended,Venue Type,Venue Code,Staff Type,Staff Code,Attended,Reason Not Attended,Suspension End Date,Vaccine 1,Dose 1,Reason Not Given 1,Site 1,Manufacturer 1,Batch No 1,Vaccine 2,Dose 2,Reason Not Given 2,Site 2,Manufacturer 2,Batch No 2,Vaccine 3,Dose 3,Reason Not Given 3,Site 3,Manufacturer 3,Batch No 3,Vaccine 4,Dose 4,Reason Not Given 4,Site 4,Manufacturer 4,Batch No 4,Vaccine 5,Dose 5,Reason Not Given 5,Site 5,Manufacturer 5,Batch No 5"
+        "NHS Number,Surname,Forename,Date of Birth,Address Line 1,Person Giving Consent,Ethnicity,Date Attended,Time Attended,Venue Type,Venue Code,Staff Type,Staff Code,Attended,Reason Not Attended,Suspension End Date,Vaccine 1,Vaccine Code 1,Dose 1,Reason Not Given 1,Site 1,Manufacturer 1,Batch No 1,Vaccine 2,Vaccine Code 2,Dose 2,Reason Not Given 2,Site 2,Manufacturer 2,Batch No 2,Vaccine 3,Vaccine Code 3,Dose 3,Reason Not Given 3,Site 3,Manufacturer 3,Batch No 3,Vaccine 4,Vaccine Code 4,Dose 4,Reason Not Given 4,Site 4,Manufacturer 4,Batch No 4,Vaccine 5,Vaccine Code 5,Dose 5,Reason Not Given 5,Site 5,Manufacturer 5,Batch No 5"
     )
     CSV: Final[str] = (
         "ORGANISATION_CODE,SCHOOL_URN,SCHOOL_NAME,CARE_SETTING,CLINIC_NAME,PERSON_FORENAME,PERSON_SURNAME,PERSON_DATE_OF_BIRTH,PERSON_DATE_OF_DEATH,YEAR_GROUP,PERSON_GENDER_CODE,PERSON_ADDRESS_LINE_1,PERSON_POSTCODE,NHS_NUMBER,NHS_NUMBER_STATUS_CODE,GP_ORGANISATION_CODE,GP_NAME,CONSENT_STATUS,CONSENT_DETAILS,HEALTH_QUESTION_ANSWERS,TRIAGE_STATUS,TRIAGED_BY,TRIAGE_DATE,TRIAGE_NOTES,GILLICK_STATUS,GILLICK_ASSESSMENT_DATE,GILLICK_ASSESSED_BY,GILLICK_ASSESSMENT_NOTES,GILLICK_NOTIFY_PARENTS,VACCINATED,DATE_OF_VACCINATION,TIME_OF_VACCINATION,PROGRAMME_NAME,VACCINE_GIVEN,PERFORMING_PROFESSIONAL_EMAIL,PERFORMING_PROFESSIONAL_FORENAME,PERFORMING_PROFESSIONAL_SURNAME,BATCH_NUMBER,BATCH_EXPIRY_DATE,ANATOMICAL_SITE,ROUTE_OF_VACCINATION,DOSE_SEQUENCE,REASON_NOT_VACCINATED,LOCAL_PATIENT_ID,SNOMED_PROCEDURE_CODE,REASON_FOR_INCLUSION,RECORD_CREATED,RECORD_UPDATED"

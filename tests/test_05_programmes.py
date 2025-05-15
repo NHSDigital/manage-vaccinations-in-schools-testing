@@ -1,6 +1,5 @@
 import pytest
 
-from libs.generic_constants import fixture_scope
 from libs.mavis_constants import programmes, test_data_file_paths, vaccines
 from pages import (
     pg_dashboard,
@@ -20,14 +19,14 @@ class Test_Programmes:
     import_records_page = pg_import_records.pg_import_records()
     vaccines_page = pg_vaccines.pg_vaccines()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_cohort_upload_and_reports(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.click_programmes()
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_record_a_vaccine(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -42,7 +41,7 @@ class Test_Programmes:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mavis_1729(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -55,7 +54,6 @@ class Test_Programmes:
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
-            self.import_records_page.click_import_records()
             self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_programmes()
@@ -66,7 +64,7 @@ class Test_Programmes:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mav_854(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -92,7 +90,7 @@ class Test_Programmes:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mav_nnn(self, start_mavis: None):
         try:
             self.login_page.login_as_admin()
@@ -165,7 +163,8 @@ class Test_Programmes:
     @pytest.mark.order(530)
     @pytest.mark.skip(reason="Test under construction")
     def test_programmes_rav_verify_banners(self, setup_mav_nnn):
-        self.programmes_page.verify_mav_nnn()
+        # self.programmes_page.verify_mav_nnn()
+        pass
 
     @pytest.mark.reports
     @pytest.mark.order(551)

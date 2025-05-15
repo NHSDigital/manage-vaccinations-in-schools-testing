@@ -39,15 +39,14 @@ class pg_import_records:
     def __init__(self):
         self.upload_time = ""
 
-    def click_import_records(self):
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
-
     def import_child_records(self, file_paths: str, verify_on_children_page: bool = False):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _cl = []
         if verify_on_children_page:
             _cl = self.tdo.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
         self.po.act(locator=self.RDO_CHILD_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(
@@ -64,8 +63,16 @@ class pg_import_records:
         if verify_on_children_page:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
-    def import_class_list_records(self, file_paths: str, year_group: str = child_year_group.ALL):
+    def import_class_list_records(
+        self, file_paths: str, year_group: str = child_year_group.ALL, verify_on_children_page: bool = False
+    ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _cl = []
+        if verify_on_children_page:
+            _cl = self.tdo.create_child_list_from_file(
+                file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
+            )
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
         self.po.act(locator=self.RDO_CLASS_LIST_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(
@@ -86,6 +93,8 @@ class pg_import_records:
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)
+        if verify_on_children_page:
+            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def import_class_list_records_from_school_session(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
@@ -105,6 +114,7 @@ class pg_import_records:
 
     def import_vaccination_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
         self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
         self.po.act(

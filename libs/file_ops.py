@@ -49,8 +49,10 @@ class file_operations:
             str: Text content of the file.
         """
         if self.check_if_path_exists(file_or_folder_path=file_path):
-            with open(file=file_path, mode=file_mode.READ) as f:
+            with open(file=file_path, mode=file_mode.READ, encoding="utf-8") as f:
                 return f.read()
+        else:
+            assert False, f"Cannot read file.  File not found: {file_path}"
 
     def read_csv_to_df(self, file_path: str) -> pd.DataFrame:
         """
@@ -64,6 +66,8 @@ class file_operations:
         """
         if self.check_if_path_exists(file_or_folder_path=file_path):
             return pd.read_csv(filepath_or_buffer=file_path)
+        else:
+            assert False, f"Cannot read CSV file.  File not found: {file_path}"
 
     def read_excel_to_df(self, file_path: str, sheet_name: str) -> pd.DataFrame:
         """
@@ -93,6 +97,6 @@ class file_operations:
             str: Path to the created file.
         """
         _file_name = f"working/{file_name_prefix}{get_current_datetime()}.csv"
-        with open(file=_file_name, mode=file_mode.WRITE) as f:
+        with open(file=_file_name, mode=file_mode.WRITE, encoding="utf-8") as f:
             f.writelines(content)
         return _file_name

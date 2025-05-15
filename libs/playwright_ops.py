@@ -43,7 +43,7 @@ class playwright_operations:
             )
             self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG, full_page=True)
 
-    def verify(self, locator: str, property: str, expected_value: str, **kwargs) -> None:
+    def verify(self, locator: str, property: element_properties, expected_value: str, **kwargs) -> None:
         """
         Verify a property of a web element.
 
@@ -61,7 +61,7 @@ class playwright_operations:
         actual_value = self.get_element_property(
             locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
         )
-        match property.lower():
+        match property:
             case element_properties.TEXT:
                 if expected_value != "":
                     self._verify_text(
@@ -72,7 +72,7 @@ class playwright_operations:
             case element_properties.CHECKBOX_CHECKED:
                 self._verify_checkbox(locator=locator, expected_value=expected_value, actual_value=actual_value)
 
-    def get_element_property(self, locator: str, property: str, **kwargs) -> str:
+    def get_element_property(self, locator: str, property: element_properties, **kwargs) -> str:
         """
         Get a property of a web element.
 
@@ -105,7 +105,7 @@ class playwright_operations:
             case element_properties.PAGE_URL:
                 return self.ce.page.url
 
-    def act(self, locator, action, value=None, **kwargs) -> None:
+    def act(self, locator: str | None, action: framework_actions, value: str | None = None, **kwargs) -> None:
         """
         Perform an action on a web element.
 
@@ -115,11 +115,16 @@ class playwright_operations:
             value (str, optional): Value to use for the action.
             **kwargs: Additional options (e.g., exact match, index).
         """
+        # Error check
+        if locator is None:
+            locator = ""
+        if value is None:
+            value = ""
         # Unpack keyword arguments
         exact: bool = kwargs.get("exact", False)
         index: int = kwargs.get("index", 0)
         # Act
-        match action.lower():
+        match action:
             case framework_actions.CLICK_LINK:
                 self._click_link(locator=locator, exact=exact, index=index)
             case framework_actions.CLICK_BUTTON:
