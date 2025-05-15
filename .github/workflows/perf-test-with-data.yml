@@ -1,4 +1,4 @@
-name: Performance tests
+name: Performance tests (E2E)
 
 on:
   push:
@@ -82,7 +82,7 @@ jobs:
       - name: Run file import for new file
         run: |
           mkdir -p import-output
-          import_output_dir=import-output 
+          import_output_dir=import-output
           echo "Placeholder step for file import"
 
       - name: Run Consent Journey for imported records (2K records)
@@ -95,7 +95,7 @@ jobs:
               -e -o $consent_output_dir/consent-report \
               -JURN=${{inputs.urn}} \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile=${{input_file}}
+              -JInputFile=${{inputs.input_file}}
 
       - name: Run nurse journey JMeter test
         run: |
