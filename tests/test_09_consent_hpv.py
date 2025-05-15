@@ -4,7 +4,6 @@ import pytest
 from pandas.core.series import Series
 
 from libs import CurrentExecution, playwright_ops
-from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_consent_hpv, pg_dashboard, pg_login, pg_sessions
 from tests.helpers import parental_consent_helper_hpv
@@ -19,7 +18,7 @@ class Test_Consent_HPV:
     dashboard_page = pg_dashboard.pg_dashboard()
     sessions_page = pg_sessions.pg_sessions()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION)
+    @pytest.fixture(scope="function")
     def get_hpv_session_link(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -35,7 +34,7 @@ class Test_Consent_HPV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_gillick(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -54,7 +53,7 @@ class Test_Consent_HPV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_invalidated_consent(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -76,7 +75,7 @@ class Test_Consent_HPV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mavis_1696(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -100,7 +99,7 @@ class Test_Consent_HPV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mavis_1864(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()
@@ -122,7 +121,7 @@ class Test_Consent_HPV:
             self.sessions_page.delete_all_sessions_for_school_1()
             self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mavis_1818(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

@@ -1,7 +1,6 @@
 import pytest
 
 from libs import CurrentExecution
-from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths, vaccines
 from pages import (
     pg_dashboard,
@@ -22,7 +21,7 @@ class Test_Reset:
     vaccines_page = pg_vaccines.pg_vaccines()
     import_records_page = pg_import_records.pg_import_records()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis: None):
         self.ce.reset_environment()
         self.login_page.login_as_nurse()
@@ -30,7 +29,7 @@ class Test_Reset:
         self.login_page.logout_of_mavis()
         self.ce.reset_environment()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_mav_965(self, setup_tests: None):
         self.dashboard_page.click_vaccines()
         self.vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)  # HPV
@@ -46,7 +45,7 @@ class Test_Reset:
         self.dashboard_page.click_sessions()
         yield
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_cohort_upload_and_reports(self, setup_tests: None):
         self.dashboard_page.click_programmes()
         yield

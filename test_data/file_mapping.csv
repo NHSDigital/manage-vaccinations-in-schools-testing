@@ -11,9 +11,11 @@ VACCS_HPV_HEADER_ONLY,test_data/vaccs/i_header_only.csv,test_data/vaccs/o_header
 VACCS_HPV_MAV_853,test_data/vaccs/i_mav_853.csv,test_data/vaccs/o_mav_853.csv,hpvmav853
 VACCS_HPV_MAV_855,test_data/vaccs/i_mav_855.csv,test_data/vaccs/o_mav_855.csv,hpvmav855
 VACCS_HPV_DOSE_TWO,test_data/vaccs/i_dose_two.csv,test_data/vaccs/o_dose_two.csv,hpvdose2
+VACCS_MAV_1080,test_data/vaccs/i_mav_1080.csv,test_data/vaccs/o_mav_1080.csv,hpvmav1080
 VACCS_SYSTMONE_POSITIVE,test_data/vaccs/i_systmone_positive.csv,test_data/vaccs/o_systmone_positive.csv,systmonepos
 VACCS_SYSTMONE_NEGATIVE,test_data/vaccs/i_systmone_negative.csv,test_data/vaccs/o_systmone_negative.csv,systmoneneg
 VACCS_SYSTMONE_HIST_NEGATIVE,test_data/vaccs/i_systmone_hist_negative.csv,test_data/vaccs/o_systmone_hist_negative.csv,systmonehistneg
+VACCS_SYSTMONE_MAV_1080,test_data/vaccs/i_systmone_mav_1080.csv,test_data/vaccs/o_systmone_mav_1080.csv,systmonemav1080
 COHORTS_POSITIVE,test_data/cohorts/i_positive.csv,test_data/cohorts/o_positive.csv,cohortpos
 COHORTS_NEGATIVE,test_data/cohorts/i_negative.csv,test_data/cohorts/o_negative.csv,cohortneg
 COHORTS_INVALID_STRUCTURE,test_data/cohorts/i_invalid_structure.csv,test_data/cohorts/o_invalid_structure.csv,cohortstruc
@@ -37,6 +39,7 @@ CLASS_SESSION_ID,test_data/class_list/i_session_id.csv,test_data/class_list/o_se
 CLASS_SINGLE_VACC,test_data/class_list/i_single_vacc.csv,test_data/class_list/o_single_vacc.csv,classsinglevacc
 CLASS_MAV_965,test_data/class_list/i_mav_965.csv,test_data/class_list/o_mav_965.csv,classmav965
 CLASS_CHANGE_NHSNO,test_data/class_list/i_change_nhsno.csv,test_data/class_list/o_change_nhsno.csv,classchangenhsno
+CLASS_MAV_1080,test_data/class_list/i_mav_1080.csv,test_data/class_list/o_mav_1080.csv,classmav1080
 COHORTS_NO_CONSENT,test_data/cohorts/i_no_consent.csv,test_data/cohorts/o_no_consent.csv,cohortnoconsent
 COHORTS_CONFLICTING_CONSENT,test_data/cohorts/i_conflicting_consent.csv,test_data/cohorts/o_conflicting_consent.csv,cohortconflict
 COHORTS_E2E_1,test_data/cohorts/i_e2e_1.csv,test_data/cohorts/o_e2e_1.csv,cohort_e2e

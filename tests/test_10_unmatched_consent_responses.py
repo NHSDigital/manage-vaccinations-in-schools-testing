@@ -1,7 +1,6 @@
 import pytest
 
 from libs import CurrentExecution
-from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from libs.wrappers import *
 from pages import pg_dashboard, pg_login, pg_programmes, pg_unmatched
@@ -18,7 +17,7 @@ class Test_Unmatched_Consent_Responses:
     # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS
     # SET THE 'RESET_ENV_BEFORE_EXECUTION' FLAG (in .env) TO 'false' IF RUNNING ONLY CONSENT TESTS
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis: None):
         self.login_page.login_as_nurse()
         self.dashboard_page.go_to_dashboard()
@@ -26,7 +25,7 @@ class Test_Unmatched_Consent_Responses:
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_ucr_match(self, start_mavis: None):
         try:
             self.login_page.login_as_nurse()

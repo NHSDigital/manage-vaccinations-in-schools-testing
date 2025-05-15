@@ -146,7 +146,7 @@ def get_dob_from_year(year_group: str) -> str:
 
     # Generate a random date between start_date and end_date
     random_date = start_date + timedelta(days=random.randint(0, (end_date - start_date).days))
-    return random_date.strftime("%Y%m%d")
+    return random_date.strftime("%Y-%m-%d")
 
 
 def get_project_root() -> str:
@@ -190,7 +190,7 @@ def get_base64_decoded_string(encoded_string: str) -> str:
     return base64.b64decode(base64_bytes).decode(file_encoding.ASCII)
 
 
-def run_shell_command(command: str) -> str:
+def run_shell_command(command: str):
     """
     Execute a shell command.
 

@@ -44,7 +44,6 @@ class testdata_operations:
                 _ln = _ln.replace("<<SCHOOL_2_NAME>>", test_data_values.SCHOOL_2_NAME)
                 _ln = _ln.replace("<<SCHOOL_1_URN>>", test_data_values.SCHOOL_1_URN)
                 _ln = _ln.replace("<<ORG_CODE>>", test_data_values.ORG_CODE)
-                # _ln = _ln.replace("<<NHS_NO>>", f"9{self.get_new_nhs_no(valid=True)[:9]}")
                 _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
                 _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
                 _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
@@ -76,7 +75,7 @@ class testdata_operations:
         """
         return nhs_number.generate(valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1)[0]
 
-    def get_expected_errors(self, file_path: str) -> list[str]:
+    def get_expected_errors(self, file_path: str):
         """
         Get expected errors from a file.
 
@@ -157,13 +156,13 @@ class testdata_operations:
         match file_type:
             case mavis_file_types.CHILD_LIST | mavis_file_types.COHORT | mavis_file_types.CLASS_LIST:
                 _child_list = _file_df[["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]]
-                return _child_list["CHILD_LAST_NAME"] + " " + _child_list["CHILD_FIRST_NAME"].values.tolist()
+                return _child_list["CHILD_LAST_NAME"] + ", " + _child_list["CHILD_FIRST_NAME"].values.tolist()
             case mavis_file_types.VACCS_MAVIS:
                 _child_list = _file_df[["PERSON_FORENAME", "PERSON_SURNAME"]]
-                return _child_list["PERSON_SURNAME"] + " " + _child_list["PERSON_FIRSTNAME"].values.tolist()
+                return _child_list["PERSON_SURNAME"] + ", " + _child_list["PERSON_FIRSTNAME"].values.tolist()
             case mavis_file_types.VACCS_SYSTMONE:
                 _child_list = _file_df[["First name", "Surname"]]
-                return _child_list["Surname"] + " " + _child_list["First name"].values.tolist()
+                return _child_list["Surname"] + ", " + _child_list["First name"].values.tolist()
             case _:
                 return None
 

@@ -44,7 +44,7 @@ class pg_children:
         self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
         self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_CHILD_RECORD)
 
-    def verify_child_has_been_uploaded(self, child_list: list[str]) -> None:
+    def verify_child_has_been_uploaded(self, child_list) -> None:
         if len(child_list) >= 1:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()

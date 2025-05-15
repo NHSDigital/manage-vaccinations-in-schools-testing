@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
-from libs.generic_constants import audit_log_paths, file_mode, fixture_scope
+from libs.generic_constants import audit_log_paths, file_mode
 from libs.mavis_constants import browsers_and_devices, playwright_constants
 from libs.wrappers import *
 
@@ -14,7 +14,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser_or_device", action="store", default=browsers_and_devices.CHROMIUM)
 
 
-@pytest.fixture(scope=fixture_scope.SESSION)
+@pytest.fixture(scope="session")
 def start_playwright_session(request):
     ce.get_env_values()
     ce.reset_environment()
@@ -26,7 +26,7 @@ def start_playwright_session(request):
     # ce.reset_environment()  # Clean up the environment after execution
 
 
-@pytest.fixture(scope=fixture_scope.FUNCTION)
+@pytest.fixture(scope="function")
 def start_mavis(start_playwright_session):
     _browser, _context = start_browser(pw=start_playwright_session, browser_or_device=ce.current_browser_name)
     ce.browser = _browser
@@ -42,6 +42,8 @@ def create_session_screenshot_dir() -> str:
         _session_name = f"{get_current_datetime()}-{ce.current_browser_name}"
         fo.file_operations().create_dir(dir_path=f"screenshots/{_session_name}")
         return f"screenshots/{_session_name}"
+    else:
+        return ""
 
 
 def start_browser(pw, browser_or_device: str):

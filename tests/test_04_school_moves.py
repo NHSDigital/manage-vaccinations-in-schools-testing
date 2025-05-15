@@ -1,7 +1,6 @@
 import pytest
 
 from libs import CurrentExecution
-from libs.generic_constants import fixture_scope
 from libs.mavis_constants import test_data_file_paths
 from pages import pg_dashboard, pg_login, pg_school_moves, pg_sessions
 
@@ -13,14 +12,14 @@ class Test_School_Moves:
     school_moves_page = pg_school_moves.pg_school_moves()
     ce = CurrentExecution()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis: None):
         self.ce.reset_environment()
         self.login_page.login_as_nurse()
         yield
         self.login_page.logout_of_mavis()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_move_and_ignore(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()
@@ -51,7 +50,7 @@ class Test_School_Moves:
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_2()
 
-    @pytest.fixture(scope=fixture_scope.FUNCTION, autouse=False)
+    @pytest.fixture(scope="function", autouse=False)
     def setup_move_to_homeschool_and_unknown(self, setup_tests: None):
         try:
             self.dashboard_page.click_sessions()
