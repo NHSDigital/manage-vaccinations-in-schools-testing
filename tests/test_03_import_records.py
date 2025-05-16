@@ -1,6 +1,10 @@
 import pytest
 
-from libs.mavis_constants import child_year_group, test_data_file_paths
+from libs.mavis_constants import (
+    child_year_group,
+    mavis_file_types,
+    test_data_file_paths,
+)
 from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
@@ -144,50 +148,70 @@ class Test_ImportRecords:
     @pytest.mark.vaccinations
     @pytest.mark.order(351)
     def test_vaccs_positive_file_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_POSITIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_POSITIVE, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(352)
     def test_vaccs_negative_file_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_NEGATIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_NEGATIVE, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(353)
     def test_vaccs_duplicate_record_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_1)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_DUP_1, file_type=mavis_file_types.VACCS_MAVIS
+        )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_DUP_2)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_DUP_2, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(354)
     def test_vaccs_file_structure(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(355)
     def test_vaccs_no_record(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HEADER_ONLY)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HEADER_ONLY, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(356)
     def test_vaccs_empty_file(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_EMPTY_FILE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_EMPTY_FILE, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(357)
     def test_vaccs_historic_positive_file_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_POSITIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HIST_POSITIVE, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(358)
     def test_vaccs_historic_negative_file_upload(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE, file_type=mavis_file_types.VACCS_MAVIS
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(359)
     def test_vaccs_historic_no_urn_mav_855(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_MAV_855)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_HPV_MAV_855, file_type=mavis_file_types.VACCS_MAVIS
+        )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
         self.import_records_page.verify_mav_855()
@@ -195,26 +219,38 @@ class Test_ImportRecords:
     @pytest.mark.vaccinations
     @pytest.mark.order(360)
     def test_vaccs_systmone_positive_file_upload(self, setup_vaccs_systmone):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE, file_type=mavis_file_types.VACCS_SYSTMONE
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(361)
     def test_vaccs_systmone_negative_file_upload(self, setup_vaccs_systmone):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_NEGATIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_NEGATIVE, file_type=mavis_file_types.VACCS_SYSTMONE
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(362)
     def test_vaccs_systmone_negative_historical_file_upload(self, setup_vaccs_systmone):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE, file_type=mavis_file_types.VACCS_SYSTMONE
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(363)
     def test_vaccs_hpv_space_normalization(self, setup_vaccs):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_MAV_1080)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_MAV_1080,
+            verify_on_children_page=True,
+            file_type=mavis_file_types.VACCS_MAVIS,
+        )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(364)
     def test_vaccs_systmone_space_normalization(self, setup_vaccs_systmone):
-        self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE)
+        self.import_records_page.import_vaccination_records(
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_MAV_1080,
+            verify_on_children_page=False,
+            file_type=mavis_file_types.VACCS_SYSTMONE,
+        )

@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import test_data_file_paths
+from libs.mavis_constants import mavis_file_types, test_data_file_paths
 from pages import (
     pg_children,
     pg_dashboard,
@@ -74,7 +74,9 @@ class Test_Children:
             self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_853)
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
-            self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_MAV_853)
+            self.import_records_page.import_vaccination_records(
+                file_paths=test_data_file_paths.VACCS_MAV_853, file_type=mavis_file_types.VACCS_MAVIS
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             yield

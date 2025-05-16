@@ -1,6 +1,11 @@
 import pytest
 
-from libs.mavis_constants import programmes, test_data_file_paths, vaccines
+from libs.mavis_constants import (
+    mavis_file_types,
+    programmes,
+    test_data_file_paths,
+    vaccines,
+)
 from pages import (
     pg_dashboard,
     pg_import_records,
@@ -54,7 +59,9 @@ class Test_Programmes:
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
-            self.import_records_page.import_vaccination_records(file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO)
+            self.import_records_page.import_vaccination_records(
+                file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO, file_type=mavis_file_types.VACCS_MAVIS
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_programmes()
             yield

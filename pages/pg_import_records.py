@@ -112,8 +112,15 @@ class pg_import_records:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)
 
-    def import_vaccination_records(self, file_paths: str):
+    def import_vaccination_records(
+        self,
+        file_paths: str,
+        file_type: mavis_file_types = mavis_file_types.VACCS_MAVIS,
+        verify_on_children_page: bool = False,
+    ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        if verify_on_children_page:
+            _cl = self.tdo.create_child_list_from_file(file_path=_input_file_path, file_type=file_type)
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
         self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
@@ -128,6 +135,8 @@ class pg_import_records:
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self._click_uploaded_file_datetime(truncated=True)
         self._verify_upload_output(file_path=_output_file_path)
+        if verify_on_children_page:
+            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def _record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
