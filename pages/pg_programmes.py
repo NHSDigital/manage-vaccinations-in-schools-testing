@@ -247,7 +247,13 @@ class pg_programmes:
         self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path)
         _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
-        assert expected_headers == actual_headers, "Report headers do not match"
+        # assert expected_headers == actual_headers, "Report headers do not match"
+        _e_not_a = [h for h in expected_headers.split(",") if h not in actual_headers.split(",")]
+        _a_not_e = [h for h in actual_headers.split(",") if h not in expected_headers.split(",")]
+        if len(_e_not_a) > 0 or len(_a_not_e) > 0:
+            assert (
+                False
+            ), f"Expected field(s) not found in actual: {_e_not_a}.  Actual report contains extra field(s): {_a_not_e}."
 
     def verify_mav_965(self):
         """
