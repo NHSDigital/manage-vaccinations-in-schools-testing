@@ -118,11 +118,11 @@ jobs:
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Upload nurse journey JMeter output
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
           path: nurse-output
-          if-no-files-found: error
+          if-no-files-found: warn
