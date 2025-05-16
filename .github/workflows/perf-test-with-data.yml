@@ -85,32 +85,33 @@ jobs:
           import_output_dir=import-output
           echo "Placeholder step for file import"
 
-      - name: Run Consent Journey for imported records (2K records)
-        run: |
-          mkdir -p consent-output
-          consent_output_dir=consent-output
-          jmeter/bin/jmeter -n -t performance-tests/E2E/consent-journey.jmx \
-              -l $consent_output_dir/samples.jtl \
-              -j $consent_output_dir/jmeter.log \
-              -e -o $consent_output_dir/consent-report \
-              -JURN=${{inputs.urn}} \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile=${{inputs.input_file}}
+#      - name: Run Consent Journey for imported records (2K records)
+#        run: |
+#          mkdir -p consent-output
+#          consent_output_dir=consent-output
+#          jmeter/bin/jmeter -n -t performance-tests/E2E/consent-journey.jmx \
+#              -l $consent_output_dir/samples.jtl \
+#              -j $consent_output_dir/jmeter.log \
+#              -e -o $consent_output_dir/consent-report \
+#              -JURN=${{inputs.urn}} \
+#              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+#              -JInputFile=${{inputs.input_file}}
 
       - name: Run nurse journey JMeter test
         run: |
           mkdir -p nurse-output
           nurse_output_dir=nurse-output
-#          jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx \
-#              -l $nurse_output_dir/samples.jtl \
-#              -j $nurse_output_dir/jmeter.log \
-#              -e -o $nurse_output_dir/report \
-#              -JSessionSlug=${{inputs.session_slug}} \
-#              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-#              -JDuration=${{inputs.duration}} \
-#              -JThreads=${{inputs.threads}} \
-#              -JRampUp=${{inputs.ramp_up}} \
-#              -JVaccinationLoop=${{inputs.vaccination_loop}}
+          jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx \
+              -l $nurse_output_dir/samples.jtl \
+              -j $nurse_output_dir/jmeter.log \
+              -e -o $nurse_output_dir/report \
+              -JURN=${{inputs.urn}} \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JDuration=${{inputs.duration}} \
+              -JThreads=${{inputs.threads}} \
+              -JRampUp=${{inputs.ramp_up}} \
+              -JVaccinationLoop=${{inputs.vaccination_loop}}
+              -JInputFile=${{inputs.input_file}}
 
       - name: Upload consent journey JMeter output
         uses: actions/upload-artifact@v4
@@ -119,9 +120,9 @@ jobs:
           path: consent-output
           if-no-files-found: error
 
-#      - name: Upload nurse journey JMeter output
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: jmeter-nurse-journey-output-${{ env.timestamp }}
-#          path: nurse-output
-#          if-no-files-found: error
+      - name: Upload nurse journey JMeter output
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-nurse-journey-output-${{ env.timestamp }}
+          path: nurse-output
+          if-no-files-found: error
