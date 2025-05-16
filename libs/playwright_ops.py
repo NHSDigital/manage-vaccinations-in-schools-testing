@@ -1,6 +1,9 @@
 import os
 import re
 from itertools import chain
+from socket import timeout
+
+import allure
 
 from libs import CurrentExecution
 from libs.generic_constants import (
@@ -169,14 +172,15 @@ class playwright_operations:
             exact (bool): Whether to match the link text exactly.
             index (int): Index of the link if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
-        else:
-            elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
-        elem.click()
-        self._check_for_app_crash(locator_info=locator)
+        with allure.step(title=f"Clicking [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
+            else:
+                elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
+            elem.click()
+            self._check_for_app_crash(locator_info=locator)
 
     def _click_button(self, locator: str, exact: bool, index: int):
         """
@@ -187,14 +191,15 @@ class playwright_operations:
             exact (bool): Whether to match the button text exactly.
             index (int): Index of the button if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator, exact=exact).nth(index)
-        elem.click()
-        self._check_for_app_crash(locator_info=locator)
+        with allure.step(title=f"Clicking [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator, exact=exact).nth(index)
+            elem.click()
+            self._check_for_app_crash(locator_info=locator)
 
     def _click_label(self, locator: str, exact: bool, index: int):
         """
@@ -205,13 +210,14 @@ class playwright_operations:
             exact (bool): Whether to match the label text exactly.
             index (int): Index of the label if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-        elem.click()
+        with allure.step(title=f"Clicking [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+            elem.click()
 
     def _click_text(self, locator: str, exact: bool, index: int):
         """
@@ -222,13 +228,14 @@ class playwright_operations:
             exact (bool): Whether to match the text exactly.
             index (int): Index of the text if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_text(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
-        elem.click()
+        with allure.step(title=f"Clicking [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_text(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
+            elem.click()
 
     def _fill(self, locator: str, value: str, exact: bool, index: int):
         """
@@ -240,15 +247,16 @@ class playwright_operations:
             exact (bool): Whether to match the input field label exactly.
             index (int): Index of the input field if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-        elem.click()
-        if value != test_data_values.EMPTY:
-            elem.fill(value)
+        with allure.step(title=f"Typing [{value}] in [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+            elem.click()
+            if value != test_data_values.EMPTY:
+                elem.fill(value)
 
     def _radio_button_select(self, locator: str, exact: bool, index: int):
         """
@@ -259,13 +267,14 @@ class playwright_operations:
             exact (bool): Whether to match the radio button label exactly.
             index (int): Index of the radio button if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-        elem.click()
+        with allure.step(title=f"Selecting radio button [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+            elem.click()
 
     def _select_file(self, locator: str, value: str, exact: bool, index: int):
         """
@@ -277,13 +286,14 @@ class playwright_operations:
             exact (bool): Whether to match the file input label exactly.
             index (int): Index of the file input element if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
-        elem.set_input_files(value)
+        with allure.step(title=f"Uploading file [{value}] to [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+            elem.set_input_files(value)
 
     def _select_from_list(self, locator: str, value: str, index: int):
         """
@@ -294,15 +304,16 @@ class playwright_operations:
             value (str): Value to select from the list.
             index (int): Index of the dropdown list if multiple matches are found.
         """
-        self._fill(locator=locator, value=value, exact=False, index=index)
-        self._wait(time_out=wait_time.MIN)
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_role(aria_roles.OPTION, name=value)
-        elem.click()
+        with allure.step(title=f"Selecting [{value}] within list [{locator}]"):
+            self._fill(locator=locator, value=value, exact=False, index=index)
+            self._wait(time_out=wait_time.MIN)
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_role(aria_roles.OPTION, name=value)
+            elem.click()
 
     def _checkbox_check(self, locator: str, index: int):
         """
@@ -312,13 +323,14 @@ class playwright_operations:
             locator (str): Locator of the checkbox.
             index (int): Index of the checkbox if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_label(locator).nth(index)
-        elem.check()
+        with allure.step(title=f"Ticking checkbox [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_label(locator).nth(index)
+            elem.check()
 
     def _checkbox_uncheck(self, locator: str, index: int):
         """
@@ -328,13 +340,14 @@ class playwright_operations:
             locator (str): Locator of the checkbox.
             index (int): Index of the checkbox if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = self.ce.page.get_by_label(locator).nth(0)
-        elem.uncheck()
+        with allure.step(title=f"Un-checking checkbox [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = self.ce.page.get_by_label(locator).nth(0)
+            elem.uncheck()
 
     def _click_index_for_row(self, locator: str, value: str, index: int):
         """
@@ -345,21 +358,22 @@ class playwright_operations:
             value (str): Value to identify the link in the row.
             index (int): Index of the row if multiple matches are found.
         """
-        if escape_characters.SEPARATOR_CHAR in locator:
-            _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-            _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
-        else:
-            elem = (
-                self.ce.page.get_by_role(
-                    aria_roles.ROW,
-                    name=locator,
+        with allure.step(title=f"Clicking index [{index}] in table [{locator}]"):
+            if escape_characters.SEPARATOR_CHAR in locator:
+                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
+                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
+                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            else:
+                elem = (
+                    self.ce.page.get_by_role(
+                        aria_roles.ROW,
+                        name=locator,
+                    )
+                    .get_by_role(aria_roles.LINK)
+                    .nth(index)
                 )
-                .get_by_role(aria_roles.LINK)
-                .nth(index)
-            )
-            elem.scroll_into_view_if_needed()
-        elem.click()
+                elem.scroll_into_view_if_needed()
+            elem.click()
 
     def _download_file_using_link(self, locator: str, value: str, index: int):
         """
@@ -370,11 +384,12 @@ class playwright_operations:
             value (str): Path to save the downloaded file.
             index (int): Index of the link if multiple matches are found.
         """
-        with self.ce.page.expect_download() as download_info:
-            self.act(locator=locator, action=framework_actions.CLICK_LINK, index=index)
-        download = download_info.value
-        download.save_as(value)
-        self._check_for_app_crash(locator_info=locator)
+        with allure.step(title=f"Downloading file [{value}] from [{locator}]"):
+            with self.ce.page.expect_download() as download_info:
+                self.act(locator=locator, action=framework_actions.CLICK_LINK, index=index)
+            download = download_info.value
+            download.save_as(value)
+            self._check_for_app_crash(locator_info=locator)
 
     def _download_file_using_button(self, locator: str, value: str, index: int):
         """
@@ -385,11 +400,12 @@ class playwright_operations:
             value (str): Path to save the downloaded file.
             index (int): Index of the button if multiple matches are found.
         """
-        with self.ce.page.expect_download() as download_info:
-            self.act(locator=locator, action=framework_actions.CLICK_BUTTON, index=index)
-        download = download_info.value
-        download.save_as(value)
-        self._check_for_app_crash(locator_info=locator)
+        with allure.step(title=f"Downloading file [{value}] from [{locator}]"):
+            with self.ce.page.expect_download() as download_info:
+                self.act(locator=locator, action=framework_actions.CLICK_BUTTON, index=index)
+            download = download_info.value
+            download.save_as(value)
+            self._check_for_app_crash(locator_info=locator)
 
     def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
         """
@@ -401,31 +417,34 @@ class playwright_operations:
             actual_value (str): Actual text value.
             exact (bool): Whether to match the text exactly.
         """
-        if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
-            return
-        if exact:
-            _passed: bool = True if expected_value == actual_value else False
-            if _passed:
-                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
-            else:
-                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-            assert _passed, f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
-        else:
-            if expected_value.startswith(escape_characters.NOT_OPERATOR):
-                expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
-                _passed: bool = True if clean_text(text=expected_value) not in clean_text(text=actual_value) else False
+        with allure.step(title=f"Verifying text [{expected_value}]"):
+            if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
+                return
+            if exact:
+                _passed: bool = True if expected_value == actual_value else False
                 if _passed:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
                 else:
                     self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert _passed, f"Text '{expected_value}' not expected but found in '{actual_value}'."
+                assert _passed, f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
             else:
-                _passed: bool = True if clean_text(text=expected_value) in clean_text(text=actual_value) else False
-                if _passed:
-                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                if expected_value.startswith(escape_characters.NOT_OPERATOR):
+                    expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
+                    _passed: bool = (
+                        True if clean_text(text=expected_value) not in clean_text(text=actual_value) else False
+                    )
+                    if _passed:
+                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                    else:
+                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
+                    assert _passed, f"Text '{expected_value}' not expected but found in '{actual_value}'."
                 else:
-                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
+                    _passed: bool = True if clean_text(text=expected_value) in clean_text(text=actual_value) else False
+                    if _passed:
+                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                    else:
+                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
+                    assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
 
     def _verify_visibility(self, locator: str, expected_value: str, actual_value: str):
         """
@@ -436,12 +455,13 @@ class playwright_operations:
             expected_value (str): Expected visibility state.
             actual_value (str): Actual visibility state.
         """
-        _passed: bool = True if actual_value == expected_value else False
-        if _passed:
-            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
-        else:
-            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
-        assert _passed, f"{locator} is not visible."
+        with allure.step(title=f"Verifying visibility [{locator}]"):
+            _passed: bool = True if actual_value == expected_value else False
+            if _passed:
+                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
+            else:
+                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
+            assert _passed, f"{locator} is not visible."
 
     def _verify_checkbox(self, locator: str, expected_value: str, actual_value: str):
         """
@@ -452,13 +472,14 @@ class playwright_operations:
             expected_value (str): Expected checked state.
             actual_value (str): Actual checked state.
         """
-        _passed: bool = True if bool(actual_value) == bool(expected_value) else False
-        _checked: str = "" if bool(actual_value) else "not"
-        if _passed:
-            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_PASSED)
-        else:
-            self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_FAILED)
-        assert _passed, f"{locator} is {_checked} checked."
+        with allure.step(title=f"Verifying checkbox [{locator}]"):
+            _passed: bool = True if bool(actual_value) == bool(expected_value) else False
+            _checked: str = "" if bool(actual_value) else "not"
+            if _passed:
+                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_PASSED)
+            else:
+                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_FAILED)
+            assert _passed, f"{locator} is {_checked} checked."
 
     def _get_element_text(self, locator: str, index: int, by_test_id: bool, chain_locator: bool) -> str:
         """
@@ -557,7 +578,7 @@ class playwright_operations:
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
                 elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
-        return elem.get_attribute(element_properties.HREF)
+        return elem.get_attribute(element_properties.HREF.name)
 
     def _wait(self, time_out: str):
         """
@@ -566,8 +587,9 @@ class playwright_operations:
         Args:
             time_out (str): Time to wait (e.g., "1s", "1m").
         """
-        _seconds = convert_time_units_to_seconds(time_unit=time_out)
-        time.sleep(_seconds)
+        with allure.step(title=f"Waiting {time_out}"):
+            _seconds = convert_time_units_to_seconds(time_unit=time_out)
+            time.sleep(_seconds)
 
     def _check_for_app_crash(self, locator_info: str):
         """

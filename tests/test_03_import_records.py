@@ -93,7 +93,7 @@ class Test_ImportRecords:
 
     @pytest.mark.childlist
     @pytest.mark.order(306)
-    def test_child_list_space_normalisation(self, setup_child_list):
+    def test_child_list_space_normalization(self, setup_child_list):
         self.import_records_page.import_child_records(
             file_paths=test_data_file_paths.CHILD_MAV_1080, verify_on_children_page=True
         )
