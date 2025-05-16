@@ -110,7 +110,7 @@ jobs:
               -JDuration=${{inputs.duration}} \
               -JThreads=${{inputs.threads}} \
               -JRampUp=${{inputs.ramp_up}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}}
+              -JVaccinationLoop=${{inputs.vaccination_loop}} \
               -JInputFile=${{inputs.input_file}}
 
       - name: Upload consent journey JMeter output
