@@ -95,7 +95,13 @@ jobs:
         if: inputs.runDataPrep == true
           mkdir -p import-output
           import_output_dir=import-output
-          echo "Placeholder step for file import"
+          jmeter/bin/jmeter -n -t performance-tests/E2E/upload-cohort-data.jmx \
+              -l $import_output_dir/samples.jtl \
+              -j $import_output_dir/jmeter.log \
+              -e -o $import_output_dir/upload-report \
+              -JURN=${{inputs.urn}} \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JInputFile=${{inputs.input_file}}
 
       - name: Run Consent Journey for imported records
         if: inputs.runDataPrep == true
