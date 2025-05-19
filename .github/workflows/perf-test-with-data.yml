@@ -114,9 +114,7 @@ jobs:
               -e -o $consent_output_dir/consent-report \
               -JURN=${{inputs.urn}} \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile=${{inputs.input_file}} \
-              -JThreads=2 \
-              -JLoops=2
+              -JInputFile=${{inputs.input_file}}
 
       - name: Run nurse journey JMeter test
         if: inputs.runNurse == true
