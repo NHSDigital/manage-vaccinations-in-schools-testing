@@ -51,6 +51,7 @@ class Test_Reset:
         yield
 
     @pytest.mark.rav
+    @pytest.mark.bug
     @pytest.mark.order(9901)
     def test_programmes_rav_prescreening_questions(self, setup_mav_965):
         self.programmes_page.verify_mav_965()

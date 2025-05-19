@@ -92,11 +92,13 @@ class Test_Children:
         self.children_page.verify_filter()
 
     @pytest.mark.children
+    @pytest.mark.bug
     @pytest.mark.order(702)
     def test_children_details_mav_853(self, setup_mav_853: None):
         self.children_page.verify_mav_853()  # MAV-853
 
     @pytest.mark.children
+    @pytest.mark.bug
     @pytest.mark.order(703)
     def test_children_change_nhsno(self, setup_change_nhsno: None):
         self.children_page.change_nhs_no()

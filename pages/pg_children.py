@@ -49,11 +49,7 @@ class pg_children:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             for _child_name in child_list:
-                _cn: str = _child_name.strip()
-                _cn = _cn.replace("\xa0", " ")
-                _cn = _cn.replace("\u200d", " ")
-                self.search_for_a_child(child_name=_cn)
-                # self.po.act(locator=self.LNK_CLEAR_FILTERS, action=framework_actions.CLICK_LINK)
+                self.search_for_a_child(child_name=_child_name)
 
     def search_for_a_child(self, child_name: str) -> None:
         self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=child_name)

@@ -76,11 +76,13 @@ class Test_Sessions:
         self.sessions_page.create_invalid_session()
 
     @pytest.mark.sessions
+    @pytest.mark.bug
     @pytest.mark.order(203)
     def test_verify_attendance_filters(self, setup_mavis_1822: None):
         self.sessions_page.verify_attendance_filters()  # MAVIS-1822
 
     @pytest.mark.sessions
+    @pytest.mark.bug
     @pytest.mark.order(204)
     def test_verify_search(self, setup_mav_1018):
         self.sessions_page.verify_search()  # MAV-1018
