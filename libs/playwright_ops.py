@@ -7,10 +7,10 @@ import allure
 
 from libs import CurrentExecution
 from libs.generic_constants import (
+    actions,
     aria_roles,
-    element_properties,
-    framework_actions,
     html_tags,
+    properties,
     screenshot_actions,
     screenshot_file_types,
     wait_time,
@@ -46,7 +46,7 @@ class playwright_operations:
             )
             self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG, full_page=True)
 
-    def verify(self, locator: str, property: element_properties, expected_value: str, **kwargs) -> None:
+    def verify(self, locator: str, property: properties, expected_value: str, **kwargs) -> None:
         """
         Verify a property of a web element.
 
@@ -65,17 +65,17 @@ class playwright_operations:
             locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
         )
         match property:
-            case element_properties.TEXT:
+            case properties.TEXT:
                 if expected_value != "":
                     self._verify_text(
                         locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
                     )
-            case element_properties.VISIBILITY:
+            case properties.VISIBILITY:
                 self._verify_visibility(locator=locator, expected_value=expected_value, actual_value=actual_value)
-            case element_properties.CHECKBOX_CHECKED:
+            case properties.CHECKBOX_CHECKED:
                 self._verify_checkbox(locator=locator, expected_value=expected_value, actual_value=actual_value)
 
-    def get_element_property(self, locator: str, property: element_properties, **kwargs) -> str:
+    def get_element_property(self, locator: str, property: properties, **kwargs) -> str:
         """
         Get a property of a web element.
 
@@ -93,22 +93,22 @@ class playwright_operations:
         index: int = kwargs.get("index", 0)
         # Act
         match property:
-            case element_properties.TEXT:
+            case properties.TEXT:
                 return self._get_element_text(
                     locator=locator, index=index, by_test_id=by_test_id, chain_locator=chain_locator
                 )
-            case element_properties.VISIBILITY:
+            case properties.VISIBILITY:
                 return self._get_element_visibility(locator=locator, index=index, chain_locator=chain_locator)
-            case element_properties.HREF:
+            case properties.HREF:
                 return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
-            case element_properties.CHECKBOX_CHECKED:
+            case properties.CHECKBOX_CHECKED:
                 return self._get_checkbox_state(locator=locator, index=index, chain_locator=chain_locator)
-            case element_properties.ELEMENT_EXISTS:
-                return self.ce.page.query_selector(locator) is not None
-            case element_properties.PAGE_URL:
+            case properties.ELEMENT_EXISTS:
+                return str(self.ce.page.query_selector(locator) is not None)
+            case properties.PAGE_URL:
                 return self.ce.page.url
 
-    def act(self, locator: str | None, action: framework_actions, value: str | None = None, **kwargs) -> None:
+    def act(self, locator: str | None, action: actions, value: str | None = None, **kwargs) -> None:
         """
         Perform an action on a web element.
 
@@ -128,37 +128,37 @@ class playwright_operations:
         index: int = kwargs.get("index", 0)
         # Act
         match action:
-            case framework_actions.CLICK_LINK:
+            case actions.CLICK_LINK:
                 self._click_link(locator=locator, exact=exact, index=index)
-            case framework_actions.CLICK_BUTTON:
+            case actions.CLICK_BUTTON:
                 self._click_button(locator=locator, exact=exact, index=index)
-            case framework_actions.CLICK_LABEL:
+            case actions.CLICK_LABEL:
                 self._click_label(locator=locator, exact=exact, index=index)
-            case framework_actions.CLICK_TEXT:
+            case actions.CLICK_TEXT:
                 self._click_text(locator=locator, exact=exact, index=index)
-            case framework_actions.FILL | framework_actions.TYPE:
+            case actions.FILL | actions.TYPE:
                 self._fill(locator=locator, value=value, exact=exact, index=index)
-            case framework_actions.RADIO_BUTTON_SELECT:
+            case actions.RADIO_BUTTON_SELECT:
                 self._radio_button_select(locator=locator, exact=exact, index=index)
-            case framework_actions.SELECT_FILE:
+            case actions.SELECT_FILE:
                 self._select_file(locator=locator, value=value, exact=exact, index=index)
-            case framework_actions.SELECT_FROM_LIST:
+            case actions.SELECT_FROM_LIST:
                 self._select_from_list(locator=locator, value=value, index=index)
-            case framework_actions.CHECKBOX_CHECK:
+            case actions.CHECKBOX_CHECK:
                 self._checkbox_check(locator=locator, index=index)
-            case framework_actions.CHECKBOX_UNCHECK:
+            case actions.CHECKBOX_UNCHECK:
                 self._checkbox_uncheck(locator=locator, index=index)
-            case framework_actions.CLICK_LINK_INDEX_FOR_ROW:
+            case actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
-            case framework_actions.DOWNLOAD_FILE_USING_LINK:
+            case actions.DOWNLOAD_FILE_USING_LINK:
                 self._download_file_using_link(locator=locator, value=value, index=index)
-            case framework_actions.DOWNLOAD_FILE_USING_BUTTON:
+            case actions.DOWNLOAD_FILE_USING_BUTTON:
                 self._download_file_using_button(locator=locator, value=value, index=index)
-            case framework_actions.CLICK_WILDCARD:
+            case actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
-            case framework_actions.CHAIN_LOCATOR_ACTION:
+            case actions.CHAIN_LOCATOR_ACTION:
                 eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
-            case framework_actions.WAIT:
+            case actions.WAIT:
                 self._wait(time_out=value)
         if locator is not None:
             self.capture_screenshot(identifier=locator, action=f"after-{action}")
@@ -247,7 +247,8 @@ class playwright_operations:
             exact (bool): Whether to match the input field label exactly.
             index (int): Index of the input field if multiple matches are found.
         """
-        with allure.step(title=f"Typing [{value}] in [{locator}]"):
+        _allure_title_value = "***" if "password" in locator.lower() else value
+        with allure.step(title=f"Typing [{_allure_title_value}] in [{locator}]"):
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
@@ -386,7 +387,7 @@ class playwright_operations:
         """
         with allure.step(title=f"Downloading file [{value}] from [{locator}]"):
             with self.ce.page.expect_download() as download_info:
-                self.act(locator=locator, action=framework_actions.CLICK_LINK, index=index)
+                self.act(locator=locator, action=actions.CLICK_LINK, index=index)
             download = download_info.value
             download.save_as(value)
             self._check_for_app_crash(locator_info=locator)
@@ -402,7 +403,7 @@ class playwright_operations:
         """
         with allure.step(title=f"Downloading file [{value}] from [{locator}]"):
             with self.ce.page.expect_download() as download_info:
-                self.act(locator=locator, action=framework_actions.CLICK_BUTTON, index=index)
+                self.act(locator=locator, action=actions.CLICK_BUTTON, index=index)
             download = download_info.value
             download.save_as(value)
             self._check_for_app_crash(locator_info=locator)
@@ -527,7 +528,7 @@ class playwright_operations:
             elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                self.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+                self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
                 elem = self.ce.page.get_by_role(locator).nth(0)
@@ -551,7 +552,7 @@ class playwright_operations:
             elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                self.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
+                self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
                 elem = self.ce.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(0)
@@ -578,7 +579,7 @@ class playwright_operations:
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
                 elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
-        return elem.get_attribute(element_properties.HREF.name)
+        return elem.get_attribute(properties.HREF.name)
 
     def _wait(self, time_out: str):
         """
@@ -625,7 +626,7 @@ class playwright_operations:
         Returns:
             tuple: Row and column indices of the cell.
         """
-        self.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
+        self.act(locator=None, action=actions.WAIT, value=wait_time.MED)
         table = self.ce.page.locator(table_locator)
 
         # Get the column index

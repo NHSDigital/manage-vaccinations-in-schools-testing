@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs import CurrentExecution, playwright_ops
-from libs.generic_constants import element_properties, framework_actions, wait_time
+from libs.generic_constants import actions, properties, wait_time
 from libs.wrappers import *
 from pages import pg_children, pg_dashboard
 
@@ -40,7 +40,7 @@ class pg_unmatched:
 
     def verify_records_exist(self):
         self.po.verify(
-            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_NO_RECORDS, exact=False
+            locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.LBL_NO_RECORDS, exact=False
         )
 
     def match_with_record(self):
@@ -49,18 +49,16 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_MATCHING,
         )
-        self.po.act(locator=self.LNK_MATCH, action=framework_actions.CLICK_LINK, index=_row_num)
-        self.po.act(locator=self.TXT_SEARCH, action=framework_actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
-        self.po.act(locator=self.BTN_SEARCH, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.LBL_CHILD_NAME_TO_MATCH, action=framework_actions.CLICK_LINK, index=0)
-        self.po.act(locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=framework_actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_CONSENT_MATCHED
-        )
+        self.po.act(locator=self.LNK_MATCH, action=actions.CLICK_LINK, index=_row_num)
+        self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=self.LBL_CHILD_NAME_TO_MATCH)
+        self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
+        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
+        self.po.act(locator=self.LBL_CHILD_NAME_TO_MATCH, action=actions.CLICK_LINK, index=0)
+        self.po.act(locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=properties.TEXT, expected_value=self.LBL_CONSENT_MATCHED)
         self.po.verify(
             locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value=f"!{self.LBL_CHILD_NAME_FOR_MATCHING}",
         )
         self.dashboard_page.go_to_dashboard()
@@ -75,17 +73,17 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_ARCHIVAL,
         )
-        self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=framework_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.TXT_NOTES, action=framework_actions.FILL, value="Archiving")
-        self.po.act(locator=self.BTN_ARCHIVE_RESPONSE, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_ARCHIVE_RECORD, action=actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.TXT_NOTES, action=actions.FILL, value="Archiving")
+        self.po.act(locator=self.BTN_ARCHIVE_RESPONSE, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value=self.LBL_ARCHIVE_SUCCESS_MESSAGE,
         )
         self.po.verify(
             locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value=f"!{self.LBL_CHILD_NAME_FOR_ARCHIVAL}",
             exact=False,
         )  # MAVIS-1782
@@ -96,12 +94,12 @@ class pg_unmatched:
             col_header=self.LBL_RESPONSE_COL,
             row_value=self.LBL_CHILD_NAME_FOR_CREATION,
         )
-        self.po.act(locator=self.LNK_PARENT_NAME, action=framework_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.LNK_CREATE_RECORD, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_PARENT_NAME, action=actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_CREATE_RECORD, action=actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value=self.LBL_CREATE_SUCCESS_MESSAGE,
         )
         self.dashboard_page.go_to_dashboard()
@@ -114,12 +112,12 @@ class pg_unmatched:
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN, col_header=self.LBL_RESPONSE_COL, row_value=self.LBL_CHILD_NO_NHS_NUMBER
         )
-        self.po.act(locator=self.LNK_PARENT_NAME, action=framework_actions.CLICK_LINK, index=(_row_num - 1))
-        self.po.act(locator=self.LNK_CREATE_RECORD, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.LNK_PARENT_NAME, action=actions.CLICK_LINK, index=(_row_num - 1))
+        self.po.act(locator=self.LNK_CREATE_RECORD, action=actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_CREATE_RECORD_FROM, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value=self.LBL_CREATE_SUCCESS_MESSAGE,
         )
         self.dashboard_page.go_to_dashboard()
