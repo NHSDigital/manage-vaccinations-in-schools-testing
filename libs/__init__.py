@@ -3,13 +3,14 @@ import time
 
 import requests
 from dotenv import load_dotenv
+from playwright.sync_api import Browser, Page
 
 from libs.generic_constants import api_response_codes
 
 
 class CurrentExecution:
-    page = None
-    browser = None
+    page: Page = None
+    browser: Browser = None
     service_url: str = ""
     base_auth_username: str = ""
     base_auth_password: str = ""
