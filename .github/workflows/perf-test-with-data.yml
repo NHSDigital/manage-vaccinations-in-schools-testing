@@ -22,7 +22,7 @@ on:
         required: true
         type: string
       input_file:
-        description: "Required: Input file name used for all steps."
+        description: "Require: Input file name used for all steps."
         required: true
         type: string
       duration:
@@ -91,8 +91,8 @@ jobs:
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Run file import for new file
-        run: |
         if: inputs.runDataPrep == true
+        run: |
           mkdir -p import-output
           import_output_dir=import-output
           jmeter/bin/jmeter -n -t performance-tests/E2E/upload-cohort-data.jmx \
