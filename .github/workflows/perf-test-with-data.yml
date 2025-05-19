@@ -115,8 +115,8 @@ jobs:
               -JURN=${{inputs.urn}} \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JInputFile=${{inputs.input_file}} \
-              -JThreads=5
-              -JLoops=10
+              -JThreads=2
+              -JLoops=2
 
       - name: Run nurse journey JMeter test
         if: inputs.runNurse == true
