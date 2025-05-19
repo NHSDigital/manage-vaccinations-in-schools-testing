@@ -7,30 +7,41 @@ on:
 
   workflow_dispatch:
     inputs:
+      runDataPrep:
+        description: "Run data prep"
+        required: true
+        type: boolean
+        default: 'true'
+      runNurse:
+        description: "Run the nurse journey"
+        required: true
+        type: boolean
+        default: 'true'
       urn:
-        description: "URN - for a school in the QA environment. This session MUST HAVE A SESSION DATE FOR TODAY."
+        description: "Required: URN for a school in the QA environment. This must have a session date for today and tomorrow."
+        required: true
+        type: string
+      input_file:
+        description: "Require: Input file name used for all steps."
         required: true
         type: string
       duration:
-        description: "Duration of nurse journey test, in seconds. This will include ramp-up."
+        description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
         type: number
       threads:
-        description: "Threads to run. Equivalent to the number of nurses using the system."
+        description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
         required: false
         type: number
       ramp_up:
-        description: "Ramp-up time in seconds. Threads will be gradually started up over this time."
+        description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
         required: false
         type: number
       vaccination_loop:
-        description: "Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
+        description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
         required: false
         type: number
-      input_file:
-        description: "Input file name used for all steps."
-        required: false
-        type: string
+
 
 # env:
 #   JMETER_PLUGIN_INSTALL_LIST: "jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv"
@@ -60,6 +71,7 @@ jobs:
           curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
           java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
           chmod +x jmeter/bin/PluginsManagerCMD.sh
+          sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
 
       - name: Install JMeter plugins
         if: env.jmeter_plugins != ''
@@ -80,28 +92,37 @@ jobs:
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Run file import for new file
+        if: inputs.runDataPrep == true
         run: |
           mkdir -p import-output
           import_output_dir=import-output
-          echo "Placeholder step for file import"
+          jmeter/bin/jmeter -n -t performance-tests/E2E/upload-cohort-data.jmx \
+              -l $import_output_dir/samples.jtl \
+              -j $import_output_dir/jmeter.log \
+              -e -o $import_output_dir/upload-report \
+              -JURN=${{inputs.urn}} \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JInputFile=${{inputs.input_file}}
 
-#      - name: Run Consent Journey for imported records (2K records)
-#        run: |
-#          mkdir -p consent-output
-#          consent_output_dir=consent-output
-#          jmeter/bin/jmeter -n -t performance-tests/E2E/consent-journey.jmx \
-#              -l $consent_output_dir/samples.jtl \
-#              -j $consent_output_dir/jmeter.log \
-#              -e -o $consent_output_dir/consent-report \
-#              -JURN=${{inputs.urn}} \
-#              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-#              -JInputFile=${{inputs.input_file}}
+      - name: Run Consent Journey for imported records
+        if: inputs.runDataPrep == true
+        run: |
+          mkdir -p consent-output
+          consent_output_dir=consent-output
+          jmeter/bin/jmeter -n -t performance-tests/E2E/consent-journey.jmx \
+              -l $consent_output_dir/samples.jtl \
+              -j $consent_output_dir/jmeter.log \
+              -e -o $consent_output_dir/consent-report \
+              -JURN=${{inputs.urn}} \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JInputFile=${{inputs.input_file}}
 
       - name: Run nurse journey JMeter test
+        if: inputs.runNurse == true
         run: |
           mkdir -p nurse-output
           nurse_output_dir=nurse-output
-          jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx \
+          jmeter/bin/jmeter -n -t performance-tests/E2E/nurse-journey.jmx \
               -l $nurse_output_dir/samples.jtl \
               -j $nurse_output_dir/jmeter.log \
               -e -o $nurse_output_dir/report \
@@ -110,19 +131,21 @@ jobs:
               -JDuration=${{inputs.duration}} \
               -JThreads=${{inputs.threads}} \
               -JRampUp=${{inputs.ramp_up}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}}
+              -JVaccinationLoop=${{inputs.vaccination_loop}} \
               -JInputFile=${{inputs.input_file}}
 
       - name: Upload consent journey JMeter output
+        if: inputs.runDataPrep == true
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Upload nurse journey JMeter output
+        if: inputs.runNurse == true
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
           path: nurse-output
-          if-no-files-found: error
+          if-no-files-found: warn
