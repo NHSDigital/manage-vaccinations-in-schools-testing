@@ -121,7 +121,7 @@ jobs:
         run: |
           mkdir -p nurse-output
           nurse_output_dir=nurse-output
-          jmeter/bin/jmeter -n -t performance-tests/nurse-journey.jmx \
+          jmeter/bin/jmeter -n -t performance-tests/E2E/nurse-journey.jmx \
               -l $nurse_output_dir/samples.jtl \
               -j $nurse_output_dir/jmeter.log \
               -e -o $nurse_output_dir/report \
