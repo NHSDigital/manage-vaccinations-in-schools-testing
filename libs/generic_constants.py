@@ -2,7 +2,7 @@ from enum import Enum, auto
 from typing import Final
 
 
-class element_properties(Enum):
+class properties(Enum):
     TEXT = auto()
     VISIBILITY = auto()
     HREF = auto()
@@ -11,7 +11,7 @@ class element_properties(Enum):
     CHECKBOX_CHECKED = auto()
 
 
-class framework_actions(Enum):
+class actions(Enum):
     CLICK_LINK = auto()
     CLICK_BUTTON = auto()
     CLICK_LABEL = auto()

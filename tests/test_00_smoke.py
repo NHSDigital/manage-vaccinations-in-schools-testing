@@ -3,7 +3,7 @@ import subprocess
 import pytest
 
 from libs import file_ops, playwright_ops
-from libs.generic_constants import element_properties
+from libs.generic_constants import properties
 
 
 class Test_Smoke:
@@ -34,6 +34,6 @@ class Test_Smoke:
     def test_smoke_homepage_loads(self, start_mavis: None):
         self.po.verify(
             locator="heading",
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value="Manage vaccinations in schools (Mavis)",
         )

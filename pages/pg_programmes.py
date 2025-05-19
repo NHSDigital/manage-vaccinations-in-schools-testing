@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.generic_constants import element_properties, framework_actions, wait_time
+from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import (
     programmes,
     record_limit,
@@ -69,84 +69,80 @@ class pg_programmes:
     LBL_RECORD_UPDATED: Final[str] = "Record updated"
 
     def click_hpv(self):
-        self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
 
     def click_imports(self):
-        self.po.act(locator=self.LNK_IMPORTS, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
 
     def click_vaccinations(self):
-        self.po.act(locator=self.LNK_VACCINATIONS, action=framework_actions.CLICK_LINK, exact=True)
+        self.po.act(locator=self.LNK_VACCINATIONS, action=actions.CLICK_LINK, exact=True)
 
     def click_cohorts(self):
-        self.po.act(locator=self.LNK_COHORTS, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_COHORTS, action=actions.CLICK_LINK)
 
     def click_edit_vaccination_record(self):
-        self.po.act(locator=self.BTN_EDIT_VACCINATION_RECORD, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_EDIT_VACCINATION_RECORD, action=actions.CLICK_BUTTON)
 
     def click_import_records(self):
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
 
     def click_import_cohort_records(self):
-        self.po.act(locator=self.LNK_IMPORT_CHILD_RECORDS, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_IMPORT_CHILD_RECORDS, action=actions.CLICK_LINK)
 
     def select_child_records(self):
-        self.po.act(locator=self.RDO_CHILD_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_CHILD_RECORDS, action=actions.RADIO_BUTTON_SELECT)
 
     def select_vaccination_records(self):
-        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT)
 
     def click_continue(self):
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def click_choose_file_child_records(self):
-        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=framework_actions.CLICK_LABEL)
+        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=actions.CLICK_LABEL)
 
     def choose_file_child_records(self, file_path: str):
         self.po.act(
             locator=self.LBL_UPLOAD_COHORT_FILE,
-            action=framework_actions.SELECT_FILE,
+            action=actions.SELECT_FILE,
             value=file_path,
         )
 
     def click_choose_file_vaccination_records(self):
-        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=framework_actions.CLICK_LABEL)
+        self.po.act(locator=self.LBL_CHOOSE_COHORT_FILE, action=actions.CLICK_LABEL)
 
     def choose_file_vaccination_records(self, file_path: str):
         self.po.act(
             locator=self.LBL_CHOOSE_VACCS_FILE,
-            action=framework_actions.SELECT_FILE,
+            action=actions.SELECT_FILE,
             value=file_path,
         )
 
     def verify_import_processing_started(self):
-        self.po.verify(
-            locator=self.LBL_PARAGRAPH, property=element_properties.TEXT, expected_value=self.LBL_IMPORT_STARTED
-        )
+        self.po.verify(locator=self.LBL_PARAGRAPH, property=properties.TEXT, expected_value=self.LBL_IMPORT_STARTED)
 
     def click_uploaded_file_datetime(self, truncated: bool = False):
         _link_time = self.upload_time[3:] if truncated else self.upload_time
-        self.po.act(locator=_link_time, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=_link_time, action=actions.CLICK_LINK)
 
     def record_upload_time(self):
         self.upload_time = get_link_formatted_date_time()
 
     def click_dose2_child(self):
-        self.po.act(locator=self.LNK_DOSE2_CHILD, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_DOSE2_CHILD, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
-                self.po.verify(
-                    locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=_msg, exact=False
-                )
+                self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=_msg, exact=False)
 
     def upload_hpv_child_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
-        self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
+        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime(truncated=True)
         self.verify_upload_output(file_path=_output_file_path)
@@ -160,9 +156,9 @@ class pg_programmes:
         self.click_continue()
         self.record_upload_time()
         if wait_long:
-            self.po.act(locator=None, action=framework_actions.WAIT, value="14m")
+            self.po.act(locator=None, action=actions.WAIT, value="14m")
         else:
-            self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MED)
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
         if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
@@ -172,13 +168,13 @@ class pg_programmes:
         self.click_vaccinations()
         self.click_dose2_child()
         self.click_edit_vaccination_record()
-        self.po.act(locator=self.LNK_CHANGE_OUTCOME, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_THEY_REFUSED_IT, action=framework_actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.LNK_CHANGE_OUTCOME, action=actions.CLICK_LINK)
+        self.po.act(locator=self.RDO_THEY_REFUSED_IT, action=actions.RADIO_BUTTON_SELECT)
         self.click_continue()
-        self.po.act(locator=self.BTN_SAVE_CHANGES, action=framework_actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_MAIN,
-            property=element_properties.TEXT,
+            property=properties.TEXT,
             expected_value="!Sorry, there’s a problem with the service",
             exact=False,
         )
@@ -194,8 +190,8 @@ class pg_programmes:
         Actual: crash
         """
         self.children_page.search_for_a_child(child_name=self.LNK_MAV_854_CHILD)
-        self.po.act(locator=self.LNK_MAV_854_CHILD, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_COMMUNITY_CLINIC_HPV, action=framework_actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_MAV_854_CHILD, action=actions.CLICK_LINK)
+        self.po.act(locator=self.LNK_COMMUNITY_CLINIC_HPV, action=actions.CLICK_LINK)
         self.sessions_page._vaccinate_child_mav_854()
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
@@ -206,45 +202,45 @@ class pg_programmes:
     def verify_careplus_report_format(self, for_programme: str):
         match for_programme.lower():
             case programmes.MENACWY:
-                self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_MENACWY, action=actions.CLICK_LINK)
             case programmes.TDIPV:
-                self.po.act(locator=self.LNK_TDIPV, action=framework_actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_TDIPV, action=actions.CLICK_LINK)
             case _:
-                self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_REPORT_CAREPLUS, action=framework_actions.RADIO_BUTTON_SELECT)
+                self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_REPORT_CAREPLUS, action=actions.RADIO_BUTTON_SELECT)
         self._download_and_verify_report_headers(expected_headers=report_headers.CAREPLUS)
 
     def verify_csv_report_format(self, for_programme: str):
         match for_programme.lower():
             case programmes.MENACWY:
-                self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_MENACWY, action=actions.CLICK_LINK)
             case programmes.TDIPV:
-                self.po.act(locator=self.LNK_TDIPV, action=framework_actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_TDIPV, action=actions.CLICK_LINK)
             case _:
-                self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_REPORT_CSV, action=framework_actions.RADIO_BUTTON_SELECT)
+                self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_REPORT_CSV, action=actions.RADIO_BUTTON_SELECT)
         self._download_and_verify_report_headers(expected_headers=report_headers.CSV)
 
     def verify_systmone_report_format(self, for_programme: str):
         match for_programme.lower():
             case programmes.MENACWY:
-                self.po.act(locator=self.LNK_MENACWY, action=framework_actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_MENACWY, action=actions.CLICK_LINK)
             case programmes.TDIPV:
-                self.po.act(locator=self.LNK_TDIPV, action=framework_actions.CLICK_LINK)
+                self.po.act(locator=self.LNK_TDIPV, action=actions.CLICK_LINK)
             case _:
-                self.po.act(locator=self.LNK_HPV, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_REPORT_SYSTMONE, action=framework_actions.RADIO_BUTTON_SELECT)
+                self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+        self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.po.act(locator=self.RDO_REPORT_SYSTMONE, action=actions.RADIO_BUTTON_SELECT)
         self._download_and_verify_report_headers(expected_headers=report_headers.SYSTMONE)
 
     def _download_and_verify_report_headers(self, expected_headers: str):
         _file_path = f"working/rpt_{get_current_datetime()}.csv"
-        self.po.act(locator=self.BTN_CONTINUE, action=framework_actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path)
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path)
         _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
         # assert expected_headers == actual_headers, "Report headers do not match"
@@ -319,9 +315,9 @@ class pg_programmes:
         self.dashboard_page.click_programmes()
         self.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
         self.po.verify(
-            locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE
+            locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE
         )
-        self.po.act(locator=self.LNK_REVIEW, action=framework_actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_USE_DUPLICATE, action=framework_actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_RESOLVE_DUPLICATE, action=framework_actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=element_properties.TEXT, expected_value=self.LBL_RECORD_UPDATED)
+        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK)
+        self.po.act(locator=self.RDO_USE_DUPLICATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=self.BTN_RESOLVE_DUPLICATE, action=actions.CLICK_BUTTON)
+        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.LBL_RECORD_UPDATED)

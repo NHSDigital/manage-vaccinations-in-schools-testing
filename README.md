@@ -51,3 +51,7 @@ Tests for individual endpoints can be executed using individual markers.  For ex
 ```console
 pytest -m regression
 ```
+
+## More information
+
+Further details on the scope and approach of the automation are on the [NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).

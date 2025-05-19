@@ -141,6 +141,7 @@ class Test_Programmes:
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
 
     @pytest.mark.cohorts
+    @pytest.mark.bug
     @pytest.mark.order(506)
     def test_cohorts_readd_to_cohort(self, setup_cohort_upload_and_reports):  # MAV-909
         self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
@@ -157,11 +158,13 @@ class Test_Programmes:
         self.sessions_page.update_triage_outcome_consent_refused(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
 
     @pytest.mark.rav
+    @pytest.mark.bug
     @pytest.mark.order(528)
     def test_programmes_rav_edit_dose_to_not_given(self, setup_mavis_1729):
         self.programmes_page.edit_dose_to_not_given()  # MAVIS-1729
 
     @pytest.mark.rav
+    @pytest.mark.bug
     @pytest.mark.order(529)
     def test_programmes_rav_verify_excel_mav_854(self, setup_mav_854):
         self.programmes_page.verify_mav_854()  # MAV-854

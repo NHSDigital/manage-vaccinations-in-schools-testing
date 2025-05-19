@@ -160,16 +160,19 @@ class Test_Consent_HPV:
         self.sessions_page.set_gillick_competence_for_student()
 
     @pytest.mark.consent
+    @pytest.mark.bug
     @pytest.mark.order(903)
     def test_invalid_consent(self, setup_mavis_1696: None):
         self.sessions_page.bug_mavis_1696()  # MAVIS-1696
 
     @pytest.mark.consent
+    @pytest.mark.bug
     @pytest.mark.order(905)
     def test_parent_provides_consent_twice(self, setup_mavis_1864: None):
         self.sessions_page.bug_mavis_1864()  # MAVIS-1864
 
     @pytest.mark.consent
+    @pytest.mark.bug
     @pytest.mark.order(906)
     def test_conflicting_consent_with_gillick_consent(self, setup_mavis_1818: None):
         self.sessions_page.bug_mavis_1818()  # MAVIS-1818

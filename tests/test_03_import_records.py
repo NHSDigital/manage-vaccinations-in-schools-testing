@@ -96,6 +96,7 @@ class Test_ImportRecords:
         self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
 
     @pytest.mark.childlist
+    @pytest.mark.bug
     @pytest.mark.order(306)
     def test_child_list_space_normalization(self, setup_child_list):
         self.import_records_page.import_child_records(
@@ -137,6 +138,7 @@ class Test_ImportRecords:
         )
 
     @pytest.mark.classlist
+    @pytest.mark.bug
     @pytest.mark.order(332)
     def test_class_list_space_normalization(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(
@@ -207,6 +209,7 @@ class Test_ImportRecords:
         )
 
     @pytest.mark.vaccinations
+    @pytest.mark.bug
     @pytest.mark.order(359)
     def test_vaccs_historic_no_urn_mav_855(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
@@ -238,6 +241,7 @@ class Test_ImportRecords:
         )
 
     @pytest.mark.vaccinations
+    @pytest.mark.bug
     @pytest.mark.order(363)
     def test_vaccs_hpv_space_normalization(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
@@ -247,6 +251,7 @@ class Test_ImportRecords:
         )
 
     @pytest.mark.vaccinations
+    @pytest.mark.bug
     @pytest.mark.order(364)
     def test_vaccs_systmone_space_normalization(self, setup_vaccs_systmone):
         self.import_records_page.import_vaccination_records(

@@ -148,26 +148,21 @@ class testdata_operations:
 
         Args:
             file_path (str): Path to the file.
+            file_type (mavis_file_types): Type of file
 
         Returns:
             list: List of child names.
         """
         _file_df = self.fo.read_csv_to_df(file_path=file_path)
-        # _file_df.replace("\xa0", " ", regex=False, inplace=True)  # NBSP
-        # _file_df.replace("\u200d", " ", regex=False, inplace=True)  # ZWJ
         match file_type:
             case mavis_file_types.CHILD_LIST | mavis_file_types.COHORT | mavis_file_types.CLASS_LIST:
-                _child_list = _file_df[["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]]
-                _list = _child_list["CHILD_LAST_NAME"] + ", " + _child_list["CHILD_FIRST_NAME"].values.tolist()
+                _cols = ["CHILD_LAST_NAME", "CHILD_FIRST_NAME"]
             case mavis_file_types.VACCS_MAVIS:
-                _child_list = _file_df[["PERSON_FORENAME", "PERSON_SURNAME"]]
-                _list = _child_list["PERSON_SURNAME"] + ", " + _child_list["PERSON_FORENAME"].values.tolist()
+                _cols = ["PERSON_SURNAME", "PERSON_FORENAME"]
             case mavis_file_types.VACCS_SYSTMONE:
-                _child_list = _file_df[["First name", "Surname"]]
-                _list = _child_list["Surname"] + ", " + _child_list["First name"].values.tolist()
-        _list = _list.replace("&nbsp;", " ")
-        _list = _list.replace("\u200d", " ")
-        return _list
+                _cols = ["Surname", "First name"]
+        _names_list = _file_df[_cols[0]] + ", " + _file_df[_cols[1]].values.tolist()
+        return _names_list
 
     def get_session_id(self, excel_path: str) -> str:
         """
