@@ -1,4 +1,5 @@
 import os
+import re  # noqa: F401 - used by eval
 import time
 
 import allure
