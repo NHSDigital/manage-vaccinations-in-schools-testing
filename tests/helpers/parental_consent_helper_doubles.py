@@ -9,7 +9,9 @@ class parental_consent_helper:
     pc = pg_consent_doubles.pg_consent_doubles()
 
     def __init__(self):
-        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT_DOUBLES)
+        self.df = self.tdo.read_spreadsheet(
+            file_path=test_data_file_paths.PARENTAL_CONSENT_DOUBLES
+        )
 
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data
@@ -58,7 +60,9 @@ class parental_consent_helper:
             dob_month=self.child_dob_month,
             dob_year=self.child_dob_year,
         )
-        self.pc.select_child_school(scenario_id=self.scenario_id, school_name=self.school_name)
+        self.pc.select_child_school(
+            scenario_id=self.scenario_id, school_name=self.school_name
+        )
         self.pc.fill_parent_details(
             scenario_id=self.scenario_id,
             parent_name=self.parent_name,
@@ -70,7 +74,9 @@ class parental_consent_helper:
             self.pc.check_phone_options(
                 scenario_id=self.scenario_id,
             )
-        self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consent_for=self.consent_for)
+        self.pc.select_consent_for_vaccination(
+            scenario_id=self.scenario_id, consent_for=self.consent_for
+        )
         if self.consent_for.lower() != test_data_values.EMPTY:  # None
             self.pc.fill_address_details(
                 scenario_id=self.scenario_id,
@@ -80,19 +86,28 @@ class parental_consent_helper:
                 postcode=self.postcode,
             )
             self.pc.select_bleeding_disorder(
-                scenario_id=self.scenario_id, bleeding_disorder_details=self.bleeding_disorder_details
+                scenario_id=self.scenario_id,
+                bleeding_disorder_details=self.bleeding_disorder_details,
             )
-            self.pc.select_severe_allergies(scenario_id=self.scenario_id, allergy_details=self.severe_allergy_details)
-            self.pc.select_severe_reaction(scenario_id=self.scenario_id, reaction_details=self.reaction_details)
+            self.pc.select_severe_allergies(
+                scenario_id=self.scenario_id,
+                allergy_details=self.severe_allergy_details,
+            )
+            self.pc.select_severe_reaction(
+                scenario_id=self.scenario_id, reaction_details=self.reaction_details
+            )
             self.pc.select_extra_support(
-                scenario_id=self.scenario_id, extra_support_details=self.extra_support_details
+                scenario_id=self.scenario_id,
+                extra_support_details=self.extra_support_details,
             )
             self.pc.vaccinated_in_past(
-                scenario_id=self.scenario_id, vaccs_in_past_details=self.vaccinated_in_past_details
+                scenario_id=self.scenario_id,
+                vaccs_in_past_details=self.vaccinated_in_past_details,
             )
         if self.consent_for.lower() == "both":
             self.pc.other_vaccs_in_past(
-                scenario_id=self.scenario_id, other_vaccs_in_past_details=self.other_vaccs_in_past_details
+                scenario_id=self.scenario_id,
+                other_vaccs_in_past_details=self.other_vaccs_in_past_details,
             )
         if self.consent_for.lower() != "both":
             self.pc.select_consent_not_given_reason(
@@ -103,4 +118,6 @@ class parental_consent_helper:
         self.pc.click_confirm_details(
             scenario_id=self.scenario_id,
         )
-        self.pc.verify_final_message(scenario_id=self.scenario_id, expected_message=self.expected_message)
+        self.pc.verify_final_message(
+            scenario_id=self.scenario_id, expected_message=self.expected_message
+        )

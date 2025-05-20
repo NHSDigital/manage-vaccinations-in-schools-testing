@@ -36,9 +36,15 @@ class Test_Consent_Doubles:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(801)
-    @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
+    @pytest.mark.parametrize(
+        "scenario_data",
+        helper.df.iterrows(),
+        ids=[tc[0] for tc in helper.df.iterrows()],
+    )
     def test_consent_workflow_doubles(
-        self, get_doubles_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]
+        self,
+        get_doubles_session_link: str,
+        scenario_data: Iterable[tuple[Hashable, Series]],
     ):
         self.po.go_to_url(url=get_doubles_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)

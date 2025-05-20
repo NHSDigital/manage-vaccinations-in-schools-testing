@@ -9,7 +9,9 @@ class parental_consent_helper:
     pc = pg_consent_hpv.pg_consent_hpv()
 
     def __init__(self):
-        self.df = self.tdo.read_spreadsheet(file_path=test_data_file_paths.PARENTAL_CONSENT_HPV)
+        self.df = self.tdo.read_spreadsheet(
+            file_path=test_data_file_paths.PARENTAL_CONSENT_HPV
+        )
 
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data
@@ -56,7 +58,9 @@ class parental_consent_helper:
             dob_month=self.child_dob_month,
             dob_year=self.child_dob_year,
         )
-        self.pc.select_child_school(scenario_id=self.scenario_id, school_name=self.school_name)
+        self.pc.select_child_school(
+            scenario_id=self.scenario_id, school_name=self.school_name
+        )
         self.pc.fill_parent_details(
             scenario_id=self.scenario_id,
             parent_name=self.parent_name,
@@ -68,7 +72,9 @@ class parental_consent_helper:
             self.pc.check_phone_options(
                 scenario_id=self.scenario_id,
             )
-        self.pc.select_consent_for_vaccination(scenario_id=self.scenario_id, consented=self.consent)
+        self.pc.select_consent_for_vaccination(
+            scenario_id=self.scenario_id, consented=self.consent
+        )
         if self.consent:
             # self.pc.fill_gp_details(gp_name=self.gp)  # Removed on 04/12/2024 as GP details are to be retrieved from PDS now.
             self.pc.fill_address_details(
@@ -78,13 +84,19 @@ class parental_consent_helper:
                 city=self.city,
                 postcode=self.postcode,
             )
-            self.pc.select_severe_allergies(scenario_id=self.scenario_id, allergy_details=self.allergy_details)
-            self.pc.select_medical_condition(
-                scenario_id=self.scenario_id, medical_condition_details=self.medical_condition_details
+            self.pc.select_severe_allergies(
+                scenario_id=self.scenario_id, allergy_details=self.allergy_details
             )
-            self.pc.select_severe_reaction(scenario_id=self.scenario_id, reaction_details=self.reaction_details)
+            self.pc.select_medical_condition(
+                scenario_id=self.scenario_id,
+                medical_condition_details=self.medical_condition_details,
+            )
+            self.pc.select_severe_reaction(
+                scenario_id=self.scenario_id, reaction_details=self.reaction_details
+            )
             self.pc.select_extra_support(
-                scenario_id=self.scenario_id, extra_support_details=self.extra_support_details
+                scenario_id=self.scenario_id,
+                extra_support_details=self.extra_support_details,
             )
         else:
             self.pc.select_consent_not_given_reason(
@@ -95,4 +107,6 @@ class parental_consent_helper:
         self.pc.click_confirm_details(
             scenario_id=self.scenario_id,
         )
-        self.pc.verify_final_message(scenario_id=self.scenario_id, expected_message=self.expected_message)
+        self.pc.verify_final_message(
+            scenario_id=self.scenario_id, expected_message=self.expected_message
+        )

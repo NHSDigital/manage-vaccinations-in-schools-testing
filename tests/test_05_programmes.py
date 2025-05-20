@@ -60,7 +60,8 @@ class Test_Programmes:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
             self.import_records_page.import_vaccination_records(
-                file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO, file_type=mavis_file_types.VACCS_MAVIS
+                file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO,
+                file_type=mavis_file_types.VACCS_MAVIS,
             )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_programmes()
@@ -87,7 +88,9 @@ class Test_Programmes:
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
-            self.sessions_page.schedule_a_valid_session_in_community_clinics(for_today=True)
+            self.sessions_page.schedule_a_valid_session_in_community_clinics(
+                for_today=True
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             yield
@@ -118,44 +121,60 @@ class Test_Programmes:
     @pytest.mark.cohorts
     @pytest.mark.order(501)
     def test_cohort_upload_positive(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_POSITIVE)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_POSITIVE
+        )
 
     @pytest.mark.cohorts
     @pytest.mark.order(502)
     def test_cohort_upload_negative(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_NEGATIVE)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_NEGATIVE
+        )
 
     @pytest.mark.cohorts
     @pytest.mark.order(503)
     def test_cohorts_file_structure(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE
+        )
 
     @pytest.mark.cohorts
     @pytest.mark.order(504)
     def test_cohorts_no_record(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_HEADER_ONLY
+        )
 
     @pytest.mark.cohorts
     @pytest.mark.order(505)
     def test_cohorts_empty_file(self, setup_cohort_upload_and_reports):
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_EMPTY_FILE
+        )
 
     @pytest.mark.cohorts
     @pytest.mark.bug
     @pytest.mark.order(506)
     def test_cohorts_readd_to_cohort(self, setup_cohort_upload_and_reports):  # MAV-909
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_MAV_909
+        )
         self.programmes_page.verify_mav_909()
 
     @pytest.mark.rav
     @pytest.mark.order(526)
     def test_programmes_rav_triage_positive(self, setup_record_a_vaccine):
-        self.sessions_page.update_triage_outcome_positive(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
+        self.sessions_page.update_triage_outcome_positive(
+            file_paths=test_data_file_paths.COHORTS_FULL_NAME
+        )
 
     @pytest.mark.rav
     @pytest.mark.order(527)
     def test_programmes_rav_triage_consent_refused(self, setup_record_a_vaccine):
-        self.sessions_page.update_triage_outcome_consent_refused(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
+        self.sessions_page.update_triage_outcome_consent_refused(
+            file_paths=test_data_file_paths.COHORTS_FULL_NAME
+        )
 
     @pytest.mark.rav
     @pytest.mark.bug
@@ -178,25 +197,37 @@ class Test_Programmes:
 
     @pytest.mark.reports
     @pytest.mark.order(551)
-    def test_programmes_verify_careplus_report_for_hpv(self, setup_cohort_upload_and_reports):
+    def test_programmes_verify_careplus_report_for_hpv(
+        self, setup_cohort_upload_and_reports
+    ):
         self.programmes_page.verify_careplus_report_format(for_programme=programmes.HPV)
 
     @pytest.mark.reports
     @pytest.mark.order(552)
-    def test_programmes_verify_careplus_report_for_doubles(self, setup_cohort_upload_and_reports):
-        self.programmes_page.verify_careplus_report_format(for_programme=programmes.MENACWY)
+    def test_programmes_verify_careplus_report_for_doubles(
+        self, setup_cohort_upload_and_reports
+    ):
+        self.programmes_page.verify_careplus_report_format(
+            for_programme=programmes.MENACWY
+        )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
-        self.programmes_page.verify_careplus_report_format(for_programme=programmes.TDIPV)
+        self.programmes_page.verify_careplus_report_format(
+            for_programme=programmes.TDIPV
+        )
 
     @pytest.mark.reports
     @pytest.mark.order(553)
-    def test_programmes_verify_csv_report_for_hpv(self, setup_cohort_upload_and_reports):
+    def test_programmes_verify_csv_report_for_hpv(
+        self, setup_cohort_upload_and_reports
+    ):
         self.programmes_page.verify_csv_report_format(for_programme=programmes.HPV)
 
     @pytest.mark.reports
     @pytest.mark.order(554)
-    def test_programmes_verify_csv_report_for_doubles(self, setup_cohort_upload_and_reports):
+    def test_programmes_verify_csv_report_for_doubles(
+        self, setup_cohort_upload_and_reports
+    ):
         self.programmes_page.verify_csv_report_format(for_programme=programmes.MENACWY)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_programmes()
@@ -204,5 +235,7 @@ class Test_Programmes:
 
     @pytest.mark.reports
     @pytest.mark.order(555)
-    def test_programmes_verify_systmone_report_for_hpv(self, setup_cohort_upload_and_reports):
+    def test_programmes_verify_systmone_report_for_hpv(
+        self, setup_cohort_upload_and_reports
+    ):
         self.programmes_page.verify_systmone_report_format(for_programme=programmes.HPV)

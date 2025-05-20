@@ -1,9 +1,9 @@
 from typing import Final
 
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
-from libs.generic_constants import actions, properties, wait_time
+from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import child_year_group, mavis_file_types, record_limit
-from libs.wrappers import *
+from libs.wrappers import get_link_formatted_date_time
 from pages import pg_children, pg_dashboard, pg_sessions, pg_vaccines
 
 
@@ -39,8 +39,12 @@ class pg_import_records:
     def __init__(self):
         self.upload_time = ""
 
-    def import_child_records(self, file_paths: str, verify_on_children_page: bool = False):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+    def import_child_records(
+        self, file_paths: str, verify_on_children_page: bool = False
+    ):
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         _cl = []
         if verify_on_children_page:
             _cl = self.tdo.create_child_list_from_file(
@@ -64,16 +68,23 @@ class pg_import_records:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def import_class_list_records(
-        self, file_paths: str, year_group: str = child_year_group.ALL, verify_on_children_page: bool = False
+        self,
+        file_paths: str,
+        year_group: str = child_year_group.ALL,
+        verify_on_children_page: bool = False,
     ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         _cl = []
         if verify_on_children_page:
             _cl = self.tdo.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_CLASS_LIST_RECORDS, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_CLASS_LIST_RECORDS, action=actions.RADIO_BUTTON_SELECT
+        )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
             locator=self.LBL_SCHOOL_NAME,
@@ -97,8 +108,12 @@ class pg_import_records:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def import_class_list_records_from_school_session(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
-        self.po.act(locator=self.LNK_IMPORT_CLASS_LIST_RECORDS, action=actions.CLICK_LINK)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
+        self.po.act(
+            locator=self.LNK_IMPORT_CLASS_LIST_RECORDS, action=actions.CLICK_LINK
+        )
         self._select_year_group(year_group=child_year_group.ALL)
         self.po.act(
             locator=self.LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1,
@@ -118,11 +133,17 @@ class pg_import_records:
         file_type: mavis_file_types = mavis_file_types.VACCS_MAVIS,
         verify_on_children_page: bool = False,
     ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         if verify_on_children_page:
-            _cl = self.tdo.create_child_list_from_file(file_path=_input_file_path, file_type=file_type)
+            _cl = self.tdo.create_child_list_from_file(
+                file_path=_input_file_path, file_type=file_type
+            )
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT
+        )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
             locator=self.LBL_VACCINATION_RECORDS,
@@ -150,7 +171,12 @@ class pg_import_records:
         if _expected_errors is not None:
             # Verify messages individually
             for _msg in _expected_errors:
-                self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=_msg, exact=False)
+                self.po.verify(
+                    locator=self.LBL_MAIN,
+                    property=properties.TEXT,
+                    expected_value=_msg,
+                    exact=False,
+                )
             # Verify all messages together
             _all_errors = "".join(
                 [
@@ -160,7 +186,12 @@ class pg_import_records:
                     and not x.startswith(escape_characters.NOT_OPERATOR)
                 ]
             )
-            self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=_all_errors, exact=False)
+            self.po.verify(
+                locator=self.LBL_MAIN,
+                property=properties.TEXT,
+                expected_value=_all_errors,
+                exact=False,
+            )
 
     def _select_year_group(self, year_group: str) -> None:
         match year_group:
@@ -182,5 +213,11 @@ class pg_import_records:
     def verify_mav_855(self):
         self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
         self.po.act(locator=self.LNK_CHILD_MAV_855, action=actions.CLICK_LINK)
-        self.po.act(locator=self.vaccines_page.LBL_VACCINE_NAME, action=actions.CLICK_LINK)
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.sessions_page.LNK_SCHOOL_1)
+        self.po.act(
+            locator=self.vaccines_page.LBL_VACCINE_NAME, action=actions.CLICK_LINK
+        )
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=properties.TEXT,
+            expected_value=self.sessions_page.LNK_SCHOOL_1,
+        )
