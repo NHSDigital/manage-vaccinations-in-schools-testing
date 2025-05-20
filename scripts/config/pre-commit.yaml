@@ -7,11 +7,3 @@ repos:
     args: ["check=staged-changes"]
     language: script
     pass_filenames: false
-- repo: local
-  hooks:
-  - id: check-file-format
-    name: Check file format
-    entry: ./scripts/githooks/check-file-format.sh
-    args: ["check=staged-changes"]
-    language: script
-    pass_filenames: false
