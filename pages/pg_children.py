@@ -3,7 +3,6 @@ from typing import Final
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
-from libs.wrappers import *
 from pages import pg_dashboard
 
 

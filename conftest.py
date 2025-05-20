@@ -7,7 +7,9 @@ from libs import CurrentExecution as ce
 from libs import file_ops as fo
 from libs.generic_constants import audit_log_paths, file_mode
 from libs.mavis_constants import browsers_and_devices, playwright_constants
-from libs.wrappers import *
+from libs.wrappers import (
+    get_current_datetime,
+)
 
 
 def pytest_addoption(parser):
@@ -143,7 +145,7 @@ def pytest_sessionfinish(session, exitstatus):
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_logreport(report):
-    outcome = yield
+    yield
 
     if report.when == "call":  # Log only actual test results
         test_name = report.nodeid
@@ -152,15 +154,3 @@ def pytest_runtest_logreport(report):
 
         with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
             log_file.write(f"{timestamp} | {test_name} | {test_result}\n")
-
-
-# @pytest.fixture
-# def step_logger():
-#     """Fixture to log individual steps within a test."""
-
-#     def log_step(step_description):
-#         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#         with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
-#             log_file.write(f"{timestamp} | STEP | {step_description}\n")
-
-#     return log_step

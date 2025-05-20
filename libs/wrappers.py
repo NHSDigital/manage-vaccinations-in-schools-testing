@@ -1,11 +1,7 @@
-import base64
-import os
 import random
-import subprocess
-import time
 from datetime import datetime, timedelta
 
-from libs.generic_constants import escape_characters, file_encoding
+from libs.generic_constants import escape_characters
 from libs.mavis_constants import child_year_group
 
 
@@ -43,7 +39,7 @@ def get_link_formatted_date_time() -> str:
         _dt = datetime.now().strftime(
             format="%-d %B %Y at %-I:%M"
         )  # Linux (Github Action)
-    except:
+    except Exception:
         _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev VDI)
     return f"{_dt}{_am_or_pm}"
 
@@ -159,60 +155,3 @@ def get_dob_from_year(year_group: str) -> str:
         days=random.randint(0, (end_date - start_date).days)
     )
     return random_date.strftime("%Y-%m-%d")
-
-
-def get_project_root() -> str:
-    """
-    Get the root directory of the project.
-
-    Returns:
-        str: Absolute path to the project root directory.
-    """
-    _project_root = os.path.dirname(__file__)
-    while (
-        os.path.basename(_project_root.lower())
-        != "manage-vaccinations-in-schools-testing"
-    ):
-        _project_root = os.path.dirname(_project_root)
-    return _project_root
-
-
-def get_base64_encoded_string(text: str) -> str:
-    """
-    Encode a string into Base64 format.
-
-    Args:
-        text (str): Input string to encode.
-
-    Returns:
-        str: Base64-encoded string.
-    """
-    text_bytes = text.encode(file_encoding.ASCII)
-    return base64.b64encode(text_bytes).decode(file_encoding.ASCII)
-
-
-def get_base64_decoded_string(encoded_string: str) -> str:
-    """
-    Decode a Base64-encoded string.
-
-    Args:
-        encoded_string (str): Base64-encoded string to decode.
-
-    Returns:
-        str: Decoded string.
-    """
-    base64_bytes = encoded_string.encode(file_encoding.ASCII)
-    return base64.b64decode(base64_bytes).decode(file_encoding.ASCII)
-
-
-def run_shell_command(command: str):
-    """
-    Execute a shell command.
-
-    Args:
-        command (str): Shell command to execute.
-
-    Returns:
-        str: Output of the command.
-    """
-    subprocess.run(command)

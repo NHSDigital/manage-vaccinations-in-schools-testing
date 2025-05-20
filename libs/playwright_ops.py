@@ -1,7 +1,5 @@
 import os
-import re
-from itertools import chain
-from socket import timeout
+import time
 
 import allure
 
@@ -9,6 +7,7 @@ from libs import CurrentExecution
 from libs.generic_constants import (
     actions,
     aria_roles,
+    escape_characters,
     html_tags,
     properties,
     screenshot_actions,
@@ -16,7 +15,11 @@ from libs.generic_constants import (
     wait_time,
 )
 from libs.mavis_constants import test_data_values
-from libs.wrappers import *
+from libs.wrappers import (
+    convert_time_units_to_seconds,
+    clean_text,
+    clean_file_name,
+)
 
 
 class playwright_operations:

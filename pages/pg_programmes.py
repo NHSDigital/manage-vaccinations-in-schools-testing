@@ -8,7 +8,7 @@ from libs.mavis_constants import (
     report_headers,
     test_data_file_paths,
 )
-from libs.wrappers import *
+from libs.wrappers import get_current_datetime, get_link_formatted_date_time
 from pages import (
     pg_children,
     pg_consent_doubles,
