@@ -5,8 +5,6 @@ import requests
 from dotenv import load_dotenv
 from playwright.sync_api import Browser, Page
 
-from libs.generic_constants import api_response_codes
-
 
 class CurrentExecution:
     page: Page = None
@@ -86,23 +84,21 @@ class CurrentExecution:
             CurrentExecution.get_env_value(var_name="SLOW_MOTION")
         )
 
-    @staticmethod
-    def reset_environment():
-        _headers = {"Authorization": CurrentExecution.api_token}
+    @classmethod
+    def reset_environment(cls):
+        url = cls.reset_endpoint
+        headers = {"Authorization": CurrentExecution.api_token}
+
         if CurrentExecution.reset_env_before_execution:
             for _ in range(3):
-                _resp_code = requests.get(
-                    url=CurrentExecution.reset_endpoint, headers=_headers
-                ).status_code
-                if (
-                    api_response_codes.SUCCESS_STATUS_CODE_MIN
-                    <= _resp_code
-                    <= api_response_codes.SUCCESS_STATUS_CODE_MAX
-                ):
+                response = requests.get(url=url, headers=headers)
+
+                if response.ok:
                     break
+
                 time.sleep(3)
             else:
-                raise AssertionError(f"Reset endpoint failed with code: {_resp_code}")
+                response.raise_for_status()
 
     @staticmethod
     def set_file_record_count(record_count: int):
