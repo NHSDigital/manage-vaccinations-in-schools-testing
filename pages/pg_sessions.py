@@ -3,7 +3,6 @@ from typing import Final
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import (
-    child_year_group,
     mavis_file_types,
     programmes,
     record_limit,
@@ -551,7 +550,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.select_year_group(year_group=child_year_group.ALL)
+        self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -599,7 +598,7 @@ class pg_sessions:
         self.click_scheduled()
         self.click_school1()
         self.click_import_class_list()
-        self.select_year_group(year_group=child_year_group.ALL)
+        self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.go_to_dashboard()
@@ -699,7 +698,6 @@ class pg_sessions:
         self,
         file_paths: str,
         verify_on_children: bool = False,
-        year_group: str = child_year_group.ALL,
     ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
             file_paths=file_paths
@@ -709,7 +707,7 @@ class pg_sessions:
                 file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
             )
         self.click_import_class_list()
-        self.select_year_group(year_group=year_group)
+        self.select_year_groups([8, 9, 10, 11])
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
@@ -721,10 +719,7 @@ class pg_sessions:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def upload_class_list_to_school_2(
-        self,
-        file_paths: str,
-        verify_on_children: bool = False,
-        year_group: str = child_year_group.ALL,
+        self, file_paths: str, verify_on_children: bool = False
     ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
             file_paths=file_paths
@@ -734,7 +729,7 @@ class pg_sessions:
                 file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
             )
         self.click_import_class_list()
-        self.select_year_group(year_group=year_group)
+        self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
@@ -936,21 +931,9 @@ class pg_sessions:
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
 
-    def select_year_group(self, year_group: str) -> None:
-        match year_group:
-            case child_year_group.YEAR_8:
-                self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
-            case child_year_group.YEAR_9:
-                self.po.act(locator=self.CHK_YEAR9, action=actions.CHECKBOX_CHECK)
-            case child_year_group.YEAR_10:
-                self.po.act(locator=self.CHK_YEAR10, action=actions.CHECKBOX_CHECK)
-            case child_year_group.YEAR_11:
-                self.po.act(locator=self.CHK_YEAR11, action=actions.CHECKBOX_CHECK)
-            case _:
-                self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
-                self.po.act(locator=self.CHK_YEAR9, action=actions.CHECKBOX_CHECK)
-                self.po.act(locator=self.CHK_YEAR10, action=actions.CHECKBOX_CHECK)
-                self.po.act(locator=self.CHK_YEAR11, action=actions.CHECKBOX_CHECK)
+    def select_year_groups(self, *year_groups: int) -> None:
+        for year_group in year_groups:
+            self.po.act(locator=f"Year {year_group}", action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def _answer_hpv_prescreening_questions(self):

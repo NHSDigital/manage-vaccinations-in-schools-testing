@@ -1,8 +1,8 @@
-from typing import Final
+from typing import Final, Optional
 
 from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import child_year_group, mavis_file_types, record_limit
+from libs.mavis_constants import mavis_file_types, record_limit
 from libs.wrappers import get_link_formatted_date_time
 from pages import pg_children, pg_dashboard, pg_sessions, pg_vaccines
 
@@ -30,10 +30,6 @@ class pg_import_records:
     LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1: Final[str] = "Upload file"
     LBL_SCHOOL_NAME: Final[str] = "Which school is this class"
     LBL_MAIN: Final[str] = "main"
-    CHK_YEAR8: Final[str] = "Year 8"
-    CHK_YEAR9: Final[str] = "Year 9"
-    CHK_YEAR10: Final[str] = "Year 10"
-    CHK_YEAR11: Final[str] = "Year 11"
     LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
 
     def __init__(self):
@@ -72,9 +68,12 @@ class pg_import_records:
     def import_class_list_records(
         self,
         file_paths: str,
-        year_group: str = child_year_group.ALL,
+        year_groups: Optional[int] = None,
         verify_on_children_page: bool = False,
     ):
+        if year_groups is None:
+            year_groups = [8, 9, 10, 11]
+
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
             file_paths=file_paths
         )
@@ -94,7 +93,7 @@ class pg_import_records:
             value=self.sessions_page.LNK_SCHOOL_1,
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self._select_year_group(year_group=year_group)
+        self._select_year_groups(*year_groups)
         self.po.act(
             locator=self.LBL_CLASS_LIST_RECORDS,
             action=actions.SELECT_FILE,
@@ -116,7 +115,7 @@ class pg_import_records:
         self.po.act(
             locator=self.LNK_IMPORT_CLASS_LIST_RECORDS, action=actions.CLICK_LINK
         )
-        self._select_year_group(year_group=child_year_group.ALL)
+        self._select_year_groups(8, 9, 10, 11)
         self.po.act(
             locator=self.LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1,
             action=actions.SELECT_FILE,
@@ -195,21 +194,9 @@ class pg_import_records:
                 exact=False,
             )
 
-    def _select_year_group(self, year_group: str) -> None:
-        match year_group:
-            case child_year_group.YEAR_8:
-                self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
-            case child_year_group.YEAR_9:
-                self.po.act(locator=self.CHK_YEAR9, action=actions.CHECKBOX_CHECK)
-            case child_year_group.YEAR_10:
-                self.po.act(locator=self.CHK_YEAR10, action=actions.CHECKBOX_CHECK)
-            case child_year_group.YEAR_11:
-                self.po.act(locator=self.CHK_YEAR11, action=actions.CHECKBOX_CHECK)
-            case _:
-                self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
-                self.po.act(locator=self.CHK_YEAR9, action=actions.CHECKBOX_CHECK)
-                self.po.act(locator=self.CHK_YEAR10, action=actions.CHECKBOX_CHECK)
-                self.po.act(locator=self.CHK_YEAR11, action=actions.CHECKBOX_CHECK)
+    def _select_year_groups(self, *year_groups: int) -> None:
+        for year_group in year_groups:
+            self.po.act(locator=f"Year {year_group}", action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def verify_mav_855(self):

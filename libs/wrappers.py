@@ -2,7 +2,6 @@ import random
 from datetime import datetime, timedelta
 
 from libs.generic_constants import escape_characters
-from libs.mavis_constants import child_year_group
 
 
 def convert_time_units_to_seconds(time_unit: str) -> int:
@@ -122,23 +121,8 @@ def get_dob_from_year(year_group: str) -> str:
     Returns:
         str: A random date of birth for the specified year group in the "YYYYMMDD" format.
     """
-    match year_group:
-        case child_year_group.YEAR_8:
-            year_offset = (
-                8  # In 2025, outputs a random date between 2011-09-01 and 2012-08-31
-            )
-        case child_year_group.YEAR_9:
-            year_offset = (
-                9  # In 2025, outputs a random date between 2010-09-01 and 2011-08-31
-            )
-        case child_year_group.YEAR_10:
-            year_offset = (
-                10  # In 2025, Outputs a random date between 2009-09-01 and 2010-08-31
-            )
-        case child_year_group.YEAR_11:
-            year_offset = (
-                11  # In 2025, outputs a random date between 2008-09-01 and 2009-08-31
-            )
+
+    year_offset = year_group
 
     # Determine the academic year offset
     current_year = datetime.now().year

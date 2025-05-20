@@ -1,7 +1,6 @@
 import pytest
 
 from libs.mavis_constants import (
-    child_year_group,
     mavis_file_types,
     test_data_file_paths,
 )
@@ -155,7 +154,7 @@ class Test_ImportRecords:
     def test_class_list_year_group(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(
             file_paths=test_data_file_paths.CLASS_YEAR_GROUP,
-            year_group=child_year_group.YEAR_8,
+            year_groups=[8],
         )
 
     @pytest.mark.classlist

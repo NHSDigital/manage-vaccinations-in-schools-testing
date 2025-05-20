@@ -7,14 +7,6 @@ class playwright_constants:
     DEFAULT_TIMEOUT: Final[int] = 60000
 
 
-class child_year_group:
-    YEAR_8: Final[str] = "YEAR_8"
-    YEAR_9: Final[str] = "YEAR_9"
-    YEAR_10: Final[str] = "YEAR_10"
-    YEAR_11: Final[str] = "YEAR_11"
-    ALL: Final[str] = "ALL"
-
-
 class programmes:
     HPV: Final[str] = "HPV"
     MENACWY: Final[str] = "MenACWY"
