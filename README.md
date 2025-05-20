@@ -8,7 +8,7 @@ This is a test automation project to test the manage vaccinations in schools (MA
 
 It is currently configured to run on the QA environment.  The project utilizes the PyTest framework along with Playwright to manage and execute the tests.
 
-## Installation
+## Installing
 
 To execute the tests from your system, please follow the steps below:
 
@@ -50,6 +50,15 @@ To execute the tests from your system, please follow the steps below:
     ```console
     pytest -m smoke
     ```
+
+## Linting
+
+```shell
+$ ruff format
+$ ruff check
+```
+
+## Running
 
 Once the self test passes, you are good to go.
 
