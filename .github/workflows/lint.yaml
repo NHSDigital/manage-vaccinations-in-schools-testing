@@ -29,3 +29,16 @@ jobs:
           python-version-file: .tool-versions
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+  ruff:
+    name: Ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .tool-versions
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Check formatting
+        run: ruff check
