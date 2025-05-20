@@ -4,6 +4,7 @@ from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import (
     child_year_group,
+    mavis_file_types,
     programmes,
     record_limit,
     test_data_values,
@@ -69,7 +70,7 @@ class pg_sessions:
     BTN_DELETE: Final[str] = "Delete"
     LNK_BACK: Final[str] = "Back"
     LNK_CONTINUE: Final[str] = "Continue"
-    LNK_HPV_CONSENT_FORM: Final[str] = "View parental consent form (opens in new tab)"
+    # LNK_HPV_CONSENT_FORM: Final[str] = "View parental consent form (opens in new tab)"
     LNK_ASSESS_GILLICK_COMPETENCE: Final[str] = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT: Final[str] = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT: Final[str] = "No"
@@ -579,7 +580,9 @@ class pg_sessions:
     ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         if verify_on_children:
-            self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
+            _cl = self.tdo.create_child_list_from_file(
+                file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
+            )
         self.click_import_class_list()
         self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
@@ -590,14 +593,16 @@ class pg_sessions:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.verify_child_has_been_uploaded()
+            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def upload_class_list_to_school_2(
         self, file_paths: str, verify_on_children: bool = False, year_group: str = child_year_group.ALL
     ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
         if verify_on_children:
-            self.ce.child_list = self.tdo.create_child_list_from_file(file_path=_input_file_path)
+            _cl = self.tdo.create_child_list_from_file(
+                file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
+            )
         self.click_import_class_list()
         self.select_year_group(year_group=year_group)
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
@@ -608,7 +613,7 @@ class pg_sessions:
             self.click_uploaded_file_datetime()
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
-            self.children_page.verify_child_has_been_uploaded()
+            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def set_gillick_competence_for_student(self):
         self.click_today()

@@ -101,8 +101,13 @@ class escape_characters:
     ASTERISK: Final[str] = "*"
     QUESTION_MARK: Final[str] = "?"
     COMMA: Final[str] = ","
+    NBSP: Final[str] = " "
+    ZWJ: Final[str] = "‍"
     UI_FORMATTING: Final[list[str]] = [
+        NBSP,
+        ZWJ,
         SPACE,
+        TAB,
         NEW_LINE,
         CARRIAGE_RETURN,
         NEW_LINE_CARRIAGE_RETURN,
@@ -110,8 +115,6 @@ class escape_characters:
         SINGLE_QUOTE_OPEN,
         SINGLE_QUOTE_CLOSE_UNICODE,
         SINGLE_QUOTE_CLOSE,
-        TAB,
-        COMMA,
     ]
     FILE_NAME: Final[list[str]] = [
         SEPARATOR_CHAR,
