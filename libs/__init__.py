@@ -22,53 +22,32 @@ class CurrentExecution:
     file_record_count: int = 0
     session_id: str = ""
 
-    @staticmethod
-    def get_env_values():
+    @classmethod
+    def get_env_values(cls):
         load_dotenv()
 
-        CurrentExecution.nurse_username = CurrentExecution.get_env_value(
-            var_name="NURSE_USERNAME"
-        )
-        CurrentExecution.nurse_password = CurrentExecution.get_env_value(
-            var_name="NURSE_PASSWORD"
-        )
-        CurrentExecution.superuser_username = CurrentExecution.get_env_value(
-            var_name="SUPERUSER_USERNAME"
-        )
-        CurrentExecution.superuser_password = CurrentExecution.get_env_value(
-            var_name="SUPERUSER_PASSWORD"
-        )
-        CurrentExecution.admin_username = CurrentExecution.get_env_value(
-            var_name="ADMIN_USERNAME"
-        )
-        CurrentExecution.admin_password = CurrentExecution.get_env_value(
-            var_name="ADMIN_PASSWORD"
-        )
-        CurrentExecution.capture_screenshot_flag = (
-            CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower()
-            == "true"
+        cls.nurse_username = os.environ["NURSE_USERNAME"]
+        cls.nurse_password = os.environ["NURSE_PASSWORD"]
+        cls.superuser_username = os.environ["SUPERUSER_USERNAME"]
+        cls.superuser_password = os.environ["SUPERUSER_PASSWORD"]
+        cls.admin_username = os.environ["ADMIN_USERNAME"]
+        cls.admin_password = os.environ["ADMIN_PASSWORD"]
+        cls.capture_screenshot_flag = (
+            os.environ.get("CAPTURE_SCREENSHOTS", "").lower() == "true"
         )
 
-    @staticmethod
-    def set_file_record_count(record_count: int):
-        CurrentExecution.file_record_count = record_count
+    @classmethod
+    def set_file_record_count(cls, record_count: int):
+        cls.file_record_count = record_count
 
-    @staticmethod
-    def get_file_record_count() -> int:
-        return CurrentExecution.file_record_count
+    @classmethod
+    def get_file_record_count(cls) -> int:
+        return cls.file_record_count
 
-    @staticmethod
-    def set_session_id(session_id: str):
-        CurrentExecution.session_id = session_id
+    @classmethod
+    def set_session_id(cls, session_id: str):
+        cls.session_id = session_id
 
-    @staticmethod
-    def get_session_id() -> str:
-        return CurrentExecution.session_id
-
-    @staticmethod
-    def get_env_value(var_name: str) -> str:
-        _val = os.getenv(var_name)
-        if _val is None:
-            return ""
-        else:
-            return _val
+    @classmethod
+    def get_session_id(cls) -> str:
+        return cls.session_id
