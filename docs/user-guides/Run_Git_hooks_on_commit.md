@@ -14,7 +14,6 @@ The [pre-commit](https://pre-commit.com/) framework is a powerful tool for manag
 ## Key files
 
 - Scripts
-  - [`check-file-format.sh`](../../scripts/githooks/check-file-format.sh)
   - [`scan-secrets.sh`](../../scripts/githooks/scan-secrets.sh)
 - Configuration
   - [`pre-commit.yaml`](../../scripts/config/pre-commit.yaml)
