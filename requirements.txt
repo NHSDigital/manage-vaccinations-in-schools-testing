@@ -37,7 +37,7 @@ prompt_toolkit==3.0.51
 psutil==6.0.0
 ptyprocess==0.7.0
 pure_eval==0.2.3
-pyee==12.0.0
+pyee==13.0.0
 Pygments==2.19.1
 pytest==8.3.3
 pytest-dependency==0.6.0
