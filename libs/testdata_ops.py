@@ -2,7 +2,6 @@ import nhs_number
 import pandas as pd
 
 from libs import CurrentExecution, file_ops
-from libs.generic_constants import escape_characters
 from libs.mavis_constants import child_year_group, mavis_file_types, test_data_values
 from libs.wrappers import (
     get_current_datetime,
