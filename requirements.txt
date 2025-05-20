@@ -28,7 +28,7 @@ packaging==25.0
 pandas==2.2.3
 parso==0.8.4
 pexpect==4.9.0
-pillow==10.4.0
+pillow==11.2.1
 pip-system-certs==4.0
 platformdirs==4.3.6
 playwright==1.51.0
