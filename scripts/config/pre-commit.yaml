@@ -17,14 +17,6 @@ repos:
     pass_filenames: false
 - repo: local
   hooks:
-  - id: check-markdown-format
-    name: Check Markdown format
-    entry: ./scripts/githooks/check-markdown-format.sh
-    args: ["check=staged-changes"]
-    language: script
-    pass_filenames: false
-- repo: local
-  hooks:
   - id: check-english-usage
     name: Check English usage
     entry: ./scripts/githooks/check-english-usage.sh
