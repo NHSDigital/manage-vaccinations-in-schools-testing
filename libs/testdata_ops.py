@@ -1,7 +1,9 @@
+import pathlib
+
 import nhs_number
 import pandas as pd
 
-from libs import CurrentExecution, file_ops
+from libs import CurrentExecution
 from libs.mavis_constants import mavis_file_types, test_data_values
 from libs.wrappers import (
     get_current_datetime,
@@ -16,16 +18,16 @@ class testdata_operations:
     A class to handle operations related to test data.
     """
 
-    fo = file_ops.file_operations()
     ce = CurrentExecution()
 
     def __init__(self):
         """
         Initialize the testdata_operations class.
         """
-        self.mapping_df: pd.DataFrame = self.fo.read_csv_to_df(
-            file_path="test_data/file_mapping.csv"
-        )
+        self.mapping_df: pd.DataFrame = pd.read_csv("test_data/file_mapping.csv")
+
+    def read_file(self, path):
+        return pathlib.Path(path).read_text(encoding="utf-8")
 
     def create_file_from_template(
         self, template_path: str, file_name_prefix: str
@@ -41,7 +43,7 @@ class testdata_operations:
             str: Path to the created file.
         """
 
-        template_text = self.fo.get_file_text(file_path=template_path)
+        template_text = self.read_file(template_path)
 
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
@@ -83,10 +85,12 @@ class testdata_operations:
 
         self.ce.set_file_record_count(record_count=_ctr)
 
-        return self.fo.create_file(
-            content="\n".join(_file_text),
-            file_name_prefix=file_name_prefix,
-        )
+        filename = f"{file_name_prefix}{get_current_datetime()}.csv"
+
+        path = pathlib.Path("working") / filename
+        path.write_text("\n".join(_file_text), encoding="utf-8")
+
+        return str(path)
 
     def get_new_nhs_no(self, valid=True) -> str:
         """
@@ -112,8 +116,9 @@ class testdata_operations:
         Returns:
             list[str]: List of expected errors.
         """
-        file_content = self.fo.get_file_text(file_path=file_path)
-        return file_content.splitlines() if file_content is not None else None
+        file_content = self.read_file(file_path)
+
+        return file_content.splitlines() if file_content else None
 
     def read_spreadsheet(
         self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1"
@@ -129,7 +134,9 @@ class testdata_operations:
         Returns:
             pd.DataFrame: DataFrame containing the spreadsheet data.
         """
-        _df = self.fo.read_excel_to_df(file_path=file_path, sheet_name=sheet_name)
+        _df = pd.read_excel(
+            file_path, sheet_name=sheet_name, header=0, dtype="str", index_col=0
+        )
         return self.clean_df(df=_df) if clean_df else _df
 
     def clean_df(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -186,7 +193,7 @@ class testdata_operations:
         Returns:
             list: List of child names.
         """
-        _file_df = self.fo.read_csv_to_df(file_path=file_path)
+        _file_df = pd.read_csv(file_path)
         match file_type:
             case (
                 mavis_file_types.CHILD_LIST

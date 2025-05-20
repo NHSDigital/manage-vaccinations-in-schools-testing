@@ -1,6 +1,6 @@
 from typing import Final, Optional
 
-from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
+from libs import CurrentExecution, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import mavis_file_types, record_limit
 from libs.wrappers import get_link_formatted_date_time
@@ -11,7 +11,6 @@ class pg_import_records:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    fo = file_ops.file_operations()
     sessions_page = pg_sessions.pg_sessions()
     dashboard_page = pg_dashboard.pg_dashboard()
     children_page = pg_children.pg_children()

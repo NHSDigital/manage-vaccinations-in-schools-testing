@@ -1,17 +1,16 @@
 from typing import Final
 
-from libs import CurrentExecution, file_ops, playwright_ops
+import pandas as pd
+
+from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, escape_characters, properties
 from libs.mavis_constants import report_headers, test_data_values
-from libs.wrappers import (
-    get_current_datetime,
-)
+from libs.wrappers import get_current_datetime
 from pages import pg_dashboard
 
 
 class pg_school_moves:
     po = playwright_ops.playwright_operations()
-    fo = file_ops.file_operations()
     ce = CurrentExecution()
     dashboard_page = pg_dashboard.pg_dashboard()
 
@@ -117,7 +116,7 @@ class pg_school_moves:
             action=actions.DOWNLOAD_FILE_USING_BUTTON,
             value=_file_path,
         )
-        _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
+        _actual_df = pd.read_csv(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
         assert expected_headers == actual_headers, (
             "School moves export headers do not match"

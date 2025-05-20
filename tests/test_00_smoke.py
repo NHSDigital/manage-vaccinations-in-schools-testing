@@ -1,13 +1,13 @@
+import pathlib
 import subprocess
 
 import pytest
 
-from libs import file_ops, playwright_ops
+from libs import playwright_ops
 from libs.generic_constants import properties
 
 
 class Test_Smoke:
-    fo = file_ops.file_operations()
     po = playwright_ops.playwright_operations()
 
     # SELF TEST
@@ -16,7 +16,7 @@ class Test_Smoke:
     def test_smoke_files_and_paths(self):
         folder_paths_to_verify = ["screenshots", "test_data", "working"]
         for folder_path in folder_paths_to_verify:
-            if not self.fo.check_if_path_exists(file_or_folder_path=folder_path):
+            if not pathlib.Path(folder_path).is_dir():
                 assert False, f"{folder_path} not found on project root"
 
     @pytest.mark.smoke

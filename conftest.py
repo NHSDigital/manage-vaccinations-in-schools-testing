@@ -1,5 +1,6 @@
 from datetime import datetime
 import os
+import pathlib
 import time
 import urllib.parse
 
@@ -11,9 +12,8 @@ from requests.auth import HTTPBasicAuth
 
 
 from libs import CurrentExecution as ce
-from libs import file_ops as fo
-from libs.generic_constants import audit_log_paths, file_mode
 from libs.mavis_constants import playwright_constants
+from libs.generic_constants import audit_log_paths
 from libs.wrappers import get_current_datetime
 
 
@@ -149,9 +149,10 @@ def start_mavis(
 
 def create_session_screenshot_dir(browser_name: str) -> str:
     if ce.capture_screenshot_flag:
-        _session_name = f"{get_current_datetime()}-{browser_name}"
-        fo.file_operations().create_dir(dir_path=f"screenshots/{_session_name}")
-        return f"screenshots/{_session_name}"
+        session_name = f"{get_current_datetime()}-{browser_name}"
+        path = pathlib.Path("screenshots") / session_name
+        path.mkdir(parents=True, exist_ok=True)
+        return str(path)
     else:
         return ""
 
@@ -191,13 +192,13 @@ def close_browser(browser, page):
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
-    with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+    with open(audit_log_paths.TEST_LEVEL_LOG, "a") as log_file:
         log_file.write(f"Test Session Started: {datetime.now()}\n")
 
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish(session, exitstatus):
-    with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+    with open(audit_log_paths.TEST_LEVEL_LOG, "a") as log_file:
         log_file.write(f"Test Session Ended: {datetime.now()}\n")
 
 
@@ -210,5 +211,5 @@ def pytest_runtest_logreport(report):
         test_result = report.outcome.upper()  # 'passed', 'failed', or 'skipped'
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        with open(audit_log_paths.TEST_LEVEL_LOG, file_mode.APPEND) as log_file:
+        with open(audit_log_paths.TEST_LEVEL_LOG, "a") as log_file:
             log_file.write(f"{timestamp} | {test_name} | {test_result}\n")
