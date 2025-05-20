@@ -75,13 +75,17 @@ class pg_programmes:
         self.po.act(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
 
     def click_vaccinations(self):
-        self.po.act(locator=self.LNK_VACCINATIONS, action=actions.CLICK_LINK, exact=True)
+        self.po.act(
+            locator=self.LNK_VACCINATIONS, action=actions.CLICK_LINK, exact=True
+        )
 
     def click_cohorts(self):
         self.po.act(locator=self.LNK_COHORTS, action=actions.CLICK_LINK)
 
     def click_edit_vaccination_record(self):
-        self.po.act(locator=self.BTN_EDIT_VACCINATION_RECORD, action=actions.CLICK_BUTTON)
+        self.po.act(
+            locator=self.BTN_EDIT_VACCINATION_RECORD, action=actions.CLICK_BUTTON
+        )
 
     def click_import_records(self):
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
@@ -93,7 +97,9 @@ class pg_programmes:
         self.po.act(locator=self.RDO_CHILD_RECORDS, action=actions.RADIO_BUTTON_SELECT)
 
     def select_vaccination_records(self):
-        self.po.act(locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT
+        )
 
     def click_continue(self):
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
@@ -119,7 +125,11 @@ class pg_programmes:
         )
 
     def verify_import_processing_started(self):
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=properties.TEXT, expected_value=self.LBL_IMPORT_STARTED)
+        self.po.verify(
+            locator=self.LBL_PARAGRAPH,
+            property=properties.TEXT,
+            expected_value=self.LBL_IMPORT_STARTED,
+        )
 
     def click_uploaded_file_datetime(self, truncated: bool = False):
         _link_time = self.upload_time[3:] if truncated else self.upload_time
@@ -135,10 +145,17 @@ class pg_programmes:
         _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
-                self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=_msg, exact=False)
+                self.po.verify(
+                    locator=self.LBL_MAIN,
+                    property=properties.TEXT,
+                    expected_value=_msg,
+                    exact=False,
+                )
 
     def upload_hpv_child_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
@@ -148,7 +165,9 @@ class pg_programmes:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_cohorts(self, file_paths: str, wait_long: bool = False):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         self.click_hpv()
         self.click_cohorts()
         self.click_import_cohort_records()
@@ -169,7 +188,9 @@ class pg_programmes:
         self.click_dose2_child()
         self.click_edit_vaccination_record()
         self.po.act(locator=self.LNK_CHANGE_OUTCOME, action=actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_THEY_REFUSED_IT, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_THEY_REFUSED_IT, action=actions.RADIO_BUTTON_SELECT
+        )
         self.click_continue()
         self.po.act(locator=self.BTN_SAVE_CHANGES, action=actions.CLICK_BUTTON)
         self.po.verify(
@@ -209,8 +230,12 @@ class pg_programmes:
                 self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_REPORT_CAREPLUS, action=actions.RADIO_BUTTON_SELECT)
-        self._download_and_verify_report_headers(expected_headers=report_headers.CAREPLUS)
+        self.po.act(
+            locator=self.RDO_REPORT_CAREPLUS, action=actions.RADIO_BUTTON_SELECT
+        )
+        self._download_and_verify_report_headers(
+            expected_headers=report_headers.CAREPLUS
+        )
 
     def verify_csv_report_format(self, for_programme: str):
         match for_programme.lower():
@@ -235,21 +260,33 @@ class pg_programmes:
                 self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.RDO_REPORT_SYSTMONE, action=actions.RADIO_BUTTON_SELECT)
-        self._download_and_verify_report_headers(expected_headers=report_headers.SYSTMONE)
+        self.po.act(
+            locator=self.RDO_REPORT_SYSTMONE, action=actions.RADIO_BUTTON_SELECT
+        )
+        self._download_and_verify_report_headers(
+            expected_headers=report_headers.SYSTMONE
+        )
 
     def _download_and_verify_report_headers(self, expected_headers: str):
         _file_path = f"working/rpt_{get_current_datetime()}.csv"
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path)
+        self.po.act(
+            locator=self.BTN_CONTINUE,
+            action=actions.DOWNLOAD_FILE_USING_BUTTON,
+            value=_file_path,
+        )
         _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
         # assert expected_headers == actual_headers, "Report headers do not match"
-        _e_not_a = [h for h in expected_headers.split(",") if h not in actual_headers.split(",")]
-        _a_not_e = [h for h in actual_headers.split(",") if h not in expected_headers.split(",")]
+        _e_not_a = [
+            h for h in expected_headers.split(",") if h not in actual_headers.split(",")
+        ]
+        _a_not_e = [
+            h for h in actual_headers.split(",") if h not in expected_headers.split(",")
+        ]
         if len(_e_not_a) > 0 or len(_a_not_e) > 0:
-            assert (
-                False
-            ), f"Expected field(s) not found in actual: {_e_not_a}.  Actual report contains extra field(s): {_a_not_e}."
+            assert False, (
+                f"Expected field(s) not found in actual: {_e_not_a}.  Actual report contains extra field(s): {_a_not_e}."
+            )
 
     def verify_mav_965(self):
         """
@@ -276,15 +313,27 @@ class pg_programmes:
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_menacwy_tab()
         self.sessions_page.click_get_consent_response()
-        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programmes.MENACWY)
+        self.consent_doubles.parent_1_verbal_positive(
+            change_phone=False, programme_name=programmes.MENACWY
+        )
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_tdipv_tab()
         self.sessions_page.click_get_consent_response()
-        self.consent_doubles.parent_1_verbal_positive(change_phone=False, programme_name=programmes.TDIPV)
-        self.sessions_page.register_child_as_attending(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.HPV)
-        self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.MENACWY)
-        self.sessions_page.record_vaccs_for_child(child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.TDIPV)
+        self.consent_doubles.parent_1_verbal_positive(
+            change_phone=False, programme_name=programmes.TDIPV
+        )
+        self.sessions_page.register_child_as_attending(
+            child_name=self.LNK_MAV_965_CHILD
+        )
+        self.sessions_page.record_vaccs_for_child(
+            child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.HPV
+        )
+        self.sessions_page.record_vaccs_for_child(
+            child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.MENACWY
+        )
+        self.sessions_page.record_vaccs_for_child(
+            child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.TDIPV
+        )
 
     def verify_mav_909(self):
         """
@@ -315,9 +364,15 @@ class pg_programmes:
         self.dashboard_page.click_programmes()
         self.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
         self.po.verify(
-            locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE
+            locator=self.LBL_MAIN,
+            property=properties.TEXT,
+            expected_value=self.LBL_DUPLICATE_REVIEW_MESSAGE,
         )
         self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK)
         self.po.act(locator=self.RDO_USE_DUPLICATE, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_RESOLVE_DUPLICATE, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.LBL_RECORD_UPDATED)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=properties.TEXT,
+            expected_value=self.LBL_RECORD_UPDATED,
+        )

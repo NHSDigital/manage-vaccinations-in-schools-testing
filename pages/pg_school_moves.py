@@ -26,42 +26,73 @@ class pg_school_moves:
     BTN_DOWNLOAD_CSV: Final[str] = "Download CSV"
 
     def verify_headers(self):
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value=self.LBL_HEADERS, exact=False)
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=properties.TEXT,
+            expected_value=self.LBL_HEADERS,
+            exact=False,
+        )
 
     def confirm_school_move(self):
-        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0)
+        self.po.act(
+            locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0
+        )
         _child_full_name: str = (
-            self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=properties.TEXT)
+            self.po.get_element_property(
+                locator=self.LBL_CHILD_NAME, property=properties.TEXT
+            )
             .replace(self.LBL_CHILD_NAME, "")
             .strip()
         )
         _success_message = f"{_child_full_name}’s school record updated"
         self.po.act(locator=self.RDO_UPDATE_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=properties.TEXT, expected_value=_success_message)
+        self.po.verify(
+            locator=self.LBL_PARAGRAPH,
+            property=properties.TEXT,
+            expected_value=_success_message,
+        )
 
     def ignore_school_move(self):
-        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0)
+        self.po.act(
+            locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0
+        )
         _child_full_name: str = (
-            self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=properties.TEXT)
+            self.po.get_element_property(
+                locator=self.LBL_CHILD_NAME, property=properties.TEXT
+            )
             .replace(self.LBL_CHILD_NAME, "")
             .strip()
         )
         _success_message = f"{_child_full_name}’s school move ignored"
-        self.po.act(locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT
+        )
         self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(locator=self.LBL_PARAGRAPH, property=properties.TEXT, expected_value=_success_message)
+        self.po.verify(
+            locator=self.LBL_PARAGRAPH,
+            property=properties.TEXT,
+            expected_value=_success_message,
+        )
 
     def confirm_and_ignore_moves(self):
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_school_moves()
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value="Full name CLMOVES1, CFMoves1")
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=properties.TEXT,
+            expected_value="Full name CLMOVES1, CFMoves1",
+        )
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
             expected_value=f"Move Class list updated {test_data_values.SCHOOL_1_NAME} to {test_data_values.SCHOOL_2_NAME}",
         )
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value="Full name CLMOVES2, CFMoves2")
+        self.po.verify(
+            locator=self.LBL_MAIN,
+            property=properties.TEXT,
+            expected_value="Full name CLMOVES2, CFMoves2",
+        )
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
@@ -73,11 +104,19 @@ class pg_school_moves:
     def download_and_verify_report(self):
         self.po.act(locator=self.LNK_DOWNLOAD_RECORDS, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self._download_and_verify_report_headers(expected_headers=report_headers.SCHOOL_MOVES)
+        self._download_and_verify_report_headers(
+            expected_headers=report_headers.SCHOOL_MOVES
+        )
 
     def _download_and_verify_report_headers(self, expected_headers: str):
         _file_path = f"working/export_{get_current_datetime()}.csv"
-        self.po.act(locator=self.BTN_DOWNLOAD_CSV, action=actions.DOWNLOAD_FILE_USING_BUTTON, value=_file_path)
+        self.po.act(
+            locator=self.BTN_DOWNLOAD_CSV,
+            action=actions.DOWNLOAD_FILE_USING_BUTTON,
+            value=_file_path,
+        )
         _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
-        assert expected_headers == actual_headers, "School moves export headers do not match"
+        assert expected_headers == actual_headers, (
+            "School moves export headers do not match"
+        )

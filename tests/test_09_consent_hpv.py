@@ -43,7 +43,9 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_school1()
-            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.COHORTS_FULL_NAME)
+            self.sessions_page.upload_class_list_to_school_1(
+                file_paths=test_data_file_paths.COHORTS_FULL_NAME
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             yield
@@ -62,7 +64,9 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_school1()
-            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.COHORTS_NO_CONSENT)
+            self.sessions_page.upload_class_list_to_school_1(
+                file_paths=test_data_file_paths.COHORTS_NO_CONSENT
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_scheduled()
@@ -108,7 +112,9 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_school1()
-            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE)
+            self.sessions_page.upload_class_list_to_school_1(
+                file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_scheduled()
@@ -148,8 +154,16 @@ class Test_Consent_HPV:
     @pytest.mark.consent
     @pytest.mark.mobile
     @pytest.mark.order(901)
-    @pytest.mark.parametrize("scenario_data", helper.df.iterrows(), ids=[tc[0] for tc in helper.df.iterrows()])
-    def test_consent_workflow_hpv(self, get_hpv_session_link: str, scenario_data: Iterable[tuple[Hashable, Series]]):
+    @pytest.mark.parametrize(
+        "scenario_data",
+        helper.df.iterrows(),
+        ids=[tc[0] for tc in helper.df.iterrows()],
+    )
+    def test_consent_workflow_hpv(
+        self,
+        get_hpv_session_link: str,
+        scenario_data: Iterable[tuple[Hashable, Series]],
+    ):
         self.po.go_to_url(url=get_hpv_session_link)
         self.helper.read_data_for_scenario(scenario_data=scenario_data)
         self.helper.enter_details_on_mavis()

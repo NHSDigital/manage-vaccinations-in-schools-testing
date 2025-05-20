@@ -44,9 +44,13 @@ class playwright_operations:
                 self.ce.session_screenshots_dir,
                 _ss_file_name,
             )
-            self.ce.page.screenshot(path=_ss_path, type=screenshot_file_types.JPEG, full_page=True)
+            self.ce.page.screenshot(
+                path=_ss_path, type=screenshot_file_types.JPEG, full_page=True
+            )
 
-    def verify(self, locator: str, property: properties, expected_value: str, **kwargs) -> None:
+    def verify(
+        self, locator: str, property: properties, expected_value: str, **kwargs
+    ) -> None:
         """
         Verify a property of a web element.
 
@@ -62,18 +66,32 @@ class playwright_operations:
         chain_locator: bool = kwargs.get("chain_locator", False)
         # Act
         actual_value = self.get_element_property(
-            locator=locator, property=property, by_test_id=by_test_id, chain_locator=chain_locator
+            locator=locator,
+            property=property,
+            by_test_id=by_test_id,
+            chain_locator=chain_locator,
         )
         match property:
             case properties.TEXT:
                 if expected_value != "":
                     self._verify_text(
-                        locator=locator, expected_value=expected_value, actual_value=actual_value, exact=exact
+                        locator=locator,
+                        expected_value=expected_value,
+                        actual_value=actual_value,
+                        exact=exact,
                     )
             case properties.VISIBILITY:
-                self._verify_visibility(locator=locator, expected_value=expected_value, actual_value=actual_value)
+                self._verify_visibility(
+                    locator=locator,
+                    expected_value=expected_value,
+                    actual_value=actual_value,
+                )
             case properties.CHECKBOX_CHECKED:
-                self._verify_checkbox(locator=locator, expected_value=expected_value, actual_value=actual_value)
+                self._verify_checkbox(
+                    locator=locator,
+                    expected_value=expected_value,
+                    actual_value=actual_value,
+                )
 
     def get_element_property(self, locator: str, property: properties, **kwargs) -> str:
         """
@@ -95,20 +113,31 @@ class playwright_operations:
         match property:
             case properties.TEXT:
                 return self._get_element_text(
-                    locator=locator, index=index, by_test_id=by_test_id, chain_locator=chain_locator
+                    locator=locator,
+                    index=index,
+                    by_test_id=by_test_id,
+                    chain_locator=chain_locator,
                 )
             case properties.VISIBILITY:
-                return self._get_element_visibility(locator=locator, index=index, chain_locator=chain_locator)
+                return self._get_element_visibility(
+                    locator=locator, index=index, chain_locator=chain_locator
+                )
             case properties.HREF:
-                return self._get_element_href(locator=locator, index=index, chain_locator=chain_locator)
+                return self._get_element_href(
+                    locator=locator, index=index, chain_locator=chain_locator
+                )
             case properties.CHECKBOX_CHECKED:
-                return self._get_checkbox_state(locator=locator, index=index, chain_locator=chain_locator)
+                return self._get_checkbox_state(
+                    locator=locator, index=index, chain_locator=chain_locator
+                )
             case properties.ELEMENT_EXISTS:
                 return str(self.ce.page.query_selector(locator) is not None)
             case properties.PAGE_URL:
                 return self.ce.page.url
 
-    def act(self, locator: str | None, action: actions, value: str | None = None, **kwargs) -> None:
+    def act(
+        self, locator: str | None, action: actions, value: str | None = None, **kwargs
+    ) -> None:
         """
         Perform an action on a web element.
 
@@ -141,7 +170,9 @@ class playwright_operations:
             case actions.RADIO_BUTTON_SELECT:
                 self._radio_button_select(locator=locator, exact=exact, index=index)
             case actions.SELECT_FILE:
-                self._select_file(locator=locator, value=value, exact=exact, index=index)
+                self._select_file(
+                    locator=locator, value=value, exact=exact, index=index
+                )
             case actions.SELECT_FROM_LIST:
                 self._select_from_list(locator=locator, value=value, index=index)
             case actions.CHECKBOX_CHECK:
@@ -151,9 +182,13 @@ class playwright_operations:
             case actions.CLICK_LINK_INDEX_FOR_ROW:
                 self._click_index_for_row(locator=locator, value=value, index=index)
             case actions.DOWNLOAD_FILE_USING_LINK:
-                self._download_file_using_link(locator=locator, value=value, index=index)
+                self._download_file_using_link(
+                    locator=locator, value=value, index=index
+                )
             case actions.DOWNLOAD_FILE_USING_BUTTON:
-                self._download_file_using_button(locator=locator, value=value, index=index)
+                self._download_file_using_button(
+                    locator=locator, value=value, index=index
+                )
             case actions.CLICK_WILDCARD:
                 self.ce.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
@@ -176,9 +211,13 @@ class playwright_operations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator, exact=exact).nth(index)
+                elem = self.ce.page.get_by_role(
+                    _location, name=_locator, exact=exact
+                ).nth(index)
             else:
-                elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator, exact=exact).nth(index)
+                elem = self.ce.page.get_by_role(
+                    aria_roles.LINK, name=locator, exact=exact
+                ).nth(index)
             elem.click()
             self._check_for_app_crash(locator_info=locator)
 
@@ -197,7 +236,9 @@ class playwright_operations:
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
                 elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_role(aria_roles.BUTTON, name=locator, exact=exact).nth(index)
+                elem = self.ce.page.get_by_role(
+                    aria_roles.BUTTON, name=locator, exact=exact
+                ).nth(index)
             elem.click()
             self._check_for_app_crash(locator_info=locator)
 
@@ -408,7 +449,9 @@ class playwright_operations:
             download.save_as(value)
             self._check_for_app_crash(locator_info=locator)
 
-    def _verify_text(self, locator: str, expected_value: str, actual_value: str, exact: bool):
+    def _verify_text(
+        self, locator: str, expected_value: str, actual_value: str, exact: bool
+    ):
         """
         Verify the text of an element.
 
@@ -419,33 +462,67 @@ class playwright_operations:
             exact (bool): Whether to match the text exactly.
         """
         with allure.step(title=f"Verifying text [{expected_value}]"):
-            if expected_value.startswith(escape_characters.COMMENT_OPERATOR):  # Skip this check
+            if expected_value.startswith(
+                escape_characters.COMMENT_OPERATOR
+            ):  # Skip this check
                 return
             if exact:
                 _passed: bool = True if expected_value == actual_value else False
                 if _passed:
-                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                    self.capture_screenshot(
+                        identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED
+                    )
                 else:
-                    self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                assert _passed, f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
+                    self.capture_screenshot(
+                        identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED
+                    )
+                assert _passed, (
+                    f"Exact match failed. Expected: '{expected_value}' but actual: '{actual_value}'."
+                )
             else:
                 if expected_value.startswith(escape_characters.NOT_OPERATOR):
-                    expected_value = expected_value.removeprefix(escape_characters.NOT_OPERATOR)
+                    expected_value = expected_value.removeprefix(
+                        escape_characters.NOT_OPERATOR
+                    )
                     _passed: bool = (
-                        True if clean_text(text=expected_value) not in clean_text(text=actual_value) else False
+                        True
+                        if clean_text(text=expected_value)
+                        not in clean_text(text=actual_value)
+                        else False
                     )
                     if _passed:
-                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                        self.capture_screenshot(
+                            identifier=locator,
+                            action=screenshot_actions.VERIFY_TEXT_PASSED,
+                        )
                     else:
-                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                    assert _passed, f"Text '{expected_value}' not expected but found in '{actual_value}'."
+                        self.capture_screenshot(
+                            identifier=locator,
+                            action=screenshot_actions.VERIFY_TEXT_FAILED,
+                        )
+                    assert _passed, (
+                        f"Text '{expected_value}' not expected but found in '{actual_value}'."
+                    )
                 else:
-                    _passed: bool = True if clean_text(text=expected_value) in clean_text(text=actual_value) else False
+                    _passed: bool = (
+                        True
+                        if clean_text(text=expected_value)
+                        in clean_text(text=actual_value)
+                        else False
+                    )
                     if _passed:
-                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_PASSED)
+                        self.capture_screenshot(
+                            identifier=locator,
+                            action=screenshot_actions.VERIFY_TEXT_PASSED,
+                        )
                     else:
-                        self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_TEXT_FAILED)
-                    assert _passed, f"Text '{expected_value}' not found in '{actual_value}'."
+                        self.capture_screenshot(
+                            identifier=locator,
+                            action=screenshot_actions.VERIFY_TEXT_FAILED,
+                        )
+                    assert _passed, (
+                        f"Text '{expected_value}' not found in '{actual_value}'."
+                    )
 
     def _verify_visibility(self, locator: str, expected_value: str, actual_value: str):
         """
@@ -459,9 +536,15 @@ class playwright_operations:
         with allure.step(title=f"Verifying visibility [{locator}]"):
             _passed: bool = True if actual_value == expected_value else False
             if _passed:
-                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_PASSED)
+                self.capture_screenshot(
+                    identifier=locator,
+                    action=screenshot_actions.VERIFY_VISIBILITY_PASSED,
+                )
             else:
-                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_VISIBILITY_FAILED)
+                self.capture_screenshot(
+                    identifier=locator,
+                    action=screenshot_actions.VERIFY_VISIBILITY_FAILED,
+                )
             assert _passed, f"{locator} is not visible."
 
     def _verify_checkbox(self, locator: str, expected_value: str, actual_value: str):
@@ -474,15 +557,23 @@ class playwright_operations:
             actual_value (str): Actual checked state.
         """
         with allure.step(title=f"Verifying checkbox [{locator}]"):
-            _passed: bool = True if bool(actual_value) == bool(expected_value) else False
+            _passed: bool = (
+                True if bool(actual_value) == bool(expected_value) else False
+            )
             _checked: str = "" if bool(actual_value) else "not"
             if _passed:
-                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_PASSED)
+                self.capture_screenshot(
+                    identifier=locator, action=screenshot_actions.VERIFY_CHECKED_PASSED
+                )
             else:
-                self.capture_screenshot(identifier=locator, action=screenshot_actions.VERIFY_CHECKED_FAILED)
+                self.capture_screenshot(
+                    identifier=locator, action=screenshot_actions.VERIFY_CHECKED_FAILED
+                )
             assert _passed, f"{locator} is {_checked} checked."
 
-    def _get_element_text(self, locator: str, index: int, by_test_id: bool, chain_locator: bool) -> str:
+    def _get_element_text(
+        self, locator: str, index: int, by_test_id: bool, chain_locator: bool
+    ) -> str:
         """
         Get the text content of an element.
 
@@ -504,13 +595,17 @@ class playwright_operations:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).locator(aria_roles.SPAN)
+                    elem = self.ce.page.get_by_role(_location, name=_locator).locator(
+                        aria_roles.SPAN
+                    )
                 else:
                     elem = self.ce.page.get_by_role(locator).nth(index)
         elem.scroll_into_view_if_needed()
         return "".join(elem.all_text_contents()).strip()
 
-    def _get_element_visibility(self, locator: str, index: int, chain_locator: bool) -> str:
+    def _get_element_visibility(
+        self, locator: str, index: int, chain_locator: bool
+    ) -> str:
         """
         Get the visibility state of an element.
 
@@ -555,7 +650,9 @@ class playwright_operations:
                 self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
-                elem = self.ce.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(0)
+                elem = self.ce.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(
+                    0
+                )
         return elem.is_checked()
 
     def _get_element_href(self, locator: str, index: int, chain_locator: bool) -> str:
@@ -578,7 +675,9 @@ class playwright_operations:
             if chain_locator:
                 elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
             else:
-                elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
+                elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(
+                    index
+                )
         return elem.get_attribute(properties.HREF.name)
 
     def _wait(self, time_out: str):
@@ -611,10 +710,16 @@ class playwright_operations:
         Args:
             url (str): URL to navigate to.
         """
-        _full_url = f"{self.ce.service_url.replace('/start','')}{url}" if url.startswith("/") else url
+        _full_url = (
+            f"{self.ce.service_url.replace('/start', '')}{url}"
+            if url.startswith("/")
+            else url
+        )
         self.ce.page.goto(_full_url)
 
-    def get_table_cell_location_for_value(self, table_locator: str, col_header: str, row_value: str):
+    def get_table_cell_location_for_value(
+        self, table_locator: str, col_header: str, row_value: str
+    ):
         """
         Get the location of a cell in a table based on column header and row value.
 
@@ -670,7 +775,11 @@ class playwright_operations:
         row_counter = 1
         for _ in range(table.locator(html_tags.TR).count()):
             row_locator = str(
-                table.locator(html_tags.TR).nth(row_counter).locator(html_tags.TD).nth(col_index).inner_text()
+                table.locator(html_tags.TR)
+                .nth(row_counter)
+                .locator(html_tags.TD)
+                .nth(col_index)
+                .inner_text()
             )
             if row_value.lower() in row_locator.lower():
                 break

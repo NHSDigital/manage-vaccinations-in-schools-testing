@@ -22,7 +22,9 @@ class Test_Login:
     @pytest.mark.order(101)
     @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
     def test_invalid_login(self, user, pwd, expected_message):
-        self.login_page.try_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
+        self.login_page.try_invalid_login(
+            user=user, pwd=pwd, expected_message=expected_message
+        )
 
     @pytest.mark.login
     @pytest.mark.order(102)

@@ -40,7 +40,9 @@ def get_link_formatted_date_time() -> str:
     """
     _am_or_pm = datetime.now().strftime(format="%p").lower()
     try:
-        _dt = datetime.now().strftime(format="%-d %B %Y at %-I:%M")  # Linux (Github Action)
+        _dt = datetime.now().strftime(
+            format="%-d %B %Y at %-I:%M"
+        )  # Linux (Github Action)
     except:
         _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev VDI)
     return f"{_dt}{_am_or_pm}"
@@ -126,13 +128,21 @@ def get_dob_from_year(year_group: str) -> str:
     """
     match year_group:
         case child_year_group.YEAR_8:
-            year_offset = 8  # In 2025, outputs a random date between 2011-09-01 and 2012-08-31
+            year_offset = (
+                8  # In 2025, outputs a random date between 2011-09-01 and 2012-08-31
+            )
         case child_year_group.YEAR_9:
-            year_offset = 9  # In 2025, outputs a random date between 2010-09-01 and 2011-08-31
+            year_offset = (
+                9  # In 2025, outputs a random date between 2010-09-01 and 2011-08-31
+            )
         case child_year_group.YEAR_10:
-            year_offset = 10  # In 2025, Outputs a random date between 2009-09-01 and 2010-08-31
+            year_offset = (
+                10  # In 2025, Outputs a random date between 2009-09-01 and 2010-08-31
+            )
         case child_year_group.YEAR_11:
-            year_offset = 11  # In 2025, outputs a random date between 2008-09-01 and 2009-08-31
+            year_offset = (
+                11  # In 2025, outputs a random date between 2008-09-01 and 2009-08-31
+            )
 
     # Determine the academic year offset
     current_year = datetime.now().year
@@ -145,7 +155,9 @@ def get_dob_from_year(year_group: str) -> str:
     end_date = datetime(end_year, 8, 31)  # End date for each year group
 
     # Generate a random date between start_date and end_date
-    random_date = start_date + timedelta(days=random.randint(0, (end_date - start_date).days))
+    random_date = start_date + timedelta(
+        days=random.randint(0, (end_date - start_date).days)
+    )
     return random_date.strftime("%Y-%m-%d")
 
 
@@ -157,7 +169,10 @@ def get_project_root() -> str:
         str: Absolute path to the project root directory.
     """
     _project_root = os.path.dirname(__file__)
-    while os.path.basename(_project_root.lower()) != "manage-vaccinations-in-schools-testing":
+    while (
+        os.path.basename(_project_root.lower())
+        != "manage-vaccinations-in-schools-testing"
+    ):
         _project_root = os.path.dirname(_project_root)
     return _project_root
 

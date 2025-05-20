@@ -31,7 +31,9 @@ class Test_Unmatched_Consent_Responses:
             self.login_page.login_as_nurse()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_programmes()
-            self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_UCR_MATCH)
+            self.programmes_page.upload_cohorts(
+                file_paths=test_data_file_paths.COHORTS_UCR_MATCH
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_unmatched_consent_responses()
             yield

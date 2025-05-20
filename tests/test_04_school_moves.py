@@ -84,7 +84,9 @@ class Test_School_Moves:
     @pytest.mark.schoolmoves
     @pytest.mark.order(402)
     @pytest.mark.skip(reason="Test under construction")
-    def test_school_moves_to_homeschool_and_unknown(self, setup_move_to_homeschool_and_unknown: None):
+    def test_school_moves_to_homeschool_and_unknown(
+        self, setup_move_to_homeschool_and_unknown: None
+    ):
         pass
 
     @pytest.mark.schoolmoves

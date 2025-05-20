@@ -73,27 +73,37 @@ class Test_ImportRecords:
     @pytest.mark.childlist
     @pytest.mark.order(301)
     def test_child_list_file_upload_positive(self, setup_child_list):
-        self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_POSITIVE)
+        self.import_records_page.import_child_records(
+            file_paths=test_data_file_paths.CHILD_POSITIVE
+        )
 
     @pytest.mark.childlist
     @pytest.mark.order(302)
     def test_child_list_file_upload_negative(self, setup_child_list):
-        self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_NEGATIVE)
+        self.import_records_page.import_child_records(
+            file_paths=test_data_file_paths.CHILD_NEGATIVE
+        )
 
     @pytest.mark.childlist
     @pytest.mark.order(303)
     def test_child_list_file_structure(self, setup_child_list):
-        self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE)
+        self.import_records_page.import_child_records(
+            file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE
+        )
 
     @pytest.mark.childlist
     @pytest.mark.order(304)
     def test_child_list_no_record(self, setup_child_list):
-        self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_HEADER_ONLY)
+        self.import_records_page.import_child_records(
+            file_paths=test_data_file_paths.CHILD_HEADER_ONLY
+        )
 
     @pytest.mark.childlist
     @pytest.mark.order(305)
     def test_child_list_empty_file(self, setup_child_list):
-        self.import_records_page.import_child_records(file_paths=test_data_file_paths.CHILD_EMPTY_FILE)
+        self.import_records_page.import_child_records(
+            file_paths=test_data_file_paths.CHILD_EMPTY_FILE
+        )
 
     @pytest.mark.childlist
     @pytest.mark.bug
@@ -108,33 +118,44 @@ class Test_ImportRecords:
     @pytest.mark.classlist
     @pytest.mark.order(326)
     def test_class_list_file_upload_positive(self, setup_class_list: None):
-        self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_POSITIVE)
+        self.import_records_page.import_class_list_records(
+            file_paths=test_data_file_paths.CLASS_POSITIVE
+        )
 
     @pytest.mark.classlist
     @pytest.mark.order(327)
     def test_class_list_file_upload_negative(self, setup_class_list: None):
-        self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_NEGATIVE)
+        self.import_records_page.import_class_list_records(
+            file_paths=test_data_file_paths.CLASS_NEGATIVE
+        )
 
     @pytest.mark.classlist
     @pytest.mark.order(328)
     def test_class_list_file_structure(self, setup_class_list: None):
-        self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE)
+        self.import_records_page.import_class_list_records(
+            file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE
+        )
 
     @pytest.mark.classlist
     @pytest.mark.order(329)
     def test_class_list_no_record(self, setup_class_list: None):
-        self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_HEADER_ONLY)
+        self.import_records_page.import_class_list_records(
+            file_paths=test_data_file_paths.CLASS_HEADER_ONLY
+        )
 
     @pytest.mark.classlist
     @pytest.mark.order(330)
     def test_class_list_empty_file(self, setup_class_list: None):
-        self.import_records_page.import_class_list_records(file_paths=test_data_file_paths.CLASS_EMPTY_FILE)
+        self.import_records_page.import_class_list_records(
+            file_paths=test_data_file_paths.CLASS_EMPTY_FILE
+        )
 
     @pytest.mark.classlist
     @pytest.mark.order(331)
     def test_class_list_year_group(self, setup_class_list: None):
         self.import_records_page.import_class_list_records(
-            file_paths=test_data_file_paths.CLASS_YEAR_GROUP, year_group=child_year_group.YEAR_8
+            file_paths=test_data_file_paths.CLASS_YEAR_GROUP,
+            year_group=child_year_group.YEAR_8,
         )
 
     @pytest.mark.classlist
@@ -151,61 +172,70 @@ class Test_ImportRecords:
     @pytest.mark.order(351)
     def test_vaccs_positive_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_POSITIVE, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_POSITIVE,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(352)
     def test_vaccs_negative_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_NEGATIVE, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_NEGATIVE,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(353)
     def test_vaccs_duplicate_record_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_DUP_1, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_DUP_1,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_import_records()
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_DUP_2, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_DUP_2,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(354)
     def test_vaccs_file_structure(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(355)
     def test_vaccs_no_record(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_HEADER_ONLY, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_HEADER_ONLY,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(356)
     def test_vaccs_empty_file(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_EMPTY_FILE, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_EMPTY_FILE,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(357)
     def test_vaccs_historic_positive_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_HIST_POSITIVE, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_HIST_POSITIVE,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(358)
     def test_vaccs_historic_negative_file_upload(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
 
     @pytest.mark.vaccinations
@@ -213,7 +243,8 @@ class Test_ImportRecords:
     @pytest.mark.order(359)
     def test_vaccs_historic_no_urn_mav_855(self, setup_vaccs):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_HPV_MAV_855, file_type=mavis_file_types.VACCS_MAVIS
+            file_paths=test_data_file_paths.VACCS_HPV_MAV_855,
+            file_type=mavis_file_types.VACCS_MAVIS,
         )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_children()
@@ -223,21 +254,24 @@ class Test_ImportRecords:
     @pytest.mark.order(360)
     def test_vaccs_systmone_positive_file_upload(self, setup_vaccs_systmone):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE, file_type=mavis_file_types.VACCS_SYSTMONE
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE,
+            file_type=mavis_file_types.VACCS_SYSTMONE,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(361)
     def test_vaccs_systmone_negative_file_upload(self, setup_vaccs_systmone):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_SYSTMONE_NEGATIVE, file_type=mavis_file_types.VACCS_SYSTMONE
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_NEGATIVE,
+            file_type=mavis_file_types.VACCS_SYSTMONE,
         )
 
     @pytest.mark.vaccinations
     @pytest.mark.order(362)
     def test_vaccs_systmone_negative_historical_file_upload(self, setup_vaccs_systmone):
         self.import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE, file_type=mavis_file_types.VACCS_SYSTMONE
+            file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE,
+            file_type=mavis_file_types.VACCS_SYSTMONE,
         )
 
     @pytest.mark.vaccinations

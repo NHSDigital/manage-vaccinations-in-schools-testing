@@ -22,7 +22,9 @@ class Test_Smoke:
     @pytest.mark.smoke
     @pytest.mark.order(2)
     def test_smoke_verify_packages(self):
-        packages_installed = subprocess.run(args=["pip", "list"], capture_output=True, text=True).stdout.strip()
+        packages_installed = subprocess.run(
+            args=["pip", "list"], capture_output=True, text=True
+        ).stdout.strip()
         packages_to_verify = ["dotenv", "playwright", "requests"]
         for package in packages_to_verify:
             if package not in packages_installed:

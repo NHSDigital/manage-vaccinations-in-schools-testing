@@ -19,9 +19,13 @@ class testdata_operations:
         """
         Initialize the testdata_operations class.
         """
-        self.mapping_df: pd.DataFrame = self.fo.read_csv_to_df(file_path="test_data/file_mapping.csv")
+        self.mapping_df: pd.DataFrame = self.fo.read_csv_to_df(
+            file_path="test_data/file_mapping.csv"
+        )
 
-    def create_file_from_template(self, template_path: str, file_name_prefix: str) -> str:
+    def create_file_from_template(
+        self, template_path: str, file_name_prefix: str
+    ) -> str:
         """
         Create a file from a template while replacing placeholders with calculated values.
 
@@ -63,7 +67,9 @@ class testdata_operations:
             dynamic_replacements["<<FNAME>>"] = f"F{_dt}{_ctr}"
             dynamic_replacements["<<LNAME>>"] = f"L{_dt}{_ctr}"
             dynamic_replacements["<<NHS_NO>>"] = self.get_new_nhs_no(valid=True)
-            dynamic_replacements["<<INVALID_NHS_NO>>"] = self.get_new_nhs_no(valid=False)
+            dynamic_replacements["<<INVALID_NHS_NO>>"] = self.get_new_nhs_no(
+                valid=False
+            )
 
             for key, value in dynamic_replacements.items():
                 line = line.replace(key, str(value))
@@ -74,7 +80,8 @@ class testdata_operations:
         self.ce.set_file_record_count(record_count=_ctr)
 
         return self.fo.create_file(
-            content=escape_characters.NEW_LINE.join(_file_text), file_name_prefix=file_name_prefix
+            content=escape_characters.NEW_LINE.join(_file_text),
+            file_name_prefix=file_name_prefix,
         )
 
     def get_new_nhs_no(self, valid=True) -> str:
@@ -87,7 +94,9 @@ class testdata_operations:
         Returns:
             str: Generated NHS number.
         """
-        return nhs_number.generate(valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1)[0]
+        return nhs_number.generate(
+            valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1
+        )[0]
 
     def get_expected_errors(self, file_path: str):
         """
@@ -100,9 +109,15 @@ class testdata_operations:
             list[str]: List of expected errors.
         """
         _file_content = self.fo.get_file_text(file_path=file_path)
-        return _file_content.split(escape_characters.NEW_LINE) if _file_content is not None else None
+        return (
+            _file_content.split(escape_characters.NEW_LINE)
+            if _file_content is not None
+            else None
+        )
 
-    def read_spreadsheet(self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1") -> pd.DataFrame:
+    def read_spreadsheet(
+        self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1"
+    ) -> pd.DataFrame:
         """
         Read a spreadsheet into a DataFrame.
 
@@ -148,9 +163,15 @@ class testdata_operations:
         Returns:
             tuple[str, str]: Input and output file paths.
         """
-        _input_template_path: str = self.mapping_df.query("ID==@file_paths")["INPUT_TEMPLATE"].to_string(index=False)
-        _output_template_path: str = self.mapping_df.query("ID==@file_paths")["OUTPUT_TEMPLATE"].to_string(index=False)
-        _file_prefix: str = self.mapping_df.query("ID==@file_paths")["FILE_PREFIX"].to_string(index=False)
+        _input_template_path: str = self.mapping_df.query("ID==@file_paths")[
+            "INPUT_TEMPLATE"
+        ].to_string(index=False)
+        _output_template_path: str = self.mapping_df.query("ID==@file_paths")[
+            "OUTPUT_TEMPLATE"
+        ].to_string(index=False)
+        _file_prefix: str = self.mapping_df.query("ID==@file_paths")[
+            "FILE_PREFIX"
+        ].to_string(index=False)
         _input_file_path: str = self.create_file_from_template(
             template_path=_input_template_path, file_name_prefix=_file_prefix
         )
@@ -169,7 +190,11 @@ class testdata_operations:
         """
         _file_df = self.fo.read_csv_to_df(file_path=file_path)
         match file_type:
-            case mavis_file_types.CHILD_LIST | mavis_file_types.COHORT | mavis_file_types.CLASS_LIST:
+            case (
+                mavis_file_types.CHILD_LIST
+                | mavis_file_types.COHORT
+                | mavis_file_types.CLASS_LIST
+            ):
                 _cols = ["CHILD_LAST_NAME", "CHILD_FIRST_NAME"]
             case mavis_file_types.VACCS_MAVIS:
                 _cols = ["PERSON_SURNAME", "PERSON_FORENAME"]
@@ -188,5 +213,7 @@ class testdata_operations:
         Returns:
             str: Session ID.
         """
-        _df = self.read_spreadsheet(file_path=excel_path, clean_df=False, sheet_name="Vaccinations")
+        _df = self.read_spreadsheet(
+            file_path=excel_path, clean_df=False, sheet_name="Vaccinations"
+        )
         return _df["SESSION_ID"].iloc[0]

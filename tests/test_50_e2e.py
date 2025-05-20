@@ -26,7 +26,9 @@ class Test_E2E:
     @pytest.mark.order(5001)
     def test_e2e(self):
         self.dashboard_page.click_programmes()
-        self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_E2E_1)
+        self.programmes_page.upload_cohorts(
+            file_paths=test_data_file_paths.COHORTS_E2E_1
+        )
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.schedule_a_valid_session_in_school_1()

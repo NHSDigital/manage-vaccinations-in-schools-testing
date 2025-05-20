@@ -38,34 +38,62 @@ class CurrentExecution:
     @staticmethod
     def get_env_values():
         load_dotenv()
-        CurrentExecution.service_url = CurrentExecution.get_env_value(var_name="BASE_URL")
-        CurrentExecution.base_auth_username = CurrentExecution.get_env_value(var_name="BASIC_AUTH_USERNAME")
-        CurrentExecution.base_auth_password = CurrentExecution.get_env_value(var_name="BASIC_AUTH_PASSWORD")
-        CurrentExecution.nurse_username = CurrentExecution.get_env_value(var_name="NURSE_USERNAME")
-        CurrentExecution.nurse_password = CurrentExecution.get_env_value(var_name="NURSE_PASSWORD")
-        CurrentExecution.superuser_username = CurrentExecution.get_env_value(var_name="SUPERUSER_USERNAME")
-        CurrentExecution.superuser_password = CurrentExecution.get_env_value(var_name="SUPERUSER_PASSWORD")
-        CurrentExecution.admin_username = CurrentExecution.get_env_value(var_name="ADMIN_USERNAME")
-        CurrentExecution.admin_password = CurrentExecution.get_env_value(var_name="ADMIN_PASSWORD")
-        CurrentExecution.headless_mode = CurrentExecution.get_env_value(var_name="HEADLESS").lower() == "true"
+        CurrentExecution.service_url = CurrentExecution.get_env_value(
+            var_name="BASE_URL"
+        )
+        CurrentExecution.base_auth_username = CurrentExecution.get_env_value(
+            var_name="BASIC_AUTH_USERNAME"
+        )
+        CurrentExecution.base_auth_password = CurrentExecution.get_env_value(
+            var_name="BASIC_AUTH_PASSWORD"
+        )
+        CurrentExecution.nurse_username = CurrentExecution.get_env_value(
+            var_name="NURSE_USERNAME"
+        )
+        CurrentExecution.nurse_password = CurrentExecution.get_env_value(
+            var_name="NURSE_PASSWORD"
+        )
+        CurrentExecution.superuser_username = CurrentExecution.get_env_value(
+            var_name="SUPERUSER_USERNAME"
+        )
+        CurrentExecution.superuser_password = CurrentExecution.get_env_value(
+            var_name="SUPERUSER_PASSWORD"
+        )
+        CurrentExecution.admin_username = CurrentExecution.get_env_value(
+            var_name="ADMIN_USERNAME"
+        )
+        CurrentExecution.admin_password = CurrentExecution.get_env_value(
+            var_name="ADMIN_PASSWORD"
+        )
+        CurrentExecution.headless_mode = (
+            CurrentExecution.get_env_value(var_name="HEADLESS").lower() == "true"
+        )
         CurrentExecution.capture_screenshot_flag = (
-            CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower() == "true"
+            CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower()
+            == "true"
         )
-        CurrentExecution.reset_endpoint = (
-            f"{CurrentExecution.service_url}{CurrentExecution.get_env_value(var_name='RESET_ENDPOINT')}"
+        CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{CurrentExecution.get_env_value(var_name='RESET_ENDPOINT')}"
+        CurrentExecution.api_token = CurrentExecution.get_env_value(
+            var_name="API_TOKEN"
         )
-        CurrentExecution.api_token = CurrentExecution.get_env_value(var_name="API_TOKEN")
         CurrentExecution.reset_env_before_execution = (
-            CurrentExecution.get_env_value(var_name="RESET_ENV_BEFORE_EXECUTION").lower() == "true"
+            CurrentExecution.get_env_value(
+                var_name="RESET_ENV_BEFORE_EXECUTION"
+            ).lower()
+            == "true"
         )
-        CurrentExecution.slow_motion = int(CurrentExecution.get_env_value(var_name="SLOW_MOTION"))
+        CurrentExecution.slow_motion = int(
+            CurrentExecution.get_env_value(var_name="SLOW_MOTION")
+        )
 
     @staticmethod
     def reset_environment():
         _headers = {"Authorization": CurrentExecution.api_token}
         if CurrentExecution.reset_env_before_execution:
             for _ in range(3):
-                _resp_code = requests.get(url=CurrentExecution.reset_endpoint, headers=_headers).status_code
+                _resp_code = requests.get(
+                    url=CurrentExecution.reset_endpoint, headers=_headers
+                ).status_code
                 if (
                     api_response_codes.SUCCESS_STATUS_CODE_MIN
                     <= _resp_code

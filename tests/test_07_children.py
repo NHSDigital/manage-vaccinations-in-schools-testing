@@ -33,7 +33,9 @@ class Test_Children:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_school1()
-            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_CHILDREN_FILTER)
+            self.sessions_page.upload_class_list_to_school_1(
+                file_paths=test_data_file_paths.CLASS_CHILDREN_FILTER
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             yield
@@ -50,7 +52,9 @@ class Test_Children:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.click_school1()
-            self.sessions_page.upload_class_list_to_school_1(file_paths=test_data_file_paths.CLASS_CHANGE_NHSNO)
+            self.sessions_page.upload_class_list_to_school_1(
+                file_paths=test_data_file_paths.CLASS_CHANGE_NHSNO
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()
             yield
@@ -71,11 +75,14 @@ class Test_Children:
             self.sessions_page.save_session_id_from_offline_excel()
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_programmes()
-            self.programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_853)
+            self.programmes_page.upload_cohorts(
+                file_paths=test_data_file_paths.COHORTS_MAV_853
+            )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_import_records()
             self.import_records_page.import_vaccination_records(
-                file_paths=test_data_file_paths.VACCS_MAV_853, file_type=mavis_file_types.VACCS_MAVIS
+                file_paths=test_data_file_paths.VACCS_MAV_853,
+                file_type=mavis_file_types.VACCS_MAVIS,
             )
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_children()

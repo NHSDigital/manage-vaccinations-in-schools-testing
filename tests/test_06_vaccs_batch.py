@@ -8,7 +8,12 @@ class Test_Regression_Vaccines:
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     vaccines_page = pg_vaccines.pg_vaccines()
-    doubles_vaccines = [vaccines.MENQUADFI, vaccines.MENVEO, vaccines.NIMENRIX, vaccines.REVAXIS]
+    doubles_vaccines = [
+        vaccines.MENQUADFI,
+        vaccines.MENVEO,
+        vaccines.NIMENRIX,
+        vaccines.REVAXIS,
+    ]
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
