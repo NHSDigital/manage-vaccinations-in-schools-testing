@@ -45,11 +45,13 @@ class pg_import_records:
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
             file_paths=file_paths
         )
+
         _cl = []
         if verify_on_children_page:
             _cl = self.tdo.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
+
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
         self.po.act(locator=self.RDO_CHILD_RECORDS, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)

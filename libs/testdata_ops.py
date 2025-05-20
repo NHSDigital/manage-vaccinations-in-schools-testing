@@ -41,9 +41,8 @@ class testdata_operations:
         Returns:
             str: Path to the created file.
         """
-        _template_text = self.fo.get_file_text(file_path=template_path)
-        if not _template_text:
-            return ""
+
+        template_text = self.fo.get_file_text(file_path=template_path)
 
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
@@ -67,7 +66,7 @@ class testdata_operations:
         _file_text = []
         _ctr = 0
 
-        for line in _template_text.split(escape_characters.NEW_LINE):
+        for line in template_text.splitlines():
             dynamic_replacements = replacements.copy()
             dynamic_replacements["<<FNAME>>"] = f"F{_dt}{_ctr}"
             dynamic_replacements["<<LNAME>>"] = f"L{_dt}{_ctr}"
@@ -85,7 +84,7 @@ class testdata_operations:
         self.ce.set_file_record_count(record_count=_ctr)
 
         return self.fo.create_file(
-            content=escape_characters.NEW_LINE.join(_file_text),
+            content="\n".join(_file_text),
             file_name_prefix=file_name_prefix,
         )
 
@@ -113,12 +112,8 @@ class testdata_operations:
         Returns:
             list[str]: List of expected errors.
         """
-        _file_content = self.fo.get_file_text(file_path=file_path)
-        return (
-            _file_content.split(escape_characters.NEW_LINE)
-            if _file_content is not None
-            else None
-        )
+        file_content = self.fo.get_file_text(file_path=file_path)
+        return file_content.splitlines() if file_content is not None else None
 
     def read_spreadsheet(
         self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1"
@@ -168,18 +163,16 @@ class testdata_operations:
         Returns:
             tuple[str, str]: Input and output file paths.
         """
-        _input_template_path: str = self.mapping_df.query("ID==@file_paths")[
-            "INPUT_TEMPLATE"
-        ].to_string(index=False)
-        _output_template_path: str = self.mapping_df.query("ID==@file_paths")[
-            "OUTPUT_TEMPLATE"
-        ].to_string(index=False)
-        _file_prefix: str = self.mapping_df.query("ID==@file_paths")[
-            "FILE_PREFIX"
-        ].to_string(index=False)
+        query = self.mapping_df.query("ID==@file_paths")
+
+        _input_template_path: str = query["INPUT_TEMPLATE"].to_string(index=False)
+        _output_template_path: str = query["OUTPUT_TEMPLATE"].to_string(index=False)
+        _file_prefix: str = query["FILE_PREFIX"].to_string(index=False)
+
         _input_file_path: str = self.create_file_from_template(
             template_path=_input_template_path, file_name_prefix=_file_prefix
         )
+
         return _input_file_path, _output_template_path
 
     def create_child_list_from_file(self, file_path: str, file_type: mavis_file_types):
