@@ -180,5 +180,11 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-# Allure
+
+
+
+# Chinmay
+main.py
+working/
 reports/
+screenshots/
