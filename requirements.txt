@@ -31,7 +31,7 @@ pexpect==4.9.0
 pillow==10.4.0
 pip-system-certs==4.0
 platformdirs==4.3.6
-playwright==1.51.0
+playwright==1.52.0
 pluggy==1.5.0
 prompt_toolkit==3.0.51
 psutil==6.0.0
