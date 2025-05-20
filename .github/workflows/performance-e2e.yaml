@@ -1,9 +1,9 @@
-name: Performance tests (E2E)
+name: Performance (end to end)
 
 on:
   push:
     branches:
-      - "performance-testing"
+      - performance-testing
 
   workflow_dispatch:
     inputs:
