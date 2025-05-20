@@ -33,32 +33,46 @@ class testdata_operations:
             str: Path to the created file.
         """
         _template_text = self.fo.get_file_text(file_path=template_path)
-        _file_text = []
-        _ctr = 0
+        if not _template_text:
+            return ""
+
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
         _session_id = self.ce.get_session_id()
-        if _template_text is not None:
-            for _ln in _template_text.split(escape_characters.NEW_LINE):
-                _ln = _ln.replace("<<SCHOOL_1_NAME>>", test_data_values.SCHOOL_1_NAME)
-                _ln = _ln.replace("<<SCHOOL_2_NAME>>", test_data_values.SCHOOL_2_NAME)
-                _ln = _ln.replace("<<SCHOOL_1_URN>>", test_data_values.SCHOOL_1_URN)
-                _ln = _ln.replace("<<ORG_CODE>>", test_data_values.ORG_CODE)
-                _ln = _ln.replace("<<NHS_NO>>", self.get_new_nhs_no(valid=True))
-                _ln = _ln.replace("<<INVALID_NHS_NO>>", self.get_new_nhs_no(valid=False))
-                _ln = _ln.replace("<<FNAME>>", f"F{_dt}{_ctr}")
-                _ln = _ln.replace("<<LNAME>>", f"L{_dt}{_ctr}")
-                _ln = _ln.replace("<<VACCS_DATE>>", _dt[:8])
-                _ln = _ln.replace("<<VACCS_TIME>>", get_current_time())
-                _ln = _ln.replace("<<HIST_VACCS_DATE>>", _hist_dt)
-                _ln = _ln.replace("<<DOB_YEAR_8>>", get_dob_from_year(year_group=child_year_group.YEAR_8))
-                _ln = _ln.replace("<<DOB_YEAR_9>>", get_dob_from_year(year_group=child_year_group.YEAR_9))
-                _ln = _ln.replace("<<DOB_YEAR_10>>", get_dob_from_year(year_group=child_year_group.YEAR_10))
-                _ln = _ln.replace("<<DOB_YEAR_11>>", get_dob_from_year(year_group=child_year_group.YEAR_11))
-                _ln = _ln.replace("<<SESSION_ID>>", _session_id)
-                _file_text.append(_ln)
-                _ctr += 1
+
+        replacements = {
+            "<<SCHOOL_1_NAME>>": test_data_values.SCHOOL_1_NAME,
+            "<<SCHOOL_2_NAME>>": test_data_values.SCHOOL_2_NAME,
+            "<<SCHOOL_1_URN>>": test_data_values.SCHOOL_1_URN,
+            "<<ORG_CODE>>": test_data_values.ORG_CODE,
+            "<<VACCS_DATE>>": _dt[:8],
+            "<<VACCS_TIME>>": get_current_time(),
+            "<<HIST_VACCS_DATE>>": _hist_dt,
+            "<<DOB_YEAR_8>>": get_dob_from_year(year_group=child_year_group.YEAR_8),
+            "<<DOB_YEAR_9>>": get_dob_from_year(year_group=child_year_group.YEAR_9),
+            "<<DOB_YEAR_10>>": get_dob_from_year(year_group=child_year_group.YEAR_10),
+            "<<DOB_YEAR_11>>": get_dob_from_year(year_group=child_year_group.YEAR_11),
+            "<<SESSION_ID>>": _session_id,
+        }
+
+        _file_text = []
+        _ctr = 0
+
+        for line in _template_text.split(escape_characters.NEW_LINE):
+            dynamic_replacements = replacements.copy()
+            dynamic_replacements["<<FNAME>>"] = f"F{_dt}{_ctr}"
+            dynamic_replacements["<<LNAME>>"] = f"L{_dt}{_ctr}"
+            dynamic_replacements["<<NHS_NO>>"] = self.get_new_nhs_no(valid=True)
+            dynamic_replacements["<<INVALID_NHS_NO>>"] = self.get_new_nhs_no(valid=False)
+
+            for key, value in dynamic_replacements.items():
+                line = line.replace(key, str(value))
+
+            _file_text.append(line)
+            _ctr += 1
+
         self.ce.set_file_record_count(record_count=_ctr)
+
         return self.fo.create_file(
             content=escape_characters.NEW_LINE.join(_file_text), file_name_prefix=file_name_prefix
         )
