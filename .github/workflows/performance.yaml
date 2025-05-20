@@ -1,9 +1,9 @@
-name: Performance tests
+name: Performance
 
 on:
   push:
     branches:
-      - "performance-testing"
+      - performance-testing
 
   workflow_dispatch:
     inputs:

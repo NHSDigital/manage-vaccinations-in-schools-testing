@@ -1,6 +1,6 @@
 # Manage vaccinations in schools
 
-[![Run MAVIS tests on TEST](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/MAVIS_TEST.yml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/MAVIS_TEST.yml)
+[![Test workflow](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/test.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/test.yaml)
 
 ## Introduction
 
@@ -10,14 +10,21 @@ It is currently configured to run on the QA environment.  The project utilizes t
 
 ## Installation
 
-This test pack requires Python 3.10 installed on the system or greater to run.
-
-To execute the tests from your system, please follow the 4 easy steps below:
+To execute the tests from your system, please follow the steps below:
 
 1. Clone the repository to any local folder
 
    ```console
    git clone https://github.com/NHSDigital/manage-vaccinations-in-schools-testing.git
+   ```
+
+1. Install Python
+
+   The version of Python is specified in the `.tool-versions` file meaning it can be managed automatically using tools
+   such as [Mise](https://mise.jdx.dev) or [Asdf](https://asdf-vm.com).
+
+   ```console
+   mise install
    ```
 
 1. Create a virtual environment

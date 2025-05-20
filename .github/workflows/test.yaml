@@ -1,7 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
-name: Run MAVIS tests on TEST
+name: Test
 
 on:
   schedule:
@@ -21,10 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version-file: .tool-versions
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
