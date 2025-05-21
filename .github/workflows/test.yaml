@@ -35,7 +35,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -56,7 +55,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -76,7 +74,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -97,7 +94,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -118,7 +114,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -139,7 +134,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -160,7 +154,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -181,7 +174,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
@@ -202,7 +194,6 @@ jobs:
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          RESET_ENV_BEFORE_EXECUTION: ${{vars.RESET_ENV_BEFORE_EXECUTION}}
           SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
