@@ -22,6 +22,7 @@ def pytest_addoption(parser):
     parser.addoption("--device", default=None)
     parser.addoption("--slowmo", type=int, default=0)
     parser.addoption("--headed", action="store_true", default="CI" not in os.environ)
+    parser.addoption("--skip-reset", action="store_true", default=False)
 
 
 ce.get_env_values()
@@ -57,13 +58,20 @@ def reset_endpoint() -> str:
 
 
 @pytest.fixture(scope="session")
-def reset_env_before_execution() -> bool:
-    return os.environ.get("RESET_ENV_BEFORE_EXECUTION", "true").lower() == "true"
+def skip_reset(request) -> bool:
+    return request.config.getoption("skip_reset")
 
 
 @pytest.fixture(scope="session")
-def reset_environment(reset_endpoint, reset_env_before_execution):
-    if reset_env_before_execution:
+def reset_environment(reset_endpoint, skip_reset):
+    if skip_reset:
+
+        def _reset_environment():
+            pass
+
+        return _reset_environment
+
+    else:
         url = f"{ce.service_url}{reset_endpoint}"
         auth = HTTPBasicAuth(ce.base_auth_username, ce.base_auth_password)
 
@@ -77,12 +85,6 @@ def reset_environment(reset_endpoint, reset_env_before_execution):
                 time.sleep(3)
             else:
                 response.raise_for_status()
-
-        return _reset_environment
-    else:
-
-        def _reset_environment():
-            pass
 
         return _reset_environment
 
