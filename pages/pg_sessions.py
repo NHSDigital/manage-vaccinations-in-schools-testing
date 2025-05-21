@@ -706,7 +706,7 @@ class pg_sessions:
                 file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
             )
         self.click_import_class_list()
-        self.select_year_groups([8, 9, 10, 11])
+        self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
