@@ -94,6 +94,16 @@ $ pytest --browser chromium --device "Pixel 7"
 $ pytest --browser chromium --browser-channel msedge
 ```
 
+### Headless mode
+
+If running in a CI environment (determined by the presence of a `CI`
+environment variable) then by default the tests will run in headless mode. To
+run the tests in headed more, use the following command:
+
+```shell
+$ pytest --headed
+```
+
 ### Slow motion
 
 When running the tests locally in headed mode, it can be useful to make the

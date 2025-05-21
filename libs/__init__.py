@@ -14,7 +14,6 @@ class CurrentExecution:
     service_url: str = ""
     base_auth_username: str = ""
     base_auth_password: str = ""
-    headless_mode: bool = False
     session_screenshots_dir: str = ""
 
     capture_screenshot_flag: bool = False
@@ -62,9 +61,6 @@ class CurrentExecution:
         )
         CurrentExecution.admin_password = CurrentExecution.get_env_value(
             var_name="ADMIN_PASSWORD"
-        )
-        CurrentExecution.headless_mode = (
-            CurrentExecution.get_env_value(var_name="HEADLESS").lower() == "true"
         )
         CurrentExecution.capture_screenshot_flag = (
             CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower()
