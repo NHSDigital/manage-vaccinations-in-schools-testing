@@ -43,7 +43,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::Chromium"
           pytest --browser chromium
@@ -63,7 +62,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::Chrome"
           pytest --browser chromium --browser-channel chrome
@@ -82,7 +80,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::Firefox"
           pytest --browser firefox
@@ -102,7 +99,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::Edge"
           pytest --browser chromium --browser-channel msedge
@@ -122,7 +118,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::iPhone 14"
           pytest -m mobile --browser webkit --device "iPhone 14"
@@ -142,7 +137,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::iPhone 15"
           pytest -m mobile --browser webkit --device "iPhone 15"
@@ -162,7 +156,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::iPad Gen 7"
           pytest -m mobile --browser webkit --device "iPad (gen 7) landscape"
@@ -182,7 +175,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::Samsung Galaxy S9+"
           pytest -m mobile --browser chromimum --device "Galaxy S9+"
@@ -202,7 +194,6 @@ jobs:
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "::group::Google Pixel 7"
           pytest -m mobile --browser chromimum --device "Pixel 7"

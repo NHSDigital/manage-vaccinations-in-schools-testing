@@ -50,11 +50,6 @@ class file_mode:
     APPEND: Final[str] = "a"
 
 
-class api_response_codes:
-    SUCCESS_STATUS_CODE_MIN: Final[int] = 200
-    SUCCESS_STATUS_CODE_MAX: Final[int] = 299
-
-
 class aria_roles:
     LINK: Final[str] = "link"
     BUTTON: Final[str] = "button"

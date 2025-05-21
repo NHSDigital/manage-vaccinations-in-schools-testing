@@ -1,11 +1,10 @@
 import os
 import time
 
-import requests
 from dotenv import load_dotenv
+import requests
+from requests.auth import HTTPBasicAuth
 from playwright.sync_api import Browser, Page
-
-from libs.generic_constants import api_response_codes
 
 
 class CurrentExecution:
@@ -24,7 +23,6 @@ class CurrentExecution:
     admin_username: str = ""
     admin_password: str = ""
     reset_endpoint: str = ""
-    api_token: str = ""
     reset_env_before_execution: bool = False
 
     screenshot_sequence: int = 0
@@ -67,9 +65,6 @@ class CurrentExecution:
             == "true"
         )
         CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{CurrentExecution.get_env_value(var_name='RESET_ENDPOINT')}"
-        CurrentExecution.api_token = CurrentExecution.get_env_value(
-            var_name="API_TOKEN"
-        )
         CurrentExecution.reset_env_before_execution = (
             CurrentExecution.get_env_value(
                 var_name="RESET_ENV_BEFORE_EXECUTION"
@@ -77,23 +72,21 @@ class CurrentExecution:
             == "true"
         )
 
-    @staticmethod
-    def reset_environment():
-        _headers = {"Authorization": CurrentExecution.api_token}
+    @classmethod
+    def reset_environment(cls):
+        url = cls.reset_endpoint
+        auth = HTTPBasicAuth(cls.base_auth_username, cls.base_auth_password)
+
         if CurrentExecution.reset_env_before_execution:
             for _ in range(3):
-                _resp_code = requests.get(
-                    url=CurrentExecution.reset_endpoint, headers=_headers
-                ).status_code
-                if (
-                    api_response_codes.SUCCESS_STATUS_CODE_MIN
-                    <= _resp_code
-                    <= api_response_codes.SUCCESS_STATUS_CODE_MAX
-                ):
+                response = requests.get(url=url, auth=auth)
+
+                if response.ok:
                     break
+
                 time.sleep(3)
             else:
-                raise AssertionError(f"Reset endpoint failed with code: {_resp_code}")
+                response.raise_for_status()
 
     @staticmethod
     def set_file_record_count(record_count: int):
