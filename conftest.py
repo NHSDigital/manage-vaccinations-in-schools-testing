@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 import pytest
 from playwright.sync_api import sync_playwright
@@ -15,6 +16,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser-channel", default=None)
     parser.addoption("--device", default=None)
     parser.addoption("--slowmo", type=int, default=0)
+    parser.addoption("--headed", action="store_true", default="CI" not in os.environ)
 
 
 @pytest.fixture(scope="session")
@@ -30,6 +32,11 @@ def browser_channel(request):
 @pytest.fixture(scope="session")
 def device(request):
     return request.config.getoption("device")
+
+
+@pytest.fixture(scope="session")
+def headed(request) -> bool:
+    return request.config.getoption("headed")
 
 
 @pytest.fixture(scope="session")
@@ -54,10 +61,10 @@ def start_playwright_session(browser_name):
 
 @pytest.fixture(scope="function")
 def start_mavis(
-    start_playwright_session, browser_name, browser_channel, device, slow_mo
+    start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
 ):
     _browser, _context = start_browser(
-        start_playwright_session, browser_name, browser_channel, device, slow_mo
+        start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
     )
 
     ce.browser = _browser
@@ -77,7 +84,7 @@ def create_session_screenshot_dir(browser_name: str) -> str:
         return ""
 
 
-def start_browser(playwright, browser_name, browser_channel, device, slow_mo):
+def start_browser(playwright, browser_name, browser_channel, device, headed, slow_mo):
     _http_credentials = {
         "username": ce.base_auth_username,
         "password": ce.base_auth_password,
@@ -85,7 +92,7 @@ def start_browser(playwright, browser_name, browser_channel, device, slow_mo):
 
     browser_type = getattr(playwright, browser_name)
     browser = browser_type.launch(
-        channel=browser_channel, headless=ce.headless_mode, slow_mo=slow_mo
+        channel=browser_channel, headless=not headed, slow_mo=slow_mo
     )
 
     kwargs = {}

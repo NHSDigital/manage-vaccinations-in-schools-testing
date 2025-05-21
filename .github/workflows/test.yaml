@@ -31,7 +31,6 @@ jobs:
           playwright install-deps
       - name: Test on Chromium
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -52,7 +51,6 @@ jobs:
       - name: Test on Chrome
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -72,7 +70,6 @@ jobs:
           echo "::endgroup::"
       - name: Test on Firefox
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -93,7 +90,6 @@ jobs:
       - name: Test on Edge
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -114,7 +110,6 @@ jobs:
       - name: Test on iPhone 14
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -135,7 +130,6 @@ jobs:
       - name: Test on iPhone 15
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -156,7 +150,6 @@ jobs:
       - name: Test on iPad Gen 7
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -177,7 +170,6 @@ jobs:
       - name: Test on Samsung Galaxy S9+
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
@@ -198,7 +190,6 @@ jobs:
       - name: Test on Google Pixel 7
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
