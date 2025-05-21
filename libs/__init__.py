@@ -27,7 +27,6 @@ class CurrentExecution:
     reset_endpoint: str = ""
     api_token: str = ""
     reset_env_before_execution: bool = False
-    slow_motion: int = 0
 
     screenshot_sequence: int = 0
     child_list: list[str] = []
@@ -80,9 +79,6 @@ class CurrentExecution:
                 var_name="RESET_ENV_BEFORE_EXECUTION"
             ).lower()
             == "true"
-        )
-        CurrentExecution.slow_motion = int(
-            CurrentExecution.get_env_value(var_name="SLOW_MOTION")
         )
 
     @staticmethod

@@ -94,6 +94,16 @@ $ pytest --browser chromium --device "Pixel 7"
 $ pytest --browser chromium --browser-channel msedge
 ```
 
+### Slow motion
+
+When running the tests locally in headed mode, it can be useful to make the
+steps artificially slower to see what's happening at each point. To introduce
+a 1-second delay, use the following command:
+
+```shell
+$ pytest --slowmo 1000
+```
+
 ### Markers
 
 Tests for individual endpoints can be executed using individual markers. For example:
