@@ -7,7 +7,6 @@ from playwright.sync_api import Browser, Page
 class CurrentExecution:
     page: Page = None
     browser: Browser = None
-    service_url: str = ""
     current_browser_name: str = ""
     headless_mode: bool = False
     session_screenshots_dir: str = ""
@@ -29,9 +28,7 @@ class CurrentExecution:
     @staticmethod
     def get_env_values():
         load_dotenv()
-        CurrentExecution.service_url = CurrentExecution.get_env_value(
-            var_name="BASE_URL"
-        )
+
         CurrentExecution.nurse_username = CurrentExecution.get_env_value(
             var_name="NURSE_USERNAME"
         )

@@ -66,5 +66,4 @@ class pg_login:
         self.po.act(locator=self.BTN_LOGIN, action=actions.CLICK_BUTTON)
 
     def go_to_login_page(self) -> None:
-        self.ce.page.goto(self.ce.service_url)
-        # self.ce.page.wait_for_url(self.ce.service_url)
+        self.ce.page.goto("/")
