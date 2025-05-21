@@ -704,7 +704,6 @@ class playwright_operations:
         """
         _actual_title = self.ce.page.title()
         if "Sorry, there’s a problem with the service" in _actual_title:
-            self.ce.reset_environment()
             assert False, f"Application has crashed after: {locator_info}"
 
     def go_to_url(self, url: str) -> None:

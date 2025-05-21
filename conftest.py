@@ -1,7 +1,11 @@
 from datetime import datetime
+import os
+import time
 
 import pytest
 from playwright.sync_api import sync_playwright
+import requests
+from requests.auth import HTTPBasicAuth
 
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
@@ -18,10 +22,49 @@ def pytest_addoption(parser):
     )
 
 
+ce.get_env_values()
+
+
 @pytest.fixture(scope="session")
-def start_playwright_session(request):
-    ce.get_env_values()
-    ce.reset_environment()
+def reset_endpoint() -> str:
+    return os.environ["RESET_ENDPOINT"]
+
+
+@pytest.fixture(scope="session")
+def reset_env_before_execution() -> bool:
+    return os.environ.get("RESET_ENV_BEFORE_EXECUTION", "true").lower() == "true"
+
+
+@pytest.fixture(scope="session")
+def reset_environment(reset_endpoint, reset_env_before_execution):
+    if reset_env_before_execution:
+        url = f"{ce.service_url}{reset_endpoint}"
+        auth = HTTPBasicAuth(ce.base_auth_username, ce.base_auth_password)
+
+        def _reset_environment():
+            for _ in range(3):
+                response = requests.get(url=url, auth=auth)
+
+                if response.ok:
+                    break
+
+                time.sleep(3)
+            else:
+                response.raise_for_status()
+
+        return _reset_environment
+    else:
+
+        def _reset_environment():
+            pass
+
+        return _reset_environment
+
+
+@pytest.fixture(scope="session")
+def start_playwright_session(request, reset_environment):
+    reset_environment()
+
     ce.current_browser_name = request.config.getoption("browser_or_device")
     ce.session_screenshots_dir = create_session_screenshot_dir()
     with sync_playwright() as _playwright:
@@ -29,7 +72,6 @@ def start_playwright_session(request):
             playwright_constants.TEST_ID_ATTRIBUTE
         )
         yield _playwright
-    # ce.reset_environment()  # Clean up the environment after execution
 
 
 @pytest.fixture(scope="function")
