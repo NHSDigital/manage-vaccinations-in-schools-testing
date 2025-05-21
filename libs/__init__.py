@@ -14,7 +14,6 @@ class CurrentExecution:
     service_url: str = ""
     base_auth_username: str = ""
     base_auth_password: str = ""
-    current_browser_name: str = ""
     headless_mode: bool = False
     session_screenshots_dir: str = ""
 

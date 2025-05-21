@@ -60,12 +60,46 @@ $ ruff check
 
 ## Running
 
-Once the self test passes, you are good to go.
+```shell
+$ pytest
+```
 
-Tests for individual endpoints can be executed using individual markers.  For example:
+### Browsers and devices
 
-```console
-pytest -m regression
+By default, the tests will run using `Chromium` with no particular device,
+however it's possible to run the tests in different browsers and devices.
+Some examples are listed below.
+
+#### iPhone 15
+
+```shell
+$ pytest --browser webkit --device "iPhone 15"
+```
+
+#### Firefox
+
+```shell
+$ pytest --browser firefox
+```
+
+#### Google Pixel 7
+
+```shell
+$ pytest --browser chromium --device "Pixel 7"
+```
+
+#### Microsoft Edge
+
+```shell
+$ pytest --browser chromium --browser-channel msedge
+```
+
+### Markers
+
+Tests for individual endpoints can be executed using individual markers. For example:
+
+```shell
+$ pytest -m regression
 ```
 
 ## More information
