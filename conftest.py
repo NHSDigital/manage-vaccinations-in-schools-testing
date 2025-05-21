@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import time
+import urllib.parse
 
 
 import pytest
@@ -26,6 +27,11 @@ def pytest_addoption(parser):
 
 
 ce.get_env_values()
+
+
+@pytest.fixture(scope="session")
+def base_url() -> str:
+    return os.environ["BASE_URL"]
 
 
 @pytest.fixture(scope="session")
@@ -62,8 +68,8 @@ def slow_mo(request) -> int:
 
 
 @pytest.fixture(scope="session")
-def reset_endpoint() -> str:
-    return os.environ["RESET_ENDPOINT"]
+def reset_endpoint(base_url) -> str:
+    return urllib.parse.urljoin(base_url, os.environ["RESET_ENDPOINT"])
 
 
 @pytest.fixture(scope="session")
@@ -81,12 +87,11 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
         return _reset_environment
 
     else:
-        url = f"{ce.service_url}{reset_endpoint}"
         auth = HTTPBasicAuth(**basic_auth)
 
         def _reset_environment():
             for _ in range(3):
-                response = requests.get(url=url, auth=auth)
+                response = requests.get(url=reset_endpoint, auth=auth)
 
                 if response.ok:
                     break
@@ -102,8 +107,7 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 def start_playwright_session(request, browser_name, reset_environment):
     reset_environment()
 
-    ce.current_browser_name = browser_name
-    ce.session_screenshots_dir = create_session_screenshot_dir()
+    ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
     with sync_playwright() as _playwright:
         _playwright.selectors.set_test_id_attribute(
@@ -112,11 +116,26 @@ def start_playwright_session(request, browser_name, reset_environment):
         yield _playwright
 
 
+@pytest.fixture(scope="function")
 def start_mavis(
-    start_playwright_session, basic_auth, browser_name, browser_channel, device, headed, slow_mo
+    start_playwright_session,
+    base_url,
+    basic_auth,
+    browser_name,
+    browser_channel,
+    device,
+    headed,
+    slow_mo,
 ):
     _browser, _context = start_browser(
-        start_playwright_session, basic_auth, browser_name, browser_channel, device, headed, slow_mo
+        start_playwright_session,
+        base_url,
+        basic_auth,
+        browser_name,
+        browser_channel,
+        device,
+        headed,
+        slow_mo,
     )
 
     ce.browser = _browser
@@ -137,7 +156,16 @@ def create_session_screenshot_dir(browser_name: str) -> str:
         return ""
 
 
-def start_browser(playwright, basic_auth, browser_name, browser_channel, device, headed, slow_mo):
+def start_browser(
+    playwright,
+    base_url,
+    basic_auth,
+    browser_name,
+    browser_channel,
+    device,
+    headed,
+    slow_mo,
+):
     browser_type = getattr(playwright, browser_name)
     browser = browser_type.launch(
         channel=browser_channel, headless=not headed, slow_mo=slow_mo
@@ -147,7 +175,9 @@ def start_browser(playwright, basic_auth, browser_name, browser_channel, device,
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(**kwargs, http_credentials=basic_auth)
+    context = browser.new_context(
+        **kwargs, base_url=base_url, http_credentials=basic_auth
+    )
 
     return [browser, context]
 

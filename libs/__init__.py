@@ -7,7 +7,6 @@ from playwright.sync_api import Browser, Page
 class CurrentExecution:
     page: Page = None
     browser: Browser = None
-    service_url: str = ""
     session_screenshots_dir: str = ""
 
     capture_screenshot_flag: bool = False
