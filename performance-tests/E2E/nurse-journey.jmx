@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
@@ -40,7 +42,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -103,7 +105,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
         <stringProp name="delimiter">,</stringProp>
         <stringProp name="fileEncoding">UTF-8</stringProp>
         <stringProp name="filename">${BaseDirectory}${InputFile}</stringProp>
@@ -148,7 +150,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -162,13 +164,13 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Login">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Login" enabled="true">
           <stringProp name="IfController.condition">${__groovy((vars.getIteration()-1) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -208,16 +210,16 @@ catch (IOException e)
 }
 
 //Uses HashMap above to cross reference URN code in feeder file to use a specific slug in URL
-vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
+vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&quot;)));
 </stringProp>
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Homepage">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Homepage" enabled="true">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">start</stringProp>
@@ -248,7 +250,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
@@ -258,7 +260,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -268,7 +270,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign-in">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign-in" enabled="true">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
@@ -312,7 +314,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/organisations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
@@ -322,7 +324,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 20-35s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 20-35s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(20000,35000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -369,13 +371,13 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Sessions list">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Sessions list" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
@@ -402,14 +404,14 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(7000,12000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True" enabled="true">
           <stringProp name="IfController.condition">${__jexl3(&quot;${ReadOnlyMode}&quot; == &quot;True&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
@@ -562,7 +564,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="LogOut_Authenticity_Token Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="LogOut_Authenticity_Token Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">LogOut_Authenticity_Token</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/logout&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;delete&quot; autocomplete=&quot;off&quot; /&gt;&lt;button class=&quot;app-header__account-button&quot; type=&quot;submit&quot;&gt;Log out&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
@@ -572,7 +574,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-1565242083">Showing &lt;b&gt;1&lt;/b&gt; to &lt;b&gt;50&lt;/b&gt; of</stringProp>
                 </collectionProp>
@@ -585,7 +587,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == False">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == False" enabled="true">
           <stringProp name="IfController.condition">${__jexl3(&quot;${ReadOnlyMode}&quot; == &quot;False&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
@@ -626,7 +628,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -644,7 +646,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 10-15s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 10-15s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -685,7 +687,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               <boolProp name="displaySystemProperties">false</boolProp>
             </DebugSampler>
             <hashTree/>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (No further patients)">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (No further patients)" enabled="true">
               <stringProp name="IfController.condition">${__jexl3(&quot;${PatientId}&quot; == &quot;PatientId_NotFound&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">true</boolProp>
@@ -707,13 +709,13 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
               <stringProp name="IfController.condition">${__jexl3(&quot;${SessionStatus}&quot; == &quot;green Completed session&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">true</boolProp>
             </IfController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list" enabled="true">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
@@ -736,7 +738,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s">
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s" enabled="true">
                   <stringProp name="ConstantTimer.delay">${__Random(7000,12000,)}</stringProp>
                 </ConstantTimer>
                 <hashTree/>
@@ -751,7 +753,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout">
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout" enabled="true">
                 <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
                 <boolProp name="IfController.evaluateAll">false</boolProp>
                 <boolProp name="IfController.useExpression">true</boolProp>
@@ -803,7 +805,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 <stringProp name="ActionProcessor.duration">0</stringProp>
               </TestAction>
               <hashTree>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated">
+                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated" enabled="true">
                   <stringProp name="cacheKey">true</stringProp>
                   <stringProp name="filename"></stringProp>
                   <stringProp name="parameters"></stringProp>
@@ -834,7 +836,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 10-15s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 10-15s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -849,7 +851,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to consent page">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to consent page" enabled="true">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv?return_to=consent</stringProp>
@@ -871,7 +873,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -983,7 +985,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;URN&quot;)));
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1063,7 +1065,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1136,7 +1138,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1202,7 +1204,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1261,7 +1263,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1383,7 +1385,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1449,7 +1451,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1501,7 +1503,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1529,7 +1531,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </elementProp>
                 </HTTPSamplerProxy>
                 <hashTree>
-                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
                     <collectionProp name="HeaderManager.headers">
                       <elementProp name="Content-Type" elementType="Header">
                         <stringProp name="Header.name">Content-Type</stringProp>
@@ -1538,7 +1540,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1587,7 +1589,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1646,7 +1648,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 17-25s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 17-25s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(17000,25000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1683,7 +1685,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </collectionProp>
                   </HeaderManager>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -1831,7 +1833,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 35-48s">
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 35-48s" enabled="true">
                   <stringProp name="ConstantTimer.delay">${__Random(35000,48000,)}</stringProp>
                 </ConstantTimer>
                 <hashTree/>
@@ -1900,7 +1902,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                 </BoundaryExtractor>
                 <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 5-8s">
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 5-8s" enabled="true">
                   <stringProp name="ConstantTimer.delay">${__Random(5000,8000,)}</stringProp>
                 </ConstantTimer>
                 <hashTree/>
@@ -1922,7 +1924,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 </ResponseAssertion>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination confirm">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination confirm" enabled="true">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
@@ -1976,11 +1978,11 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                 </BoundaryExtractor>
                 <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 35-48s">
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 35-48s" enabled="true">
                   <stringProp name="ConstantTimer.delay">${__Random(35000,48000,)}</stringProp>
                 </ConstantTimer>
                 <hashTree/>
-                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
                     <stringProp name="210190978">Vaccination outcome recorded for</stringProp>
                   </collectionProp>
@@ -1990,7 +1992,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <intProp name="Assertion.test_type">16</intProp>
                 </ResponseAssertion>
                 <hashTree/>
-                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Vaccination log">
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Vaccination log" enabled="true">
                   <stringProp name="scriptLanguage">groovy</stringProp>
                   <stringProp name="parameters"></stringProp>
                   <stringProp name="filename"></stringProp>
@@ -2001,13 +2003,13 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
               </hashTree>
             </hashTree>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
             <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinatedStatus}&quot; == &quot;Vaccinated&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Already vaccinated">
+            <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Already vaccinated" enabled="true">
               <boolProp name="WAITING">true</boolProp>
               <boolProp name="SUCCESFULL">true</boolProp>
               <stringProp name="RESPONSE_CODE">200</stringProp>
@@ -2023,7 +2025,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               <stringProp name="RESULT_CLASS">org.apache.jmeter.samplers.SampleResult</stringProp>
             </kg.apc.jmeter.samplers.DummySampler>
             <hashTree>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated">
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated" enabled="true">
                 <stringProp name="cacheKey">true</stringProp>
                 <stringProp name="filename"></stringProp>
                 <stringProp name="parameters"></stringProp>
@@ -2033,7 +2035,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               <hashTree/>
             </hashTree>
           </hashTree>
-          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller">
+          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
             <stringProp name="ForeachController.inputVal">VaccinationPages</stringProp>
             <stringProp name="ForeachController.returnVal">VaccinationPage</stringProp>
             <boolProp name="ForeachController.useSeparator">true</boolProp>
@@ -2042,13 +2044,13 @@ without actual network activity. This helps debugging tests.</stringProp>
             <stringProp name="TestPlan.comments">Cycles through whether the patient can take the MENACWY or IPV, if they&apos;re too young they won&apos;t</stringProp>
           </ForeachController>
           <hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
               <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinationPage}&quot; == &quot;log&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">true</boolProp>
             </IfController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list" enabled="true">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
@@ -2071,7 +2073,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s">
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s" enabled="true">
                   <stringProp name="ConstantTimer.delay">${__Random(7000,12000,)}</stringProp>
                 </ConstantTimer>
                 <hashTree/>
@@ -2132,13 +2134,13 @@ without actual network activity. This helps debugging tests.</stringProp>
                   <hashTree/>
                 </hashTree>
               </hashTree>
-              <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Start next thread for new patient">
+              <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Start next thread for new patient" enabled="true">
                 <intProp name="ActionProcessor.action">3</intProp>
                 <intProp name="ActionProcessor.target">0</intProp>
                 <stringProp name="ActionProcessor.duration">0</stringProp>
               </TestAction>
               <hashTree>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated">
+                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated" enabled="true">
                   <stringProp name="cacheKey">true</stringProp>
                   <stringProp name="filename"></stringProp>
                   <stringProp name="parameters"></stringProp>
@@ -2148,7 +2150,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to ${VaccinationPage} vaccination page">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to ${VaccinationPage} vaccination page" enabled="true">
               <stringProp name="TestPlan.comments">Should only get here for MenACWY and IPV</stringProp>
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -2171,7 +2173,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
@@ -2279,7 +2281,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2359,7 +2361,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2432,7 +2434,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2498,7 +2500,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2557,7 +2559,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2679,7 +2681,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2745,7 +2747,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2797,7 +2799,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2834,7 +2836,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2933,7 +2935,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -2992,7 +2994,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 17-25s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 17-25s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(17000,25000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -3029,7 +3031,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       </collectionProp>
                     </HeaderManager>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -3050,13 +3052,13 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
-                <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If MenACWY">
+                <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If MenACWY" enabled="true">
                   <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinationPage}&quot; == &quot;menacwy&quot;)}</stringProp>
                   <boolProp name="IfController.evaluateAll">false</boolProp>
                   <boolProp name="IfController.useExpression">false</boolProp>
                 </IfController>
                 <hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions" enabled="true">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/vaccinations</stringProp>
@@ -3187,7 +3189,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="ConstantTimer.delay">${__Random(35000,48000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -3203,13 +3205,13 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                 </hashTree>
-                <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If IPV">
+                <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If IPV" enabled="true">
                   <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinationPage}&quot; == &quot;td_ipv&quot;)}</stringProp>
                   <boolProp name="IfController.evaluateAll">false</boolProp>
                   <boolProp name="IfController.useExpression">false</boolProp>
                 </IfController>
                 <hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions" enabled="true">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/vaccinations</stringProp>
@@ -3347,7 +3349,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="ConstantTimer.delay">${__Random(35000,48000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
-                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                    <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
@@ -3363,7 +3365,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination batch">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination batch" enabled="true">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
@@ -3432,7 +3434,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </ResponseAssertion>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination confirm">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination confirm" enabled="true">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
@@ -3490,7 +3492,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="ConstantTimer.delay">${__Random(35000,48000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
-                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s">
+                  <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-13s" enabled="true">
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
@@ -3504,7 +3506,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <intProp name="Assertion.test_type">16</intProp>
                   </ResponseAssertion>
                   <hashTree/>
-                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Vaccination log">
+                  <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Vaccination log" enabled="true">
                     <stringProp name="scriptLanguage">groovy</stringProp>
                     <stringProp name="parameters"></stringProp>
                     <stringProp name="filename"></stringProp>
@@ -3515,13 +3517,13 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 </hashTree>
               </hashTree>
             </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
               <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinatedStatus}&quot; == &quot;Vaccinated&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">true</boolProp>
             </IfController>
             <hashTree>
-              <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Already vaccinated">
+              <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Already vaccinated" enabled="true">
                 <boolProp name="WAITING">true</boolProp>
                 <boolProp name="SUCCESFULL">true</boolProp>
                 <stringProp name="RESPONSE_CODE">200</stringProp>
@@ -3537,7 +3539,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                 <stringProp name="RESULT_CLASS">org.apache.jmeter.samplers.SampleResult</stringProp>
               </kg.apc.jmeter.samplers.DummySampler>
               <hashTree>
-                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated">
+                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated" enabled="true">
                   <stringProp name="cacheKey">true</stringProp>
                   <stringProp name="filename"></stringProp>
                   <stringProp name="parameters"></stringProp>
@@ -3549,14 +3551,14 @@ without actual network activity. This helps debugging tests.</stringProp>
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout" enabled="true">
           <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
           <stringProp name="TestPlan.comments">Use the same if controller as login</stringProp>
         </IfController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
             <stringProp name="HTTPSampler.port">0</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.path">logout</stringProp>
@@ -3584,7 +3586,7 @@ without actual network activity. This helps debugging tests.</stringProp>
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="Content-Type" elementType="Header">
                   <stringProp name="Header.name">Content-Type</stringProp>
