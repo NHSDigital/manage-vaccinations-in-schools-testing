@@ -31,11 +31,9 @@ jobs:
           playwright install-deps
       - name: Test on Chromium
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -46,16 +44,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Chromium"
-          pytest --browser_or_device chromium
+          pytest --browser chromium
           echo "::endgroup::"
       - name: Test on Chrome
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -66,15 +62,13 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Chrome"
-          pytest --browser_or_device chrome
+          pytest --browser chromium --browser-channel chrome
           echo "::endgroup::"
       - name: Test on Firefox
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -85,16 +79,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Firefox"
-          pytest --browser_or_device firefox
+          pytest --browser firefox
           echo "::endgroup::"
       - name: Test on Edge
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -105,16 +97,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Edge"
-          pytest --browser_or_device msedge
+          pytest --browser chromium --browser-channel msedge
           echo "::endgroup::"
       - name: Test on iPhone 14
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -125,16 +115,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::iPhone 14"
-          pytest -m mobile --browser_or_device iphone_14
+          pytest -m mobile --browser webkit --device "iPhone 14"
           echo "::endgroup::"
       - name: Test on iPhone 15
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -145,16 +133,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::iPhone 15"
-          pytest -m mobile --browser_or_device iphone_15
+          pytest -m mobile --browser webkit --device "iPhone 15"
           echo "::endgroup::"
       - name: Test on iPad Gen 7
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -165,16 +151,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::iPad Gen 7"
-          pytest -m mobile --browser_or_device ipad_7
+          pytest -m mobile --browser webkit --device "iPad (gen 7) landscape"
           echo "::endgroup::"
       - name: Test on Samsung Galaxy S9+
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -185,16 +169,14 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Samsung Galaxy S9+"
-          pytest -m mobile --browser_or_device s9+
+          pytest -m mobile --browser chromimum --device "Galaxy S9+"
           echo "::endgroup::"
       - name: Test on Google Pixel 7
         if: always()
         env:
-          HEADLESS: ${{ vars.HEADLESS }}
           CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
-          SLOW_MOTION: ${{ vars.SLOW_MOTION }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -205,7 +187,7 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Google Pixel 7"
-          pytest -m mobile --browser_or_device pixel_7
+          pytest -m mobile --browser chromimum --device "Pixel 7"
           echo "::endgroup::"
       - name: Upload report
         if: always()

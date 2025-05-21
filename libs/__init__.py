@@ -7,8 +7,9 @@ from playwright.sync_api import Browser, Page
 class CurrentExecution:
     page: Page = None
     browser: Browser = None
-    current_browser_name: str = ""
-    headless_mode: bool = False
+    service_url: str = ""
+    base_auth_username: str = ""
+    base_auth_password: str = ""
     session_screenshots_dir: str = ""
 
     capture_screenshot_flag: bool = False
@@ -18,7 +19,8 @@ class CurrentExecution:
     superuser_password: str = ""
     admin_username: str = ""
     admin_password: str = ""
-    slow_motion: int = 0
+    reset_endpoint: str = ""
+    reset_env_before_execution: bool = False
 
     screenshot_sequence: int = 0
     child_list: list[str] = []
@@ -47,15 +49,16 @@ class CurrentExecution:
         CurrentExecution.admin_password = CurrentExecution.get_env_value(
             var_name="ADMIN_PASSWORD"
         )
-        CurrentExecution.headless_mode = (
-            CurrentExecution.get_env_value(var_name="HEADLESS").lower() == "true"
-        )
         CurrentExecution.capture_screenshot_flag = (
             CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower()
             == "true"
         )
-        CurrentExecution.slow_motion = int(
-            CurrentExecution.get_env_value(var_name="SLOW_MOTION")
+        CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{CurrentExecution.get_env_value(var_name='RESET_ENDPOINT')}"
+        CurrentExecution.reset_env_before_execution = (
+            CurrentExecution.get_env_value(
+                var_name="RESET_ENV_BEFORE_EXECUTION"
+            ).lower()
+            == "true"
         )
 
     @staticmethod

@@ -7,19 +7,6 @@ class playwright_constants:
     DEFAULT_TIMEOUT: Final[int] = 60000
 
 
-class browsers_and_devices:
-    CHROMIUM: Final[str] = "chromium"
-    FIREFOX: Final[str] = "firefox"
-    MSEDGE: Final[str] = "msedge"
-    CHROME: Final[str] = "chrome"
-    GALAXY_S20: Final[str] = "s20"
-    PIXEL_7: Final[str] = "pixel_7"
-    GALAXY_S9_PLUS: Final[str] = "s9+"
-    IPAD_7: Final[str] = "ipad_7"
-    IPHONE_15: Final[str] = "iphone_15"
-    IPHONE_14: Final[str] = "iphone_14"
-
-
 class child_year_group:
     YEAR_8: Final[str] = "YEAR_8"
     YEAR_9: Final[str] = "YEAR_9"

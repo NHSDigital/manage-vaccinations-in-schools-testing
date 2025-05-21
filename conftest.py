@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
-import time
-import urllib.parse
+
 
 import pytest
 from playwright.sync_api import sync_playwright
@@ -11,77 +10,50 @@ from requests.auth import HTTPBasicAuth
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
 from libs.generic_constants import audit_log_paths, file_mode
-from libs.mavis_constants import browsers_and_devices, playwright_constants
-from libs.wrappers import (
-    get_current_datetime,
-)
+from libs.mavis_constants import playwright_constants
+from libs.wrappers import get_current_datetime
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--browser_or_device", action="store", default=browsers_and_devices.CHROMIUM
-    )
-    parser.addoption("--skip-reset", action="store_true", default=False)
-
-
-ce.get_env_values()
-
-
-@pytest.fixture(scope="session")
-def base_url() -> str:
-    return os.environ["BASE_URL"]
+    parser.addoption("--browser", default="chromium")
+    parser.addoption("--browser-channel", default=None)
+    parser.addoption("--device", default=None)
+    parser.addoption("--slowmo", type=int, default=0)
+    parser.addoption("--headed", action="store_true", default="CI" not in os.environ)
 
 
 @pytest.fixture(scope="session")
-def basic_auth() -> dict[str, str]:
-    return {
-        "username": os.environ["BASIC_AUTH_USERNAME"],
-        "password": os.environ["BASIC_AUTH_PASSWORD"],
-    }
+def browser_name(request):
+    return request.config.getoption("browser")
 
 
 @pytest.fixture(scope="session")
-def reset_endpoint(base_url) -> str:
-    return urllib.parse.urljoin(base_url, os.environ["RESET_ENDPOINT"])
+def browser_channel(request):
+    return request.config.getoption("browser_channel")
 
 
 @pytest.fixture(scope="session")
-def skip_reset(request) -> bool:
-    return request.config.getoption("skip_reset")
+def device(request):
+    return request.config.getoption("device")
 
 
 @pytest.fixture(scope="session")
-def reset_environment(reset_endpoint, basic_auth, skip_reset):
-    if skip_reset:
-
-        def _reset_environment():
-            pass
-
-        return _reset_environment
-
-    else:
-        auth = HTTPBasicAuth(**basic_auth)
-
-        def _reset_environment():
-            for _ in range(3):
-                response = requests.get(url=reset_endpoint, auth=auth)
-
-                if response.ok:
-                    break
-
-                time.sleep(3)
-            else:
-                response.raise_for_status()
-
-        return _reset_environment
+def headed(request) -> bool:
+    return request.config.getoption("headed")
 
 
 @pytest.fixture(scope="session")
-def start_playwright_session(request, reset_environment):
-    reset_environment()
+def slow_mo(request) -> int:
+    return request.config.getoption("slowmo")
 
-    ce.current_browser_name = request.config.getoption("browser_or_device")
-    ce.session_screenshots_dir = create_session_screenshot_dir()
+
+@pytest.fixture(scope="session")
+def start_playwright_session(browser_name):
+    ce.get_env_values()
+    ce.reset_environment()
+
+    ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
+
     with sync_playwright() as _playwright:
         _playwright.selectors.set_test_id_attribute(
             playwright_constants.TEST_ID_ATTRIBUTE
@@ -90,9 +62,11 @@ def start_playwright_session(request, reset_environment):
 
 
 @pytest.fixture(scope="function")
-def start_mavis(start_playwright_session, base_url, basic_auth):
+def start_mavis(
+    start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
+):
     _browser, _context = start_browser(
-        start_playwright_session, base_url, basic_auth, ce.current_browser_name
+        start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
     )
 
     ce.browser = _browser
@@ -104,96 +78,34 @@ def start_mavis(start_playwright_session, base_url, basic_auth):
     close_browser(browser=_browser, page=ce.page)
 
 
-def create_session_screenshot_dir() -> str:
+def create_session_screenshot_dir(browser_name: str) -> str:
     if ce.capture_screenshot_flag:
-        _session_name = f"{get_current_datetime()}-{ce.current_browser_name}"
+        _session_name = f"{get_current_datetime()}-{browser_name}"
         fo.file_operations().create_dir(dir_path=f"screenshots/{_session_name}")
         return f"screenshots/{_session_name}"
     else:
         return ""
 
 
-def start_browser(pw, base_url, basic_auth, browser_or_device):
-    try:
-        match browser_or_device.lower():
-            case browsers_and_devices.IPHONE_14:
-                _browser = pw.webkit.launch(
-                    headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    **pw.devices["iPhone 14"],
-                    base_url=base_url,
-                    http_credentials=basic_auth,
-                )
-            case browsers_and_devices.IPHONE_15:
-                _browser = pw.chromium.launch(
-                    channel="chrome", headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    **pw.devices["iPhone 15"],
-                    base_url=base_url,
-                    http_credentials=basic_auth,
-                )
-            case browsers_and_devices.IPAD_7:
-                _browser = pw.chromium.launch(
-                    headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    **pw.devices["iPad (gen 7) landscape"],
-                    base_url=base_url,
-                    http_credentials=basic_auth,
-                )
-            case browsers_and_devices.PIXEL_7:
-                _browser = pw.webkit.launch(
-                    headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    **pw.devices["Pixel 7"],
-                    base_url=base_url,
-                    http_credentials=basic_auth,
-                )
-            case browsers_and_devices.GALAXY_S9_PLUS:
-                _browser = pw.chromium.launch(
-                    channel="chromium",
-                    headless=ce.headless_mode,
-                    slow_mo=ce.slow_motion,
-                )
-                _context = _browser.new_context(
-                    **pw.devices["Galaxy S9+"],
-                    base_url=base_url,
-                    http_credentials=basic_auth,
-                )
-            case browsers_and_devices.CHROME:
-                _browser = pw.chromium.launch(
-                    channel="chrome", headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    base_url=base_url, http_credentials=basic_auth
-                )
-            case browsers_and_devices.MSEDGE:
-                _browser = pw.chromium.launch(
-                    channel="msedge", headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    base_url=base_url, http_credentials=basic_auth
-                )
-            case browsers_and_devices.FIREFOX:
-                _browser = pw.firefox.launch(
-                    headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    base_url=base_url, http_credentials=basic_auth
-                )
-            case _:  # Desktop Chromium for all other cases
-                _browser = pw.chromium.launch(
-                    headless=ce.headless_mode, slow_mo=ce.slow_motion
-                )
-                _context = _browser.new_context(
-                    base_url=base_url, http_credentials=basic_auth
-                )
-        return _browser, _context
-    except Exception as e:
-        raise AssertionError(f"Error launching {browser_or_device}: {e}")
+
+def start_browser(playwright, browser_name, browser_channel, device, headed, slow_mo):
+    _http_credentials = {
+        "username": ce.base_auth_username,
+        "password": ce.base_auth_password,
+    }
+
+    browser_type = getattr(playwright, browser_name)
+    browser = browser_type.launch(
+        channel=browser_channel, headless=not headed, slow_mo=slow_mo
+    )
+
+    kwargs = {}
+    if device:
+        kwargs = playwright.devices[device]
+
+    context = browser.new_context(**kwargs, http_credentials=_http_credentials)
+
+    return [browser, context]
 
 
 def close_browser(browser, page):
