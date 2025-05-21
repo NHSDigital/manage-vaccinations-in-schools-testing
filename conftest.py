@@ -1,9 +1,13 @@
 from datetime import datetime
 import os
+import time
+import urllib.parse
 
 
 import pytest
 from playwright.sync_api import sync_playwright
+import requests
+from requests.auth import HTTPBasicAuth
 
 
 from libs import CurrentExecution as ce
@@ -19,6 +23,23 @@ def pytest_addoption(parser):
     parser.addoption("--device", default=None)
     parser.addoption("--slowmo", type=int, default=0)
     parser.addoption("--headed", action="store_true", default="CI" not in os.environ)
+    parser.addoption("--skip-reset", action="store_true", default=False)
+
+
+ce.get_env_values()
+
+
+@pytest.fixture(scope="session")
+def base_url() -> str:
+    return os.environ["BASE_URL"]
+
+
+@pytest.fixture(scope="session")
+def basic_auth() -> dict[str, str]:
+    return {
+        "username": os.environ["BASIC_AUTH_USERNAME"],
+        "password": os.environ["BASIC_AUTH_PASSWORD"],
+    }
 
 
 @pytest.fixture(scope="session")
@@ -47,9 +68,44 @@ def slow_mo(request) -> int:
 
 
 @pytest.fixture(scope="session")
-def start_playwright_session(browser_name):
-    ce.get_env_values()
-    ce.reset_environment()
+def reset_endpoint(base_url) -> str:
+    return urllib.parse.urljoin(base_url, os.environ["RESET_ENDPOINT"])
+
+
+@pytest.fixture(scope="session")
+def skip_reset(request) -> bool:
+    return request.config.getoption("skip_reset")
+
+
+@pytest.fixture(scope="session")
+def reset_environment(reset_endpoint, basic_auth, skip_reset):
+    if skip_reset:
+
+        def _reset_environment():
+            pass
+
+        return _reset_environment
+
+    else:
+        auth = HTTPBasicAuth(**basic_auth)
+
+        def _reset_environment():
+            for _ in range(3):
+                response = requests.get(url=reset_endpoint, auth=auth)
+
+                if response.ok:
+                    break
+
+                time.sleep(3)
+            else:
+                response.raise_for_status()
+
+        return _reset_environment
+
+
+@pytest.fixture(scope="session")
+def start_playwright_session(request, browser_name, reset_environment):
+    reset_environment()
 
     ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
@@ -62,10 +118,24 @@ def start_playwright_session(browser_name):
 
 @pytest.fixture(scope="function")
 def start_mavis(
-    start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
+    start_playwright_session,
+    base_url,
+    basic_auth,
+    browser_name,
+    browser_channel,
+    device,
+    headed,
+    slow_mo,
 ):
     _browser, _context = start_browser(
-        start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
+        start_playwright_session,
+        base_url,
+        basic_auth,
+        browser_name,
+        browser_channel,
+        device,
+        headed,
+        slow_mo,
     )
 
     ce.browser = _browser
@@ -86,13 +156,16 @@ def create_session_screenshot_dir(browser_name: str) -> str:
         return ""
 
 
-
-def start_browser(playwright, browser_name, browser_channel, device, headed, slow_mo):
-    _http_credentials = {
-        "username": ce.base_auth_username,
-        "password": ce.base_auth_password,
-    }
-
+def start_browser(
+    playwright,
+    base_url,
+    basic_auth,
+    browser_name,
+    browser_channel,
+    device,
+    headed,
+    slow_mo,
+):
     browser_type = getattr(playwright, browser_name)
     browser = browser_type.launch(
         channel=browser_channel, headless=not headed, slow_mo=slow_mo
@@ -102,7 +175,9 @@ def start_browser(playwright, browser_name, browser_channel, device, headed, slo
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(**kwargs, http_credentials=_http_credentials)
+    context = browser.new_context(
+        **kwargs, base_url=base_url, http_credentials=basic_auth
+    )
 
     return [browser, context]
 

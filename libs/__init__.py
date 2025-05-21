@@ -7,9 +7,6 @@ from playwright.sync_api import Browser, Page
 class CurrentExecution:
     page: Page = None
     browser: Browser = None
-    service_url: str = ""
-    base_auth_username: str = ""
-    base_auth_password: str = ""
     session_screenshots_dir: str = ""
 
     capture_screenshot_flag: bool = False
@@ -19,8 +16,6 @@ class CurrentExecution:
     superuser_password: str = ""
     admin_username: str = ""
     admin_password: str = ""
-    reset_endpoint: str = ""
-    reset_env_before_execution: bool = False
 
     screenshot_sequence: int = 0
     child_list: list[str] = []
@@ -51,13 +46,6 @@ class CurrentExecution:
         )
         CurrentExecution.capture_screenshot_flag = (
             CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower()
-            == "true"
-        )
-        CurrentExecution.reset_endpoint = f"{CurrentExecution.service_url}{CurrentExecution.get_env_value(var_name='RESET_ENDPOINT')}"
-        CurrentExecution.reset_env_before_execution = (
-            CurrentExecution.get_env_value(
-                var_name="RESET_ENV_BEFORE_EXECUTION"
-            ).lower()
             == "true"
         )
 
