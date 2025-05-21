@@ -2,12 +2,12 @@ import nhs_number
 import pandas as pd
 
 from libs import CurrentExecution, file_ops
-from libs.mavis_constants import child_year_group, mavis_file_types, test_data_values
+from libs.mavis_constants import mavis_file_types, test_data_values
 from libs.wrappers import (
     get_current_datetime,
     get_current_time,
     get_offset_date,
-    get_dob_from_year,
+    get_date_of_birth_for_year_group,
 )
 
 
@@ -55,12 +55,13 @@ class testdata_operations:
             "<<VACCS_DATE>>": _dt[:8],
             "<<VACCS_TIME>>": get_current_time(),
             "<<HIST_VACCS_DATE>>": _hist_dt,
-            "<<DOB_YEAR_8>>": get_dob_from_year(year_group=child_year_group.YEAR_8),
-            "<<DOB_YEAR_9>>": get_dob_from_year(year_group=child_year_group.YEAR_9),
-            "<<DOB_YEAR_10>>": get_dob_from_year(year_group=child_year_group.YEAR_10),
-            "<<DOB_YEAR_11>>": get_dob_from_year(year_group=child_year_group.YEAR_11),
             "<<SESSION_ID>>": _session_id,
         }
+
+        for year_group in range(8, 12):
+            replacements[f"<<DOB_YEAR_{year_group}>>"] = (
+                get_date_of_birth_for_year_group(year_group)
+            )
 
         _file_text = []
         _ctr = 0

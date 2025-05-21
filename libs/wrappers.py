@@ -1,8 +1,11 @@
-import random
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+
+from faker import Faker
 
 from libs.generic_constants import escape_characters
-from libs.mavis_constants import child_year_group
+
+
+faker = Faker()
 
 
 def convert_time_units_to_seconds(time_unit: str) -> int:
@@ -112,46 +115,10 @@ def get_offset_date(offset_days: int) -> str:
     return _offset_date.strftime("%Y%m%d")
 
 
-def get_dob_from_year(year_group: str) -> str:
-    """
-    Get a random date as a date of birth for the specified year group.
+def get_date_of_birth_for_year_group(year_group: int) -> str:
+    academic_year = date.today().year - year_group - 6
 
-    Args:
-        year_group (str): Child year group.
+    start_date = date(academic_year, 9, 1)
+    end_date = date(academic_year + 1, 8, 31)
 
-    Returns:
-        str: A random date of birth for the specified year group in the "YYYYMMDD" format.
-    """
-    match year_group:
-        case child_year_group.YEAR_8:
-            year_offset = (
-                8  # In 2025, outputs a random date between 2011-09-01 and 2012-08-31
-            )
-        case child_year_group.YEAR_9:
-            year_offset = (
-                9  # In 2025, outputs a random date between 2010-09-01 and 2011-08-31
-            )
-        case child_year_group.YEAR_10:
-            year_offset = (
-                10  # In 2025, Outputs a random date between 2009-09-01 and 2010-08-31
-            )
-        case child_year_group.YEAR_11:
-            year_offset = (
-                11  # In 2025, outputs a random date between 2008-09-01 and 2009-08-31
-            )
-
-    # Determine the academic year offset
-    current_year = datetime.now().year
-    base_year = current_year - 15  # Base year is 15 years ago
-    start_year = base_year + (9 - year_offset)  # Adjust range for each year
-    end_year = start_year + 1
-
-    # Define the start and end dates for the range
-    start_date = datetime(start_year, 9, 1)  # Start date for each year group
-    end_date = datetime(end_year, 8, 31)  # End date for each year group
-
-    # Generate a random date between start_date and end_date
-    random_date = start_date + timedelta(
-        days=random.randint(0, (end_date - start_date).days)
-    )
-    return random_date.strftime("%Y-%m-%d")
+    return faker.date_between(start_date, end_date)
