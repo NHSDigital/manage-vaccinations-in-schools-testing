@@ -4,8 +4,7 @@ import os
 
 import pytest
 from playwright.sync_api import sync_playwright
-import requests
-from requests.auth import HTTPBasicAuth
+
 
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
