@@ -27,6 +27,14 @@ ce.get_env_values()
 
 
 @pytest.fixture(scope="session")
+def basic_auth() -> dict[str, str]:
+    return {
+        "username": os.environ["BASIC_AUTH_USERNAME"],
+        "password": os.environ["BASIC_AUTH_PASSWORD"],
+    }
+
+
+@pytest.fixture(scope="session")
 def reset_endpoint() -> str:
     return os.environ["RESET_ENDPOINT"]
 
@@ -37,7 +45,7 @@ def skip_reset(request) -> bool:
 
 
 @pytest.fixture(scope="session")
-def reset_environment(reset_endpoint, skip_reset):
+def reset_environment(reset_endpoint, basic_auth, skip_reset):
     if skip_reset:
 
         def _reset_environment():
@@ -47,7 +55,7 @@ def reset_environment(reset_endpoint, skip_reset):
 
     else:
         url = f"{ce.service_url}{reset_endpoint}"
-        auth = HTTPBasicAuth(ce.base_auth_username, ce.base_auth_password)
+        auth = HTTPBasicAuth(**basic_auth)
 
         def _reset_environment():
             for _ in range(3):
@@ -77,10 +85,11 @@ def start_playwright_session(request, reset_environment):
 
 
 @pytest.fixture(scope="function")
-def start_mavis(start_playwright_session):
+def start_mavis(start_playwright_session, basic_auth):
     _browser, _context = start_browser(
-        pw=start_playwright_session, browser_or_device=ce.current_browser_name
+        start_playwright_session, basic_auth, ce.current_browser_name
     )
+
     ce.browser = _browser
     ce.page = _context.new_page()
     # ce.page.set_default_timeout(playwright_constants.DEFAULT_TIMEOUT)
@@ -98,11 +107,7 @@ def create_session_screenshot_dir() -> str:
         return ""
 
 
-def start_browser(pw, browser_or_device: str):
-    _http_credentials = {
-        "username": ce.base_auth_username,
-        "password": ce.base_auth_password,
-    }
+def start_browser(pw, basic_auth, browser_or_device):
     try:
         match browser_or_device.lower():
             case browsers_and_devices.IPHONE_14:
@@ -110,14 +115,14 @@ def start_browser(pw, browser_or_device: str):
                     headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
                 _context = _browser.new_context(
-                    **pw.devices["iPhone 14"], http_credentials=_http_credentials
+                    **pw.devices["iPhone 14"], http_credentials=basic_auth
                 )
             case browsers_and_devices.IPHONE_15:
                 _browser = pw.chromium.launch(
                     channel="chrome", headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
                 _context = _browser.new_context(
-                    **pw.devices["iPhone 15"], http_credentials=_http_credentials
+                    **pw.devices["iPhone 15"], http_credentials=basic_auth
                 )
             case browsers_and_devices.IPAD_7:
                 _browser = pw.chromium.launch(
@@ -125,14 +130,14 @@ def start_browser(pw, browser_or_device: str):
                 )
                 _context = _browser.new_context(
                     **pw.devices["iPad (gen 7) landscape"],
-                    http_credentials=_http_credentials,
+                    http_credentials=basic_auth,
                 )
             case browsers_and_devices.PIXEL_7:
                 _browser = pw.webkit.launch(
                     headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
                 _context = _browser.new_context(
-                    **pw.devices["Pixel 7"], http_credentials=_http_credentials
+                    **pw.devices["Pixel 7"], http_credentials=basic_auth
                 )
             case browsers_and_devices.GALAXY_S9_PLUS:
                 _browser = pw.chromium.launch(
@@ -141,28 +146,28 @@ def start_browser(pw, browser_or_device: str):
                     slow_mo=ce.slow_motion,
                 )
                 _context = _browser.new_context(
-                    **pw.devices["Galaxy S9+"], http_credentials=_http_credentials
+                    **pw.devices["Galaxy S9+"], http_credentials=basic_auth
                 )
             case browsers_and_devices.CHROME:
                 _browser = pw.chromium.launch(
                     channel="chrome", headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
-                _context = _browser.new_context(http_credentials=_http_credentials)
+                _context = _browser.new_context(http_credentials=basic_auth)
             case browsers_and_devices.MSEDGE:
                 _browser = pw.chromium.launch(
                     channel="msedge", headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
-                _context = _browser.new_context(http_credentials=_http_credentials)
+                _context = _browser.new_context(http_credentials=basic_auth)
             case browsers_and_devices.FIREFOX:
                 _browser = pw.firefox.launch(
                     headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
-                _context = _browser.new_context(http_credentials=_http_credentials)
+                _context = _browser.new_context(http_credentials=basic_auth)
             case _:  # Desktop Chromium for all other cases
                 _browser = pw.chromium.launch(
                     headless=ce.headless_mode, slow_mo=ce.slow_motion
                 )
-                _context = _browser.new_context(http_credentials=_http_credentials)
+                _context = _browser.new_context(http_credentials=basic_auth)
         return _browser, _context
     except Exception as e:
         raise AssertionError(f"Error launching {browser_or_device}: {e}")
