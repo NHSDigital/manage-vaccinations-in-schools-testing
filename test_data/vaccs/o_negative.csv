@@ -26,7 +26,7 @@ Row 18 DATE_OF_VACCINATION or Event date is required
 #Row 19 DATE_OF_VACCINATION: The vaccination date is in the future
 Row 19 DATE_OF_VACCINATION: The vaccination date is in the future. DATE_OF_VACCINATION: Enter a date that matches when the vaccination session took place.
 #Row 20 PROGRAMME: This programme is not available in this session
-Row 20 PROGRAMME or Vaccination type is required
+Row 20 PROGRAMME or Vaccination type is required VACCINE_GIVEN: is required
 Row 21 VACCINE_GIVEN: This vaccine is not available in this session.
 #Row 22 BATCH_NUMBER: Enter a batch number.
 Row 22 BATCH_NUMBER or Vaccination batch number is required

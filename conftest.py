@@ -1,19 +1,17 @@
-from datetime import datetime
 import os
 import pathlib
 import time
 import urllib.parse
-
+from datetime import datetime
 
 import pytest
-from playwright.sync_api import sync_playwright
 import requests
+from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
-
 from libs import CurrentExecution as ce
-from libs.mavis_constants import playwright_constants
 from libs.generic_constants import audit_log_paths
+from libs.mavis_constants import playwright_constants
 from libs.wrappers import get_current_datetime
 
 
@@ -21,8 +19,8 @@ def pytest_addoption(parser):
     parser.addoption("--browser", default="chromium")
     parser.addoption("--browser-channel", default=None)
     parser.addoption("--device", default=None)
-    parser.addoption("--slowmo", type=int, default=0)
-    parser.addoption("--headed", action="store_true", default="CI" not in os.environ)
+    parser.addoption("--slowmo", type=int, default=200)
+    parser.addoption("--headed", action="store_true", default=False)
     parser.addoption("--skip-reset", action="store_true", default=False)
 
 
@@ -110,9 +108,7 @@ def start_playwright_session(request, browser_name, reset_environment):
     ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
     with sync_playwright() as _playwright:
-        _playwright.selectors.set_test_id_attribute(
-            playwright_constants.TEST_ID_ATTRIBUTE
-        )
+        _playwright.selectors.set_test_id_attribute(playwright_constants.TEST_ID_ATTRIBUTE)
         yield _playwright
 
 
@@ -168,17 +164,13 @@ def start_browser(
     slow_mo,
 ):
     browser_type = getattr(playwright, browser_name)
-    browser = browser_type.launch(
-        channel=browser_channel, headless=not headed, slow_mo=slow_mo
-    )
+    browser = browser_type.launch(channel=browser_channel, headless=not headed, slow_mo=slow_mo)
 
     kwargs = {}
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(
-        **kwargs, base_url=base_url, http_credentials=basic_auth
-    )
+    context = browser.new_context(**kwargs, base_url=base_url, http_credentials=basic_auth)
 
     return [browser, context]
 
