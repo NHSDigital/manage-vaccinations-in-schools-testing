@@ -13,8 +13,6 @@ class CurrentExecution:
     service_url: str = ""
     base_auth_username: str = ""
     base_auth_password: str = ""
-    current_browser_name: str = ""
-    headless_mode: bool = False
     session_screenshots_dir: str = ""
 
     capture_screenshot_flag: bool = False
@@ -26,7 +24,6 @@ class CurrentExecution:
     admin_password: str = ""
     reset_endpoint: str = ""
     reset_env_before_execution: bool = False
-    slow_motion: int = 0
 
     screenshot_sequence: int = 0
     child_list: list[str] = []
@@ -63,9 +60,6 @@ class CurrentExecution:
         CurrentExecution.admin_password = CurrentExecution.get_env_value(
             var_name="ADMIN_PASSWORD"
         )
-        CurrentExecution.headless_mode = (
-            CurrentExecution.get_env_value(var_name="HEADLESS").lower() == "true"
-        )
         CurrentExecution.capture_screenshot_flag = (
             CurrentExecution.get_env_value(var_name="CAPTURE_SCREENSHOTS").lower()
             == "true"
@@ -76,9 +70,6 @@ class CurrentExecution:
                 var_name="RESET_ENV_BEFORE_EXECUTION"
             ).lower()
             == "true"
-        )
-        CurrentExecution.slow_motion = int(
-            CurrentExecution.get_env_value(var_name="SLOW_MOTION")
         )
 
     @classmethod
