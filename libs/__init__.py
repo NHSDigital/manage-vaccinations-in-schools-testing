@@ -8,8 +8,6 @@ class CurrentExecution:
     page: Page = None
     browser: Browser = None
     service_url: str = ""
-    base_auth_username: str = ""
-    base_auth_password: str = ""
     session_screenshots_dir: str = ""
 
     capture_screenshot_flag: bool = False

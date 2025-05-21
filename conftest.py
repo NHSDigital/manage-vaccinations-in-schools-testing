@@ -29,6 +29,14 @@ ce.get_env_values()
 
 
 @pytest.fixture(scope="session")
+def basic_auth() -> dict[str, str]:
+    return {
+        "username": os.environ["BASIC_AUTH_USERNAME"],
+        "password": os.environ["BASIC_AUTH_PASSWORD"],
+    }
+
+
+@pytest.fixture(scope="session")
 def browser_name(request):
     return request.config.getoption("browser")
 
@@ -53,6 +61,7 @@ def slow_mo(request) -> int:
     return request.config.getoption("slowmo")
 
 
+@pytest.fixture(scope="session")
 def reset_endpoint() -> str:
     return os.environ["RESET_ENDPOINT"]
 
@@ -63,7 +72,7 @@ def skip_reset(request) -> bool:
 
 
 @pytest.fixture(scope="session")
-def reset_environment(reset_endpoint, skip_reset):
+def reset_environment(reset_endpoint, basic_auth, skip_reset):
     if skip_reset:
 
         def _reset_environment():
@@ -73,7 +82,7 @@ def reset_environment(reset_endpoint, skip_reset):
 
     else:
         url = f"{ce.service_url}{reset_endpoint}"
-        auth = HTTPBasicAuth(ce.base_auth_username, ce.base_auth_password)
+        auth = HTTPBasicAuth(**basic_auth)
 
         def _reset_environment():
             for _ in range(3):
@@ -103,12 +112,11 @@ def start_playwright_session(request, browser_name, reset_environment):
         yield _playwright
 
 
-@pytest.fixture(scope="function")
 def start_mavis(
-    start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
+    start_playwright_session, basic_auth, browser_name, browser_channel, device, headed, slow_mo
 ):
     _browser, _context = start_browser(
-        start_playwright_session, browser_name, browser_channel, device, headed, slow_mo
+        start_playwright_session, basic_auth, browser_name, browser_channel, device, headed, slow_mo
     )
 
     ce.browser = _browser
@@ -129,13 +137,7 @@ def create_session_screenshot_dir(browser_name: str) -> str:
         return ""
 
 
-
-def start_browser(playwright, browser_name, browser_channel, device, headed, slow_mo):
-    _http_credentials = {
-        "username": ce.base_auth_username,
-        "password": ce.base_auth_password,
-    }
-
+def start_browser(playwright, basic_auth, browser_name, browser_channel, device, headed, slow_mo):
     browser_type = getattr(playwright, browser_name)
     browser = browser_type.launch(
         channel=browser_channel, headless=not headed, slow_mo=slow_mo
@@ -145,7 +147,7 @@ def start_browser(playwright, browser_name, browser_channel, device, headed, slo
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(**kwargs, http_credentials=_http_credentials)
+    context = browser.new_context(**kwargs, http_credentials=basic_auth)
 
     return [browser, context]
 
