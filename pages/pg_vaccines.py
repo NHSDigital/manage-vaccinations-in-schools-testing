@@ -2,10 +2,7 @@ from typing import Final
 
 from libs import playwright_ops
 from libs.generic_constants import actions, properties
-from libs.wrappers import (
-    get_current_datetime,
-    get_offset_date,
-)
+from libs.wrappers import get_current_datetime, get_offset_date
 
 
 class pg_vaccines:

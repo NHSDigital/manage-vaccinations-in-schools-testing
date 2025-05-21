@@ -1,6 +1,6 @@
 from typing import Final
 
-from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
+from libs import CurrentExecution, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import (
     mavis_file_types,
@@ -22,7 +22,6 @@ class pg_sessions:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    fo = file_ops.file_operations()
     dashboard_page = pg_dashboard.pg_dashboard()
     consent_page = pg_consent_hpv.pg_consent_hpv()
     children_page = pg_children.pg_children()

@@ -1,6 +1,8 @@
 from typing import Final
 
-from libs import CurrentExecution, file_ops, playwright_ops, testdata_ops
+import pandas as pd
+
+from libs import CurrentExecution, playwright_ops, testdata_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import (
     programmes,
@@ -22,7 +24,6 @@ class pg_programmes:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    fo = file_ops.file_operations()
     sessions_page = pg_sessions.pg_sessions()
     dashboard_page = pg_dashboard.pg_dashboard()
     children_page = pg_children.pg_children()
@@ -274,7 +275,7 @@ class pg_programmes:
             action=actions.DOWNLOAD_FILE_USING_BUTTON,
             value=_file_path,
         )
-        _actual_df = self.fo.read_csv_to_df(file_path=_file_path)
+        _actual_df = pd.read_csv(_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
         # assert expected_headers == actual_headers, "Report headers do not match"
         _e_not_a = [

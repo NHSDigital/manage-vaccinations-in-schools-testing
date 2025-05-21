@@ -44,12 +44,6 @@ class screenshot_file_types:
     JPEG: Final[str] = "jpeg"
 
 
-class file_mode:
-    READ: Final[str] = "r"
-    WRITE: Final[str] = "w"
-    APPEND: Final[str] = "a"
-
-
 class aria_roles:
     LINK: Final[str] = "link"
     BUTTON: Final[str] = "button"
