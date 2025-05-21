@@ -1,8 +1,10 @@
 from datetime import datetime
 import os
 
+
 import pytest
 from playwright.sync_api import sync_playwright
+
 
 from libs import CurrentExecution as ce
 from libs import file_ops as fo
@@ -56,7 +58,6 @@ def start_playwright_session(browser_name):
             playwright_constants.TEST_ID_ATTRIBUTE
         )
         yield _playwright
-    # ce.reset_environment()  # Clean up the environment after execution
 
 
 @pytest.fixture(scope="function")
@@ -70,7 +71,8 @@ def start_mavis(
     ce.browser = _browser
     ce.page = _context.new_page()
     # ce.page.set_default_timeout(playwright_constants.DEFAULT_TIMEOUT)
-    ce.page.goto(url=ce.service_url)
+    ce.page.goto("/")
+
     yield
     close_browser(browser=_browser, page=ce.page)
 
@@ -82,6 +84,7 @@ def create_session_screenshot_dir(browser_name: str) -> str:
         return f"screenshots/{_session_name}"
     else:
         return ""
+
 
 
 def start_browser(playwright, browser_name, browser_channel, device, headed, slow_mo):

@@ -14,7 +14,7 @@ class Test_Unmatched_Consent_Responses:
 
     # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS (HPV) TO HAVE RUN FIRST
     # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS
-    # SET THE 'RESET_ENV_BEFORE_EXECUTION' FLAG (in .env) TO 'false' IF RUNNING ONLY CONSENT TESTS
+    # RUN WITH '--skip-reset' IF RUNNING ONLY CONSENT TESTS
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis: None):

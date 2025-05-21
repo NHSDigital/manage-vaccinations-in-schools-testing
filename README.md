@@ -122,6 +122,17 @@ Tests for individual endpoints can be executed using individual markers. For exa
 $ pytest -m regression
 ```
 
+### Resetting the environment
+
+By default, when running the tests, a call is made to `$RESET_ENDPOINT` which
+is designed to reset the environment for a clean test run. It can sometimes be
+necessary to skip resetting the environment (when running a single test for
+example). To do this, there is `--skip-reset` flag available:
+
+```shell
+$ pytest tests/test_10_unmatched_consent_responses.py --skip-reset
+```
+
 ## More information
 
 Further details on the scope and approach of the automation are on the [NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).

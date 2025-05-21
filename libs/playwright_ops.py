@@ -704,22 +704,7 @@ class playwright_operations:
         """
         _actual_title = self.ce.page.title()
         if "Sorry, there’s a problem with the service" in _actual_title:
-            self.ce.reset_environment()
             assert False, f"Application has crashed after: {locator_info}"
-
-    def go_to_url(self, url: str) -> None:
-        """
-        Navigate to a specified URL.
-
-        Args:
-            url (str): URL to navigate to.
-        """
-        _full_url = (
-            f"{self.ce.service_url.replace('/start', '')}{url}"
-            if url.startswith("/")
-            else url
-        )
-        self.ce.page.goto(_full_url)
 
     def get_table_cell_location_for_value(
         self, table_locator: str, col_header: str, row_value: str

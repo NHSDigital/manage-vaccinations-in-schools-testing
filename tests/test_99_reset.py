@@ -1,6 +1,5 @@
 import pytest
 
-from libs import CurrentExecution
 from libs.mavis_constants import test_data_file_paths, vaccines
 from pages import (
     pg_dashboard,
@@ -13,7 +12,6 @@ from pages import (
 
 
 class Test_Reset:
-    ce = CurrentExecution()
     login_page = pg_login.pg_login()
     dashboard_page = pg_dashboard.pg_dashboard()
     programmes_page = pg_programmes.pg_programmes()
@@ -22,12 +20,14 @@ class Test_Reset:
     import_records_page = pg_import_records.pg_import_records()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_tests(self, start_mavis: None):
-        self.ce.reset_environment()
+    def setup_tests(self, start_mavis, reset_environment):
+        reset_environment()
+
         self.login_page.login_as_nurse()
         yield
         self.login_page.logout_of_mavis()
-        self.ce.reset_environment()
+
+        reset_environment()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_mav_965(self, setup_tests: None):
