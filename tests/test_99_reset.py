@@ -20,10 +20,10 @@ class Test_Reset:
     import_records_page = pg_import_records.pg_import_records()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_tests(self, start_mavis, reset_environment):
+    def setup_tests(self, start_mavis, reset_environment, nurse):
         reset_environment()
 
-        self.login_page.login_as_nurse()
+        self.login_page.log_in(**nurse)
         yield
         self.login_page.logout_of_mavis()
 

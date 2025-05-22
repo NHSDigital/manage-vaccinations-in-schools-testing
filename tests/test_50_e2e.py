@@ -11,10 +11,10 @@ class Test_E2E:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture(scope="function", autouse=True)
-    def setup_tests(self, start_mavis, reset_environment):
+    def setup_tests(self, start_mavis, reset_environment, nurse):
         reset_environment()
 
-        self.login_page.login_as_nurse()
+        self.login_page.log_in(**nurse)
         yield
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()

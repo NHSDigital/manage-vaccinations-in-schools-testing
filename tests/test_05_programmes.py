@@ -25,16 +25,16 @@ class Test_Programmes:
     vaccines_page = pg_vaccines.pg_vaccines()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_cohort_upload_and_reports(self, start_mavis: None):
-        self.login_page.login_as_nurse()
+    def setup_cohort_upload_and_reports(self, start_mavis, nurse):
+        self.login_page.log_in(**nurse)
         self.dashboard_page.click_programmes()
         yield
         self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_record_a_vaccine(self, start_mavis: None):
+    def setup_record_a_vaccine(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -47,9 +47,9 @@ class Test_Programmes:
             self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mavis_1729(self, start_mavis: None):
+    def setup_mavis_1729(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.import_records_page.import_class_list_records_from_school_session(
@@ -73,9 +73,9 @@ class Test_Programmes:
             self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mav_854(self, start_mavis: None):
+    def setup_mav_854(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_vaccines()
             self.vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)
             self.dashboard_page.go_to_dashboard()

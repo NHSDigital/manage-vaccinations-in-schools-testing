@@ -18,9 +18,6 @@ class pg_login:
     BTN_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
     LBL_PARAGRAPH: Final[str] = "paragraph"
 
-    def login_as_nurse(self):
-        self.log_in(self.ce.nurse_username, self.ce.nurse_password)
-
     def log_in(self, username: str, password: str):
         self.__login_actions(username=username, password=password)
         self.po.act(locator=self.BTN_ROLE, action=actions.CLICK_BUTTON)

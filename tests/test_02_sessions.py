@@ -10,17 +10,17 @@ class Test_Sessions:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_tests(self, start_mavis: None):
-        self.login_page.login_as_nurse()
+    def setup_tests(self, start_mavis, nurse):
+        self.login_page.log_in(**nurse)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
         self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mavis_1822(self, start_mavis: None):
+    def setup_mavis_1822(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -41,9 +41,9 @@ class Test_Sessions:
             self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mav_1018(self, start_mavis: None):
+    def setup_mav_1018(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()

@@ -17,17 +17,17 @@ class Test_Unmatched_Consent_Responses:
     # RUN WITH '--skip-reset' IF RUNNING ONLY CONSENT TESTS
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_tests(self, start_mavis: None):
-        self.login_page.login_as_nurse()
+    def setup_tests(self, start_mavis, nurse):
+        self.login_page.log_in(**nurse)
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_unmatched_consent_responses()
         yield
         self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_ucr_match(self, start_mavis: None):
+    def setup_ucr_match(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_programmes()
             self.programmes_page.upload_cohorts(

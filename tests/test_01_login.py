@@ -28,9 +28,9 @@ class Test_Login:
 
     @pytest.mark.login
     @pytest.mark.order(102)
-    def test_home_page_links_for_nurse(self):
+    def test_home_page_links_for_nurse(self, nurse):
         self.login_page.go_to_login_page()
-        self.login_page.login_as_nurse()
+        self.login_page.log_in(**nurse)
         self.dashboard_page.verify_all_expected_links_for_nurse()
         self.login_page.logout_of_mavis()
 

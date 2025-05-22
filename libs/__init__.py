@@ -8,10 +8,7 @@ class CurrentExecution:
     page: Page = None
     browser: Browser = None
     session_screenshots_dir: str = ""
-
     capture_screenshot_flag: bool = False
-    nurse_username: str = ""
-    nurse_password: str = ""
 
     screenshot_sequence: int = 0
     child_list: list[str] = []
@@ -22,8 +19,6 @@ class CurrentExecution:
     def get_env_values(cls):
         load_dotenv()
 
-        cls.nurse_username = os.environ["NURSE_USERNAME"]
-        cls.nurse_password = os.environ["NURSE_PASSWORD"]
         cls.capture_screenshot_flag = (
             os.environ.get("CAPTURE_SCREENSHOTS", "").lower() == "true"
         )

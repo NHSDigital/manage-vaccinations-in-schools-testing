@@ -20,8 +20,8 @@ class Test_Children:
     programmes_page = pg_programmes.pg_programmes()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_tests(self, start_mavis: None):
-        self.login_page.login_as_nurse()
+    def setup_tests(self, start_mavis, nurse):
+        self.login_page.log_in(**nurse)
         yield
         self.login_page.logout_of_mavis()
 

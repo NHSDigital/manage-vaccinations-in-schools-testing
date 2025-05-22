@@ -49,6 +49,14 @@ def basic_auth() -> dict[str, str]:
 
 
 @pytest.fixture(scope="session")
+def nurse() -> dict[str, str]:
+    return {
+        "username": os.environ["NURSE_USERNAME"],
+        "password": os.environ["NURSE_PASSWORD"],
+    }
+
+
+@pytest.fixture(scope="session")
 def superuser() -> dict[str, str]:
     return {
         "username": os.environ["SUPERUSER_USERNAME"],
