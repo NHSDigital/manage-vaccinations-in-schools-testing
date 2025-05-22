@@ -41,4 +41,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Check formatting
+        run: ruff format --check
+      - name: Check linting
         run: ruff check
