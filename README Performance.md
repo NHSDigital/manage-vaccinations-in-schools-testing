@@ -1,8 +1,8 @@
 # Manage vaccinations in schools
 
-[![Performance tests (E2E)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/perf-test-with-data.yml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/perf-test-with-data.yml)
+[![Performance (end to end)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml)
 
-[![Performance tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-tests.yml)
+[![Performance](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance.yaml)
 
 ## Introduction
 
