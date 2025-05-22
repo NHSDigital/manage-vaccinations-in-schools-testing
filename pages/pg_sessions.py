@@ -32,7 +32,9 @@ class pg_sessions:
 
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
-    LNK_CHILD_CONFLICTING_CONSENT: Final[str] = "CONFLICTINGCONSENT1, ConflictingConsent1"
+    LNK_CHILD_CONFLICTING_CONSENT: Final[str] = (
+        "CONFLICTINGCONSENT1, ConflictingConsent1"
+    )
     LNK_CHILD_E2E1: Final[str] = "CE2E1, CE2E1"
     LNK_CHILD_CONFLICTING_GILLICK: Final[str] = "GILLICK1, Conflicting1"
     LNK_CHILD_CONSENT_TWICE: Final[str] = "TWICE1, Consent1"
@@ -57,7 +59,9 @@ class pg_sessions:
     RDO_YES_SAFE_TO_VACCINATE: Final[str] = "Yes, it’s safe to vaccinate"
     BTN_SAVE_TRIAGE: Final[str] = "Save triage"
     LBL_PARAGRAPH: Final[str] = "paragraph"
-    LBL_TRIAGE_UPDATED_MESSAGE: str = f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
+    LBL_TRIAGE_UPDATED_MESSAGE: str = (
+        f"Triage outcome updated for {LNK_CHILD_FULL_NAME}"
+    )
     LBL_MAIN: Final[str] = "main"
     TXT_DAY: Final[str] = "Day"
     TXT_MONTH: Final[str] = "Month"
@@ -74,8 +78,12 @@ class pg_sessions:
     RDO_NO_GILLICK_COMPETENT: Final[str] = "No"
     TXT_GILLICK_ASSESSMENT_DETAILS: Final[str] = "Assessment notes (optional)"
     BTN_SAVE_CHANGES: Final[str] = "Save changes"
-    LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN: Final[str] = "Triaged decision: Safe to vaccinate"
-    LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED: Final[str] = "Consent refused by Parent1 (Dad)"
+    LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN: Final[str] = (
+        "Triaged decision: Safe to vaccinate"
+    )
+    LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED: Final[str] = (
+        "Consent refused by Parent1 (Dad)"
+    )
     BTN_GET_CONSENT_RESPONSE: Final[str] = "Get consent response"
     LNK_CONSENT_TAB: Final[str] = "Consent"
     BTN_COMPLETE_GILLICK_ASSESSMENT: Final[str] = "Complete your assessment"
@@ -84,7 +92,9 @@ class pg_sessions:
     LNK_EDIT_GILLICK_COMPETENCE: Final[str] = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT: Final[str] = "Update your assessment"
     LNK_HPV_CONSENT_FORM: Final[str] = "View the HPV online consent form"
-    LNK_DOUBLES_CONSENT_FORM: str = f"View the {programmes.MENACWY} and {programmes.TDIPV} online consent form"
+    LNK_DOUBLES_CONSENT_FORM: str = (
+        f"View the {programmes.MENACWY} and {programmes.TDIPV} online consent form"
+    )
     LNK_COULD_NOT_VACCINATE: Final[str] = "Could not vaccinate"
     RDO_CONSENT_REFUSED: Final[str] = "Consent refused"
     LNK_MARK_AS_INVALID: Final[str] = "Mark as invalid"
@@ -106,7 +116,9 @@ class pg_sessions:
     CHK_ARE_FEELING_WELL: Final[str] = "are feeling well"
     CHK_HAVE_NO_ALLERGIES: Final[str] = "have no allergies which would"
     CHK_ARE_NOT_PREGNANT: Final[str] = "are not pregnant"
-    CHK_NOT_TAKING_MEDICATION: Final[str] = "are not taking any medication which prevents vaccination"
+    CHK_NOT_TAKING_MEDICATION: Final[str] = (
+        "are not taking any medication which prevents vaccination"
+    )
     RDO_YES: Final[str] = "Yes"
     RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
     RDO_CLINIC_WEIMANN: Final[str] = "The Weimann Institute Clinic"
@@ -159,10 +171,14 @@ class pg_sessions:
         self.po.act(locator=self.LNK_TAB_TODAY, action=actions.CLICK_LINK, exact=True)
 
     def click_scheduled(self):
-        self.po.act(locator=self.LNK_TAB_SCHEDULED, action=actions.CLICK_LINK, exact=True)
+        self.po.act(
+            locator=self.LNK_TAB_SCHEDULED, action=actions.CLICK_LINK, exact=True
+        )
 
     def click_unscheduled(self):
-        self.po.act(locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True)
+        self.po.act(
+            locator=self.LNK_TAB_UNSCHEDULED, action=actions.CLICK_LINK, exact=True
+        )
 
     def select_no_response(self):
         self.po.act(locator=self.RDO_NO_RESPONSE, action=actions.RADIO_BUTTON_SELECT)
@@ -175,7 +191,9 @@ class pg_sessions:
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
     def select_conflicting_consent(self):
-        self.po.act(locator=self.RDO_CONFLICTING_CONSENT, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_CONFLICTING_CONSENT, action=actions.RADIO_BUTTON_SELECT
+        )
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
@@ -189,10 +207,14 @@ class pg_sessions:
         self.po.act(locator=programmes.TDIPV, action=actions.CLICK_LINK)
 
     def click_register_tab(self):
-        self.po.act(locator=self.LNK_TAB_REGISTER, action=actions.CLICK_LINK, exact=False)
+        self.po.act(
+            locator=self.LNK_TAB_REGISTER, action=actions.CLICK_LINK, exact=False
+        )
 
     def click_activity_log(self):
-        self.po.act(locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True)
+        self.po.act(
+            locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True
+        )
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
     def click_school1(self):
@@ -240,10 +262,14 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CHILD_CONSENT_TWICE, action=actions.CLICK_LINK)
 
     def click_child_conflicting_gillick(self):
-        self.po.act(locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=actions.CLICK_LINK)
+        self.po.act(
+            locator=self.LNK_CHILD_CONFLICTING_GILLICK, action=actions.CLICK_LINK
+        )
 
     def click_child_conflicting_consent(self):
-        self.po.act(locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=actions.CLICK_LINK)
+        self.po.act(
+            locator=self.LNK_CHILD_CONFLICTING_CONSENT, action=actions.CLICK_LINK
+        )
 
     def click_child_e2e1(self):
         self.po.act(locator=self.LNK_CHILD_E2E1, action=actions.CLICK_LINK)
@@ -252,7 +278,9 @@ class pg_sessions:
         self.po.act(locator=self.LNK_UPDATE_TRIAGE_OUTCOME, action=actions.CLICK_LINK)
 
     def select_yes_safe_to_vaccinate(self):
-        self.po.act(locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT
+        )
 
     def click_save_triage(self):
         self.po.act(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
@@ -261,7 +289,9 @@ class pg_sessions:
         self.po.act(locator=self.LNK_CONSENT_TAB, action=actions.CLICK_LINK)
 
     def click_assess_gillick_competence(self):
-        self.po.act(locator=self.LNK_ASSESS_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
+        self.po.act(
+            locator=self.LNK_ASSESS_GILLICK_COMPETENCE, action=actions.CLICK_LINK
+        )
 
     def click_edit_gillick_competence(self):
         self.po.act(locator=self.LNK_EDIT_GILLICK_COMPETENCE, action=actions.CLICK_LINK)
@@ -270,7 +300,9 @@ class pg_sessions:
         self.po.act(locator=self.LNK_COULD_NOT_VACCINATE, action=actions.CLICK_LINK)
 
     def select_consent_refused(self):
-        self.po.act(locator=self.RDO_CONSENT_REFUSED, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_CONSENT_REFUSED, action=actions.RADIO_BUTTON_SELECT
+        )
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
@@ -288,21 +320,27 @@ class pg_sessions:
         _session_id = self.tdo.get_session_id(excel_path=_file_path)
         self.ce.set_session_id(session_id=_session_id)
 
-    def add_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
+    def add_gillick_competence(
+        self, is_competent: bool, competence_details: str
+    ) -> None:
         self.__set_gillick_competence(
             is_add=True,
             is_competent=is_competent,
             competence_details=competence_details,
         )
 
-    def edit_gillick_competence(self, is_competent: bool, competence_details: str) -> None:
+    def edit_gillick_competence(
+        self, is_competent: bool, competence_details: str
+    ) -> None:
         self.__set_gillick_competence(
             is_add=False,
             is_competent=is_competent,
             competence_details=competence_details,
         )
 
-    def __set_gillick_competence(self, is_add: bool, is_competent: bool, competence_details: str) -> None:
+    def __set_gillick_competence(
+        self, is_add: bool, is_competent: bool, competence_details: str
+    ) -> None:
         if is_competent:
             self.po.act(
                 locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
@@ -356,7 +394,9 @@ class pg_sessions:
                 action=actions.CLICK_BUTTON,
             )
         else:
-            self.po.act(locator=self.BTN_UPDATE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON)
+            self.po.act(
+                locator=self.BTN_UPDATE_GILLICK_ASSESSMENT, action=actions.CLICK_BUTTON
+            )
         if is_competent:
             self.po.verify(
                 locator=self.LBL_MAIN,
@@ -466,7 +506,9 @@ class pg_sessions:
     def invalidate_parent2_refusal(self):
         self.po.act(locator=self.LNK_PARENT2, action=actions.CLICK_LINK)
         self.po.act(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_LINK)
-        self.po.act(locator=self.TXT_NOTES, action=actions.FILL, value="Invalidation notes.")
+        self.po.act(
+            locator=self.TXT_NOTES, action=actions.FILL, value="Invalidation notes."
+        )
         self.po.act(locator=self.LNK_MARK_AS_INVALID, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_MAIN,
@@ -572,7 +614,11 @@ class pg_sessions:
         self.verify_activity_log_entry(consent_given=False)
 
     def schedule_a_valid_session_in_school_1(self, for_today: bool = False):
-        _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
+        _future_date = (
+            get_offset_date(offset_days=0)
+            if for_today
+            else get_offset_date(offset_days=10)
+        )
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_school1()
@@ -580,7 +626,11 @@ class pg_sessions:
         self.verify_scheduled_date(message=_expected_message)
 
     def schedule_a_valid_session_in_school_2(self, for_today: bool = False):
-        _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
+        _future_date = (
+            get_offset_date(offset_days=0)
+            if for_today
+            else get_offset_date(offset_days=10)
+        )
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_school2()
@@ -588,7 +638,11 @@ class pg_sessions:
         self.verify_scheduled_date(message=_expected_message)
 
     def schedule_a_valid_session_in_community_clinics(self, for_today: bool = False):
-        _future_date = get_offset_date(offset_days=0) if for_today else get_offset_date(offset_days=10)
+        _future_date = (
+            get_offset_date(offset_days=0)
+            if for_today
+            else get_offset_date(offset_days=10)
+        )
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_community_clinics()
@@ -644,7 +698,9 @@ class pg_sessions:
         file_paths: str,
         verify_on_children: bool = False,
     ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         if verify_on_children:
             _cl = self.tdo.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
@@ -661,8 +717,12 @@ class pg_sessions:
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
-    def upload_class_list_to_school_2(self, file_paths: str, verify_on_children: bool = False):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(file_paths=file_paths)
+    def upload_class_list_to_school_2(
+        self, file_paths: str, verify_on_children: bool = False
+    ):
+        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+            file_paths=file_paths
+        )
         if verify_on_children:
             _cl = self.tdo.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
@@ -685,15 +745,23 @@ class pg_sessions:
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_assess_gillick_competence()
-        self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
+        self.add_gillick_competence(
+            is_competent=True, competence_details="Gillick competent"
+        )
         self.click_edit_gillick_competence()
-        self.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
+        self.edit_gillick_competence(
+            is_competent=False, competence_details="Not Gillick competent"
+        )
 
     def get_hpv_consent_url(self) -> str:
-        return self.po.get_element_property(locator=self.LNK_HPV_CONSENT_FORM, property=properties.HREF)
+        return self.po.get_element_property(
+            locator=self.LNK_HPV_CONSENT_FORM, property=properties.HREF
+        )
 
     def get_doubles_consent_url(self) -> str:
-        return self.po.get_element_property(locator=self.LNK_DOUBLES_CONSENT_FORM, property=properties.HREF)
+        return self.po.get_element_property(
+            locator=self.LNK_DOUBLES_CONSENT_FORM, property=properties.HREF
+        )
 
     def bug_mavis_1696(self):
         self.select_no_response()
@@ -764,7 +832,9 @@ class pg_sessions:
     def verify_attendance_filters(self):
         # Check year filters
         self.po.act(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children")
+        self.po.verify(
+            locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children"
+        )
         self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
@@ -776,11 +846,15 @@ class pg_sessions:
         self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.verify(locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children")
+        self.po.verify(
+            locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children"
+        )
         # Check name filters
         if len(self.ce.child_list) >= 1:
             for child_name in self.ce.child_list:
-                self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name)
+                self.po.act(
+                    locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name
+                )
                 self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
                 self.po.verify(
                     locator=self.LBL_MAIN,
@@ -811,7 +885,9 @@ class pg_sessions:
             expected_value="You can only vaccinate if all respondents give consent.",
         )
         self.click_assess_gillick_competence()
-        self.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
+        self.add_gillick_competence(
+            is_competent=True, competence_details="Gillick competent"
+        )
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
@@ -879,7 +955,9 @@ class pg_sessions:
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_NOT_TAKING_MEDICATION, action=actions.CHECKBOX_CHECK)
+        self.po.act(
+            locator=self.CHK_NOT_TAKING_MEDICATION, action=actions.CHECKBOX_CHECK
+        )
         if check_prefilled:
             self.po.verify(
                 locator=self.CHK_ARE_FEELING_WELL,
@@ -887,7 +965,9 @@ class pg_sessions:
                 expected_value=True,
             )
         else:
-            self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK)
+            self.po.act(
+                locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK
+            )
 
     def _answer_tdipv_prescreening_questions(self, check_prefilled: bool = False):
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
@@ -899,7 +979,9 @@ class pg_sessions:
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_NOT_TAKING_MEDICATION, action=actions.CHECKBOX_CHECK)
+        self.po.act(
+            locator=self.CHK_NOT_TAKING_MEDICATION, action=actions.CHECKBOX_CHECK
+        )
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=actions.CHECKBOX_CHECK)
         if check_prefilled:
@@ -912,7 +994,9 @@ class pg_sessions:
             #     locator=self.CHK_ARE_NOT_PREGNANT, property=element_properties.CHECKBOX_CHECKED, expected_value=True
             # )   # Removed in R2.2.1 MAV-976
         else:
-            self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK)
+            self.po.act(
+                locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK
+            )
 
     def _vaccinate_child_mav_854(self):
         self.click_get_consent_response()
@@ -968,7 +1052,9 @@ class pg_sessions:
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=child_name, action=actions.CLICK_LINK)
 
-    def record_vaccs_for_child(self, child_name: str, programme_name: str, at_school: bool = True):
+    def record_vaccs_for_child(
+        self, child_name: str, programme_name: str, at_school: bool = True
+    ):
         _batch_name: str = ""
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
         self.search_child(child_name=child_name)

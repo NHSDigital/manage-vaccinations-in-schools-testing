@@ -108,7 +108,9 @@ def start_playwright_session(request, browser_name, reset_environment):
     ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
     with sync_playwright() as _playwright:
-        _playwright.selectors.set_test_id_attribute(playwright_constants.TEST_ID_ATTRIBUTE)
+        _playwright.selectors.set_test_id_attribute(
+            playwright_constants.TEST_ID_ATTRIBUTE
+        )
         yield _playwright
 
 
@@ -164,13 +166,17 @@ def start_browser(
     slow_mo,
 ):
     browser_type = getattr(playwright, browser_name)
-    browser = browser_type.launch(channel=browser_channel, headless=not headed, slow_mo=slow_mo)
+    browser = browser_type.launch(
+        channel=browser_channel, headless=not headed, slow_mo=slow_mo
+    )
 
     kwargs = {}
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(**kwargs, base_url=base_url, http_credentials=basic_auth)
+    context = browser.new_context(
+        **kwargs, base_url=base_url, http_credentials=basic_auth
+    )
 
     return [browser, context]
 

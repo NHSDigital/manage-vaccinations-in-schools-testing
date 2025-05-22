@@ -35,9 +35,13 @@ class pg_school_moves:
         )
 
     def confirm_school_move(self):
-        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0)
+        self.po.act(
+            locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0
+        )
         _child_full_name: str = (
-            self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=properties.TEXT)
+            self.po.get_element_property(
+                locator=self.LBL_CHILD_NAME, property=properties.TEXT
+            )
             .replace(self.LBL_CHILD_NAME, "")
             .strip()
         )
@@ -51,14 +55,20 @@ class pg_school_moves:
         )
 
     def ignore_school_move(self):
-        self.po.act(locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0)
+        self.po.act(
+            locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0
+        )
         _child_full_name: str = (
-            self.po.get_element_property(locator=self.LBL_CHILD_NAME, property=properties.TEXT)
+            self.po.get_element_property(
+                locator=self.LBL_CHILD_NAME, property=properties.TEXT
+            )
             .replace(self.LBL_CHILD_NAME, "")
             .strip()
         )
         _success_message = f"{_child_full_name}’s school move ignored"
-        self.po.act(locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(
+            locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT
+        )
         self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
@@ -95,7 +105,9 @@ class pg_school_moves:
     def download_and_verify_report(self):
         self.po.act(locator=self.LNK_DOWNLOAD_RECORDS, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self._download_and_verify_report_headers(expected_headers=report_headers.SCHOOL_MOVES)
+        self._download_and_verify_report_headers(
+            expected_headers=report_headers.SCHOOL_MOVES
+        )
 
     def _download_and_verify_report_headers(self, expected_headers: str):
         _file_path = f"working/export_{get_current_datetime()}.csv"
@@ -106,9 +118,13 @@ class pg_school_moves:
         )
         _actual_df = pd.read_csv(filepath_or_buffer=_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
-        _e_not_a = [h for h in expected_headers.split(",") if h not in actual_headers.split(",")]
-        _a_not_e = [h for h in actual_headers.split(",") if h not in expected_headers.split(",")]
+        _e_not_a = [
+            h for h in expected_headers.split(",") if h not in actual_headers.split(",")
+        ]
+        _a_not_e = [
+            h for h in actual_headers.split(",") if h not in expected_headers.split(",")
+        ]
         if len(_e_not_a) > 0 or len(_a_not_e) > 0:
-            assert (
-                False
-            ), f"Expected field(s) not found in actual: {_e_not_a}.  Actual report contains extra field(s): {_a_not_e}."
+            assert False, (
+                f"Expected field(s) not found in actual: {_e_not_a}.  Actual report contains extra field(s): {_a_not_e}."
+            )
