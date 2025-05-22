@@ -24,9 +24,6 @@ class pg_login:
     def login_as_superuser(self):
         self.log_in(self.ce.superuser_username, self.ce.superuser_password)
 
-    def login_as_admin(self):
-        self.log_in(self.ce.admin_username, self.ce.admin_password)
-
     def log_in(self, username: str, password: str):
         self.__login_actions(username=username, password=password)
         self.po.act(locator=self.BTN_ROLE, action=actions.CLICK_BUTTON)

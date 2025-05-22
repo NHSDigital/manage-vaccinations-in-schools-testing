@@ -33,6 +33,14 @@ def base_url() -> str:
 
 
 @pytest.fixture(scope="session")
+def admin() -> dict[str, str]:
+    return {
+        "username": os.environ["ADMIN_USERNAME"],
+        "password": os.environ["ADMIN_PASSWORD"],
+    }
+
+
+@pytest.fixture(scope="session")
 def basic_auth() -> dict[str, str]:
     return {
         "username": os.environ["BASIC_AUTH_USERNAME"],

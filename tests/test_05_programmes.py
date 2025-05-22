@@ -101,9 +101,9 @@ class Test_Programmes:
             self.login_page.logout_of_mavis()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mav_nnn(self, start_mavis: None):
+    def setup_mav_nnn(self, start_mavis, admin):
         try:
-            self.login_page.login_as_admin()
+            self.login_page.log_in(**admin)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.import_records_page.import_class_list_records_from_school_session(

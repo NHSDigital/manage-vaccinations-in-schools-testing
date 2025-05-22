@@ -44,8 +44,8 @@ class Test_Login:
 
     @pytest.mark.login
     @pytest.mark.order(104)
-    def test_home_page_links_for_admin(self):
+    def test_home_page_links_for_admin(self, admin):
         self.login_page.go_to_login_page()
-        self.login_page.login_as_admin()
+        self.login_page.log_in(**admin)
         self.dashboard_page.verify_all_expected_links_for_admin()
         self.login_page.logout_of_mavis()
