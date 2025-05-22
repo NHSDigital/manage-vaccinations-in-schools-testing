@@ -67,7 +67,7 @@ class pg_import_records:
     def import_class_list_records(
         self,
         file_paths: str,
-        year_groups: Optional[int] = None,
+        year_groups: Optional[list[int]] = None,
         verify_on_children_page: bool = False,
     ):
         if year_groups is None:

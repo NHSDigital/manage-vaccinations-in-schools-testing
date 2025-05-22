@@ -46,7 +46,7 @@ class pg_login:
         self.po.act(locator=self.BTN_ADMIN_ROLE, action=actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.LBL_ADMIN)
 
-    def try_invalid_login(self, user: str, pwd: str, expected_message: str) -> str:
+    def try_invalid_login(self, user: str, pwd: str, expected_message: str):
         self.__login_actions(username=user, password=pwd)
         self.verify_login(is_successful_login=False, verify_text=expected_message)
 
