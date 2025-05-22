@@ -17,10 +17,6 @@ on:
         required: true
         type: boolean
         default: 'true'
-      urn:
-        description: "Required: URN for a school in the QA environment. This must have a session date for today and tomorrow."
-        required: true
-        type: string
       input_file:
         description: "Require: Input file name used for all steps."
         required: true
@@ -100,7 +96,6 @@ jobs:
               -l $import_output_dir/samples.jtl \
               -j $import_output_dir/jmeter.log \
               -e -o $import_output_dir/upload-report \
-              -JURN=${{inputs.urn}} \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JInputFile=${{inputs.input_file}}
 
@@ -113,7 +108,6 @@ jobs:
               -l $consent_output_dir/samples.jtl \
               -j $consent_output_dir/jmeter.log \
               -e -o $consent_output_dir/consent-report \
-              -JURN=${{inputs.urn}} \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JInputFile=${{inputs.input_file}}
 
@@ -126,7 +120,6 @@ jobs:
               -l $nurse_output_dir/samples.jtl \
               -j $nurse_output_dir/jmeter.log \
               -e -o $nurse_output_dir/report \
-              -JURN=${{inputs.urn}} \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JDuration=${{inputs.duration}} \
               -JThreads=${{inputs.threads}} \
