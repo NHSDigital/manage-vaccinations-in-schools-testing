@@ -1,19 +1,17 @@
-from datetime import datetime
 import os
 import pathlib
 import time
 import urllib.parse
-
+from datetime import datetime
 
 import pytest
-from playwright.sync_api import sync_playwright
 import requests
+from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
-
 from libs import CurrentExecution as ce
-from libs.mavis_constants import playwright_constants
 from libs.generic_constants import audit_log_paths
+from libs.mavis_constants import playwright_constants
 from libs.wrappers import get_current_datetime
 
 
@@ -21,8 +19,8 @@ def pytest_addoption(parser):
     parser.addoption("--browser", default="chromium")
     parser.addoption("--browser-channel", default=None)
     parser.addoption("--device", default=None)
-    parser.addoption("--slowmo", type=int, default=0)
-    parser.addoption("--headed", action="store_true", default="CI" not in os.environ)
+    parser.addoption("--slowmo", type=int, default=200)
+    parser.addoption("--headed", action="store_true", default=False)
     parser.addoption("--skip-reset", action="store_true", default=False)
 
 

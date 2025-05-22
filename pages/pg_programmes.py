@@ -277,7 +277,6 @@ class pg_programmes:
         )
         _actual_df = pd.read_csv(_file_path)
         actual_headers = ",".join(_actual_df.columns.tolist())
-        # assert expected_headers == actual_headers, "Report headers do not match"
         _e_not_a = [
             h for h in expected_headers.split(",") if h not in actual_headers.split(",")
         ]
