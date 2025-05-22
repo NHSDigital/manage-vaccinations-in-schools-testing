@@ -50,7 +50,7 @@ pyzmq==26.4.0
 ruff==0.11.10
 requests==2.32.3
 setuptools==80.8.0
-six==1.16.0
+six==1.17.0
 stack-data==0.6.3
 tomli==2.2.1
 tornado==6.4.2
