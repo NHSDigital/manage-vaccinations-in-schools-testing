@@ -15,7 +15,7 @@ class Test_Sessions:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         yield
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_mavis_1822(self, start_mavis, nurse):
@@ -38,7 +38,7 @@ class Test_Sessions:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_mav_1018(self, start_mavis, nurse):
@@ -61,7 +61,7 @@ class Test_Sessions:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.mark.sessions
     @pytest.mark.order(201)

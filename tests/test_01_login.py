@@ -32,7 +32,7 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.log_in(**nurse)
         self.dashboard_page.verify_all_expected_links_for_nurse()
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.mark.login
     @pytest.mark.order(103)
@@ -40,7 +40,7 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.log_in(**superuser)
         self.dashboard_page.verify_all_expected_links_for_superuser()
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.mark.login
     @pytest.mark.order(104)
@@ -48,4 +48,4 @@ class Test_Login:
         self.login_page.go_to_login_page()
         self.login_page.log_in(**admin)
         self.dashboard_page.verify_all_expected_links_for_admin()
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()

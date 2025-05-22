@@ -22,7 +22,7 @@ class Test_Unmatched_Consent_Responses:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_unmatched_consent_responses()
         yield
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_ucr_match(self, start_mavis, nurse):
@@ -37,7 +37,7 @@ class Test_Unmatched_Consent_Responses:
             self.dashboard_page.click_unmatched_consent_responses()
             yield
         finally:
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.mark.unmatchedconsentresponses
     @pytest.mark.order(1001)

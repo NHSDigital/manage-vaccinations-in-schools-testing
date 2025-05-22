@@ -17,7 +17,7 @@ class Test_ImportRecords:
     def setup_tests(self, start_mavis, nurse):
         self.login_page.log_in(**nurse)
         yield
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_child_list(self, setup_tests: None):

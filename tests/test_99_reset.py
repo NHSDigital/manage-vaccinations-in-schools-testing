@@ -25,7 +25,7 @@ class Test_Reset:
 
         self.login_page.log_in(**nurse)
         yield
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
         reset_environment()
 

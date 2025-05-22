@@ -19,7 +19,7 @@ class Test_E2E:
         self.dashboard_page.go_to_dashboard()
         self.dashboard_page.click_sessions()
         self.sessions_page.delete_all_sessions_for_school_1()
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.mark.e2e
     @pytest.mark.order(5001)

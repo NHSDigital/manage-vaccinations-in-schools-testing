@@ -23,12 +23,12 @@ class pg_login:
         self.po.act(locator=self.BTN_ROLE, action=actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.BTN_LOGOUT)
 
+    def log_out(self):
+        self.po.act(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
+
     def try_invalid_login(self, user: str, pwd: str, expected_message: str):
         self.__login_actions(username=user, password=pwd)
         self.verify_login(is_successful_login=False, verify_text=expected_message)
-
-    def logout_of_mavis(self):
-        self.po.act(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
 
     def verify_login(self, is_successful_login: bool, verify_text: str):
         locator = self.LBL_BANNER if is_successful_login else self.LBL_PARAGRAPH
