@@ -12,8 +12,6 @@ class CurrentExecution:
     capture_screenshot_flag: bool = False
     nurse_username: str = ""
     nurse_password: str = ""
-    superuser_username: str = ""
-    superuser_password: str = ""
 
     screenshot_sequence: int = 0
     child_list: list[str] = []
@@ -26,8 +24,6 @@ class CurrentExecution:
 
         cls.nurse_username = os.environ["NURSE_USERNAME"]
         cls.nurse_password = os.environ["NURSE_PASSWORD"]
-        cls.superuser_username = os.environ["SUPERUSER_USERNAME"]
-        cls.superuser_password = os.environ["SUPERUSER_PASSWORD"]
         cls.capture_screenshot_flag = (
             os.environ.get("CAPTURE_SCREENSHOTS", "").lower() == "true"
         )

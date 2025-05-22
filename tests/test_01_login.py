@@ -36,9 +36,9 @@ class Test_Login:
 
     @pytest.mark.login
     @pytest.mark.order(103)
-    def test_home_page_links_for_superuser(self):
+    def test_home_page_links_for_superuser(self, superuser):
         self.login_page.go_to_login_page()
-        self.login_page.login_as_superuser()
+        self.login_page.log_in(**superuser)
         self.dashboard_page.verify_all_expected_links_for_superuser()
         self.login_page.logout_of_mavis()
 

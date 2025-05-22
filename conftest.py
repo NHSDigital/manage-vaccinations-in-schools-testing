@@ -49,6 +49,14 @@ def basic_auth() -> dict[str, str]:
 
 
 @pytest.fixture(scope="session")
+def superuser() -> dict[str, str]:
+    return {
+        "username": os.environ["SUPERUSER_USERNAME"],
+        "password": os.environ["SUPERUSER_PASSWORD"],
+    }
+
+
+@pytest.fixture(scope="session")
 def browser_name(request):
     return request.config.getoption("browser")
 
