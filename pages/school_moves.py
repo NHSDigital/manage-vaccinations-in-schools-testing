@@ -127,5 +127,5 @@ class SchoolMovesPage:
         ]
         if len(_e_not_a) > 0 or len(_a_not_e) > 0:
             assert False, (
-                f"Expected field(s) not found in actual: {_e_not_a}.  Actual report contains extra field(s): {_a_not_e}."
+                f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
             )

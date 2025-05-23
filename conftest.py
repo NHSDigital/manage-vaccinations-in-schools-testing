@@ -107,17 +107,14 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
             pass
 
         return _reset_environment
-
     else:
         auth = HTTPBasicAuth(**basic_auth)
 
         def _reset_environment():
             for _ in range(3):
                 response = requests.get(url=reset_endpoint, auth=auth)
-
                 if response.ok:
                     break
-
                 time.sleep(3)
             else:
                 response.raise_for_status()
