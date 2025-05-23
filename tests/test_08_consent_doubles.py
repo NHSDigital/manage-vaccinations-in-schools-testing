@@ -3,14 +3,13 @@ from typing import Hashable, Iterable
 import pytest
 from pandas.core.series import Series
 
-from libs import CurrentExecution, playwright_ops
+from libs import CurrentExecution
 from pages import pg_consent_hpv, pg_dashboard, pg_login, pg_sessions
 from tests.helpers import parental_consent_helper_doubles
 
 
 class Test_Consent_Doubles:
     ce = CurrentExecution()
-    po = playwright_ops.playwright_operations()
     pc = pg_consent_hpv.pg_consent_hpv()
     helper = parental_consent_helper_doubles.parental_consent_helper()
     login_page = pg_login.pg_login()
