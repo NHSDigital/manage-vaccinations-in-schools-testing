@@ -7,13 +7,13 @@ from libs.generic_constants import actions, escape_characters, properties
 from libs.mavis_constants import report_headers, test_data_values
 from libs.wrappers import get_current_datetime
 
-from .dashboard import pg_dashboard
+from .dashboard import DashboardPage
 
 
-class pg_school_moves:
+class SchoolMovesPage:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
-    dashboard_page = pg_dashboard()
+    dashboard_page = DashboardPage()
 
     LBL_HEADERS: Final[str] = "Updated	Full name	Move	Actions"
     LBL_MAIN: Final[str] = "main"

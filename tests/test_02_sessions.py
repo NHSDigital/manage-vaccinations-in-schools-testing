@@ -1,13 +1,13 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths
-from pages import pg_dashboard, pg_login, pg_sessions
+from pages import DashboardPage, LoginPage, SessionsPage
 
 
 class Test_Sessions:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    sessions_page = pg_sessions()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    sessions_page = SessionsPage()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, nurse):

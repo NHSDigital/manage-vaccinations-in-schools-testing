@@ -16,18 +16,18 @@ from libs.wrappers import (
     get_offset_date,
 )
 
-from .children import pg_children
-from .consent_hpv import pg_consent_hpv
-from .dashboard import pg_dashboard
+from .children import ChildrenPage
+from .consent_hpv import ConsentHPVPage
+from .dashboard import DashboardPage
 
 
-class pg_sessions:
+class SessionsPage:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    dashboard_page = pg_dashboard()
-    consent_page = pg_consent_hpv()
-    children_page = pg_children()
+    dashboard_page = DashboardPage()
+    consent_page = ConsentHPVPage()
+    children_page = ChildrenPage()
 
     LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
     LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME

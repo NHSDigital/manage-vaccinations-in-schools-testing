@@ -1,26 +1,26 @@
-from .children import pg_children
-from .consent_doubles import pg_consent_doubles
-from .consent_hpv import pg_consent_hpv
-from .dashboard import pg_dashboard
-from .import_records import pg_import_records
-from .login import pg_login
-from .programmes import pg_programmes
-from .school_moves import pg_school_moves
-from .sessions import pg_sessions
-from .unmatched import pg_unmatched
-from .vaccines import pg_vaccines
+from .children import ChildrenPage
+from .consent_doubles import ConsentDoublesPage
+from .consent_hpv import ConsentHPVPage
+from .dashboard import DashboardPage
+from .import_records import ImportRecordsPage
+from .login import LoginPage
+from .programmes import ProgrammesPage
+from .school_moves import SchoolMovesPage
+from .sessions import SessionsPage
+from .unmatched import UnmatchedPage
+from .vaccines import VaccinesPage
 
 
 __all__ = [
-    "pg_children",
-    "pg_consent_doubles",
-    "pg_consent_hpv",
-    "pg_dashboard",
-    "pg_import_records",
-    "pg_login",
-    "pg_programmes",
-    "pg_school_moves",
-    "pg_sessions",
-    "pg_unmatched",
-    "pg_vaccines",
+    "ChildrenPage",
+    "ConsentDoublesPage",
+    "ConsentHPVPage",
+    "DashboardPage",
+    "ImportRecordsPage",
+    "LoginPage",
+    "ProgrammesPage",
+    "SchoolMovesPage",
+    "SessionsPage",
+    "UnmatchedPage",
+    "VaccinesPage",
 ]

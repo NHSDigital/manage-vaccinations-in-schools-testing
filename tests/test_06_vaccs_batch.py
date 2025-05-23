@@ -1,13 +1,13 @@
 import pytest
 
 from libs.mavis_constants import vaccines
-from pages import pg_dashboard, pg_login, pg_vaccines
+from pages import DashboardPage, LoginPage, VaccinesPage
 
 
 class Test_Regression_Vaccines:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    vaccines_page = pg_vaccines()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    vaccines_page = VaccinesPage()
     doubles_vaccines = [
         vaccines.MENQUADFI,
         vaccines.MENVEO,

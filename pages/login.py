@@ -5,7 +5,7 @@ from libs.generic_constants import actions, properties
 from libs.mavis_constants import test_data_values
 
 
-class pg_login:
+class LoginPage:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
 

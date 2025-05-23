@@ -5,17 +5,17 @@ from pandas.core.series import Series
 
 from libs import CurrentExecution
 from libs.mavis_constants import test_data_file_paths
-from pages import pg_consent_hpv, pg_dashboard, pg_login, pg_sessions
+from pages import ConsentHPVPage, DashboardPage, LoginPage, SessionsPage
 from tests.helpers import parental_consent_helper_hpv
 
 
 class Test_Consent_HPV:
     ce = CurrentExecution()
-    pc = pg_consent_hpv()
+    pc = ConsentHPVPage()
     helper = parental_consent_helper_hpv.parental_consent_helper()
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    sessions_page = pg_sessions()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    sessions_page = SessionsPage()
 
     @pytest.fixture(scope="function")
     def get_hpv_session_link(self, start_mavis, nurse):

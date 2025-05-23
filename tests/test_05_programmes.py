@@ -7,22 +7,22 @@ from libs.mavis_constants import (
     vaccines,
 )
 from pages import (
-    pg_dashboard,
-    pg_import_records,
-    pg_login,
-    pg_programmes,
-    pg_sessions,
-    pg_vaccines,
+    DashboardPage,
+    ImportRecordsPage,
+    LoginPage,
+    ProgrammesPage,
+    SessionsPage,
+    VaccinesPage,
 )
 
 
 class Test_Programmes:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    sessions_page = pg_sessions()
-    programmes_page = pg_programmes()
-    import_records_page = pg_import_records()
-    vaccines_page = pg_vaccines()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    sessions_page = SessionsPage()
+    programmes_page = ProgrammesPage()
+    import_records_page = ImportRecordsPage()
+    vaccines_page = VaccinesPage()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_cohort_upload_and_reports(self, start_mavis, nurse):

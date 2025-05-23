@@ -1,11 +1,11 @@
 import pytest
 
-from pages import pg_dashboard, pg_login
+from pages import DashboardPage, LoginPage
 
 
 class Test_Login:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):

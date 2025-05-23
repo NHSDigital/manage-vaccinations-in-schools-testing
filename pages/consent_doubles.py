@@ -5,7 +5,7 @@ from libs.generic_constants import actions, properties
 from libs.mavis_constants import programmes, test_data_values
 
 
-class pg_consent_doubles:
+class ConsentDoublesPage:
     po = playwright_ops.playwright_operations()
 
     BTN_START_NOW: Final[str] = "Start now"

@@ -2,7 +2,7 @@ from libs import playwright_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 
 
-class pg_dashboard:
+class DashboardPage:
     po = playwright_ops.playwright_operations()
 
     LNK_PROGRAMMES: str = f"heading{escape_characters.SEPARATOR_CHAR}Programmes"

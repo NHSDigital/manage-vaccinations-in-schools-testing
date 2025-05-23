@@ -3,15 +3,15 @@ from typing import Final
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 
-from .children import pg_children
-from .dashboard import pg_dashboard
+from .children import ChildrenPage
+from .dashboard import DashboardPage
 
 
-class pg_unmatched:
+class UnmatchedPage:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
-    dashboard_page = pg_dashboard()
-    children_page = pg_children()
+    dashboard_page = DashboardPage()
+    children_page = ChildrenPage()
 
     LBL_NO_RECORDS: Final[str] = "!There are currently no unmatched consent responses."
     LBL_MAIN: Final[str] = "main"

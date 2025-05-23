@@ -1,14 +1,14 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths
-from pages import pg_dashboard, pg_login, pg_programmes, pg_sessions
+from pages import DashboardPage, LoginPage, ProgrammesPage, SessionsPage
 
 
 class Test_E2E:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    programmes_page = pg_programmes()
-    sessions_page = pg_sessions()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    programmes_page = ProgrammesPage()
+    sessions_page = SessionsPage()
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis, reset_environment, nurse):

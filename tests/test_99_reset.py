@@ -2,22 +2,22 @@ import pytest
 
 from libs.mavis_constants import test_data_file_paths, vaccines
 from pages import (
-    pg_dashboard,
-    pg_import_records,
-    pg_login,
-    pg_programmes,
-    pg_sessions,
-    pg_vaccines,
+    DashboardPage,
+    ImportRecordsPage,
+    LoginPage,
+    ProgrammesPage,
+    SessionsPage,
+    VaccinesPage,
 )
 
 
 class Test_Reset:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    programmes_page = pg_programmes()
-    sessions_page = pg_sessions()
-    vaccines_page = pg_vaccines()
-    import_records_page = pg_import_records()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    programmes_page = ProgrammesPage()
+    sessions_page = SessionsPage()
+    vaccines_page = VaccinesPage()
+    import_records_page = ImportRecordsPage()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, reset_environment, nurse):

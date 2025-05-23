@@ -5,7 +5,7 @@ from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
 
 
-class pg_consent_hpv:
+class ConsentHPVPage:
     po = playwright_ops.playwright_operations()
 
     BTN_START_NOW: Final[str] = "Start now"

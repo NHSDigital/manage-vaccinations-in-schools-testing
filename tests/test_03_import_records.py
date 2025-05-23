@@ -4,14 +4,14 @@ from libs.mavis_constants import (
     mavis_file_types,
     test_data_file_paths,
 )
-from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
+from pages import DashboardPage, ImportRecordsPage, LoginPage, SessionsPage
 
 
 class Test_ImportRecords:
-    login_page = pg_login()
-    dashboard_page = pg_dashboard()
-    import_records_page = pg_import_records()
-    sessions_page = pg_sessions()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    import_records_page = ImportRecordsPage()
+    sessions_page = SessionsPage()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, nurse):

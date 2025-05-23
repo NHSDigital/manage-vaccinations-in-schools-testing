@@ -4,13 +4,13 @@ from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
 
-from .dashboard import pg_dashboard
+from .dashboard import DashboardPage
 
 
-class pg_children:
+class ChildrenPage:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
-    dashboard_page = pg_dashboard()
+    dashboard_page = DashboardPage()
 
     CHILD1: Final[str] = "CFILTER1, CFilter1"
     LBL_CHILD_RECORD: Final[str] = "1 child"

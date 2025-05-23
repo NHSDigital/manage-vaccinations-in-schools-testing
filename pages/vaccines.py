@@ -5,7 +5,7 @@ from libs.generic_constants import actions, properties
 from libs.wrappers import get_current_datetime, get_offset_date
 
 
-class pg_vaccines:
+class VaccinesPage:
     po = playwright_ops.playwright_operations()
 
     LBL_VACCINE_NAME: Final[str] = "Gardasil 9 (HPV)"
