@@ -1,6 +1,5 @@
 import os
 
-from dotenv import load_dotenv
 from playwright.sync_api import Browser, Page
 
 
@@ -16,8 +15,6 @@ class CurrentExecution:
 
     @classmethod
     def get_env_values(cls):
-        load_dotenv()
-
         cls.capture_screenshot_flag = (
             os.environ.get("CAPTURE_SCREENSHOTS", "").lower() == "true"
         )
