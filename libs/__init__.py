@@ -11,7 +11,6 @@ class CurrentExecution:
     capture_screenshot_flag: bool = False
 
     screenshot_sequence: int = 0
-    child_list: list[str] = []
     file_record_count: int = 0
     session_id: str = ""
 
