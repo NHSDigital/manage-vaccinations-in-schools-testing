@@ -95,11 +95,11 @@ jobs:
         if: inputs.runDataPrep == true
         run: |
           mkdir -p generate-cohort-output
-          generate-cohort-output_dir=generate-cohort-output
+          generate_cohort_output_dir=generate-cohort-output
           jmeter/bin/jmeter -n -t performance-tests/E2E/generate-cohort.jmx \
-              -l $generate-cohort-output_dir/samples.jtl \
-              -j $generate-cohort-outputt_dir/jmeter.log \
-              -e -o $generate-cohort-output_dir/upload-report \
+              -l $generate_cohort_output_dir/samples.jtl \
+              -j $generate_cohort_output_dir/jmeter.log \
+              -e -o $generate_cohort_output_dir/upload-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JURN=${{inputs.URN}} \
               -JRowCount=${{inputs.row_count}}
