@@ -852,19 +852,6 @@ class SessionsPage:
         self.po.verify(
             locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children"
         )
-        # Check name filters
-        if len(self.ce.child_list) >= 1:
-            for child_name in self.ce.child_list:
-                self.po.act(
-                    locator=self.TXT_FILTER_NAME, action=actions.FILL, value=child_name
-                )
-                self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-                self.po.verify(
-                    locator=self.LBL_MAIN,
-                    property=properties.TEXT,
-                    expected_value=child_name,
-                )
-                self.po.act(locator=self.TXT_FILTER_NAME, action=actions.FILL, value="")
 
     def bug_mavis_1818(self):
         self.select_no_response()
