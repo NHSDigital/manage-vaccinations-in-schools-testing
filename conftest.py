@@ -235,3 +235,6 @@ def pytest_runtest_logreport(report):
 
         with open(audit_log_paths.TEST_LEVEL_LOG, "a") as log_file:
             log_file.write(f"{timestamp} | {test_name} | {test_result}\n")
+
+
+pytest_plugins = ["pages"]

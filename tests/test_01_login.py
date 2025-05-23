@@ -1,11 +1,5 @@
 import pytest
 
-from pages import DashboardPage, LoginPage
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_tests(start_mavis):
@@ -23,13 +17,13 @@ test_parameters = [
 @pytest.mark.login
 @pytest.mark.order(101)
 @pytest.mark.parametrize("user,pwd,expected_message", test_parameters)
-def test_invalid(user, pwd, expected_message):
+def test_invalid(user, pwd, expected_message, login_page):
     login_page.try_invalid_login(user=user, pwd=pwd, expected_message=expected_message)
 
 
 @pytest.mark.login
 @pytest.mark.order(102)
-def test_home_page_links_for_nurse(nurse):
+def test_home_page_links_for_nurse(nurse, login_page, dashboard_page):
     login_page.go_to_login_page()
     login_page.log_in(**nurse)
     dashboard_page.verify_all_expected_links_for_nurse()
@@ -38,7 +32,7 @@ def test_home_page_links_for_nurse(nurse):
 
 @pytest.mark.login
 @pytest.mark.order(103)
-def test_home_page_links_for_superuser(superuser):
+def test_home_page_links_for_superuser(superuser, login_page, dashboard_page):
     login_page.go_to_login_page()
     login_page.log_in(**superuser)
     dashboard_page.verify_all_expected_links_for_superuser()
@@ -47,7 +41,7 @@ def test_home_page_links_for_superuser(superuser):
 
 @pytest.mark.login
 @pytest.mark.order(104)
-def test_home_page_links_for_admin(admin):
+def test_home_page_links_for_admin(admin, login_page, dashboard_page):
     login_page.go_to_login_page()
     login_page.log_in(**admin)
     dashboard_page.verify_all_expected_links_for_admin()

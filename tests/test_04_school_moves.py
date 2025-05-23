@@ -1,17 +1,10 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths
-from pages import DashboardPage, LoginPage, SchoolMovesPage, SessionsPage
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-sessions_page = SessionsPage()
-school_moves_page = SchoolMovesPage()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, reset_environment, nurse):
+def setup_tests(start_mavis, reset_environment, nurse, login_page):
     reset_environment()
 
     login_page.log_in(**nurse)
@@ -20,7 +13,7 @@ def setup_tests(start_mavis, reset_environment, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_move_and_ignore(setup_tests: None):
+def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
@@ -52,7 +45,7 @@ def setup_move_and_ignore(setup_tests: None):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_move_to_homeschool_and_unknown(setup_tests: None):
+def setup_move_to_homeschool_and_unknown(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
@@ -79,7 +72,7 @@ def setup_move_to_homeschool_and_unknown(setup_tests: None):
 
 @pytest.mark.schoolmoves
 @pytest.mark.order(401)
-def test_confirm_and_ignore(setup_move_and_ignore):
+def test_confirm_and_ignore(setup_move_and_ignore, school_moves_page):
     school_moves_page.confirm_and_ignore_moves()
 
 
@@ -93,7 +86,7 @@ def test_to_homeschool_and_unknown(setup_move_to_homeschool_and_unknown):
 
 @pytest.mark.schoolmoves
 @pytest.mark.order(403)
-def test_download_report(setup_move_and_ignore):
+def test_download_report(setup_move_and_ignore, dashboard_page, school_moves_page):
     dashboard_page.go_to_dashboard()
     dashboard_page.click_school_moves()
     school_moves_page.download_and_verify_report()

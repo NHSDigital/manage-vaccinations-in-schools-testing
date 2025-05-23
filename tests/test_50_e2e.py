@@ -1,17 +1,12 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths
-from pages import DashboardPage, LoginPage, ProgrammesPage, SessionsPage
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-programmes_page = ProgrammesPage()
-sessions_page = SessionsPage()
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup_tests(start_mavis, reset_environment, nurse):
+def setup_tests(
+    start_mavis, reset_environment, nurse, login_page, dashboard_page, sessions_page
+):
     reset_environment()
 
     login_page.log_in(**nurse)
@@ -24,7 +19,7 @@ def setup_tests(start_mavis, reset_environment, nurse):
 
 @pytest.mark.e2e
 @pytest.mark.order(5001)
-def test_e2e():
+def test_e2e(dashboard_page, programmes_page, sessions_page):
     dashboard_page.click_programmes()
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_E2E_1)
     dashboard_page.go_to_dashboard()

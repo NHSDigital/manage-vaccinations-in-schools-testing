@@ -6,26 +6,10 @@ from libs.mavis_constants import (
     test_data_file_paths,
     vaccines,
 )
-from pages import (
-    DashboardPage,
-    ImportRecordsPage,
-    LoginPage,
-    ProgrammesPage,
-    SessionsPage,
-    VaccinesPage,
-)
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-sessions_page = SessionsPage()
-programmes_page = ProgrammesPage()
-import_records_page = ImportRecordsPage()
-vaccines_page = VaccinesPage()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_cohort_upload_and_reports(start_mavis, nurse):
+def setup_cohort_upload_and_reports(start_mavis, nurse, dashboard_page, login_page):
     login_page.log_in(**nurse)
     dashboard_page.click_programmes()
     yield
@@ -33,7 +17,9 @@ def setup_cohort_upload_and_reports(start_mavis, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_record_a_vaccine(start_mavis, nurse):
+def setup_record_a_vaccine(
+    start_mavis, nurse, dashboard_page, login_page, sessions_page
+):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -49,7 +35,9 @@ def setup_record_a_vaccine(start_mavis, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mavis_1729(start_mavis, nurse):
+def setup_mavis_1729(
+    start_mavis, nurse, dashboard_page, import_records_page, login_page, sessions_page
+):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -76,7 +64,15 @@ def setup_mavis_1729(start_mavis, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mav_854(start_mavis, nurse):
+def setup_mav_854(
+    start_mavis,
+    nurse,
+    dashboard_page,
+    import_records_page,
+    login_page,
+    sessions_page,
+    vaccines_page,
+):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_vaccines()
@@ -103,7 +99,9 @@ def setup_mav_854(start_mavis, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mav_nnn(start_mavis, admin):
+def setup_mav_nnn(
+    start_mavis, admin, dashboard_page, login_page, import_records_page, sessions_page
+):
     try:
         login_page.log_in(**admin)
         dashboard_page.click_sessions()
@@ -123,19 +121,19 @@ def setup_mav_nnn(start_mavis, admin):
 
 @pytest.mark.cohorts
 @pytest.mark.order(501)
-def test_cohort_upload_positive(setup_cohort_upload_and_reports):
+def test_cohort_upload_positive(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_POSITIVE)
 
 
 @pytest.mark.cohorts
 @pytest.mark.order(502)
-def test_cohort_upload_negative(setup_cohort_upload_and_reports):
+def test_cohort_upload_negative(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_NEGATIVE)
 
 
 @pytest.mark.cohorts
 @pytest.mark.order(503)
-def test_cohorts_file_structure(setup_cohort_upload_and_reports):
+def test_cohorts_file_structure(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(
         file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE
     )
@@ -143,27 +141,29 @@ def test_cohorts_file_structure(setup_cohort_upload_and_reports):
 
 @pytest.mark.cohorts
 @pytest.mark.order(504)
-def test_cohorts_no_record(setup_cohort_upload_and_reports):
+def test_cohorts_no_record(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
 
 
 @pytest.mark.cohorts
 @pytest.mark.order(505)
-def test_cohorts_empty_file(setup_cohort_upload_and_reports):
+def test_cohorts_empty_file(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
 
 
 @pytest.mark.cohorts
 @pytest.mark.bug
 @pytest.mark.order(506)
-def test_cohorts_readd_to_cohort(setup_cohort_upload_and_reports):  # MAV-909
+def test_cohorts_readd_to_cohort(
+    setup_cohort_upload_and_reports, programmes_page
+):  # MAV-909
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
     programmes_page.verify_mav_909()
 
 
 @pytest.mark.rav
 @pytest.mark.order(526)
-def test_rav_triage_positive(setup_record_a_vaccine):
+def test_rav_triage_positive(setup_record_a_vaccine, sessions_page):
     sessions_page.update_triage_outcome_positive(
         file_paths=test_data_file_paths.COHORTS_FULL_NAME
     )
@@ -171,7 +171,7 @@ def test_rav_triage_positive(setup_record_a_vaccine):
 
 @pytest.mark.rav
 @pytest.mark.order(527)
-def test_rav_triage_consent_refused(setup_record_a_vaccine):
+def test_rav_triage_consent_refused(setup_record_a_vaccine, sessions_page):
     sessions_page.update_triage_outcome_consent_refused(
         file_paths=test_data_file_paths.COHORTS_FULL_NAME
     )
@@ -180,14 +180,14 @@ def test_rav_triage_consent_refused(setup_record_a_vaccine):
 @pytest.mark.rav
 @pytest.mark.bug
 @pytest.mark.order(528)
-def test_rav_edit_dose_to_not_given(setup_mavis_1729):
+def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page):
     programmes_page.edit_dose_to_not_given()  # MAVIS-1729
 
 
 @pytest.mark.rav
 @pytest.mark.bug
 @pytest.mark.order(529)
-def test_rav_verify_excel_mav_854(setup_mav_854):
+def test_rav_verify_excel_mav_854(setup_mav_854, programmes_page):
     programmes_page.verify_mav_854()  # MAV-854
 
 
@@ -201,13 +201,17 @@ def test_rav_verify_banners(setup_mav_nnn):
 
 @pytest.mark.reports
 @pytest.mark.order(551)
-def test_verify_careplus_report_for_hpv(setup_cohort_upload_and_reports):
+def test_verify_careplus_report_for_hpv(
+    setup_cohort_upload_and_reports, programmes_page
+):
     programmes_page.verify_careplus_report_format(for_programme=programmes.HPV)
 
 
 @pytest.mark.reports
 @pytest.mark.order(552)
-def test_verify_careplus_report_for_doubles(setup_cohort_upload_and_reports):
+def test_verify_careplus_report_for_doubles(
+    setup_cohort_upload_and_reports, dashboard_page, programmes_page
+):
     programmes_page.verify_careplus_report_format(for_programme=programmes.MENACWY)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_programmes()
@@ -216,13 +220,15 @@ def test_verify_careplus_report_for_doubles(setup_cohort_upload_and_reports):
 
 @pytest.mark.reports
 @pytest.mark.order(553)
-def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports):
+def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.verify_csv_report_format(for_programme=programmes.HPV)
 
 
 @pytest.mark.reports
 @pytest.mark.order(554)
-def test_verify_csv_report_for_doubles(setup_cohort_upload_and_reports):
+def test_verify_csv_report_for_doubles(
+    setup_cohort_upload_and_reports, dashboard_page, programmes_page
+):
     programmes_page.verify_csv_report_format(for_programme=programmes.MENACWY)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_programmes()
@@ -231,5 +237,7 @@ def test_verify_csv_report_for_doubles(setup_cohort_upload_and_reports):
 
 @pytest.mark.reports
 @pytest.mark.order(555)
-def test_verify_systmone_report_for_hpv(setup_cohort_upload_and_reports):
+def test_verify_systmone_report_for_hpv(
+    setup_cohort_upload_and_reports, programmes_page
+):
     programmes_page.verify_systmone_report_format(for_programme=programmes.HPV)
