@@ -1,12 +1,12 @@
 from libs import CurrentExecution, testdata_ops
 from libs.mavis_constants import test_data_file_paths, test_data_values
-from pages import pg_consent_doubles
+from pages import ConsentDoublesPage
 
 
 class parental_consent_helper:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    pc = pg_consent_doubles.pg_consent_doubles()
+    pc = ConsentDoublesPage()
 
     def __init__(self):
         self.df = self.tdo.read_spreadsheet(

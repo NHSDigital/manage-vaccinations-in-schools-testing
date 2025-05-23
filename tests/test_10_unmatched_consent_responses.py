@@ -2,15 +2,15 @@ import pytest
 
 from libs import CurrentExecution
 from libs.mavis_constants import test_data_file_paths
-from pages import pg_dashboard, pg_login, pg_programmes, pg_unmatched
+from pages import DashboardPage, LoginPage, ProgrammesPage, UnmatchedPage
 
 
 class Test_Unmatched_Consent_Responses:
     ce = CurrentExecution()
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    unmatched_page = pg_unmatched.pg_unmatched()
-    programmes_page = pg_programmes.pg_programmes()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    unmatched_page = UnmatchedPage()
+    programmes_page = ProgrammesPage()
 
     # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS (HPV) TO HAVE RUN FIRST
     # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS

@@ -1,11 +1,11 @@
 from typing import Final
 
 from libs import playwright_ops
-from libs.generic_constants import actions, properties, wait_time
-from libs.mavis_constants import test_data_values
+from libs.generic_constants import actions, properties
+from libs.mavis_constants import programmes, test_data_values
 
 
-class pg_consent_hpv:
+class ConsentDoublesPage:
     po = playwright_ops.playwright_operations()
 
     BTN_START_NOW: Final[str] = "Start now"
@@ -34,8 +34,11 @@ class pg_consent_hpv:
     CHK_MOBILE_ONLY_TEXT: Final[str] = "I can only receive text"
     CHK_MOBILE_ONLY_VOICE: Final[str] = "I can only receive voice calls"
     CHK_MOBILE_OTHER: Final[str] = "Other"
-    CHK_CONSENT_AGREE: Final[str] = "Yes, I agree"
-    CHK_CONSENT_DISAGREE: Final[str] = "No"
+    RDO_CONSENT_BOTH: Final[str] = "Yes, I agree to them having"
+    RDO_CONSENT_ONE: Final[str] = "I agree to them having one of"
+    RDO_CONSENT_MENACWY: Final[str] = "MenACWY"
+    RDO_CONSENT_TDIPV: Final[str] = "Td/IPV"
+    RDO_CONSENT_NONE: Final[str] = "No"
     RDO_GP_REGISTERED: Final[str] = "Yes, they are registered with a GP"
     RDO_GP_NOT_REGISTERED: Final[str] = "No, they are not registered with a GP"
     RDO_GP_NOT_KNOWN: Final[str] = "I don’t know"
@@ -60,7 +63,7 @@ class pg_consent_hpv:
     RDO_NO_THEY_DO_NOT_AGREE: Final[str] = "No, they do not agree"
     RDO_NO_RESPONSE: Final[str] = "No response"
     RDO_YES_SAFE_TO_VACCINATE: Final[str] = "Yes, it’s safe to vaccinate"
-    LBL_CONSENT_RECORDED: Final[str] = "Consent recorded for CLAST, CFirst"
+    LBL_CONSENT_RECORDED: Final[str] = "Consent recorded for CF"
     LBL_MAIN: Final[str] = "main"
     RDO_PARENT1_DAD: Final[str] = "Parent1 (Dad)"
     RDO_PARENT2_MUM: Final[str] = "Parent2 (Mum)"
@@ -169,14 +172,31 @@ class pg_consent_hpv:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_consent_for_vaccination(
-        self, scenario_id: str, consented: bool = True
+        self, scenario_id: str, consent_for: str
     ) -> None:
-        if consented:
-            self.po.act(locator=self.CHK_CONSENT_AGREE, action=actions.CHECKBOX_CHECK)
-        else:
-            self.po.act(
-                locator=self.CHK_CONSENT_DISAGREE, action=actions.CHECKBOX_CHECK
-            )
+        match consent_for.lower():
+            case "both":
+                self.po.act(
+                    locator=self.RDO_CONSENT_BOTH, action=actions.RADIO_BUTTON_SELECT
+                )
+            case "menacwy":
+                self.po.act(
+                    locator=self.RDO_CONSENT_ONE, action=actions.RADIO_BUTTON_SELECT
+                )
+                self.po.act(
+                    locator=self.RDO_CONSENT_MENACWY, action=actions.RADIO_BUTTON_SELECT
+                )
+            case "td/ipv":
+                self.po.act(
+                    locator=self.RDO_CONSENT_ONE, action=actions.RADIO_BUTTON_SELECT
+                )
+                self.po.act(
+                    locator=self.RDO_CONSENT_TDIPV, action=actions.RADIO_BUTTON_SELECT
+                )
+            case _:
+                self.po.act(
+                    locator=self.RDO_CONSENT_NONE, action=actions.RADIO_BUTTON_SELECT
+                )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_gp_details(
@@ -204,6 +224,20 @@ class pg_consent_hpv:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
+    def select_bleeding_disorder(
+        self, scenario_id: str, bleeding_disorder_details: str = test_data_values.EMPTY
+    ) -> None:
+        if bleeding_disorder_details == test_data_values.EMPTY:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
+        else:
+            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
+            self.po.act(
+                locator=self.TXT_GIVE_DETAILS,
+                action=actions.FILL,
+                value=bleeding_disorder_details,
+            )
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+
     def select_severe_allergies(
         self, scenario_id: str, allergy_details: str = test_data_values.EMPTY
     ) -> None:
@@ -215,20 +249,6 @@ class pg_consent_hpv:
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
                 value=allergy_details,
-            )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    def select_medical_condition(
-        self, scenario_id: str, medical_condition_details: str = test_data_values.EMPTY
-    ) -> None:
-        if medical_condition_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
-            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.act(
-                locator=self.TXT_GIVE_DETAILS,
-                action=actions.FILL,
-                value=medical_condition_details,
             )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
@@ -257,6 +277,36 @@ class pg_consent_hpv:
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
                 value=extra_support_details,
+            )
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+
+    def vaccinated_in_past(
+        self, scenario_id: str, vaccs_in_past_details: str = test_data_values.EMPTY
+    ) -> None:
+        if vaccs_in_past_details == test_data_values.EMPTY:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
+        else:
+            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
+            self.po.act(
+                locator=self.TXT_GIVE_DETAILS,
+                action=actions.FILL,
+                value=vaccs_in_past_details,
+            )
+        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+
+    def other_vaccs_in_past(
+        self,
+        scenario_id: str,
+        other_vaccs_in_past_details: str = test_data_values.EMPTY,
+    ) -> None:
+        if other_vaccs_in_past_details == test_data_values.EMPTY:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
+        else:
+            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
+            self.po.act(
+                locator=self.TXT_GIVE_DETAILS,
+                action=actions.FILL,
+                value=other_vaccs_in_past_details,
             )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
@@ -420,7 +470,9 @@ class pg_consent_hpv:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.check_phone_options(scenario_id="")
 
-    def parent_1_verbal_positive(self, change_phone: bool = True):
+    def parent_1_verbal_positive(
+        self, change_phone: bool = True, programme_name: str = programmes.MENACWY
+    ):
         self.po.act(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
@@ -430,7 +482,7 @@ class pg_consent_hpv:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.set_health_questions_no()
+        self.set_health_questions_no(programme_name=programme_name)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
             locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT
@@ -442,8 +494,6 @@ class pg_consent_hpv:
             self.po.act(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
             self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
             self.check_phone_options(scenario_id="")
-        else:
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
     def parent_1_online_positive(self):
@@ -480,23 +530,49 @@ class pg_consent_hpv:
         )  # Safe to vaccinate
         self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
-    def set_health_questions_no(self):
-        self.po.act(
-            locator="get_by_role('group', name='Does your child have any severe allergies?').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.act(
-            locator="get_by_role('group', name='Does your child have any medical conditions for which they receive treatment?').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.act(
-            locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
-        self.po.act(
-            locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
-            action=actions.CHAIN_LOCATOR_ACTION,
-        )
+    def set_health_questions_no(self, programme_name: str):
+        if programme_name == programmes.MENACWY:
+            self.po.act(
+                locator="get_by_role('group', name='Does your child have a bleeding disorder or another medical condition they').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Does your child have any').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Has your child had a').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+        else:
+            self.po.act(
+                locator="get_by_role('group', name='Does your child have a bleeding disorder or another medical condition they').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Does your child have any').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Has your child ever had a').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Does your child need extra').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
+            self.po.act(
+                locator="get_by_role('group', name='Has your child had a tetanus').get_by_label('No').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
 
     def child_consent_verbal_positive(self):
         self.po.act(

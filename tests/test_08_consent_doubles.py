@@ -4,17 +4,18 @@ import pytest
 from pandas.core.series import Series
 
 from libs import CurrentExecution
-from pages import pg_consent_hpv, pg_dashboard, pg_login, pg_sessions
 from tests.helpers import parental_consent_helper_doubles
+
+from pages import ConsentHPVPage, DashboardPage, LoginPage, SessionsPage
 
 
 class Test_Consent_Doubles:
     ce = CurrentExecution()
-    pc = pg_consent_hpv.pg_consent_hpv()
+    pc = ConsentHPVPage()
     helper = parental_consent_helper_doubles.parental_consent_helper()
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    sessions_page = pg_sessions.pg_sessions()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    sessions_page = SessionsPage()
 
     @pytest.fixture(scope="function")
     def get_doubles_session_link(self, start_mavis, nurse):

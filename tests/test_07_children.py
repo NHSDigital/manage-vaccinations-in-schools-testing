@@ -2,22 +2,22 @@ import pytest
 
 from libs.mavis_constants import mavis_file_types, test_data_file_paths
 from pages import (
-    pg_children,
-    pg_dashboard,
-    pg_import_records,
-    pg_login,
-    pg_programmes,
-    pg_sessions,
+    ChildrenPage,
+    DashboardPage,
+    ImportRecordsPage,
+    LoginPage,
+    ProgrammesPage,
+    SessionsPage,
 )
 
 
 class Test_Children:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    children_page = pg_children.pg_children()
-    sessions_page = pg_sessions.pg_sessions()
-    import_records_page = pg_import_records.pg_import_records()
-    programmes_page = pg_programmes.pg_programmes()
+    login_page = LoginPage()
+    dashboard_page = DashboardPage()
+    children_page = ChildrenPage()
+    sessions_page = SessionsPage()
+    import_records_page = ImportRecordsPage()
+    programmes_page = ProgrammesPage()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, nurse):
