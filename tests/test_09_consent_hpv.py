@@ -165,7 +165,6 @@ def setup_mavis_1818(start_mavis, nurse):
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
 def test_consent_workflow_hpv(
-    self,
     get_hpv_session_link: str,
     scenario_data: Iterable[tuple[Hashable, Series]],
 ):
