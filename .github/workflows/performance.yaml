@@ -1,4 +1,4 @@
-name: Performance
+name: Performance tests
 
 on:
   push:
