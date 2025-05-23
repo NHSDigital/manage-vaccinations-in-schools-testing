@@ -6,7 +6,6 @@ from libs import CurrentExecution, playwright_ops, testdata_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import (
     programmes,
-    record_limit,
     report_headers,
     test_data_file_paths,
 )
@@ -16,6 +15,7 @@ from .children import ChildrenPage
 from .consent_doubles import ConsentDoublesPage
 from .consent_hpv import ConsentHPVPage
 from .dashboard import DashboardPage
+from .import_records import ImportRecordsPage
 from .sessions import SessionsPage
 
 
@@ -28,6 +28,7 @@ class ProgrammesPage:
     children_page = ChildrenPage()
     consent_hpv = ConsentHPVPage()
     consent_doubles = ConsentDoublesPage()
+    import_records_page = ImportRecordsPage()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
@@ -159,9 +160,11 @@ class ProgrammesPage:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+
+        if self.import_records_page.is_processing_in_background():
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime(truncated=True)
+
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_cohorts(self, file_paths: str, wait_long: bool = False):
@@ -174,12 +177,14 @@ class ProgrammesPage:
         self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.record_upload_time()
-        if wait_long:
-            self.po.act(locator=None, action=actions.WAIT, value="14m")
-        else:
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+
+        if self.import_records_page.is_processing_in_background():
+            if wait_long:
+                self.po.act(locator=None, action=actions.WAIT, value="14m")
+            else:
+                self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime()
+
         self.verify_upload_output(file_path=_output_file_path)
 
     def edit_dose_to_not_given(self):

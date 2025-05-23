@@ -1,10 +1,7 @@
 import pytest
 
-from libs import CurrentExecution
 from libs.mavis_constants import test_data_file_paths
 
-
-ce = CurrentExecution()
 
 # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS (HPV) TO HAVE RUN FIRST
 # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS
