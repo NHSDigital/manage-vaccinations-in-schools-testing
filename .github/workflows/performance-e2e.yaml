@@ -17,26 +17,30 @@ on:
         required: true
         type: boolean
         default: 'true'
-      input_file:
-        description: "Require: Input file name used for all steps."
+      URN:
+        description: "Required: what URN to run the test against."
         required: true
         type: string
       duration:
         description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
-        type: number
+        type: string
       threads:
         description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
         required: false
-        type: number
+        type: string
       ramp_up:
         description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
         required: false
-        type: number
+        type: string
       vaccination_loop:
         description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
         required: false
-        type: number
+        type: string
+      row_count:
+        description: "Optional (default 1000) number of rows in the cohort file."
+        required: false
+        type: string
 
 
 # env:
@@ -87,6 +91,19 @@ jobs:
         id: timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
+      - name: Create new cohort file
+        if: inputs.runDataPrep == true
+        run: |
+          mkdir -p generate-cohort-output
+          generate-cohort-output_dir=generate-cohort-output
+          jmeter/bin/jmeter -n -t performance-tests/E2E/generate-cohort.jmx \
+              -l $generate-cohort-output_dir/samples.jtl \
+              -j $generate-cohort-outputt_dir/jmeter.log \
+              -e -o $generate-cohort-output_dir/upload-report \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JURN=${{inputs.URN}} \
+              -JRowCount=${{inputs.row_count}}
+
       - name: Run file import for new file
         if: inputs.runDataPrep == true
         run: |
@@ -97,7 +114,7 @@ jobs:
               -j $import_output_dir/jmeter.log \
               -e -o $import_output_dir/upload-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile=${{inputs.input_file}}
+              -JInputFile="cohortnew.csv"
 
       - name: Run Consent Journey for imported records
         if: inputs.runDataPrep == true
@@ -109,7 +126,7 @@ jobs:
               -j $consent_output_dir/jmeter.log \
               -e -o $consent_output_dir/consent-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile=${{inputs.input_file}}
+              -JInputFile="cohortnew.csv"
 
       - name: Run nurse journey JMeter test
         if: inputs.runNurse == true
@@ -125,7 +142,7 @@ jobs:
               -JThreads=${{inputs.threads}} \
               -JRampUp=${{inputs.ramp_up}} \
               -JVaccinationLoop=${{inputs.vaccination_loop}} \
-              -JInputFile=${{inputs.input_file}}
+              -JInputFile="cohortnew.csv"
 
       - name: Upload consent journey JMeter output
         if: inputs.runDataPrep == true
