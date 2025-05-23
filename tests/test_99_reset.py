@@ -12,12 +12,12 @@ from pages import (
 
 
 class Test_Reset:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    programmes_page = pg_programmes.pg_programmes()
-    sessions_page = pg_sessions.pg_sessions()
-    vaccines_page = pg_vaccines.pg_vaccines()
-    import_records_page = pg_import_records.pg_import_records()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    programmes_page = pg_programmes()
+    sessions_page = pg_sessions()
+    vaccines_page = pg_vaccines()
+    import_records_page = pg_import_records()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, reset_environment, nurse):

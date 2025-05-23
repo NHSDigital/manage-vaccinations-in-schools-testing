@@ -6,7 +6,7 @@ from pages import pg_consent_hpv
 class parental_consent_helper:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    pc = pg_consent_hpv.pg_consent_hpv()
+    pc = pg_consent_hpv()
 
     def __init__(self):
         self.df = self.tdo.read_spreadsheet(

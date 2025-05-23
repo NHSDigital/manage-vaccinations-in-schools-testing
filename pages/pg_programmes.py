@@ -11,24 +11,23 @@ from libs.mavis_constants import (
     test_data_file_paths,
 )
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
-from pages import (
-    pg_children,
-    pg_consent_doubles,
-    pg_consent_hpv,
-    pg_dashboard,
-    pg_sessions,
-)
+
+from .pg_children import pg_children
+from .pg_consent_doubles import pg_consent_doubles
+from .pg_consent_hpv import pg_consent_hpv
+from .pg_dashboard import pg_dashboard
+from .pg_sessions import pg_sessions
 
 
 class pg_programmes:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    sessions_page = pg_sessions.pg_sessions()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    children_page = pg_children.pg_children()
-    consent_hpv = pg_consent_hpv.pg_consent_hpv()
-    consent_doubles = pg_consent_doubles.pg_consent_doubles()
+    sessions_page = pg_sessions()
+    dashboard_page = pg_dashboard()
+    children_page = pg_children()
+    consent_hpv = pg_consent_hpv()
+    consent_doubles = pg_consent_doubles()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"

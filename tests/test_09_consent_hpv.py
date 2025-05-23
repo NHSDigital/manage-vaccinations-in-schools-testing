@@ -11,11 +11,11 @@ from tests.helpers import parental_consent_helper_hpv
 
 class Test_Consent_HPV:
     ce = CurrentExecution()
-    pc = pg_consent_hpv.pg_consent_hpv()
+    pc = pg_consent_hpv()
     helper = parental_consent_helper_hpv.parental_consent_helper()
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    sessions_page = pg_sessions.pg_sessions()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    sessions_page = pg_sessions()
 
     @pytest.fixture(scope="function")
     def get_hpv_session_link(self, start_mavis, nurse):

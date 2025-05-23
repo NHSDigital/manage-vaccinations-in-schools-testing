@@ -5,10 +5,10 @@ from pages import pg_dashboard, pg_login, pg_school_moves, pg_sessions
 
 
 class Test_School_Moves:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    sessions_page = pg_sessions.pg_sessions()
-    school_moves_page = pg_school_moves.pg_school_moves()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    sessions_page = pg_sessions()
+    school_moves_page = pg_school_moves()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, reset_environment, nurse):

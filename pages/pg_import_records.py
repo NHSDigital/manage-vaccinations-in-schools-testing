@@ -4,17 +4,21 @@ from libs import CurrentExecution, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import mavis_file_types, record_limit
 from libs.wrappers import get_link_formatted_date_time
-from pages import pg_children, pg_dashboard, pg_sessions, pg_vaccines
+
+from .pg_children import pg_children
+from .pg_dashboard import pg_dashboard
+from .pg_sessions import pg_sessions
+from .pg_vaccines import pg_vaccines
 
 
 class pg_import_records:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    sessions_page = pg_sessions.pg_sessions()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    children_page = pg_children.pg_children()
-    vaccines_page = pg_vaccines.pg_vaccines()
+    sessions_page = pg_sessions()
+    dashboard_page = pg_dashboard()
+    children_page = pg_children()
+    vaccines_page = pg_vaccines()
 
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 

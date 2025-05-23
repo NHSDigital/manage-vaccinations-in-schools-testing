@@ -5,10 +5,10 @@ from pages import pg_dashboard, pg_login, pg_programmes, pg_sessions
 
 
 class Test_E2E:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    programmes_page = pg_programmes.pg_programmes()
-    sessions_page = pg_sessions.pg_sessions()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    programmes_page = pg_programmes()
+    sessions_page = pg_sessions()
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis, reset_environment, nurse):

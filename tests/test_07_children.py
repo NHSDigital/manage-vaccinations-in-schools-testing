@@ -12,12 +12,12 @@ from pages import (
 
 
 class Test_Children:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    children_page = pg_children.pg_children()
-    sessions_page = pg_sessions.pg_sessions()
-    import_records_page = pg_import_records.pg_import_records()
-    programmes_page = pg_programmes.pg_programmes()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    children_page = pg_children()
+    sessions_page = pg_sessions()
+    import_records_page = pg_import_records()
+    programmes_page = pg_programmes()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, nurse):

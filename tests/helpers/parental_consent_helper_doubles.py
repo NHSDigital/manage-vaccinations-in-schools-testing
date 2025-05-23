@@ -6,7 +6,7 @@ from pages import pg_consent_doubles
 class parental_consent_helper:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    pc = pg_consent_doubles.pg_consent_doubles()
+    pc = pg_consent_doubles()
 
     def __init__(self):
         self.df = self.tdo.read_spreadsheet(

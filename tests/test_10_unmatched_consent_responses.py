@@ -7,10 +7,10 @@ from pages import pg_dashboard, pg_login, pg_programmes, pg_unmatched
 
 class Test_Unmatched_Consent_Responses:
     ce = CurrentExecution()
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    unmatched_page = pg_unmatched.pg_unmatched()
-    programmes_page = pg_programmes.pg_programmes()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    unmatched_page = pg_unmatched()
+    programmes_page = pg_programmes()
 
     # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS (HPV) TO HAVE RUN FIRST
     # RUN THE CONSENT WORKFLOW TESTS OR THE FULL PACK BEFORE RUNNING THESE TESTS

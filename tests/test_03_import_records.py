@@ -8,10 +8,10 @@ from pages import pg_dashboard, pg_import_records, pg_login, pg_sessions
 
 
 class Test_ImportRecords:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    import_records_page = pg_import_records.pg_import_records()
-    sessions_page = pg_sessions.pg_sessions()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
+    import_records_page = pg_import_records()
+    sessions_page = pg_sessions()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_tests(self, start_mavis, nurse):

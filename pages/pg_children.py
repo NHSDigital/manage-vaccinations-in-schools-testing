@@ -3,13 +3,14 @@ from typing import Final
 from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
-from pages import pg_dashboard
+
+from .pg_dashboard import pg_dashboard
 
 
 class pg_children:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
-    dashboard_page = pg_dashboard.pg_dashboard()
+    dashboard_page = pg_dashboard()
 
     CHILD1: Final[str] = "CFILTER1, CFilter1"
     LBL_CHILD_RECORD: Final[str] = "1 child"

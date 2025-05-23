@@ -15,16 +15,19 @@ from libs.wrappers import (
     get_link_formatted_date_time,
     get_offset_date,
 )
-from pages import pg_children, pg_consent_hpv, pg_dashboard
+
+from .pg_children import pg_children
+from .pg_consent_hpv import pg_consent_hpv
+from .pg_dashboard import pg_dashboard
 
 
 class pg_sessions:
     po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    dashboard_page = pg_dashboard.pg_dashboard()
-    consent_page = pg_consent_hpv.pg_consent_hpv()
-    children_page = pg_children.pg_children()
+    dashboard_page = pg_dashboard()
+    consent_page = pg_consent_hpv()
+    children_page = pg_children()
 
     LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
     LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME

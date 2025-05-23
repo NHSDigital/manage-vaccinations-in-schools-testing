@@ -4,8 +4,8 @@ from pages import pg_dashboard, pg_login
 
 
 class Test_Login:
-    login_page = pg_login.pg_login()
-    dashboard_page = pg_dashboard.pg_dashboard()
+    login_page = pg_login()
+    dashboard_page = pg_dashboard()
 
     @pytest.fixture(scope="function", autouse=True)
     def setup_tests(self, start_mavis: None):
