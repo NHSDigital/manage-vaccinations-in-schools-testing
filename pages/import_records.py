@@ -3,7 +3,7 @@ from typing import Final, Optional
 from libs import CurrentExecution, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.playwright_ops import PlaywrightOperations
-from libs.mavis_constants import mavis_file_types, record_limit
+from libs.mavis_constants import mavis_file_types, test_data_values
 from libs.wrappers import get_link_formatted_date_time
 
 from .children import ChildrenPage
@@ -39,6 +39,14 @@ class ImportRecordsPage:
         self.vaccines_page = VaccinesPage(playwright_operations)
         self.upload_time = ""
 
+    @property
+    def alert_success(self):
+        return self.ce.page.get_by_text("Import processing started")
+
+    def is_processing_in_background(self):
+        self.ce.page.wait_for_load_state()
+        return self.alert_success.is_visible()
+
     def import_child_records(
         self, file_paths: str, verify_on_children_page: bool = False
     ):
@@ -62,9 +70,11 @@ class ImportRecordsPage:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._record_upload_time()
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+
+        if self.is_processing_in_background():
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self._click_uploaded_file_datetime(truncated=True)
+
         self._verify_upload_output(file_path=_output_file_path)
         if verify_on_children_page:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
@@ -94,7 +104,7 @@ class ImportRecordsPage:
         self.po.act(
             locator=self.LBL_SCHOOL_NAME,
             action=actions.SELECT_FROM_LIST,
-            value=self.sessions_page.LNK_SCHOOL_1,
+            value=test_data_values.SCHOOL_1_NAME,
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._select_year_groups(*year_groups)
@@ -105,9 +115,11 @@ class ImportRecordsPage:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._record_upload_time()
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+
+        if self.is_processing_in_background():
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self._click_uploaded_file_datetime(truncated=True)
+
         self._verify_upload_output(file_path=_output_file_path)
         if verify_on_children_page:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
@@ -127,9 +139,11 @@ class ImportRecordsPage:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._record_upload_time()
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+
+        if self.is_processing_in_background():
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self._click_uploaded_file_datetime(truncated=True)
+
         self._verify_upload_output(file_path=_output_file_path)
 
     def import_vaccination_records(
@@ -158,9 +172,11 @@ class ImportRecordsPage:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._record_upload_time()
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MAX)
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MAX_THRESHOLD:
+
+        if self.is_processing_in_background():
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MAX)
             self._click_uploaded_file_datetime(truncated=True)
+
         self._verify_upload_output(file_path=_output_file_path)
         if verify_on_children_page:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
@@ -213,5 +229,5 @@ class ImportRecordsPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=self.sessions_page.LNK_SCHOOL_1,
+            expected_value=test_data_values.SCHOOL_1_NAME,
         )

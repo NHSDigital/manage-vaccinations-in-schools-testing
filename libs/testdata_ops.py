@@ -86,8 +86,6 @@ class testdata_operations:
             _file_text.append(line)
             _ctr += 1
 
-        self.ce.set_file_record_count(record_count=_ctr)
-
         filename = f"{file_name_prefix}{get_current_datetime()}.csv"
 
         path = pathlib.Path("working") / filename
