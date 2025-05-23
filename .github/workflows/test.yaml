@@ -169,7 +169,7 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Samsung Galaxy S9+"
-          pytest -m mobile --browser chromimum --device "Galaxy S9+"
+          pytest -m mobile --browser chromium --device "Galaxy S9+"
           echo "::endgroup::"
       - name: Test on Google Pixel 7
         if: always()
@@ -187,7 +187,7 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
           echo "::group::Google Pixel 7"
-          pytest -m mobile --browser chromimum --device "Pixel 7"
+          pytest -m mobile --browser chromium --device "Pixel 7"
           echo "::endgroup::"
       - name: Upload report
         if: always()
