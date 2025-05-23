@@ -1,9 +1,9 @@
+import time
 from datetime import date, datetime, timedelta
 
 from faker import Faker
 
 from libs.generic_constants import escape_characters
-
 
 faker = Faker()
 
@@ -121,4 +121,8 @@ def get_date_of_birth_for_year_group(year_group: int) -> str:
     start_date = date(academic_year, 9, 1)
     end_date = date(academic_year + 1, 8, 31)
 
-    return faker.date_between(start_date, end_date)
+    return str(faker.date_between(start_date, end_date))
+
+
+def wait_for_reset():
+    time.sleep(60)

@@ -1,17 +1,16 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths, vaccines
+from libs.wrappers import wait_for_reset
 
 
 @pytest.fixture(scope="function", autouse=False)
 def setup_tests(start_mavis, reset_environment, nurse, login_page):
     reset_environment()
-
+    wait_for_reset()
     login_page.log_in(**nurse)
     yield
     login_page.log_out()
-
-    reset_environment()
 
 
 @pytest.fixture(scope="function", autouse=False)
