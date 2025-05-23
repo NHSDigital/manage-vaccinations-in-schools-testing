@@ -1,14 +1,14 @@
-from .pg_children import pg_children
-from .pg_consent_doubles import pg_consent_doubles
-from .pg_consent_hpv import pg_consent_hpv
-from .pg_dashboard import pg_dashboard
-from .pg_import_records import pg_import_records
-from .pg_login import pg_login
-from .pg_programmes import pg_programmes
-from .pg_school_moves import pg_school_moves
-from .pg_sessions import pg_sessions
-from .pg_unmatched import pg_unmatched
-from .pg_vaccines import pg_vaccines
+from .children import pg_children
+from .consent_doubles import pg_consent_doubles
+from .consent_hpv import pg_consent_hpv
+from .dashboard import pg_dashboard
+from .import_records import pg_import_records
+from .login import pg_login
+from .programmes import pg_programmes
+from .school_moves import pg_school_moves
+from .sessions import pg_sessions
+from .unmatched import pg_unmatched
+from .vaccines import pg_vaccines
 
 
 __all__ = [

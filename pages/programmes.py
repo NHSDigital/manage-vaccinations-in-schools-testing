@@ -12,11 +12,11 @@ from libs.mavis_constants import (
 )
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
 
-from .pg_children import pg_children
-from .pg_consent_doubles import pg_consent_doubles
-from .pg_consent_hpv import pg_consent_hpv
-from .pg_dashboard import pg_dashboard
-from .pg_sessions import pg_sessions
+from .children import pg_children
+from .consent_doubles import pg_consent_doubles
+from .consent_hpv import pg_consent_hpv
+from .dashboard import pg_dashboard
+from .sessions import pg_sessions
 
 
 class pg_programmes:

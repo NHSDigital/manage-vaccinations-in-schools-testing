@@ -16,9 +16,9 @@ from libs.wrappers import (
     get_offset_date,
 )
 
-from .pg_children import pg_children
-from .pg_consent_hpv import pg_consent_hpv
-from .pg_dashboard import pg_dashboard
+from .children import pg_children
+from .consent_hpv import pg_consent_hpv
+from .dashboard import pg_dashboard
 
 
 class pg_sessions:

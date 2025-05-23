@@ -5,10 +5,10 @@ from libs.generic_constants import actions, escape_characters, properties, wait_
 from libs.mavis_constants import mavis_file_types, record_limit
 from libs.wrappers import get_link_formatted_date_time
 
-from .pg_children import pg_children
-from .pg_dashboard import pg_dashboard
-from .pg_sessions import pg_sessions
-from .pg_vaccines import pg_vaccines
+from .children import pg_children
+from .dashboard import pg_dashboard
+from .sessions import pg_sessions
+from .vaccines import pg_vaccines
 
 
 class pg_import_records:

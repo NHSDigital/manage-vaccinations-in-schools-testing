@@ -7,7 +7,7 @@ from libs.generic_constants import actions, escape_characters, properties
 from libs.mavis_constants import report_headers, test_data_values
 from libs.wrappers import get_current_datetime
 
-from .pg_dashboard import pg_dashboard
+from .dashboard import pg_dashboard
 
 
 class pg_school_moves:

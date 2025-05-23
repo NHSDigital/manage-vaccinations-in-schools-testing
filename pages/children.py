@@ -4,7 +4,7 @@ from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
 
-from .pg_dashboard import pg_dashboard
+from .dashboard import pg_dashboard
 
 
 class pg_children:
