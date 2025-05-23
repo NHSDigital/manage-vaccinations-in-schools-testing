@@ -5,7 +5,6 @@ from libs.generic_constants import actions, escape_characters, properties, wait_
 from libs.mavis_constants import (
     mavis_file_types,
     programmes,
-    record_limit,
     test_data_values,
     vaccines,
 )
@@ -19,6 +18,7 @@ from libs.wrappers import (
 from .children import ChildrenPage
 from .consent_hpv import ConsentHPVPage
 from .dashboard import DashboardPage
+from .import_records import ImportRecordsPage
 
 
 class SessionsPage:
@@ -28,6 +28,7 @@ class SessionsPage:
     dashboard_page = DashboardPage()
     consent_page = ConsentHPVPage()
     children_page = ChildrenPage()
+    import_records_page = ImportRecordsPage()
 
     LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
     LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME
@@ -713,9 +714,11 @@ class SessionsPage:
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+
+        if self.import_records_page.is_processing_in_background():
             self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime()
+
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
@@ -735,9 +738,11 @@ class SessionsPage:
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+
+        if self.import_records_page.is_processing_in_background():
             self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime()
+
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
