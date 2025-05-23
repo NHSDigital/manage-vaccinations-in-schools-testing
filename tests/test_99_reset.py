@@ -1,26 +1,10 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths, vaccines
-from pages import (
-    DashboardPage,
-    ImportRecordsPage,
-    LoginPage,
-    ProgrammesPage,
-    SessionsPage,
-    VaccinesPage,
-)
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-programmes_page = ProgrammesPage()
-sessions_page = SessionsPage()
-vaccines_page = VaccinesPage()
-import_records_page = ImportRecordsPage()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, reset_environment, nurse):
+def setup_tests(start_mavis, reset_environment, nurse, login_page):
     reset_environment()
 
     login_page.log_in(**nurse)
@@ -31,7 +15,9 @@ def setup_tests(start_mavis, reset_environment, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mav_965(setup_tests: None):
+def setup_mav_965(
+    setup_tests, dashboard_page, import_records_page, sessions_page, vaccines_page
+):
     dashboard_page.click_vaccines()
     vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)  # HPV
     vaccines_page.add_batch(vaccine_name=vaccines.MENQUADFI)  # MenACWY
@@ -48,7 +34,7 @@ def setup_mav_965(setup_tests: None):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_cohort_upload_and_reports(setup_tests: None):
+def setup_cohort_upload_and_reports(setup_tests, dashboard_page):
     dashboard_page.click_programmes()
     yield
 
@@ -56,14 +42,16 @@ def setup_cohort_upload_and_reports(setup_tests: None):
 @pytest.mark.rav
 @pytest.mark.bug
 @pytest.mark.order(9901)
-def test_programmes_rav_prescreening_questions(setup_mav_965):
+def test_programmes_rav_prescreening_questions(setup_mav_965, programmes_page):
     programmes_page.verify_mav_965()
 
 
 @pytest.mark.cohorts
 @pytest.mark.order(9902)
 @pytest.mark.skip(reason="Covered in performance testing")
-def test_cohort_upload_performance(setup_cohort_upload_and_reports):  # MAV-927
+def test_cohort_upload_performance(
+    setup_cohort_upload_and_reports, programmes_page
+):  # MAV-927
     programmes_page.upload_cohorts(
         file_paths=test_data_file_paths.COHORTS_MAV_927_PERF, wait_long=True
     )

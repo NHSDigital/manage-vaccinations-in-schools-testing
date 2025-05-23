@@ -6,19 +6,13 @@ from pandas.core.series import Series
 from libs import CurrentExecution
 from tests.helpers import parental_consent_helper_doubles
 
-from pages import ConsentHPVPage, DashboardPage, LoginPage, SessionsPage
-
 
 ce = CurrentExecution()
-pc = ConsentHPVPage()
 helper = parental_consent_helper_doubles.parental_consent_helper()
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-sessions_page = SessionsPage()
 
 
 @pytest.fixture(scope="function")
-def get_session_link(start_mavis, nurse):
+def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()

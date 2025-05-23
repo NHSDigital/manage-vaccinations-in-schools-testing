@@ -1,16 +1,10 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths
-from pages import DashboardPage, LoginPage, SessionsPage
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-sessions_page = SessionsPage()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, nurse):
+def setup_tests(start_mavis, nurse, login_page, dashboard_page):
     login_page.log_in(**nurse)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_sessions()
@@ -19,7 +13,7 @@ def setup_tests(start_mavis, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mavis_1822(start_mavis, nurse):
+def setup_mavis_1822(start_mavis, nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -43,7 +37,7 @@ def setup_mavis_1822(start_mavis, nurse):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mav_1018(start_mavis, nurse):
+def setup_mav_1018(start_mavis, nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -68,7 +62,7 @@ def setup_mav_1018(start_mavis, nurse):
 
 @pytest.mark.sessions
 @pytest.mark.order(201)
-def test_lifecycle(setup_tests: None):
+def test_lifecycle(setup_tests, dashboard_page, sessions_page):
     sessions_page.schedule_a_valid_session_in_school_1()
     dashboard_page.go_to_dashboard()
     dashboard_page.click_sessions()
@@ -80,19 +74,19 @@ def test_lifecycle(setup_tests: None):
 
 @pytest.mark.sessions
 @pytest.mark.order(202)
-def test_invalid(setup_tests: None):
+def test_invalid(setup_tests, sessions_page):
     sessions_page.create_invalid_session()
 
 
 @pytest.mark.sessions
 @pytest.mark.bug
 @pytest.mark.order(203)
-def test_verify_attendance_filters(setup_mavis_1822: None):
+def test_verify_attendance_filters(setup_mavis_1822, sessions_page):
     sessions_page.verify_attendance_filters()  # MAVIS-1822
 
 
 @pytest.mark.sessions
 @pytest.mark.bug
 @pytest.mark.order(204)
-def test_verify_search(setup_mav_1018):
+def test_verify_search(setup_mav_1018, sessions_page):
     sessions_page.verify_search()  # MAV-1018

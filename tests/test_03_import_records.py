@@ -4,30 +4,23 @@ from libs.mavis_constants import (
     mavis_file_types,
     test_data_file_paths,
 )
-from pages import DashboardPage, ImportRecordsPage, LoginPage, SessionsPage
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-import_records_page = ImportRecordsPage()
-sessions_page = SessionsPage()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, nurse):
+def setup_tests(start_mavis, nurse, login_page):
     login_page.log_in(**nurse)
     yield
     login_page.log_out()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_child_list(setup_tests: None):
+def setup_child_list(setup_tests, dashboard_page):
     dashboard_page.click_import_records()
     yield
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_class_list(setup_tests: None):
+def setup_class_list(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
@@ -41,7 +34,7 @@ def setup_class_list(setup_tests: None):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_vaccs(setup_tests: None):
+def setup_vaccs(setup_tests, dashboard_page, sessions_page, import_records_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -60,7 +53,7 @@ def setup_vaccs(setup_tests: None):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_vaccs_systmone(setup_tests: None):
+def setup_vaccs_systmone(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -76,7 +69,7 @@ def setup_vaccs_systmone(setup_tests: None):
 ########################################### CHILD LIST ###########################################
 @pytest.mark.childlist
 @pytest.mark.order(301)
-def test_child_list_file_upload_positive(setup_child_list):
+def test_child_list_file_upload_positive(setup_child_list, import_records_page):
     import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_POSITIVE
     )
@@ -84,7 +77,7 @@ def test_child_list_file_upload_positive(setup_child_list):
 
 @pytest.mark.childlist
 @pytest.mark.order(302)
-def test_child_list_file_upload_negative(setup_child_list):
+def test_child_list_file_upload_negative(setup_child_list, import_records_page):
     import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_NEGATIVE
     )
@@ -92,7 +85,7 @@ def test_child_list_file_upload_negative(setup_child_list):
 
 @pytest.mark.childlist
 @pytest.mark.order(303)
-def test_child_list_file_structure(setup_child_list):
+def test_child_list_file_structure(setup_child_list, import_records_page):
     import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE
     )
@@ -100,7 +93,7 @@ def test_child_list_file_structure(setup_child_list):
 
 @pytest.mark.childlist
 @pytest.mark.order(304)
-def test_child_list_no_record(setup_child_list):
+def test_child_list_no_record(setup_child_list, import_records_page):
     import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_HEADER_ONLY
     )
@@ -108,7 +101,7 @@ def test_child_list_no_record(setup_child_list):
 
 @pytest.mark.childlist
 @pytest.mark.order(305)
-def test_child_list_empty_file(setup_child_list):
+def test_child_list_empty_file(setup_child_list, import_records_page):
     import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_EMPTY_FILE
     )
@@ -117,7 +110,7 @@ def test_child_list_empty_file(setup_child_list):
 @pytest.mark.childlist
 @pytest.mark.bug
 @pytest.mark.order(306)
-def test_child_list_space_normalization(setup_child_list):
+def test_child_list_space_normalization(setup_child_list, import_records_page):
     import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_MAV_1080, verify_on_children_page=True
     )
@@ -128,7 +121,7 @@ def test_child_list_space_normalization(setup_child_list):
 
 @pytest.mark.classlist
 @pytest.mark.order(326)
-def test_class_list_file_upload_positive(setup_class_list: None):
+def test_class_list_file_upload_positive(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_POSITIVE
     )
@@ -136,7 +129,7 @@ def test_class_list_file_upload_positive(setup_class_list: None):
 
 @pytest.mark.classlist
 @pytest.mark.order(327)
-def test_class_list_file_upload_negative(setup_class_list: None):
+def test_class_list_file_upload_negative(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_NEGATIVE
     )
@@ -144,7 +137,7 @@ def test_class_list_file_upload_negative(setup_class_list: None):
 
 @pytest.mark.classlist
 @pytest.mark.order(328)
-def test_class_list_file_structure(setup_class_list: None):
+def test_class_list_file_structure(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_INVALID_STRUCTURE
     )
@@ -152,7 +145,7 @@ def test_class_list_file_structure(setup_class_list: None):
 
 @pytest.mark.classlist
 @pytest.mark.order(329)
-def test_class_list_no_record(setup_class_list: None):
+def test_class_list_no_record(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_HEADER_ONLY
     )
@@ -160,7 +153,7 @@ def test_class_list_no_record(setup_class_list: None):
 
 @pytest.mark.classlist
 @pytest.mark.order(330)
-def test_class_list_empty_file(setup_class_list: None):
+def test_class_list_empty_file(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_EMPTY_FILE
     )
@@ -168,7 +161,7 @@ def test_class_list_empty_file(setup_class_list: None):
 
 @pytest.mark.classlist
 @pytest.mark.order(331)
-def test_class_list_year_group(setup_class_list: None):
+def test_class_list_year_group(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_YEAR_GROUP,
         year_groups=[8],
@@ -178,7 +171,7 @@ def test_class_list_year_group(setup_class_list: None):
 @pytest.mark.classlist
 @pytest.mark.bug
 @pytest.mark.order(332)
-def test_class_list_space_normalization(setup_class_list: None):
+def test_class_list_space_normalization(setup_class_list, import_records_page):
     import_records_page.import_class_list_records(
         file_paths=test_data_file_paths.CLASS_MAV_1080, verify_on_children_page=True
     )
@@ -189,7 +182,7 @@ def test_class_list_space_normalization(setup_class_list: None):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(351)
-def test_vaccs_positive_file_upload(setup_vaccs):
+def test_vaccs_positive_file_upload(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_POSITIVE,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -198,7 +191,7 @@ def test_vaccs_positive_file_upload(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(352)
-def test_vaccs_negative_file_upload(setup_vaccs):
+def test_vaccs_negative_file_upload(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_NEGATIVE,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -207,7 +200,9 @@ def test_vaccs_negative_file_upload(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(353)
-def test_vaccs_duplicate_record_upload(setup_vaccs):
+def test_vaccs_duplicate_record_upload(
+    setup_vaccs, dashboard_page, import_records_page
+):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_DUP_1,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -222,7 +217,7 @@ def test_vaccs_duplicate_record_upload(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(354)
-def test_vaccs_file_structure(setup_vaccs):
+def test_vaccs_file_structure(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_INVALID_STRUCTURE,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -231,7 +226,7 @@ def test_vaccs_file_structure(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(355)
-def test_vaccs_no_record(setup_vaccs):
+def test_vaccs_no_record(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_HEADER_ONLY,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -240,7 +235,7 @@ def test_vaccs_no_record(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(356)
-def test_vaccs_empty_file(setup_vaccs):
+def test_vaccs_empty_file(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_EMPTY_FILE,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -249,7 +244,7 @@ def test_vaccs_empty_file(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(357)
-def test_vaccs_historic_positive_file_upload(setup_vaccs):
+def test_vaccs_historic_positive_file_upload(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_HIST_POSITIVE,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -258,7 +253,7 @@ def test_vaccs_historic_positive_file_upload(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(358)
-def test_vaccs_historic_negative_file_upload(setup_vaccs):
+def test_vaccs_historic_negative_file_upload(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_HIST_NEGATIVE,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -268,7 +263,9 @@ def test_vaccs_historic_negative_file_upload(setup_vaccs):
 @pytest.mark.vaccinations
 @pytest.mark.bug
 @pytest.mark.order(359)
-def test_vaccs_historic_no_urn_mav_855(setup_vaccs):
+def test_vaccs_historic_no_urn_mav_855(
+    setup_vaccs, dashboard_page, import_records_page
+):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_HPV_MAV_855,
         file_type=mavis_file_types.VACCS_MAVIS,
@@ -280,7 +277,7 @@ def test_vaccs_historic_no_urn_mav_855(setup_vaccs):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(360)
-def test_vaccs_systmone_positive_file_upload(setup_vaccs_systmone):
+def test_vaccs_systmone_positive_file_upload(setup_vaccs_systmone, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_SYSTMONE_POSITIVE,
         file_type=mavis_file_types.VACCS_SYSTMONE,
@@ -289,7 +286,7 @@ def test_vaccs_systmone_positive_file_upload(setup_vaccs_systmone):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(361)
-def test_vaccs_systmone_negative_file_upload(setup_vaccs_systmone):
+def test_vaccs_systmone_negative_file_upload(setup_vaccs_systmone, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_SYSTMONE_NEGATIVE,
         file_type=mavis_file_types.VACCS_SYSTMONE,
@@ -298,7 +295,9 @@ def test_vaccs_systmone_negative_file_upload(setup_vaccs_systmone):
 
 @pytest.mark.vaccinations
 @pytest.mark.order(362)
-def test_vaccs_systmone_negative_historical_file_upload(setup_vaccs_systmone):
+def test_vaccs_systmone_negative_historical_file_upload(
+    setup_vaccs_systmone, import_records_page
+):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_SYSTMONE_HIST_NEGATIVE,
         file_type=mavis_file_types.VACCS_SYSTMONE,
@@ -308,7 +307,7 @@ def test_vaccs_systmone_negative_historical_file_upload(setup_vaccs_systmone):
 @pytest.mark.vaccinations
 @pytest.mark.bug
 @pytest.mark.order(363)
-def test_vaccs_hpv_space_normalization(setup_vaccs):
+def test_vaccs_hpv_space_normalization(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_MAV_1080,
         verify_on_children_page=True,
@@ -319,7 +318,7 @@ def test_vaccs_hpv_space_normalization(setup_vaccs):
 @pytest.mark.vaccinations
 @pytest.mark.bug
 @pytest.mark.order(364)
-def test_vaccs_systmone_space_normalization(setup_vaccs_systmone):
+def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_SYSTMONE_MAV_1080,
         verify_on_children_page=False,

@@ -1,33 +1,17 @@
 import pytest
 
 from libs.mavis_constants import mavis_file_types, test_data_file_paths
-from pages import (
-    ChildrenPage,
-    DashboardPage,
-    ImportRecordsPage,
-    LoginPage,
-    ProgrammesPage,
-    SessionsPage,
-)
-
-
-login_page = LoginPage()
-dashboard_page = DashboardPage()
-children_page = ChildrenPage()
-sessions_page = SessionsPage()
-import_records_page = ImportRecordsPage()
-programmes_page = ProgrammesPage()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, nurse):
+def setup_tests(start_mavis, nurse, login_page):
     login_page.log_in(**nurse)
     yield
     login_page.log_out()
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_children_page(setup_tests: None):
+def setup_children_page(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -47,7 +31,7 @@ def setup_children_page(setup_tests: None):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_change_nhsno(setup_tests: None):
+def setup_change_nhsno(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -67,7 +51,9 @@ def setup_change_nhsno(setup_tests: None):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mav_853(setup_tests: None):
+def setup_mav_853(
+    setup_tests, dashboard_page, import_records_page, programmes_page, sessions_page
+):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -96,7 +82,7 @@ def setup_mav_853(setup_tests: None):
 
 @pytest.mark.children
 @pytest.mark.order(701)
-def test_headers_and_filter(setup_children_page: None):
+def test_headers_and_filter(setup_children_page, children_page):
     children_page.verify_headers()
     children_page.verify_filter()
 
@@ -104,12 +90,12 @@ def test_headers_and_filter(setup_children_page: None):
 @pytest.mark.children
 @pytest.mark.bug
 @pytest.mark.order(702)
-def test_details_mav_853(setup_mav_853: None):
+def test_details_mav_853(setup_mav_853, children_page):
     children_page.verify_mav_853()  # MAV-853
 
 
 @pytest.mark.children
 @pytest.mark.bug
 @pytest.mark.order(703)
-def test_change_nhsno(setup_change_nhsno: None):
+def test_change_nhsno(setup_change_nhsno, children_page):
     children_page.change_nhs_no()
