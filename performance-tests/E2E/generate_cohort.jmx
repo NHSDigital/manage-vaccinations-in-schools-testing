@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Generate cohort row">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.io.FileReader;
+import java.io.PrintStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.format.*;
+Random r = new Random(System.currentTimeMillis())
+
+BufferedReader reader;
+PrintStream writer;
+
+def CHILD_ADDRESS_LINE_1 = []
+def CHILD_ADDRESS_LINE_2 = []
+def CHILD_POSTCODE = []
+def CHILD_TOWN = []
+def CHILD_PREFERRED_GIVEN_NAME = []
+def CHILD_DATE_OF_BIRTH = []
+def CHILD_FIRST_NAME = []
+def CHILD_LAST_NAME = []
+def CHILD_NHS_NUMBER = []
+def PARENT_1_EMAIL = []
+def PARENT_1_NAME = []
+def PARENT_1_PHONE = []
+def PARENT_1_RELATIONSHIP = []
+def PARENT_2_EMAIL = []
+def PARENT_2_NAME = []
+def PARENT_2_PHONE = []
+def PARENT_2_RELATIONSHIP = []
+def CHILD_SCHOOL_URN =[]
+
+def startDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2011-09-01&apos;)
+def endDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2012-08-31&apos;)
+
+try {
+	reader = new BufferedReader(new FileReader(vars.get(&quot;BaseDirectory&quot;) + vars.get(&quot;SourceCohort&quot;)));
+     String line = reader.readLine();
+
+     line = reader.readLine();
+
+     while (line != null)
+     {
+		String[] lineSplit = line.split(&quot;,&quot;);
+		CHILD_ADDRESS_LINE_1.add(lineSplit[0])
+		CHILD_ADDRESS_LINE_2.add(lineSplit[1])
+		CHILD_POSTCODE.add(lineSplit[2])
+		CHILD_TOWN.add(lineSplit[3])
+		CHILD_PREFERRED_GIVEN_NAME.add(lineSplit[4])
+		CHILD_DATE_OF_BIRTH.add(lineSplit[5])
+		CHILD_FIRST_NAME.add(lineSplit[6])
+		CHILD_LAST_NAME.add(lineSplit[7])
+		CHILD_NHS_NUMBER.add(lineSplit[8])
+		PARENT_1_EMAIL.add(lineSplit[9])
+		PARENT_1_NAME.add(lineSplit[10])
+		PARENT_1_PHONE.add(lineSplit[11])
+		PARENT_1_RELATIONSHIP.add(lineSplit[12])
+		PARENT_2_EMAIL.add(lineSplit[13])
+		PARENT_2_NAME.add(lineSplit[14])
+		PARENT_2_PHONE.add(lineSplit[15])
+		PARENT_2_RELATIONSHIP.add(lineSplit[16])
+		CHILD_SCHOOL_URN.add(lineSplit[17])
+		
+          line = reader.readLine();
+     }
+
+	reader.close();
+}
+catch (IOException e)
+{
+	e.printStackTrace();
+}
+
+writer = new PrintStream(new File(vars.get(&quot;BaseDirectory&quot;) + &quot;cohortnew.csv&quot;))
+
+writer.println(&quot;CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_POSTCODE,CHILD_TOWN,CHILD_PREFERRED_GIVEN_NAME,CHILD_DATE_OF_BIRTH,CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_NHS_NUMBER,PARENT_1_EMAIL,PARENT_1_NAME,PARENT_1_PHONE,PARENT_1_RELATIONSHIP,PARENT_2_EMAIL,PARENT_2_NAME,PARENT_2_PHONE,PARENT_2_RELATIONSHIP,CHILD_SCHOOL_URN&quot;)
+
+for(outrow=1;outrow&lt;21;outrow++){
+vars.put(&quot;CHILD_ADDRESS_LINE_1&quot;,r.nextInt(100000).toString() + &quot; &quot; + CHILD_ADDRESS_LINE_1.get(r.nextInt(CHILD_ADDRESS_LINE_1.size())).tokenize(&apos; &apos;)[-2]  + &quot; &quot; + CHILD_ADDRESS_LINE_1.get(r.nextInt(CHILD_ADDRESS_LINE_1.size())).tokenize(&apos; &apos;).last())
+vars.put(&quot;CHILD_ADDRESS_LINE_2&quot;,CHILD_ADDRESS_LINE_2.get(r.nextInt(CHILD_ADDRESS_LINE_2.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + CHILD_ADDRESS_LINE_2.get(r.nextInt(CHILD_ADDRESS_LINE_2.size())).tokenize(&apos; &apos;).last())
+vars.put(&quot;CHILD_POSTCODE&quot;,CHILD_POSTCODE.get(r.nextInt(CHILD_POSTCODE.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + CHILD_POSTCODE.get(r.nextInt(CHILD_POSTCODE.size())).tokenize(&apos; &apos;).last())
+vars.put(&quot;CHILD_TOWN&quot;,CHILD_TOWN.get(r.nextInt(CHILD_TOWN.size())))
+vars.put(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;,&quot;&quot;)
+vars.put(&quot;CHILD_DATE_OF_BIRTH&quot;,(startDate + r.nextInt(endDate-startDate)).format(&apos;yyyy-MM-dd&apos;))
+vars.put(&quot;CHILD_FIRST_NAME&quot;,CHILD_FIRST_NAME.get(r.nextInt(CHILD_FIRST_NAME.size())))
+vars.put(&quot;CHILD_LAST_NAME&quot;,CHILD_LAST_NAME.get(r.nextInt(CHILD_LAST_NAME.size())))
+
+checkdigit=&quot;10&quot;
+while(checkdigit==&quot;10&quot;){
+	nhsnumber=(r.nextInt(999999) + 999000000).toString()
+	checkdigit = (11-(nhsnumber[0].toInteger()*10 + nhsnumber[1].toInteger()*9 + nhsnumber[2].toInteger()*8 + nhsnumber[3].toInteger()*7 + nhsnumber[4].toInteger()*6 + nhsnumber[5].toInteger()*5 + nhsnumber[6].toInteger()*4 + nhsnumber[7].toInteger()*3 + nhsnumber[8].toInteger()*2) % 11).toString()
+	if(checkdigit==&quot;11&quot;){
+		checkdigit=&quot;0&quot;
+	}
+	nhsnumber=nhsnumber + checkdigit
+}
+vars.put(&quot;CHILD_NHS_NUMBER&quot;,nhsnumber)
+
+vars.put(&quot;PARENT_1_NAME&quot;,PARENT_1_NAME.get(r.nextInt(PARENT_1_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
+vars.put(&quot;PARENT_2_NAME&quot;,PARENT_2_NAME.get(r.nextInt(PARENT_2_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
+vars.put(&quot;PARENT_1_EMAIL&quot;,vars.get(&quot;PARENT_1_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
+vars.put(&quot;PARENT_2_EMAIL&quot;,vars.get(&quot;PARENT_2_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
+vars.put(&quot;PARENT_1_PHONE&quot;,PARENT_1_PHONE.get(r.nextInt(PARENT_1_PHONE.size())))
+vars.put(&quot;PARENT_2_PHONE&quot;,PARENT_2_PHONE.get(r.nextInt(PARENT_2_PHONE.size())))
+vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,PARENT_1_RELATIONSHIP.get(r.nextInt(PARENT_1_RELATIONSHIP.size())))
+vars.put(&quot;PARENT_2_RELATIONSHIP&quot;,PARENT_2_RELATIONSHIP.get(r.nextInt(PARENT_2_RELATIONSHIP.size())))
+
+vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;URN&quot;))
+
+rowPartOne=(vars.get(&quot;CHILD_ADDRESS_LINE_1&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_ADDRESS_LINE_2&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_POSTCODE&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_TOWN&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_DATE_OF_BIRTH&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_NHS_NUMBER&quot;) + &quot;,&quot;)
+rowPartTwo=(vars.get(&quot;PARENT_1_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_SCHOOL_URN&quot;))
+
+writer.println(rowPartOne + rowPartTwo)
+log.info(vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
+}
+
+writer.flush();
+writer.close();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+          <boolProp name="displayJMeterProperties">false</boolProp>
+          <boolProp name="displayJMeterVariables">true</boolProp>
+          <boolProp name="displaySystemProperties">false</boolProp>
+        </DebugSampler>
+        <hashTree/>
+      </hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="BaseDirectory" elementType="Argument">
+            <stringProp name="Argument.name">BaseDirectory</stringProp>
+            <stringProp name="Argument.value">${__P(Directory, ${__groovy(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__groovy(File.separator,)})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="SourceCohort" elementType="Argument">
+            <stringProp name="Argument.name">SourceCohort</stringProp>
+            <stringProp name="Argument.value">${__P(SourceCohort, SourceCohort.csv)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="URN" elementType="Argument">
+            <stringProp name="Argument.name">URN</stringProp>
+            <stringProp name="Argument.value">${__P(URN, 114624)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
