@@ -18,25 +18,25 @@ class Test_Consent_HPV:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture(scope="function")
-    def get_hpv_session_link(self, start_mavis: None):
+    def get_hpv_session_link(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1()
             link = self.sessions_page.get_hpv_consent_url()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
             yield link
         finally:
             self.login_page.go_to_login_page()
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_gillick(self, start_mavis: None):
+    def setup_gillick(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -52,12 +52,12 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_invalidated_consent(self, start_mavis: None):
+    def setup_invalidated_consent(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1()
             self.dashboard_page.go_to_dashboard()
@@ -76,12 +76,12 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mavis_1696(self, start_mavis: None):
+    def setup_mavis_1696(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -100,12 +100,12 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mavis_1864(self, start_mavis: None):
+    def setup_mavis_1864(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -124,12 +124,12 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_mavis_1818(self, start_mavis: None):
+    def setup_mavis_1818(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
             self.dashboard_page.go_to_dashboard()
@@ -148,7 +148,7 @@ class Test_Consent_HPV:
             self.dashboard_page.go_to_dashboard()
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.mark.consent
     @pytest.mark.mobile

@@ -16,11 +16,11 @@ class Test_Regression_Vaccines:
     ]
 
     @pytest.fixture(scope="function", autouse=True)
-    def setup_tests(self, start_mavis: None):
-        self.login_page.login_as_nurse()
+    def setup_tests(self, start_mavis, nurse):
+        self.login_page.log_in(**nurse)
         self.dashboard_page.click_vaccines()
         yield
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.mark.vaccsbatch
     @pytest.mark.order(601)

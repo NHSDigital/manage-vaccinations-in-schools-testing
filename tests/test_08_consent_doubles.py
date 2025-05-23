@@ -17,20 +17,20 @@ class Test_Consent_Doubles:
     sessions_page = pg_sessions.pg_sessions()
 
     @pytest.fixture(scope="function")
-    def get_doubles_session_link(self, start_mavis: None):
+    def get_doubles_session_link(self, start_mavis, nurse):
         try:
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.schedule_a_valid_session_in_school_1()
             link = self.sessions_page.get_doubles_consent_url()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
             yield link
         finally:
             self.login_page.go_to_login_page()
-            self.login_page.login_as_nurse()
+            self.login_page.log_in(**nurse)
             self.dashboard_page.click_sessions()
             self.sessions_page.delete_all_sessions_for_school_1()
-            self.login_page.logout_of_mavis()
+            self.login_page.log_out()
 
     @pytest.mark.consent
     @pytest.mark.mobile

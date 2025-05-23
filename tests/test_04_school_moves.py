@@ -11,12 +11,12 @@ class Test_School_Moves:
     school_moves_page = pg_school_moves.pg_school_moves()
 
     @pytest.fixture(scope="function", autouse=False)
-    def setup_tests(self, start_mavis, reset_environment):
+    def setup_tests(self, start_mavis, reset_environment, nurse):
         reset_environment()
 
-        self.login_page.login_as_nurse()
+        self.login_page.log_in(**nurse)
         yield
-        self.login_page.logout_of_mavis()
+        self.login_page.log_out()
 
     @pytest.fixture(scope="function", autouse=False)
     def setup_move_and_ignore(self, setup_tests: None):

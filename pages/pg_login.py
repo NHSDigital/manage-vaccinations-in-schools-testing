@@ -15,48 +15,25 @@ class pg_login:
     BTN_LOGIN: Final[str] = "Log in"
     BTN_LOGOUT: Final[str] = "Log out"
     LBL_BANNER: Final[str] = "banner"
-    LBL_NURSE: Final[str] = "JOY, Nurse"
-    BTN_NURSE_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
-    BTN_SUPERUSER_ROLE: Final[str] = (
-        f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
-    )
-    BTN_ADMIN_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
-    LBL_SUPERUSER: Final[str] = "SUPERUSER, Superuser"
-    LBL_ADMIN: Final[str] = "HOPE, Admin"
+    BTN_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
     LBL_PARAGRAPH: Final[str] = "paragraph"
 
-    def login_as_nurse(self):
-        self.__login_actions(
-            username=self.ce.nurse_username, password=self.ce.nurse_password
-        )
-        self.po.act(locator=self.BTN_NURSE_ROLE, action=actions.CLICK_BUTTON)
-        self.verify_login(is_successful_login=True, verify_text=self.LBL_NURSE)
+    def log_in(self, username: str, password: str):
+        self.__login_actions(username=username, password=password)
+        self.po.act(locator=self.BTN_ROLE, action=actions.CLICK_BUTTON)
+        self.verify_login(is_successful_login=True, verify_text=self.BTN_LOGOUT)
 
-    def login_as_superuser(self):
-        self.__login_actions(
-            username=self.ce.superuser_username, password=self.ce.superuser_password
-        )
-        self.po.act(locator=self.BTN_SUPERUSER_ROLE, action=actions.CLICK_BUTTON)
-        self.verify_login(is_successful_login=True, verify_text=self.LBL_SUPERUSER)
-
-    def login_as_admin(self):
-        self.__login_actions(
-            username=self.ce.admin_username, password=self.ce.admin_password
-        )
-        self.po.act(locator=self.BTN_ADMIN_ROLE, action=actions.CLICK_BUTTON)
-        self.verify_login(is_successful_login=True, verify_text=self.LBL_ADMIN)
+    def log_out(self):
+        self.po.act(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
 
     def try_invalid_login(self, user: str, pwd: str, expected_message: str):
         self.__login_actions(username=user, password=pwd)
         self.verify_login(is_successful_login=False, verify_text=expected_message)
 
-    def logout_of_mavis(self):
-        self.po.act(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
-
     def verify_login(self, is_successful_login: bool, verify_text: str):
-        _locator = self.LBL_BANNER if is_successful_login else self.LBL_PARAGRAPH
+        locator = self.LBL_BANNER if is_successful_login else self.LBL_PARAGRAPH
         self.po.verify(
-            locator=_locator, property=properties.TEXT, expected_value=verify_text
+            locator=locator, property=properties.TEXT, expected_value=verify_text
         )
 
     def __login_actions(self, username: str, password: str) -> None:
