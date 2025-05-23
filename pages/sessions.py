@@ -844,7 +844,7 @@ class SessionsPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value="No children",
+            expected_value="Showing 1 to 1",
         )
         self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
