@@ -31,7 +31,6 @@ jobs:
           playwright install-deps
       - name: Test on Chromium
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -49,7 +48,6 @@ jobs:
       - name: Test on Chrome
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -66,7 +64,6 @@ jobs:
           echo "::endgroup::"
       - name: Test on Firefox
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -84,7 +81,6 @@ jobs:
       - name: Test on Edge
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -102,7 +98,6 @@ jobs:
       - name: Test on iPhone 14
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -120,7 +115,6 @@ jobs:
       - name: Test on iPhone 15
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -138,7 +132,6 @@ jobs:
       - name: Test on iPad Gen 7
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -156,7 +149,6 @@ jobs:
       - name: Test on Samsung Galaxy S9+
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
@@ -174,7 +166,6 @@ jobs:
       - name: Test on Google Pixel 7
         if: always()
         env:
-          CAPTURE_SCREENSHOTS: ${{ vars.CAPTURE_SCREENSHOTS }}
           BASE_URL: ${{ vars.BASE_URL }}
           RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}

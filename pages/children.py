@@ -1,17 +1,13 @@
 from typing import Final
 
-from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
+from libs.playwright_ops import PlaywrightOperations
 
 from .dashboard import DashboardPage
 
 
 class ChildrenPage:
-    po = playwright_ops.playwright_operations()
-    ce = CurrentExecution()
-    dashboard_page = DashboardPage()
-
     CHILD1: Final[str] = "CFILTER1, CFilter1"
     LBL_CHILD_RECORD: Final[str] = "1 child"
 
@@ -33,6 +29,10 @@ class ChildrenPage:
     LNK_CHANGE_NHS_NO: Final[str] = "Change   NHS number"
     BTN_CONTINUE: Final[str] = "Continue"
     BTN_REMOVE_FROM_COHORT: Final[str] = "Remove from cohort"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
+        self.dashboard_page = DashboardPage(playwright_operations)
 
     def verify_headers(self):
         self.po.verify(

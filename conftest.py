@@ -1,6 +1,7 @@
 import os
-import pathlib
+from pathlib import Path
 import time
+from typing import Optional
 import urllib.parse
 from datetime import datetime
 
@@ -10,6 +11,7 @@ from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
 from libs import CurrentExecution as ce
+from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
 from libs.mavis_constants import playwright_constants
 from libs.wrappers import get_current_datetime
@@ -22,9 +24,7 @@ def pytest_addoption(parser):
     parser.addoption("--slowmo", type=int, default=200)
     parser.addoption("--headed", action="store_true", default=False)
     parser.addoption("--skip-reset", action="store_true", default=False)
-
-
-ce.get_env_values()
+    parser.addoption("--screenshot", type=str, default="off")
 
 
 @pytest.fixture(scope="session")
@@ -85,6 +85,11 @@ def headed(request) -> bool:
 
 
 @pytest.fixture(scope="session")
+def screenshot(request):
+    return request.config.getoption("screenshot")
+
+
+@pytest.fixture(scope="session")
 def slow_mo(request) -> int:
     return request.config.getoption("slowmo")
 
@@ -97,6 +102,22 @@ def reset_endpoint(base_url) -> str:
 @pytest.fixture(scope="session")
 def skip_reset(request) -> bool:
     return request.config.getoption("skip_reset")
+
+
+@pytest.fixture(scope="session")
+def screenshots_path(screenshot: str, browser_name: str) -> Optional[Path]:
+    if screenshot == "on":
+        session_name = f"{get_current_datetime()}-{browser_name}"
+        path = Path("screenshots") / session_name
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+    else:
+        return None
+
+
+@pytest.fixture(scope="session")
+def playwright_operations(screenshots_path):
+    return PlaywrightOperations(screenshots_path)
 
 
 @pytest.fixture(scope="session")
@@ -125,8 +146,6 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 @pytest.fixture(scope="session")
 def start_playwright_session(request, browser_name, reset_environment):
     reset_environment()
-
-    ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
     with sync_playwright() as _playwright:
         _playwright.selectors.set_test_id_attribute(
@@ -164,16 +183,6 @@ def start_mavis(
 
     yield
     close_browser(browser=_browser, page=ce.page)
-
-
-def create_session_screenshot_dir(browser_name: str) -> str:
-    if ce.capture_screenshot_flag:
-        session_name = f"{get_current_datetime()}-{browser_name}"
-        path = pathlib.Path("screenshots") / session_name
-        path.mkdir(parents=True, exist_ok=True)
-        return str(path)
-    else:
-        return ""
 
 
 def start_browser(

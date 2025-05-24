@@ -5,11 +5,13 @@ from pandas.core.series import Series
 
 from libs import CurrentExecution
 from libs.mavis_constants import test_data_file_paths
-from tests.helpers import parental_consent_helper_hpv
+from libs.playwright_ops import PlaywrightOperations
+
+from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
 
 ce = CurrentExecution()
-helper = parental_consent_helper_hpv.parental_consent_helper()
+helper = ParentalConsentHelper()
 
 
 @pytest.fixture(scope="function")
@@ -164,10 +166,11 @@ def setup_mavis_1818(start_mavis, nurse, login_page, dashboard_page, sessions_pa
 def test_consent_workflow_hpv(
     get_hpv_session_link: str,
     scenario_data: Iterable[tuple[Hashable, Series]],
+    playwright_operations: PlaywrightOperations,
 ):
     ce.page.goto(get_hpv_session_link)
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    helper.enter_details_on_mavis()
+    helper.enter_details_on_mavis(playwright_operations)
 
 
 @pytest.mark.consent

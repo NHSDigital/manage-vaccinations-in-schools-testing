@@ -2,13 +2,14 @@ from typing import Final
 
 import pandas as pd
 
-from libs import CurrentExecution, playwright_ops, testdata_ops
+from libs import CurrentExecution, testdata_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import (
     programmes,
     report_headers,
     test_data_file_paths,
 )
+from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
 
 from .children import ChildrenPage
@@ -20,15 +21,8 @@ from .sessions import SessionsPage
 
 
 class ProgrammesPage:
-    po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    sessions_page = SessionsPage()
-    dashboard_page = DashboardPage()
-    children_page = ChildrenPage()
-    consent_hpv = ConsentHPVPage()
-    consent_doubles = ConsentDoublesPage()
-    import_records_page = ImportRecordsPage()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
@@ -68,6 +62,15 @@ class ProgrammesPage:
     RDO_KEEP_BOTH: Final[str] = "Keep both records"
     BTN_RESOLVE_DUPLICATE: Final[str] = "Resolve duplicate"
     LBL_RECORD_UPDATED: Final[str] = "Record updated"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
+        self.sessions_page = SessionsPage(playwright_operations)
+        self.dashboard_page = DashboardPage(playwright_operations)
+        self.children_page = ChildrenPage(playwright_operations)
+        self.consent_hpv = ConsentHPVPage(playwright_operations)
+        self.consent_doubles = ConsentDoublesPage(playwright_operations)
+        self.import_records_page = ImportRecordsPage(playwright_operations)
 
     def click_hpv(self):
         self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)

@@ -14,55 +14,55 @@ from .vaccines import VaccinesPage
 
 
 @pytest.fixture
-def children_page():
-    return ChildrenPage()
+def children_page(playwright_operations):
+    return ChildrenPage(playwright_operations)
 
 
 @pytest.fixture
-def consent_doubles_page():
-    return ConsentDoublesPage()
+def consent_doubles_page(playwright_operations):
+    return ConsentDoublesPage(playwright_operations)
 
 
 @pytest.fixture
-def consent_hpv_page():
-    return ConsentHPVPage()
+def consent_hpv_page(playwright_operations):
+    return ConsentHPVPage(playwright_operations)
 
 
 @pytest.fixture
-def dashboard_page():
-    return DashboardPage()
+def dashboard_page(playwright_operations):
+    return DashboardPage(playwright_operations)
 
 
 @pytest.fixture
-def import_records_page():
-    return ImportRecordsPage()
+def import_records_page(playwright_operations):
+    return ImportRecordsPage(playwright_operations)
 
 
 @pytest.fixture
-def login_page():
-    return LoginPage()
+def login_page(playwright_operations):
+    return LoginPage(playwright_operations)
 
 
 @pytest.fixture
-def programmes_page():
-    return ProgrammesPage()
+def programmes_page(playwright_operations):
+    return ProgrammesPage(playwright_operations)
 
 
 @pytest.fixture
-def school_moves_page():
-    return SchoolMovesPage()
+def school_moves_page(playwright_operations):
+    return SchoolMovesPage(playwright_operations)
 
 
 @pytest.fixture
-def sessions_page():
-    return SessionsPage()
+def sessions_page(playwright_operations):
+    return SessionsPage(playwright_operations)
 
 
 @pytest.fixture
-def unmatched_page():
-    return UnmatchedPage()
+def unmatched_page(playwright_operations):
+    return UnmatchedPage(playwright_operations)
 
 
 @pytest.fixture
-def vaccines_page():
-    return VaccinesPage()
+def vaccines_page(playwright_operations):
+    return VaccinesPage(playwright_operations)
