@@ -6,7 +6,7 @@ from ..models import (
     ConsentHPVPage,
     DashboardPage,
     ImportRecordsPage,
-    LoginPage,
+    LogInPage,
     ProgrammesPage,
     SchoolMovesPage,
     SessionsPage,
@@ -42,8 +42,8 @@ def import_records_page(playwright_operations):
 
 
 @pytest.fixture
-def login_page(playwright_operations):
-    return LoginPage(playwright_operations)
+def log_in_page(page):
+    return LogInPage(page)
 
 
 @pytest.fixture

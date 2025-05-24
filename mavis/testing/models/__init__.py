@@ -3,7 +3,7 @@ from .consent_doubles import ConsentDoublesPage
 from .consent_hpv import ConsentHPVPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
-from .login import LoginPage
+from .log_in import LogInPage
 from .programmes import ProgrammesPage
 from .school_moves import SchoolMovesPage
 from .sessions import SessionsPage
@@ -18,7 +18,7 @@ __all__ = (
     "ConsentHPVPage",
     "DashboardPage",
     "ImportRecordsPage",
-    "LoginPage",
+    "LogInPage",
     "ProgrammesPage",
     "SchoolMovesPage",
     "SessionsPage",
