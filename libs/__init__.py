@@ -8,9 +8,7 @@ class CurrentExecution:
     browser: Browser = None
     session_screenshots_dir: str = ""
     capture_screenshot_flag: bool = False
-
     screenshot_sequence: int = 0
-    file_record_count: int = 0
     session_id: str = ""
 
     @classmethod
@@ -18,14 +16,6 @@ class CurrentExecution:
         cls.capture_screenshot_flag = (
             os.environ.get("CAPTURE_SCREENSHOTS", "").lower() == "true"
         )
-
-    @classmethod
-    def set_file_record_count(cls, record_count: int):
-        cls.file_record_count = record_count
-
-    @classmethod
-    def get_file_record_count(cls) -> int:
-        return cls.file_record_count
 
     @classmethod
     def set_session_id(cls, session_id: str):
