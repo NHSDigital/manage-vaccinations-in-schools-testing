@@ -1035,7 +1035,6 @@ class SessionsPage:
     def record_vaccs_for_child(
         self, child_name: str, programme: Programme, at_school: bool = True
     ):
-        _batch_name: str = ""
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
         self.search_child(child_name=child_name)
         self.po.act(locator=programme, action=actions.CLICK_LINK)
