@@ -7,6 +7,7 @@ from .login import LoginPage
 from .programmes import ProgrammesPage
 from .school_moves import SchoolMovesPage
 from .sessions import SessionsPage
+from .start import StartPage
 from .unmatched import UnmatchedPage
 from .vaccines import VaccinesPage
 
@@ -21,6 +22,7 @@ __all__ = (
     "ProgrammesPage",
     "SchoolMovesPage",
     "SessionsPage",
+    "StartPage",
     "UnmatchedPage",
     "VaccinesPage",
     "VaccinesPage",

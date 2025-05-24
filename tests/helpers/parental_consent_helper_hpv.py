@@ -1,7 +1,7 @@
 from mavis.testing import testdata_ops
 from mavis.testing.mavis_constants import test_data_file_paths, test_data_values
 from mavis.testing.playwright_ops import PlaywrightOperations
-from mavis.testing.models import ConsentHPVPage
+from mavis.testing.models import ConsentHPVPage, StartPage
 
 
 class ParentalConsentHelper:
@@ -43,11 +43,11 @@ class ParentalConsentHelper:
         self.expected_message = str(_row["ExpectedFinalMessage"])
 
     def enter_details_on_mavis(
-        self, playwright_operations: PlaywrightOperations
+        self, start_page: StartPage, playwright_operations: PlaywrightOperations
     ) -> None:
         page = ConsentHPVPage(playwright_operations)
 
-        page.click_start_now()
+        start_page.start()
         page.fill_child_name_details(
             scenario_id=self.scenario_id,
             child_first_name=self.child_first_name,

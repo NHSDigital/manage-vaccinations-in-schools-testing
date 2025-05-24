@@ -11,12 +11,9 @@ doubles_vaccines = [
 ]
 
 
-@pytest.fixture(scope="function", autouse=True)
-def setup_tests(nurse, login_page, dashboard_page):
-    login_page.log_in(**nurse)
+@pytest.fixture(autouse=True)
+def go_to_vaccines_page(log_in_as_nurse, dashboard_page):
     dashboard_page.click_vaccines()
-    yield
-    login_page.log_out()
 
 
 @pytest.mark.vaccsbatch

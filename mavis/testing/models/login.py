@@ -6,7 +6,6 @@ from ..playwright_ops import PlaywrightOperations
 
 
 class LoginPage:
-    LNK_START_NOW: Final[str] = "Start now"
     TXT_EMAIL_ADDRESS: Final[str] = "Email address"
     TXT_PASSWORD: Final[str] = "Password"
     BTN_LOGIN: Final[str] = "Log in"
@@ -37,10 +36,6 @@ class LoginPage:
         )
 
     def __login_actions(self, username: str, password: str) -> None:
-        self.po.act(locator=self.LNK_START_NOW, action=actions.CLICK_LINK)
         self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=username)
         self.po.act(locator=self.TXT_PASSWORD, action=actions.FILL, value=password)
         self.po.act(locator=self.BTN_LOGIN, action=actions.CLICK_BUTTON)
-
-    def go_to_login_page(self) -> None:
-        self.po.page.goto("/")

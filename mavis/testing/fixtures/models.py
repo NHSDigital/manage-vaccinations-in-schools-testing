@@ -10,6 +10,7 @@ from ..models import (
     ProgrammesPage,
     SchoolMovesPage,
     SessionsPage,
+    StartPage,
     UnmatchedPage,
     VaccinesPage,
 )
@@ -58,6 +59,11 @@ def school_moves_page(playwright_operations):
 @pytest.fixture
 def sessions_page(playwright_operations):
     return SessionsPage(playwright_operations)
+
+
+@pytest.fixture
+def start_page(page):
+    return StartPage(page)
 
 
 @pytest.fixture
