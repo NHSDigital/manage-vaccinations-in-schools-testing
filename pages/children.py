@@ -30,9 +30,11 @@ class ChildrenPage:
     BTN_CONTINUE: Final[str] = "Continue"
     BTN_REMOVE_FROM_COHORT: Final[str] = "Remove from cohort"
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
+    def __init__(
+        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    ):
         self.po = playwright_operations
-        self.dashboard_page = DashboardPage(playwright_operations)
+        self.dashboard_page = dashboard_page
 
     def verify_headers(self):
         self.po.verify(
@@ -59,7 +61,7 @@ class ChildrenPage:
 
     def verify_child_has_been_uploaded(self, child_list) -> None:
         if len(child_list) >= 1:
-            self.dashboard_page.go_to_dashboard()
+            self.dashboard_page.click_mavis()
             self.dashboard_page.click_children()
             for _child_name in child_list:
                 self.search_for_a_child(child_name=_child_name)

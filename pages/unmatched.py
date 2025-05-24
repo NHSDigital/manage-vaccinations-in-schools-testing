@@ -38,10 +38,12 @@ class UnmatchedPage:
     BTN_LINK_RESPONSE_WITH_RECORD: Final[str] = "Link response with record"
     LBL_CONSENT_MATCHED: str = f"Consent matched for {LBL_CHILD_NAME_TO_MATCH}"
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
+    def __init__(
+        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    ):
         self.po = playwright_operations
-        self.dashboard_page = DashboardPage(playwright_operations)
-        self.children_page = ChildrenPage(playwright_operations)
+        self.dashboard_page = dashboard_page
+        self.children_page = ChildrenPage(playwright_operations, dashboard_page)
 
     def verify_records_exist(self):
         self.po.verify(
@@ -81,7 +83,7 @@ class UnmatchedPage:
             property=properties.TEXT,
             expected_value=f"!{self.LBL_CHILD_NAME_FOR_MATCHING}",
         )
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
             child_name=self.LBL_CHILD_NAME_TO_MATCH, is_created=False
@@ -130,7 +132,7 @@ class UnmatchedPage:
             property=properties.TEXT,
             expected_value=self.LBL_CREATE_SUCCESS_MESSAGE,
         )
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
             child_name=self.LBL_CHILD_NAME_FOR_CREATION, is_created=True
@@ -154,7 +156,7 @@ class UnmatchedPage:
             property=properties.TEXT,
             expected_value=self.LBL_CREATE_SUCCESS_MESSAGE,
         )
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
             child_name=self.LBL_CHILD_NO_NHS_NUMBER, is_created=True

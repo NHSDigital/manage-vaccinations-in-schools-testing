@@ -329,6 +329,9 @@ dist
 allure-report/
 allure-results/
 
+# Playwright
+test-results/
+
 # Project
 main.py
 working/

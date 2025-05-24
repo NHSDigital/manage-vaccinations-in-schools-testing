@@ -140,6 +140,16 @@ example). To do this, there is `--skip-reset` flag available:
 $ pytest tests/test_10_unmatched_consent_responses.py --skip-reset
 ```
 
+#### Tracing
+
+There's an option available to run tests with tracing, allowing the test to be
+replayed in the Trace Viewer.
+
+```shell
+$ pytest --tracing on
+$ playwright show-trace test-results/.../trace.zip
+```
+
 ### Reporting
 
 While the tests are running results are stored in `allure-results` which can
