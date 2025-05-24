@@ -9,18 +9,9 @@ class CurrentExecution:
     session_screenshots_dir: str = ""
     capture_screenshot_flag: bool = False
     screenshot_sequence: int = 0
-    session_id: str = ""
 
     @classmethod
     def get_env_values(cls):
         cls.capture_screenshot_flag = (
             os.environ.get("CAPTURE_SCREENSHOTS", "").lower() == "true"
         )
-
-    @classmethod
-    def set_session_id(cls, session_id: str):
-        cls.session_id = session_id
-
-    @classmethod
-    def get_session_id(cls) -> str:
-        return cls.session_id

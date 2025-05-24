@@ -42,10 +42,10 @@ def setup_vaccs(setup_tests, dashboard_page, sessions_page, import_records_page)
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
         sessions_page.click_school1()
-        sessions_page.save_session_id_from_offline_excel()
+        session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.go_to_dashboard()
         dashboard_page.click_import_records()
-        yield
+        yield session_id
     finally:
         dashboard_page.go_to_dashboard()
         dashboard_page.click_sessions()
@@ -186,6 +186,7 @@ def test_vaccs_positive_file_upload(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_POSITIVE,
         file_type=mavis_file_types.VACCS_MAVIS,
+        session_id=setup_vaccs,
     )
 
 
@@ -195,6 +196,7 @@ def test_vaccs_negative_file_upload(setup_vaccs, import_records_page):
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_NEGATIVE,
         file_type=mavis_file_types.VACCS_MAVIS,
+        session_id=setup_vaccs,
     )
 
 
