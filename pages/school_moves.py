@@ -2,19 +2,15 @@ from typing import Final
 
 import pandas as pd
 
-from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, escape_characters, properties
 from libs.mavis_constants import report_headers, test_data_values
+from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime
 
 from .dashboard import DashboardPage
 
 
 class SchoolMovesPage:
-    po = playwright_ops.playwright_operations()
-    ce = CurrentExecution()
-    dashboard_page = DashboardPage()
-
     LBL_HEADERS: Final[str] = "Updated	Full name	Move	Actions"
     LBL_MAIN: Final[str] = "main"
     LBL_PARAGRAPH: Final[str] = "paragraph"
@@ -26,6 +22,10 @@ class SchoolMovesPage:
     LNK_DOWNLOAD_RECORDS: Final[str] = "Download records"
     BTN_CONTINUE: Final[str] = "Continue"
     BTN_DOWNLOAD_CSV: Final[str] = "Download CSV"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
+        self.dashboard_page = DashboardPage(playwright_operations)
 
     def verify_headers(self):
         self.po.verify(

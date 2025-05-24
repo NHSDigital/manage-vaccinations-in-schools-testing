@@ -1,10 +1,8 @@
-from libs import playwright_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
+from libs.playwright_ops import PlaywrightOperations
 
 
 class DashboardPage:
-    po = playwright_ops.playwright_operations()
-
     LNK_PROGRAMMES: str = f"heading{escape_characters.SEPARATOR_CHAR}Programmes"
     LNK_SESSIONS: str = f"heading{escape_characters.SEPARATOR_CHAR}Sessions"
     LNK_CHILDREN: str = f"heading{escape_characters.SEPARATOR_CHAR}Children"
@@ -22,6 +20,9 @@ class DashboardPage:
         f"heading{escape_characters.SEPARATOR_CHAR}Service guidance"
     )
     LNK_NHS_LOGO: str = "Manage vaccinations in schools"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
 
     def click_programmes(self):
         self.po.act(locator=self.LNK_PROGRAMMES, action=actions.CLICK_LINK)

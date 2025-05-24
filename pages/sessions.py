@@ -1,6 +1,6 @@
 from typing import Final
 
-from libs import CurrentExecution, playwright_ops, testdata_ops
+from libs import CurrentExecution, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import (
     mavis_file_types,
@@ -9,6 +9,7 @@ from libs.mavis_constants import (
     test_data_values,
     vaccines,
 )
+from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import (
     datetime,
     get_current_datetime,
@@ -22,12 +23,8 @@ from .dashboard import DashboardPage
 
 
 class SessionsPage:
-    po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    dashboard_page = DashboardPage()
-    consent_page = ConsentHPVPage()
-    children_page = ChildrenPage()
 
     LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
     LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME
@@ -129,8 +126,12 @@ class SessionsPage:
     BTN_SEARCH: Final[str] = "Search"
     TXT_SEARCH: Final[str] = "Search"
 
-    def __init__(self):
+    def __init__(self, playwright_operations: PlaywrightOperations):
         self.upload_time = ""
+        self.po = playwright_operations
+        self.dashboard_page = DashboardPage(playwright_operations)
+        self.consent_page = ConsentHPVPage(playwright_operations)
+        self.children_page = ChildrenPage(playwright_operations)
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")

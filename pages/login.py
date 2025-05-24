@@ -1,12 +1,12 @@
 from typing import Final
 
-from libs import CurrentExecution, playwright_ops
+from libs import CurrentExecution
 from libs.generic_constants import actions, properties
 from libs.mavis_constants import test_data_values
+from libs.playwright_ops import PlaywrightOperations
 
 
 class LoginPage:
-    po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
 
     LNK_START_NOW: Final[str] = "Start now"
@@ -17,6 +17,9 @@ class LoginPage:
     LBL_BANNER: Final[str] = "banner"
     BTN_ROLE: Final[str] = f"SAIS Organisation 1 ({test_data_values.ORG_CODE})"
     LBL_PARAGRAPH: Final[str] = "paragraph"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
 
     def log_in(self, username: str, password: str):
         self.__login_actions(username=username, password=password)

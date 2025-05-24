@@ -1,13 +1,11 @@
 from typing import Final
 
-from libs import playwright_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import test_data_values
+from libs.playwright_ops import PlaywrightOperations
 
 
 class ConsentHPVPage:
-    po = playwright_ops.playwright_operations()
-
     BTN_START_NOW: Final[str] = "Start now"
     TXT_CHILD_FIRST_NAME: Final[str] = "First name"
     TXT_CHILD_LAST_NAME: Final[str] = "Last name"
@@ -75,6 +73,9 @@ class ConsentHPVPage:
     VACCINE_WILL_BE_GIVEN_ELSEWHERE: Final[str] = "vaccine will be given elsewhere"
     MEDICAL_REASONS: Final[str] = "medical reasons"
     PERSONAL_CHOICE: Final[str] = "personal choice"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
 
     def click_start_now(self):
         self.po.act(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)

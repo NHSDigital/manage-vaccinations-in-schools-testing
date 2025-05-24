@@ -1,18 +1,13 @@
 from typing import Final
 
-from libs import CurrentExecution, playwright_ops
 from libs.generic_constants import actions, properties, wait_time
+from libs.playwright_ops import PlaywrightOperations
 
 from .children import ChildrenPage
 from .dashboard import DashboardPage
 
 
 class UnmatchedPage:
-    po = playwright_ops.playwright_operations()
-    ce = CurrentExecution()
-    dashboard_page = DashboardPage()
-    children_page = ChildrenPage()
-
     LBL_NO_RECORDS: Final[str] = "!There are currently no unmatched consent responses."
     LBL_MAIN: Final[str] = "main"
     LBL_PARAGRAPH: Final[str] = "paragraph"
@@ -42,6 +37,11 @@ class UnmatchedPage:
     LNK_SELECT_FILTERED_CHILD: Final[str] = "Select"
     BTN_LINK_RESPONSE_WITH_RECORD: Final[str] = "Link response with record"
     LBL_CONSENT_MATCHED: str = f"Consent matched for {LBL_CHILD_NAME_TO_MATCH}"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
+        self.dashboard_page = DashboardPage(playwright_operations)
+        self.children_page = ChildrenPage(playwright_operations)
 
     def verify_records_exist(self):
         self.po.verify(

@@ -4,11 +4,13 @@ import pytest
 from pandas.core.series import Series
 
 from libs import CurrentExecution
-from tests.helpers import parental_consent_helper_doubles
+from libs.playwright_ops import PlaywrightOperations
+
+from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 
 
 ce = CurrentExecution()
-helper = parental_consent_helper_doubles.parental_consent_helper()
+helper = ParentalConsentHelper()
 
 
 @pytest.fixture(scope="function")
@@ -39,7 +41,8 @@ def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_pa
 def test_workflow(
     get_session_link: str,
     scenario_data: Iterable[tuple[Hashable, Series]],
+    playwright_operations: PlaywrightOperations,
 ):
     ce.page.goto(get_session_link)
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    helper.enter_details_on_mavis()
+    helper.enter_details_on_mavis(playwright_operations)
