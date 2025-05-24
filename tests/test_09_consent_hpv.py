@@ -32,17 +32,17 @@ def setup_gillick(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.COHORTS_FULL_NAME
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -52,20 +52,20 @@ def setup_invalidated_consent(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.COHORTS_NO_CONSENT
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school1()
         sessions_page.click_consent_tab()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -75,20 +75,20 @@ def setup_mavis_1696(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.COHORTS_CONFLICTING_CONSENT
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school1()
         sessions_page.click_consent_tab()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -98,20 +98,20 @@ def setup_mavis_1864(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school1()
         sessions_page.click_consent_tab()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -121,20 +121,20 @@ def setup_mavis_1818(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.COHORTS_CONFLICTING_GILLICK
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school1()
         sessions_page.click_consent_tab()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 

@@ -81,7 +81,7 @@ class UnmatchedPage:
             property=properties.TEXT,
             expected_value=f"!{self.LBL_CHILD_NAME_FOR_MATCHING}",
         )
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
             child_name=self.LBL_CHILD_NAME_TO_MATCH, is_created=False
@@ -130,7 +130,7 @@ class UnmatchedPage:
             property=properties.TEXT,
             expected_value=self.LBL_CREATE_SUCCESS_MESSAGE,
         )
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
             child_name=self.LBL_CHILD_NAME_FOR_CREATION, is_created=True
@@ -154,7 +154,7 @@ class UnmatchedPage:
             property=properties.TEXT,
             expected_value=self.LBL_CREATE_SUCCESS_MESSAGE,
         )
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
             child_name=self.LBL_CHILD_NO_NHS_NUMBER, is_created=True

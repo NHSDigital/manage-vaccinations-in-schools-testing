@@ -120,13 +120,17 @@ class SessionsPage:
     BTN_SEARCH: Final[str] = "Search"
     TXT_SEARCH: Final[str] = "Search"
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
+    def __init__(
+        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    ):
         self.upload_time = ""
         self.po = playwright_operations
-        self.dashboard_page = DashboardPage(playwright_operations)
+        self.dashboard_page = dashboard_page
         self.consent_page = ConsentHPVPage(playwright_operations)
-        self.children_page = ChildrenPage(playwright_operations)
-        self.import_records_page = ImportRecordsPage(playwright_operations)
+        self.children_page = ChildrenPage(playwright_operations, dashboard_page)
+        self.import_records_page = ImportRecordsPage(
+            playwright_operations, dashboard_page
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -550,7 +554,7 @@ class SessionsPage:
         self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
@@ -558,7 +562,7 @@ class SessionsPage:
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_give_consent()
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
@@ -579,7 +583,7 @@ class SessionsPage:
         self.click_child_full_name()
         self.click_get_consent_response()
         self.consent_page.service_give_consent()
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()
@@ -598,7 +602,7 @@ class SessionsPage:
         self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_school1()

@@ -29,10 +29,12 @@ class ImportRecordsPage:
     LBL_MAIN: Final[str] = "main"
     LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
+    def __init__(
+        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    ):
         self.po = playwright_operations
-        self.dashboard_page = DashboardPage(playwright_operations)
-        self.children_page = ChildrenPage(playwright_operations)
+        self.dashboard_page = dashboard_page
+        self.children_page = ChildrenPage(playwright_operations, dashboard_page)
         self.vaccines_page = VaccinesPage(playwright_operations)
         self.upload_time = ""
 

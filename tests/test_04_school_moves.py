@@ -13,17 +13,17 @@ def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_2()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school2()
@@ -32,10 +32,10 @@ def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
         )
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_2()
 
@@ -49,7 +49,7 @@ def setup_move_to_homeschool_and_unknown(setup_tests, dashboard_page, sessions_p
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.CLASS_MOVES_UNKNOWN_HOMESCHOOLED
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_school2()
@@ -58,10 +58,10 @@ def setup_move_to_homeschool_and_unknown(setup_tests, dashboard_page, sessions_p
         )
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_2()
 
@@ -83,6 +83,6 @@ def test_to_homeschool_and_unknown(setup_move_to_homeschool_and_unknown):
 @pytest.mark.schoolmoves
 @pytest.mark.order(403)
 def test_download_report(setup_move_and_ignore, dashboard_page, school_moves_page):
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_school_moves()
     school_moves_page.download_and_verify_report()

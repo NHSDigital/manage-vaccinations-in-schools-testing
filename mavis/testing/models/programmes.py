@@ -58,14 +58,18 @@ class ProgrammesPage:
     BTN_RESOLVE_DUPLICATE: Final[str] = "Resolve duplicate"
     LBL_RECORD_UPDATED: Final[str] = "Record updated"
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
+    def __init__(
+        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    ):
         self.po = playwright_operations
-        self.sessions_page = SessionsPage(playwright_operations)
-        self.dashboard_page = DashboardPage(playwright_operations)
-        self.children_page = ChildrenPage(playwright_operations)
+        self.dashboard_page = dashboard_page
+        self.sessions_page = SessionsPage(playwright_operations, dashboard_page)
+        self.children_page = ChildrenPage(playwright_operations, dashboard_page)
         self.consent_hpv = ConsentHPVPage(playwright_operations)
         self.consent_doubles = ConsentDoublesPage(playwright_operations)
-        self.import_records_page = ImportRecordsPage(playwright_operations)
+        self.import_records_page = ImportRecordsPage(
+            playwright_operations, dashboard_page
+        )
 
     def click_hpv(self):
         self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
@@ -217,7 +221,7 @@ class ProgrammesPage:
         self.po.act(locator=self.LNK_MAV_854_CHILD, action=actions.CLICK_LINK)
         self.po.act(locator=self.LNK_COMMUNITY_CLINIC_HPV, action=actions.CLICK_LINK)
         self.sessions_page._vaccinate_child_mav_854()
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
@@ -304,7 +308,7 @@ class ProgrammesPage:
         - If Td/IPV followed by MenACWY  then "feeling well" is pre-filled
         - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
         """
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_school1()
         self.sessions_page.click_consent_tab()
@@ -359,10 +363,10 @@ class ProgrammesPage:
             Actual Result:
             Server error page and user cannot bring the child back into the cohort
         """
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.remove_child_from_cohort(child_name=self.LNK_MAV_909_CHILD)
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_programmes()
         self.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
         self.po.verify(
