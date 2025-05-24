@@ -1,14 +1,6 @@
 import pytest
 
-from libs.mavis_constants import vaccines
-
-
-doubles_vaccines = [
-    vaccines.MENQUADFI,
-    vaccines.MENVEO,
-    vaccines.NIMENRIX,
-    vaccines.REVAXIS,
-]
+from libs.mavis_constants import Vaccine
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -21,20 +13,8 @@ def setup_tests(start_mavis, nurse, login_page, dashboard_page):
 
 @pytest.mark.vaccsbatch
 @pytest.mark.order(601)
-def test_batch_add_change_archive_hpv(vaccines_page):
-    vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)
-    vaccines_page.change_batch(vaccine_name=vaccines.GARDASIL9)
-    vaccines_page.archive_batch(vaccine_name=vaccines.GARDASIL9)
-
-
-@pytest.mark.vaccsbatch
-@pytest.mark.order(602)
-@pytest.mark.parametrize(
-    "vaccine",
-    doubles_vaccines,
-    ids=[id[0] for id in doubles_vaccines],
-)
-def test_batch_add_change_archive_doubles(vaccine, vaccines_page):
-    vaccines_page.add_batch(vaccine_name=vaccine)
-    vaccines_page.change_batch(vaccine_name=vaccine)
-    vaccines_page.archive_batch(vaccine_name=vaccine)
+@pytest.mark.parametrize("vaccine", Vaccine)
+def test_batch_add_change_archive(vaccine, vaccines_page):
+    vaccines_page.add_batch(vaccine=vaccine)
+    vaccines_page.change_batch(vaccine=vaccine)
+    vaccines_page.archive_batch(vaccine=vaccine)

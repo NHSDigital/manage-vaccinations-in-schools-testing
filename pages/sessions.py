@@ -7,7 +7,7 @@ from libs.mavis_constants import (
     programmes,
     record_limit,
     test_data_values,
-    vaccines,
+    Vaccine,
 )
 from libs.wrappers import (
     datetime,
@@ -1045,24 +1045,23 @@ class SessionsPage:
     def record_vaccs_for_child(
         self, child_name: str, programme_name: str, at_school: bool = True
     ):
-        _batch_name: str = ""
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
         self.search_child(child_name=child_name)
         self.po.act(locator=programme_name, action=actions.CLICK_LINK)
         match programme_name:
             case programmes.HPV:
                 self._answer_hpv_prescreening_questions()
-                _batch_name = vaccines.GARDASIL9[0]
+                vaccine = Vaccine.GARDASIL_9
             case programmes.MENACWY:
                 self._answer_menacwy_prescreening_questions(check_prefilled=True)
-                _batch_name = vaccines.MENQUADFI[0]
+                vaccine = Vaccine.MENQUADFI
             case programmes.TDIPV:
                 self._answer_tdipv_prescreening_questions(check_prefilled=True)
-                _batch_name = vaccines.REVAXIS[0]
+                vaccine = Vaccine.REVAXIS
         self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=_batch_name, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=vaccine, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         if at_school:  # only skips MAV-854
             self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
