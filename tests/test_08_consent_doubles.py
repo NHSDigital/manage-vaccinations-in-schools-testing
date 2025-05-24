@@ -1,14 +1,12 @@
-from typing import Hashable, Iterable
-
 import pytest
-from pandas.core.series import Series
 
 from libs import CurrentExecution
-from tests.helpers import parental_consent_helper_doubles
+
+from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 
 
 ce = CurrentExecution()
-helper = parental_consent_helper_doubles.parental_consent_helper()
+helper = ParentalConsentHelper()
 
 
 @pytest.fixture(scope="function")
@@ -36,10 +34,7 @@ def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_pa
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_workflow(
-    get_session_link: str,
-    scenario_data: Iterable[tuple[Hashable, Series]],
-):
-    ce.page.goto(get_session_link)
+def test_workflow(get_session_link, scenario_data, consent_doubles_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    helper.enter_details_on_mavis()
+    ce.page.goto(get_session_link)
+    helper.enter_details_on_mavis(consent_doubles_page)

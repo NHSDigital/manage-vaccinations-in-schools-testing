@@ -3,10 +3,9 @@ from libs.mavis_constants import test_data_file_paths, test_data_values
 from pages import ConsentDoublesPage
 
 
-class parental_consent_helper:
+class ParentalConsentHelper:
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    pc = ConsentDoublesPage()
 
     def __init__(self):
         self.df = self.tdo.read_spreadsheet(
@@ -45,25 +44,25 @@ class parental_consent_helper:
         self.consent_not_given_details = str(_row["ConsentNotGivenDetails"])
         self.expected_message = str(_row["ExpectedFinalMessage"])
 
-    def enter_details_on_mavis(self) -> None:
-        self.pc.click_start_now()
-        self.pc.fill_child_name_details(
+    def enter_details_on_mavis(self, page: ConsentDoublesPage):
+        page.click_start_now()
+        page.fill_child_name_details(
             scenario_id=self.scenario_id,
             child_first_name=self.child_first_name,
             child_last_name=self.child_last_name,
             known_as_first=self.child_aka_first,
             known_as_last=self.child_aka_last,
         )
-        self.pc.fill_child_dob(
+        page.fill_child_dob(
             scenario_id=self.scenario_id,
             dob_day=self.child_dob_day,
             dob_month=self.child_dob_month,
             dob_year=self.child_dob_year,
         )
-        self.pc.select_child_school(
+        page.select_child_school(
             scenario_id=self.scenario_id, school_name=self.school_name
         )
-        self.pc.fill_parent_details(
+        page.fill_parent_details(
             scenario_id=self.scenario_id,
             parent_name=self.parent_name,
             relation=self.relation,
@@ -71,53 +70,53 @@ class parental_consent_helper:
             phone=self.phone,
         )
         if self.phone != test_data_values.EMPTY:
-            self.pc.check_phone_options(
+            page.check_phone_options(
                 scenario_id=self.scenario_id,
             )
-        self.pc.select_consent_for_vaccination(
+        page.select_consent_for_vaccination(
             scenario_id=self.scenario_id, consent_for=self.consent_for
         )
         if self.consent_for.lower() != test_data_values.EMPTY:  # None
-            self.pc.fill_address_details(
+            page.fill_address_details(
                 scenario_id=self.scenario_id,
                 line1=self.addr1,
                 line2=self.addr2,
                 city=self.city,
                 postcode=self.postcode,
             )
-            self.pc.select_bleeding_disorder(
+            page.select_bleeding_disorder(
                 scenario_id=self.scenario_id,
                 bleeding_disorder_details=self.bleeding_disorder_details,
             )
-            self.pc.select_severe_allergies(
+            page.select_severe_allergies(
                 scenario_id=self.scenario_id,
                 allergy_details=self.severe_allergy_details,
             )
-            self.pc.select_severe_reaction(
+            page.select_severe_reaction(
                 scenario_id=self.scenario_id, reaction_details=self.reaction_details
             )
-            self.pc.select_extra_support(
+            page.select_extra_support(
                 scenario_id=self.scenario_id,
                 extra_support_details=self.extra_support_details,
             )
-            self.pc.vaccinated_in_past(
+            page.vaccinated_in_past(
                 scenario_id=self.scenario_id,
                 vaccs_in_past_details=self.vaccinated_in_past_details,
             )
         if self.consent_for.lower() == "both":
-            self.pc.other_vaccs_in_past(
+            page.other_vaccs_in_past(
                 scenario_id=self.scenario_id,
                 other_vaccs_in_past_details=self.other_vaccs_in_past_details,
             )
         if self.consent_for.lower() != "both":
-            self.pc.select_consent_not_given_reason(
+            page.select_consent_not_given_reason(
                 scenario_id=self.scenario_id,
                 reason=self.consent_not_given_reason,
                 reason_details=self.consent_not_given_details,
             )
-        self.pc.click_confirm_details(
+        page.click_confirm_details(
             scenario_id=self.scenario_id,
         )
-        self.pc.verify_final_message(
+        page.verify_final_message(
             scenario_id=self.scenario_id, expected_message=self.expected_message
         )
