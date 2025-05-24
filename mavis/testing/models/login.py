@@ -1,8 +1,8 @@
 from typing import Final
 
-from libs.generic_constants import actions, properties
-from libs.mavis_constants import test_data_values
-from libs.playwright_ops import PlaywrightOperations
+from ..generic_constants import actions, properties
+from ..mavis_constants import test_data_values
+from ..playwright_ops import PlaywrightOperations
 
 
 class LoginPage:

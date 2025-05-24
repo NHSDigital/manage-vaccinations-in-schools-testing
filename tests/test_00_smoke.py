@@ -3,7 +3,7 @@ import subprocess
 
 import pytest
 
-from libs.generic_constants import properties
+from mavis.testing.generic_constants import properties
 
 
 @pytest.mark.smoke

@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import vaccines
+from mavis.testing.mavis_constants import vaccines
 
 
 doubles_vaccines = [

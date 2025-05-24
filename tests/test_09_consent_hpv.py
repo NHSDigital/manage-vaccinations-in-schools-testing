@@ -4,8 +4,8 @@ import pytest
 from pandas.core.series import Series
 from playwright.sync_api import Page
 
-from libs.mavis_constants import test_data_file_paths
-from libs.playwright_ops import PlaywrightOperations
+from mavis.testing.mavis_constants import test_data_file_paths
+from mavis.testing.playwright_ops import PlaywrightOperations
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 

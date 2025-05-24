@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import (
+from mavis.testing.mavis_constants import (
     mavis_file_types,
     programmes,
     test_data_file_paths,

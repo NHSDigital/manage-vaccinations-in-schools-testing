@@ -1,5 +1,5 @@
-from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.playwright_ops import PlaywrightOperations
+from ..generic_constants import actions, escape_characters, properties, wait_time
+from ..playwright_ops import PlaywrightOperations
 
 
 class DashboardPage:

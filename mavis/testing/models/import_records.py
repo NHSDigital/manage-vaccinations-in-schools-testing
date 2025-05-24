@@ -1,10 +1,10 @@
 from typing import Final, Optional
 
-from libs import testdata_ops
-from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import mavis_file_types, test_data_values
-from libs.playwright_ops import PlaywrightOperations
-from libs.wrappers import get_link_formatted_date_time
+from .. import testdata_ops
+from ..generic_constants import actions, escape_characters, properties, wait_time
+from ..mavis_constants import mavis_file_types, test_data_values
+from ..playwright_ops import PlaywrightOperations
+from ..wrappers import get_link_formatted_date_time
 
 from .children import ChildrenPage
 from .dashboard import DashboardPage

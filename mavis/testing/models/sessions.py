@@ -1,16 +1,11 @@
+from datetime import datetime
 from typing import Final
 
-from libs import testdata_ops
-from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import (
-    mavis_file_types,
-    programmes,
-    test_data_values,
-    vaccines,
-)
-from libs.playwright_ops import PlaywrightOperations
-from libs.wrappers import (
-    datetime,
+from .. import testdata_ops
+from ..generic_constants import actions, escape_characters, properties, wait_time
+from ..mavis_constants import mavis_file_types, programmes, test_data_values, vaccines
+from ..playwright_ops import PlaywrightOperations
+from ..wrappers import (
     get_current_datetime,
     get_link_formatted_date_time,
     get_offset_date,

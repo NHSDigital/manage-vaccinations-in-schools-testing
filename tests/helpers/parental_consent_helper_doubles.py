@@ -1,7 +1,7 @@
-from libs import testdata_ops
-from libs.mavis_constants import test_data_file_paths, test_data_values
-from libs.playwright_ops import PlaywrightOperations
-from pages import ConsentDoublesPage
+from mavis.testing import testdata_ops
+from mavis.testing.mavis_constants import test_data_file_paths, test_data_values
+from mavis.testing.playwright_ops import PlaywrightOperations
+from mavis.testing.models import ConsentDoublesPage
 
 
 class ParentalConsentHelper:

@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import test_data_file_paths
+from mavis.testing.mavis_constants import test_data_file_paths
 
 
 @pytest.fixture(scope="function", autouse=False)
