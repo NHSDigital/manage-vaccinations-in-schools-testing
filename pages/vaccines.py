@@ -52,7 +52,7 @@ class VaccinesPage:
             expected_value=vaccine,
         )
 
-        self.po.ce.page.get_by_role("link", name=f"Add a new {vaccine} batch").click()
+        self.po.page.get_by_role("link", name=f"Add a new {vaccine} batch").click()
 
         self.po.verify(
             locator=self.LBL_MAIN,

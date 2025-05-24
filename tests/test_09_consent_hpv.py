@@ -1,17 +1,15 @@
 import pytest
 
-from libs import CurrentExecution
 from libs.mavis_constants import test_data_file_paths
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
 
-ce = CurrentExecution()
 helper = ParentalConsentHelper()
 
 
 @pytest.fixture(scope="function")
-def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_page):
+def get_session_link(nurse, dashboard_page, login_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -28,7 +26,7 @@ def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_pa
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_gillick(start_mavis, nurse, dashboard_page, login_page, sessions_page):
+def setup_gillick(nurse, dashboard_page, login_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -50,9 +48,7 @@ def setup_gillick(start_mavis, nurse, dashboard_page, login_page, sessions_page)
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_invalidated_consent(
-    start_mavis, nurse, login_page, dashboard_page, sessions_page
-):
+def setup_invalidated_consent(nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -77,7 +73,7 @@ def setup_invalidated_consent(
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mavis_1696(start_mavis, nurse, login_page, dashboard_page, sessions_page):
+def setup_mavis_1696(nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -102,7 +98,7 @@ def setup_mavis_1696(start_mavis, nurse, login_page, dashboard_page, sessions_pa
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mavis_1864(start_mavis, nurse, login_page, dashboard_page, sessions_page):
+def setup_mavis_1864(nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -127,7 +123,7 @@ def setup_mavis_1864(start_mavis, nurse, login_page, dashboard_page, sessions_pa
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mavis_1818(start_mavis, nurse, login_page, dashboard_page, sessions_page):
+def setup_mavis_1818(nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -159,9 +155,9 @@ def setup_mavis_1818(start_mavis, nurse, login_page, dashboard_page, sessions_pa
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_consent_workflow_hpv(get_session_link, scenario_data, consent_hpv_page):
+def test_workflow(get_session_link, scenario_data, page, consent_hpv_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    ce.page.goto(get_session_link)
+    page.goto(get_session_link)
     helper.enter_details_on_mavis(consent_hpv_page)
 
 

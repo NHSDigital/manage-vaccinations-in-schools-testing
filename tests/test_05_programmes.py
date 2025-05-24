@@ -9,7 +9,7 @@ from libs.mavis_constants import (
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_cohort_upload_and_reports(start_mavis, nurse, dashboard_page, login_page):
+def setup_cohort_upload_and_reports(nurse, dashboard_page, login_page):
     login_page.log_in(**nurse)
     dashboard_page.click_programmes()
     yield
@@ -17,9 +17,7 @@ def setup_cohort_upload_and_reports(start_mavis, nurse, dashboard_page, login_pa
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_record_a_vaccine(
-    start_mavis, nurse, dashboard_page, login_page, sessions_page
-):
+def setup_record_a_vaccine(nurse, dashboard_page, login_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -36,7 +34,7 @@ def setup_record_a_vaccine(
 
 @pytest.fixture(scope="function", autouse=False)
 def setup_mavis_1729(
-    start_mavis, nurse, dashboard_page, import_records_page, login_page, sessions_page
+    nurse, dashboard_page, import_records_page, login_page, sessions_page
 ):
     try:
         login_page.log_in(**nurse)
@@ -66,7 +64,6 @@ def setup_mavis_1729(
 
 @pytest.fixture(scope="function", autouse=False)
 def setup_mav_854(
-    start_mavis,
     nurse,
     dashboard_page,
     import_records_page,
@@ -100,7 +97,7 @@ def setup_mav_854(
 
 @pytest.fixture(scope="function", autouse=False)
 def setup_mav_nnn(
-    start_mavis, admin, dashboard_page, login_page, import_records_page, sessions_page
+    admin, dashboard_page, login_page, import_records_page, sessions_page
 ):
     try:
         login_page.log_in(**admin)

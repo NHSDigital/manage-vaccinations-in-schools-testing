@@ -2,7 +2,7 @@ from typing import Final
 
 import pandas as pd
 
-from libs import CurrentExecution, testdata_ops
+from libs import testdata_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import report_headers, test_data_file_paths, Programme
 from libs.playwright_ops import PlaywrightOperations
@@ -17,7 +17,6 @@ from .sessions import SessionsPage
 
 
 class ProgrammesPage:
-    ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"

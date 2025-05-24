@@ -1,11 +1,6 @@
 import pytest
 
 
-@pytest.fixture(scope="function", autouse=True)
-def setup_tests(start_mavis):
-    yield
-
-
 test_parameters = [
     ("invalid_user", "invalid_password", "Invalid Email or password."),
     ("invalid_user", "", "Invalid Email or password."),

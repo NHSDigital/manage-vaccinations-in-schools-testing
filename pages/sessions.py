@@ -1,6 +1,6 @@
 from typing import Final
 
-from libs import CurrentExecution, testdata_ops
+from libs import testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import mavis_file_types, test_data_values, Programme
 from libs.playwright_ops import PlaywrightOperations
@@ -18,7 +18,6 @@ from .import_records import ImportRecordsPage
 
 
 class SessionsPage:
-    ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
 
     LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
