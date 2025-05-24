@@ -7,7 +7,6 @@ from datetime import datetime
 
 import pytest
 import requests
-from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
 from libs.playwright_ops import PlaywrightOperations
@@ -16,13 +15,7 @@ from libs.wrappers import get_current_datetime
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser", default="chromium")
-    parser.addoption("--browser-channel", default=None)
-    parser.addoption("--device", default=None)
-    parser.addoption("--slowmo", type=int, default=200)
-    parser.addoption("--headed", action="store_true", default=False)
     parser.addoption("--skip-reset", action="store_true", default=False)
-    parser.addoption("--screenshot", type=str, default="off")
 
 
 @pytest.fixture(scope="session")
@@ -63,33 +56,8 @@ def superuser() -> dict[str, str]:
 
 
 @pytest.fixture(scope="session")
-def browser_name(request):
-    return request.config.getoption("browser")
-
-
-@pytest.fixture(scope="session")
-def browser_channel(request):
-    return request.config.getoption("browser_channel")
-
-
-@pytest.fixture(scope="session")
-def device(request):
-    return request.config.getoption("device")
-
-
-@pytest.fixture(scope="session")
-def headed(request) -> bool:
-    return request.config.getoption("headed")
-
-
-@pytest.fixture(scope="session")
-def screenshot(request):
-    return request.config.getoption("screenshot")
-
-
-@pytest.fixture(scope="session")
-def slow_mo(request) -> int:
-    return request.config.getoption("slowmo")
+def screenshot(pytestconfig):
+    return pytestconfig.getoption("screenshot")
 
 
 @pytest.fixture(scope="session")
@@ -98,19 +66,19 @@ def reset_endpoint(base_url) -> str:
 
 
 @pytest.fixture(scope="session")
-def skip_reset(request) -> bool:
-    return request.config.getoption("skip_reset")
+def skip_reset(pytestconfig) -> bool:
+    return pytestconfig.getoption("skip_reset")
 
 
 @pytest.fixture(scope="session")
 def screenshots_path(screenshot: str, browser_name: str) -> Optional[Path]:
-    if screenshot == "on":
-        session_name = f"{get_current_datetime()}-{browser_name}"
-        path = Path("screenshots") / session_name
-        path.mkdir(parents=True, exist_ok=True)
-        return path
-    else:
+    if screenshot == "off":
         return None
+
+    session_name = f"{get_current_datetime()}-{browser_name}"
+    path = Path("screenshots") / session_name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 @pytest.fixture(scope="session")
@@ -137,48 +105,28 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 
 
 @pytest.fixture(scope="session")
-def playwright(request, browser_name, reset_environment):
+def playwright(playwright, reset_environment):
     reset_environment()
-
-    with sync_playwright() as playwright:
-        playwright.selectors.set_test_id_attribute("data-qa")
-        yield playwright
+    playwright.selectors.set_test_id_attribute("data-qa")
+    yield playwright
 
 
 @pytest.fixture(scope="session")
-def browser(playwright, browser_name, browser_channel, headed, slow_mo):
-    browser_type = getattr(playwright, browser_name)
-    browser = browser_type.launch(
-        channel=browser_channel, headless=not headed, slow_mo=slow_mo
-    )
-
-    yield browser
-
-    browser.close()
+def browser_context_args(browser_context_args, basic_auth):
+    return {**browser_context_args, "http_credentials": basic_auth}
 
 
 @pytest.fixture(scope="session")
-def context(playwright, base_url, basic_auth, browser, device):
-    kwargs = {}
-    if device:
-        kwargs = playwright.devices[device]
-
-    return browser.new_context(**kwargs, base_url=base_url, http_credentials=basic_auth)
+def browser_type_launch_args(browser_type_launch_args, pytestconfig):
+    slowmo_option = pytestconfig.getoption("--slowmo")
+    slow_mo = max(200, slowmo_option)  # FIXME: Find a way to disable this by default.
+    return {**browser_type_launch_args, "slow_mo": slow_mo}
 
 
 @pytest.fixture
-def page(browser, context):
-    page = context.new_page()
+def page(page):
     page.goto("/")
-
-    yield page
-
-    button_log_out = page.get_by_role("button", name="Log out")
-
-    if button_log_out.is_visible():
-        button_log_out.click()
-
-    page.close()
+    return page
 
 
 @pytest.fixture
