@@ -180,10 +180,7 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-
-
-
-# Chinmay
+# Project
 main.py
 working/
 reports/

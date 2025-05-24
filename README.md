@@ -101,6 +101,16 @@ run the tests in headed more, use the following command:
 $ pytest --headed
 ```
 
+### Screenshots
+
+To take screenshots while the tests are running there is a `--screenshot`
+command line option. The screenshots will be saved in a `screenshots`
+directory.
+
+```shell
+$ pytest --screenshot on
+```
+
 ### Slow motion
 
 When running the tests locally in headed mode, it can be useful to make the

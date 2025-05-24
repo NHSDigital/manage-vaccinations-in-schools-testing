@@ -1,6 +1,7 @@
 import os
-import pathlib
+from pathlib import Path
 import time
+from typing import Optional
 import urllib.parse
 from datetime import datetime
 
@@ -22,9 +23,7 @@ def pytest_addoption(parser):
     parser.addoption("--slowmo", type=int, default=200)
     parser.addoption("--headed", action="store_true", default=False)
     parser.addoption("--skip-reset", action="store_true", default=False)
-
-
-ce.get_env_values()
+    parser.addoption("--screenshot", type=str, default="off")
 
 
 @pytest.fixture(scope="session")
@@ -85,6 +84,11 @@ def headed(request) -> bool:
 
 
 @pytest.fixture(scope="session")
+def screenshot(request):
+    return request.config.getoption("screenshot")
+
+
+@pytest.fixture(scope="session")
 def slow_mo(request) -> int:
     return request.config.getoption("slowmo")
 
@@ -100,8 +104,19 @@ def skip_reset(request) -> bool:
 
 
 @pytest.fixture(scope="session")
-def playwright_operations():
-    return PlaywrightOperations()
+def screenshots_path(screenshot: str, browser_name: str) -> Optional[Path]:
+    if screenshot == "on":
+        session_name = f"{get_current_datetime()}-{browser_name}"
+        path = Path("screenshots") / session_name
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+    else:
+        return None
+
+
+@pytest.fixture(scope="session")
+def playwright_operations(screenshots_path):
+    return PlaywrightOperations(screenshots_path)
 
 
 @pytest.fixture(scope="session")
@@ -130,8 +145,6 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 @pytest.fixture(scope="session")
 def playwright(request, browser_name, reset_environment):
     reset_environment()
-
-    ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
     with sync_playwright() as playwright:
         yield playwright
@@ -165,16 +178,6 @@ def start_mavis(
 
     yield
     close_browser(browser=_browser, page=ce.page)
-
-
-def create_session_screenshot_dir(browser_name: str) -> str:
-    if ce.capture_screenshot_flag:
-        session_name = f"{get_current_datetime()}-{browser_name}"
-        path = pathlib.Path("screenshots") / session_name
-        path.mkdir(parents=True, exist_ok=True)
-        return str(path)
-    else:
-        return ""
 
 
 def start_browser(

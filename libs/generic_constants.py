@@ -40,10 +40,6 @@ class screenshot_actions:
     VERIFY_CHECKED_FAILED: Final[str] = "verify_checked_failed"
 
 
-class screenshot_file_types:
-    JPEG: Final[str] = "jpeg"
-
-
 class aria_roles:
     LINK: Final[str] = "link"
     BUTTON: Final[str] = "button"
