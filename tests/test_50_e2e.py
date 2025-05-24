@@ -5,9 +5,7 @@ from libs.wrappers import wait_for_reset
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup_tests(
-    start_mavis, reset_environment, nurse, login_page, dashboard_page, sessions_page
-):
+def setup_tests(reset_environment, nurse, login_page, dashboard_page, sessions_page):
     reset_environment()
     wait_for_reset()
     login_page.log_in(**nurse)

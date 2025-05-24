@@ -1,11 +1,10 @@
-from libs import CurrentExecution, testdata_ops
+from libs import testdata_ops
 from libs.mavis_constants import test_data_file_paths, test_data_values
 from libs.playwright_ops import PlaywrightOperations
 from pages import ConsentDoublesPage
 
 
 class ParentalConsentHelper:
-    ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
 
     def __init__(self):

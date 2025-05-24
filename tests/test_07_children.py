@@ -4,7 +4,7 @@ from libs.mavis_constants import mavis_file_types, test_data_file_paths
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, nurse, login_page):
+def setup_tests(nurse, login_page):
     login_page.log_in(**nurse)
     yield
     login_page.log_out()

@@ -1,14 +1,11 @@
 from typing import Final
 
-from libs import CurrentExecution
 from libs.generic_constants import actions, properties
 from libs.mavis_constants import test_data_values
 from libs.playwright_ops import PlaywrightOperations
 
 
 class LoginPage:
-    ce = CurrentExecution()
-
     LNK_START_NOW: Final[str] = "Start now"
     TXT_EMAIL_ADDRESS: Final[str] = "Email address"
     TXT_PASSWORD: Final[str] = "Password"
@@ -46,4 +43,4 @@ class LoginPage:
         self.po.act(locator=self.BTN_LOGIN, action=actions.CLICK_BUTTON)
 
     def go_to_login_page(self) -> None:
-        self.ce.page.goto("/")
+        self.po.page.goto("/")

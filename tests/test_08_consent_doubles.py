@@ -2,19 +2,18 @@ from typing import Hashable, Iterable
 
 import pytest
 from pandas.core.series import Series
+from playwright.sync_api import Page
 
-from libs import CurrentExecution
 from libs.playwright_ops import PlaywrightOperations
 
 from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 
 
-ce = CurrentExecution()
 helper = ParentalConsentHelper()
 
 
 @pytest.fixture(scope="function")
-def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_page):
+def get_session_link(nurse, dashboard_page, login_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -41,8 +40,9 @@ def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_pa
 def test_workflow(
     get_session_link: str,
     scenario_data: Iterable[tuple[Hashable, Series]],
+    page: Page,
     playwright_operations: PlaywrightOperations,
 ):
-    ce.page.goto(get_session_link)
+    page.goto(get_session_link)
     helper.read_data_for_scenario(scenario_data=scenario_data)
     helper.enter_details_on_mavis(playwright_operations)

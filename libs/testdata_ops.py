@@ -4,7 +4,6 @@ from typing import Optional
 import nhs_number
 import pandas as pd
 
-from libs import CurrentExecution
 from libs.mavis_constants import mavis_file_types, test_data_values
 from libs.wrappers import (
     get_current_datetime,
@@ -18,8 +17,6 @@ class testdata_operations:
     """
     A class to handle operations related to test data.
     """
-
-    ce = CurrentExecution()
 
     def __init__(self):
         """

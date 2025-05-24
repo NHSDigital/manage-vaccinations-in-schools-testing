@@ -9,7 +9,7 @@ from libs.mavis_constants import test_data_file_paths
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, nurse, login_page, dashboard_page):
+def setup_tests(nurse, login_page, dashboard_page):
     login_page.log_in(**nurse)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_unmatched_consent_responses()
@@ -18,7 +18,7 @@ def setup_tests(start_mavis, nurse, login_page, dashboard_page):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_ucr_match(start_mavis, nurse, login_page, dashboard_page, programmes_page):
+def setup_ucr_match(nurse, login_page, dashboard_page, programmes_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.go_to_dashboard()

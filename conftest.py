@@ -10,10 +10,8 @@ import requests
 from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
-from libs import CurrentExecution as ce
 from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
-from libs.mavis_constants import playwright_constants
 from libs.wrappers import get_current_datetime
 
 
@@ -116,11 +114,6 @@ def screenshots_path(screenshot: str, browser_name: str) -> Optional[Path]:
 
 
 @pytest.fixture(scope="session")
-def playwright_operations(screenshots_path):
-    return PlaywrightOperations(screenshots_path)
-
-
-@pytest.fixture(scope="session")
 def reset_environment(reset_endpoint, basic_auth, skip_reset):
     if skip_reset:
 
@@ -144,78 +137,53 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 
 
 @pytest.fixture(scope="session")
-def start_playwright_session(request, browser_name, reset_environment):
+def playwright(request, browser_name, reset_environment):
     reset_environment()
 
-    with sync_playwright() as _playwright:
-        _playwright.selectors.set_test_id_attribute(
-            playwright_constants.TEST_ID_ATTRIBUTE
-        )
-        yield _playwright
+    with sync_playwright() as playwright:
+        playwright.selectors.set_test_id_attribute("data-qa")
+        yield playwright
 
 
-@pytest.fixture(scope="function")
-def start_mavis(
-    start_playwright_session,
-    base_url,
-    basic_auth,
-    browser_name,
-    browser_channel,
-    device,
-    headed,
-    slow_mo,
-):
-    _browser, _context = start_browser(
-        start_playwright_session,
-        base_url,
-        basic_auth,
-        browser_name,
-        browser_channel,
-        device,
-        headed,
-        slow_mo,
-    )
-
-    ce.browser = _browser
-    ce.page = _context.new_page()
-    # ce.page.set_default_timeout(playwright_constants.DEFAULT_TIMEOUT)
-    ce.page.goto("/")
-
-    yield
-    close_browser(browser=_browser, page=ce.page)
-
-
-def start_browser(
-    playwright,
-    base_url,
-    basic_auth,
-    browser_name,
-    browser_channel,
-    device,
-    headed,
-    slow_mo,
-):
+@pytest.fixture(scope="session")
+def browser(playwright, browser_name, browser_channel, headed, slow_mo):
     browser_type = getattr(playwright, browser_name)
     browser = browser_type.launch(
         channel=browser_channel, headless=not headed, slow_mo=slow_mo
     )
 
+    yield browser
+
+    browser.close()
+
+
+@pytest.fixture(scope="session")
+def context(playwright, base_url, basic_auth, browser, device):
     kwargs = {}
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(
-        **kwargs, base_url=base_url, http_credentials=basic_auth
-    )
-
-    return [browser, context]
+    return browser.new_context(**kwargs, base_url=base_url, http_credentials=basic_auth)
 
 
-def close_browser(browser, page):
-    if page.get_by_role("button", name="Log out").is_visible():
-        page.get_by_role("button", name="Log out").click()
+@pytest.fixture
+def page(browser, context):
+    page = context.new_page()
+    page.goto("/")
+
+    yield page
+
+    button_log_out = page.get_by_role("button", name="Log out")
+
+    if button_log_out.is_visible():
+        button_log_out.click()
+
     page.close()
-    browser.close()
+
+
+@pytest.fixture
+def playwright_operations(page, screenshots_path):
+    return PlaywrightOperations(page, screenshots_path)
 
 
 @pytest.hookimpl(tryfirst=True)
