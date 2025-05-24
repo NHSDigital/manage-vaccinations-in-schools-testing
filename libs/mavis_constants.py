@@ -2,11 +2,6 @@ from enum import Enum, auto
 from typing import Final
 
 
-class playwright_constants:
-    TEST_ID_ATTRIBUTE: Final[str] = "data-qa"
-    DEFAULT_TIMEOUT: Final[int] = 60000
-
-
 class programmes:
     HPV: Final[str] = "HPV"
     MENACWY: Final[str] = "MenACWY"
