@@ -61,7 +61,7 @@ def setup_mav_853(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
         sessions_page.click_school1()
-        sessions_page.save_session_id_from_offline_excel()
+        session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.go_to_dashboard()
         dashboard_page.click_programmes()
         programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_853)
@@ -70,6 +70,7 @@ def setup_mav_853(
         import_records_page.import_vaccination_records(
             file_paths=test_data_file_paths.VACCS_MAV_853,
             file_type=mavis_file_types.VACCS_MAVIS,
+            session_id=session_id,
         )
         dashboard_page.go_to_dashboard()
         dashboard_page.click_children()

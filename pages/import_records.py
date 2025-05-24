@@ -137,9 +137,10 @@ class ImportRecordsPage:
         file_paths: str,
         file_type: mavis_file_types = mavis_file_types.VACCS_MAVIS,
         verify_on_children_page: bool = False,
+        session_id: Optional[str] = None,
     ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
-            file_paths=file_paths
+            file_paths=file_paths, session_id=session_id
         )
         if verify_on_children_page:
             _cl = self.tdo.create_child_list_from_file(

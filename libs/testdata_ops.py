@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 import nhs_number
 import pandas as pd
@@ -30,7 +31,10 @@ class testdata_operations:
         return pathlib.Path(path).read_text(encoding="utf-8")
 
     def create_file_from_template(
-        self, template_path: str, file_name_prefix: str
+        self,
+        template_path: str,
+        file_name_prefix: str,
+        session_id: Optional[str] = None,
     ) -> str:
         """
         Create a file from a template while replacing placeholders with calculated values.
@@ -47,7 +51,6 @@ class testdata_operations:
 
         _dt = get_current_datetime()
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
-        _session_id = self.ce.get_session_id()
 
         replacements = {
             "<<SCHOOL_1_NAME>>": test_data_values.SCHOOL_1_NAME,
@@ -57,7 +60,7 @@ class testdata_operations:
             "<<VACCS_DATE>>": _dt[:8],
             "<<VACCS_TIME>>": get_current_time(),
             "<<HIST_VACCS_DATE>>": _hist_dt,
-            "<<SESSION_ID>>": _session_id,
+            "<<SESSION_ID>>": session_id,
         }
 
         for year_group in range(8, 12):
@@ -78,7 +81,7 @@ class testdata_operations:
             )
 
             for key, value in dynamic_replacements.items():
-                line = line.replace(key, str(value))
+                line = line.replace(key, str(value) if value else "")
 
             _file_text.append(line)
             _ctr += 1
@@ -160,7 +163,9 @@ class testdata_operations:
         _df.replace(to_replace="", value=test_data_values.EMPTY, inplace=True)
         return _df
 
-    def get_file_paths(self, file_paths: str) -> tuple[str, str]:
+    def get_file_paths(
+        self, file_paths: str, session_id: Optional[str] = None
+    ) -> tuple[str, str]:
         """
         Get input and output file paths based on a mapping.
 
@@ -177,7 +182,9 @@ class testdata_operations:
         _file_prefix: str = query["FILE_PREFIX"].to_string(index=False)
 
         _input_file_path: str = self.create_file_from_template(
-            template_path=_input_template_path, file_name_prefix=_file_prefix
+            template_path=_input_template_path,
+            file_name_prefix=_file_prefix,
+            session_id=session_id,
         )
 
         return _input_file_path, _output_template_path
