@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import auto, Enum, StrEnum
 from typing import Final
 
 
@@ -7,10 +7,10 @@ class playwright_constants:
     DEFAULT_TIMEOUT: Final[int] = 60000
 
 
-class programmes:
-    HPV: Final[str] = "HPV"
-    MENACWY: Final[str] = "MenACWY"
-    TDIPV: Final[str] = "Td/IPV"
+class Programme(StrEnum):
+    HPV = "HPV"
+    MENACWY = "MenACWY"
+    TD_IPV = "Td/IPV"
 
 
 class vaccines:

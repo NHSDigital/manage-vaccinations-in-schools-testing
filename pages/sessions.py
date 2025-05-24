@@ -4,10 +4,10 @@ from libs import CurrentExecution, playwright_ops, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import (
     mavis_file_types,
-    programmes,
     record_limit,
     test_data_values,
     vaccines,
+    Programme,
 )
 from libs.wrappers import (
     datetime,
@@ -75,7 +75,6 @@ class SessionsPage:
     BTN_DELETE: Final[str] = "Delete"
     LNK_BACK: Final[str] = "Back"
     LNK_CONTINUE: Final[str] = "Continue"
-    # LNK_HPV_CONSENT_FORM: Final[str] = "View parental consent form (opens in new tab)"
     LNK_ASSESS_GILLICK_COMPETENCE: Final[str] = "Assess Gillick competence"
     RDO_YES_GILLICK_COMPETENT: Final[str] = "Yes, they are Gillick competent"
     RDO_NO_GILLICK_COMPETENT: Final[str] = "No"
@@ -94,9 +93,9 @@ class SessionsPage:
     LBL_CHILD_NOT_COMPETENT: Final[str] = "Child assessed as not Gillick competent"
     LNK_EDIT_GILLICK_COMPETENCE: Final[str] = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT: Final[str] = "Update your assessment"
-    LNK_HPV_CONSENT_FORM: Final[str] = "View the HPV online consent form"
+    LNK_HPV_CONSENT_FORM: Final[str] = f"View the {Programme.HPV} online consent form"
     LNK_DOUBLES_CONSENT_FORM: str = (
-        f"View the {programmes.MENACWY} and {programmes.TDIPV} online consent form"
+        f"View the {Programme.MENACWY} and {Programme.TD_IPV} online consent form"
     )
     LNK_COULD_NOT_VACCINATE: Final[str] = "Could not vaccinate"
     RDO_CONSENT_REFUSED: Final[str] = "Consent refused"
@@ -200,14 +199,8 @@ class SessionsPage:
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
-    def click_hpv_tab(self):
-        self.po.act(locator=programmes.HPV, action=actions.CLICK_LINK)
-
-    def click_menacwy_tab(self):
-        self.po.act(locator=programmes.MENACWY, action=actions.CLICK_LINK)
-
-    def click_tdipv_tab(self):
-        self.po.act(locator=programmes.TDIPV, action=actions.CLICK_LINK)
+    def click_programme_tab(self, programme: Programme):
+        self.po.act(locator=programme, action=actions.CLICK_LINK)
 
     def click_register_tab(self):
         self.po.act(
@@ -994,7 +987,7 @@ class SessionsPage:
         self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
         self.record_vaccs_for_child(
             child_name=self.LNK_MAV_854_CHILD,
-            programme_name=programmes.HPV,
+            programme=Programme.HPV,
             at_school=False,
         )
         self.po.act(locator=self.RDO_CLINIC_WEIMANN, action=actions.RADIO_BUTTON_SELECT)
@@ -1043,20 +1036,20 @@ class SessionsPage:
         self.po.act(locator=child_name, action=actions.CLICK_LINK)
 
     def record_vaccs_for_child(
-        self, child_name: str, programme_name: str, at_school: bool = True
+        self, child_name: str, programme: Programme, at_school: bool = True
     ):
         _batch_name: str = ""
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
         self.search_child(child_name=child_name)
-        self.po.act(locator=programme_name, action=actions.CLICK_LINK)
-        match programme_name:
-            case programmes.HPV:
+        self.po.act(locator=programme, action=actions.CLICK_LINK)
+        match programme:
+            case Programme.HPV:
                 self._answer_hpv_prescreening_questions()
                 _batch_name = vaccines.GARDASIL9[0]
-            case programmes.MENACWY:
+            case Programme.MENACWY:
                 self._answer_menacwy_prescreening_questions(check_prefilled=True)
                 _batch_name = vaccines.MENQUADFI[0]
-            case programmes.TDIPV:
+            case Programme.TD_IPV:
                 self._answer_tdipv_prescreening_questions(check_prefilled=True)
                 _batch_name = vaccines.REVAXIS[0]
         self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
@@ -1069,5 +1062,5 @@ class SessionsPage:
             self.po.verify(
                 locator=self.LBL_MAIN,
                 property=properties.TEXT,
-                expected_value=f"Vaccination outcome recorded for {programme_name}",
+                expected_value=f"Vaccination outcome recorded for {programme}",
             )

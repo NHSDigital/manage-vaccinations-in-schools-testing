@@ -2,9 +2,9 @@ import pytest
 
 from libs.mavis_constants import (
     mavis_file_types,
-    programmes,
     test_data_file_paths,
     vaccines,
+    Programme,
 )
 
 
@@ -204,7 +204,7 @@ def test_rav_verify_banners(setup_mav_nnn):
 def test_verify_careplus_report_for_hpv(
     setup_cohort_upload_and_reports, programmes_page
 ):
-    programmes_page.verify_careplus_report_format(for_programme=programmes.HPV)
+    programmes_page.verify_careplus_report_format(Programme.HPV)
 
 
 @pytest.mark.reports
@@ -212,16 +212,16 @@ def test_verify_careplus_report_for_hpv(
 def test_verify_careplus_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
-    programmes_page.verify_careplus_report_format(for_programme=programmes.MENACWY)
+    programmes_page.verify_careplus_report_format(Programme.MENACWY)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_programmes()
-    programmes_page.verify_careplus_report_format(for_programme=programmes.TDIPV)
+    programmes_page.verify_careplus_report_format(Programme.TD_IPV)
 
 
 @pytest.mark.reports
 @pytest.mark.order(553)
 def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.verify_csv_report_format(for_programme=programmes.HPV)
+    programmes_page.verify_csv_report_format(Programme.HPV)
 
 
 @pytest.mark.reports
@@ -229,10 +229,10 @@ def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports, programmes_p
 def test_verify_csv_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
-    programmes_page.verify_csv_report_format(for_programme=programmes.MENACWY)
+    programmes_page.verify_csv_report_format(Programme.MENACWY)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_programmes()
-    programmes_page.verify_csv_report_format(for_programme=programmes.TDIPV)
+    programmes_page.verify_csv_report_format(Programme.TD_IPV)
 
 
 @pytest.mark.reports
@@ -240,4 +240,4 @@ def test_verify_csv_report_for_doubles(
 def test_verify_systmone_report_for_hpv(
     setup_cohort_upload_and_reports, programmes_page
 ):
-    programmes_page.verify_systmone_report_format(for_programme=programmes.HPV)
+    programmes_page.verify_systmone_report_format(Programme.HPV)
