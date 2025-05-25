@@ -16,12 +16,7 @@ from libs.generic_constants import (
     screenshot_actions,
     wait_time,
 )
-from libs.mavis_constants import test_data_values
-from libs.wrappers import (
-    convert_time_units_to_seconds,
-    clean_text,
-    clean_file_name,
-)
+from libs.wrappers import convert_time_units_to_seconds, clean_text, clean_file_name
 
 
 class PlaywrightOperations:
@@ -284,7 +279,7 @@ class PlaywrightOperations:
                 elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
             elem.click()
 
-    def _fill(self, locator: str, value: str, exact: bool, index: int):
+    def _fill(self, locator: str, value: Optional[str], exact: bool, index: int):
         """
         Fill a text input field.
 
@@ -303,7 +298,8 @@ class PlaywrightOperations:
             else:
                 elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
             elem.click()
-            if value != test_data_values.EMPTY:
+
+            if value:
                 elem.fill(value)
 
     def _radio_button_select(self, locator: str, exact: bool, index: int):

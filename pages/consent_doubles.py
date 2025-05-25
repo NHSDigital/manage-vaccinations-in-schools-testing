@@ -1,7 +1,7 @@
-from typing import Final
+from typing import Final, Optional
 
 from libs.generic_constants import actions, properties
-from libs.mavis_constants import test_data_values, Programme
+from libs.mavis_constants import Programme
 from libs.playwright_ops import PlaywrightOperations
 
 
@@ -86,8 +86,8 @@ class ConsentDoublesPage:
         scenario_id: str,
         child_first_name: str,
         child_last_name: str,
-        known_as_first: str = test_data_values.EMPTY,
-        known_as_last: str = test_data_values.EMPTY,
+        known_as_first: Optional[str] = None,
+        known_as_last: Optional[str] = None,
     ) -> None:
         self.po.act(
             locator=self.TXT_CHILD_FIRST_NAME,
@@ -97,15 +97,8 @@ class ConsentDoublesPage:
         self.po.act(
             locator=self.TXT_CHILD_LAST_NAME, action=actions.FILL, value=child_last_name
         )
-        if (
-            known_as_first == test_data_values.EMPTY
-            and known_as_last == test_data_values.EMPTY
-        ):
-            self.po.act(
-                locator=self.RDO_KNOWN_BY_ANOTHER_NAME_NO,
-                action=actions.RADIO_BUTTON_SELECT,
-            )
-        else:
+
+        if known_as_first or known_as_last:
             self.po.act(
                 locator=self.RDO_KNOWN_BY_ANOTHER_NAME_YES,
                 action=actions.RADIO_BUTTON_SELECT,
@@ -118,6 +111,12 @@ class ConsentDoublesPage:
             self.po.act(
                 locator=self.TXT_KNOWN_AS_LAST, action=actions.FILL, value=known_as_last
             )
+        else:
+            self.po.act(
+                locator=self.RDO_KNOWN_BY_ANOTHER_NAME_NO,
+                action=actions.RADIO_BUTTON_SELECT,
+            )
+
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_child_dob(
@@ -149,14 +148,19 @@ class ConsentDoublesPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_parent_details(
-        self, scenario_id: str, parent_name: str, relation: str, email: str, phone: str
+        self,
+        scenario_id: str,
+        parent_name: str,
+        relation: str,
+        email: str,
+        phone: Optional[str],
     ) -> None:
         self.po.act(
             locator=self.TXT_PARENT_FULL_NAME, action=actions.FILL, value=parent_name
         )
         self.po.act(locator=relation, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=email)
-        if phone != test_data_values.EMPTY:
+        if phone:
             self.po.act(
                 locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value=phone
             )
@@ -171,9 +175,9 @@ class ConsentDoublesPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_consent_for_vaccination(
-        self, scenario_id: str, consent_for: str
+        self, scenario_id: str, consent_for: Optional[str]
     ) -> None:
-        match consent_for.lower():
+        match consent_for:
             case "both":
                 self.po.act(
                     locator=self.RDO_CONSENT_BOTH, action=actions.RADIO_BUTTON_SELECT
@@ -192,24 +196,10 @@ class ConsentDoublesPage:
                 self.po.act(
                     locator=Programme.TD_IPV, action=actions.RADIO_BUTTON_SELECT
                 )
-            case _:
+            case "none":
                 self.po.act(
                     locator=self.RDO_CONSENT_NONE, action=actions.RADIO_BUTTON_SELECT
                 )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    def fill_gp_details(
-        self, scenario_id: str, gp_name: str = test_data_values.EMPTY
-    ) -> None:
-        if gp_name == test_data_values.EMPTY:
-            self.po.act(
-                locator=self.RDO_GP_NOT_KNOWN, action=actions.RADIO_BUTTON_SELECT
-            )
-        else:
-            self.po.act(
-                locator=self.RDO_GP_REGISTERED, action=actions.RADIO_BUTTON_SELECT
-            )
-            self.po.act(locator=self.TXT_GP_NAME, action=actions.FILL, value=gp_name)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_address_details(
@@ -223,90 +213,76 @@ class ConsentDoublesPage:
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_bleeding_disorder(
-        self, scenario_id: str, bleeding_disorder_details: str = test_data_values.EMPTY
-    ) -> None:
-        if bleeding_disorder_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
+    def select_bleeding_disorder(self, scenario_id: str, notes: Optional[str] = None):
+        if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
-                value=bleeding_disorder_details,
+                value=notes,
             )
+        else:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_severe_allergies(
-        self, scenario_id: str, allergy_details: str = test_data_values.EMPTY
-    ) -> None:
-        if allergy_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
+    def select_severe_allergies(self, scenario_id: str, notes: Optional[str] = None):
+        if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
-                value=allergy_details,
+                value=notes,
             )
+        else:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_severe_reaction(
-        self, scenario_id: str, reaction_details: str = test_data_values.EMPTY
-    ) -> None:
-        if reaction_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
+    def select_severe_reaction(self, scenario_id: str, notes: Optional[str] = None):
+        if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
-                value=reaction_details,
+                value=notes,
             )
+        else:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_extra_support(
-        self, scenario_id: str, extra_support_details: str = test_data_values.EMPTY
-    ) -> None:
-        if extra_support_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
+    def select_extra_support(self, scenario_id: str, notes: Optional[str] = None):
+        if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
-                value=extra_support_details,
+                value=notes,
             )
+        else:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def vaccinated_in_past(
-        self, scenario_id: str, vaccs_in_past_details: str = test_data_values.EMPTY
-    ) -> None:
-        if vaccs_in_past_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
+    def vaccinated_in_past(self, scenario_id: str, notes: Optional[str] = None):
+        if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
-                value=vaccs_in_past_details,
+                value=notes,
             )
+        else:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def other_vaccs_in_past(
-        self,
-        scenario_id: str,
-        other_vaccs_in_past_details: str = test_data_values.EMPTY,
-    ) -> None:
-        if other_vaccs_in_past_details == test_data_values.EMPTY:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        else:
+    def other_vaccs_in_past(self, scenario_id: str, notes: Optional[str] = None):
+        if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
                 locator=self.TXT_GIVE_DETAILS,
                 action=actions.FILL,
-                value=other_vaccs_in_past_details,
+                value=notes,
             )
+        else:
+            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def click_confirm_details(
