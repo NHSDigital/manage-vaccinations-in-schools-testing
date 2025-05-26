@@ -48,7 +48,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 pytz==2025.2
 pyzmq==26.4.0
-ruff==0.11.10
+ruff==0.11.11
 requests==2.32.3
 setuptools==80.8.0
 six==1.17.0
