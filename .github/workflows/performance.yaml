@@ -45,7 +45,7 @@ on:
 # Added run-name information so it's easier to see what was run
 run-name: Test ${{inputs.testToRun}} run with ${{inputs.threads}} threads for ${{inputs.duration}} seconds and ${{inputs.ramp_up}} ramp up
 jobs:
-  nurse_journey_performance_test:
+  performance_test:
     runs-on: ubuntu-latest
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
