@@ -180,8 +180,9 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# Allure
+allure-results/
+
 # Project
 main.py
 working/
-reports/
-screenshots/
