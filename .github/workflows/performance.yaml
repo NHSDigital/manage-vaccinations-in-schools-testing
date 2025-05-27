@@ -1,4 +1,4 @@
-name: Performance tests
+name: Nurse Journey performance test
 
 on:
   push:
