@@ -3,8 +3,8 @@ import pytest
 from libs.mavis_constants import (
     mavis_file_types,
     test_data_file_paths,
-    vaccines,
     Programme,
+    Vaccine,
 )
 
 
@@ -77,7 +77,7 @@ def setup_mav_854(
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_vaccines()
-        vaccines_page.add_batch(vaccine_name=vaccines.GARDASIL9)
+        vaccines_page.add_batch(vaccine=Vaccine.GARDASIL_9)
         dashboard_page.go_to_dashboard()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)

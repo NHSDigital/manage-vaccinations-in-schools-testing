@@ -11,19 +11,24 @@ class Programme(StrEnum):
     def vaccines(self):
         match self:
             case self.HPV:
-                return [vaccines.GARDASIL9[0]]
+                return [Vaccine.GARDASIL_9]
             case self.MENACWY:
-                return [vaccines.MENQUADFI[0], vaccines.MENVEO[0], vaccines.NIMENRIX[0]]
+                return [Vaccine.MENQUADFI, Vaccine.MENVEO, Vaccine.NIMENRIX]
             case self.TD_IPV:
-                return [vaccines.REVAXIS[0]]
+                return [Vaccine.REVAXIS]
 
 
-class vaccines:
-    GARDASIL9: Final[tuple[str, int]] = ("Gardasil9", 0)  # HPV
-    MENQUADFI: Final[tuple[str, int]] = ("MenQuadfi", 1)  # MenACWY
-    MENVEO: Final[tuple[str, int]] = ("Menveo", 2)  # MenACWY
-    NIMENRIX: Final[tuple[str, int]] = ("Nimenrix", 3)  # MenACWY
-    REVAXIS: Final[tuple[str, int]] = ("Revaxis", 4)  # Td/IPV
+class Vaccine(StrEnum):
+    # HPV
+    GARDASIL_9 = "Gardasil 9"
+
+    # MenACWY
+    MENQUADFI = "MenQuadfi"
+    MENVEO = "Menveo"
+    NIMENRIX = "Nimenrix"
+
+    # Td/IPV
+    REVAXIS = "Revaxis"
 
 
 class test_data_values:
