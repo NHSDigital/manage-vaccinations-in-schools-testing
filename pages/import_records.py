@@ -8,7 +8,6 @@ from libs.wrappers import get_link_formatted_date_time
 
 from .children import ChildrenPage
 from .dashboard import DashboardPage
-from .sessions import SessionsPage
 from .vaccines import VaccinesPage
 
 
@@ -33,7 +32,6 @@ class ImportRecordsPage:
 
     def __init__(self, playwright_operations: PlaywrightOperations):
         self.po = playwright_operations
-        self.sessions_page = SessionsPage(playwright_operations)
         self.dashboard_page = DashboardPage(playwright_operations)
         self.children_page = ChildrenPage(playwright_operations)
         self.vaccines_page = VaccinesPage(playwright_operations)
