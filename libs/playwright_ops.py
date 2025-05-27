@@ -1,6 +1,8 @@
-import os
+from datetime import datetime
+from pathlib import Path
 import re  # noqa: F401 - used by eval
 import time
+from typing import Optional
 
 import allure
 
@@ -12,7 +14,6 @@ from libs.generic_constants import (
     html_tags,
     properties,
     screenshot_actions,
-    screenshot_file_types,
     wait_time,
 )
 from libs.mavis_constants import test_data_values
@@ -31,6 +32,9 @@ class PlaywrightOperations:
     ce = CurrentExecution()
     PAGE_ELEMENT_PATH = "self.ce.page."
 
+    def __init__(self, screenshots_path: Optional[Path]):
+        self.screenshots_path = screenshots_path
+
     def capture_screenshot(self, identifier: str, action: str) -> None:
         """
         Capture a screenshot of the current page.
@@ -39,18 +43,16 @@ class PlaywrightOperations:
             identifier (str): Identifier for the screenshot.
             action (str): Action performed before capturing the screenshot.
         """
-        if self.ce.capture_screenshot_flag:
-            self.ce.screenshot_sequence += 1
-            _ss_file_name = clean_file_name(
-                f"{self.ce.screenshot_sequence}-{action}-{identifier}.{screenshot_file_types.JPEG}"
-            )
-            _ss_path = os.path.join(
-                self.ce.session_screenshots_dir,
-                _ss_file_name,
-            )
-            self.ce.page.screenshot(
-                path=_ss_path, type=screenshot_file_types.JPEG, full_page=True
-            )
+        if not self.screenshots_path:
+            return
+
+        file_name = clean_file_name(
+            f"{datetime.now().isoformat()}-{action}-{identifier}.png"
+        )
+
+        path = self.screenshots_path / file_name
+
+        self.ce.page.screenshot(path=path, type="png", full_page=True)
 
     def verify(
         self, locator: str, property: properties, expected_value: str, **kwargs
