@@ -11,7 +11,6 @@ from requests.auth import HTTPBasicAuth
 
 from libs import CurrentExecution as ce
 from libs.generic_constants import audit_log_paths
-from libs.mavis_constants import playwright_constants
 from libs.wrappers import get_current_datetime
 
 
@@ -123,21 +122,18 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 
 
 @pytest.fixture(scope="session")
-def start_playwright_session(request, browser_name, reset_environment):
+def playwright(request, browser_name, reset_environment):
     reset_environment()
 
     ce.session_screenshots_dir = create_session_screenshot_dir(browser_name)
 
-    with sync_playwright() as _playwright:
-        _playwright.selectors.set_test_id_attribute(
-            playwright_constants.TEST_ID_ATTRIBUTE
-        )
-        yield _playwright
+    with sync_playwright() as playwright:
+        yield playwright
 
 
 @pytest.fixture(scope="function")
 def start_mavis(
-    start_playwright_session,
+    playwright,
     base_url,
     basic_auth,
     browser_name,
@@ -147,7 +143,7 @@ def start_mavis(
     slow_mo,
 ):
     _browser, _context = start_browser(
-        start_playwright_session,
+        playwright,
         base_url,
         basic_auth,
         browser_name,
@@ -159,7 +155,6 @@ def start_mavis(
 
     ce.browser = _browser
     ce.page = _context.new_page()
-    # ce.page.set_default_timeout(playwright_constants.DEFAULT_TIMEOUT)
     ce.page.goto("/")
 
     yield
