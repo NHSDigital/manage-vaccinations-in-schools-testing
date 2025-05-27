@@ -1,11 +1,21 @@
-from enum import Enum, auto
+from enum import auto, Enum, StrEnum
 from typing import Final
 
 
-class programmes:
-    HPV: Final[str] = "HPV"
-    MENACWY: Final[str] = "MenACWY"
-    TDIPV: Final[str] = "Td/IPV"
+class Programme(StrEnum):
+    HPV = "HPV"
+    MENACWY = "MenACWY"
+    TD_IPV = "Td/IPV"
+
+    @property
+    def vaccines(self):
+        match self:
+            case self.HPV:
+                return [vaccines.GARDASIL9[0]]
+            case self.MENACWY:
+                return [vaccines.MENQUADFI[0], vaccines.MENVEO[0], vaccines.NIMENRIX[0]]
+            case self.TD_IPV:
+                return [vaccines.REVAXIS[0]]
 
 
 class vaccines:

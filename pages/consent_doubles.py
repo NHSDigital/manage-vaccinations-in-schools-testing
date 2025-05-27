@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs.generic_constants import actions, properties
-from libs.mavis_constants import programmes, test_data_values
+from libs.mavis_constants import test_data_values, Programme
 from libs.playwright_ops import PlaywrightOperations
 
 
@@ -34,8 +34,6 @@ class ConsentDoublesPage:
     CHK_MOBILE_OTHER: Final[str] = "Other"
     RDO_CONSENT_BOTH: Final[str] = "Yes, I agree to them having"
     RDO_CONSENT_ONE: Final[str] = "I agree to them having one of"
-    RDO_CONSENT_MENACWY: Final[str] = "MenACWY"
-    RDO_CONSENT_TDIPV: Final[str] = "Td/IPV"
     RDO_CONSENT_NONE: Final[str] = "No"
     RDO_GP_REGISTERED: Final[str] = "Yes, they are registered with a GP"
     RDO_GP_NOT_REGISTERED: Final[str] = "No, they are not registered with a GP"
@@ -185,14 +183,14 @@ class ConsentDoublesPage:
                     locator=self.RDO_CONSENT_ONE, action=actions.RADIO_BUTTON_SELECT
                 )
                 self.po.act(
-                    locator=self.RDO_CONSENT_MENACWY, action=actions.RADIO_BUTTON_SELECT
+                    locator=Programme.MENACWY, action=actions.RADIO_BUTTON_SELECT
                 )
             case "td/ipv":
                 self.po.act(
                     locator=self.RDO_CONSENT_ONE, action=actions.RADIO_BUTTON_SELECT
                 )
                 self.po.act(
-                    locator=self.RDO_CONSENT_TDIPV, action=actions.RADIO_BUTTON_SELECT
+                    locator=Programme.TD_IPV, action=actions.RADIO_BUTTON_SELECT
                 )
             case _:
                 self.po.act(
@@ -472,7 +470,7 @@ class ConsentDoublesPage:
         self.check_phone_options(scenario_id="")
 
     def parent_1_verbal_positive(
-        self, change_phone: bool = True, programme_name: str = programmes.MENACWY
+        self, change_phone: bool = True, programme: Programme = Programme.MENACWY
     ):
         self.po.act(locator=self.RDO_PARENT1_DAD, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
@@ -483,7 +481,7 @@ class ConsentDoublesPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.set_health_questions_no(programme_name=programme_name)
+        self.set_health_questions_no(programme=programme)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
             locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT
@@ -531,8 +529,8 @@ class ConsentDoublesPage:
         )  # Safe to vaccinate
         self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
-    def set_health_questions_no(self, programme_name: str):
-        if programme_name == programmes.MENACWY:
+    def set_health_questions_no(self, programme: Programme):
+        if programme == Programme.MENACWY:
             self.po.act(
                 locator="get_by_role('group', name='Does your child have a bleeding disorder or another medical condition they').get_by_label('No').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,

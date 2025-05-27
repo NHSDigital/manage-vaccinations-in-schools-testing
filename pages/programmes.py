@@ -5,10 +5,10 @@ import pandas as pd
 from libs import CurrentExecution, testdata_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import (
-    programmes,
     record_limit,
     report_headers,
     test_data_file_paths,
+    Programme,
 )
 from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
@@ -29,9 +29,6 @@ class ProgrammesPage:
     LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
     LNK_MAV_909_CHILD: Final[str] = "MAV_909, MAV_909"
 
-    LNK_HPV: Final[str] = "HPV"
-    LNK_TDIPV: Final[str] = "Td/IPV"
-    LNK_MENACWY: Final[str] = "MenACWY"
     LNK_IMPORTS: Final[str] = "Imports"
     LNK_VACCINATIONS: Final[str] = "Vaccinations"
     LNK_COHORTS: Final[str] = "Cohorts"
@@ -71,8 +68,8 @@ class ProgrammesPage:
         self.consent_hpv = ConsentHPVPage(playwright_operations)
         self.consent_doubles = ConsentDoublesPage(playwright_operations)
 
-    def click_hpv(self):
-        self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+    def click_programme(self, programme: Programme):
+        self.po.act(locator=programme, action=actions.CLICK_LINK)
 
     def click_imports(self):
         self.po.act(locator=self.LNK_IMPORTS, action=actions.CLICK_LINK)
@@ -171,7 +168,7 @@ class ProgrammesPage:
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
             file_paths=file_paths
         )
-        self.click_hpv()
+        self.click_programme(Programme.HPV)
         self.click_cohorts()
         self.click_import_cohort_records()
         self.choose_file_child_records(file_path=_input_file_path)
@@ -186,7 +183,7 @@ class ProgrammesPage:
         self.verify_upload_output(file_path=_output_file_path)
 
     def edit_dose_to_not_given(self):
-        self.click_hpv()
+        self.click_programme(Programme.HPV)
         self.click_vaccinations()
         self.click_dose2_child()
         self.click_edit_vaccination_record()
@@ -223,14 +220,8 @@ class ProgrammesPage:
         self.sessions_page.click_school1()
         self.sessions_page.save_session_id_from_offline_excel()  # If session ID is loaded, file was downloaded successfully
 
-    def verify_careplus_report_format(self, for_programme: str):
-        match for_programme.lower():
-            case programmes.MENACWY:
-                self.po.act(locator=self.LNK_MENACWY, action=actions.CLICK_LINK)
-            case programmes.TDIPV:
-                self.po.act(locator=self.LNK_TDIPV, action=actions.CLICK_LINK)
-            case _:
-                self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+    def verify_careplus_report_format(self, programme: Programme):
+        self.po.act(locator=programme, action=actions.CLICK_LINK)
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
@@ -240,27 +231,15 @@ class ProgrammesPage:
             expected_headers=report_headers.CAREPLUS
         )
 
-    def verify_csv_report_format(self, for_programme: str):
-        match for_programme.lower():
-            case programmes.MENACWY:
-                self.po.act(locator=self.LNK_MENACWY, action=actions.CLICK_LINK)
-            case programmes.TDIPV:
-                self.po.act(locator=self.LNK_TDIPV, action=actions.CLICK_LINK)
-            case _:
-                self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+    def verify_csv_report_format(self, programme: Programme):
+        self.po.act(locator=programme, action=actions.CLICK_LINK)
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.RDO_REPORT_CSV, action=actions.RADIO_BUTTON_SELECT)
         self._download_and_verify_report_headers(expected_headers=report_headers.CSV)
 
-    def verify_systmone_report_format(self, for_programme: str):
-        match for_programme.lower():
-            case programmes.MENACWY:
-                self.po.act(locator=self.LNK_MENACWY, action=actions.CLICK_LINK)
-            case programmes.TDIPV:
-                self.po.act(locator=self.LNK_TDIPV, action=actions.CLICK_LINK)
-            case _:
-                self.po.act(locator=self.LNK_HPV, action=actions.CLICK_LINK)
+    def verify_systmone_report_format(self, programme: Programme):
+        self.po.act(locator=programme, action=actions.CLICK_LINK)
         self.po.act(locator=self.BTN_DOWNLOAD_REPORT, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(
@@ -309,32 +288,32 @@ class ProgrammesPage:
         self.sessions_page.click_school1()
         self.sessions_page.click_consent_tab()
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.click_hpv_tab()
+        self.sessions_page.click_programme_tab(Programme.HPV)
         self.sessions_page.click_get_consent_response()
         self.consent_hpv.parent_1_verbal_positive(change_phone=False)
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.click_menacwy_tab()
+        self.sessions_page.click_programme_tab(Programme.MENACWY)
         self.sessions_page.click_get_consent_response()
         self.consent_doubles.parent_1_verbal_positive(
-            change_phone=False, programme_name=programmes.MENACWY
+            change_phone=False, programme=Programme.MENACWY
         )
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.click_tdipv_tab()
+        self.sessions_page.click_programme_tab(Programme.TD_IPV)
         self.sessions_page.click_get_consent_response()
         self.consent_doubles.parent_1_verbal_positive(
-            change_phone=False, programme_name=programmes.TDIPV
+            change_phone=False, programme=Programme.TD_IPV
         )
         self.sessions_page.register_child_as_attending(
             child_name=self.LNK_MAV_965_CHILD
         )
         self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.HPV
+            child_name=self.LNK_MAV_965_CHILD, programme=Programme.HPV
         )
         self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.MENACWY
+            child_name=self.LNK_MAV_965_CHILD, programme=Programme.MENACWY
         )
         self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme_name=programmes.TDIPV
+            child_name=self.LNK_MAV_965_CHILD, programme=Programme.TD_IPV
         )
 
     def verify_mav_909(self):
