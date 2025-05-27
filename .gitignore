@@ -325,6 +325,8 @@ dist
 .pnp.*
 
 # Allure
+.allure/
+allure-report/
 allure-results/
 
 # Project
