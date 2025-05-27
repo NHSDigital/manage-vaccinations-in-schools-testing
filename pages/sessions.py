@@ -311,10 +311,9 @@ class SessionsPage:
         )
         return _file_path
 
-    def save_session_id_from_offline_excel(self):
-        _file_path = self.download_offline_recording_excel()
-        _session_id = self.tdo.get_session_id(excel_path=_file_path)
-        self.ce.set_session_id(session_id=_session_id)
+    def get_session_id_from_offline_excel(self):
+        file_path = self.download_offline_recording_excel()
+        return self.tdo.get_session_id(excel_path=file_path)
 
     def add_gillick_competence(
         self, is_competent: bool, competence_details: str

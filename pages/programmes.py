@@ -218,7 +218,7 @@ class ProgrammesPage:
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
         self.sessions_page.click_school1()
-        self.sessions_page.save_session_id_from_offline_excel()  # If session ID is loaded, file was downloaded successfully
+        assert self.sessions_page.get_session_id_from_offline_excel()
 
     def verify_careplus_report_format(self, programme: Programme):
         self.po.act(locator=programme, action=actions.CLICK_LINK)
