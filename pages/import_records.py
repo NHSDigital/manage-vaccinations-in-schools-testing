@@ -1,6 +1,6 @@
 from typing import Final, Optional
 
-from libs import CurrentExecution, testdata_ops
+from libs import testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.playwright_ops import PlaywrightOperations
 from libs.mavis_constants import mavis_file_types, test_data_values
@@ -12,7 +12,6 @@ from .vaccines import VaccinesPage
 
 
 class ImportRecordsPage:
-    ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
 
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
@@ -39,10 +38,10 @@ class ImportRecordsPage:
 
     @property
     def alert_success(self):
-        return self.ce.page.get_by_text("Import processing started")
+        return self.po.page.get_by_text("Import processing started")
 
     def is_processing_in_background(self):
-        self.ce.page.wait_for_load_state()
+        self.po.page.wait_for_load_state()
         return self.alert_success.is_visible()
 
     def import_child_records(

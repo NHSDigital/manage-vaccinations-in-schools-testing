@@ -5,8 +5,8 @@ import time
 from typing import Optional
 
 import allure
+from playwright.sync_api import Page
 
-from libs import CurrentExecution
 from libs.generic_constants import (
     actions,
     aria_roles,
@@ -24,10 +24,8 @@ class PlaywrightOperations:
     A class to handle Playwright operations for web automation.
     """
 
-    ce = CurrentExecution()
-    PAGE_ELEMENT_PATH = "self.ce.page."
-
-    def __init__(self, screenshots_path: Optional[Path]):
+    def __init__(self, page: Page, screenshots_path: Optional[Path]):
+        self.page = page
         self.screenshots_path = screenshots_path
 
     def capture_screenshot(self, identifier: str, action: str) -> None:
@@ -47,7 +45,7 @@ class PlaywrightOperations:
 
         path = self.screenshots_path / file_name
 
-        self.ce.page.screenshot(path=path, type="png", full_page=True)
+        self.page.screenshot(path=path, type="png", full_page=True)
 
     def verify(
         self, locator: str, property: properties, expected_value: str, **kwargs
@@ -132,9 +130,9 @@ class PlaywrightOperations:
                     locator=locator, index=index, chain_locator=chain_locator
                 )
             case properties.ELEMENT_EXISTS:
-                return str(self.ce.page.query_selector(locator) is not None)
+                return str(self.page.query_selector(locator) is not None)
             case properties.PAGE_URL:
-                return self.ce.page.url
+                return self.page.url
 
     def act(
         self, locator: str | None, action: actions, value: str | None = None, **kwargs
@@ -191,9 +189,9 @@ class PlaywrightOperations:
                     locator=locator, value=value, index=index
                 )
             case actions.CLICK_WILDCARD:
-                self.ce.page.click(f"text={locator}")
+                self.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
-                eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+                eval(f"self.page.{locator}")
             case actions.WAIT:
                 self._wait(time_out=value)
         if locator is not None:
@@ -212,11 +210,11 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(
-                    _location, name=_locator, exact=exact
-                ).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator, exact=exact).nth(
+                    index
+                )
             else:
-                elem = self.ce.page.get_by_role(
+                elem = self.page.get_by_role(
                     aria_roles.LINK, name=locator, exact=exact
                 ).nth(index)
             elem.click()
@@ -235,9 +233,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_role(
+                elem = self.page.get_by_role(
                     aria_roles.BUTTON, name=locator, exact=exact
                 ).nth(index)
             elem.click()
@@ -256,9 +254,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+                elem = self.page.get_by_label(locator, exact=exact).nth(index)
             elem.click()
 
     def _click_text(self, locator: str, exact: bool, index: int):
@@ -274,9 +272,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_text(_location, name=_locator).nth(index)
+                elem = self.page.get_by_text(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_text(locator, exact=exact).nth(index)
+                elem = self.page.get_by_text(locator, exact=exact).nth(index)
             elem.click()
 
     def _fill(self, locator: str, value: Optional[str], exact: bool, index: int):
@@ -294,9 +292,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+                elem = self.page.get_by_label(locator, exact=exact).nth(index)
             elem.click()
 
             if value:
@@ -315,9 +313,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+                elem = self.page.get_by_label(locator, exact=exact).nth(index)
             elem.click()
 
     def _select_file(self, locator: str, value: str, exact: bool, index: int):
@@ -334,9 +332,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_label(locator, exact=exact).nth(index)
+                elem = self.page.get_by_label(locator, exact=exact).nth(index)
             elem.set_input_files(value)
 
     def _select_from_list(self, locator: str, value: str, index: int):
@@ -354,9 +352,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_role(aria_roles.OPTION, name=value)
+                elem = self.page.get_by_role(aria_roles.OPTION, name=value)
             elem.click()
 
     def _checkbox_check(self, locator: str, index: int):
@@ -371,9 +369,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_label(locator).nth(index)
+                elem = self.page.get_by_label(locator).nth(index)
             elem.check()
 
     def _checkbox_uncheck(self, locator: str, index: int):
@@ -388,9 +386,9 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
-                elem = self.ce.page.get_by_label(locator).nth(0)
+                elem = self.page.get_by_label(locator).nth(0)
             elem.uncheck()
 
     def _click_index_for_row(self, locator: str, value: str, index: int):
@@ -406,10 +404,10 @@ class PlaywrightOperations:
             if escape_characters.SEPARATOR_CHAR in locator:
                 _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                 _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+                elem = self.page.get_by_role(_location, name=_locator).nth(index)
             else:
                 elem = (
-                    self.ce.page.get_by_role(
+                    self.page.get_by_role(
                         aria_roles.ROW,
                         name=locator,
                     )
@@ -429,7 +427,7 @@ class PlaywrightOperations:
             index (int): Index of the link if multiple matches are found.
         """
         with allure.step(title=f"Downloading file [{value}] from [{locator}]"):
-            with self.ce.page.expect_download() as download_info:
+            with self.page.expect_download() as download_info:
                 self.act(locator=locator, action=actions.CLICK_LINK, index=index)
             download = download_info.value
             download.save_as(value)
@@ -445,7 +443,7 @@ class PlaywrightOperations:
             index (int): Index of the button if multiple matches are found.
         """
         with allure.step(title=f"Downloading file [{value}] from [{locator}]"):
-            with self.ce.page.expect_download() as download_info:
+            with self.page.expect_download() as download_info:
                 self.act(locator=locator, action=actions.CLICK_BUTTON, index=index)
             download = download_info.value
             download.save_as(value)
@@ -589,19 +587,19 @@ class PlaywrightOperations:
             str: Text content of the element.
         """
         if by_test_id:
-            elem = self.ce.page.get_by_test_id(locator)
+            elem = self.page.get_by_test_id(locator)
         else:
             if chain_locator:
-                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+                elem = eval(f"self.page.{locator}")
             else:
                 if escape_characters.SEPARATOR_CHAR in locator:
                     _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
                     _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                    elem = self.ce.page.get_by_role(_location, name=_locator).locator(
+                    elem = self.page.get_by_role(_location, name=_locator).locator(
                         aria_roles.SPAN
                     )
                 else:
-                    elem = self.ce.page.get_by_role(locator).nth(index)
+                    elem = self.page.get_by_role(locator).nth(index)
         elem.scroll_into_view_if_needed()
         return "".join(elem.all_text_contents()).strip()
 
@@ -622,13 +620,13 @@ class PlaywrightOperations:
         if escape_characters.SEPARATOR_CHAR in locator:
             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            elem = self.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
                 self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+                elem = eval(f"self.page.{locator}")
             else:
-                elem = self.ce.page.get_by_role(locator).nth(0)
+                elem = self.page.get_by_role(locator).nth(0)
         return elem.is_visible()
 
     def _get_checkbox_state(self, locator: str, index: int, chain_locator: bool) -> str:
@@ -646,15 +644,13 @@ class PlaywrightOperations:
         if escape_characters.SEPARATOR_CHAR in locator:
             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            elem = self.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
                 self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+                elem = eval(f"self.page.{locator}")
             else:
-                elem = self.ce.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(
-                    0
-                )
+                elem = self.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(0)
         return elem.is_checked()
 
     def _get_element_href(self, locator: str, index: int, chain_locator: bool) -> str:
@@ -672,14 +668,12 @@ class PlaywrightOperations:
         if escape_characters.SEPARATOR_CHAR in locator:
             _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
             _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-            elem = self.ce.page.get_by_role(_location, name=_locator).nth(index)
+            elem = self.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                elem = eval(f"{self.PAGE_ELEMENT_PATH}{locator}")
+                elem = eval(f"self.page.{locator}")
             else:
-                elem = self.ce.page.get_by_role(aria_roles.LINK, name=locator).nth(
-                    index
-                )
+                elem = self.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
         return elem.get_attribute(properties.HREF.name)
 
     def _wait(self, time_out: str):
@@ -700,7 +694,7 @@ class PlaywrightOperations:
         Args:
             locator_info (str): Information about the locator that caused the crash.
         """
-        _actual_title = self.ce.page.title()
+        _actual_title = self.page.title()
         if "Sorry, there’s a problem with the service" in _actual_title:
             assert False, f"Application has crashed after: {locator_info}"
 
@@ -719,7 +713,7 @@ class PlaywrightOperations:
             tuple: Row and column indices of the cell.
         """
         self.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        table = self.ce.page.locator(table_locator)
+        table = self.page.locator(table_locator)
 
         # Get the column index
         col_index = self._get_column_index(table, col_header)

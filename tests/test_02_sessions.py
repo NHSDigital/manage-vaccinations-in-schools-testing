@@ -4,7 +4,7 @@ from libs.mavis_constants import test_data_file_paths
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_tests(start_mavis, nurse, login_page, dashboard_page):
+def setup_tests(nurse, login_page, dashboard_page):
     login_page.log_in(**nurse)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_sessions()
@@ -13,7 +13,7 @@ def setup_tests(start_mavis, nurse, login_page, dashboard_page):
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mavis_1822(start_mavis, nurse, login_page, dashboard_page, sessions_page):
+def setup_mavis_1822(nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -37,7 +37,7 @@ def setup_mavis_1822(start_mavis, nurse, login_page, dashboard_page, sessions_pa
 
 
 @pytest.fixture(scope="function", autouse=False)
-def setup_mav_1018(start_mavis, nurse, login_page, dashboard_page, sessions_page):
+def setup_mav_1018(nurse, login_page, dashboard_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()

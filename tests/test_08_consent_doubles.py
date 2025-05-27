@@ -1,16 +1,13 @@
 import pytest
 
-from libs import CurrentExecution
-
 from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 
 
-ce = CurrentExecution()
 helper = ParentalConsentHelper()
 
 
 @pytest.fixture(scope="function")
-def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_page):
+def get_session_link(nurse, dashboard_page, login_page, sessions_page):
     try:
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
@@ -34,7 +31,7 @@ def get_session_link(start_mavis, nurse, dashboard_page, login_page, sessions_pa
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_workflow(get_session_link, scenario_data, consent_doubles_page):
+def test_workflow(get_session_link, scenario_data, page, consent_doubles_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    ce.page.goto(get_session_link)
+    page.goto(get_session_link)
     helper.enter_details_on_mavis(consent_doubles_page)

@@ -4,7 +4,7 @@ from libs.mavis_constants import Vaccine
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup_tests(start_mavis, nurse, login_page, dashboard_page):
+def setup_tests(nurse, login_page, dashboard_page):
     login_page.log_in(**nurse)
     dashboard_page.click_vaccines()
     yield

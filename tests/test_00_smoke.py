@@ -29,7 +29,7 @@ def test_verify_packages():
 
 @pytest.mark.smoke
 @pytest.mark.order(3)
-def test_homepage_loads(start_mavis, playwright_operations):
+def test_homepage_loads(playwright_operations):
     playwright_operations.verify(
         locator="heading",
         property=properties.TEXT,
