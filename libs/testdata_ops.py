@@ -151,15 +151,15 @@ class testdata_operations:
             pd.DataFrame: Cleaned DataFrame.
         """
         pd.set_option("future.no_silent_downcasting", True)
-        _df = df.fillna(value="0", inplace=False)
-        _df.replace(to_replace="True", value="true", inplace=True)
-        _df.replace(to_replace="False", value="false", inplace=True)
-        _df.replace(to_replace="null", value=test_data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="None", value=test_data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="NaN", value=test_data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="0", value=test_data_values.EMPTY, inplace=True)
-        _df.replace(to_replace="", value=test_data_values.EMPTY, inplace=True)
-        return _df
+        df = df.fillna(value="0", inplace=False)
+        df.replace(to_replace="True", value=True, inplace=True)
+        df.replace(to_replace="False", value=False, inplace=True)
+        df.replace(to_replace="null", value=None, inplace=True)
+        df.replace(to_replace="None", value=None, inplace=True)
+        df.replace(to_replace="NaN", value=None, inplace=True)
+        df.replace(to_replace="0", value=None, inplace=True)
+        df.replace(to_replace="", value=None, inplace=True)
+        return df
 
     def get_file_paths(
         self, file_paths: str, session_id: Optional[str] = None

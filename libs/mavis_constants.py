@@ -36,7 +36,6 @@ class test_data_values:
     SCHOOL_2_NAME: Final[str] = "Ashlawn School"
     SCHOOL_1_URN: Final[str] = "142181"
     ORG_CODE: Final[str] = "R1L"
-    EMPTY: Final[str] = "<empty>"
 
 
 class mavis_file_types(Enum):

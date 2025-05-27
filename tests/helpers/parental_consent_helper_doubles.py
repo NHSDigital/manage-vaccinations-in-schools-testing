@@ -1,5 +1,5 @@
 from libs import CurrentExecution, testdata_ops
-from libs.mavis_constants import test_data_file_paths, test_data_values
+from libs.mavis_constants import test_data_file_paths
 from pages import ConsentDoublesPage
 
 
@@ -15,34 +15,36 @@ class ParentalConsentHelper:
     def read_data_for_scenario(self, scenario_data) -> None:
         _, _row = scenario_data
         self.scenario_id = _row.name
-        self.child_first_name = str(_row["ChildFirstName"])
-        self.child_last_name = str(_row["ChildLastName"])
-        self.child_aka_first = str(_row["ChildAKAFirst"])
-        self.child_aka_last = str(_row["ChildAKALast"])
-        self.child_dob_day = str(_row["ChildDobDay"])
-        self.child_dob_month = str(_row["ChildDobMonth"])
-        self.child_dob_month = str(_row["ChildDobMonth"])
-        self.child_dob_year = str(_row["ChildDobYear"])
-        self.school_name = str(_row["SchoolName"])
-        self.parent_name = str(_row["ParentFullName"])
-        self.relation = str(_row["Relation"])
-        self.email = str(_row["Email"])
-        self.phone = str(_row["Phone"])
-        self.consent_for = str(_row["ConsentVaccine"])
-        self.gp = str(_row["GPName"])
-        self.addr1 = str(_row["AddressLine1"])
-        self.addr2 = str(_row["AddressLine2"])
-        self.city = str(_row["City"])
-        self.postcode = str(_row["PostCode"])
-        self.bleeding_disorder_details = str(_row["BleedingDisorderDetails"])
-        self.severe_allergy_details = str(_row["SevereAllergyDetails"])
-        self.reaction_details = str(_row["ReactionDetails"])
-        self.extra_support_details = str(_row["ExtraSupportDetails"])
-        self.vaccinated_in_past_details = str(_row["VaccinatedInPastDetails"])
-        self.other_vaccs_in_past_details = str(_row["OtherVaccsInPastDetails"])
-        self.consent_not_given_reason = str(_row["ConsentNotGivenReason"])
-        self.consent_not_given_details = str(_row["ConsentNotGivenDetails"])
-        self.expected_message = str(_row["ExpectedFinalMessage"])
+        self.child_first_name = _row["ChildFirstName"]
+        self.child_last_name = _row["ChildLastName"]
+        self.child_aka_first = _row["ChildAKAFirst"]
+        self.child_aka_last = _row["ChildAKALast"]
+        self.child_dob_day = _row["ChildDobDay"]
+        self.child_dob_month = _row["ChildDobMonth"]
+        self.child_dob_month = _row["ChildDobMonth"]
+        self.child_dob_year = _row["ChildDobYear"]
+        self.school_name = _row["SchoolName"]
+        self.parent_name = _row["ParentFullName"]
+        self.relation = _row["Relation"]
+        self.email = _row["Email"]
+        self.phone = _row["Phone"]
+        self.consent_for = (
+            _row["ConsentVaccine"].lower() if _row["ConsentVaccine"] else "none"
+        )
+        self.gp = _row["GPName"]
+        self.addr1 = _row["AddressLine1"]
+        self.addr2 = _row["AddressLine2"]
+        self.city = _row["City"]
+        self.postcode = _row["PostCode"]
+        self.bleeding_disorder_details = _row["BleedingDisorderDetails"]
+        self.severe_allergy_details = _row["SevereAllergyDetails"]
+        self.reaction_details = _row["ReactionDetails"]
+        self.extra_support_details = _row["ExtraSupportDetails"]
+        self.vaccinated_in_past_details = _row["VaccinatedInPastDetails"]
+        self.other_vaccs_in_past_details = _row["OtherVaccsInPastDetails"]
+        self.consent_not_given_reason = _row["ConsentNotGivenReason"]
+        self.consent_not_given_details = _row["ConsentNotGivenDetails"]
+        self.expected_message = _row["ExpectedFinalMessage"]
 
     def enter_details_on_mavis(self, page: ConsentDoublesPage):
         page.click_start_now()
@@ -69,14 +71,14 @@ class ParentalConsentHelper:
             email=self.email,
             phone=self.phone,
         )
-        if self.phone != test_data_values.EMPTY:
-            page.check_phone_options(
-                scenario_id=self.scenario_id,
-            )
+        if self.phone:
+            page.check_phone_options(scenario_id=self.scenario_id)
+
         page.select_consent_for_vaccination(
             scenario_id=self.scenario_id, consent_for=self.consent_for
         )
-        if self.consent_for.lower() != test_data_values.EMPTY:  # None
+
+        if self.consent_for != "none":
             page.fill_address_details(
                 scenario_id=self.scenario_id,
                 line1=self.addr1,
@@ -86,37 +88,37 @@ class ParentalConsentHelper:
             )
             page.select_bleeding_disorder(
                 scenario_id=self.scenario_id,
-                bleeding_disorder_details=self.bleeding_disorder_details,
+                notes=self.bleeding_disorder_details,
             )
             page.select_severe_allergies(
                 scenario_id=self.scenario_id,
-                allergy_details=self.severe_allergy_details,
+                notes=self.severe_allergy_details,
             )
             page.select_severe_reaction(
-                scenario_id=self.scenario_id, reaction_details=self.reaction_details
+                scenario_id=self.scenario_id, notes=self.reaction_details
             )
             page.select_extra_support(
                 scenario_id=self.scenario_id,
-                extra_support_details=self.extra_support_details,
+                notes=self.extra_support_details,
             )
             page.vaccinated_in_past(
                 scenario_id=self.scenario_id,
-                vaccs_in_past_details=self.vaccinated_in_past_details,
+                notes=self.vaccinated_in_past_details,
             )
-        if self.consent_for.lower() == "both":
-            page.other_vaccs_in_past(
-                scenario_id=self.scenario_id,
-                other_vaccs_in_past_details=self.other_vaccs_in_past_details,
-            )
-        if self.consent_for.lower() != "both":
+            if self.consent_for == "both":
+                page.other_vaccs_in_past(
+                    scenario_id=self.scenario_id,
+                    notes=self.other_vaccs_in_past_details,
+                )
+
+        if self.consent_for != "both":
             page.select_consent_not_given_reason(
                 scenario_id=self.scenario_id,
                 reason=self.consent_not_given_reason,
                 reason_details=self.consent_not_given_details,
             )
-        page.click_confirm_details(
-            scenario_id=self.scenario_id,
-        )
+
+        page.click_confirm_details(scenario_id=self.scenario_id)
         page.verify_final_message(
             scenario_id=self.scenario_id, expected_message=self.expected_message
         )
