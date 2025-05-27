@@ -1,6 +1,6 @@
 from libs import testdata_ops
 from libs.mavis_constants import test_data_file_paths
-from pages import ConsentHPVPage
+from pages import ConsentPage
 
 
 class ParentalConsentHelper:
@@ -41,7 +41,7 @@ class ParentalConsentHelper:
         self.consent_not_given_details = _row["ConsentNotGivenDetails"]
         self.expected_message = _row["ExpectedFinalMessage"]
 
-    def enter_details_on_mavis(self, page: ConsentHPVPage) -> None:
+    def enter_details_on_mavis(self, page: ConsentPage) -> None:
         page.click_start_now()
         page.fill_child_name_details(
             scenario_id=self.scenario_id,
@@ -66,14 +66,12 @@ class ParentalConsentHelper:
             email=self.email,
             phone=self.phone,
         )
-
         if self.phone:
             page.check_phone_options(scenario_id=self.scenario_id)
 
-        page.select_consent_for_vaccination(
+        page.select_consent_for_hpv_vaccination(
             scenario_id=self.scenario_id, consented=self.consent
         )
-
         if self.consent:
             page.fill_address_details(
                 scenario_id=self.scenario_id,
@@ -82,20 +80,15 @@ class ParentalConsentHelper:
                 city=self.city,
                 postcode=self.postcode,
             )
-            page.select_severe_allergies(
-                scenario_id=self.scenario_id, notes=self.allergy_details
-            )
-            page.select_medical_condition(
-                scenario_id=self.scenario_id,
-                notes=self.medical_condition_details,
-            )
-            page.select_severe_reaction(
-                scenario_id=self.scenario_id, notes=self.reaction_details
-            )
-            page.select_extra_support(
-                scenario_id=self.scenario_id,
-                notes=self.extra_support_details,
-            )
+            for details in [
+                self.allergy_details,
+                self.medical_condition_details,
+                self.reaction_details,
+                self.extra_support_details,
+            ]:
+                page.select_and_provide_details(
+                    scenario_id=self.scenario_id, details=details
+                )
         else:
             page.select_consent_not_given_reason(
                 scenario_id=self.scenario_id,

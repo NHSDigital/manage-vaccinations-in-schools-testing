@@ -31,7 +31,7 @@ def get_session_link(nurse, dashboard_page, login_page, sessions_page):
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_workflow(get_session_link, scenario_data, page, consent_doubles_page):
+def test_workflow(get_session_link, scenario_data, page, consent_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
     page.goto(get_session_link)
-    helper.enter_details_on_mavis(consent_doubles_page)
+    helper.enter_details_on_mavis(consent_page)

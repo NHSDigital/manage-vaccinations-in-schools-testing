@@ -9,8 +9,7 @@ from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
 
 from .children import ChildrenPage
-from .consent_doubles import ConsentDoublesPage
-from .consent_hpv import ConsentHPVPage
+from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
 from .sessions import SessionsPage
@@ -60,8 +59,7 @@ class ProgrammesPage:
         self.sessions_page = SessionsPage(playwright_operations)
         self.dashboard_page = DashboardPage(playwright_operations)
         self.children_page = ChildrenPage(playwright_operations)
-        self.consent_hpv = ConsentHPVPage(playwright_operations)
-        self.consent_doubles = ConsentDoublesPage(playwright_operations)
+        self.consent_page = ConsentPage(playwright_operations)
         self.import_records_page = ImportRecordsPage(playwright_operations)
 
     def click_programme(self, programme: Programme):
@@ -290,17 +288,17 @@ class ProgrammesPage:
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.HPV)
         self.sessions_page.click_get_consent_response()
-        self.consent_hpv.parent_1_verbal_positive(change_phone=False)
+        self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.MENACWY)
         self.sessions_page.click_get_consent_response()
-        self.consent_doubles.parent_1_verbal_positive(
+        self.consent_page.parent_1_verbal_positive(
             change_phone=False, programme=Programme.MENACWY
         )
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.TD_IPV)
         self.sessions_page.click_get_consent_response()
-        self.consent_doubles.parent_1_verbal_positive(
+        self.consent_page.parent_1_verbal_positive(
             change_phone=False, programme=Programme.TD_IPV
         )
         self.sessions_page.register_child_as_attending(

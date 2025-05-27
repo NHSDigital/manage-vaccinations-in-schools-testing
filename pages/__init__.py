@@ -1,8 +1,7 @@
 import pytest
 
 from .children import ChildrenPage
-from .consent_doubles import ConsentDoublesPage
-from .consent_hpv import ConsentHPVPage
+from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
 from .login import LoginPage
@@ -19,13 +18,8 @@ def children_page(playwright_operations):
 
 
 @pytest.fixture
-def consent_doubles_page(playwright_operations):
-    return ConsentDoublesPage(playwright_operations)
-
-
-@pytest.fixture
-def consent_hpv_page(playwright_operations):
-    return ConsentHPVPage(playwright_operations)
+def consent_page(playwright_operations):
+    return ConsentPage(playwright_operations)
 
 
 @pytest.fixture
