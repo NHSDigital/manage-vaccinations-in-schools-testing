@@ -1,13 +1,11 @@
 from typing import Final
 
-from libs import playwright_ops
 from libs.generic_constants import actions, properties
+from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime, get_offset_date
 
 
 class VaccinesPage:
-    po = playwright_ops.playwright_operations()
-
     LBL_VACCINE_NAME: Final[str] = "Gardasil 9 (HPV)"
     LBL_VACCINE_MANUFACTURER: Final[str] = "Merck Sharp & Dohme"
     LBL_MAIN: Final[str] = "main"
@@ -21,6 +19,9 @@ class VaccinesPage:
     BTN_ADD_BATCH: Final[str] = "Add batch"
     BTN_SAVE_CHANGES: Final[str] = "Save changes"
     BTN_CONFIRM_ARCHIVE: Final[str] = "Yes, archive this batch"
+
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
 
     def verify_current_vaccine(self):
         self.po.verify(

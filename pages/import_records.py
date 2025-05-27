@@ -1,7 +1,8 @@
 from typing import Final, Optional
 
-from libs import CurrentExecution, playwright_ops, testdata_ops
+from libs import CurrentExecution, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
+from libs.playwright_ops import PlaywrightOperations
 from libs.mavis_constants import mavis_file_types, record_limit
 from libs.wrappers import get_link_formatted_date_time
 
@@ -12,13 +13,8 @@ from .vaccines import VaccinesPage
 
 
 class ImportRecordsPage:
-    po = playwright_ops.playwright_operations()
     ce = CurrentExecution()
     tdo = testdata_ops.testdata_operations()
-    sessions_page = SessionsPage()
-    dashboard_page = DashboardPage()
-    children_page = ChildrenPage()
-    vaccines_page = VaccinesPage()
 
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 
@@ -35,7 +31,12 @@ class ImportRecordsPage:
     LBL_MAIN: Final[str] = "main"
     LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
 
-    def __init__(self):
+    def __init__(self, playwright_operations: PlaywrightOperations):
+        self.po = playwright_operations
+        self.sessions_page = SessionsPage(playwright_operations)
+        self.dashboard_page = DashboardPage(playwright_operations)
+        self.children_page = ChildrenPage(playwright_operations)
+        self.vaccines_page = VaccinesPage(playwright_operations)
         self.upload_time = ""
 
     def import_child_records(

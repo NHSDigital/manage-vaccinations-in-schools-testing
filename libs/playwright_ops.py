@@ -23,7 +23,7 @@ from libs.wrappers import (
 )
 
 
-class playwright_operations:
+class PlaywrightOperations:
     """
     A class to handle Playwright operations for web automation.
     """

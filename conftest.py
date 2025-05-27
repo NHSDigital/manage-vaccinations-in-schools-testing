@@ -10,6 +10,7 @@ from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
 from libs import CurrentExecution as ce
+from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
 from libs.wrappers import get_current_datetime
 
@@ -96,6 +97,11 @@ def reset_endpoint(base_url) -> str:
 @pytest.fixture(scope="session")
 def skip_reset(request) -> bool:
     return request.config.getoption("skip_reset")
+
+
+@pytest.fixture(scope="session")
+def playwright_operations():
+    return PlaywrightOperations()
 
 
 @pytest.fixture(scope="session")
