@@ -188,13 +188,17 @@ def start_browser(
     slow_mo,
 ):
     browser_type = getattr(playwright, browser_name)
-    browser = browser_type.launch(channel=browser_channel, headless=not headed, slow_mo=slow_mo)
+    browser = browser_type.launch(
+        channel=browser_channel, headless=not headed, slow_mo=slow_mo
+    )
 
     kwargs = {}
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(**kwargs, base_url=base_url, http_credentials=basic_auth)
+    context = browser.new_context(
+        **kwargs, base_url=base_url, http_credentials=basic_auth
+    )
 
     return [browser, context]
 
