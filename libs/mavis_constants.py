@@ -42,11 +42,6 @@ class mavis_file_types(Enum):
     VACCS_SYSTMONE = auto()
 
 
-class record_limit:
-    FILE_RECORD_MIN_THRESHOLD: Final[int] = 15
-    FILE_RECORD_MAX_THRESHOLD: Final[int] = 15
-
-
 class test_data_file_paths:
     PARENTAL_CONSENT_HPV: Final[str] = "test_data/ParentalConsent_HPV.xlsx"
     PARENTAL_CONSENT_DOUBLES: Final[str] = "test_data/ParentalConsent_Doubles.xlsx"

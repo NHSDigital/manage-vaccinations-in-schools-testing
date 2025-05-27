@@ -2,12 +2,7 @@ from typing import Final
 
 from libs import CurrentExecution, testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import (
-    mavis_file_types,
-    record_limit,
-    test_data_values,
-    Programme,
-)
+from libs.mavis_constants import mavis_file_types, test_data_values, Programme
 from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import (
     datetime,
@@ -19,6 +14,7 @@ from libs.wrappers import (
 from .children import ChildrenPage
 from .consent_hpv import ConsentHPVPage
 from .dashboard import DashboardPage
+from .import_records import ImportRecordsPage
 
 
 class SessionsPage:
@@ -130,6 +126,7 @@ class SessionsPage:
         self.dashboard_page = DashboardPage(playwright_operations)
         self.consent_page = ConsentHPVPage(playwright_operations)
         self.children_page = ChildrenPage(playwright_operations)
+        self.import_records_page = ImportRecordsPage(playwright_operations)
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -705,9 +702,11 @@ class SessionsPage:
         self.choose_file_child_records_for_school_1(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+
+        if self.import_records_page.is_processing_in_background():
             self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime()
+
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
@@ -727,9 +726,11 @@ class SessionsPage:
         self.choose_file_child_records_for_school_2(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
-        if self.ce.get_file_record_count() > record_limit.FILE_RECORD_MIN_THRESHOLD:
+
+        if self.import_records_page.is_processing_in_background():
             self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime()
+
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
