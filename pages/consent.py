@@ -278,11 +278,8 @@ class ConsentPage:
         if details:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
-                locator=self.TXT_GIVE_DETAILS,
-                action=actions.FILL,
-                value=details
+                locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=details
             )
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         else:
             self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
 

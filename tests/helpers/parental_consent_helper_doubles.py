@@ -93,11 +93,11 @@ class ParentalConsentHelper:
                 page.select_and_provide_details(
                     scenario_id=self.scenario_id, details=details
                 )
-        if self.consent_for.lower() == "both":
-            page.select_and_provide_details(
-                scenario_id=self.scenario_id,
-                details=self.other_vaccs_in_past_details,
-            )
+            if self.consent_for.lower() == "both":
+                page.select_and_provide_details(
+                    scenario_id=self.scenario_id,
+                    details=self.other_vaccs_in_past_details,
+                )
         if self.consent_for.lower() != "both":
             page.select_consent_not_given_reason(
                 scenario_id=self.scenario_id,
