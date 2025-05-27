@@ -32,8 +32,6 @@ class ConsentPage:
     CHK_MOBILE_ONLY_TEXT: Final[str] = "I can only receive text"
     CHK_MOBILE_ONLY_VOICE: Final[str] = "I can only receive voice calls"
     CHK_MOBILE_OTHER: Final[str] = "Other"
-    CHK_CONSENT_AGREE: Final[str] = "Yes, I agree"
-    CHK_CONSENT_DISAGREE: Final[str] = "No"
     RDO_GP_REGISTERED: Final[str] = "Yes, they are registered with a GP"
     RDO_GP_NOT_REGISTERED: Final[str] = "No, they are not registered with a GP"
     RDO_GP_NOT_KNOWN: Final[str] = "I don’t know"
@@ -58,7 +56,6 @@ class ConsentPage:
     RDO_NO_THEY_DO_NOT_AGREE: Final[str] = "No, they do not agree"
     RDO_NO_RESPONSE: Final[str] = "No response"
     RDO_YES_SAFE_TO_VACCINATE: Final[str] = "Yes, it’s safe to vaccinate"
-    LBL_CONSENT_RECORDED: Final[str] = "Consent recorded for CLAST, CFirst"
     LBL_MAIN: Final[str] = "main"
     RDO_PARENT1_DAD: Final[str] = "Parent1 (Dad)"
     RDO_PARENT2_MUM: Final[str] = "Parent2 (Mum)"
@@ -68,7 +65,7 @@ class ConsentPage:
     RDO_CHILD_GILLICK_COMPETENT: Final[str] = "Child (Gillick competent)"
     BTN_SAVE_TRIAGE: Final[str] = "Save triage"
 
-    # doubles locators
+    # DOUBLES
     RDO_DOUBLES_CONSENT_BOTH: Final[str] = "Yes, I agree to them having"
     RDO_DOUBLES_CONSENT_ONE: Final[str] = "I agree to them having one of"
     RDO_DOUBLES_CONSENT_MENACWY: Final[str] = "MenACWY"
@@ -76,7 +73,7 @@ class ConsentPage:
     RDO_DOUBLES_CONSENT_NONE: Final[str] = "No"
     LBL_DOUBLES_CONSENT_RECORDED: Final[str] = "Consent recorded for CF"
 
-    # hpv locators
+    # HPV
     CHK_HPV_CONSENT_AGREE: Final[str] = "Yes, I agree"
     CHK_HPV_CONSENT_DISAGREE: Final[str] = "No"
     LBL_HPV_CONSENT_RECORDED: Final[str] = "Consent recorded for CLAST, CFirst"
@@ -223,10 +220,12 @@ class ConsentPage:
         self, scenario_id: str, consented: bool
     ) -> None:
         if consented:
-            self.po.act(locator=self.CHK_CONSENT_AGREE, action=actions.CHECKBOX_CHECK)
+            self.po.act(
+                locator=self.CHK_HPV_CONSENT_AGREE, action=actions.CHECKBOX_CHECK
+            )
         else:
             self.po.act(
-                locator=self.CHK_CONSENT_DISAGREE, action=actions.CHECKBOX_CHECK
+                locator=self.CHK_HPV_CONSENT_DISAGREE, action=actions.CHECKBOX_CHECK
             )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
@@ -473,7 +472,7 @@ class ConsentPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=self.LBL_CONSENT_RECORDED,
+            expected_value=self.LBL_HPV_CONSENT_RECORDED,
             exact=False,
         )
 
