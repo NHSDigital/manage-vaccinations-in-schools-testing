@@ -2,7 +2,6 @@ import pytest
 
 from libs.mavis_constants import vaccines
 
-
 doubles_vaccines = [
     vaccines.MENQUADFI,
     vaccines.MENVEO,
@@ -32,7 +31,7 @@ def test_batch_add_change_archive_hpv(vaccines_page):
 @pytest.mark.parametrize(
     "vaccine",
     doubles_vaccines,
-    ids=[id[0] for id in doubles_vaccines],
+    ids=[f"{id} batch" for id in doubles_vaccines],
 )
 def test_batch_add_change_archive_doubles(vaccine, vaccines_page):
     vaccines_page.add_batch(vaccine_name=vaccine)

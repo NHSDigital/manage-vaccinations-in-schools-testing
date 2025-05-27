@@ -1,4 +1,4 @@
-from enum import auto, Enum, StrEnum
+from enum import Enum, StrEnum, auto
 from typing import Final
 
 
@@ -11,19 +11,19 @@ class Programme(StrEnum):
     def vaccines(self):
         match self:
             case self.HPV:
-                return [vaccines.GARDASIL9[0]]
+                return [vaccines.GARDASIL9]
             case self.MENACWY:
-                return [vaccines.MENQUADFI[0], vaccines.MENVEO[0], vaccines.NIMENRIX[0]]
+                return [vaccines.MENQUADFI, vaccines.MENVEO, vaccines.NIMENRIX]
             case self.TD_IPV:
-                return [vaccines.REVAXIS[0]]
+                return [vaccines.REVAXIS]
 
 
 class vaccines:
-    GARDASIL9: Final[tuple[str, int]] = ("Gardasil9", 0)  # HPV
-    MENQUADFI: Final[tuple[str, int]] = ("MenQuadfi", 1)  # MenACWY
-    MENVEO: Final[tuple[str, int]] = ("Menveo", 2)  # MenACWY
-    NIMENRIX: Final[tuple[str, int]] = ("Nimenrix", 3)  # MenACWY
-    REVAXIS: Final[tuple[str, int]] = ("Revaxis", 4)  # Td/IPV
+    GARDASIL9: Final[str] = "Gardasil 9"  # HPV
+    MENQUADFI: Final[str] = "MenQuadfi"  # MenACWY
+    MENVEO: Final[str] = "Menveo"  # MenACWY
+    NIMENRIX: Final[str] = "Nimenrix"  # MenACWY
+    REVAXIS: Final[str] = "Revaxis"  # Td/IPV
 
 
 class test_data_values:

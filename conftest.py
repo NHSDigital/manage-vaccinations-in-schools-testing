@@ -10,8 +10,8 @@ from playwright.sync_api import sync_playwright
 from requests.auth import HTTPBasicAuth
 
 from libs import CurrentExecution as ce
-from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
+from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime
 
 
@@ -20,7 +20,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser-channel", default=None)
     parser.addoption("--device", default=None)
     parser.addoption("--slowmo", type=int, default=200)
-    parser.addoption("--headed", action="store_true", default=False)
+    parser.addoption("--headed", action="store_true", default=True)
     parser.addoption("--skip-reset", action="store_true", default=False)
 
 
@@ -117,7 +117,7 @@ def reset_environment(reset_endpoint, basic_auth, skip_reset):
 
         def _reset_environment():
             for _ in range(3):
-                response = requests.get(url=reset_endpoint, auth=auth)
+                response = requests.get(url=reset_endpoint, auth=auth, verify=False)
                 if response.ok:
                     break
                 time.sleep(3)
@@ -188,17 +188,13 @@ def start_browser(
     slow_mo,
 ):
     browser_type = getattr(playwright, browser_name)
-    browser = browser_type.launch(
-        channel=browser_channel, headless=not headed, slow_mo=slow_mo
-    )
+    browser = browser_type.launch(channel=browser_channel, headless=not headed, slow_mo=slow_mo)
 
     kwargs = {}
     if device:
         kwargs = playwright.devices[device]
 
-    context = browser.new_context(
-        **kwargs, base_url=base_url, http_credentials=basic_auth
-    )
+    context = browser.new_context(**kwargs, base_url=base_url, http_credentials=basic_auth)
 
     return [browser, context]
 
