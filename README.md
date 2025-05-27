@@ -61,37 +61,37 @@ To execute the tests from your system, please follow the steps below:
 $ pytest
 ```
 
-### Browsers and devices
+#### Browsers and devices
 
 By default, the tests will run using `Chromium` with no particular device,
 however it's possible to run the tests in different browsers and devices.
 Some examples are listed below.
 
-#### iPhone 15
+##### iPhone 15
 
 ```shell
 $ pytest --browser webkit --device "iPhone 15"
 ```
 
-#### Firefox
+##### Firefox
 
 ```shell
 $ pytest --browser firefox
 ```
 
-#### Google Pixel 7
+##### Google Pixel 7
 
 ```shell
 $ pytest --browser chromium --device "Pixel 7"
 ```
 
-#### Microsoft Edge
+##### Microsoft Edge
 
 ```shell
 $ pytest --browser chromium --browser-channel msedge
 ```
 
-### Headless mode
+#### Headless mode
 
 If running in a CI environment (determined by the presence of a `CI`
 environment variable) then by default the tests will run in headless mode. To
@@ -101,7 +101,7 @@ run the tests in headed more, use the following command:
 $ pytest --headed
 ```
 
-### Screenshots
+#### Screenshots
 
 To take screenshots while the tests are running there is a `--screenshot`
 command line option. The screenshots will be saved in a `screenshots`
@@ -111,7 +111,7 @@ directory.
 $ pytest --screenshot on
 ```
 
-### Slow motion
+#### Slow motion
 
 When running the tests locally in headed mode, it can be useful to make the
 steps artificially slower to see what's happening at each point. To introduce
@@ -121,7 +121,7 @@ a 1-second delay, use the following command:
 $ pytest --slowmo 1000
 ```
 
-### Markers
+#### Markers
 
 Tests for individual endpoints can be executed using individual markers. For example:
 
@@ -129,7 +129,7 @@ Tests for individual endpoints can be executed using individual markers. For exa
 $ pytest -m regression
 ```
 
-### Resetting the environment
+#### Resetting the environment
 
 By default, when running the tests, a call is made to `$RESET_ENDPOINT` which
 is designed to reset the environment for a clean test run. It can sometimes be
@@ -138,6 +138,17 @@ example). To do this, there is `--skip-reset` flag available:
 
 ```shell
 $ pytest tests/test_10_unmatched_consent_responses.py --skip-reset
+```
+
+### Reporting
+
+While the tests are running results are stored in `allure-results` which can
+then be used to generate a report:
+
+```shell
+$ npm install
+$ npx allure generate allure-results
+$ npx allure open
 ```
 
 ### Linting
