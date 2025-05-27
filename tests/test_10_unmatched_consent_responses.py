@@ -8,49 +8,37 @@ from libs.mavis_constants import test_data_file_paths
 # RUN WITH '--skip-reset' IF RUNNING ONLY CONSENT TESTS
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_tests(nurse, login_page, dashboard_page):
-    login_page.log_in(**nurse)
+@pytest.fixture
+def go_to_unmatched_consent_responses(log_in_as_nurse, dashboard_page):
+    dashboard_page.click_unmatched_consent_responses()
+
+
+@pytest.fixture
+def setup_ucr_match(log_in_as_nurse, dashboard_page, programmes_page):
+    dashboard_page.click_programmes()
+    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_UCR_MATCH)
     dashboard_page.go_to_dashboard()
     dashboard_page.click_unmatched_consent_responses()
-    yield
-    login_page.log_out()
-
-
-@pytest.fixture(scope="function", autouse=False)
-def setup_ucr_match(nurse, login_page, dashboard_page, programmes_page):
-    try:
-        login_page.log_in(**nurse)
-        dashboard_page.go_to_dashboard()
-        dashboard_page.click_programmes()
-        programmes_page.upload_cohorts(
-            file_paths=test_data_file_paths.COHORTS_UCR_MATCH
-        )
-        dashboard_page.go_to_dashboard()
-        dashboard_page.click_unmatched_consent_responses()
-        yield
-    finally:
-        login_page.log_out()
 
 
 @pytest.mark.unmatchedconsentresponses
 @pytest.mark.order(1001)
 @pytest.mark.dependency(name="ucr_records_exist")
-def test_check_records_exist(setup_tests, unmatched_page):
+def test_check_records_exist(go_to_unmatched_consent_responses, unmatched_page):
     unmatched_page.verify_records_exist()
 
 
 @pytest.mark.unmatchedconsentresponses
 @pytest.mark.order(1002)
 @pytest.mark.dependency(depends=["ucr_records_exist"])
-def test_archive_record(setup_tests, unmatched_page):
+def test_archive_record(go_to_unmatched_consent_responses, unmatched_page):
     unmatched_page.archive_record()  # Covers MAVIS-1782
 
 
 @pytest.mark.unmatchedconsentresponses
 @pytest.mark.order(1003)
 @pytest.mark.dependency(depends=["ucr_records_exist"])
-def test_create_record(setup_tests, unmatched_page):
+def test_create_record(go_to_unmatched_consent_responses, unmatched_page):
     unmatched_page.create_record()  # Covers MAVIS-1812
 
 
@@ -64,5 +52,7 @@ def test_match_record(setup_ucr_match, unmatched_page):
 @pytest.mark.unmatchedconsentresponses
 @pytest.mark.order(1005)
 @pytest.mark.dependency(depends=["ucr_records_exist"])
-def test_create_record_with_no_nhs_number(setup_tests, unmatched_page):
+def test_create_record_with_no_nhs_number(
+    go_to_unmatched_consent_responses, unmatched_page
+):
     unmatched_page.create_record_with_no_nhs_number()  # MAVIS-1781

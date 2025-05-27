@@ -8,18 +8,14 @@ from libs.mavis_constants import (
 )
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_cohort_upload_and_reports(nurse, dashboard_page, login_page):
-    login_page.log_in(**nurse)
+@pytest.fixture
+def setup_cohort_upload_and_reports(log_in_as_nurse, dashboard_page):
     dashboard_page.click_programmes()
-    yield
-    login_page.log_out()
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_record_a_vaccine(nurse, dashboard_page, login_page, sessions_page):
+@pytest.fixture
+def setup_record_a_vaccine(log_in_as_nurse, dashboard_page, sessions_page):
     try:
-        login_page.log_in(**nurse)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         dashboard_page.go_to_dashboard()
@@ -29,15 +25,13 @@ def setup_record_a_vaccine(nurse, dashboard_page, login_page, sessions_page):
         dashboard_page.go_to_dashboard()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        login_page.log_out()
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_mavis_1729(
-    nurse, dashboard_page, import_records_page, login_page, sessions_page
+    log_in_as_nurse, dashboard_page, import_records_page, sessions_page
 ):
     try:
-        login_page.log_in(**nurse)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         import_records_page.import_class_list_records_from_school_session(
@@ -59,20 +53,17 @@ def setup_mavis_1729(
         dashboard_page.go_to_dashboard()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        login_page.log_out()
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_mav_854(
-    nurse,
+    log_in_as_nurse,
     dashboard_page,
     import_records_page,
-    login_page,
     sessions_page,
     vaccines_page,
 ):
     try:
-        login_page.log_in(**nurse)
         dashboard_page.click_vaccines()
         vaccines_page.add_batch(vaccine=Vaccine.GARDASIL_9)
         dashboard_page.go_to_dashboard()
@@ -92,15 +83,11 @@ def setup_mav_854(
         dashboard_page.go_to_dashboard()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        login_page.log_out()
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_mav_nnn(
-    admin, dashboard_page, login_page, import_records_page, sessions_page
-):
+@pytest.fixture
+def setup_mav_nnn(log_in_as_admin, dashboard_page, import_records_page, sessions_page):
     try:
-        login_page.log_in(**admin)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         import_records_page.import_class_list_records_from_school_session(
@@ -112,7 +99,6 @@ def setup_mav_nnn(
         dashboard_page.go_to_dashboard()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        login_page.log_out()
 
 
 @pytest.mark.cohorts

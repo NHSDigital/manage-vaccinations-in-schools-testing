@@ -6,21 +6,13 @@ from libs.mavis_constants import (
 )
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_tests(nurse, login_page):
-    login_page.log_in(**nurse)
-    yield
-    login_page.log_out()
-
-
-@pytest.fixture(scope="function", autouse=False)
-def setup_child_list(setup_tests, dashboard_page):
+@pytest.fixture
+def setup_child_list(log_in_as_nurse, dashboard_page):
     dashboard_page.click_import_records()
-    yield
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_class_list(setup_tests, dashboard_page, sessions_page):
+@pytest.fixture
+def setup_class_list(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
@@ -33,8 +25,8 @@ def setup_class_list(setup_tests, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions_for_school_1()
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_vaccs(setup_tests, dashboard_page, sessions_page, import_records_page):
+@pytest.fixture
+def setup_vaccs(log_in_as_nurse, dashboard_page, sessions_page, import_records_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -52,8 +44,8 @@ def setup_vaccs(setup_tests, dashboard_page, sessions_page, import_records_page)
         sessions_page.delete_all_sessions_for_school_1()
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_vaccs_systmone(setup_tests, dashboard_page, sessions_page):
+@pytest.fixture
+def setup_vaccs_systmone(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)

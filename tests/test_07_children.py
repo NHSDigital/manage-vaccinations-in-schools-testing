@@ -3,15 +3,8 @@ import pytest
 from libs.mavis_constants import mavis_file_types, test_data_file_paths
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_tests(nurse, login_page):
-    login_page.log_in(**nurse)
-    yield
-    login_page.log_out()
-
-
-@pytest.fixture(scope="function", autouse=False)
-def setup_children_page(setup_tests, dashboard_page, sessions_page):
+@pytest.fixture
+def setup_children_page(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -30,8 +23,8 @@ def setup_children_page(setup_tests, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions_for_school_1()
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_change_nhsno(setup_tests, dashboard_page, sessions_page):
+@pytest.fixture
+def setup_change_nhsno(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
@@ -50,9 +43,9 @@ def setup_change_nhsno(setup_tests, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions_for_school_1()
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_mav_853(
-    setup_tests, dashboard_page, import_records_page, programmes_page, sessions_page
+    log_in_as_nurse, dashboard_page, import_records_page, programmes_page, sessions_page
 ):
     try:
         dashboard_page.click_sessions()

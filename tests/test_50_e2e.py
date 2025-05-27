@@ -4,10 +4,11 @@ from libs.mavis_constants import test_data_file_paths
 from libs.wrappers import wait_for_reset
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(autouse=True)
 def setup_tests(reset_environment, nurse, login_page, dashboard_page, sessions_page):
     reset_environment()
     wait_for_reset()
+    login_page.go_to_login_page()
     login_page.log_in(**nurse)
     yield
     dashboard_page.go_to_dashboard()

@@ -120,13 +120,28 @@ def reset_environment_before_run(reset_environment):
 
 @pytest.fixture
 def page(reset_environment_before_run, page):
-    page.goto("/")
     return page
 
 
 @pytest.fixture
 def playwright_operations(page, screenshots_path):
     return PlaywrightOperations(page, screenshots_path)
+
+
+@pytest.fixture
+def log_in_as_nurse(nurse, login_page):
+    login_page.go_to_login_page()
+    login_page.log_in(**nurse)
+    yield
+    login_page.log_out()
+
+
+@pytest.fixture
+def log_in_as_admin(admin, login_page):
+    login_page.go_to_login_page()
+    login_page.log_in(**admin)
+    yield
+    login_page.log_out()
 
 
 @pytest.hookimpl(tryfirst=True)
