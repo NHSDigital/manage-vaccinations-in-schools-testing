@@ -43,7 +43,7 @@ on:
 #   JMETER_PLUGIN_INSTALL_LIST: "jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv"
 
 # Added run-name information so it's easier to see what was run
-run-name: Test ${{testToRun}} run with ${{threads}} threads for ${{duration}} seconds and ${{ramp_up}} ramp up
+run-name: Test ${{inputs.testToRun}} run with ${{inputs.threads}} threads for ${{inputs.duration}} seconds and ${{inputs.ramp_up}} ramp up
 jobs:
   nurse_journey_performance_test:
     runs-on: ubuntu-latest
