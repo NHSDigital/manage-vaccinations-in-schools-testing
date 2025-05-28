@@ -116,10 +116,6 @@ class Location(StrEnum):
         return ""
 
 
-class test_data_values:
-    ORG_CODE: Final[str] = "R1L"
-
-
 class mavis_file_types(Enum):
     CHILD_LIST = auto()
     COHORT = auto()

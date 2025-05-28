@@ -1,11 +1,6 @@
 from playwright.sync_api import expect
 import pytest
 
-from libs.mavis_constants import test_data_values
-
-
-organisation = test_data_values.ORG_CODE
-
 
 @pytest.fixture(autouse=True)
 def go_to_log_in_page(start_page):
@@ -33,11 +28,11 @@ def users(admin, nurse, superuser) -> dict[str, dict[str, str]]:
 @pytest.mark.log_in
 @pytest.mark.order(102)
 @pytest.mark.parametrize("role", ("admin", "nurse", "superuser"))
-def test_valid(role, users, dashboard_page, log_in_page):
+def test_valid(role, users, organisation, dashboard_page, log_in_page):
     log_in_page.log_in(**users[role])
     expect(log_in_page.log_out_button).to_be_visible()
 
-    log_in_page.select_role(organisation)
+    log_in_page.select_organisation(organisation)
     expect(dashboard_page.mavis_link).to_be_visible()
     expect(dashboard_page.programmes_link).to_be_visible()
     expect(dashboard_page.sessions_link).to_be_visible()

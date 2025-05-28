@@ -1,20 +1,15 @@
 import pytest
 
-from libs.mavis_constants import (
-    test_data_file_paths,
-    test_data_values,
-    Vaccine,
-    Location,
-)
+from libs.mavis_constants import test_data_file_paths, Location, Vaccine
 from libs.wrappers import wait_for_reset
 
 
 @pytest.fixture
-def setup_tests(reset_environment, nurse, log_in_page, start_page):
+def setup_tests(reset_environment, nurse, organisation, log_in_page, start_page):
     reset_environment()
     wait_for_reset()
     start_page.navigate_and_start()
-    log_in_page.log_in_and_select_role(**nurse, organisation=test_data_values.ORG_CODE)
+    log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
     yield
     log_in_page.log_out()
 
