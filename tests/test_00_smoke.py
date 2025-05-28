@@ -3,7 +3,7 @@ import subprocess
 
 import pytest
 
-from libs.generic_constants import properties
+from playwright.sync_api import expect
 
 
 @pytest.mark.smoke
@@ -29,10 +29,8 @@ def test_verify_packages():
 
 @pytest.mark.smoke
 @pytest.mark.order(3)
-def test_homepage_loads(login_page, playwright_operations):
-    login_page.go_to_login_page()
-    playwright_operations.verify(
-        locator="heading",
-        property=properties.TEXT,
-        expected_value="Manage vaccinations in schools (Mavis)",
-    )
+def test_start(start_page, playwright_operations):
+    start_page.navigate()
+
+    expect(start_page.heading).to_be_visible()
+    expect(start_page.start_link).to_be_visible()

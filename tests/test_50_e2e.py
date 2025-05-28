@@ -5,10 +5,12 @@ from libs.wrappers import wait_for_reset
 
 
 @pytest.fixture(autouse=True)
-def setup_tests(reset_environment, nurse, login_page, dashboard_page, sessions_page):
+def setup_tests(
+    reset_environment, nurse, login_page, dashboard_page, sessions_page, start_page
+):
     reset_environment()
     wait_for_reset()
-    login_page.go_to_login_page()
+    start_page.navigate_and_start()
     login_page.log_in(**nurse)
     yield
     dashboard_page.go_to_dashboard()

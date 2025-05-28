@@ -6,7 +6,6 @@ from libs.playwright_ops import PlaywrightOperations
 
 
 class ConsentPage:
-    BTN_START_NOW: Final[str] = "Start now"
     TXT_CHILD_FIRST_NAME: Final[str] = "First name"
     TXT_CHILD_LAST_NAME: Final[str] = "Last name"
     RDO_KNOWN_BY_ANOTHER_NAME_YES: Final[str] = "Yes"
@@ -86,9 +85,6 @@ class ConsentPage:
 
     def __init__(self, playwright_operations: PlaywrightOperations):
         self.po = playwright_operations
-
-    def click_start_now(self):
-        self.po.act(locator=self.BTN_START_NOW, action=actions.CLICK_BUTTON)
 
     def fill_child_name_details(
         self,
