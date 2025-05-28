@@ -6,7 +6,7 @@ import pandas as pd
 
 from .mavis_constants import mavis_file_types, Location
 from .organisation import Organisation
-from .wrappers import (
+from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
     get_offset_date,

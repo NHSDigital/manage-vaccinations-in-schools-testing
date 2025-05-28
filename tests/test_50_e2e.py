@@ -1,7 +1,7 @@
 import pytest
 
 from libs.mavis_constants import test_data_file_paths, Location
-from libs.wrappers import wait_for_reset
+from mavis.test.wrappers import wait_for_reset
 
 
 @pytest.fixture(autouse=True)

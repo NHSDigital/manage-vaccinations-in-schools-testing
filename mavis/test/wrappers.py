@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 from faker import Faker
 
-from .generic_constants import escape_characters
+from libs.generic_constants import escape_characters
 
 faker = Faker()
 

@@ -16,7 +16,11 @@ from .generic_constants import (
     screenshot_actions,
     wait_time,
 )
-from .wrappers import convert_time_units_to_seconds, clean_text, clean_file_name
+from mavis.test.wrappers import (
+    convert_time_units_to_seconds,
+    clean_text,
+    clean_file_name,
+)
 
 
 class PlaywrightOperations:
