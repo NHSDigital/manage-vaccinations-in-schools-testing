@@ -241,29 +241,7 @@ class ConsentPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def set_all_health_questions_to_no(self, programme: Programme):
-        common_doubles_locators = [
-            "Does your child have a bleeding disorder or another medical condition they",
-            "Does your child have any",
-            "Has your child ever had a",
-            "Does your child need extra",
-        ]
-        programme_specific_locators = {
-            Programme.MENACWY: common_doubles_locators
-            + [
-                "Has your child had a",
-            ],
-            Programme.TD_IPV: common_doubles_locators
-            + [
-                "Has your child had a tetanus",
-            ],
-            Programme.HPV: [
-                "Does your child have any severe allergies?",
-                "Does your child have any medical conditions for which they receive treatment?",
-                "Has your child ever had a",
-                "Does your child need extra",
-            ],
-        }
-        for locator_text in programme_specific_locators.get(programme, []):
+        for locator_text in programme.health_questions:
             self.po.act(
                 locator=self._get_no_action(locator_text),
                 action=actions.CHAIN_LOCATOR_ACTION,
