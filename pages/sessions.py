@@ -12,7 +12,7 @@ from libs.wrappers import (
 )
 
 from .children import ChildrenPage
-from .consent_hpv import ConsentHPVPage
+from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
 
@@ -123,7 +123,7 @@ class SessionsPage:
         self.upload_time = ""
         self.po = playwright_operations
         self.dashboard_page = DashboardPage(playwright_operations)
-        self.consent_page = ConsentHPVPage(playwright_operations)
+        self.consent_page = ConsentPage(playwright_operations)
         self.children_page = ChildrenPage(playwright_operations)
         self.import_records_page = ImportRecordsPage(playwright_operations)
 
