@@ -1,6 +1,7 @@
 import pytest
 
 from libs.mavis_constants import (
+    VaccinationSite,
     mavis_file_types,
     test_data_file_paths,
 )
@@ -15,25 +16,29 @@ def setup_child_list(log_in_as_nurse, dashboard_page):
 def setup_class_list(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1()
+        sessions_page.schedule_a_valid_session(
+            vaccination_site=VaccinationSite.SCHOOL_1
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.fixture
 def setup_vaccs(log_in_as_nurse, dashboard_page, sessions_page, import_records_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        sessions_page.schedule_a_valid_session(
+            vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+        )
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
-        sessions_page.click_school1()
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -41,21 +46,23 @@ def setup_vaccs(log_in_as_nurse, dashboard_page, sessions_page, import_records_p
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.fixture
 def setup_vaccs_systmone(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        sessions_page.schedule_a_valid_session(
+            vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 ########################################### CHILD LIST ###########################################

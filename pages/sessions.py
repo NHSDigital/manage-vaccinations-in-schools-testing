@@ -1,7 +1,12 @@
 from typing import Final
 
 from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import mavis_file_types, test_data_values, Programme
+from libs.mavis_constants import (
+    PrescreeningQuestion,
+    VaccinationSite,
+    mavis_file_types,
+    Programme,
+)
 from libs.playwright_ops import PlaywrightOperations
 from libs.test_data import TestData
 from libs.wrappers import (
@@ -15,20 +20,10 @@ from .children import ChildrenPage
 from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
-from enum import StrEnum
 
 
 class SessionsPage:
     tdo = TestData()
-
-    class VaccinationSite(StrEnum):
-        SCHOOL_1 = test_data_values.SCHOOL_1_NAME
-        SCHOOL_2 = test_data_values.SCHOOL_2_NAME
-        COMMUNITY_CLINICS = "Community clinics"
-
-        @property
-        def upload_label(self) -> str:
-            return "Upload file"
 
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
@@ -49,8 +44,6 @@ class SessionsPage:
     LNK_TAB_ACTIVITY_LOG: Final[str] = "Activity log"
     LNK_TAB_REGISTER: Final[str] = "Register"
     LNK_IMPORT_CLASS_LIST: Final[str] = "Import class lists"
-    LBL_CHOOSE_COHORT_FILE_1: str = "Upload file"
-    LBL_CHOOSE_COHORT_FILE_2: str = "Upload file"
     BTN_CONTINUE: Final[str] = "Continue"
     LNK_ADD_SESSION_DATES: Final[str] = "Add session dates"
     LNK_RECORD_VACCINATIONS: Final[str] = "Record vaccinations"
@@ -219,8 +212,8 @@ class SessionsPage:
         )
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
-    def click_vaccination_site(self, site: VaccinationSite):
-        self.po.act(locator=site, action=actions.CLICK_LINK)
+    def click_vaccination_site(self, vaccination_site: VaccinationSite):
+        self.po.act(locator=vaccination_site, action=actions.CLICK_LINK)
 
     def click_import_class_list(self):
         self.po.act(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
@@ -228,7 +221,9 @@ class SessionsPage:
     def click_continue(self):
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def choose_file_child_records_for_vaccination_site(self, file_path: str, vaccination_site: VaccinationSite):
+    def choose_file_child_records(
+        self, file_path: str, vaccination_site: VaccinationSite
+    ):
         self.po.act(
             locator=vaccination_site.upload_label,
             action=actions.SELECT_FILE,
@@ -329,21 +324,8 @@ class SessionsPage:
     def __set_gillick_competence(
         self, is_add: bool, is_competent: bool, competence_details: str
     ) -> None:
-        questions = [
-            "The child knows which vaccination they will have", 
-            "The child knows which disease the vaccination protects against", 
-            "The child knows what could happen if they got the disease",
-            "The child knows how the injection will be given",
-            "The child knows which side effects they might experience"
-        ]
-        response = "Yes" if is_competent else "No"
+        self.__answer_gillick_competence_questions(is_competent)
 
-        for question in questions:
-            self.po.act(
-                locator=f"get_by_role('group', name='{question}').get_by_label('{response}').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-        
         self.po.act(
             locator=self.TXT_GILLICK_ASSESSMENT_DETAILS,
             action=actions.FILL,
@@ -378,6 +360,22 @@ class SessionsPage:
             expected_value=competence_details,
             exact=False,
         )
+
+    def __answer_gillick_competence_questions(self, is_competent):
+        questions = [
+            "The child knows which vaccination they will have",
+            "The child knows which disease the vaccination protects against",
+            "The child knows what could happen if they got the disease",
+            "The child knows how the injection will be given",
+            "The child knows which side effects they might experience",
+        ]
+        response = "Yes" if is_competent else "No"
+
+        for question in questions:
+            self.po.act(
+                locator=f"get_by_role('group', name='{question}').get_by_label('{response}').check()",
+                action=actions.CHAIN_LOCATOR_ACTION,
+            )
 
     def __schedule_session(self, on_date: str, expect_error: bool = False):
         _day = on_date[-2:]
@@ -496,42 +494,61 @@ class SessionsPage:
     def click_get_consent_response(self):
         self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=actions.CLICK_BUTTON)
 
-    def update_triage_outcome_positive(self, file_paths):
-        self.__import_class_list_and_select_year_groups(file_paths)
-        self.__update_triage_consent(consent_given=True)
+    def update_triage_outcome_positive(
+        self, file_paths, vaccination_site: VaccinationSite = VaccinationSite.SCHOOL_1
+    ):
+        self.__import_class_list_and_select_year_groups(
+            file_paths, vaccination_site=vaccination_site
+        )
+        self.__update_triage_consent(
+            consent_given=True, vaccination_site=vaccination_site
+        )
 
-    def verify_mav_nnn(self):
+    def verify_mav_nnn(
+        self, vaccination_site: VaccinationSite = VaccinationSite.SCHOOL_1
+    ):
         self.click_scheduled()
-        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
-        self.__handle_consent_approval()
+        self.__handle_consent_approval(vaccination_site=vaccination_site)
 
-    def update_triage_outcome_consent_refused(self, file_paths):
-        self.__import_class_list_and_select_year_groups(file_paths)
-        self.__update_triage_consent(consent_given=False)
+    def update_triage_outcome_consent_refused(
+        self, file_paths, vaccination_site: VaccinationSite = VaccinationSite.SCHOOL_1
+    ):
+        self.__import_class_list_and_select_year_groups(
+            file_paths, vaccination_site=vaccination_site
+        )
+        self.__update_triage_consent(
+            consent_given=False, vaccination_site=vaccination_site
+        )
 
-    def __import_class_list_and_select_year_groups(self, file_paths):
+    def __import_class_list_and_select_year_groups(
+        self, file_paths, vaccination_site: VaccinationSite
+    ):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
-        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records_for_vaccination_site(file_path=_input_file_path, vaccination_site=self.VaccinationSite.SCHOOL_1)
+        self.choose_file_child_records(
+            file_path=_input_file_path, vaccination_site=vaccination_site
+        )
         self.click_continue()
         self.dashboard_page.click_mavis()
 
-
-    def __update_triage_consent(self, consent_given: bool):
+    def __update_triage_consent(
+        self, consent_given: bool, vaccination_site: VaccinationSite
+    ):
         self.dashboard_page.click_sessions()
         self.click_scheduled()
-        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
         if consent_given:
-            self.__handle_consent_approval()
+            self.__handle_consent_approval(vaccination_site=vaccination_site)
         else:
             self.__handle_refused_consent()
 
@@ -542,12 +559,12 @@ class SessionsPage:
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)
 
-    def __handle_consent_approval(self):
+    def __handle_consent_approval(self, vaccination_site: VaccinationSite):
         self.consent_page.service_give_consent()
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.click_scheduled()
-        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.click_register_tab()
         self.click_child_full_name()
         self.click_update_triage_outcome()
@@ -555,7 +572,9 @@ class SessionsPage:
         self.click_save_triage()
         self.verify_triage_updated()
 
-    def schedule_a_valid_session_at_vaccination_site(self, vaccination_site: VaccinationSite, for_today: bool = False):
+    def schedule_a_valid_session(
+        self, vaccination_site: VaccinationSite, for_today: bool = False
+    ):
         _future_date = (
             get_offset_date(offset_days=0)
             if for_today
@@ -563,28 +582,28 @@ class SessionsPage:
         )
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
-        self.click_vaccination_site(vaccination_site)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
-    def edit_a_session_to_today_at_vaccination_site(self, vaccination_site: VaccinationSite):
+    def edit_a_session_to_today(self, vaccination_site: VaccinationSite):
         _future_date = get_offset_date(offset_days=0)
         self.click_scheduled()
-        self.click_vaccination_site(site=vaccination_site)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.__edit_session(to_date=_future_date)
 
-    def delete_all_sessions_for_vaccination_site(self, vaccination_site: VaccinationSite):
+    def delete_all_sessions(self, vaccination_site: VaccinationSite):
         self.click_scheduled()
-        self.click_vaccination_site(site=vaccination_site)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.__delete_sessions()
 
-    def create_invalid_session_for_vaccination_site(self, vaccination_site: VaccinationSite):
+    def create_invalid_session(self, vaccination_site: VaccinationSite):
         _invalid_date = "20251332"
         self.click_unscheduled()
-        self.click_vaccination_site(site=vaccination_site)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
-    def upload_class_list_for_vaccination_site(
+    def upload_class_list(
         self,
         file_paths: str,
         vaccination_site: VaccinationSite,
@@ -599,7 +618,9 @@ class SessionsPage:
             )
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records_for_vaccination_site(file_path=_input_file_path, vaccination_site=vaccination_site)
+        self.choose_file_child_records(
+            file_path=_input_file_path, vaccination_site=vaccination_site
+        )
         self.click_continue()
         self._record_upload_time()
 
@@ -611,9 +632,11 @@ class SessionsPage:
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
-    def set_gillick_competence_for_student_at_vaccination_site(self):
+    def set_gillick_competence_for_student(
+        self, vaccination_site: VaccinationSite = VaccinationSite.SCHOOL_1
+    ):
         self.click_today()
-        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
+        self.click_vaccination_site(vaccination_site=vaccination_site)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_assess_gillick_competence()
@@ -794,65 +817,20 @@ class SessionsPage:
             self.po.act(locator=f"Year {year_group}", action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def _answer_hpv_prescreening_questions(self):
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=actions.CHECKBOX_CHECK)
-        # self.po.act(locator=None, action=framework_actions.WAIT, value=wait_time.MIN)
-        # self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=framework_actions.CHECKBOX_CHECK) # Removed in R2.2.1 MAV-976
-
-    def _answer_menacwy_prescreening_questions(self, check_prefilled: bool = False):
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(
-            locator=self.CHK_NOT_TAKING_MEDICATION, action=actions.CHECKBOX_CHECK
-        )
-        if check_prefilled:
-            self.po.verify(
-                locator=self.CHK_ARE_FEELING_WELL,
-                property=properties.CHECKBOX_CHECKED,
-                expected_value=True,
-            )
-        else:
-            self.po.act(
-                locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK
-            )
-
-    def _answer_tdipv_prescreening_questions(self, check_prefilled: bool = False):
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-        self.po.act(locator=self.CHK_NOT_ALREADY_HAD, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_KNOW_VACCINATION, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_HAVE_NO_ALLERGIES, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(
-            locator=self.CHK_NOT_TAKING_MEDICATION, action=actions.CHECKBOX_CHECK
-        )
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(locator=self.CHK_ARE_NOT_PREGNANT, action=actions.CHECKBOX_CHECK)
-        if check_prefilled:
-            self.po.verify(
-                locator=self.CHK_ARE_FEELING_WELL,
-                property=properties.CHECKBOX_CHECKED,
-                expected_value=True,
-            )
-        else:
-            self.po.act(
-                locator=self.CHK_ARE_FEELING_WELL, action=actions.CHECKBOX_CHECK
-            )
+    def _answer_prescreening_questions(self, programme: Programme):
+        for question in programme.prescreening_questions:
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
+            if question == PrescreeningQuestion.FEELING_WELL and programme in [
+                Programme.MENACWY,
+                Programme.TD_IPV,
+            ]:
+                self.po.verify(
+                    locator=self.CHK_ARE_FEELING_WELL,
+                    property=properties.CHECKBOX_CHECKED,
+                    expected_value=True,
+                )
+            else:
+                self.po.act(locator=question, action=actions.CHECKBOX_CHECK)
 
     def _vaccinate_child_mav_854(self):
         self.click_get_consent_response()
@@ -914,16 +892,7 @@ class SessionsPage:
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
         self.search_child(child_name=child_name)
         self.po.act(locator=programme, action=actions.CLICK_LINK)
-
-        # FIXME: Move this logic to `Programme` enum.
-        match programme:
-            case Programme.HPV:
-                self._answer_hpv_prescreening_questions()
-            case Programme.MENACWY:
-                self._answer_menacwy_prescreening_questions(check_prefilled=True)
-            case Programme.TD_IPV:
-                self._answer_tdipv_prescreening_questions(check_prefilled=True)
-
+        self._answer_prescreening_questions(programme=programme)
         self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)

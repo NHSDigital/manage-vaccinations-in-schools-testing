@@ -3,7 +3,12 @@ from typing import Final
 import pandas as pd
 
 from libs.generic_constants import actions, properties, wait_time
-from libs.mavis_constants import report_headers, test_data_file_paths, Programme
+from libs.mavis_constants import (
+    VaccinationSite,
+    report_headers,
+    test_data_file_paths,
+    Programme,
+)
 from libs.playwright_ops import PlaywrightOperations
 from libs.test_data import TestData
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
@@ -219,7 +224,9 @@ class ProgrammesPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
-        self.sessions_page.click_school1()
+        self.sessions_page.click_vaccination_site(
+            vaccination_site=VaccinationSite.SCHOOL_1
+        )
         assert self.sessions_page.get_session_id_from_offline_excel()
 
     def verify_careplus_report_format(self, programme: Programme):
@@ -287,22 +294,24 @@ class ProgrammesPage:
         """
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
-        self.sessions_page.click_school1()
+        self.sessions_page.click_vaccination_site(
+            vaccination_site=VaccinationSite.SCHOOL_1
+        )
         self.sessions_page.click_consent_tab()
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.HPV)
         self.sessions_page.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(change_phone=False)
+        self.consent.parent_1_verbal_positive(change_phone=False)
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.MENACWY)
         self.sessions_page.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(
+        self.consent.parent_1_verbal_positive(
             change_phone=False, programme=Programme.MENACWY
         )
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.TD_IPV)
         self.sessions_page.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(
+        self.consent.parent_1_verbal_positive(
             change_phone=False, programme=Programme.TD_IPV
         )
         self.sessions_page.register_child_as_attending(

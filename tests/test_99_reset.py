@@ -1,6 +1,11 @@
 import pytest
 
-from libs.mavis_constants import test_data_file_paths, test_data_values, Vaccine
+from libs.mavis_constants import (
+    test_data_file_paths,
+    test_data_values,
+    Vaccine,
+    VaccinationSite,
+)
 from libs.wrappers import wait_for_reset
 
 
@@ -24,7 +29,9 @@ def setup_mav_965(
     vaccines_page.add_batch(vaccine=Vaccine.REVAXIS)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+    sessions_page.schedule_a_valid_session(
+        vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+    )
     import_records_page.import_class_list_records_from_school_session(
         file_paths=test_data_file_paths.CLASS_MAV_965
     )

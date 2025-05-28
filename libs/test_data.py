@@ -4,7 +4,7 @@ from typing import Optional
 import nhs_number
 import pandas as pd
 
-from .mavis_constants import mavis_file_types, test_data_values
+from .mavis_constants import VaccinationSite, mavis_file_types, test_data_values
 from .wrappers import (
     get_current_datetime,
     get_current_time,
@@ -50,9 +50,9 @@ class TestData:
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
 
         replacements = {
-            "<<SCHOOL_1_NAME>>": test_data_values.SCHOOL_1_NAME,
-            "<<SCHOOL_2_NAME>>": test_data_values.SCHOOL_2_NAME,
-            "<<SCHOOL_1_URN>>": test_data_values.SCHOOL_1_URN,
+            "<<SCHOOL_1_NAME>>": VaccinationSite.SCHOOL_1,
+            "<<SCHOOL_2_NAME>>": VaccinationSite.SCHOOL_2,
+            "<<SCHOOL_1_URN>>": VaccinationSite.SCHOOL_1.urn,
             "<<ORG_CODE>>": test_data_values.ORG_CODE,
             "<<VACCS_DATE>>": _dt[:8],
             "<<VACCS_TIME>>": get_current_time(),

@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs.generic_constants import actions, properties, wait_time
-from libs.mavis_constants import test_data_values
+from libs.mavis_constants import VaccinationSite
 from libs.playwright_ops import PlaywrightOperations
 
 from .dashboard import DashboardPage
@@ -91,7 +91,7 @@ class ChildrenPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"Invited to the session at {test_data_values.SCHOOL_1_NAME}",
+            expected_value=f"Invited to the session at {VaccinationSite.SCHOOL_1}",
         )
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed

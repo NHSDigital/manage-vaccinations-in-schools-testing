@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import test_data_file_paths, test_data_values
+from libs.mavis_constants import VaccinationSite, test_data_file_paths, test_data_values
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
@@ -15,7 +15,9 @@ def get_session_link(nurse, dashboard_page, log_in_page, sessions_page):
         log_in_page.navigate()
         log_in_page.log_in_and_select_role(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1()
+        sessions_page.schedule_a_valid_session(
+            vaccination_site=VaccinationSite.SCHOOL_1
+        )
         link = sessions_page.get_hpv_consent_url()
         log_in_page.log_out()
         yield link
@@ -23,7 +25,7 @@ def get_session_link(nurse, dashboard_page, log_in_page, sessions_page):
         log_in_page.navigate()
         log_in_page.log_in_and_select_role(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
         log_in_page.log_out()
 
 
@@ -31,12 +33,15 @@ def get_session_link(nurse, dashboard_page, log_in_page, sessions_page):
 def setup_gillick(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        sessions_page.schedule_a_valid_session(
+            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_school1()
-        sessions_page.upload_class_list_to_school_1(
-            file_paths=test_data_file_paths.COHORTS_FULL_NAME
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.upload_class_list(
+            file_paths=test_data_file_paths.COHORTS_FULL_NAME,
+            vaccination_site=VaccinationSite.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -44,99 +49,111 @@ def setup_gillick(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.fixture
 def setup_invalidated_consent(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1()
+        sessions_page.schedule_a_valid_session(
+            vaccination_site=VaccinationSite.SCHOOL_1
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_school1()
-        sessions_page.upload_class_list_to_school_1(
-            file_paths=test_data_file_paths.COHORTS_NO_CONSENT
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.upload_class_list(
+            file_paths=test_data_file_paths.COHORTS_NO_CONSENT,
+            vaccination_site=VaccinationSite.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_school1()
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.fixture
 def setup_mavis_1696(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        sessions_page.schedule_a_valid_session(
+            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_school1()
-        sessions_page.upload_class_list_to_school_1(
-            file_paths=test_data_file_paths.COHORTS_CONFLICTING_CONSENT
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.upload_class_list(
+            file_paths=test_data_file_paths.COHORTS_CONFLICTING_CONSENT,
+            vaccination_site=VaccinationSite.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_school1()
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.fixture
 def setup_mavis_1864(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        sessions_page.schedule_a_valid_session(
+            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_school1()
-        sessions_page.upload_class_list_to_school_1(
-            file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.upload_class_list(
+            file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE,
+            vaccination_site=VaccinationSite.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_school1()
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.fixture
 def setup_mavis_1818(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
+        sessions_page.schedule_a_valid_session(
+            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_school1()
-        sessions_page.upload_class_list_to_school_1(
-            file_paths=test_data_file_paths.COHORTS_CONFLICTING_GILLICK
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.upload_class_list(
+            file_paths=test_data_file_paths.COHORTS_CONFLICTING_GILLICK,
+            vaccination_site=VaccinationSite.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_school1()
+        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions_for_school_1()
+        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
 
 
 @pytest.mark.consent
