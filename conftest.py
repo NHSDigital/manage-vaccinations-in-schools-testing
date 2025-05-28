@@ -12,6 +12,7 @@ from requests.auth import HTTPBasicAuth
 from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
 from libs.mavis_constants import test_data_values
+from libs.test_data import TestData
 from libs.wrappers import get_current_datetime
 
 
@@ -122,6 +123,11 @@ def reset_environment_before_run(reset_environment):
 @pytest.fixture
 def page(reset_environment_before_run, page):
     return page
+
+
+@pytest.fixture(scope="session")
+def test_data():
+    return TestData()
 
 
 @pytest.fixture

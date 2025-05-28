@@ -21,8 +21,6 @@ from .sessions import SessionsPage
 
 
 class ProgrammesPage:
-    tdo = TestData()
-
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
     LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
@@ -60,15 +58,22 @@ class ProgrammesPage:
     LBL_RECORD_UPDATED: Final[str] = "Record updated"
 
     def __init__(
-        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+        self,
+        test_data: TestData,
+        playwright_operations: PlaywrightOperations,
+        dashboard_page: DashboardPage,
     ):
+        self.test_data = test_data
+
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
-        self.sessions_page = SessionsPage(playwright_operations, dashboard_page)
+        self.sessions_page = SessionsPage(
+            test_data, playwright_operations, dashboard_page
+        )
         self.children_page = ChildrenPage(playwright_operations, dashboard_page)
         self.consent_page = ConsentPage(playwright_operations)
         self.import_records_page = ImportRecordsPage(
-            playwright_operations, dashboard_page
+            test_data, playwright_operations, dashboard_page
         )
 
     def click_programme(self, programme: Programme):
@@ -145,7 +150,7 @@ class ProgrammesPage:
         self.po.act(locator=self.LNK_DOSE2_CHILD, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
-        _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
+        _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 self.po.verify(
@@ -156,7 +161,7 @@ class ProgrammesPage:
                 )
 
     def upload_hpv_child_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
         self.choose_file_child_records(file_path=_input_file_path)
@@ -170,7 +175,7 @@ class ProgrammesPage:
         self.verify_upload_output(file_path=_output_file_path)
 
     def upload_cohorts(self, file_paths: str, wait_long: bool = False):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
         self.click_programme(Programme.HPV)

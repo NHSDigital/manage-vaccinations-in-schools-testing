@@ -12,8 +12,6 @@ from .vaccines import VaccinesPage
 
 
 class ImportRecordsPage:
-    tdo = TestData()
-
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 
     LNK_IMPORT_RECORDS: Final[str] = "Import records"
@@ -30,8 +28,12 @@ class ImportRecordsPage:
     LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
 
     def __init__(
-        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+        self,
+        test_data: TestData,
+        playwright_operations: PlaywrightOperations,
+        dashboard_page: DashboardPage,
     ):
+        self.test_data = test_data
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
         self.children_page = ChildrenPage(playwright_operations, dashboard_page)
@@ -49,13 +51,13 @@ class ImportRecordsPage:
     def import_child_records(
         self, file_paths: str, verify_on_children_page: bool = False
     ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
 
         _cl = []
         if verify_on_children_page:
-            _cl = self.tdo.create_child_list_from_file(
+            _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
 
@@ -87,12 +89,12 @@ class ImportRecordsPage:
         if year_groups is None:
             year_groups = [8, 9, 10, 11]
 
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
         _cl = []
         if verify_on_children_page:
-            _cl = self.tdo.create_child_list_from_file(
+            _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
@@ -124,7 +126,7 @@ class ImportRecordsPage:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def import_class_list_records_from_school_session(self, file_paths: str):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
         self.po.act(
@@ -152,11 +154,11 @@ class ImportRecordsPage:
         verify_on_children_page: bool = False,
         session_id: Optional[str] = None,
     ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths, session_id=session_id
         )
         if verify_on_children_page:
-            _cl = self.tdo.create_child_list_from_file(
+            _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=file_type
             )
         self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
@@ -188,7 +190,7 @@ class ImportRecordsPage:
         self.po.act(locator=_link_time, action=actions.CLICK_LINK)
 
     def _verify_upload_output(self, file_path: str):
-        _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
+        _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             # Verify messages individually
             for _msg in _expected_errors:
