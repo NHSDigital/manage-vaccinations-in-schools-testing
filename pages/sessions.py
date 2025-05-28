@@ -15,14 +15,20 @@ from .children import ChildrenPage
 from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
+from enum import StrEnum
 
 
 class SessionsPage:
     tdo = TestData()
 
-    LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
-    LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME
-    LNK_COMMUNITY_CLINICS: Final[str] = "Community clinics"
+    class VaccinationSite(StrEnum):
+        SCHOOL_1 = test_data_values.SCHOOL_1_NAME
+        SCHOOL_2 = test_data_values.SCHOOL_2_NAME
+        COMMUNITY_CLINICS = "Community clinics"
+
+        @property
+        def upload_label(self) -> str:
+            return "Upload file"
 
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
@@ -213,14 +219,8 @@ class SessionsPage:
         )
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
-    def click_school1(self):
-        self.po.act(locator=self.LNK_SCHOOL_1, action=actions.CLICK_LINK)
-
-    def click_school2(self):
-        self.po.act(locator=self.LNK_SCHOOL_2, action=actions.CLICK_LINK)
-
-    def click_community_clinics(self):
-        self.po.act(locator=self.LNK_COMMUNITY_CLINICS, action=actions.CLICK_LINK)
+    def click_vaccination_site(self, site: VaccinationSite):
+        self.po.act(locator=site, action=actions.CLICK_LINK)
 
     def click_import_class_list(self):
         self.po.act(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
@@ -228,16 +228,9 @@ class SessionsPage:
     def click_continue(self):
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def choose_file_child_records_for_school_1(self, file_path: str):
+    def choose_file_child_records_for_vaccination_site(self, file_path: str, vaccination_site: VaccinationSite):
         self.po.act(
-            locator=self.LBL_CHOOSE_COHORT_FILE_1,
-            action=actions.SELECT_FILE,
-            value=file_path,
-        )
-
-    def choose_file_child_records_for_school_2(self, file_path: str):
-        self.po.act(
-            locator=self.LBL_CHOOSE_COHORT_FILE_2,
+            locator=vaccination_site.upload_label,
             action=actions.SELECT_FILE,
             value=file_path,
         )
@@ -336,48 +329,21 @@ class SessionsPage:
     def __set_gillick_competence(
         self, is_add: bool, is_competent: bool, competence_details: str
     ) -> None:
-        if is_competent:
+        questions = [
+            "The child knows which vaccination they will have", 
+            "The child knows which disease the vaccination protects against", 
+            "The child knows what could happen if they got the disease",
+            "The child knows how the injection will be given",
+            "The child knows which side effects they might experience"
+        ]
+        response = "Yes" if is_competent else "No"
+
+        for question in questions:
             self.po.act(
-                locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('Yes').check()",
+                locator=f"get_by_role('group', name='{question}').get_by_label('{response}').check()",
                 action=actions.CHAIN_LOCATOR_ACTION,
             )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows which disease').get_by_label('Yes').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows what could').get_by_label('Yes').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows how the').get_by_label('Yes').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows which side').get_by_label('Yes').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-        else:
-            self.po.act(
-                locator="get_by_role('group', name='The child knows which vaccination they will have').get_by_label('No').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows which disease').get_by_label('No').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows what could').get_by_label('No').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows how the').get_by_label('No').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
-            self.po.act(
-                locator="get_by_role('group', name='The child knows which side').get_by_label('No').check()",
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
+        
         self.po.act(
             locator=self.TXT_GILLICK_ASSESSMENT_DETAILS,
             action=actions.FILL,
@@ -464,15 +430,6 @@ class SessionsPage:
             chain_locator=True,
         )
 
-    def __close_session(self):
-        self.po.act(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_CLOSE_SESSION, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Session closed.",
-        )
-
     def verify_triage_updated(self):
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
@@ -540,75 +497,65 @@ class SessionsPage:
         self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=actions.CLICK_BUTTON)
 
     def update_triage_outcome_positive(self, file_paths):
-        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
-        self.click_scheduled()
-        self.click_school1()
-        self.click_import_class_list()
-        self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
-        self.click_continue()
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_school1()
-        self.click_consent_tab()
-        self.click_child_full_name()
-        self.click_get_consent_response()
-        self.consent_page.service_give_consent()
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_school1()
-        self.click_register_tab()
-        self.click_child_full_name()
-        self.click_update_triage_outcome()
-        self.select_yes_safe_to_vaccinate()
-        self.click_save_triage()
-        self.verify_triage_updated()
-        self.click_child_full_name()
-        self.click_activity_log()
-        self.verify_activity_log_entry(consent_given=True)
+        self.__import_class_list_and_select_year_groups(file_paths)
+        self.__update_triage_consent(consent_given=True)
 
     def verify_mav_nnn(self):
         self.click_scheduled()
-        self.click_school1()
+        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
-        self.consent_page.service_give_consent()
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_school1()
-        self.click_register_tab()
-        self.click_child_full_name()
-        self.click_update_triage_outcome()
-        self.select_yes_safe_to_vaccinate()
-        self.click_save_triage()
-        self.verify_triage_updated()
+        self.__handle_consent_approval()
 
     def update_triage_outcome_consent_refused(self, file_paths):
+        self.__import_class_list_and_select_year_groups(file_paths)
+        self.__update_triage_consent(consent_given=False)
+
+    def __import_class_list_and_select_year_groups(self, file_paths):
         _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
-        self.click_school1()
+        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
+        self.choose_file_child_records_for_vaccination_site(file_path=_input_file_path, vaccination_site=self.VaccinationSite.SCHOOL_1)
         self.click_continue()
         self.dashboard_page.click_mavis()
+
+
+    def __update_triage_consent(self, consent_given: bool):
         self.dashboard_page.click_sessions()
         self.click_scheduled()
-        self.click_school1()
+        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_get_consent_response()
+        if consent_given:
+            self.__handle_consent_approval()
+        else:
+            self.__handle_refused_consent()
+
+    def __handle_refused_consent(self):
         self.consent_page.service_refuse_consent()
         self.select_consent_refused()
         self.click_child_full_name()
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)
 
-    def schedule_a_valid_session_in_school_1(self, for_today: bool = False):
+    def __handle_consent_approval(self):
+        self.consent_page.service_give_consent()
+        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_sessions()
+        self.click_scheduled()
+        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
+        self.click_register_tab()
+        self.click_child_full_name()
+        self.click_update_triage_outcome()
+        self.select_yes_safe_to_vaccinate()
+        self.click_save_triage()
+        self.verify_triage_updated()
+
+    def schedule_a_valid_session_at_vaccination_site(self, vaccination_site: VaccinationSite, for_today: bool = False):
         _future_date = (
             get_offset_date(offset_days=0)
             if for_today
@@ -616,81 +563,31 @@ class SessionsPage:
         )
         _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
-        self.click_school1()
+        self.click_vaccination_site(vaccination_site)
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
-    def schedule_a_valid_session_in_school_2(self, for_today: bool = False):
-        _future_date = (
-            get_offset_date(offset_days=0)
-            if for_today
-            else get_offset_date(offset_days=10)
-        )
-        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
-        self.click_unscheduled()
-        self.click_school2()
-        self.__schedule_session(on_date=_future_date)
-        self.verify_scheduled_date(message=_expected_message)
-
-    def schedule_a_valid_session_in_community_clinics(self, for_today: bool = False):
-        _future_date = (
-            get_offset_date(offset_days=0)
-            if for_today
-            else get_offset_date(offset_days=10)
-        )
-        _expected_message = f"Session dates	{self.__get_display_formatted_date(date_to_format=_future_date)}"
-        self.click_unscheduled()
-        self.click_community_clinics()
-        self.__schedule_session(on_date=_future_date)
-        self.verify_scheduled_date(message=_expected_message)
-
-    def close_active_session_in_school_2(self):
-        _past_date = get_offset_date(offset_days=-1)
-        self.click_scheduled()
-        self.click_school2()
-        self.__edit_session(to_date=_past_date)
-        self.__close_session()
-
-    def close_active_session_in_school_1(self):
-        self.click_scheduled()
-        self.click_school1()
-        self.__close_session()
-
-    def close_active_session_in_community_clinics(self):
-        self.click_scheduled()
-        self.click_community_clinics()
-        self.__close_session()
-
-    def edit_a_session_to_today(self):
+    def edit_a_session_to_today_at_vaccination_site(self, vaccination_site: VaccinationSite):
         _future_date = get_offset_date(offset_days=0)
         self.click_scheduled()
-        self.click_school1()
+        self.click_vaccination_site(site=vaccination_site)
         self.__edit_session(to_date=_future_date)
 
-    def delete_all_sessions_for_school_1(self):
+    def delete_all_sessions_for_vaccination_site(self, vaccination_site: VaccinationSite):
         self.click_scheduled()
-        self.click_school1()
+        self.click_vaccination_site(site=vaccination_site)
         self.__delete_sessions()
 
-    def delete_all_sessions_for_school_2(self):
-        self.click_scheduled()
-        self.click_school2()
-        self.__delete_sessions()
-
-    def delete_all_sessions_for_community_clinics(self):
-        self.click_scheduled()
-        self.click_community_clinics()
-        self.__delete_sessions()
-
-    def create_invalid_session(self):
+    def create_invalid_session_for_vaccination_site(self, vaccination_site: VaccinationSite):
         _invalid_date = "20251332"
         self.click_unscheduled()
-        self.click_school1()
+        self.click_vaccination_site(site=vaccination_site)
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
-    def upload_class_list_to_school_1(
+    def upload_class_list_for_vaccination_site(
         self,
         file_paths: str,
+        vaccination_site: VaccinationSite,
         verify_on_children: bool = False,
     ):
         _input_file_path, _output_file_path = self.tdo.get_file_paths(
@@ -702,7 +599,7 @@ class SessionsPage:
             )
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records_for_school_1(file_path=_input_file_path)
+        self.choose_file_child_records_for_vaccination_site(file_path=_input_file_path, vaccination_site=vaccination_site)
         self.click_continue()
         self._record_upload_time()
 
@@ -714,33 +611,9 @@ class SessionsPage:
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
-    def upload_class_list_to_school_2(
-        self, file_paths: str, verify_on_children: bool = False
-    ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
-            file_paths=file_paths
-        )
-        if verify_on_children:
-            _cl = self.tdo.create_child_list_from_file(
-                file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
-            )
-        self.click_import_class_list()
-        self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records_for_school_2(file_path=_input_file_path)
-        self.click_continue()
-        self._record_upload_time()
-
-        if self.import_records_page.is_processing_in_background():
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-            self.click_uploaded_file_datetime()
-
-        self.verify_upload_output(file_path=_output_file_path)
-        if verify_on_children:
-            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
-
-    def set_gillick_competence_for_student(self):
+    def set_gillick_competence_for_student_at_vaccination_site(self):
         self.click_today()
-        self.click_school1()
+        self.click_vaccination_site(self.VaccinationSite.SCHOOL_1)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_assess_gillick_competence()

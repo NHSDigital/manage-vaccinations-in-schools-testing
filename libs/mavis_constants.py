@@ -66,7 +66,6 @@ class HealthQuestion(StrEnum):
     )
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
-
 class test_data_values:
     SCHOOL_1_NAME: Final[str] = "Bohunt School Wokingham"
     SCHOOL_2_NAME: Final[str] = "Ashlawn School"
