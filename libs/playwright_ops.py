@@ -7,7 +7,7 @@ from typing import Optional
 import allure
 from playwright.sync_api import Page
 
-from libs.generic_constants import (
+from .generic_constants import (
     actions,
     aria_roles,
     escape_characters,
@@ -16,7 +16,7 @@ from libs.generic_constants import (
     screenshot_actions,
     wait_time,
 )
-from libs.wrappers import convert_time_units_to_seconds, clean_text, clean_file_name
+from .wrappers import convert_time_units_to_seconds, clean_text, clean_file_name
 
 
 class PlaywrightOperations:

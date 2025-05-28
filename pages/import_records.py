@@ -1,9 +1,9 @@
 from typing import Final, Optional
 
-from libs import testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.playwright_ops import PlaywrightOperations
 from libs.mavis_constants import mavis_file_types, test_data_values
+from libs.test_data import TestData
 from libs.wrappers import get_link_formatted_date_time
 
 from .children import ChildrenPage
@@ -12,7 +12,7 @@ from .vaccines import VaccinesPage
 
 
 class ImportRecordsPage:
-    tdo = testdata_ops.testdata_operations()
+    tdo = TestData()
 
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
 
