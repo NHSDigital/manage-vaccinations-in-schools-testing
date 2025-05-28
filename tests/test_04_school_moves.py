@@ -3,16 +3,12 @@ import pytest
 from libs.mavis_constants import test_data_file_paths
 
 
-@pytest.fixture(scope="function", autouse=False)
-def setup_tests(reset_environment, nurse, login_page):
+@pytest.fixture
+def setup_tests(log_in_as_nurse, reset_environment):
     reset_environment()
 
-    login_page.log_in(**nurse)
-    yield
-    login_page.log_out()
 
-
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
@@ -44,7 +40,7 @@ def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions_for_school_2()
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_move_to_homeschool_and_unknown(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()

@@ -6,9 +6,10 @@ from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 helper = ParentalConsentHelper()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def get_session_link(nurse, dashboard_page, login_page, sessions_page):
     try:
+        login_page.go_to_login_page()
         login_page.log_in(**nurse)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()

@@ -29,7 +29,8 @@ def test_verify_packages():
 
 @pytest.mark.smoke
 @pytest.mark.order(3)
-def test_homepage_loads(playwright_operations):
+def test_homepage_loads(login_page, playwright_operations):
+    login_page.go_to_login_page()
     playwright_operations.verify(
         locator="heading",
         property=properties.TEXT,

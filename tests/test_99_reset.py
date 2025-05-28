@@ -4,16 +4,17 @@ from libs.mavis_constants import test_data_file_paths, Vaccine
 from libs.wrappers import wait_for_reset
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_tests(reset_environment, nurse, login_page):
     reset_environment()
     wait_for_reset()
+    login_page.go_to_login_page()
     login_page.log_in(**nurse)
     yield
     login_page.log_out()
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_mav_965(
     setup_tests, dashboard_page, import_records_page, sessions_page, vaccines_page
 ):
@@ -32,10 +33,9 @@ def setup_mav_965(
     yield
 
 
-@pytest.fixture(scope="function", autouse=False)
+@pytest.fixture
 def setup_cohort_upload_and_reports(setup_tests, dashboard_page):
     dashboard_page.click_programmes()
-    yield
 
 
 @pytest.mark.rav
