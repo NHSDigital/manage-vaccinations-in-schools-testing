@@ -1,25 +1,30 @@
 import pytest
 
+from libs.mavis_constants import test_data_values
+
 from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 
 
 helper = ParentalConsentHelper()
+organisation = test_data_values.ORG_CODE
 
 
 @pytest.fixture
-def get_session_link(nurse, dashboard_page, login_page, sessions_page):
+def get_session_link(nurse, dashboard_page, log_in_page, sessions_page):
     try:
-        login_page.navigate_and_log_in(**nurse)
+        log_in_page.navigate()
+        log_in_page.log_in_and_select_role(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
         link = sessions_page.get_doubles_consent_url()
-        login_page.log_out()
+        log_in_page.log_out()
         yield link
     finally:
-        login_page.navigate_and_log_in(**nurse)
+        log_in_page.navigate()
+        log_in_page.log_in_and_select_role(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
-        login_page.log_out()
+        log_in_page.log_out()
 
 
 @pytest.mark.consent

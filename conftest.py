@@ -11,6 +11,7 @@ from requests.auth import HTTPBasicAuth
 
 from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
+from libs.mavis_constants import test_data_values
 from libs.wrappers import get_current_datetime
 
 
@@ -129,17 +130,19 @@ def playwright_operations(page, screenshots_path):
 
 
 @pytest.fixture
-def log_in_as_nurse(nurse, login_page):
-    login_page.navigate_and_log_in(**nurse)
+def log_in_as_nurse(nurse, log_in_page):
+    log_in_page.navigate()
+    log_in_page.log_in_and_select_role(**nurse, organisation=test_data_values.ORG_CODE)
     yield
-    login_page.log_out()
+    log_in_page.log_out()
 
 
 @pytest.fixture
-def log_in_as_admin(admin, login_page):
-    login_page.navigate_and_log_in(**admin)
+def log_in_as_admin(admin, log_in_page):
+    log_in_page.navigate()
+    log_in_page.log_in_and_select_role(**admin, organisation=test_data_values.ORG_CODE)
     yield
-    login_page.log_out()
+    log_in_page.log_out()
 
 
 @pytest.hookimpl(tryfirst=True)

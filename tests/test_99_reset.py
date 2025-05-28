@@ -5,13 +5,13 @@ from libs.wrappers import wait_for_reset
 
 
 @pytest.fixture
-def setup_tests(reset_environment, nurse, login_page, start_page):
+def setup_tests(reset_environment, nurse, log_in_page, start_page):
     reset_environment()
     wait_for_reset()
     start_page.navigate_and_start()
-    login_page.log_in(**nurse)
+    log_in_page.log_in(**nurse)
     yield
-    login_page.log_out()
+    log_in_page.log_out()
 
 
 @pytest.fixture
