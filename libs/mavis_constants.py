@@ -62,7 +62,7 @@ class HealthQuestion(StrEnum):
     REACTION = "Has your child ever had a severe reaction to any medicines, including vaccines?"
     EXTRA_SUPPORT = "Does your child need extra support during vaccination sessions?"
     PAST_MENACWY_VACCINE = (
-        "Has your child had a meningitis (MenACWY) vaccination in the past 5 years?"
+        "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
     )
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
