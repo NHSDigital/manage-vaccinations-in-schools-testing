@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from libs.step import step
+from ..step import step
 
 
 class DashboardPage:
