@@ -181,4 +181,4 @@ def pytest_runtest_logreport(report):
             log_file.write(f"{timestamp} | {test_name} | {test_result}\n")
 
 
-pytest_plugins = ["pages"]
+pytest_plugins = ["mavis.test"]

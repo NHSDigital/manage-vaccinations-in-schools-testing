@@ -1,6 +1,6 @@
 from libs.mavis_constants import test_data_file_paths
 from libs.test_data import TestData
-from pages import ConsentPage
+from mavis.test.models import ConsentPage
 
 
 class ParentalConsentHelper:
