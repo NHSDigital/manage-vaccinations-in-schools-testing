@@ -1,4 +1,4 @@
-from playwright.sync_api import expect, Page
+from playwright.sync_api import Page
 
 from libs.step import step
 
@@ -33,10 +33,6 @@ class LogInPage:
     def log_out(self):
         self.log_out_button.click()
 
-    def expect_success(self):
-        expect(self.log_out_button).to_be_visible()
-
     def log_in_and_select_role(self, username: str, password: str, organisation: str):
         self.log_in(username, password)
-        self.expect_success()
         self.select_role(organisation)

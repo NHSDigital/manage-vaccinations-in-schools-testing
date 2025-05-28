@@ -17,7 +17,7 @@ def go_to_unmatched_consent_responses(log_in_as_nurse, dashboard_page):
 def setup_ucr_match(log_in_as_nurse, dashboard_page, programmes_page):
     dashboard_page.click_programmes()
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_UCR_MATCH)
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
 
 

@@ -12,19 +12,19 @@ def setup_tests(log_in_as_nurse, dashboard_page):
 def setup_mavis_1822(setup_tests, dashboard_page, sessions_page):
     try:
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.CLASS_POSITIVE
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_today()
         sessions_page.click_school1()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -33,19 +33,19 @@ def setup_mavis_1822(setup_tests, dashboard_page, sessions_page):
 def setup_mav_1018(setup_tests, dashboard_page, sessions_page):
     try:
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_today()
         sessions_page.click_school1()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -54,10 +54,10 @@ def setup_mav_1018(setup_tests, dashboard_page, sessions_page):
 @pytest.mark.order(201)
 def test_lifecycle(setup_tests, dashboard_page, sessions_page):
     sessions_page.schedule_a_valid_session_in_school_1()
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.edit_a_session_to_today()
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.delete_all_sessions_for_school_1()
 

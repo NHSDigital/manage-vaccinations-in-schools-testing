@@ -14,8 +14,8 @@ from .vaccines import VaccinesPage
 
 
 @pytest.fixture
-def children_page(playwright_operations):
-    return ChildrenPage(playwright_operations)
+def children_page(playwright_operations, dashboard_page):
+    return ChildrenPage(playwright_operations, dashboard_page)
 
 
 @pytest.fixture
@@ -24,13 +24,13 @@ def consent_page(playwright_operations):
 
 
 @pytest.fixture
-def dashboard_page(playwright_operations):
-    return DashboardPage(playwright_operations)
+def dashboard_page(page):
+    return DashboardPage(page)
 
 
 @pytest.fixture
-def import_records_page(playwright_operations):
-    return ImportRecordsPage(playwright_operations)
+def import_records_page(playwright_operations, dashboard_page):
+    return ImportRecordsPage(playwright_operations, dashboard_page)
 
 
 @pytest.fixture
@@ -39,18 +39,18 @@ def log_in_page(page):
 
 
 @pytest.fixture
-def programmes_page(playwright_operations):
-    return ProgrammesPage(playwright_operations)
+def programmes_page(playwright_operations, dashboard_page):
+    return ProgrammesPage(playwright_operations, dashboard_page)
 
 
 @pytest.fixture
-def school_moves_page(playwright_operations):
-    return SchoolMovesPage(playwright_operations)
+def school_moves_page(playwright_operations, dashboard_page):
+    return SchoolMovesPage(playwright_operations, dashboard_page)
 
 
 @pytest.fixture
-def sessions_page(playwright_operations):
-    return SessionsPage(playwright_operations)
+def sessions_page(playwright_operations, dashboard_page):
+    return SessionsPage(playwright_operations, dashboard_page)
 
 
 @pytest.fixture
@@ -59,8 +59,8 @@ def start_page(page):
 
 
 @pytest.fixture
-def unmatched_page(playwright_operations):
-    return UnmatchedPage(playwright_operations)
+def unmatched_page(playwright_operations, dashboard_page):
+    return UnmatchedPage(playwright_operations, dashboard_page)
 
 
 @pytest.fixture

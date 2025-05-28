@@ -23,9 +23,11 @@ class SchoolMovesPage:
     BTN_CONTINUE: Final[str] = "Continue"
     BTN_DOWNLOAD_CSV: Final[str] = "Download CSV"
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
+    def __init__(
+        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    ):
         self.po = playwright_operations
-        self.dashboard_page = DashboardPage(playwright_operations)
+        self.dashboard_page = dashboard_page
 
     def verify_headers(self):
         self.po.verify(
@@ -78,7 +80,7 @@ class SchoolMovesPage:
         )
 
     def confirm_and_ignore_moves(self):
-        self.dashboard_page.go_to_dashboard()
+        self.dashboard_page.click_mavis()
         self.dashboard_page.click_school_moves()
         self.po.verify(
             locator=self.LBL_MAIN,

@@ -18,11 +18,11 @@ def setup_record_a_vaccine(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -39,18 +39,18 @@ def setup_mavis_1729(
         )
         sessions_page.click_school1()
         session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.import_vaccination_records(
             file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO,
             file_type=mavis_file_types.VACCS_MAVIS,
             session_id=session_id,
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_programmes()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -66,21 +66,21 @@ def setup_mav_854(
     try:
         dashboard_page.click_vaccines()
         vaccines_page.add_batch(vaccine=Vaccine.GARDASIL_9)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_MAV_854
         )
         sessions_page.click_school1()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_community_clinics(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -96,7 +96,7 @@ def setup_mav_nnn(log_in_as_admin, dashboard_page, import_records_page, sessions
         sessions_page.click_school1()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -195,7 +195,7 @@ def test_verify_careplus_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
     programmes_page.verify_careplus_report_format(Programme.MENACWY)
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.verify_careplus_report_format(Programme.TD_IPV)
 
@@ -212,7 +212,7 @@ def test_verify_csv_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
     programmes_page.verify_csv_report_format(Programme.MENACWY)
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.verify_csv_report_format(Programme.TD_IPV)
 

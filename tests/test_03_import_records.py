@@ -16,11 +16,11 @@ def setup_class_list(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -35,11 +35,11 @@ def setup_vaccs(log_in_as_nurse, dashboard_page, sessions_page, import_records_p
         )
         sessions_page.click_school1()
         session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield session_id
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -49,11 +49,11 @@ def setup_vaccs_systmone(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -201,7 +201,7 @@ def test_vaccs_duplicate_record_upload(
         file_paths=test_data_file_paths.VACCS_DUP_1,
         file_type=mavis_file_types.VACCS_MAVIS,
     )
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_import_records()
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_DUP_2,
@@ -264,7 +264,7 @@ def test_vaccs_historic_no_urn_mav_855(
         file_paths=test_data_file_paths.VACCS_HPV_MAV_855,
         file_type=mavis_file_types.VACCS_MAVIS,
     )
-    dashboard_page.go_to_dashboard()
+    dashboard_page.click_mavis()
     dashboard_page.click_children()
     import_records_page.verify_mav_855()
 

@@ -8,17 +8,17 @@ def setup_children_page(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.CLASS_CHILDREN_FILTER
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -28,17 +28,17 @@ def setup_change_nhsno(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1(for_today=True)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_school1()
         sessions_page.upload_class_list_to_school_1(
             file_paths=test_data_file_paths.CLASS_CHANGE_NHSNO
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
@@ -55,21 +55,21 @@ def setup_mav_853(
         )
         sessions_page.click_school1()
         session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_programmes()
         programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_853)
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.import_vaccination_records(
             file_paths=test_data_file_paths.VACCS_MAV_853,
             file_type=mavis_file_types.VACCS_MAVIS,
             session_id=session_id,
         )
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield
     finally:
-        dashboard_page.go_to_dashboard()
+        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
 
