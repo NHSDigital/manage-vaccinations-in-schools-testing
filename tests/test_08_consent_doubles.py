@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import Location
+from mavis.test.mavis_constants import Location
 
 from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 

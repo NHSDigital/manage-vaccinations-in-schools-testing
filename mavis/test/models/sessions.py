@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import (
+from ..mavis_constants import (
     PrescreeningQuestion,
     Location,
     mavis_file_types,

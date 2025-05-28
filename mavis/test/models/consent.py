@@ -1,7 +1,7 @@
 from typing import Final, Optional
 
 from libs.generic_constants import actions, properties
-from libs.mavis_constants import Programme
+from ..mavis_constants import Programme
 from ..playwright_ops import PlaywrightOperations
 
 

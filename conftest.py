@@ -11,8 +11,9 @@ from requests.auth import HTTPBasicAuth
 
 from mavis.test.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
-from libs.test_data import TestData
+
 from mavis.test.organisation import Organisation
+from mavis.test.test_data import TestData
 from mavis.test.wrappers import get_current_datetime
 
 

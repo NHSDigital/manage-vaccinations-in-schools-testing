@@ -1,9 +1,9 @@
 import pytest
 
-from libs.mavis_constants import (
-    Location,
+from mavis.test.mavis_constants import (
     mavis_file_types,
     test_data_file_paths,
+    Location,
     Programme,
     Vaccine,
 )

@@ -3,7 +3,7 @@ from typing import Final
 import pandas as pd
 
 from libs.generic_constants import actions, properties, wait_time
-from libs.mavis_constants import (
+from ..mavis_constants import (
     Location,
     report_headers,
     test_data_file_paths,
