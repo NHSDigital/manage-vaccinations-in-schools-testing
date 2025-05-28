@@ -8,6 +8,7 @@ from .login import LoginPage
 from .programmes import ProgrammesPage
 from .school_moves import SchoolMovesPage
 from .sessions import SessionsPage
+from .start import StartPage
 from .unmatched import UnmatchedPage
 from .vaccines import VaccinesPage
 
@@ -50,6 +51,11 @@ def school_moves_page(playwright_operations):
 @pytest.fixture
 def sessions_page(playwright_operations):
     return SessionsPage(playwright_operations)
+
+
+@pytest.fixture
+def start_page(page):
+    return StartPage(page)
 
 
 @pytest.fixture

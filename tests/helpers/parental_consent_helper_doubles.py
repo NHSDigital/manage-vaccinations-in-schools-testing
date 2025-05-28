@@ -46,7 +46,6 @@ class ParentalConsentHelper:
         self.expected_message = _row["ExpectedFinalMessage"]
 
     def enter_details_on_mavis(self, page: ConsentPage):
-        page.click_start_now()
         page.fill_child_name_details(
             scenario_id=self.scenario_id,
             child_first_name=self.child_first_name,

@@ -130,16 +130,14 @@ def playwright_operations(page, screenshots_path):
 
 @pytest.fixture
 def log_in_as_nurse(nurse, login_page):
-    login_page.go_to_login_page()
-    login_page.log_in(**nurse)
+    login_page.navigate_and_log_in(**nurse)
     yield
     login_page.log_out()
 
 
 @pytest.fixture
 def log_in_as_admin(admin, login_page):
-    login_page.go_to_login_page()
-    login_page.log_in(**admin)
+    login_page.navigate_and_log_in(**admin)
     yield
     login_page.log_out()
 

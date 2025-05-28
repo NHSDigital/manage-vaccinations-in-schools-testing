@@ -6,7 +6,6 @@ from libs.playwright_ops import PlaywrightOperations
 
 
 class LoginPage:
-    LNK_START_NOW: Final[str] = "Start now"
     TXT_EMAIL_ADDRESS: Final[str] = "Email address"
     TXT_PASSWORD: Final[str] = "Password"
     BTN_LOGIN: Final[str] = "Log in"
@@ -18,10 +17,17 @@ class LoginPage:
     def __init__(self, playwright_operations: PlaywrightOperations):
         self.po = playwright_operations
 
+    def navigate(self):
+        self.po.page.goto("/users/sign-in")
+
     def log_in(self, username: str, password: str):
         self.__login_actions(username=username, password=password)
         self.po.act(locator=self.BTN_ROLE, action=actions.CLICK_BUTTON)
         self.verify_login(is_successful_login=True, verify_text=self.BTN_LOGOUT)
+
+    def navigate_and_log_in(self, username: str, password: str):
+        self.navigate()
+        self.log_in(username, password)
 
     def log_out(self):
         self.po.act(locator=self.BTN_LOGOUT, action=actions.CLICK_BUTTON)
@@ -37,10 +43,6 @@ class LoginPage:
         )
 
     def __login_actions(self, username: str, password: str) -> None:
-        self.po.act(locator=self.LNK_START_NOW, action=actions.CLICK_LINK)
         self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=username)
         self.po.act(locator=self.TXT_PASSWORD, action=actions.FILL, value=password)
         self.po.act(locator=self.BTN_LOGIN, action=actions.CLICK_BUTTON)
-
-    def go_to_login_page(self) -> None:
-        self.po.page.goto("/")

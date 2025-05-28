@@ -11,16 +11,14 @@ helper = ParentalConsentHelper()
 @pytest.fixture
 def get_session_link(nurse, dashboard_page, login_page, sessions_page):
     try:
-        login_page.go_to_login_page()
-        login_page.log_in(**nurse)
+        login_page.navigate_and_log_in(**nurse)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session_in_school_1()
         link = sessions_page.get_hpv_consent_url()
         login_page.log_out()
         yield link
     finally:
-        login_page.go_to_login_page()
-        login_page.log_in(**nurse)
+        login_page.navigate_and_log_in(**nurse)
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions_for_school_1()
         login_page.log_out()
@@ -146,9 +144,10 @@ def setup_mavis_1818(log_in_as_nurse, dashboard_page, sessions_page):
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_workflow(get_session_link, scenario_data, page, consent_page):
+def test_workflow(get_session_link, scenario_data, page, consent_page, start_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
     page.goto(get_session_link)
+    start_page.start()
     helper.enter_details_on_mavis(consent_page)
 
 

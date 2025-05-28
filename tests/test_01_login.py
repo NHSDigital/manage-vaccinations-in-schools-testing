@@ -2,8 +2,8 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def go_to_log_in_page(login_page):
-    login_page.go_to_login_page()
+def go_to_log_in_page(start_page):
+    start_page.navigate_and_start()
 
 
 @pytest.mark.login
