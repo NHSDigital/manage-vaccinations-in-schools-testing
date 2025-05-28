@@ -9,7 +9,7 @@ from libs.mavis_constants import (
     test_data_file_paths,
     Programme,
 )
-from libs.playwright_ops import PlaywrightOperations
+from ..playwright_ops import PlaywrightOperations
 from ..test_data import TestData
 from ..wrappers import get_current_datetime, get_link_formatted_date_time
 

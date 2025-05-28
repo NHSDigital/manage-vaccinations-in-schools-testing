@@ -1,7 +1,7 @@
 from typing import Final
 
 from libs.generic_constants import actions, properties, wait_time
-from libs.playwright_ops import PlaywrightOperations
+from ..playwright_ops import PlaywrightOperations
 
 from .children import ChildrenPage
 from .dashboard import DashboardPage

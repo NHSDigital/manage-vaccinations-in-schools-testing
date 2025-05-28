@@ -2,7 +2,7 @@ from typing import Final, Optional
 
 from libs.generic_constants import actions, properties
 from libs.mavis_constants import Programme
-from libs.playwright_ops import PlaywrightOperations
+from ..playwright_ops import PlaywrightOperations
 
 
 class ConsentPage:

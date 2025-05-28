@@ -7,7 +7,7 @@ from libs.mavis_constants import (
     mavis_file_types,
     Programme,
 )
-from libs.playwright_ops import PlaywrightOperations
+from ..playwright_ops import PlaywrightOperations
 from ..test_data import TestData
 from ..wrappers import (
     datetime,

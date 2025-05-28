@@ -4,7 +4,7 @@ import pandas as pd
 
 from libs.generic_constants import actions, escape_characters, properties
 from libs.mavis_constants import Location, report_headers
-from libs.playwright_ops import PlaywrightOperations
+from ..playwright_ops import PlaywrightOperations
 from ..wrappers import get_current_datetime
 
 from .dashboard import DashboardPage

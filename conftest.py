@@ -9,7 +9,7 @@ import pytest
 import requests
 from requests.auth import HTTPBasicAuth
 
-from libs.playwright_ops import PlaywrightOperations
+from mavis.test.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
 from libs.test_data import TestData
 from libs.organisation import Organisation
