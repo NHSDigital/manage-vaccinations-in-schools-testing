@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 from typing import Optional
 
 import nhs_number
@@ -18,14 +18,14 @@ class TestData:
     A class to handle operations related to test data.
     """
 
-    def __init__(self):
-        """
-        Initialize the testdata_operations class.
-        """
-        self.mapping_df: pd.DataFrame = pd.read_csv("test_data/file_mapping.csv")
+    template_path = Path("test_data")
+    working_path = Path("working")
 
-    def read_file(self, path):
-        return pathlib.Path(path).read_text(encoding="utf-8")
+    def __init__(self):
+        self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
+
+    def read_file(self, filename):
+        return (self.template_path / filename).read_text(encoding="utf-8")
 
     def create_file_from_template(
         self,
@@ -85,9 +85,8 @@ class TestData:
 
         filename = f"{file_name_prefix}{get_current_datetime()}.csv"
 
-        path = pathlib.Path("working") / filename
+        path = self.working_path / filename
         path.write_text("\n".join(_file_text), encoding="utf-8")
-
         return str(path)
 
     def get_new_nhs_no(self, valid=True) -> str:
@@ -119,23 +118,27 @@ class TestData:
         return file_content.splitlines() if file_content else None
 
     def read_spreadsheet(
-        self, file_path: str, clean_df: bool = True, sheet_name: str = "Sheet1"
+        self, filename: str, sheet_name: str = "Sheet1"
     ) -> pd.DataFrame:
         """
         Read a spreadsheet into a DataFrame.
 
         Args:
-            file_path (str): Path to the spreadsheet file.
-            clean_df (bool, optional): Whether to clean the DataFrame. Defaults to True.
+            filename (str): Path to the spreadsheet file.
             sheet_name (str, optional): Name of the sheet to read. Defaults to "Sheet1".
 
         Returns:
             pd.DataFrame: DataFrame containing the spreadsheet data.
         """
-        _df = pd.read_excel(
-            file_path, sheet_name=sheet_name, header=0, dtype="str", index_col=0
+        return self.clean_df(
+            pd.read_excel(
+                self.template_path / filename,
+                sheet_name=sheet_name,
+                header=0,
+                dtype="str",
+                index_col=0,
+            )
         )
-        return self.clean_df(df=_df) if clean_df else _df
 
     def clean_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -170,7 +173,7 @@ class TestData:
         Returns:
             tuple[str, str]: Input and output file paths.
         """
-        query = self.mapping_df.query("ID==@file_paths")
+        query = self.file_mapping.query("ID==@file_paths")
 
         _input_template_path: str = query["INPUT_TEMPLATE"].to_string(index=False)
         _output_template_path: str = query["OUTPUT_TEMPLATE"].to_string(index=False)
@@ -210,17 +213,16 @@ class TestData:
         _names_list = _file_df[_cols[0]] + ", " + _file_df[_cols[1]].values.tolist()
         return _names_list
 
-    def get_session_id(self, excel_path: str) -> str:
+    def get_session_id(self, path: str) -> str:
         """
         Get the session ID from an Excel file.
 
         Args:
-            excel_path (str): Path to the Excel file.
+            path (str): Path to the Excel file.
 
         Returns:
             str: Session ID.
         """
-        _df = self.read_spreadsheet(
-            file_path=excel_path, clean_df=False, sheet_name="Vaccinations"
-        )
-        return _df["SESSION_ID"].iloc[0]
+
+        data_frame = pd.read_excel(path, sheet_name="Vaccinations")
+        return data_frame["SESSION_ID"].iloc[0]

@@ -6,7 +6,7 @@ from pages import ConsentPage
 class ParentalConsentHelper:
     def __init__(self):
         self.df = TestData().read_spreadsheet(
-            file_path=test_data_file_paths.PARENTAL_CONSENT_DOUBLES
+            test_data_file_paths.PARENTAL_CONSENT_DOUBLES
         )
 
     def read_data_for_scenario(self, scenario_data) -> None:
