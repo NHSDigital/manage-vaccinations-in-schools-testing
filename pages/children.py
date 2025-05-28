@@ -75,11 +75,6 @@ class ChildrenPage:
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, is_created: bool
     ):
-        _log_text: str = ""
-        if is_created:
-            _log_text = "Update this text when MAVIS-1896/MAV-253 is closed"  # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
-        else:
-            _log_text = "Consent response manually matched with child record"
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
@@ -96,10 +91,12 @@ class ChildrenPage:
             property=properties.TEXT,
             expected_value=f"Invited to the session at {test_data_values.SCHOOL_1_NAME}",
         )
+
+        # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=_log_text,
+            expected_value="Consent response manually matched with child record",
         )
 
     def verify_mav_853(self):
