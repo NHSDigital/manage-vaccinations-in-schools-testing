@@ -2,7 +2,7 @@ from typing import Final
 
 import pandas as pd
 
-from libs.generic_constants import actions, escape_characters, properties
+from ..generic_constants import actions, escape_characters, properties
 from ..mavis_constants import Location, report_headers
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import get_current_datetime

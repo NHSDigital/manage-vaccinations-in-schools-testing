@@ -7,7 +7,7 @@ from typing import Optional
 import allure
 from playwright.sync_api import Page
 
-from libs.generic_constants import (
+from .generic_constants import (
     actions,
     aria_roles,
     escape_characters,
