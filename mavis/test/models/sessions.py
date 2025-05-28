@@ -8,7 +8,7 @@ from libs.mavis_constants import (
     Programme,
 )
 from libs.playwright_ops import PlaywrightOperations
-from libs.test_data import TestData
+from ..test_data import TestData
 from ..wrappers import (
     datetime,
     get_current_datetime,

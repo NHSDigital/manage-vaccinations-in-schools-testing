@@ -4,9 +4,9 @@ from typing import Optional
 import nhs_number
 import pandas as pd
 
-from .mavis_constants import mavis_file_types, Location
-from .organisation import Organisation
-from mavis.test.wrappers import (
+from libs.mavis_constants import mavis_file_types, Location
+from libs.organisation import Organisation
+from .wrappers import (
     get_current_datetime,
     get_current_time,
     get_offset_date,
