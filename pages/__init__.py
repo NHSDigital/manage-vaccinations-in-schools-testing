@@ -4,7 +4,7 @@ from .children import ChildrenPage
 from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
-from .login import LoginPage
+from .log_in import LogInPage
 from .programmes import ProgrammesPage
 from .school_moves import SchoolMovesPage
 from .sessions import SessionsPage
@@ -34,8 +34,8 @@ def import_records_page(playwright_operations):
 
 
 @pytest.fixture
-def login_page(playwright_operations):
-    return LoginPage(playwright_operations)
+def log_in_page(page):
+    return LogInPage(page)
 
 
 @pytest.fixture
