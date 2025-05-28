@@ -1,13 +1,11 @@
-from libs import testdata_ops
 from libs.mavis_constants import test_data_file_paths
+from libs.test_data import TestData
 from pages import ConsentPage
 
 
 class ParentalConsentHelper:
-    tdo = testdata_ops.testdata_operations()
-
     def __init__(self):
-        self.df = self.tdo.read_spreadsheet(
+        self.df = TestData().read_spreadsheet(
             file_path=test_data_file_paths.PARENTAL_CONSENT_HPV
         )
 

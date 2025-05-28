@@ -1,9 +1,9 @@
 from typing import Final
 
-from libs import testdata_ops
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.mavis_constants import mavis_file_types, test_data_values, Programme
 from libs.playwright_ops import PlaywrightOperations
+from libs.test_data import TestData
 from libs.wrappers import (
     datetime,
     get_current_datetime,
@@ -18,7 +18,7 @@ from .import_records import ImportRecordsPage
 
 
 class SessionsPage:
-    tdo = testdata_ops.testdata_operations()
+    tdo = TestData()
 
     LNK_SCHOOL_1: Final[str] = test_data_values.SCHOOL_1_NAME
     LNK_SCHOOL_2: Final[str] = test_data_values.SCHOOL_2_NAME

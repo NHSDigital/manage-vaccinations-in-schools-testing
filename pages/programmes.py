@@ -2,10 +2,10 @@ from typing import Final
 
 import pandas as pd
 
-from libs import testdata_ops
 from libs.generic_constants import actions, properties, wait_time
 from libs.mavis_constants import report_headers, test_data_file_paths, Programme
 from libs.playwright_ops import PlaywrightOperations
+from libs.test_data import TestData
 from libs.wrappers import get_current_datetime, get_link_formatted_date_time
 
 from .children import ChildrenPage
@@ -16,7 +16,7 @@ from .sessions import SessionsPage
 
 
 class ProgrammesPage:
-    tdo = testdata_ops.testdata_operations()
+    tdo = TestData()
 
     LNK_DOSE2_CHILD: Final[str] = "DOSE2, Dose2"
     LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
