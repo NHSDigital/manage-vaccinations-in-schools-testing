@@ -39,6 +39,26 @@ class Programme(StrEnum):
         }
         return programme_specific_questions[self]
 
+    @property
+    def prescreening_questions(self):
+        common_questions = [
+            PrescreeningQuestion.FEELING_WELL,
+            PrescreeningQuestion.NO_RELEVANT_ALLERGIES,
+            PrescreeningQuestion.NOT_ALREADY_HAD,
+            PrescreeningQuestion.KNOW_PURPOSE_AND_CONSENT,
+        ]
+        programme_specific_questions = {
+            Programme.MENACWY: common_questions
+            + [PrescreeningQuestion.NO_RELEVANT_MEDICATION],
+            Programme.TD_IPV: common_questions
+            + [
+                PrescreeningQuestion.NO_RELEVANT_MEDICATION,
+                PrescreeningQuestion.NOT_PREGNANT,
+            ],
+            Programme.HPV: common_questions,
+        }
+        return programme_specific_questions[self]
+
 
 class Vaccine(StrEnum):
     # HPV
@@ -67,10 +87,36 @@ class HealthQuestion(StrEnum):
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
 
+class PrescreeningQuestion(StrEnum):
+    FEELING_WELL = "are feeling well"
+    NO_RELEVANT_ALLERGIES = "have no allergies which would prevent vaccination"
+    NOT_ALREADY_HAD = "have not already had the vaccination"
+    KNOW_PURPOSE_AND_CONSENT = (
+        "know what the vaccination is for, and are happy to have it"
+    )
+    NO_RELEVANT_MEDICATION = "are not taking any medication which prevents vaccination"
+    NOT_PREGNANT = "are not pregnant"
+
+
+class Location(StrEnum):
+    SCHOOL_1 = "Bohunt School Wokingham"
+    SCHOOL_2 = "Ashlawn School"
+    COMMUNITY_CLINICS = "Community clinics"
+
+    @property
+    def urn(self) -> str:
+        if self == Location.SCHOOL_1:
+            return "142181"
+        return ""
+
+    @property
+    def upload_label(self) -> str:
+        if self in [Location.SCHOOL_1, Location.SCHOOL_2]:
+            return "Upload file"
+        return ""
+
+
 class test_data_values:
-    SCHOOL_1_NAME: Final[str] = "Bohunt School Wokingham"
-    SCHOOL_2_NAME: Final[str] = "Ashlawn School"
-    SCHOOL_1_URN: Final[str] = "142181"
     ORG_CODE: Final[str] = "R1L"
 
 

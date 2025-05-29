@@ -2,8 +2,8 @@ from typing import Final, Optional
 
 from libs.generic_constants import actions, escape_characters, properties, wait_time
 from libs.playwright_ops import PlaywrightOperations
-from libs.mavis_constants import mavis_file_types, test_data_values
 from libs.test_data import TestData
+from libs.mavis_constants import Location, mavis_file_types
 from libs.wrappers import get_link_formatted_date_time
 
 from .children import ChildrenPage
@@ -103,7 +103,7 @@ class ImportRecordsPage:
         self.po.act(
             locator=self.LBL_SCHOOL_NAME,
             action=actions.SELECT_FROM_LIST,
-            value=test_data_values.SCHOOL_1_NAME,
+            value=Location.SCHOOL_1,
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._select_year_groups(*year_groups)
@@ -228,5 +228,5 @@ class ImportRecordsPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=test_data_values.SCHOOL_1_NAME,
+            expected_value=Location.SCHOOL_1,
         )
