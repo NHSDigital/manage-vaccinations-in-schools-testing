@@ -10,9 +10,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from mavis.test.generic_constants import audit_log_paths
-from mavis.test.organisation import Organisation
 from mavis.test.playwright_ops import PlaywrightOperations
-from mavis.test.test_data import TestData
 from mavis.test.wrappers import get_current_datetime
 
 
@@ -23,11 +21,6 @@ def pytest_addoption(parser):
 @pytest.fixture(scope="session")
 def base_url() -> str:
     return os.environ["BASE_URL"]
-
-
-@pytest.fixture(scope="session")
-def organisation() -> Organisation:
-    return Organisation(name="SAIS Organisation 1", ods_code="R1L")
 
 
 @pytest.fixture(scope="session")
@@ -128,11 +121,6 @@ def reset_environment_before_run(reset_environment):
 @pytest.fixture
 def page(reset_environment_before_run, page):
     return page
-
-
-@pytest.fixture(scope="session")
-def test_data(organisation):
-    return TestData(organisation)
 
 
 @pytest.fixture

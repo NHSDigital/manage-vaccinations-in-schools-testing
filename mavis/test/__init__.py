@@ -1,5 +1,6 @@
 import pytest
 
+from .data import TestData
 from .models import (
     ChildrenPage,
     ConsentPage,
@@ -13,6 +14,7 @@ from .models import (
     UnmatchedPage,
     VaccinesPage,
 )
+from .organisation import Organisation
 
 
 @pytest.fixture
@@ -68,3 +70,13 @@ def unmatched_page(playwright_operations, dashboard_page):
 @pytest.fixture
 def vaccines_page(playwright_operations):
     return VaccinesPage(playwright_operations)
+
+
+@pytest.fixture(scope="session")
+def organisation() -> Organisation:
+    return Organisation(name="SAIS Organisation 1", ods_code="R1L")
+
+
+@pytest.fixture(scope="session")
+def test_data(organisation):
+    return TestData(organisation)
