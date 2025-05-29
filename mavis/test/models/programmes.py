@@ -204,7 +204,7 @@ class ProgrammesPage:
             exact=False,
         )
 
-    def verify_mav_854(self, location):
+    def verify_mav_854(self, schools, clinics):
         """
         1. Find a child who is in an HPV school session
         2. Ensure there is a clinic session date for today
@@ -217,11 +217,11 @@ class ProgrammesPage:
         self.children_page.search_for_a_child(child_name=self.LNK_MAV_854_CHILD)
         self.po.act(locator=self.LNK_MAV_854_CHILD, action=actions.CLICK_LINK)
         self.po.act(locator=self.LNK_COMMUNITY_CLINIC_HPV, action=actions.CLICK_LINK)
-        self.sessions_page._vaccinate_child_mav_854()
+        self.sessions_page._vaccinate_child_mav_854(clinics[0])
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
-        self.sessions_page.click_location(location)
+        self.sessions_page.click_location(schools[0])
         assert self.sessions_page.get_session_id_from_offline_excel()
 
     def verify_careplus_report_format(self, programme: Programme):
