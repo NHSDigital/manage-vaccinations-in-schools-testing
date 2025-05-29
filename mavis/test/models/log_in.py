@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
-from libs.organisation import Organisation
-from libs.step import step
+from ..organisation import Organisation
+from ..step import step
 
 
 class LogInPage:

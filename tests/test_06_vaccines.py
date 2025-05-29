@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import Vaccine
+from mavis.test.mavis_constants import Vaccine
 
 
 @pytest.mark.vaccines

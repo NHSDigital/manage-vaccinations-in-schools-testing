@@ -9,11 +9,11 @@ import pytest
 import requests
 from requests.auth import HTTPBasicAuth
 
-from libs.playwright_ops import PlaywrightOperations
-from libs.generic_constants import audit_log_paths
-from libs.test_data import TestData
-from libs.organisation import Organisation
-from libs.wrappers import get_current_datetime
+from mavis.test.generic_constants import audit_log_paths
+from mavis.test.organisation import Organisation
+from mavis.test.playwright_ops import PlaywrightOperations
+from mavis.test.test_data import TestData
+from mavis.test.wrappers import get_current_datetime
 
 
 def pytest_addoption(parser):
@@ -181,4 +181,4 @@ def pytest_runtest_logreport(report):
             log_file.write(f"{timestamp} | {test_name} | {test_result}\n")
 
 
-pytest_plugins = ["pages"]
+pytest_plugins = ["mavis.test"]

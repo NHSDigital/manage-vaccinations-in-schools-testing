@@ -1,15 +1,15 @@
 from typing import Final
 
-from libs.generic_constants import actions, escape_characters, properties, wait_time
-from libs.mavis_constants import (
+from ..generic_constants import actions, escape_characters, properties, wait_time
+from ..mavis_constants import (
     PrescreeningQuestion,
     Location,
     mavis_file_types,
     Programme,
 )
-from libs.playwright_ops import PlaywrightOperations
-from libs.test_data import TestData
-from libs.wrappers import (
+from ..playwright_ops import PlaywrightOperations
+from ..test_data import TestData
+from ..wrappers import (
     datetime,
     get_current_datetime,
     get_link_formatted_date_time,

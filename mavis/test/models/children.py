@@ -1,8 +1,8 @@
 from typing import Final
 
-from libs.generic_constants import actions, properties, wait_time
-from libs.mavis_constants import Location
-from libs.playwright_ops import PlaywrightOperations
+from ..generic_constants import actions, properties, wait_time
+from ..mavis_constants import Location
+from ..playwright_ops import PlaywrightOperations
 
 from .dashboard import DashboardPage
 

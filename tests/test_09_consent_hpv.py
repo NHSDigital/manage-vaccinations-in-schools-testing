@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import Location, test_data_file_paths
+from mavis.test.mavis_constants import test_data_file_paths, Location
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 

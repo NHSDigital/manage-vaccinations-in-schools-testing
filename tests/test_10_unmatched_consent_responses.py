@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import test_data_file_paths
+from mavis.test.mavis_constants import test_data_file_paths
 
 
 # ALL OF THE TESTS IN THIS CLASS DEPEND ON THE CONSENT WORKFLOW TESTS (HPV) TO HAVE RUN FIRST

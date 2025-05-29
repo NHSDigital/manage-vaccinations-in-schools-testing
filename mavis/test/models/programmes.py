@@ -2,16 +2,16 @@ from typing import Final
 
 import pandas as pd
 
-from libs.generic_constants import actions, properties, wait_time
-from libs.mavis_constants import (
+from ..generic_constants import actions, properties, wait_time
+from ..mavis_constants import (
     Location,
     report_headers,
     test_data_file_paths,
     Programme,
 )
-from libs.playwright_ops import PlaywrightOperations
-from libs.test_data import TestData
-from libs.wrappers import get_current_datetime, get_link_formatted_date_time
+from ..playwright_ops import PlaywrightOperations
+from ..test_data import TestData
+from ..wrappers import get_current_datetime, get_link_formatted_date_time
 
 from .children import ChildrenPage
 from .consent import ConsentPage

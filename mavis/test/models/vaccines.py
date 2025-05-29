@@ -1,9 +1,9 @@
 from typing import Final
 
-from libs.generic_constants import actions, properties
-from libs.mavis_constants import Vaccine
-from libs.playwright_ops import PlaywrightOperations
-from libs.wrappers import get_current_datetime, get_offset_date
+from ..generic_constants import actions, properties
+from ..mavis_constants import Vaccine
+from ..playwright_ops import PlaywrightOperations
+from ..wrappers import get_current_datetime, get_offset_date
 
 
 class VaccinesPage:
