@@ -174,7 +174,7 @@ class ProgrammesPage:
 
         self.verify_upload_output(file_path=_output_file_path)
 
-    def upload_cohorts(self, file_paths: str, wait_long: bool = False):
+    def upload_cohorts(self, file_paths: str):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
@@ -186,10 +186,7 @@ class ProgrammesPage:
         self.record_upload_time()
 
         if self.import_records_page.is_processing_in_background():
-            if wait_long:
-                self.po.act(locator=None, action=actions.WAIT, value="14m")
-            else:
-                self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
+            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
             self.click_uploaded_file_datetime()
 
         self.verify_upload_output(file_path=_output_file_path)
