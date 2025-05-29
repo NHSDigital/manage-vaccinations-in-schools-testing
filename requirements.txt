@@ -43,7 +43,7 @@ Pygments==2.19.1
 pytest==8.3.5
 pytest-dependency==0.6.0
 pytest-dotenv==0.5.2
-pytest-playwright==0.6.1
+pytest-playwright==0.7.0
 pytest-xdist==3.7.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
