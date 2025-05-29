@@ -1,7 +1,5 @@
 import pytest
 
-from mavis.test.mavis_constants import Location
-
 from .helpers.parental_consent_helper_doubles import ParentalConsentHelper
 
 
@@ -9,12 +7,14 @@ helper = ParentalConsentHelper()
 
 
 @pytest.fixture
-def get_session_link(nurse, organisation, dashboard_page, log_in_page, sessions_page):
+def get_session_link(
+    nurse, organisation, schools, dashboard_page, log_in_page, sessions_page
+):
     try:
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
+        sessions_page.schedule_a_valid_session(schools[0])
         link = sessions_page.get_doubles_consent_url()
         log_in_page.log_out()
         yield link
@@ -22,7 +22,7 @@ def get_session_link(nurse, organisation, dashboard_page, log_in_page, sessions_
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
         log_in_page.log_out()
 
 

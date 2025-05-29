@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 
 from .data import TestData
@@ -15,6 +17,7 @@ from .models import (
     VaccinesPage,
 )
 from .organisation import Organisation
+from .school import School
 
 
 @pytest.fixture
@@ -73,10 +76,18 @@ def vaccines_page(playwright_operations):
 
 
 @pytest.fixture(scope="session")
+def schools() -> List[School]:
+    return [
+        School(name="Bohunt School Wokingham", urn="142181"),
+        School(name="Ashlawn School", urn="unknown"),
+    ]
+
+
+@pytest.fixture(scope="session")
 def organisation() -> Organisation:
     return Organisation(name="SAIS Organisation 1", ods_code="R1L")
 
 
 @pytest.fixture(scope="session")
-def test_data(organisation):
-    return TestData(organisation)
+def test_data(organisation, schools):
+    return TestData(organisation, schools)

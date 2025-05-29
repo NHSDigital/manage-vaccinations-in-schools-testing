@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import test_data_file_paths, Location
+from mavis.test.mavis_constants import test_data_file_paths
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
@@ -9,12 +9,14 @@ helper = ParentalConsentHelper()
 
 
 @pytest.fixture
-def get_session_link(nurse, organisation, dashboard_page, log_in_page, sessions_page):
+def get_session_link(
+    nurse, organisation, schools, dashboard_page, log_in_page, sessions_page
+):
     try:
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
+        sessions_page.schedule_a_valid_session(schools[0])
         link = sessions_page.get_hpv_consent_url()
         log_in_page.log_out()
         yield link
@@ -22,23 +24,20 @@ def get_session_link(nurse, organisation, dashboard_page, log_in_page, sessions_
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
         log_in_page.log_out()
 
 
 @pytest.fixture
-def setup_gillick(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_gillick(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.COHORTS_FULL_NAME,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.COHORTS_FULL_NAME,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -46,109 +45,99 @@ def setup_gillick(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
-def setup_invalidated_consent(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_invalidated_consent(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
+        sessions_page.schedule_a_valid_session(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.COHORTS_NO_CONSENT,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.COHORTS_NO_CONSENT,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
-def setup_mavis_1696(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_mavis_1696(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.COHORTS_CONFLICTING_CONSENT,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.COHORTS_CONFLICTING_CONSENT,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
-def setup_mavis_1864(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_mavis_1864(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.COHORTS_CONSENT_TWICE,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.COHORTS_CONSENT_TWICE,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
-def setup_mavis_1818(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_mavis_1818(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.COHORTS_CONFLICTING_GILLICK,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.COHORTS_CONFLICTING_GILLICK,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.click_consent_tab()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.mark.consent
@@ -168,8 +157,8 @@ def test_workflow(get_session_link, scenario_data, page, consent_page, start_pag
 
 @pytest.mark.consent
 @pytest.mark.order(902)
-def test_gillick_competence(setup_gillick, sessions_page):
-    sessions_page.set_gillick_competence_for_student()
+def test_gillick_competence(setup_gillick, schools, sessions_page):
+    sessions_page.set_gillick_competence_for_student(schools[0])
 
 
 @pytest.mark.consent

@@ -4,12 +4,7 @@ import pandas as pd
 
 from ..data import TestData
 from ..generic_constants import actions, properties, wait_time
-from ..mavis_constants import (
-    Location,
-    report_headers,
-    test_data_file_paths,
-    Programme,
-)
+from ..mavis_constants import report_headers, test_data_file_paths, Programme
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import get_current_datetime, get_link_formatted_date_time
 
@@ -209,7 +204,7 @@ class ProgrammesPage:
             exact=False,
         )
 
-    def verify_mav_854(self):
+    def verify_mav_854(self, location):
         """
         1. Find a child who is in an HPV school session
         2. Ensure there is a clinic session date for today
@@ -226,7 +221,7 @@ class ProgrammesPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
         self.sessions_page.click_scheduled()
-        self.sessions_page.click_location(Location.SCHOOL_1)
+        self.sessions_page.click_location(location)
         assert self.sessions_page.get_session_id_from_offline_excel()
 
     def verify_careplus_report_format(self, programme: Programme):
@@ -278,7 +273,7 @@ class ProgrammesPage:
                 f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
             )
 
-    def verify_mav_965(self):
+    def verify_mav_965(self, location: str):
         """
         Steps to reproduce:
         Patient setup: in a school session today, marked as attending, session has HPV and doubles, patients is eligible for all vaccines (has consent, correct year group, no history)
@@ -294,7 +289,7 @@ class ProgrammesPage:
         """
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
-        self.sessions_page.click_location(Location.SCHOOL_1)
+        self.sessions_page.click_location(location)
         self.sessions_page.click_consent_tab()
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.HPV)

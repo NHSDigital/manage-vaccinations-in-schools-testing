@@ -3,7 +3,6 @@ import pytest
 from mavis.test.mavis_constants import (
     mavis_file_types,
     test_data_file_paths,
-    Location,
     Programme,
     Vaccine,
 )
@@ -15,34 +14,30 @@ def setup_cohort_upload_and_reports(log_in_as_nurse, dashboard_page):
 
 
 @pytest.fixture
-def setup_record_a_vaccine(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_record_a_vaccine(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            location=Location.SCHOOL_1, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
 def setup_mavis_1729(
-    log_in_as_nurse, dashboard_page, import_records_page, sessions_page
+    log_in_as_nurse, schools, dashboard_page, import_records_page, sessions_page
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            location=Location.SCHOOL_1, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -57,59 +52,58 @@ def setup_mavis_1729(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
 def setup_mav_854(
     log_in_as_nurse,
+    schools,
     dashboard_page,
     import_records_page,
     sessions_page,
     vaccines_page,
 ):
+    session = "Community clinics"
+
     try:
         dashboard_page.click_vaccines()
         vaccines_page.add_batch(vaccine=Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            location=Location.SCHOOL_1, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.import_class_list_records_from_school_session(
-            file_paths=test_data_file_paths.CLASS_MAV_854
+            test_data_file_paths.CLASS_MAV_854
         )
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            location=Location.COMMUNITY_CLINICS, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(session, for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(location=Location.COMMUNITY_CLINICS)
+        sessions_page.delete_all_sessions(session)
 
 
 @pytest.fixture
-def setup_mav_nnn(log_in_as_admin, dashboard_page, import_records_page, sessions_page):
+def setup_mav_nnn(
+    log_in_as_admin, schools, dashboard_page, import_records_page, sessions_page
+):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            location=Location.SCHOOL_1, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SINGLE_VACC
         )
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.mark.cohorts
@@ -156,17 +150,17 @@ def test_cohorts_readd_to_cohort(
 
 @pytest.mark.rav
 @pytest.mark.order(526)
-def test_rav_triage_positive(setup_record_a_vaccine, sessions_page):
+def test_rav_triage_positive(setup_record_a_vaccine, schools, sessions_page):
     sessions_page.update_triage_outcome_positive(
-        file_paths=test_data_file_paths.COHORTS_FULL_NAME
+        schools[0], test_data_file_paths.COHORTS_FULL_NAME
     )
 
 
 @pytest.mark.rav
 @pytest.mark.order(527)
-def test_rav_triage_consent_refused(setup_record_a_vaccine, sessions_page):
+def test_rav_triage_consent_refused(setup_record_a_vaccine, schools, sessions_page):
     sessions_page.update_triage_outcome_consent_refused(
-        file_paths=test_data_file_paths.COHORTS_FULL_NAME
+        schools[0], test_data_file_paths.COHORTS_FULL_NAME
     )
 
 
@@ -180,8 +174,8 @@ def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page):
 @pytest.mark.rav
 @pytest.mark.bug
 @pytest.mark.order(529)
-def test_rav_verify_excel_mav_854(setup_mav_854, programmes_page):
-    programmes_page.verify_mav_854()  # MAV-854
+def test_rav_verify_excel_mav_854(setup_mav_854, schools, programmes_page):
+    programmes_page.verify_mav_854(schools[0])  # MAV-854
 
 
 @pytest.mark.rav

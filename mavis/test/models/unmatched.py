@@ -53,7 +53,7 @@ class UnmatchedPage:
             exact=False,
         )
 
-    def match_with_record(self):
+    def match_with_record(self, location):
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
@@ -86,7 +86,7 @@ class UnmatchedPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
-            child_name=self.LBL_CHILD_NAME_TO_MATCH, is_created=False
+            self.LBL_CHILD_NAME_TO_MATCH, location, is_created=False
         )  # MAVIS-1812
 
     def archive_record(self):
@@ -114,7 +114,7 @@ class UnmatchedPage:
             exact=False,
         )  # MAVIS-1782
 
-    def create_record(self):
+    def create_record(self, location: str):
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
@@ -135,10 +135,10 @@ class UnmatchedPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
-            child_name=self.LBL_CHILD_NAME_FOR_CREATION, is_created=True
+            self.LBL_CHILD_NAME_FOR_CREATION, location, is_created=True
         )  # MAVIS-1896
 
-    def create_record_with_no_nhs_number(self):
+    def create_record_with_no_nhs_number(self, location: str):
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
@@ -159,5 +159,5 @@ class UnmatchedPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
-            child_name=self.LBL_CHILD_NO_NHS_NUMBER, is_created=True
+            self.LBL_CHILD_NO_NHS_NUMBER, location, is_created=True
         )  # MAVIS-1781

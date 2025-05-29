@@ -98,24 +98,6 @@ class PrescreeningQuestion(StrEnum):
     NOT_PREGNANT = "are not pregnant"
 
 
-class Location(StrEnum):
-    SCHOOL_1 = "Bohunt School Wokingham"
-    SCHOOL_2 = "Ashlawn School"
-    COMMUNITY_CLINICS = "Community clinics"
-
-    @property
-    def urn(self) -> str:
-        if self == Location.SCHOOL_1:
-            return "142181"
-        return ""
-
-    @property
-    def upload_label(self) -> str:
-        if self in [Location.SCHOOL_1, Location.SCHOOL_2]:
-            return "Upload file"
-        return ""
-
-
 class mavis_file_types(Enum):
     CHILD_LIST = auto()
     COHORT = auto()
