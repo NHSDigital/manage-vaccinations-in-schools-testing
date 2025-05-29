@@ -35,8 +35,7 @@ Row 24 ANATOMICAL_SITE: Enter an anatomical site.
 Row 25 ANATOMICAL_SITE: Enter a anatomical site that is appropriate for the vaccine.
 #Row 26 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
 Row 26 DOSE_SEQUENCE or Vaccination type is required
-#Row 27 DOSE_SEQUENCE: must be less than or equal to 3
-Row 27 DOSE_SEQUENCE: must be less than 3
+Row 27 DOSE_SEQUENCE: must be less than or equal to 3
 !Row 28 DATE_OF_VACCINATION: Enter a date for a current session
 #Row 28 CARE_SETTING: Enter a care setting.
 Row 29 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
