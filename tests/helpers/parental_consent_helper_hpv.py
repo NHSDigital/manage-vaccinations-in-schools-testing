@@ -39,8 +39,8 @@ class ParentalConsentHelper:
 
     def enter_details_on_mavis(self, page: ConsentPage) -> None:
         page.fill_child_name_details(
-            child_first_name=self.child_first_name,
-            child_last_name=self.child_last_name,
+            first_name=self.child_first_name,
+            last_name=self.child_last_name,
             known_as_first=self.child_aka_first,
             known_as_last=self.child_aka_last,
         )
@@ -49,7 +49,7 @@ class ParentalConsentHelper:
             dob_month=self.child_dob_month,
             dob_year=self.child_dob_year,
         )
-        page.select_child_school(school_name=self.school_name)
+        page.select_child_school(school=self.school_name)
         page.fill_parent_details(
             parent_name=self.parent_name,
             relation=self.relation,
