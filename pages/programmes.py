@@ -61,7 +61,7 @@ class ProgrammesPage:
         self.dashboard_page = dashboard_page
         self.sessions_page = SessionsPage(playwright_operations, dashboard_page)
         self.children_page = ChildrenPage(playwright_operations, dashboard_page)
-        self.consent = ConsentPage(playwright_operations)
+        self.consent_page = ConsentPage(playwright_operations)
         self.import_records_page = ImportRecordsPage(
             playwright_operations, dashboard_page
         )
