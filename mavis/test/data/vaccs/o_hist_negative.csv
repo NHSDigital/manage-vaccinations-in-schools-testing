@@ -30,8 +30,7 @@ Row 21 VACCINE_GIVEN: This vaccine is not available in this session.
 #Row 23 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 #Row 24 ANATOMICAL_SITE: Enter an anatomical site.
 #Row 28 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
-#Row 29 DOSE_SEQUENCE: must be less than or equal to 3
-Row 29 DOSE_SEQUENCE: must be less than 3
+Row 29 DOSE_SEQUENCE: must be less than or equal to 3
 #Row 30 CARE_SETTING: Enter a care setting.
 Row 33 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
 Row 35 TIME_OF_VACCINATION: Enter a time in the correct format.
