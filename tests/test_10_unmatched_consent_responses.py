@@ -53,6 +53,6 @@ def test_match_record(setup_ucr_match, schools, unmatched_page):
 @pytest.mark.order(1005)
 @pytest.mark.dependency(depends=["ucr_records_exist"])
 def test_create_record_with_no_nhs_number(
-    go_to_unmatched_consent_responses, unmatched_page
+    go_to_unmatched_consent_responses, schools, unmatched_page
 ):
-    unmatched_page.create_record_with_no_nhs_number()  # MAVIS-1781
+    unmatched_page.create_record_with_no_nhs_number(schools[0])  # MAVIS-1781

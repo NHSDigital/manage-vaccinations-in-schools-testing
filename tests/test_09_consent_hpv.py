@@ -9,9 +9,7 @@ helper = ParentalConsentHelper()
 
 
 @pytest.fixture
-def get_session_link(
-    nurse, organisation, schools, dashboard_page, log_in_page, sessions_page
-):
+def url(nurse, organisation, schools, dashboard_page, log_in_page, sessions_page):
     try:
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
@@ -148,9 +146,9 @@ def setup_mavis_1818(log_in_as_nurse, schools, dashboard_page, sessions_page):
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_workflow(get_session_link, scenario_data, page, consent_page, start_page):
+def test_workflow(url, scenario_data, page, consent_page, start_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    page.goto(get_session_link)
+    page.goto(url)
     start_page.start()
     helper.enter_details_on_mavis(consent_page)
 
