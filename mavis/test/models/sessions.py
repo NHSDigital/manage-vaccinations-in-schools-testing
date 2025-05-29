@@ -1,5 +1,6 @@
 from typing import Final
 
+from ..data import TestData
 from ..generic_constants import actions, escape_characters, properties, wait_time
 from ..mavis_constants import (
     PrescreeningQuestion,
@@ -8,7 +9,6 @@ from ..mavis_constants import (
     Programme,
 )
 from ..playwright_ops import PlaywrightOperations
-from ..test_data import TestData
 from ..wrappers import (
     datetime,
     get_current_datetime,

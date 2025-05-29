@@ -1,5 +1,5 @@
+from mavis.test.data import TestData
 from mavis.test.mavis_constants import test_data_file_paths
-from mavis.test.test_data import TestData
 from mavis.test.models import ConsentPage
 
 
