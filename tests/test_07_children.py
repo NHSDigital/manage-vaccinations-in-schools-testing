@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import VaccinationSite, mavis_file_types, test_data_file_paths
+from libs.mavis_constants import Location, mavis_file_types, test_data_file_paths
 
 
 @pytest.fixture
@@ -8,14 +8,14 @@ def setup_children_page(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+            for_today=True, location=Location.SCHOOL_1
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         sessions_page.upload_class_list(
             file_paths=test_data_file_paths.CLASS_CHILDREN_FILTER,
-            vaccination_site=VaccinationSite.SCHOOL_1,
+            location=Location.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -23,7 +23,7 @@ def setup_children_page(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
 
 
 @pytest.fixture
@@ -31,14 +31,14 @@ def setup_change_nhsno(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+            for_today=True, location=Location.SCHOOL_1
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         sessions_page.upload_class_list(
             file_paths=test_data_file_paths.CLASS_CHANGE_NHSNO,
-            vaccination_site=VaccinationSite.SCHOOL_1,
+            location=Location.SCHOOL_1,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -46,7 +46,7 @@ def setup_change_nhsno(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
 
 
 @pytest.fixture
@@ -56,12 +56,12 @@ def setup_mav_853(
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            for_today=True, vaccination_site=VaccinationSite.SCHOOL_1
+            for_today=True, location=Location.SCHOOL_1
         )
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
@@ -79,7 +79,7 @@ def setup_mav_853(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
 
 
 @pytest.mark.children

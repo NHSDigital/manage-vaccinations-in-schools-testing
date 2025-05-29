@@ -3,7 +3,7 @@ from typing import Final
 import pandas as pd
 
 from libs.generic_constants import actions, escape_characters, properties
-from libs.mavis_constants import VaccinationSite, report_headers
+from libs.mavis_constants import Location, report_headers
 from libs.playwright_ops import PlaywrightOperations
 from libs.wrappers import get_current_datetime
 
@@ -90,7 +90,7 @@ class SchoolMovesPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"Move Class list updated {VaccinationSite.SCHOOL_1} to {VaccinationSite.SCHOOL_2}",
+            expected_value=f"Move Class list updated {Location.SCHOOL_1} to {Location.SCHOOL_2}",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
@@ -100,7 +100,7 @@ class SchoolMovesPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"Class list updated {VaccinationSite.SCHOOL_1} to {VaccinationSite.SCHOOL_2}",
+            expected_value=f"Class list updated {Location.SCHOOL_1} to {Location.SCHOOL_2}",
         )
         self.confirm_school_move()
         self.ignore_school_move()

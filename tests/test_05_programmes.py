@@ -1,7 +1,7 @@
 import pytest
 
 from libs.mavis_constants import (
-    VaccinationSite,
+    Location,
     mavis_file_types,
     test_data_file_paths,
     Programme,
@@ -19,7 +19,7 @@ def setup_record_a_vaccine(log_in_as_nurse, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+            location=Location.SCHOOL_1, for_today=True
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -27,7 +27,7 @@ def setup_record_a_vaccine(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
 
 
 @pytest.fixture
@@ -37,12 +37,12 @@ def setup_mavis_1729(
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+            location=Location.SCHOOL_1, for_today=True
         )
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -57,7 +57,7 @@ def setup_mavis_1729(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
 
 
 @pytest.fixture
@@ -74,16 +74,16 @@ def setup_mav_854(
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+            location=Location.SCHOOL_1, for_today=True
         )
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_MAV_854
         )
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.COMMUNITY_CLINICS, for_today=True
+            location=Location.COMMUNITY_CLINICS, for_today=True
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -91,9 +91,7 @@ def setup_mav_854(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(
-            vaccination_site=VaccinationSite.COMMUNITY_CLINICS
-        )
+        sessions_page.delete_all_sessions(location=Location.COMMUNITY_CLINICS)
 
 
 @pytest.fixture
@@ -101,17 +99,17 @@ def setup_mav_nnn(log_in_as_admin, dashboard_page, import_records_page, sessions
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_1, for_today=True
+            location=Location.SCHOOL_1, for_today=True
         )
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SINGLE_VACC
         )
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
 
 
 @pytest.mark.cohorts

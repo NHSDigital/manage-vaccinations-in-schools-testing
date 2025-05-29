@@ -1,6 +1,6 @@
 import pytest
 
-from libs.mavis_constants import VaccinationSite, test_data_file_paths
+from libs.mavis_constants import Location, test_data_file_paths
 
 
 @pytest.fixture
@@ -12,68 +12,62 @@ def setup_tests(log_in_as_nurse, reset_environment):
 def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_2
-        )
+        sessions_page.schedule_a_valid_session(location=Location.SCHOOL_2)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         sessions_page.upload_class_list(
-            vaccination_site=VaccinationSite.SCHOOL_1,
+            location=Location.SCHOOL_1,
             file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_2)
+        sessions_page.click_location(location=Location.SCHOOL_2)
         sessions_page.upload_class_list(
-            vaccination_site=VaccinationSite.SCHOOL_2,
+            location=Location.SCHOOL_2,
             file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
         )
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_2)
+        sessions_page.delete_all_sessions(location=Location.SCHOOL_2)
 
 
 @pytest.fixture
 def setup_move_to_homeschool_and_unknown(setup_tests, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            vaccination_site=VaccinationSite.SCHOOL_1
-        )
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
+        sessions_page.click_location(Location.SCHOOL_1)
         sessions_page.upload_class_list(
-            vaccination_site=VaccinationSite.SCHOOL_1,
+            location=Location.SCHOOL_1,
             file_paths=test_data_file_paths.CLASS_MOVES_UNKNOWN_HOMESCHOOLED,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_vaccination_site(vaccination_site=VaccinationSite.SCHOOL_2)
+        sessions_page.click_location(location=Location.SCHOOL_2)
         sessions_page.upload_class_list(
-            vaccination_site=VaccinationSite.SCHOOL_2,
+            location=Location.SCHOOL_2,
             file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
         )
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_1)
+        sessions_page.delete_all_sessions(Location.SCHOOL_1)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(vaccination_site=VaccinationSite.SCHOOL_2)
+        sessions_page.delete_all_sessions(location=Location.SCHOOL_2)
 
 
 @pytest.mark.schoolmoves
