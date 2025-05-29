@@ -107,7 +107,6 @@ class mavis_file_types(Enum):
 
 
 class test_data_file_paths:
-    PARENTAL_CONSENT_HPV: Final[str] = "ParentalConsent_HPV.xlsx"
     VACCS_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
     VACCS_NEGATIVE: Final[str] = "VACCS_HPV_NEGATIVE"
     VACCS_HIST_POSITIVE: Final[str] = "VACCS_HIST_HPV_POSITIVE"
