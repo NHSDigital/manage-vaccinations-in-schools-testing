@@ -32,6 +32,8 @@ class TestData:
         self.schools = schools
         self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
 
+        self.working_path.mkdir(parents=True, exist_ok=True)
+
     def read_file(self, filename):
         return (self.template_path / filename).read_text(encoding="utf-8")
 
