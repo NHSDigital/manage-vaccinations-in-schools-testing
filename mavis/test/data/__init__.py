@@ -19,7 +19,7 @@ class TestData:
     A class to handle operations related to test data.
     """
 
-    template_path = Path("test_data")
+    template_path = Path(__file__).parent
     working_path = Path("working")
 
     def __init__(self, organisation: Optional[Organisation] = None):

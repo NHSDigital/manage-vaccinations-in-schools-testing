@@ -9,7 +9,7 @@ from playwright.sync_api import expect
 @pytest.mark.smoke
 @pytest.mark.order(1)
 def test_files_and_paths():
-    folder_paths_to_verify = ["test_data", "working"]
+    folder_paths_to_verify = ["working"]
     for folder_path in folder_paths_to_verify:
         if not pathlib.Path(folder_path).is_dir():
             assert False, f"{folder_path} not found on project root"
