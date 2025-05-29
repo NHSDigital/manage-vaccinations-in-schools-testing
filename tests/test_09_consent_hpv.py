@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import test_data_file_paths
+from mavis.test.mavis_constants import test_data_file_paths, Programme
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
@@ -15,9 +15,9 @@ def url(nurse, organisation, schools, dashboard_page, log_in_page, sessions_page
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0])
-        link = sessions_page.get_hpv_consent_url()
+        url = sessions_page.get_online_consent_url(Programme.HPV)
         log_in_page.log_out()
-        yield link
+        yield url
     finally:
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)

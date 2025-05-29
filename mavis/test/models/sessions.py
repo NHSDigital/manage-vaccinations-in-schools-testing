@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, List
 
 from ..data import TestData
 from ..generic_constants import actions, escape_characters, properties, wait_time
@@ -76,10 +76,6 @@ class SessionsPage:
     LBL_CHILD_NOT_COMPETENT: Final[str] = "Child assessed as not Gillick competent"
     LNK_EDIT_GILLICK_COMPETENCE: Final[str] = "Edit Gillick competence"
     BTN_UPDATE_GILLICK_ASSESSMENT: Final[str] = "Update your assessment"
-    LNK_HPV_CONSENT_FORM: Final[str] = f"View the {Programme.HPV} online consent form"
-    LNK_DOUBLES_CONSENT_FORM: str = (
-        f"View the {Programme.MENACWY} and {Programme.TD_IPV} online consent form"
-    )
     LNK_COULD_NOT_VACCINATE: Final[str] = "Could not vaccinate"
     RDO_CONSENT_REFUSED: Final[str] = "Consent refused"
     LNK_MARK_AS_INVALID: Final[str] = "Mark as invalid"
@@ -620,15 +616,9 @@ class SessionsPage:
             is_competent=False, competence_details="Not Gillick competent"
         )
 
-    def get_hpv_consent_url(self) -> str:
-        return self.po.get_element_property(
-            locator=self.LNK_HPV_CONSENT_FORM, property=properties.HREF
-        )
-
-    def get_doubles_consent_url(self) -> str:
-        return self.po.get_element_property(
-            locator=self.LNK_DOUBLES_CONSENT_FORM, property=properties.HREF
-        )
+    def get_online_consent_url(self, *programmes: List[Programme]) -> str:
+        link_text = f"View the {' and '.join(programmes)} online consent form"
+        return self.po.page.get_by_role("link", name=link_text).get_attribute("href")
 
     def bug_mavis_1696(self):
         self.select_no_response()
