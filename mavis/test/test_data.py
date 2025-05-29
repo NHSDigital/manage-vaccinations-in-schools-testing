@@ -5,7 +5,7 @@ import nhs_number
 import pandas as pd
 
 from libs.mavis_constants import mavis_file_types, Location
-from libs.organisation import Organisation
+from .organisation import Organisation
 from .wrappers import (
     get_current_datetime,
     get_current_time,
