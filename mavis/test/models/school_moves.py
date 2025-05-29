@@ -3,8 +3,9 @@ from typing import Final, List
 import pandas as pd
 
 from ..generic_constants import actions, escape_characters, properties
-from ..mavis_constants import report_headers
+
 from ..onboarding import School
+from ..mavis_constants import ReportFormat
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import get_current_datetime
 
@@ -110,7 +111,7 @@ class SchoolMovesPage:
         self.po.act(locator=self.LNK_DOWNLOAD_RECORDS, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._download_and_verify_report_headers(
-            expected_headers=report_headers.SCHOOL_MOVES
+            expected_headers=ReportFormat.SCHOOL_MOVES.headers
         )
 
     def _download_and_verify_report_headers(self, expected_headers: str):

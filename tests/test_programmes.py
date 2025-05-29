@@ -6,6 +6,7 @@ from mavis.test.mavis_constants import (
     test_data_file_paths,
     Programme,
     Vaccine,
+    ReportFormat
 )
 
 
@@ -174,36 +175,36 @@ def test_rav_verify_banners(setup_mav_nnn):
 def test_verify_careplus_report_for_hpv(
     setup_cohort_upload_and_reports, programmes_page
 ):
-    programmes_page.verify_careplus_report_format(Programme.HPV)
+    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.CAREPLUS)
 
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
-    programmes_page.verify_careplus_report_format(Programme.MENACWY)
+    programmes_page.verify_report_format(programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS)
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_careplus_report_format(Programme.TD_IPV)
+    programmes_page.verify_report_format(programme=Programme.TD_IPV, report_format=ReportFormat.CAREPLUS)
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.verify_csv_report_format(Programme.HPV)
+    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.CSV)
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
-    programmes_page.verify_csv_report_format(Programme.MENACWY)
+    programmes_page.verify_report_format(programme=Programme.MENACWY, report_format=ReportFormat.CSV)
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_csv_report_format(Programme.TD_IPV)
+    programmes_page.verify_report_format(programme=Programme.TD_IPV, report_format=ReportFormat.CSV)
 
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_hpv(
     setup_cohort_upload_and_reports, programmes_page
 ):
-    programmes_page.verify_systmone_report_format(Programme.HPV)
+    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.SYSTMONE)
