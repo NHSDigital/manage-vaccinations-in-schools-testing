@@ -4,7 +4,8 @@ from typing import Optional
 import nhs_number
 import pandas as pd
 
-from .mavis_constants import Location, mavis_file_types, test_data_values
+from .mavis_constants import mavis_file_types, Location
+from .organisation import Organisation
 from .wrappers import (
     get_current_datetime,
     get_current_time,
@@ -21,7 +22,8 @@ class TestData:
     template_path = Path("test_data")
     working_path = Path("working")
 
-    def __init__(self):
+    def __init__(self, organisation: Optional[Organisation] = None):
+        self.organisation = organisation
         self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
 
     def read_file(self, filename):
@@ -53,12 +55,14 @@ class TestData:
             "<<SCHOOL_1_NAME>>": Location.SCHOOL_1,
             "<<SCHOOL_2_NAME>>": Location.SCHOOL_2,
             "<<SCHOOL_1_URN>>": Location.SCHOOL_1.urn,
-            "<<ORG_CODE>>": test_data_values.ORG_CODE,
             "<<VACCS_DATE>>": _dt[:8],
             "<<VACCS_TIME>>": get_current_time(),
             "<<HIST_VACCS_DATE>>": _hist_dt,
             "<<SESSION_ID>>": session_id,
         }
+
+        if self.organisation:
+            replacements["<<ORG_CODE>>"] = self.organisation.ods_code
 
         for year_group in range(8, 12):
             replacements[f"<<DOB_YEAR_{year_group}>>"] = (

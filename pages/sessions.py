@@ -23,8 +23,6 @@ from .import_records import ImportRecordsPage
 
 
 class SessionsPage:
-    tdo = TestData()
-
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
     LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
     LNK_CHILD_CONFLICTING_CONSENT: Final[str] = (
@@ -119,15 +117,19 @@ class SessionsPage:
     TXT_SEARCH: Final[str] = "Search"
 
     def __init__(
-        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+        self,
+        test_data: TestData,
+        playwright_operations: PlaywrightOperations,
+        dashboard_page: DashboardPage,
     ):
         self.upload_time = ""
+        self.test_data = test_data
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
         self.consent_page = ConsentPage(playwright_operations)
         self.children_page = ChildrenPage(playwright_operations, dashboard_page)
         self.import_records_page = ImportRecordsPage(
-            playwright_operations, dashboard_page
+            test_data, playwright_operations, dashboard_page
         )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
@@ -142,7 +144,7 @@ class SessionsPage:
         self.po.act(locator=self.upload_time, action=actions.CLICK_LINK)
 
     def verify_upload_output(self, file_path: str):
-        _expected_errors = self.tdo.get_expected_errors(file_path=file_path)
+        _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             # Verify messages individually
             for _msg in _expected_errors:
@@ -299,7 +301,7 @@ class SessionsPage:
 
     def get_session_id_from_offline_excel(self):
         file_path = self.download_offline_recording_excel()
-        return self.tdo.get_session_id(file_path)
+        return self.test_data.get_session_id(file_path)
 
     def add_gillick_competence(
         self, is_competent: bool, competence_details: str
@@ -515,7 +517,7 @@ class SessionsPage:
     def __import_class_list_and_select_year_groups(
         self, file_paths, location: Location
     ):
-        _input_file_path, _ = self.tdo.get_file_paths(file_paths=file_paths)
+        _input_file_path, _ = self.test_data.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_location(location)
         self.click_import_class_list()
@@ -591,11 +593,11 @@ class SessionsPage:
         location: Location,
         verify_on_children: bool = False,
     ):
-        _input_file_path, _output_file_path = self.tdo.get_file_paths(
+        _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
         if verify_on_children:
-            _cl = self.tdo.create_child_list_from_file(
+            _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
             )
         self.click_import_class_list()

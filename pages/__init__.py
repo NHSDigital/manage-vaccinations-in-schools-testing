@@ -29,8 +29,8 @@ def dashboard_page(page):
 
 
 @pytest.fixture
-def import_records_page(playwright_operations, dashboard_page):
-    return ImportRecordsPage(playwright_operations, dashboard_page)
+def import_records_page(test_data, playwright_operations, dashboard_page):
+    return ImportRecordsPage(test_data, playwright_operations, dashboard_page)
 
 
 @pytest.fixture
@@ -39,8 +39,8 @@ def log_in_page(page):
 
 
 @pytest.fixture
-def programmes_page(playwright_operations, dashboard_page):
-    return ProgrammesPage(playwright_operations, dashboard_page)
+def programmes_page(test_data, playwright_operations, dashboard_page):
+    return ProgrammesPage(test_data, playwright_operations, dashboard_page)
 
 
 @pytest.fixture
@@ -49,8 +49,8 @@ def school_moves_page(playwright_operations, dashboard_page):
 
 
 @pytest.fixture
-def sessions_page(playwright_operations, dashboard_page):
-    return SessionsPage(playwright_operations, dashboard_page)
+def sessions_page(test_data, playwright_operations, dashboard_page):
+    return SessionsPage(test_data, playwright_operations, dashboard_page)
 
 
 @pytest.fixture

@@ -11,7 +11,8 @@ from requests.auth import HTTPBasicAuth
 
 from libs.playwright_ops import PlaywrightOperations
 from libs.generic_constants import audit_log_paths
-from libs.mavis_constants import test_data_values
+from libs.test_data import TestData
+from libs.organisation import Organisation
 from libs.wrappers import get_current_datetime
 
 
@@ -22,6 +23,11 @@ def pytest_addoption(parser):
 @pytest.fixture(scope="session")
 def base_url() -> str:
     return os.environ["BASE_URL"]
+
+
+@pytest.fixture(scope="session")
+def organisation() -> Organisation:
+    return Organisation(name="SAIS Organisation 1", ods_code="R1L")
 
 
 @pytest.fixture(scope="session")
@@ -124,23 +130,28 @@ def page(reset_environment_before_run, page):
     return page
 
 
+@pytest.fixture(scope="session")
+def test_data(organisation):
+    return TestData(organisation)
+
+
 @pytest.fixture
 def playwright_operations(page, screenshots_path):
     return PlaywrightOperations(page, screenshots_path)
 
 
 @pytest.fixture
-def log_in_as_nurse(nurse, log_in_page):
+def log_in_as_nurse(nurse, organisation, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_role(**nurse, organisation=test_data_values.ORG_CODE)
+    log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
     yield
     log_in_page.log_out()
 
 
 @pytest.fixture
-def log_in_as_admin(admin, log_in_page):
+def log_in_as_admin(admin, organisation, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_role(**admin, organisation=test_data_values.ORG_CODE)
+    log_in_page.log_in_and_select_organisation(**admin, organisation=organisation)
     yield
     log_in_page.log_out()
 

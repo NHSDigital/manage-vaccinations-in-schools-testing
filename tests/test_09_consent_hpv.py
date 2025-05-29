@@ -1,19 +1,18 @@
 import pytest
 
-from libs.mavis_constants import Location, test_data_file_paths, test_data_values
+from libs.mavis_constants import Location, test_data_file_paths
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
 
 helper = ParentalConsentHelper()
-organisation = test_data_values.ORG_CODE
 
 
 @pytest.fixture
-def get_session_link(nurse, dashboard_page, log_in_page, sessions_page):
+def get_session_link(nurse, organisation, dashboard_page, log_in_page, sessions_page):
     try:
         log_in_page.navigate()
-        log_in_page.log_in_and_select_role(**nurse, organisation=organisation)
+        log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
         link = sessions_page.get_hpv_consent_url()
@@ -21,7 +20,7 @@ def get_session_link(nurse, dashboard_page, log_in_page, sessions_page):
         yield link
     finally:
         log_in_page.navigate()
-        log_in_page.log_in_and_select_role(**nurse, organisation=organisation)
+        log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(Location.SCHOOL_1)
         log_in_page.log_out()
