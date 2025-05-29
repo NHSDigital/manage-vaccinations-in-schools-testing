@@ -313,7 +313,7 @@ class SessionsPage:
 
     def get_session_id_from_offline_excel(self):
         file_path = self.download_offline_recording_excel()
-        return self.tdo.get_session_id(excel_path=file_path)
+        return self.tdo.get_session_id(file_path)
 
     def add_gillick_competence(
         self, is_competent: bool, competence_details: str
