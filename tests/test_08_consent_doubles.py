@@ -9,21 +9,8 @@ helper = ParentalConsentHelper()
 
 
 @pytest.fixture
-def url(nurse, organisation, schools, dashboard_page, log_in_page, sessions_page):
-    try:
-        log_in_page.navigate()
-        log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
-        dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0])
-        url = sessions_page.get_online_consent_url(Programme.MENACWY, Programme.TD_IPV)
-        log_in_page.log_out()
-        yield url
-    finally:
-        log_in_page.navigate()
-        log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
-        log_in_page.log_out()
+def url(get_online_consent_url):
+    yield from get_online_consent_url(Programme.MENACWY, Programme.TD_IPV)
 
 
 @pytest.mark.consent
