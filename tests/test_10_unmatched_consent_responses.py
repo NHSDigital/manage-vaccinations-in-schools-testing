@@ -38,15 +38,15 @@ def test_archive_record(go_to_unmatched_consent_responses, unmatched_page):
 @pytest.mark.unmatchedconsentresponses
 @pytest.mark.order(1003)
 @pytest.mark.dependency(depends=["ucr_records_exist"])
-def test_create_record(go_to_unmatched_consent_responses, unmatched_page):
-    unmatched_page.create_record()  # Covers MAVIS-1812
+def test_create_record(go_to_unmatched_consent_responses, schools, unmatched_page):
+    unmatched_page.create_record(schools[0])  # Covers MAVIS-1812
 
 
 @pytest.mark.unmatchedconsentresponses
 @pytest.mark.order(1004)
 @pytest.mark.dependency(depends=["ucr_records_exist"])
-def test_match_record(setup_ucr_match, unmatched_page):
-    unmatched_page.match_with_record()  # Covers MAVIS-1812
+def test_match_record(setup_ucr_match, schools, unmatched_page):
+    unmatched_page.match_with_record(schools[0])  # Covers MAVIS-1812
 
 
 @pytest.mark.unmatchedconsentresponses

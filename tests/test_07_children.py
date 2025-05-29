@@ -1,21 +1,18 @@
 import pytest
 
-from mavis.test.mavis_constants import mavis_file_types, test_data_file_paths, Location
+from mavis.test.mavis_constants import mavis_file_types, test_data_file_paths
 
 
 @pytest.fixture
-def setup_children_page(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_children_page(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.CLASS_CHILDREN_FILTER,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.CLASS_CHILDREN_FILTER,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -23,22 +20,19 @@ def setup_children_page(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
-def setup_change_nhsno(log_in_as_nurse, dashboard_page, sessions_page):
+def setup_change_nhsno(log_in_as_nurse, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            file_paths=test_data_file_paths.CLASS_CHANGE_NHSNO,
-            location=Location.SCHOOL_1,
+            test_data_file_paths.CLASS_CHANGE_NHSNO,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -46,26 +40,29 @@ def setup_change_nhsno(log_in_as_nurse, dashboard_page, sessions_page):
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
 def setup_mav_853(
-    log_in_as_nurse, dashboard_page, import_records_page, programmes_page, sessions_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    import_records_page,
+    programmes_page,
+    sessions_page,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            for_today=True, location=Location.SCHOOL_1
-        )
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.import_class_list_records_from_school_session(
             file_paths=test_data_file_paths.CLASS_SESSION_ID
         )
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
-        programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_853)
+        programmes_page.upload_cohorts(test_data_file_paths.COHORTS_MAV_853)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.import_vaccination_records(
@@ -79,7 +76,7 @@ def setup_mav_853(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.mark.children

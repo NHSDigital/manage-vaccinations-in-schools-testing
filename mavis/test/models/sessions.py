@@ -2,12 +2,7 @@ from typing import Final
 
 from ..data import TestData
 from ..generic_constants import actions, escape_characters, properties, wait_time
-from ..mavis_constants import (
-    PrescreeningQuestion,
-    Location,
-    mavis_file_types,
-    Programme,
-)
+from ..mavis_constants import mavis_file_types, PrescreeningQuestion, Programme
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import (
     datetime,
@@ -214,8 +209,8 @@ class SessionsPage:
         )
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
-    def click_location(self, location: Location):
-        self.po.act(locator=location, action=actions.CLICK_LINK)
+    def click_location(self, location):
+        self.po.act(locator=str(location), action=actions.CLICK_LINK)
 
     def click_import_class_list(self):
         self.po.act(locator=self.LNK_IMPORT_CLASS_LIST, action=actions.CLICK_LINK)
@@ -223,9 +218,9 @@ class SessionsPage:
     def click_continue(self):
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def choose_file_child_records(self, file_path: str, location: Location):
+    def choose_file_child_records(self, file_path: str):
         self.po.act(
-            locator=location.upload_label,
+            locator="Upload file",
             action=actions.SELECT_FILE,
             value=file_path,
         )
@@ -494,13 +489,11 @@ class SessionsPage:
     def click_get_consent_response(self):
         self.po.act(locator=self.BTN_GET_CONSENT_RESPONSE, action=actions.CLICK_BUTTON)
 
-    def update_triage_outcome_positive(
-        self, file_paths, location: Location = Location.SCHOOL_1
-    ):
-        self.__import_class_list_and_select_year_groups(file_paths, location=location)
+    def update_triage_outcome_positive(self, location: str, file_paths):
+        self.__import_class_list_and_select_year_groups(location, file_paths)
         self.__update_triage_consent(consent_given=True, location=location)
 
-    def verify_mav_nnn(self, location: Location = Location.SCHOOL_1):
+    def verify_mav_nnn(self, location: str):
         self.click_scheduled()
         self.click_location(location)
         self.click_consent_tab()
@@ -508,25 +501,25 @@ class SessionsPage:
         self.click_get_consent_response()
         self.__handle_consent_approval(location=location)
 
-    def update_triage_outcome_consent_refused(
-        self, file_paths, location: Location = Location.SCHOOL_1
-    ):
-        self.__import_class_list_and_select_year_groups(file_paths, location=location)
+    def update_triage_outcome_consent_refused(self, location: str, file_paths: str):
+        self.__import_class_list_and_select_year_groups(location, file_paths)
         self.__update_triage_consent(consent_given=False, location=location)
 
     def __import_class_list_and_select_year_groups(
-        self, file_paths, location: Location
+        self,
+        location: str,
+        file_paths: str,
     ):
         _input_file_path, _ = self.test_data.get_file_paths(file_paths=file_paths)
         self.click_scheduled()
         self.click_location(location)
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(file_path=_input_file_path, location=location)
+        self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self.dashboard_page.click_mavis()
 
-    def __update_triage_consent(self, consent_given: bool, location: Location):
+    def __update_triage_consent(self, consent_given: bool, location: str):
         self.dashboard_page.click_sessions()
         self.click_scheduled()
         self.click_location(location)
@@ -534,7 +527,7 @@ class SessionsPage:
         self.click_child_full_name()
         self.click_get_consent_response()
         if consent_given:
-            self.__handle_consent_approval(location=location)
+            self.__handle_consent_approval(location)
         else:
             self.__handle_refused_consent()
 
@@ -545,7 +538,7 @@ class SessionsPage:
         self.click_activity_log()
         self.verify_activity_log_entry(consent_given=False)
 
-    def __handle_consent_approval(self, location: Location):
+    def __handle_consent_approval(self, location: str):
         self.consent_page.service_give_consent()
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_sessions()
@@ -558,7 +551,7 @@ class SessionsPage:
         self.click_save_triage()
         self.verify_triage_updated()
 
-    def schedule_a_valid_session(self, location: Location, for_today: bool = False):
+    def schedule_a_valid_session(self, location: str, for_today: bool = False):
         _future_date = (
             get_offset_date(offset_days=0)
             if for_today
@@ -570,18 +563,18 @@ class SessionsPage:
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
-    def edit_a_session_to_today(self, location: Location):
+    def edit_a_session_to_today(self, location: str):
         _future_date = get_offset_date(offset_days=0)
         self.click_scheduled()
         self.click_location(location)
         self.__edit_session(to_date=_future_date)
 
-    def delete_all_sessions(self, location: Location):
+    def delete_all_sessions(self, location: str):
         self.click_scheduled()
         self.click_location(location)
         self.__delete_sessions()
 
-    def create_invalid_session(self, location: Location):
+    def create_invalid_session(self, location: str):
         _invalid_date = "20251332"
         self.click_unscheduled()
         self.click_location(location)
@@ -590,7 +583,6 @@ class SessionsPage:
     def upload_class_list(
         self,
         file_paths: str,
-        location: Location,
         verify_on_children: bool = False,
     ):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
@@ -602,7 +594,7 @@ class SessionsPage:
             )
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(file_path=_input_file_path, location=location)
+        self.choose_file_child_records(file_path=_input_file_path)
         self.click_continue()
         self._record_upload_time()
 
@@ -614,11 +606,9 @@ class SessionsPage:
         if verify_on_children:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
-    def set_gillick_competence_for_student(
-        self, location: Location = Location.SCHOOL_1
-    ):
+    def set_gillick_competence_for_student(self, session: str):
         self.click_today()
-        self.click_location(location)
+        self.click_location(session)
         self.click_consent_tab()
         self.click_child_full_name()
         self.click_assess_gillick_competence()

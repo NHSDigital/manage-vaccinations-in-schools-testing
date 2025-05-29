@@ -1,11 +1,12 @@
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 import nhs_number
 import pandas as pd
 
-from ..mavis_constants import mavis_file_types, Location
+from ..mavis_constants import mavis_file_types
 from ..organisation import Organisation
+from ..school import School
 from ..wrappers import (
     get_current_datetime,
     get_current_time,
@@ -22,8 +23,13 @@ class TestData:
     template_path = Path(__file__).parent
     working_path = Path("working")
 
-    def __init__(self, organisation: Optional[Organisation] = None):
+    def __init__(
+        self,
+        organisation: Optional[Organisation] = None,
+        schools: Optional[List[School]] = None,
+    ):
         self.organisation = organisation
+        self.schools = schools
         self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
 
     def read_file(self, filename):
@@ -52,9 +58,6 @@ class TestData:
         _hist_dt = get_offset_date(offset_days=-(365 * 2))
 
         replacements = {
-            "<<SCHOOL_1_NAME>>": Location.SCHOOL_1,
-            "<<SCHOOL_2_NAME>>": Location.SCHOOL_2,
-            "<<SCHOOL_1_URN>>": Location.SCHOOL_1.urn,
             "<<VACCS_DATE>>": _dt[:8],
             "<<VACCS_TIME>>": get_current_time(),
             "<<HIST_VACCS_DATE>>": _hist_dt,
@@ -63,6 +66,11 @@ class TestData:
 
         if self.organisation:
             replacements["<<ORG_CODE>>"] = self.organisation.ods_code
+
+        if self.schools:
+            for index, school in enumerate(self.schools):
+                replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
+                replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
         for year_group in range(8, 12):
             replacements[f"<<DOB_YEAR_{year_group}>>"] = (

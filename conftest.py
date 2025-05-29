@@ -56,8 +56,8 @@ def superuser() -> dict[str, str]:
 
 
 @pytest.fixture(scope="session")
-def reset_endpoint(base_url) -> str:
-    return urllib.parse.urljoin(base_url, os.environ["RESET_ENDPOINT"])
+def reset_endpoint(base_url, organisation) -> str:
+    return urllib.parse.urljoin(base_url, os.path.join("reset", organisation.ods_code))
 
 
 @pytest.fixture(scope="session")

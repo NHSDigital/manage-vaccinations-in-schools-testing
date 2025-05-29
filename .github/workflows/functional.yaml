@@ -32,7 +32,6 @@ jobs:
       - name: Test on Chromium
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -49,7 +48,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -65,7 +63,6 @@ jobs:
       - name: Test on Firefox
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -82,7 +79,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -99,7 +95,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -116,7 +111,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -133,7 +127,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -150,7 +143,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
@@ -167,7 +159,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          RESET_ENDPOINT: ${{ vars.RESET_ENDPOINT }}
           NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
           NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
           SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}

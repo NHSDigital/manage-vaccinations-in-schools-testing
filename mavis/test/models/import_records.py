@@ -2,7 +2,7 @@ from typing import Final, Optional
 
 from ..data import TestData
 from ..generic_constants import actions, escape_characters, properties, wait_time
-from ..mavis_constants import mavis_file_types, Location
+from ..mavis_constants import mavis_file_types
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import get_link_formatted_date_time
 
@@ -82,6 +82,7 @@ class ImportRecordsPage:
 
     def import_class_list_records(
         self,
+        location: str,
         file_paths: str,
         year_groups: Optional[list[int]] = None,
         verify_on_children_page: bool = False,
@@ -105,7 +106,7 @@ class ImportRecordsPage:
         self.po.act(
             locator=self.LBL_SCHOOL_NAME,
             action=actions.SELECT_FROM_LIST,
-            value=Location.SCHOOL_1,
+            value=str(location),
         )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self._select_year_groups(*year_groups)
@@ -221,7 +222,7 @@ class ImportRecordsPage:
             self.po.act(locator=f"Year {year_group}", action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def verify_mav_855(self):
+    def verify_mav_855(self, location: str):
         self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
         self.po.act(locator=self.LNK_CHILD_MAV_855, action=actions.CLICK_LINK)
         self.po.act(
@@ -230,5 +231,5 @@ class ImportRecordsPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=Location.SCHOOL_1,
+            expected_value=str(location),
         )

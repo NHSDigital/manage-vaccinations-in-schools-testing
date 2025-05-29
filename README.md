@@ -131,7 +131,7 @@ $ pytest -m regression
 
 #### Resetting the environment
 
-By default, when running the tests, a call is made to `$RESET_ENDPOINT` which
+By default, when running the tests, a call is made to `/reset/{ods_code}` which
 is designed to reset the environment for a clean test run. It can sometimes be
 necessary to skip resetting the environment (when running a single test for
 example). To do this, there is `--skip-reset` flag available:

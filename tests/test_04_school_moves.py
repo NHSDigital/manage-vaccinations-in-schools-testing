@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import test_data_file_paths, Location
+from mavis.test.mavis_constants import test_data_file_paths
 
 
 @pytest.fixture
@@ -9,71 +9,69 @@ def setup_tests(log_in_as_nurse, reset_environment):
 
 
 @pytest.fixture
-def setup_move_and_ignore(setup_tests, dashboard_page, sessions_page):
+def setup_move_and_ignore(setup_tests, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
+        sessions_page.schedule_a_valid_session(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(location=Location.SCHOOL_2)
+        sessions_page.schedule_a_valid_session(schools[1])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            location=Location.SCHOOL_1,
-            file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
+            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(location=Location.SCHOOL_2)
+        sessions_page.click_location(schools[1])
         sessions_page.upload_class_list(
-            location=Location.SCHOOL_2,
-            file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
+            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
         )
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(location=Location.SCHOOL_2)
+        sessions_page.delete_all_sessions(schools[1])
 
 
 @pytest.fixture
-def setup_move_to_homeschool_and_unknown(setup_tests, dashboard_page, sessions_page):
+def setup_move_to_homeschool_and_unknown(
+    setup_tests, schools, dashboard_page, sessions_page
+):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(Location.SCHOOL_1)
-        sessions_page.click_location(Location.SCHOOL_1)
+        sessions_page.schedule_a_valid_session(schools[0])
+        sessions_page.click_location(schools[0])
         sessions_page.upload_class_list(
-            location=Location.SCHOOL_1,
-            file_paths=test_data_file_paths.CLASS_MOVES_UNKNOWN_HOMESCHOOLED,
+            test_data_file_paths.CLASS_MOVES_UNKNOWN_HOMESCHOOLED,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
-        sessions_page.click_location(location=Location.SCHOOL_2)
+        sessions_page.click_location(schools[1])
         sessions_page.upload_class_list(
-            location=Location.SCHOOL_2,
-            file_paths=test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
+            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
         )
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(Location.SCHOOL_1)
+        sessions_page.delete_all_sessions(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(location=Location.SCHOOL_2)
+        sessions_page.delete_all_sessions(schools[2])
 
 
 @pytest.mark.schoolmoves
 @pytest.mark.order(401)
-def test_confirm_and_ignore(setup_move_and_ignore, school_moves_page):
-    school_moves_page.confirm_and_ignore_moves()
+def test_confirm_and_ignore(setup_move_and_ignore, schools, school_moves_page):
+    school_moves_page.confirm_and_ignore_moves(schools)
 
 
 # Add tests for school moves to Homeschool or Unknown school

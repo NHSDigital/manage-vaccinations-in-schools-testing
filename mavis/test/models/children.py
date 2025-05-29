@@ -1,7 +1,6 @@
 from typing import Final
 
 from ..generic_constants import actions, properties, wait_time
-from ..mavis_constants import Location
 from ..playwright_ops import PlaywrightOperations
 
 from .dashboard import DashboardPage
@@ -75,7 +74,7 @@ class ChildrenPage:
         )
 
     def verify_activity_log_for_created_or_matched_child(
-        self, child_name: str, is_created: bool
+        self, child_name: str, location: str, *, is_created: bool
     ):
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
@@ -91,7 +90,7 @@ class ChildrenPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"Invited to the session at {Location.SCHOOL_1}",
+            expected_value=f"Invited to the session at {location}",
         )
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed

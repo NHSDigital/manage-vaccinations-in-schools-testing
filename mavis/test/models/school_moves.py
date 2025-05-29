@@ -1,10 +1,11 @@
-from typing import Final
+from typing import Final, List
 
 import pandas as pd
 
 from ..generic_constants import actions, escape_characters, properties
-from ..mavis_constants import Location, report_headers
+from ..mavis_constants import report_headers
 from ..playwright_ops import PlaywrightOperations
+from ..school import School
 from ..wrappers import get_current_datetime
 
 from .dashboard import DashboardPage
@@ -79,7 +80,7 @@ class SchoolMovesPage:
             expected_value=_success_message,
         )
 
-    def confirm_and_ignore_moves(self):
+    def confirm_and_ignore_moves(self, schools: List[School]):
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_school_moves()
         self.po.verify(
@@ -90,7 +91,7 @@ class SchoolMovesPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"Move Class list updated {Location.SCHOOL_1} to {Location.SCHOOL_2}",
+            expected_value=f"Move Class list updated {schools[0]} to {schools[1]}",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
@@ -100,7 +101,7 @@ class SchoolMovesPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"Class list updated {Location.SCHOOL_1} to {Location.SCHOOL_2}",
+            expected_value=f"Class list updated {schools[0]} to {schools[1]}",
         )
         self.confirm_school_move()
         self.ignore_school_move()
