@@ -297,17 +297,17 @@ class ProgrammesPage:
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.HPV)
         self.sessions_page.click_get_consent_response()
-        self.consent.parent_1_verbal_positive(change_phone=False)
+        self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.MENACWY)
         self.sessions_page.click_get_consent_response()
-        self.consent.parent_1_verbal_positive(
+        self.consent_page.parent_1_verbal_positive(
             change_phone=False, programme=Programme.MENACWY
         )
         self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
         self.sessions_page.click_programme_tab(Programme.TD_IPV)
         self.sessions_page.click_get_consent_response()
-        self.consent.parent_1_verbal_positive(
+        self.consent_page.parent_1_verbal_positive(
             change_phone=False, programme=Programme.TD_IPV
         )
         self.sessions_page.register_child_as_attending(
