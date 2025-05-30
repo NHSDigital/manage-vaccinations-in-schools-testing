@@ -20,7 +20,7 @@
         <boolProp name="independentListPerThread">true</boolProp>
       </com.blazemeter.jmeter.RandomCSVDataSetConfig>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
         <stringProp name="delimiter">,</stringProp>
         <stringProp name="fileEncoding">UTF-8</stringProp>
         <stringProp name="filename">${BaseDirectory}${InputFile}</stringProp>
@@ -32,7 +32,7 @@
         <stringProp name="variableNames"></stringProp>
       </CSVDataSet>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -72,6 +72,51 @@
           <elementProp name="InputFile" elementType="Argument">
             <stringProp name="Argument.name">InputFile</stringProp>
             <stringProp name="Argument.value">${__P(InputFile, null)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables for standalone execution" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="AuthToken" elementType="Argument">
+            <stringProp name="Argument.name">AuthToken</stringProp>
+            <stringProp name="Argument.value">${__P(AuthToken,bWFuYWdlOnZhY2NpbmF0aW9ucw==)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="UrnMapping" elementType="Argument">
+            <stringProp name="Argument.name">UrnMapping</stringProp>
+            <stringProp name="Argument.value">urn-mapping.csv</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="Threads" elementType="Argument">
+            <stringProp name="Argument.name">Threads</stringProp>
+            <stringProp name="Argument.value">${__P(Threads, 1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="Duration" elementType="Argument">
+            <stringProp name="Argument.name">Duration</stringProp>
+            <stringProp name="Argument.value">${__P(Duration, 3600)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="RampUp" elementType="Argument">
+            <stringProp name="Argument.name">RampUp</stringProp>
+            <stringProp name="Argument.value">${__P(RampUp, 1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="Loops" elementType="Argument">
+            <stringProp name="Argument.name">Loops</stringProp>
+            <stringProp name="Argument.value">${__P(Loops, 1000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="BaseDirectory" elementType="Argument">
+            <stringProp name="Argument.name">BaseDirectory</stringProp>
+            <stringProp name="Argument.value">${__P(Directory, ${__groovy(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__groovy(File.separator,)})}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="InputFile" elementType="Argument">
+            <stringProp name="Argument.name">InputFile</stringProp>
+            <stringProp name="Argument.value">${__P(InputFile, cohortnew.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -130,7 +175,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Open a consent session for tomorrow" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Open a consent session for tomorrow">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -141,7 +186,7 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
@@ -237,7 +282,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign-in" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign-in">
             <stringProp name="HTTPSampler.port">0</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
@@ -291,13 +336,23 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
               <stringProp name="BoundaryExtractor.match_number">1</stringProp>
             </BoundaryExtractor>
             <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">organisationId</stringProp>
+              <stringProp name="RegexExtractor.regex">organisation_id&quot; type=&quot;submit&quot; value=&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">orgNotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number"></stringProp>
+            </RegexExtractor>
+            <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Select Organisations" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Select Organisations">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Organisation" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Organisation">
             <stringProp name="HTTPSampler.port">0</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.path">users/organisations</stringProp>
@@ -310,7 +365,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
                 <elementProp name="organisation_id" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">organisation_id</stringProp>
-                  <stringProp name="Argument.value">2</stringProp>
+                  <stringProp name="Argument.value">${organisationId}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -365,11 +420,11 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Edit session">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Edit session" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session Edit">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session Edit" enabled="true">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -423,7 +478,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session Dates">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session Dates" enabled="true">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -505,7 +560,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             <boolProp name="displaySystemProperties">false</boolProp>
           </DebugSampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Edit date list">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Edit date list" enabled="true">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -565,7 +620,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             </ResponseAssertion>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Add tomorrows date">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Add tomorrows date" enabled="true">
             <stringProp name="TestPlan.comments">This adds tomorrow as a session date, if it already exists then it will intentionally fail</stringProp>
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
@@ -2146,7 +2201,7 @@ else
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/record" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/record">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2198,9 +2253,9 @@ else
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
-                  <stringProp name="553898084">We&apos;ve sent a confirmation to ${PARENT_1_EMAIL}</stringProp>
+                  <stringProp name="387093943">We&apos;ve sent a confirmation to</stringProp>
                 </collectionProp>
                 <stringProp name="Assertion.custom_message"></stringProp>
                 <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -3735,9 +3790,9 @@ else
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
-                  <stringProp name="553898084">We&apos;ve sent a confirmation to ${PARENT_1_EMAIL}</stringProp>
+                  <stringProp name="387093943">We&apos;ve sent a confirmation to</stringProp>
                 </collectionProp>
                 <stringProp name="Assertion.custom_message"></stringProp>
                 <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -3753,7 +3808,7 @@ else
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
