@@ -32,12 +32,6 @@ jobs:
       - name: Test on Chromium
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -48,12 +42,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -63,12 +51,6 @@ jobs:
       - name: Test on Firefox
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -79,12 +61,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -95,12 +71,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -111,12 +81,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -127,12 +91,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -143,12 +101,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |
@@ -159,12 +111,6 @@ jobs:
         if: always()
         env:
           BASE_URL: ${{ vars.BASE_URL }}
-          NURSE_PASSWORD: ${{ secrets.NURSE_PASSWORD }}
-          NURSE_USERNAME: ${{ secrets.NURSE_USERNAME }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          SUPERUSER_USERNAME: ${{ secrets.SUPERUSER_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
         run: |

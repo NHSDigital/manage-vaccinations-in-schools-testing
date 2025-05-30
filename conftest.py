@@ -1,21 +1,13 @@
 import os
 from pathlib import Path
-import time
 from typing import Optional
-import urllib.parse
 from datetime import datetime
 
 import pytest
-import requests
-from requests.auth import HTTPBasicAuth
 
 from mavis.test.generic_constants import audit_log_paths
 from mavis.test.playwright_ops import PlaywrightOperations
 from mavis.test.wrappers import get_current_datetime
-
-
-def pytest_addoption(parser):
-    parser.addoption("--skip-reset", action="store_true", default=False)
 
 
 @pytest.fixture(scope="session")
@@ -24,45 +16,11 @@ def base_url() -> str:
 
 
 @pytest.fixture(scope="session")
-def admin() -> dict[str, str]:
-    return {
-        "username": os.environ["ADMIN_USERNAME"],
-        "password": os.environ["ADMIN_PASSWORD"],
-    }
-
-
-@pytest.fixture(scope="session")
 def basic_auth() -> dict[str, str]:
     return {
         "username": os.environ["BASIC_AUTH_USERNAME"],
         "password": os.environ["BASIC_AUTH_PASSWORD"],
     }
-
-
-@pytest.fixture(scope="session")
-def nurse() -> dict[str, str]:
-    return {
-        "username": os.environ["NURSE_USERNAME"],
-        "password": os.environ["NURSE_PASSWORD"],
-    }
-
-
-@pytest.fixture(scope="session")
-def superuser() -> dict[str, str]:
-    return {
-        "username": os.environ["SUPERUSER_USERNAME"],
-        "password": os.environ["SUPERUSER_PASSWORD"],
-    }
-
-
-@pytest.fixture(scope="session")
-def reset_endpoint(base_url, organisation) -> str:
-    return urllib.parse.urljoin(base_url, os.path.join("reset", organisation.ods_code))
-
-
-@pytest.fixture(scope="session")
-def skip_reset(pytestconfig) -> bool:
-    return pytestconfig.getoption("skip_reset")
 
 
 @pytest.fixture(scope="session")
@@ -79,29 +37,6 @@ def screenshots_path(pytestconfig, browser_name: str) -> Optional[Path]:
 
 
 @pytest.fixture(scope="session")
-def reset_environment(reset_endpoint, basic_auth, skip_reset):
-    if skip_reset:
-
-        def _reset_environment():
-            pass
-
-        return _reset_environment
-    else:
-        auth = HTTPBasicAuth(**basic_auth)
-
-        def _reset_environment():
-            for _ in range(3):
-                response = requests.get(url=reset_endpoint, auth=auth)
-                if response.ok:
-                    break
-                time.sleep(3)
-            else:
-                response.raise_for_status()
-
-        return _reset_environment
-
-
-@pytest.fixture(scope="session")
 def browser_context_args(browser_context_args, basic_auth):
     return {**browser_context_args, "http_credentials": basic_auth}
 
@@ -113,16 +48,6 @@ def browser_type_launch_args(browser_type_launch_args, pytestconfig):
     return {**browser_type_launch_args, "slow_mo": slow_mo}
 
 
-@pytest.fixture(scope="session")
-def reset_environment_before_run(reset_environment):
-    reset_environment()
-
-
-@pytest.fixture
-def page(reset_environment_before_run, page):
-    return page
-
-
 @pytest.fixture
 def playwright_operations(page, screenshots_path):
     return PlaywrightOperations(page, screenshots_path)
@@ -131,7 +56,7 @@ def playwright_operations(page, screenshots_path):
 @pytest.fixture
 def log_in_as_nurse(nurse, organisation, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
+    log_in_page.log_in_and_select_organisation(nurse, organisation)
     yield
     log_in_page.log_out()
 
@@ -139,7 +64,7 @@ def log_in_as_nurse(nurse, organisation, log_in_page):
 @pytest.fixture
 def log_in_as_admin(admin, organisation, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_organisation(**admin, organisation=organisation)
+    log_in_page.log_in_and_select_organisation(admin, organisation)
     yield
     log_in_page.log_out()
 
@@ -151,9 +76,7 @@ def get_online_consent_url(
     def wrapper(*programmes):
         try:
             log_in_page.navigate()
-            log_in_page.log_in_and_select_organisation(
-                **nurse, organisation=organisation
-            )
+            log_in_page.log_in_and_select_organisation(nurse, organisation)
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(schools[0])
             url = sessions_page.get_online_consent_url(*programmes)
@@ -161,9 +84,7 @@ def get_online_consent_url(
             yield url
         finally:
             log_in_page.navigate()
-            log_in_page.log_in_and_select_organisation(
-                **nurse, organisation=organisation
-            )
+            log_in_page.log_in_and_select_organisation(nurse, organisation)
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(schools[0])
             log_in_page.log_out()

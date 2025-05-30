@@ -129,17 +129,6 @@ Tests for individual endpoints can be executed using individual markers. For exa
 $ pytest -m regression
 ```
 
-#### Resetting the environment
-
-By default, when running the tests, a call is made to `/reset/{ods_code}` which
-is designed to reset the environment for a clean test run. It can sometimes be
-necessary to skip resetting the environment (when running a single test for
-example). To do this, there is `--skip-reset` flag available:
-
-```shell
-$ pytest tests/test_unmatched_consent_responses.py --skip-reset
-```
-
 #### Tracing
 
 There's an option available to run tests with tracing, allowing the test to be

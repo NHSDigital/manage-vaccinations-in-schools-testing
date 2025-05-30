@@ -1,8 +1,8 @@
 from typing import Final, List
 
-from ..clinic import Clinic
 from ..data import TestData
 from ..generic_constants import actions, escape_characters, properties, wait_time
+from ..onboarding import Clinic
 from ..mavis_constants import mavis_file_types, PrescreeningQuestion, Programme
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import (
@@ -754,7 +754,7 @@ class SessionsPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"JOY, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse.",
+            expected_value=f"NURSE, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse.",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
