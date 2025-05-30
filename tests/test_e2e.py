@@ -3,6 +3,8 @@ import pytest
 from mavis.test.mavis_constants import test_data_file_paths
 from mavis.test.wrappers import wait_for_reset
 
+pytestmark = pytest.mark.e2e
+
 
 @pytest.fixture(autouse=True)
 def setup_tests(
@@ -26,8 +28,6 @@ def setup_tests(
     log_in_page.log_out()
 
 
-@pytest.mark.e2e
-@pytest.mark.order(5001)
 def test_e2e(schools, dashboard_page, programmes_page, sessions_page):
     dashboard_page.click_programmes()
     programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_E2E_1)

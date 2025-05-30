@@ -2,6 +2,8 @@ import pytest
 
 from mavis.test.mavis_constants import test_data_file_paths
 
+pytestmark = pytest.mark.school_moves
+
 
 @pytest.fixture
 def setup_tests(log_in_as_nurse, reset_environment):
@@ -68,22 +70,15 @@ def setup_move_to_homeschool_and_unknown(
         sessions_page.delete_all_sessions(schools[2])
 
 
-@pytest.mark.schoolmoves
-@pytest.mark.order(401)
 def test_confirm_and_ignore(setup_move_and_ignore, schools, school_moves_page):
     school_moves_page.confirm_and_ignore_moves(schools)
 
 
-# Add tests for school moves to Homeschool or Unknown school
-@pytest.mark.schoolmoves
-@pytest.mark.order(402)
 @pytest.mark.skip(reason="Test under construction")
 def test_to_homeschool_and_unknown(setup_move_to_homeschool_and_unknown):
     pass
 
 
-@pytest.mark.schoolmoves
-@pytest.mark.order(403)
 def test_download_report(setup_move_and_ignore, dashboard_page, school_moves_page):
     dashboard_page.click_mavis()
     dashboard_page.click_school_moves()

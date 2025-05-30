@@ -361,7 +361,7 @@ class ConsentPage:
             expected_value=expected_message,
         )
 
-    def change_parent_phone(self):  # MAVIS-1778
+    def change_parent_phone(self):
         self.po.act(
             locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value="7700900000"
         )

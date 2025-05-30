@@ -40,6 +40,5 @@ def setup_mav_965(
 
 @pytest.mark.rav
 @pytest.mark.bug
-@pytest.mark.order(9901)
 def test_programmes_rav_prescreening_questions(setup_mav_965, schools, programmes_page):
     programmes_page.verify_mav_965(schools[0])

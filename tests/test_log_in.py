@@ -1,14 +1,14 @@
 from playwright.sync_api import expect
 import pytest
 
+pytestmark = pytest.mark.log_in
+
 
 @pytest.fixture(autouse=True)
 def go_to_log_in_page(start_page):
     start_page.navigate_and_start()
 
 
-@pytest.mark.log_in
-@pytest.mark.order(101)
 @pytest.mark.parametrize("username", ("", "invalid"))
 @pytest.mark.parametrize("password", ("", "invalid"))
 def test_invalid(username, password, log_in_page):
@@ -25,8 +25,6 @@ def users(admin, nurse, superuser) -> dict[str, dict[str, str]]:
     }
 
 
-@pytest.mark.log_in
-@pytest.mark.order(102)
 @pytest.mark.parametrize("role", ("admin", "nurse", "superuser"))
 def test_valid(role, users, organisation, dashboard_page, log_in_page):
     log_in_page.log_in(**users[role])

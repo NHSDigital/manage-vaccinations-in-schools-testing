@@ -1,6 +1,9 @@
+import allure
 import pytest
 
 from mavis.test.mavis_constants import mavis_file_types, test_data_file_paths
+
+pytestmark = pytest.mark.children
 
 
 @pytest.fixture
@@ -79,22 +82,17 @@ def setup_mav_853(
         sessions_page.delete_all_sessions(schools[0])
 
 
-@pytest.mark.children
-@pytest.mark.order(701)
 def test_headers_and_filter(setup_children_page, children_page):
     children_page.verify_headers()
     children_page.verify_filter()
 
 
-@pytest.mark.children
+@allure.issue("MAV-853")
 @pytest.mark.bug
-@pytest.mark.order(702)
 def test_details_mav_853(setup_mav_853, children_page):
-    children_page.verify_mav_853()  # MAV-853
+    children_page.verify_mav_853()
 
 
-@pytest.mark.children
 @pytest.mark.bug
-@pytest.mark.order(703)
 def test_change_nhsno(setup_change_nhsno, children_page):
     children_page.change_nhs_no()
