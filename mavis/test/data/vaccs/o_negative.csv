@@ -1,43 +1,29 @@
 Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
 Row 3 ORGANISATION_CODE: Enter an organisation code.
-#Row 4 SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
-#Row 5 SCHOOL_NAME: Enter a school name.
 Row 5 SCHOOL_NAME or School is required
 Row 6 NHS_NUMBER: should be a valid NHS number with 10 characters
 Row 7 NHS_NUMBER: should be a valid NHS number with 10 characters
-#Row 8 PERSON_FORENAME: Enter a first name.
 Row 8 PERSON_FORENAME or First name is required
-#Row 9 PERSON_SURNAME: Enter a last name.
 Row 9 PERSON_SURNAME or Surname is required
-#Row 10 PERSON_DOB: Enter a date of birth in the correct format.
 Row 10 PERSON_DOB or Date of birth is required
 Row 11 PERSON_DOB: Enter a date of birth in the correct format.
-#Row 12 PERSON_DOB: Enter a date of birth in the past.
 Row 12 DATE_OF_VACCINATION: The vaccination date is before the date of birth. PERSON_DOB: Enter a date of birth in the past.
 Row 13 PERSON_DOB: Enter a date of birth in the correct format.
-#Row 14 PERSON_GENDER_CODE/PERSON_GENDER: Enter a gender or gender code.
 Row 14 PERSON_GENDER_CODE, PERSON_GENDER or Sex is required
 Row 15 PERSON_GENDER_CODE: Enter a valid gender or gender code.
-#Row 16 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA
 Row 16 PERSON_POSTCODE or Postcode is required
 Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
-#Row 18 DATE_OF_VACCINATION: Enter a date in the correct format
 Row 18 DATE_OF_VACCINATION or Event date is required
-#Row 19 DATE_OF_VACCINATION: The vaccination date is in the future
 Row 19 DATE_OF_VACCINATION: The vaccination date is in the future. DATE_OF_VACCINATION: Enter a date that matches when the vaccination session took place.
-#Row 20 PROGRAMME: This programme is not available in this session
 Row 20 PROGRAMME or Vaccination type is required VACCINE_GIVEN: is required
 Row 21 VACCINE_GIVEN: This vaccine is not available in this session.
-#Row 22 BATCH_NUMBER: Enter a batch number.
 Row 22 BATCH_NUMBER or Vaccination batch number is required
 Row 23 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 24 ANATOMICAL_SITE: Enter an anatomical site.
 Row 25 ANATOMICAL_SITE: Enter a anatomical site that is appropriate for the vaccine.
-#Row 26 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
 Row 26 DOSE_SEQUENCE or Vaccination type is required
 Row 27 DOSE_SEQUENCE: must be less than or equal to 3
 !Row 28 DATE_OF_VACCINATION: Enter a date for a current session
-#Row 28 CARE_SETTING: Enter a care setting.
 Row 29 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
 Row 30 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
 Row 31 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
@@ -46,16 +32,10 @@ Row 32 CLINIC_NAME: Enter a clinic name
 Row 33 TIME_OF_VACCINATION: Enter a time in the correct format.
 !Row 33 TIME_OF_VACCINATION: Enter a time in the correct format.TIME_OF_VACCINATION: Enter a time in the correct format.
 Row 34 REASON_NOT_VACCINATED: must be blank
-#Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column.BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
 Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
 !Row 36 DATE_OF_VACCINATION: Enter a date for a current session
 Row 36 CARE_SETTING: Enter a valid care setting.
 Row 37 TIME_OF_VACCINATION: Enter a time in the past.
-#Row 38 REASON_NOT_VACCINATED: must be blank
 Row 38 REASON_NOT_VACCINATED: must be blank
-#Row 39 DOSE_SEQUENCE: The dose sequence number cannot be greater than 5. Enter a dose sequence number, for example, 1, 2, 3, 4 or 5.
-#Row 40 DOSE_SEQUENCE: must be less than or equal to 5
 Row 40 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
-#Row 41 DOSE_SEQUENCE: The dose sequence number cannot be greater than 3. Enter a dose sequence number, for example, 1, 2 or 3.
-#Row 42 DOSE_SEQUENCE: must be less than or equal to 3
 Row 42 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
