@@ -8,12 +8,10 @@ from ..wrappers import get_link_formatted_date_time
 
 from .children import ChildrenPage
 from .dashboard import DashboardPage
-from .vaccines import VaccinesPage
 
 
 class ImportRecordsPage:
     LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
-
     LNK_IMPORT_RECORDS: Final[str] = "Import records"
     RDO_CHILD_RECORDS: Final[str] = "Child records"
     RDO_CLASS_LIST_RECORDS: Final[str] = "Class list records"
@@ -24,6 +22,7 @@ class ImportRecordsPage:
     LBL_VACCINATION_RECORDS: Final[str] = "Upload file"
     LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1: Final[str] = "Upload file"
     LBL_SCHOOL_NAME: Final[str] = "Which school is this class"
+    LBL_HPV_VACCINE_NAME: Final[str] = "Gardasil 9 (HPV)"
     LBL_MAIN: Final[str] = "main"
     LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
 
@@ -37,7 +36,6 @@ class ImportRecordsPage:
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
         self.children_page = ChildrenPage(playwright_operations, dashboard_page)
-        self.vaccines_page = VaccinesPage(playwright_operations)
         self.upload_time = ""
 
     @property
@@ -225,9 +223,7 @@ class ImportRecordsPage:
     def verify_mav_855(self, location: str):
         self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
         self.po.act(locator=self.LNK_CHILD_MAV_855, action=actions.CLICK_LINK)
-        self.po.act(
-            locator=self.vaccines_page.LBL_VACCINE_NAME, action=actions.CLICK_LINK
-        )
+        self.po.act(locator=self.LBL_HPV_VACCINE_NAME, action=actions.CLICK_LINK)
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,

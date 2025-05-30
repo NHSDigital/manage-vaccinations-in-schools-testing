@@ -72,8 +72,8 @@ def unmatched_page(playwright_operations, dashboard_page):
 
 
 @pytest.fixture
-def vaccines_page(playwright_operations):
-    return VaccinesPage(playwright_operations)
+def vaccines_page(page):
+    return VaccinesPage(page)
 
 
 @pytest.fixture(scope="session")
