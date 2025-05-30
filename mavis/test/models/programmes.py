@@ -4,7 +4,6 @@ from typing import Final
 import pandas as pd
 
 from ..data import TestData
-from ..generic_constants import actions, properties
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import format_datetime_for_upload_link, get_current_datetime
 
@@ -16,7 +15,6 @@ from ..mavis_constants import (
 from ..step import step
 from playwright.sync_api import Page, expect
 
-
 from .children import ChildrenPage
 from .consent import ConsentPage
 from .dashboard import DashboardPage
@@ -25,7 +23,6 @@ from .sessions import SessionsPage
 
 
 class ProgrammesPage:
-
     LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
     LNK_MAV_909_CHILD: Final[str] = "MAV_909, MAV_909"
 
@@ -50,7 +47,8 @@ class ProgrammesPage:
         )
 
         self.programme_links = {
-            programme: page.get_by_role("link", name=programme) for programme in Programme
+            programme: page.get_by_role("link", name=programme)
+            for programme in Programme
         }
 
         programme_page_links = (
