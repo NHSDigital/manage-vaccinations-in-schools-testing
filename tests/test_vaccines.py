@@ -2,9 +2,9 @@ import pytest
 
 from mavis.test.mavis_constants import Vaccine
 
+pytestmark = pytest.mark.vaccines
 
-@pytest.mark.vaccines
-@pytest.mark.order(601)
+
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_add_change_archive(
     log_in_as_nurse, vaccine, dashboard_page, vaccines_page

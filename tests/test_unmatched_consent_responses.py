@@ -61,13 +61,11 @@ def go_to_unmatched_consent_responses(log_in_as_nurse, dashboard_page):
     dashboard_page.click_unmatched_consent_responses()
 
 
-@pytest.mark.order(1002)
 @allure.issue("MAVIS-1782")
 def test_archive_record(unmatched_page, child_name):
     unmatched_page.archive_record(*child_name)
 
 
-@pytest.mark.order(1004)
 @allure.issue("MAVIS-1812")
 @pytest.mark.parametrize("child_name", [("CMatch1", "CMatch1")])
 def test_match_record(
@@ -82,7 +80,6 @@ def test_match_record(
     unmatched_page.match_with_record(schools[0], "CMatch1", "CMatch1")
 
 
-@pytest.mark.order(1003)
 @allure.issue("MAVIS-1812")
 @pytest.mark.parametrize("child_name", [("Helena", "Hoyte")])
 @pytest.mark.parametrize("child_date_of_birth", [(20, 8, 2011)])
@@ -93,7 +90,6 @@ def test_create_record_with_nhs_number(unmatched_page, schools, child_name):
     unmatched_page.create_record(schools[0], *child_name)
 
 
-@pytest.mark.order(1005)
 @allure.issue("MAVIS-1781")
 def test_create_record_with_no_nhs_number(unmatched_page, schools, child_name):
     unmatched_page.create_record_with_no_nhs_number(schools[0], *child_name)

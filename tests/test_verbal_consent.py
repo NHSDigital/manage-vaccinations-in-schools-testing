@@ -1,3 +1,4 @@
+import allure
 import pytest
 
 from mavis.test.mavis_constants import test_data_file_paths
@@ -26,7 +27,6 @@ def setup_gillick(log_in_as_nurse, schools, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions(schools[0])
 
 
-@pytest.mark.order(902)
 def test_gillick_competence(setup_gillick, schools, sessions_page):
     sessions_page.set_gillick_competence_for_student(schools[0])
 
@@ -54,10 +54,10 @@ def setup_mavis_1696(log_in_as_nurse, schools, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions(schools[0])
 
 
+@allure.issue("MAVIS-1696")
 @pytest.mark.bug
-@pytest.mark.order(903)
 def test_invalid_consent(setup_mavis_1696, sessions_page):
-    sessions_page.bug_mavis_1696()  # MAVIS-1696
+    sessions_page.bug_mavis_1696()
 
 
 @pytest.fixture
@@ -83,10 +83,10 @@ def setup_mavis_1864(log_in_as_nurse, schools, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions(schools[0])
 
 
+@allure.issue("MAVIS-1864")
 @pytest.mark.bug
-@pytest.mark.order(905)
 def test_parent_provides_consent_twice(setup_mavis_1864, sessions_page):
-    sessions_page.bug_mavis_1864()  # MAVIS-1864
+    sessions_page.bug_mavis_1864()
 
 
 @pytest.fixture
@@ -112,7 +112,7 @@ def setup_mavis_1818(log_in_as_nurse, schools, dashboard_page, sessions_page):
         sessions_page.delete_all_sessions(schools[0])
 
 
+@allure.issue("MAVIS-1818")
 @pytest.mark.bug
-@pytest.mark.order(906)
 def test_conflicting_consent_with_gillick_consent(setup_mavis_1818, sessions_page):
-    sessions_page.bug_mavis_1818()  # MAVIS-1818
+    sessions_page.bug_mavis_1818()

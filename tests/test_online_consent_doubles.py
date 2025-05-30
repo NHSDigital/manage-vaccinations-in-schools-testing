@@ -16,7 +16,6 @@ def start_consent(url, page, start_page):
     start_page.start()
 
 
-@pytest.mark.order(801)
 def test_refused(consent_page, faker, schools):
     consent_page.fill_child_name_details("ROSS", "HAYES", "AKAFirst", "AKALast")
     consent_page.fill_child_dob(10, 8, 2009)
@@ -35,7 +34,6 @@ def test_refused(consent_page, faker, schools):
     """)
 
 
-@pytest.mark.order(802)
 @pytest.mark.parametrize("consent_for", ("both", "menacwy", "td_ipv"))
 @pytest.mark.parametrize("change_school", (False, True))
 @pytest.mark.parametrize("health_question", (False, True))
