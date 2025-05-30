@@ -2,8 +2,8 @@ from typing import Final, Optional
 
 from ..generic_constants import actions, properties
 from ..mavis_constants import Programme
+from ..onboarding import School
 from ..playwright_ops import PlaywrightOperations
-from ..school import School
 
 
 class ConsentPage:
