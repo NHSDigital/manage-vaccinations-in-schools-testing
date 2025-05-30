@@ -8,7 +8,6 @@ from .dashboard import DashboardPage
 
 
 class UnmatchedPage:
-    LBL_NO_RECORDS: Final[str] = "!There are currently no unmatched consent responses."
     LBL_MAIN: Final[str] = "main"
     LBL_PARAGRAPH: Final[str] = "paragraph"
     LBL_ARCHIVE_SUCCESS_MESSAGE: Final[str] = (
@@ -24,19 +23,12 @@ class UnmatchedPage:
     TXT_NOTES: Final[str] = "Notes"
     BTN_CREATE_RECORD_FROM: Final[str] = "Create a new record from"
     BTN_ARCHIVE_RESPONSE: Final[str] = "Archive response"
-    # TBL_CHILDREN: Final[str] = "unmatched consent responses Response dateChildParent or guardianAction"
     TBL_CHILDREN: Final[str] = "table"
     LBL_RESPONSE_COL: Final[str] = "Response"
-    LBL_CHILD_NAME_FOR_ARCHIVAL: Final[str] = "CONSENTRECORD, NonMatching"
-    LBL_CHILD_NAME_FOR_CREATION: Final[str] = "HOYTE, HELENA"
-    LBL_CHILD_NAME_FOR_MATCHING: Final[str] = "TWIST, BERYL"
-    LBL_CHILD_NO_NHS_NUMBER: Final[str] = "NONUMBER, NoNHS"
-    LBL_CHILD_NAME_TO_MATCH: Final[str] = "CMATCH1, CMatch1"
     TXT_SEARCH: Final[str] = "Search"
     BTN_SEARCH: Final[str] = "Search"
     LNK_SELECT_FILTERED_CHILD: Final[str] = "Select"
     BTN_LINK_RESPONSE_WITH_RECORD: Final[str] = "Link response with record"
-    LBL_CONSENT_MATCHED: str = f"Consent matched for {LBL_CHILD_NAME_TO_MATCH}"
 
     def __init__(
         self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
@@ -45,55 +37,52 @@ class UnmatchedPage:
         self.dashboard_page = dashboard_page
         self.children_page = ChildrenPage(playwright_operations, dashboard_page)
 
-    def verify_records_exist(self):
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=self.LBL_NO_RECORDS,
-            exact=False,
-        )
+    def _get_child_full_name(self, first_name: str, last_name: str) -> str:
+        return f"{last_name.upper()}, {first_name}"
 
-    def match_with_record(self, location):
+    def match_with_record(self, location: str, first_name: str, last_name: str):
+        full_name = self._get_child_full_name(first_name, last_name)
+
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
-            row_value=self.LBL_CHILD_NAME_FOR_MATCHING,
+            row_value=full_name,
         )
         self.po.act(locator=self.LNK_MATCH, action=actions.CLICK_LINK, index=_row_num)
         self.po.act(
             locator=self.TXT_SEARCH,
             action=actions.FILL,
-            value=self.LBL_CHILD_NAME_TO_MATCH,
+            value=full_name,
         )
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
         self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.act(
-            locator=self.LBL_CHILD_NAME_TO_MATCH, action=actions.CLICK_LINK, index=0
-        )
+        self.po.act(locator=full_name, action=actions.CLICK_LINK, index=0)
         self.po.act(
             locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=actions.CLICK_BUTTON
         )
         self.po.verify(
             locator=self.LBL_PARAGRAPH,
             property=properties.TEXT,
-            expected_value=self.LBL_CONSENT_MATCHED,
+            expected_value=f"Consent matched for {full_name}",
         )
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"!{self.LBL_CHILD_NAME_FOR_MATCHING}",
+            expected_value="There are currently no unmatched consent responses.",
         )
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
-            self.LBL_CHILD_NAME_TO_MATCH, location, is_created=False
-        )  # MAVIS-1812
+            full_name, location, is_created=False
+        )
 
-    def archive_record(self):
+    def archive_record(self, first_name: str, last_name: str):
+        full_name = self._get_child_full_name(first_name, last_name)
+
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
-            row_value=self.LBL_CHILD_NAME_FOR_ARCHIVAL,
+            row_value=full_name,
         )
         self.po.act(
             locator=self.LNK_ARCHIVE_RECORD,
@@ -110,15 +99,17 @@ class UnmatchedPage:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
-            expected_value=f"!{self.LBL_CHILD_NAME_FOR_ARCHIVAL}",
+            expected_value="There are currently no unmatched consent responses.",
             exact=False,
-        )  # MAVIS-1782
+        )
 
-    def create_record(self, location: str):
+    def create_record(self, location: str, first_name: str, last_name: str):
+        full_name = self._get_child_full_name(first_name, last_name)
+
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
-            row_value=self.LBL_CHILD_NAME_FOR_CREATION,
+            row_value=full_name,
         )
         self.po.act(
             locator=self.LNK_PARENT_NAME,
@@ -135,14 +126,18 @@ class UnmatchedPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
-            self.LBL_CHILD_NAME_FOR_CREATION, location, is_created=True
-        )  # MAVIS-1896
+            full_name, location, is_created=True
+        )
 
-    def create_record_with_no_nhs_number(self, location: str):
+    def create_record_with_no_nhs_number(
+        self, location: str, first_name: str, last_name: str
+    ):
+        full_name = self._get_child_full_name(first_name, last_name)
+
         _row_num, _ = self.po.get_table_cell_location_for_value(
             table_locator=self.TBL_CHILDREN,
             col_header=self.LBL_RESPONSE_COL,
-            row_value=self.LBL_CHILD_NO_NHS_NUMBER,
+            row_value=full_name,
         )
         self.po.act(
             locator=self.LNK_PARENT_NAME,
@@ -159,5 +154,5 @@ class UnmatchedPage:
         self.dashboard_page.click_mavis()
         self.dashboard_page.click_children()
         self.children_page.verify_activity_log_for_created_or_matched_child(
-            self.LBL_CHILD_NO_NHS_NUMBER, location, is_created=True
-        )  # MAVIS-1781
+            full_name, location, is_created=True
+        )

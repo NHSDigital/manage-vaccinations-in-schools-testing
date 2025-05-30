@@ -23,11 +23,7 @@ class TestData:
     template_path = Path(__file__).parent
     working_path = Path("working")
 
-    def __init__(
-        self,
-        organisation: Optional[Organisation] = None,
-        schools: Optional[List[School]] = None,
-    ):
+    def __init__(self, organisation: Organisation, schools: List[School]):
         self.organisation = organisation
         self.schools = schools
         self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
@@ -130,50 +126,6 @@ class TestData:
         file_content = self.read_file(file_path)
 
         return file_content.splitlines() if file_content else None
-
-    def read_spreadsheet(
-        self, filename: str, sheet_name: str = "Sheet1"
-    ) -> pd.DataFrame:
-        """
-        Read a spreadsheet into a DataFrame.
-
-        Args:
-            filename (str): Path to the spreadsheet file.
-            sheet_name (str, optional): Name of the sheet to read. Defaults to "Sheet1".
-
-        Returns:
-            pd.DataFrame: DataFrame containing the spreadsheet data.
-        """
-        return self.clean_df(
-            pd.read_excel(
-                self.template_path / filename,
-                sheet_name=sheet_name,
-                header=0,
-                dtype="str",
-                index_col=0,
-            )
-        )
-
-    def clean_df(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Clean a DataFrame by replacing unwanted values.
-
-        Args:
-            df (pd.DataFrame): DataFrame to clean.
-
-        Returns:
-            pd.DataFrame: Cleaned DataFrame.
-        """
-        pd.set_option("future.no_silent_downcasting", True)
-        df = df.fillna(value="0", inplace=False)
-        df.replace(to_replace="True", value=True, inplace=True)
-        df.replace(to_replace="False", value=False, inplace=True)
-        df.replace(to_replace="null", value=None, inplace=True)
-        df.replace(to_replace="None", value=None, inplace=True)
-        df.replace(to_replace="NaN", value=None, inplace=True)
-        df.replace(to_replace="0", value=None, inplace=True)
-        df.replace(to_replace="", value=None, inplace=True)
-        return df
 
     def get_file_paths(
         self, file_paths: str, session_id: Optional[str] = None

@@ -3,6 +3,7 @@ from typing import Final, Optional
 from ..generic_constants import actions, properties
 from ..mavis_constants import Programme
 from ..playwright_ops import PlaywrightOperations
+from ..school import School
 
 
 class ConsentPage:
@@ -88,18 +89,18 @@ class ConsentPage:
 
     def fill_child_name_details(
         self,
-        child_first_name: str,
-        child_last_name: str,
+        first_name: str,
+        last_name: str,
         known_as_first: Optional[str] = None,
         known_as_last: Optional[str] = None,
     ) -> None:
         self.po.act(
             locator=self.TXT_CHILD_FIRST_NAME,
             action=actions.FILL,
-            value=child_first_name,
+            value=first_name,
         )
         self.po.act(
-            locator=self.TXT_CHILD_LAST_NAME, action=actions.FILL, value=child_last_name
+            locator=self.TXT_CHILD_LAST_NAME, action=actions.FILL, value=last_name
         )
 
         if known_as_first or known_as_last:
@@ -123,14 +124,18 @@ class ConsentPage:
 
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def fill_child_dob(self, dob_day: str, dob_month: str, dob_year: str) -> None:
-        self.po.act(locator=self.TXT_DOB_DAY, action=actions.FILL, value=dob_day)
-        self.po.act(locator=self.TXT_DOB_MONTH, action=actions.FILL, value=dob_month)
-        self.po.act(locator=self.TXT_DOB_YEAR, action=actions.FILL, value=dob_year)
+    def fill_child_dob(self, dob_day: int, dob_month: int, dob_year: int) -> None:
+        self.po.act(locator=self.TXT_DOB_DAY, action=actions.FILL, value=str(dob_day))
+        self.po.act(
+            locator=self.TXT_DOB_MONTH, action=actions.FILL, value=str(dob_month)
+        )
+        self.po.act(locator=self.TXT_DOB_YEAR, action=actions.FILL, value=str(dob_year))
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_child_school(self, school_name: str) -> None:
-        if school_name == self.po.get_element_property(
+    def select_child_school(self, school: School) -> None:
+        name = str(school)
+
+        if name == self.po.get_element_property(
             locator=self.LBL_SCHOOL_NAME, property=properties.TEXT, by_test_id=True
         ):
             self.po.act(
@@ -145,7 +150,7 @@ class ConsentPage:
             self.po.act(
                 locator=self.TXT_SCHOOL_NAME,
                 action=actions.SELECT_FROM_LIST,
-                value=school_name,
+                value=name,
             )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
@@ -153,19 +158,26 @@ class ConsentPage:
         self,
         parent_name: str,
         relation: str,
-        email: str,
-        phone: Optional[str],
+        *,
+        email: Optional[str] = None,
+        phone: Optional[str] = None,
     ) -> None:
         self.po.act(
             locator=self.TXT_PARENT_FULL_NAME, action=actions.FILL, value=parent_name
         )
         self.po.act(locator=relation, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=email)
+
+        if email:
+            self.po.act(
+                locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=email
+            )
+
         if phone:
             self.po.act(
                 locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value=phone
             )
             self.po.act(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
+
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def check_phone_options(self) -> None:
@@ -191,7 +203,7 @@ class ConsentPage:
                     locator=self.RDO_DOUBLES_CONSENT_MENACWY,
                     action=actions.RADIO_BUTTON_SELECT,
                 )
-            case "td/ipv":
+            case "td_ipv":
                 self.po.act(
                     locator=self.RDO_DOUBLES_CONSENT_ONE,
                     action=actions.RADIO_BUTTON_SELECT,
@@ -336,7 +348,7 @@ class ConsentPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     # --- Shared methods for confirmation and verification ---
-    def click_confirm_details(self, scenario_id: str) -> None:
+    def click_confirm_details(self, scenario_id: str = "") -> None:
         if "mavis-1778" in scenario_id.lower():
             self.po.act(locator=self.LNK_CHANGE_PHONE, action=actions.CLICK_LINK)
             self.change_parent_phone()

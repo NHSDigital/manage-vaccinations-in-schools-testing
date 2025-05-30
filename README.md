@@ -137,7 +137,7 @@ necessary to skip resetting the environment (when running a single test for
 example). To do this, there is `--skip-reset` flag available:
 
 ```shell
-$ pytest tests/test_10_unmatched_consent_responses.py --skip-reset
+$ pytest tests/test_11_unmatched_consent_responses.py --skip-reset
 ```
 
 #### Tracing
