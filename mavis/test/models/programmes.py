@@ -2,7 +2,6 @@ from typing import Final
 
 import pandas as pd
 
-from mavis.test import school
 
 from ..mavis_constants import (
     ReportFormat,
@@ -13,7 +12,7 @@ from ..playwright_ops import PlaywrightOperations
 from ..step import step
 from playwright.sync_api import Page, expect
 
-from ..data  import TestData
+from ..data import TestData
 from ..wrappers import get_current_datetime, get_link_formatted_date_time
 
 from .children import ChildrenPage
@@ -24,7 +23,6 @@ from .sessions import SessionsPage
 
 
 class ProgrammesPage:
-
     LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
     LNK_MAV_909_CHILD: Final[str] = "MAV_909, MAV_909"
 
@@ -49,7 +47,8 @@ class ProgrammesPage:
         )
 
         self.programme_links = {
-            programme: page.get_by_role("link", name=programme) for programme in Programme
+            programme: page.get_by_role("link", name=programme)
+            for programme in Programme
         }
 
         programme_page_links = (
