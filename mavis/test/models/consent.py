@@ -88,7 +88,6 @@ class ConsentPage:
 
     def fill_child_name_details(
         self,
-        scenario_id: str,
         child_first_name: str,
         child_last_name: str,
         known_as_first: Optional[str] = None,
@@ -124,15 +123,13 @@ class ConsentPage:
 
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def fill_child_dob(
-        self, scenario_id: str, dob_day: str, dob_month: str, dob_year: str
-    ) -> None:
+    def fill_child_dob(self, dob_day: str, dob_month: str, dob_year: str) -> None:
         self.po.act(locator=self.TXT_DOB_DAY, action=actions.FILL, value=dob_day)
         self.po.act(locator=self.TXT_DOB_MONTH, action=actions.FILL, value=dob_month)
         self.po.act(locator=self.TXT_DOB_YEAR, action=actions.FILL, value=dob_year)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_child_school(self, scenario_id: str, school_name: str) -> None:
+    def select_child_school(self, school_name: str) -> None:
         if school_name == self.po.get_element_property(
             locator=self.LBL_SCHOOL_NAME, property=properties.TEXT, by_test_id=True
         ):
@@ -154,7 +151,6 @@ class ConsentPage:
 
     def fill_parent_details(
         self,
-        scenario_id: str,
         parent_name: str,
         relation: str,
         email: str,
@@ -172,13 +168,12 @@ class ConsentPage:
             self.po.act(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def check_phone_options(self, scenario_id: str) -> None:
+    def check_phone_options(self) -> None:
         self.po.act(locator=self.CHK_MOBILE_ONLY_TEXT, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def select_consent_for_double_vaccinations(
         self,
-        scenario_id: str,
         consent_for: Optional[str] = None,
     ) -> None:
         match (consent_for or "").lower():
@@ -212,9 +207,7 @@ class ConsentPage:
                 )
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_consent_for_hpv_vaccination(
-        self, scenario_id: str, consented: bool
-    ) -> None:
+    def select_consent_for_hpv_vaccination(self, consented: bool) -> None:
         if consented:
             self.po.act(
                 locator=self.CHK_HPV_CONSENT_AGREE, action=actions.CHECKBOX_CHECK
@@ -226,7 +219,7 @@ class ConsentPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_address_details(
-        self, scenario_id: str, line1: str, line2: str, city: str, postcode: str
+        self, line1: str, line2: str, city: str, postcode: str
     ) -> None:
         self.po.act(locator=self.TXT_ADDRESS_LINE_1, action=actions.FILL, value=line1)
         self.po.act(locator=self.TXT_ADDRESS_LINE_2, action=actions.FILL, value=line2)
@@ -246,9 +239,7 @@ class ConsentPage:
     def _get_no_action(self, locator: str) -> str:
         return f"get_by_role('group', name='{locator}').get_by_label('No').check()"
 
-    def select_and_provide_details(
-        self, scenario_id: str, details: Optional[str] = None
-    ) -> None:
+    def select_and_provide_details(self, details: Optional[str] = None) -> None:
         if details:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
@@ -259,7 +250,7 @@ class ConsentPage:
 
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_medical_condition(self, scenario_id: str, notes: Optional[str] = None):
+    def select_medical_condition(self, notes: Optional[str] = None):
         if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
@@ -271,7 +262,7 @@ class ConsentPage:
             self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_severe_reaction(self, scenario_id: str, notes: Optional[str] = None):
+    def select_severe_reaction(self, notes: Optional[str] = None):
         if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
@@ -283,7 +274,7 @@ class ConsentPage:
             self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_extra_support(self, scenario_id: str, notes: Optional[str] = None):
+    def select_extra_support(self, notes: Optional[str] = None):
         if notes:
             self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
             self.po.act(
@@ -295,9 +286,7 @@ class ConsentPage:
             self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
-    def select_consent_not_given_reason(
-        self, scenario_id: str, reason: str, notes: str
-    ) -> None:
+    def select_consent_not_given_reason(self, reason: str, notes: str) -> None:
         match reason.lower():
             case self.VACCINE_ALREADY_RECEIVED:
                 self.po.act(
@@ -353,7 +342,7 @@ class ConsentPage:
             self.change_parent_phone()
         self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
 
-    def verify_final_message(self, scenario_id: str, expected_message: str) -> None:
+    def verify_final_message(self, expected_message: str) -> None:
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
@@ -366,7 +355,7 @@ class ConsentPage:
         )
         self.po.act(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.check_phone_options(scenario_id="")
+        self.check_phone_options()
 
     def parent_1_verbal_positive(
         self, change_phone: bool = True, programme: Programme = Programme.HPV

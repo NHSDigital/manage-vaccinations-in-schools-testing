@@ -45,36 +45,28 @@ class ParentalConsentHelper:
 
     def enter_details_on_mavis(self, page: ConsentPage):
         page.fill_child_name_details(
-            scenario_id=self.scenario_id,
             child_first_name=self.child_first_name,
             child_last_name=self.child_last_name,
             known_as_first=self.child_aka_first,
             known_as_last=self.child_aka_last,
         )
         page.fill_child_dob(
-            scenario_id=self.scenario_id,
             dob_day=self.child_dob_day,
             dob_month=self.child_dob_month,
             dob_year=self.child_dob_year,
         )
-        page.select_child_school(
-            scenario_id=self.scenario_id, school_name=self.school_name
-        )
+        page.select_child_school(school_name=self.school_name)
         page.fill_parent_details(
-            scenario_id=self.scenario_id,
             parent_name=self.parent_name,
             relation=self.relation,
             email=self.email,
             phone=self.phone,
         )
         if self.phone:
-            page.check_phone_options(scenario_id=self.scenario_id)
-        page.select_consent_for_double_vaccinations(
-            scenario_id=self.scenario_id, consent_for=self.consent_for
-        )
+            page.check_phone_options()
+        page.select_consent_for_double_vaccinations(consent_for=self.consent_for)
         if self.consent_for != "none":
             page.fill_address_details(
-                scenario_id=self.scenario_id,
                 line1=self.addr1,
                 line2=self.addr2,
                 city=self.city,
@@ -87,22 +79,16 @@ class ParentalConsentHelper:
                 self.extra_support_details,
                 self.vaccinated_in_past_details,
             ]:
-                page.select_and_provide_details(
-                    scenario_id=self.scenario_id, details=details
-                )
+                page.select_and_provide_details(details=details)
             if self.consent_for.lower() == "both":
                 page.select_and_provide_details(
-                    scenario_id=self.scenario_id,
                     details=self.other_vaccs_in_past_details,
                 )
         if self.consent_for.lower() != "both":
             page.select_consent_not_given_reason(
-                scenario_id=self.scenario_id,
                 reason=self.consent_not_given_reason,
                 notes=self.consent_not_given_details,
             )
 
         page.click_confirm_details(scenario_id=self.scenario_id)
-        page.verify_final_message(
-            scenario_id=self.scenario_id, expected_message=self.expected_message
-        )
+        page.verify_final_message(expected_message=self.expected_message)

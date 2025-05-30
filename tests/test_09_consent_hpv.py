@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import test_data_file_paths
+from mavis.test.mavis_constants import test_data_file_paths, Programme
 
 from .helpers.parental_consent_helper_hpv import ParentalConsentHelper
 
@@ -9,23 +9,8 @@ helper = ParentalConsentHelper()
 
 
 @pytest.fixture
-def get_session_link(
-    nurse, organisation, schools, dashboard_page, log_in_page, sessions_page
-):
-    try:
-        log_in_page.navigate()
-        log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
-        dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0])
-        link = sessions_page.get_hpv_consent_url()
-        log_in_page.log_out()
-        yield link
-    finally:
-        log_in_page.navigate()
-        log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
-        log_in_page.log_out()
+def url(get_online_consent_url):
+    yield from get_online_consent_url(Programme.HPV)
 
 
 @pytest.fixture
@@ -148,9 +133,9 @@ def setup_mavis_1818(log_in_as_nurse, schools, dashboard_page, sessions_page):
     helper.df.iterrows(),
     ids=[tc[0] for tc in helper.df.iterrows()],
 )
-def test_workflow(get_session_link, scenario_data, page, consent_page, start_page):
+def test_workflow(url, scenario_data, page, consent_page, start_page):
     helper.read_data_for_scenario(scenario_data=scenario_data)
-    page.goto(get_session_link)
+    page.goto(url)
     start_page.start()
     helper.enter_details_on_mavis(consent_page)
 
