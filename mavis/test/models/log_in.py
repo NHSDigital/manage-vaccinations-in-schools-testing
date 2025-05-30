@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from ..organisation import Organisation
+from ..onboarding import Organisation, User
 from ..step import step
 
 
@@ -21,9 +21,9 @@ class LogInPage:
         self.page.goto("/users/sign-in")
 
     @step("Log in as {0}")
-    def log_in(self, username: str, password: str):
-        self.username_input.fill(username)
-        self.password_input.fill(password)
+    def log_in(self, user: User):
+        self.username_input.fill(user.username)
+        self.password_input.fill(user.password)
         self.log_in_button.click()
 
     @step("Select organisation {0}")
@@ -34,8 +34,6 @@ class LogInPage:
     def log_out(self):
         self.log_out_button.click()
 
-    def log_in_and_select_organisation(
-        self, username: str, password: str, organisation: Organisation
-    ):
-        self.log_in(username, password)
+    def log_in_and_select_organisation(self, user: User, organisation: Organisation):
+        self.log_in(user)
         self.select_organisation(organisation)

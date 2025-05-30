@@ -6,12 +6,21 @@ pytestmark = pytest.mark.school_moves
 
 
 @pytest.fixture
-def setup_tests(log_in_as_nurse, reset_environment):
-    reset_environment()
+def setup_move_and_ignore(
+    log_in_as_nurse, test_data, schools, dashboard_page, sessions_page
+):
+    # We need to make sure we're uploading the same class with the same NHS numbers.
+    input_file_path, output_file_path = test_data.get_file_paths(
+        test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE
+    )
 
+    def upload_class_list():
+        sessions_page.click_import_class_list()
+        sessions_page.select_year_groups(8, 9, 10, 11)
+        sessions_page.choose_file_child_records(file_path=input_file_path)
+        sessions_page.click_continue()
+        sessions_page.verify_upload_output(file_path=output_file_path)
 
-@pytest.fixture
-def setup_move_and_ignore(setup_tests, schools, dashboard_page, sessions_page):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0])
@@ -22,16 +31,12 @@ def setup_move_and_ignore(setup_tests, schools, dashboard_page, sessions_page):
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_location(schools[0])
-        sessions_page.upload_class_list(
-            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
-        )
+        upload_class_list()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_location(schools[1])
-        sessions_page.upload_class_list(
-            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
-        )
+        upload_class_list()
         yield
     finally:
         dashboard_page.click_mavis()
@@ -44,7 +49,7 @@ def setup_move_and_ignore(setup_tests, schools, dashboard_page, sessions_page):
 
 @pytest.fixture
 def setup_move_to_homeschool_and_unknown(
-    setup_tests, schools, dashboard_page, sessions_page
+    log_in_as_nurse, schools, dashboard_page, sessions_page
 ):
     try:
         dashboard_page.click_sessions()
