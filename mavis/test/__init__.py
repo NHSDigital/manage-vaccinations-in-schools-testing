@@ -2,6 +2,7 @@ from typing import List
 
 import pytest
 
+from .clinic import Clinic
 from .data import TestData
 from .models import (
     ChildrenPage,
@@ -73,6 +74,13 @@ def unmatched_page(playwright_operations, dashboard_page):
 @pytest.fixture
 def vaccines_page(playwright_operations):
     return VaccinesPage(playwright_operations)
+
+
+@pytest.fixture(scope="session")
+def clinics() -> List[Clinic]:
+    return [
+        Clinic(name="The Weimann Institute Clinic"),
+    ]
 
 
 @pytest.fixture(scope="session")

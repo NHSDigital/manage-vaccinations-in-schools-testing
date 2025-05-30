@@ -174,8 +174,8 @@ def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page):
 @pytest.mark.rav
 @pytest.mark.bug
 @pytest.mark.order(529)
-def test_rav_verify_excel_mav_854(setup_mav_854, schools, programmes_page):
-    programmes_page.verify_mav_854(schools[0])  # MAV-854
+def test_rav_verify_excel_mav_854(setup_mav_854, schools, clinics, programmes_page):
+    programmes_page.verify_mav_854(schools, clinics)
 
 
 @pytest.mark.rav

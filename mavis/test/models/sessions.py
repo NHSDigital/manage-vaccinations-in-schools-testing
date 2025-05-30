@@ -1,5 +1,6 @@
 from typing import Final, List
 
+from ..clinic import Clinic
 from ..data import TestData
 from ..generic_constants import actions, escape_characters, properties, wait_time
 from ..mavis_constants import mavis_file_types, PrescreeningQuestion, Programme
@@ -102,7 +103,6 @@ class SessionsPage:
     )
     RDO_YES: Final[str] = "Yes"
     RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
-    RDO_CLINIC_WEIMANN: Final[str] = "The Weimann Institute Clinic"
     BTN_CONFIRM: Final[str] = "Confirm"
     BTN_SEARCH: Final[str] = "Search"
     TXT_SEARCH: Final[str] = "Search"
@@ -794,7 +794,7 @@ class SessionsPage:
             else:
                 self.po.act(locator=question, action=actions.CHECKBOX_CHECK)
 
-    def _vaccinate_child_mav_854(self):
+    def _vaccinate_child_mav_854(self, clinic: Clinic):
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
@@ -803,7 +803,7 @@ class SessionsPage:
             programme=Programme.HPV,
             at_school=False,
         )
-        self.po.act(locator=self.RDO_CLINIC_WEIMANN, action=actions.RADIO_BUTTON_SELECT)
+        self.po.act(locator=str(clinic), action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
         self.po.verify(
