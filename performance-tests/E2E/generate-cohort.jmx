@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
@@ -18,7 +20,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Generate cohort row">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Generate cohort row" enabled="true">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
@@ -161,12 +163,12 @@ writer.close();</stringProp>
           </elementProp>
           <elementProp name="URN" elementType="Argument">
             <stringProp name="Argument.name">URN</stringProp>
-            <stringProp name="Argument.value">${__P(URN, 114624)}</stringProp>
+            <stringProp name="Argument.value">${__P(URN, 100007)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="RowCount" elementType="Argument">
             <stringProp name="Argument.name">RowCount</stringProp>
-            <stringProp name="Argument.value">${__P(RowCount,1000)}</stringProp>
+            <stringProp name="Argument.value">${__P(RowCount,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
