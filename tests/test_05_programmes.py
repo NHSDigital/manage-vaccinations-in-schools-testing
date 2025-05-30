@@ -5,7 +5,7 @@ from mavis.test.mavis_constants import (
     test_data_file_paths,
     Programme,
     Vaccine,
-    ReportFormat
+    ReportFormat,
 )
 
 
@@ -192,7 +192,9 @@ def test_rav_verify_banners(setup_mav_nnn):
 def test_verify_careplus_report_for_hpv(
     setup_cohort_upload_and_reports, programmes_page
 ):
-    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.CAREPLUS)
+    programmes_page.verify_report_format(
+        programme=Programme.HPV, report_format=ReportFormat.CAREPLUS
+    )
 
 
 @pytest.mark.reports
@@ -200,16 +202,22 @@ def test_verify_careplus_report_for_hpv(
 def test_verify_careplus_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
-    programmes_page.verify_report_format(programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS)
+    programmes_page.verify_report_format(
+        programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_report_format(programme=Programme.TD_IPV, report_format=ReportFormat.CAREPLUS)
+    programmes_page.verify_report_format(
+        programme=Programme.TD_IPV, report_format=ReportFormat.CAREPLUS
+    )
 
 
 @pytest.mark.reports
 @pytest.mark.order(553)
 def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.CSV)
+    programmes_page.verify_report_format(
+        programme=Programme.HPV, report_format=ReportFormat.CSV
+    )
 
 
 @pytest.mark.reports
@@ -217,10 +225,14 @@ def test_verify_csv_report_for_hpv(setup_cohort_upload_and_reports, programmes_p
 def test_verify_csv_report_for_doubles(
     setup_cohort_upload_and_reports, dashboard_page, programmes_page
 ):
-    programmes_page.verify_report_format(programme=Programme.MENACWY, report_format=ReportFormat.CSV)
+    programmes_page.verify_report_format(
+        programme=Programme.MENACWY, report_format=ReportFormat.CSV
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_report_format(programme=Programme.TD_IPV, report_format=ReportFormat.CSV)
+    programmes_page.verify_report_format(
+        programme=Programme.TD_IPV, report_format=ReportFormat.CSV
+    )
 
 
 @pytest.mark.reports
@@ -228,4 +240,6 @@ def test_verify_csv_report_for_doubles(
 def test_verify_systmone_report_for_hpv(
     setup_cohort_upload_and_reports, programmes_page
 ):
-    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.SYSTMONE)
+    programmes_page.verify_report_format(
+        programme=Programme.HPV, report_format=ReportFormat.SYSTMONE
+    )
