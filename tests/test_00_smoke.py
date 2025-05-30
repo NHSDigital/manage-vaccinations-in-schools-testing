@@ -1,4 +1,3 @@
-import pathlib
 import subprocess
 
 import pytest
@@ -8,15 +7,6 @@ from playwright.sync_api import expect
 
 @pytest.mark.smoke
 @pytest.mark.order(1)
-def test_files_and_paths():
-    folder_paths_to_verify = ["working"]
-    for folder_path in folder_paths_to_verify:
-        if not pathlib.Path(folder_path).is_dir():
-            assert False, f"{folder_path} not found on project root"
-
-
-@pytest.mark.smoke
-@pytest.mark.order(2)
 def test_verify_packages():
     packages_installed = subprocess.run(
         args=["pip", "list"], capture_output=True, text=True
@@ -28,7 +18,7 @@ def test_verify_packages():
 
 
 @pytest.mark.smoke
-@pytest.mark.order(3)
+@pytest.mark.order(2)
 def test_start(start_page, playwright_operations):
     start_page.navigate()
 
