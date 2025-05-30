@@ -1,7 +1,6 @@
 from datetime import datetime
 from pathlib import Path
 import re  # noqa: F401 - used by eval
-import time
 from typing import Optional
 
 import allure
@@ -14,9 +13,8 @@ from .generic_constants import (
     html_tags,
     properties,
     screenshot_actions,
-    wait_time,
 )
-from .wrappers import convert_time_units_to_seconds, clean_text, clean_file_name
+from .wrappers import clean_text, clean_file_name
 
 
 class PlaywrightOperations:
@@ -172,8 +170,6 @@ class PlaywrightOperations:
                 self._select_file(
                     locator=locator, value=value, exact=exact, index=index
                 )
-            case actions.SELECT_FROM_LIST:
-                self._select_from_list(locator=locator, value=value, index=index)
             case actions.CHECKBOX_CHECK:
                 self._checkbox_check(locator=locator, index=index)
             case actions.CHECKBOX_UNCHECK:
@@ -192,8 +188,6 @@ class PlaywrightOperations:
                 self.page.click(f"text={locator}")
             case actions.CHAIN_LOCATOR_ACTION:
                 eval(f"self.page.{locator}")
-            case actions.WAIT:
-                self._wait(time_out=value)
         if locator is not None:
             self.capture_screenshot(identifier=locator, action=f"after-{action}")
 
@@ -218,7 +212,6 @@ class PlaywrightOperations:
                     aria_roles.LINK, name=locator, exact=exact
                 ).nth(index)
             elem.click()
-            self._check_for_app_crash(locator_info=locator)
 
     def _click_button(self, locator: str, exact: bool, index: int):
         """
@@ -239,7 +232,6 @@ class PlaywrightOperations:
                     aria_roles.BUTTON, name=locator, exact=exact
                 ).nth(index)
             elem.click()
-            self._check_for_app_crash(locator_info=locator)
 
     def _click_label(self, locator: str, exact: bool, index: int):
         """
@@ -337,26 +329,6 @@ class PlaywrightOperations:
                 elem = self.page.get_by_label(locator, exact=exact).nth(index)
             elem.set_input_files(value)
 
-    def _select_from_list(self, locator: str, value: str, index: int):
-        """
-        Select an option from a dropdown list.
-
-        Args:
-            locator (str): Locator of the dropdown list.
-            value (str): Value to select from the list.
-            index (int): Index of the dropdown list if multiple matches are found.
-        """
-        with allure.step(title=f"Selecting [{value}] within list [{locator}]"):
-            self._fill(locator=locator, value=value, exact=False, index=index)
-            self._wait(time_out=wait_time.MIN)
-            if escape_characters.SEPARATOR_CHAR in locator:
-                _location = locator.split(escape_characters.SEPARATOR_CHAR)[0]
-                _locator = locator.split(escape_characters.SEPARATOR_CHAR)[1]
-                elem = self.page.get_by_role(_location, name=_locator).nth(index)
-            else:
-                elem = self.page.get_by_role(aria_roles.OPTION, name=value)
-            elem.click()
-
     def _checkbox_check(self, locator: str, index: int):
         """
         Check a checkbox.
@@ -431,7 +403,6 @@ class PlaywrightOperations:
                 self.act(locator=locator, action=actions.CLICK_LINK, index=index)
             download = download_info.value
             download.save_as(value)
-            self._check_for_app_crash(locator_info=locator)
 
     def _download_file_using_button(self, locator: str, value: str, index: int):
         """
@@ -447,7 +418,6 @@ class PlaywrightOperations:
                 self.act(locator=locator, action=actions.CLICK_BUTTON, index=index)
             download = download_info.value
             download.save_as(value)
-            self._check_for_app_crash(locator_info=locator)
 
     def _verify_text(
         self, locator: str, expected_value: str, actual_value: str, exact: bool
@@ -623,7 +593,6 @@ class PlaywrightOperations:
             elem = self.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"self.page.{locator}")
             else:
                 elem = self.page.get_by_role(locator).nth(0)
@@ -647,7 +616,6 @@ class PlaywrightOperations:
             elem = self.page.get_by_role(_location, name=_locator).nth(index)
         else:
             if chain_locator:
-                self.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
                 elem = eval(f"self.page.{locator}")
             else:
                 elem = self.page.get_by_role(aria_roles.CHECKBOX, name=locator).nth(0)
@@ -676,28 +644,6 @@ class PlaywrightOperations:
                 elem = self.page.get_by_role(aria_roles.LINK, name=locator).nth(index)
         return elem.get_attribute(properties.HREF.name)
 
-    def _wait(self, time_out: str):
-        """
-        Wait for a specified amount of time.
-
-        Args:
-            time_out (str): Time to wait (e.g., "1s", "1m").
-        """
-        with allure.step(title=f"Waiting {time_out}"):
-            _seconds = convert_time_units_to_seconds(time_unit=time_out)
-            time.sleep(_seconds)
-
-    def _check_for_app_crash(self, locator_info: str):
-        """
-        Check if the application has crashed.
-
-        Args:
-            locator_info (str): Information about the locator that caused the crash.
-        """
-        _actual_title = self.page.title()
-        if "Sorry, there’s a problem with the service" in _actual_title:
-            assert False, f"Application has crashed after: {locator_info}"
-
     def get_table_cell_location_for_value(
         self, table_locator: str, col_header: str, row_value: str
     ):
@@ -712,7 +658,6 @@ class PlaywrightOperations:
         Returns:
             tuple: Row and column indices of the cell.
         """
-        self.act(locator=None, action=actions.WAIT, value=wait_time.MED)
         table = self.page.locator(table_locator)
 
         # Get the column index

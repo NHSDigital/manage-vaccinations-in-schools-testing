@@ -1,14 +1,17 @@
+from datetime import datetime, timedelta
+import time
 from typing import Final, List
 
+from playwright.sync_api import expect
+
 from ..data import TestData
-from ..generic_constants import actions, escape_characters, properties, wait_time
+from ..generic_constants import actions, escape_characters, properties
 from ..onboarding import Clinic
 from ..mavis_constants import mavis_file_types, PrescreeningQuestion, Programme
 from ..playwright_ops import PlaywrightOperations
 from ..wrappers import (
-    datetime,
+    format_datetime_for_upload_link,
     get_current_datetime,
-    get_link_formatted_date_time,
     get_offset_date,
 )
 
@@ -35,8 +38,6 @@ class SessionsPage:
     RDO_NO_RESPONSE: Final[str] = "No response"
     RDO_CONSENT_GIVEN: Final[str] = "Consent given"
     RDO_CONFLICTING_CONSENT: Final[str] = "Conflicting consent"
-    LNK_TAB_ACTIVITY_LOG: Final[str] = "Activity log"
-    LNK_TAB_REGISTER: Final[str] = "Register"
     LNK_IMPORT_CLASS_LIST: Final[str] = "Import class lists"
     BTN_CONTINUE: Final[str] = "Continue"
     LNK_ADD_SESSION_DATES: Final[str] = "Add session dates"
@@ -64,12 +65,6 @@ class SessionsPage:
     RDO_NO_GILLICK_COMPETENT: Final[str] = "No"
     TXT_GILLICK_ASSESSMENT_DETAILS: Final[str] = "Assessment notes (optional)"
     BTN_SAVE_CHANGES: Final[str] = "Save changes"
-    LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN: Final[str] = (
-        "Triaged decision: Safe to vaccinate"
-    )
-    LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED: Final[str] = (
-        "Consent refused by Parent1 (Dad)"
-    )
     BTN_GET_CONSENT_RESPONSE: Final[str] = "Get consent response"
     LNK_CONSENT_TAB: Final[str] = "Consent"
     BTN_COMPLETE_GILLICK_ASSESSMENT: Final[str] = "Complete your assessment"
@@ -82,7 +77,6 @@ class SessionsPage:
     LNK_MARK_AS_INVALID: Final[str] = "Mark as invalid"
     LNK_PARENT2: Final[str] = "Parent2"
     TXT_NOTES: Final[str] = "Notes"
-    LNK_REGISTER_ATTENDANCE: Final[str] = "Register"
     LBL_CAPTION: Final[str] = "caption"
     CHK_YEAR8: Final[str] = "Year 8"
     CHK_YEAR9: Final[str] = "Year 9"
@@ -101,8 +95,6 @@ class SessionsPage:
     CHK_NOT_TAKING_MEDICATION: Final[str] = (
         "are not taking any medication which prevents vaccination"
     )
-    RDO_YES: Final[str] = "Yes"
-    RDO_LEFT_ARM_UPPER: Final[str] = "Left arm (upper position)"
     BTN_CONFIRM: Final[str] = "Confirm"
     BTN_SEARCH: Final[str] = "Search"
     TXT_SEARCH: Final[str] = "Search"
@@ -113,7 +105,6 @@ class SessionsPage:
         playwright_operations: PlaywrightOperations,
         dashboard_page: DashboardPage,
     ):
-        self.upload_time = ""
         self.test_data = test_data
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
@@ -129,10 +120,23 @@ class SessionsPage:
         return _formatted_date
 
     def _record_upload_time(self):
-        self.upload_time = get_link_formatted_date_time()
+        self.upload_time = datetime.now()
 
-    def click_uploaded_file_datetime(self):
-        self.po.act(locator=self.upload_time, action=actions.CLICK_LINK)
+    def _click_uploaded_file_datetime(self):
+        # FIXME: This logic is duplicated in three places, we should extract it somewhere else.
+        first_link = self.po.page.get_by_role(
+            "link", name=format_datetime_for_upload_link(self.upload_time)
+        )
+        second_link = self.po.page.get_by_role(
+            "link",
+            name=format_datetime_for_upload_link(
+                self.upload_time + timedelta(minutes=1)
+            ),
+        )
+
+        # This handles when an upload occurs across the minute tick over, for
+        # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
+        first_link.or_(second_link).first.click()
 
     def verify_upload_output(self, file_path: str):
         _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
@@ -177,33 +181,30 @@ class SessionsPage:
     def select_no_response(self):
         self.po.act(locator=self.RDO_NO_RESPONSE, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
     def select_consent_given(self):
         self.po.act(locator=self.RDO_CONSENT_GIVEN, action=actions.RADIO_BUTTON_SELECT)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
     def select_conflicting_consent(self):
         self.po.act(
             locator=self.RDO_CONFLICTING_CONSENT, action=actions.RADIO_BUTTON_SELECT
         )
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
+
+    def click_tab(self, name: str):
+        link = self.po.page.get_by_role("navigation").get_by_role("link", name=name)
+        link.click()
+        link.get_by_role("strong").wait_for()
 
     def click_programme_tab(self, programme: Programme):
-        self.po.act(locator=programme, action=actions.CLICK_LINK)
+        self.click_tab(str(programme))
 
     def click_register_tab(self):
-        self.po.act(
-            locator=self.LNK_TAB_REGISTER, action=actions.CLICK_LINK, exact=False
-        )
+        self.click_tab("Register")
 
     def click_activity_log(self):
-        self.po.act(
-            locator=self.LNK_TAB_ACTIVITY_LOG, action=actions.CLICK_LINK, exact=True
-        )
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
+        self.click_tab("Activity log")
 
     def click_location(self, location):
         self.po.act(locator=str(location), action=actions.CLICK_LINK)
@@ -230,7 +231,6 @@ class SessionsPage:
             action=actions.FILL,
             value=self.LNK_CHILD_NO_CONSENT,
         )
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.LNK_CHILD_NO_CONSENT, action=actions.CLICK_LINK)
 
     def click_child_consent_twice(self):
@@ -279,7 +279,6 @@ class SessionsPage:
             locator=self.RDO_CONSENT_REFUSED, action=actions.RADIO_BUTTON_SELECT
         )
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
 
     def download_offline_recording_excel(self) -> str:
         _file_path = f"working/excel_{get_current_datetime()}.xlsx"
@@ -428,21 +427,16 @@ class SessionsPage:
         )
 
     def verify_activity_log_entry(self, consent_given: bool):
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         if consent_given:
-            self.po.verify(
-                locator=self.LBL_MAIN,
-                property=properties.TEXT,
-                expected_value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_GIVEN,
-                exact=False,
-            )
+            locator = self.po.page.get_by_role(
+                "heading", name="Triaged decision: Safe to vaccinate"
+            ).first
         else:
-            self.po.verify(
-                locator=self.LBL_MAIN,
-                property=properties.TEXT,
-                expected_value=self.LBL_ACTIVITY_LOG_ENTRY_CONSENT_REFUSED,
-                exact=False,
-            )
+            locator = self.po.page.get_by_role(
+                "heading", name="Consent refused by Parent1 (Dad)"
+            ).first
+
+        expect(locator).to_be_visible()
 
     def invalidate_parent2_refusal(self):
         self.po.act(locator=self.LNK_PARENT2, action=actions.CLICK_LINK)
@@ -591,12 +585,12 @@ class SessionsPage:
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
         self.choose_file_child_records(file_path=_input_file_path)
-        self.click_continue()
         self._record_upload_time()
+        self.click_continue()
 
         if self.import_records_page.is_processing_in_background():
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-            self.click_uploaded_file_datetime()
+            self._click_uploaded_file_datetime()
+            self.import_records_page.wait_for_processed()
 
         self.verify_upload_output(file_path=_output_file_path)
         if verify_on_children:
@@ -632,7 +626,6 @@ class SessionsPage:
         self.click_child_conflicting_consent()
         self.invalidate_parent2_refusal()
         self.click_activity_log()
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         # FIXME: Make the following generic
         self.po.verify(
             locator=self.LBL_MAIN,
@@ -687,25 +680,21 @@ class SessionsPage:
         )
 
     def verify_attendance_filters(self):
-        # Check year filters
-        self.po.act(locator=self.LNK_REGISTER_ATTENDANCE, action=actions.CLICK_LINK)
-        self.po.verify(
-            locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children"
-        )
+        self.click_register_tab()
+
+        search_summary = self.po.page.get_by_text("Showing 1 to")
+
+        expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
+
         self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_CHECK)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Showing 1 to 1",
-        )
+
+        expect(search_summary).to_have_text("Showing 1 to 1 of 1 children")
+
         self.po.act(locator=self.CHK_YEAR8, action=actions.CHECKBOX_UNCHECK)
         self.po.act(locator=self.BTN_UPDATE_RESULTS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.verify(
-            locator=self.LBL_MAIN, property=properties.TEXT, expected_value="6 children"
-        )
+
+        expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
 
     def bug_mavis_1818(self):
         self.select_no_response()
@@ -781,18 +770,15 @@ class SessionsPage:
 
     def _answer_prescreening_questions(self, programme: Programme):
         for question in programme.prescreening_questions:
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
+            locator = self.po.page.get_by_role("checkbox", name=question)
+
             if question == PrescreeningQuestion.FEELING_WELL and programme in [
                 Programme.MENACWY,
                 Programme.TD_IPV,
             ]:
-                self.po.verify(
-                    locator=self.CHK_ARE_FEELING_WELL,
-                    property=properties.CHECKBOX_CHECKED,
-                    expected_value=True,
-                )
+                expect(locator).to_be_checked()
             else:
-                self.po.act(locator=question, action=actions.CHECKBOX_CHECK)
+                locator.check()
 
     def _vaccinate_child_mav_854(self, clinic: Clinic):
         self.click_get_consent_response()
@@ -816,7 +802,6 @@ class SessionsPage:
         self.click_register_tab()
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=self.BTN_ATTENDING, action=actions.CLICK_BUTTON)
 
     def verify_search(self):
@@ -834,7 +819,6 @@ class SessionsPage:
             value="a very long string that won't match any names",
         )
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
@@ -845,7 +829,6 @@ class SessionsPage:
     def search_child(self, child_name: str) -> None:
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=child_name, action=actions.CLICK_LINK)
 
     def record_vaccs_for_child(
@@ -853,13 +836,24 @@ class SessionsPage:
     ):
         self.po.act(locator=self.LNK_RECORD_VACCINATIONS, action=actions.CLICK_LINK)
         self.search_child(child_name=child_name)
-        self.po.act(locator=programme, action=actions.CLICK_LINK)
+        self.click_programme_tab(programme)
+
+        # FIXME: Figure out why we need this. Without this pause, the form
+        #  elements seem to clear out when the continue button is pressed
+        #  and the form fails to submit.
+        time.sleep(0.25)
+
         self._answer_prescreening_questions(programme=programme)
-        self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.RDO_LEFT_ARM_UPPER, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=programme.vaccines[0], action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+
+        self.po.page.get_by_role("radio", name="Yes").check()
+        self.po.page.get_by_role("radio", name="Left arm (upper position)").check()
+
+        continue_button = self.po.page.get_by_role("button", name="Continue")
+        continue_button.click()
+
+        self.po.page.get_by_role("radio", name=programme.vaccines[0]).check()
+        continue_button.click()
+
         if at_school:  # only skips MAV-854
             self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
             self.po.verify(

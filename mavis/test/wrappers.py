@@ -7,43 +7,17 @@ from .generic_constants import escape_characters
 faker = Faker()
 
 
-def convert_time_units_to_seconds(time_unit: str) -> int:
-    """
-    Convert time units to seconds.
-    For example: "1m" to 60, "1h" to 3600.
+def format_datetime_for_upload_link(now: datetime) -> str:
+    am_or_pm = now.strftime(format="%p").lower()
 
-    Args:
-        time_unit (str): Time unit to convert (e.g., "1m", "1h", "30s").
-
-    Returns:
-        int: Number of seconds.
-    """
-    seconds = 0
-    if time_unit[-1].lower() == "m":
-        seconds = int(time_unit[0:-1]) * 60
-    elif time_unit[-1].lower() == "h":
-        seconds = int(time_unit[0:-1]) * 60 * 60
-    else:
-        seconds = int(time_unit.lower().replace("s", ""))
-    return seconds
-
-
-def get_link_formatted_date_time() -> str:
-    """
-    Get the current date and time formatted for links.
-    Handles platform-specific formatting for Linux and Windows.
-
-    Returns:
-        str: Formatted date and time string (e.g., "14 April 2025 at 2:30pm").
-    """
-    _am_or_pm = datetime.now().strftime(format="%p").lower()
     try:
-        _dt = datetime.now().strftime(
-            format="%-d %B %Y at %-I:%M"
-        )  # Linux (Github Action)
-    except Exception:
-        _dt = datetime.now().strftime(format="%#d %B %Y at %#I:%M")  # Windows (Dev VDI)
-    return f"{_dt}{_am_or_pm}"
+        # Linux (Github Action)
+        date_string = now.strftime(format="%-d %B %Y at %-I:%M")
+    except ValueError:
+        # Windows (Dev VDI)
+        date_string = now.strftime(format="%#d %B %Y at %#I:%M")
+
+    return f"{date_string}{am_or_pm}"
 
 
 def get_current_datetime() -> str:

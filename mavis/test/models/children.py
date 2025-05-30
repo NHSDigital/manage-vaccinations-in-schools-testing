@@ -1,6 +1,8 @@
 from typing import Final
 
-from ..generic_constants import actions, properties, wait_time
+from playwright.sync_api import expect
+
+from ..generic_constants import actions, properties
 from ..onboarding import School
 from ..playwright_ops import PlaywrightOperations
 
@@ -20,7 +22,6 @@ class ChildrenPage:
     TXT_SEARCH: Final[str] = "Search"
     BTN_SEARCH: Final[str] = "Search"
     LNK_CLEAR_FILTERS: Final[str] = "Clear filters"
-    LNK_ACTIVITY_LOG: Final[str] = "Activity log"
     LNK_CHILD_RECORD: Final[str] = "Child record"
     LNK_CHILD_MAV_853: Final[str] = "MAV_853, MAV_853"
     LNK_CHILD_CHANGE_NHSNO: Final[str] = "CHANGENHSNO, CHANGENHSNO"
@@ -51,7 +52,6 @@ class ChildrenPage:
     def verify_filter(self):
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=self.CHILD1)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
@@ -68,20 +68,27 @@ class ChildrenPage:
     def search_for_a_child(self, child_name: str) -> None:
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.verify(
             locator=self.LBL_MAIN, property=properties.TEXT, expected_value=child_name
         )
+
+    def click_tab(self, name: str):
+        link = self.po.page.get_by_role("navigation").get_by_role("link", name=name)
+        link.click()
+        link.get_by_role("strong").wait_for()
+
+    def click_activity_log(self):
+        self.click_tab("Activity log")
 
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, location: str, *, is_created: bool
     ):
         self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=child_name, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_ACTIVITY_LOG, action=actions.CLICK_TEXT)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
+
+        self.click_activity_log()
+
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
@@ -109,14 +116,13 @@ class ChildrenPage:
         """
         self.search_for_a_child(child_name=self.LNK_CHILD_MAV_853)
         self.po.act(locator=self.LNK_CHILD_MAV_853, action=actions.CLICK_LINK)
-        # Verify activity log
-        self.po.act(locator=self.LNK_ACTIVITY_LOG, action=actions.CLICK_LINK)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Vaccinated with Gardasil 9",
-        )
+
+        self.click_activity_log()
+
+        expect(
+            self.po.page.get_by_role("heading", name="Vaccinated with Gardasil 9").first
+        ).to_be_visible()
+
         # Verify vaccination record
         self.po.act(locator=self.LNK_CHILD_RECORD, action=actions.CLICK_LINK)
 

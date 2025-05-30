@@ -147,11 +147,12 @@ class ConsentPage:
                 action=actions.RADIO_BUTTON_SELECT,
             )
             self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-            self.po.act(
-                locator=self.TXT_SCHOOL_NAME,
-                action=actions.SELECT_FROM_LIST,
-                value=name,
-            )
+
+            self.po.page.wait_for_load_state()
+
+            self.po.page.get_by_role("combobox").fill(name)
+            self.po.page.get_by_role("option", name=name).click()
+
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def fill_parent_details(
@@ -465,7 +466,7 @@ class ConsentPage:
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
     def _select_parent(self, parent_locator: str):
-        self.po.act(locator=parent_locator, action=actions.RADIO_BUTTON_SELECT)
+        self.po.page.get_by_role("radio", name=parent_locator).check()
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
         self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
 
