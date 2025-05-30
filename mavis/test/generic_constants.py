@@ -20,7 +20,6 @@ class actions(Enum):
     TYPE = auto()
     RADIO_BUTTON_SELECT = auto()
     SELECT_FILE = auto()
-    SELECT_FROM_LIST = auto()
     CHECKBOX_CHECK = auto()
     CHECKBOX_UNCHECK = auto()
     CLICK_LINK_INDEX_FOR_ROW = auto()
@@ -28,7 +27,6 @@ class actions(Enum):
     CHAIN_LOCATOR_ACTION = auto()
     DOWNLOAD_FILE_USING_LINK = auto()
     DOWNLOAD_FILE_USING_BUTTON = auto()
-    WAIT = auto()
 
 
 class screenshot_actions:
@@ -55,12 +53,6 @@ class html_tags:
     TABLE: Final[str] = "table"
     TR: Final[str] = "tr"
     TD: Final[str] = "td"
-
-
-class wait_time:
-    MIN: Final[str] = "1s"
-    MED: Final[str] = "10s"
-    MAX: Final[str] = "30s"
 
 
 class escape_characters:
@@ -116,10 +108,6 @@ class escape_characters:
         STROKE,
         BACKSLASH,
     ]
-
-
-class file_encoding:
-    ASCII: Final[str] = "ascii"
 
 
 class audit_log_paths:

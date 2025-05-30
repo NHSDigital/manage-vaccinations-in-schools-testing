@@ -1,12 +1,13 @@
+from datetime import datetime, timedelta
 from typing import Final
 
 import pandas as pd
 
 from ..data import TestData
-from ..generic_constants import actions, properties, wait_time
+from ..generic_constants import actions, properties
 from ..mavis_constants import report_headers, test_data_file_paths, Programme
 from ..playwright_ops import PlaywrightOperations
-from ..wrappers import get_current_datetime, get_link_formatted_date_time
+from ..wrappers import format_datetime_for_upload_link, get_current_datetime
 
 from .children import ChildrenPage
 from .consent import ConsentPage
@@ -134,12 +135,24 @@ class ProgrammesPage:
             expected_value=self.LBL_IMPORT_STARTED,
         )
 
-    def click_uploaded_file_datetime(self, truncated: bool = False):
-        _link_time = self.upload_time[3:] if truncated else self.upload_time
-        self.po.act(locator=_link_time, action=actions.CLICK_LINK)
+    def _record_upload_time(self):
+        self.upload_time = datetime.now()
 
-    def record_upload_time(self):
-        self.upload_time = get_link_formatted_date_time()
+    def _click_uploaded_file_datetime(self):
+        # FIXME: This logic is duplicated in three places, we should extract it somewhere else.
+        first_link = self.po.page.get_by_role(
+            "link", name=format_datetime_for_upload_link(self.upload_time)
+        )
+        second_link = self.po.page.get_by_role(
+            "link",
+            name=format_datetime_for_upload_link(
+                self.upload_time + timedelta(minutes=1)
+            ),
+        )
+
+        # This handles when an upload occurs across the minute tick over, for
+        # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
+        first_link.or_(second_link).first.click()
 
     def click_dose2_child(self):
         self.po.act(locator=self.LNK_DOSE2_CHILD, action=actions.CLICK_LINK)
@@ -160,12 +173,12 @@ class ProgrammesPage:
             file_paths=file_paths
         )
         self.choose_file_child_records(file_path=_input_file_path)
+        self._record_upload_time()
         self.click_continue()
-        self.record_upload_time()
 
         if self.import_records_page.is_processing_in_background():
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-            self.click_uploaded_file_datetime(truncated=True)
+            self._click_uploaded_file_datetime()
+            self.import_records_page.wait_for_processed()
 
         self.verify_upload_output(file_path=_output_file_path)
 
@@ -177,12 +190,12 @@ class ProgrammesPage:
         self.click_cohorts()
         self.click_import_cohort_records()
         self.choose_file_child_records(file_path=_input_file_path)
+        self._record_upload_time()
         self.click_continue()
-        self.record_upload_time()
 
         if self.import_records_page.is_processing_in_background():
-            self.po.act(locator=None, action=actions.WAIT, value=wait_time.MED)
-            self.click_uploaded_file_datetime()
+            self._click_uploaded_file_datetime()
+            self.import_records_page.wait_for_processed()
 
         self.verify_upload_output(file_path=_output_file_path)
 
