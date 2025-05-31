@@ -5,127 +5,53 @@ on:
     - cron: "0 3 * * *"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   test:
-    runs-on: ubuntu-latest
-    env:
-      TZ: "Europe/London"
+    name: Test
+
     strategy:
       matrix:
-        location: ["UK"]
+        device:
+          - Desktop Chrome
+          - Desktop Edge
+          - Desktop Firefox
+          - Desktop Safari
+          - Galaxy S9+
+          - Pixel 7
+          - iPad (gen 7) landscape
+          - iPhone 14
+          - iPhone 15
+
+    permissions: {}
+
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: "Europe/London"
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version-file: .tool-versions
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          playwright install
-          playwright install-deps
-      - name: Test on Chromium
+          pip install -U pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright
+        run: playwright install --with-deps
+
+      - name: Run tests
+        run: pytest --device "${{ matrix.device }}"
         env:
           BASE_URL: ${{ vars.BASE_URL }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::Chromium"
-          pytest --browser chromium
-          echo "::endgroup::"
-      - name: Test on Chrome
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::Chrome"
-          pytest --browser chromium --browser-channel chrome
-          echo "::endgroup::"
-      - name: Test on Firefox
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::Firefox"
-          pytest --browser firefox
-          echo "::endgroup::"
-      - name: Test on Edge
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::Edge"
-          pytest --browser chromium --browser-channel msedge
-          echo "::endgroup::"
-      - name: Test on iPhone 14
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::iPhone 14"
-          pytest -m mobile --browser webkit --device "iPhone 14"
-          echo "::endgroup::"
-      - name: Test on iPhone 15
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::iPhone 15"
-          pytest -m mobile --browser webkit --device "iPhone 15"
-          echo "::endgroup::"
-      - name: Test on iPad Gen 7
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::iPad Gen 7"
-          pytest -m mobile --browser webkit --device "iPad (gen 7) landscape"
-          echo "::endgroup::"
-      - name: Test on Samsung Galaxy S9+
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::Samsung Galaxy S9+"
-          pytest -m mobile --browser chromium --device "Galaxy S9+"
-          echo "::endgroup::"
-      - name: Test on Google Pixel 7
-        if: always()
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
-        run: |
-          echo "::group::Google Pixel 7"
-          pytest -m mobile --browser chromium --device "Pixel 7"
-          echo "::endgroup::"
-      - name: Upload report
-        if: always()
+
+      - name: Upload Allure results
         uses: actions/upload-artifact@v4
         with:
-          name: allure-reports
-          path: reports
-      - name: Upload screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: screenshots
+          name: ${{ matrix.device }}
+          path: allure-results
