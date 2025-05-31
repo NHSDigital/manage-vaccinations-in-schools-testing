@@ -108,7 +108,3 @@ class escape_characters:
         STROKE,
         BACKSLASH,
     ]
-
-
-class audit_log_paths:
-    TEST_LEVEL_LOG: Final[str] = "logs/test_level.log"

@@ -1,6 +1,7 @@
 import pytest
 
 from .data import TestData
+from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
 from .models import (
     ChildrenPage,
     ConsentPage,
@@ -36,6 +37,9 @@ __all__ = [
     "onboard",
     "onboarding",
     "organisation",
+    "pytest_runtest_logreport",
+    "pytest_sessionfinish",
+    "pytest_sessionstart",
     "reset",
     "schools",
     "superuser",
