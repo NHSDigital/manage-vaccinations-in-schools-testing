@@ -1,10 +1,15 @@
-from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
+from .hooks import (
+    pytest_runtest_logreport,
+    pytest_sessionfinish,
+    pytest_sessionstart,
+)
 from .fixtures import (
     admin,
     archive_consent_response_page,
     base_url,
     basic_auth,
     browser_context_args,
+    browser_type,
     children_page,
     clinics,
     consent_page,
@@ -46,6 +51,7 @@ __all__ = [
     "base_url",
     "basic_auth",
     "browser_context_args",
+    "browser_type",
     "children_page",
     "clinics",
     "consent_page",

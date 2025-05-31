@@ -35,6 +35,7 @@ from .playwright import (
     base_url,
     basic_auth,
     browser_context_args,
+    browser_type,
     playwright_operations,
     screenshots_path,
 )
@@ -45,6 +46,7 @@ __all__ = [
     "base_url",
     "basic_auth",
     "browser_context_args",
+    "browser_type",
     "children_page",
     "clinics",
     "consent_page",

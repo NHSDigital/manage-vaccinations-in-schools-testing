@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 from typing import Optional
 
+from playwright.sync_api import BrowserType, Playwright
 import pytest
 
 from ..playwright_ops import PlaywrightOperations
@@ -32,6 +33,13 @@ def screenshots_path(pytestconfig) -> Optional[Path]:
     path = Path("screenshots") / session_name
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+@pytest.fixture(scope="session")
+def browser_type(playwright: Playwright, device: Optional[str]) -> BrowserType:
+    device = device or "Desktop Chrome"
+    browser_name = playwright.devices[device]["default_browser_type"]
+    return getattr(playwright, browser_name)
 
 
 @pytest.fixture(scope="session")

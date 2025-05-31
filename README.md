@@ -63,32 +63,31 @@ $ pytest
 
 #### Browsers and devices
 
-By default, the tests will run using `Chromium` with no particular device,
-however it's possible to run the tests in different browsers and devices.
-Some examples are listed below.
+By default, the tests will run using the `Desktop Chrome` device, however it's
+possible to run the tests in devices. Some examples are listed below.
 
 ##### iPhone 15
 
 ```shell
-$ pytest --browser webkit --device "iPhone 15"
+$ pytest --device "iPhone 15"
 ```
 
 ##### Firefox
 
 ```shell
-$ pytest --browser firefox
+$ pytest --device "Desktop Firefox"
 ```
 
 ##### Google Pixel 7
 
 ```shell
-$ pytest --browser chromium --device "Pixel 7"
+$ pytest --device "Pixel 7"
 ```
 
 ##### Microsoft Edge
 
 ```shell
-$ pytest --browser chromium --browser-channel msedge
+$ pytest --device "Desktop Edge"
 ```
 
 #### Headless mode
