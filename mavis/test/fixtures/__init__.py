@@ -12,6 +12,19 @@ from .models import (
     unmatched_page,
     vaccines_page,
 )
+from .onboarding import (
+    admin,
+    clinics,
+    nurse,
+    onboard,
+    onboarding,
+    organisation,
+    reset,
+    schools,
+    superuser,
+    team,
+    users,
+)
 from .playwright import (
     base_url,
     basic_auth,
@@ -21,10 +34,12 @@ from .playwright import (
 )
 
 __all__ = [
+    "admin",
     "base_url",
     "basic_auth",
     "browser_context_args",
     "children_page",
+    "clinics",
     "consent_page",
     "dashboard_page",
     "get_online_consent_url",
@@ -32,13 +47,22 @@ __all__ = [
     "log_in_as_admin",
     "log_in_as_nurse",
     "log_in_page",
+    "nurse",
+    "onboard",
+    "onboarding",
+    "organisation",
     "playwright_operations",
     "programmes_page",
+    "reset",
     "school_moves_page",
+    "schools",
     "screenshots_path",
     "sessions_page",
     "start_page",
+    "superuser",
+    "team",
     "test_data",
     "unmatched_page",
+    "users",
     "vaccines_page",
 ]
