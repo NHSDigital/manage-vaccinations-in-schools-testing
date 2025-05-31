@@ -1,18 +1,27 @@
 import pytest
 
 from ..models import (
+    ArchiveConsentResponsePage,
     ChildrenPage,
     ConsentPage,
+    ConsentResponsePage,
+    CreateNewRecordConsentResponsePage,
     DashboardPage,
     ImportRecordsPage,
     LogInPage,
+    MatchConsentResponsePage,
     ProgrammesPage,
     SchoolMovesPage,
     SessionsPage,
     StartPage,
-    UnmatchedPage,
+    UnmatchedConsentResponsesPage,
     VaccinesPage,
 )
+
+
+@pytest.fixture
+def archive_consent_response_page(page):
+    return ArchiveConsentResponsePage(page)
 
 
 @pytest.fixture
@@ -23,6 +32,16 @@ def children_page(playwright_operations, dashboard_page):
 @pytest.fixture
 def consent_page(playwright_operations):
     return ConsentPage(playwright_operations)
+
+
+@pytest.fixture
+def consent_response_page(page):
+    return ConsentResponsePage(page)
+
+
+@pytest.fixture
+def create_new_record_consent_response_page(page):
+    return CreateNewRecordConsentResponsePage(page)
 
 
 @pytest.fixture
@@ -38,6 +57,11 @@ def import_records_page(test_data, playwright_operations, dashboard_page):
 @pytest.fixture
 def log_in_page(page):
     return LogInPage(page)
+
+
+@pytest.fixture
+def match_consent_response_page(page):
+    return MatchConsentResponsePage(page)
 
 
 @pytest.fixture
@@ -61,8 +85,8 @@ def start_page(page):
 
 
 @pytest.fixture
-def unmatched_page(playwright_operations, dashboard_page):
-    return UnmatchedPage(playwright_operations, dashboard_page)
+def unmatched_consent_responses_page(page):
+    return UnmatchedConsentResponsesPage(page)
 
 
 @pytest.fixture

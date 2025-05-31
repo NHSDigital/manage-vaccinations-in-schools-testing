@@ -1,15 +1,19 @@
 from .helpers import get_online_consent_url, log_in_as_admin, log_in_as_nurse, test_data
 from .models import (
+    archive_consent_response_page,
     children_page,
     consent_page,
+    consent_response_page,
+    create_new_record_consent_response_page,
     dashboard_page,
     import_records_page,
     log_in_page,
+    match_consent_response_page,
     programmes_page,
     school_moves_page,
     sessions_page,
     start_page,
-    unmatched_page,
+    unmatched_consent_responses_page,
     vaccines_page,
 )
 from .onboarding import (
@@ -35,18 +39,22 @@ from .playwright import (
 
 __all__ = [
     "admin",
+    "archive_consent_response_page",
     "base_url",
     "basic_auth",
     "browser_context_args",
     "children_page",
     "clinics",
     "consent_page",
+    "consent_response_page",
+    "create_new_record_consent_response_page",
     "dashboard_page",
     "get_online_consent_url",
     "import_records_page",
     "log_in_as_admin",
     "log_in_as_nurse",
     "log_in_page",
+    "match_consent_response_page",
     "nurse",
     "onboard",
     "onboarding",
@@ -62,7 +70,7 @@ __all__ = [
     "superuser",
     "team",
     "test_data",
-    "unmatched_page",
+    "unmatched_consent_responses_page",
     "users",
     "vaccines_page",
 ]

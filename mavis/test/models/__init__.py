@@ -7,20 +7,30 @@ from .programmes import ProgrammesPage
 from .school_moves import SchoolMovesPage
 from .sessions import SessionsPage
 from .start import StartPage
-from .unmatched import UnmatchedPage
+from .consent_responses import (
+    ArchiveConsentResponsePage,
+    ConsentResponsePage,
+    CreateNewRecordConsentResponsePage,
+    MatchConsentResponsePage,
+    UnmatchedConsentResponsesPage,
+)
 from .vaccines import VaccinesPage
 
 
 __all__ = [
+    "ArchiveConsentResponsePage",
     "ChildrenPage",
     "ConsentPage",
+    "ConsentResponsePage",
+    "CreateNewRecordConsentResponsePage",
     "DashboardPage",
     "ImportRecordsPage",
     "LogInPage",
+    "MatchConsentResponsePage",
     "ProgrammesPage",
     "SchoolMovesPage",
     "SessionsPage",
     "StartPage",
-    "UnmatchedPage",
+    "UnmatchedConsentResponsesPage",
     "VaccinesPage",
 ]
