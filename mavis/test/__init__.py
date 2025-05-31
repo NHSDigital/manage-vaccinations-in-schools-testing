@@ -6,21 +6,19 @@ from .fixtures import (
     base_url,
     basic_auth,
     browser_context_args,
+    children_page,
+    consent_page,
+    dashboard_page,
+    import_records_page,
+    log_in_page,
     playwright_operations,
+    programmes_page,
+    school_moves_page,
     screenshots_path,
-)
-from .models import (
-    ChildrenPage,
-    ConsentPage,
-    DashboardPage,
-    ImportRecordsPage,
-    LogInPage,
-    ProgrammesPage,
-    SchoolMovesPage,
-    SessionsPage,
-    StartPage,
-    UnmatchedPage,
-    VaccinesPage,
+    sessions_page,
+    start_page,
+    unmatched_page,
+    vaccines_page,
 )
 from .onboarding import (
     admin,
@@ -42,77 +40,33 @@ __all__ = [
     "base_url",
     "basic_auth",
     "browser_context_args",
+    "children_page",
     "clinics",
+    "consent_page",
+    "dashboard_page",
+    "import_records_page",
+    "log_in_page",
     "nurse",
     "onboard",
     "onboarding",
     "organisation",
     "playwright_operations",
+    "programmes_page",
     "pytest_runtest_logreport",
     "pytest_sessionfinish",
     "pytest_sessionstart",
     "reset",
+    "school_moves_page",
     "schools",
     "screenshots_path",
+    "sessions_page",
+    "start_page",
     "superuser",
     "team",
+    "unmatched_page",
     "users",
+    "vaccines_page",
 ]
-
-
-@pytest.fixture
-def children_page(playwright_operations, dashboard_page):
-    return ChildrenPage(playwright_operations, dashboard_page)
-
-
-@pytest.fixture
-def consent_page(playwright_operations):
-    return ConsentPage(playwright_operations)
-
-
-@pytest.fixture
-def dashboard_page(page):
-    return DashboardPage(page)
-
-
-@pytest.fixture
-def import_records_page(test_data, playwright_operations, dashboard_page):
-    return ImportRecordsPage(test_data, playwright_operations, dashboard_page)
-
-
-@pytest.fixture
-def log_in_page(page):
-    return LogInPage(page)
-
-
-@pytest.fixture
-def programmes_page(test_data, page, import_records_page):
-    return ProgrammesPage(page, test_data, import_records_page)
-
-
-@pytest.fixture
-def school_moves_page(playwright_operations, dashboard_page):
-    return SchoolMovesPage(playwright_operations, dashboard_page)
-
-
-@pytest.fixture
-def sessions_page(test_data, playwright_operations, dashboard_page):
-    return SessionsPage(test_data, playwright_operations, dashboard_page)
-
-
-@pytest.fixture
-def start_page(page):
-    return StartPage(page)
-
-
-@pytest.fixture
-def unmatched_page(playwright_operations, dashboard_page):
-    return UnmatchedPage(playwright_operations, dashboard_page)
-
-
-@pytest.fixture
-def vaccines_page(page):
-    return VaccinesPage(page)
 
 
 @pytest.fixture(scope="session")
