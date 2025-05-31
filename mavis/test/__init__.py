@@ -2,6 +2,13 @@ import pytest
 
 from .data import TestData
 from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
+from .fixtures import (
+    base_url,
+    basic_auth,
+    browser_context_args,
+    playwright_operations,
+    screenshots_path,
+)
 from .models import (
     ChildrenPage,
     ConsentPage,
@@ -32,16 +39,21 @@ from .onboarding import (
 
 __all__ = [
     "admin",
+    "base_url",
+    "basic_auth",
+    "browser_context_args",
     "clinics",
     "nurse",
     "onboard",
     "onboarding",
     "organisation",
+    "playwright_operations",
     "pytest_runtest_logreport",
     "pytest_sessionfinish",
     "pytest_sessionstart",
     "reset",
     "schools",
+    "screenshots_path",
     "superuser",
     "team",
     "users",
