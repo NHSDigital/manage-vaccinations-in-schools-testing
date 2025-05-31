@@ -1,3 +1,4 @@
+from .helpers import get_online_consent_url, log_in_as_admin, log_in_as_nurse, test_data
 from .models import (
     children_page,
     consent_page,
@@ -26,7 +27,10 @@ __all__ = [
     "children_page",
     "consent_page",
     "dashboard_page",
+    "get_online_consent_url",
     "import_records_page",
+    "log_in_as_admin",
+    "log_in_as_nurse",
     "log_in_page",
     "playwright_operations",
     "programmes_page",
@@ -34,6 +38,7 @@ __all__ = [
     "screenshots_path",
     "sessions_page",
     "start_page",
+    "test_data",
     "unmatched_page",
     "vaccines_page",
 ]
