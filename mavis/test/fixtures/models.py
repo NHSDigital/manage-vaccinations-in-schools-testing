@@ -7,10 +7,12 @@ from ..models import (
     ConsentResponsePage,
     CreateNewRecordConsentResponsePage,
     DashboardPage,
+    DownloadSchoolMovesPage,
     ImportRecordsPage,
     LogInPage,
     MatchConsentResponsePage,
     ProgrammesPage,
+    ReviewSchoolMovePage,
     SchoolMovesPage,
     SessionsPage,
     StartPage,
@@ -50,6 +52,11 @@ def dashboard_page(page):
 
 
 @pytest.fixture
+def download_school_moves_page(page):
+    return DownloadSchoolMovesPage(page)
+
+
+@pytest.fixture
 def import_records_page(test_data, playwright_operations, dashboard_page):
     return ImportRecordsPage(test_data, playwright_operations, dashboard_page)
 
@@ -70,8 +77,13 @@ def programmes_page(page, test_data, import_records_page):
 
 
 @pytest.fixture
-def school_moves_page(playwright_operations, dashboard_page):
-    return SchoolMovesPage(playwright_operations, dashboard_page)
+def review_school_move_page(page):
+    return ReviewSchoolMovePage(page)
+
+
+@pytest.fixture
+def school_moves_page(page):
+    return SchoolMovesPage(page)
 
 
 @pytest.fixture

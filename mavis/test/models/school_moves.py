@@ -1,135 +1,93 @@
-from typing import Final, List
+from datetime import date
+from pathlib import Path
+from typing import Optional
 
-import pandas as pd
+from ..step import step
 
-from ..generic_constants import actions, escape_characters, properties
 
-from ..onboarding import School
-from ..mavis_constants import ReportFormat
-from ..playwright_ops import PlaywrightOperations
-from ..wrappers import get_current_datetime
-
-from .dashboard import DashboardPage
+def get_child_full_name(first_name: str, last_name: str) -> str:
+    return f"{last_name.upper()}, {first_name}"
 
 
 class SchoolMovesPage:
-    LBL_HEADERS: Final[str] = "Updated	Full name	Move	Actions"
-    LBL_MAIN: Final[str] = "main"
-    LBL_PARAGRAPH: Final[str] = "paragraph"
-    LNK_REVIEW: Final[str] = "Review"
-    LBL_CHILD_NAME: str = f"heading{escape_characters.SEPARATOR_CHAR}Review school move"
-    RDO_UPDATE_SCHOOL: Final[str] = "Update record with new school"
-    RDO_IGNORE_INFORMATION: Final[str] = "Ignore new information"
-    BTN_UPDATE_SCHOOL: Final[str] = "Update child record"
-    LNK_DOWNLOAD_RECORDS: Final[str] = "Download records"
-    BTN_CONTINUE: Final[str] = "Continue"
-    BTN_DOWNLOAD_CSV: Final[str] = "Download CSV"
+    def __init__(self, page):
+        self.page = page
+        self.rows = page.get_by_role("row")
+        self.download_button = page.get_by_role("button", name="Download records")
+        self.confirmed_alert = page.get_by_role("alert", name="Success").filter(
+            has_text="updated"
+        )
+        self.ignored_alert = page.get_by_role("region", name="Information").filter(
+            has_text="ignored"
+        )
 
-    def __init__(
-        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
+    @step("Click on school move for {0} {1}")
+    def click_child(self, first_name: str, last_name: str):
+        row = self.get_row_for_child(first_name, last_name)
+        row.get_by_role("link", name="Review").click()
+
+    @step("Click on Download records")
+    def click_download(self):
+        self.download_button.click()
+
+    def get_row_for_child(self, first_name: str, last_name: str):
+        full_name = get_child_full_name(first_name, last_name)
+        return self.rows.filter(has=self.page.get_by_text(full_name))
+
+
+class DownloadSchoolMovesPage:
+    def __init__(self, page):
+        self.page = page
+
+        from_group = page.get_by_role("group", name="From")
+        self.from_day = from_group.get_by_role("textbox", name="Day")
+        self.from_month = from_group.get_by_role("textbox", name="Month")
+        self.from_year = from_group.get_by_role("textbox", name="Year")
+
+        to_group = page.get_by_role("group", name="To")
+        self.to_day = to_group.get_by_role("textbox", name="Day")
+        self.to_month = to_group.get_by_role("textbox", name="Month")
+        self.to_year = to_group.get_by_role("textbox", name="Year")
+
+        self.continue_button = page.get_by_role("button", name="Continue")
+        self.confirm_button = page.get_by_role("button", name="Download CSV")
+
+    def enter_date_range(
+        self, from_date: Optional[date] = None, to_date: Optional[date] = None
     ):
-        self.po = playwright_operations
-        self.dashboard_page = dashboard_page
+        if from_date:
+            self.from_day.fill(str(from_date.day))
+            self.from_month.fill(str(from_date.month))
+            self.from_year.fill(str(from_date.year))
 
-    def verify_headers(self):
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=self.LBL_HEADERS,
-            exact=False,
-        )
+        if to_date:
+            self.to_day.fill(str(to_date.day))
+            self.to_month.fill(str(to_date.month))
+            self.to_year.fill(str(to_date.year))
 
-    def confirm_school_move(self):
-        self.po.act(
-            locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0
-        )
-        _child_full_name: str = (
-            self.po.get_element_property(
-                locator=self.LBL_CHILD_NAME, property=properties.TEXT
-            )
-            .replace(self.LBL_CHILD_NAME, "")
-            .strip()
-        )
-        _success_message = f"{_child_full_name}’s school record updated"
-        self.po.act(locator=self.RDO_UPDATE_SCHOOL, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_PARAGRAPH,
-            property=properties.TEXT,
-            expected_value=_success_message,
-        )
+        self.continue_button.click()
 
-    def ignore_school_move(self):
-        self.po.act(
-            locator=self.LNK_REVIEW, action=actions.CLICK_LINK_INDEX_FOR_ROW, index=0
-        )
-        _child_full_name: str = (
-            self.po.get_element_property(
-                locator=self.LBL_CHILD_NAME, property=properties.TEXT
-            )
-            .replace(self.LBL_CHILD_NAME, "")
-            .strip()
-        )
-        _success_message = f"{_child_full_name}’s school move ignored"
-        self.po.act(
-            locator=self.RDO_IGNORE_INFORMATION, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_UPDATE_SCHOOL, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_PARAGRAPH,
-            property=properties.TEXT,
-            expected_value=_success_message,
-        )
+    def confirm(self) -> Path:
+        with self.page.expect_download() as download_info:
+            self.confirm_button.click()
+        return download_info.value.path()
 
-    def confirm_and_ignore_moves(self, schools: List[School]):
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_school_moves()
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Full name CLMOVES1, CFMoves1",
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=f"Move Class list updated {schools[0]} to {schools[1]}",
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Full name CLMOVES2, CFMoves2",
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=f"Class list updated {schools[0]} to {schools[1]}",
-        )
-        self.confirm_school_move()
-        self.ignore_school_move()
 
-    def download_and_verify_report(self):
-        self.po.act(locator=self.LNK_DOWNLOAD_RECORDS, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self._download_and_verify_report_headers(
-            expected_headers=ReportFormat.SCHOOL_MOVES.headers
+class ReviewSchoolMovePage:
+    def __init__(self, page):
+        self.page = page
+        self.confirm_radio = page.get_by_role(
+            "radio", name="Update record with new school"
         )
+        self.ignore_radio = page.get_by_role("radio", name="Ignore new information")
+        self.update_button = page.get_by_role("button", name="Update")
 
-    def _download_and_verify_report_headers(self, expected_headers: str):
-        _file_path = f"working/export_{get_current_datetime()}.csv"
-        self.po.act(
-            locator=self.BTN_DOWNLOAD_CSV,
-            action=actions.DOWNLOAD_FILE_USING_BUTTON,
-            value=_file_path,
-        )
-        _actual_df = pd.read_csv(filepath_or_buffer=_file_path)
-        actual_headers = ",".join(_actual_df.columns.tolist())
-        _e_not_a = [
-            h for h in expected_headers.split(",") if h not in actual_headers.split(",")
-        ]
-        _a_not_e = [
-            h for h in actual_headers.split(",") if h not in expected_headers.split(",")
-        ]
-        if len(_e_not_a) > 0 or len(_a_not_e) > 0:
-            assert False, (
-                f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
-            )
+    @step("Confirm school move")
+    def confirm(self):
+        self.confirm_radio.check()
+        self.update_button.click()
+
+    @step("Ignore school move")
+    def ignore(self):
+        self.ignore_radio.check()
+        self.update_button.click()
