@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.mavis_constants import Programme
 
-pytestmark = [pytest.mark.consent, pytest.mark.mobile]
+pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
