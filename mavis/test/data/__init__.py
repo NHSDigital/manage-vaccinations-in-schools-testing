@@ -185,7 +185,7 @@ class TestData:
 
     def _normalize(self, string: str) -> str:
         # Remove all Unicode whitespace including NBSP and ZWJ
-        return re.sub(r'[\s\u00A0\u200D]+', ' ', str(string)).strip()
+        return re.sub(r"[\s\u00A0\u200D]+", "", str(string)).strip()
 
     def get_session_id(self, path: str) -> str:
         """

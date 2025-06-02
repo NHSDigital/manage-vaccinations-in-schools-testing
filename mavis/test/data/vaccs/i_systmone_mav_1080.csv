@@ -1,9 +1,9 @@
 ﻿TEST_DESC_IGNORED,Date of birth,NHS number,Vaccination area code,Vaccination batch number,Vaccination reason,Vaccination type,First name,Postcode,Sex,Surname,Event date,Event location type,Event time,Organisation ID,School,School code,Patient Count
 TwoSpaces,  <<DOB_YEAR_10>>  ,  <<NHS_NO>>  ,    ,  123013325  ,    ,  Cervarix 1  ,  C<<FNAME>>  ,  LE3 2DA  ,  Female  ,  C<<LNAME>>  ,  <<VACCS_DATE>>  ,  School  ,  <<VACCS_TIME>>  ,  <<ORG_CODE>>  ,  <<SCHOOL_0_NAME>>  ,  <<SCHOOL_0_URN>>  ,
 Tabs,<<DOB_YEAR_10>>	,	  <<NHS_NO>>	,	  	,	  123013325	,	  	,	  Gardasil9 1	,	  C<<FNAME>>	,	  LE3 2DA	,	  Female	,	  C<<LNAME>>	,	  <<VACCS_DATE>>	,	  School	,	  <<VACCS_TIME>>	,	  <<ORG_CODE>>	,	  <<SCHOOL_0_NAME>>	,	  <<SCHOOL_0_URN>>	,
-NBSP,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,NBSP <<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
-ZWJ,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,ZWJ‍<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+NBSP,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1, <<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+ZWJ,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,‍‍<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
 HistoricalTwoSpaces,  <<DOB_YEAR_10>>  ,  <<NHS_NO>>  ,    ,  123013325  ,    ,  Cervarix 1  ,  C<<FNAME>>  ,  LE3 2DA  ,  Female  ,  C<<LNAME>>  ,  <<HIST_VACCS_DATE>>  ,  School  ,  <<VACCS_TIME>>  ,  <<ORG_CODE>>  ,  <<SCHOOL_0_NAME>>  ,  <<SCHOOL_0_URN>>  ,
 HistoricalTabs,<<DOB_YEAR_10>>	,	  <<NHS_NO>>	,	  	,	  123013325	,	  	,	  Gardasil9 1	,	  C<<FNAME>>	,	  LE3 2DA	,	  Female	,	  C<<LNAME>>	,	  <<HIST_VACCS_DATE>>	,	  School	,	  <<VACCS_TIME>>	,	  <<ORG_CODE>>	,	  <<SCHOOL_0_NAME>>	,	  <<SCHOOL_0_URN>>	,
-HistoricalNBSP,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,NBSP <<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<HIST_VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
-HistoricalZWJ,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,ZWJ‍<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<HIST_VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+HistoricalNBSP,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1, <<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<HIST_VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+HistoricalZWJ,<<DOB_YEAR_10>>,<<NHS_NO>>,,123013325,,Gardasil9 1,‍‍<<FNAME>>,LE3 2DA,Female,C<<LNAME>>,<<HIST_VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
