@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import nhs_number
 import pandas as pd
+import re
 
 from ..mavis_constants import mavis_file_types
 from ..onboarding import Organisation, School
@@ -176,8 +177,15 @@ class TestData:
                 _cols = ["PERSON_SURNAME", "PERSON_FORENAME"]
             case mavis_file_types.VACCS_SYSTMONE:
                 _cols = ["Surname", "First name"]
-        _names_list = _file_df[_cols[0]] + ", " + _file_df[_cols[1]].values.tolist()
+        # Strip whitespace from both columns before combining
+        col0 = _file_df[_cols[0]].apply(self._normalize)
+        col1 = _file_df[_cols[1]].apply(self._normalize)
+        _names_list = (col0 + ", " + col1).tolist()
         return _names_list
+
+    def _normalize(self, string: str) -> str:
+        # Remove all Unicode whitespace including NBSP and ZWJ
+        return re.sub(r'[\s\u00A0\u200D]+', ' ', str(string)).strip()
 
     def get_session_id(self, path: str) -> str:
         """

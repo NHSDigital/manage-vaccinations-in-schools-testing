@@ -89,10 +89,36 @@ def test_headers_and_filter(setup_children_page, children_page):
 
 @allure.issue("MAV-853")
 @pytest.mark.bug
-def test_details_mav_853(setup_mav_853, children_page, schools):
-    children_page.verify_mav_853(schools[0])
+def test_details_mav_853(setup_mav_853, children_page):
+    """
+    1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
+    2. Navigate to the patient, either in a session or from the global children view
+    3. Expected: patient details can be seen
+    Actual: crash
+    """
+    mav_853_child = "MAV_853, MAV_853"
+
+    children_page.search_for_a_child(mav_853_child)
+    children_page.click_record_for_child(mav_853_child)
+    # Verify activity log
+    children_page.click_activity_log_and_wait()
+    children_page.expect_text_in_main("Vaccinated with Gardasil 9")
+    # Verify vaccination record
+    children_page.click_child_record()
+    children_page.click_hpv_vaccination_details()
+    children_page.expect_text_in_main("OutcomeVaccinated")
 
 
 @pytest.mark.bug
 def test_change_nhsno(setup_change_nhsno, children_page):
-    children_page.change_nhs_no()
+    change_nhs_no_child = "CHANGENHSNO, CHANGENHSNO"
+
+    children_page.search_for_a_child(child_name=change_nhs_no_child)
+    children_page.click_record_for_child(child_name=change_nhs_no_child)
+    children_page.click_edit_child_record()
+    children_page.click_change_nhs_no()
+    children_page.fill_nhs_no_for_child(
+        child_name=change_nhs_no_child, nhs_no="9123456789"
+    )
+    children_page.click_continue()
+    children_page.expect_text_in_main("Enter a valid NHS number")

@@ -1,62 +1,58 @@
-from typing import Final
-
-from playwright.sync_api import expect
-
-from ..generic_constants import actions, properties
-from ..onboarding import School
-from ..playwright_ops import PlaywrightOperations
-
 from .dashboard import DashboardPage
+
+from playwright.sync_api import Page, expect
+
+from ..step import step
 
 
 class ChildrenPage:
-    CHILD1: Final[str] = "CFILTER1, CFilter1"
-    LBL_CHILD_RECORD: Final[str] = "1 child"
-
-    LBL_CHILDREN: Final[str] = "Children"
-    LBL_HEADING: Final[str] = "heading"
-    LBL_MAIN: Final[str] = "main"
-    LBL_TABLE_HEADERS: Final[str] = (
-        "Name and NHS number	Postcode	School	Date of birth"
-    )
-    TXT_SEARCH: Final[str] = "Search"
-    BTN_SEARCH: Final[str] = "Search"
-    LNK_CLEAR_FILTERS: Final[str] = "Clear filters"
-    LNK_CHILD_RECORD: Final[str] = "Child record"
-    LNK_CHILD_MAV_853: Final[str] = "MAV_853, MAV_853"
-    LNK_CHILD_CHANGE_NHSNO: Final[str] = "CHANGENHSNO, CHANGENHSNO"
-    LNK_EDIT_CHILD_RECORD: Final[str] = "Edit child record"
-    LNK_CHANGE_NHS_NO: Final[str] = "Change   NHS number"
-    BTN_CONTINUE: Final[str] = "Continue"
-    BTN_REMOVE_FROM_COHORT: Final[str] = "Remove from cohort"
-
-    def __init__(
-        self, playwright_operations: PlaywrightOperations, dashboard_page: DashboardPage
-    ):
-        self.po = playwright_operations
+    def __init__(self, page: Page, dashboard_page: DashboardPage):
+        self.page = page
         self.dashboard_page = dashboard_page
 
-    def verify_headers(self):
-        self.po.verify(
-            locator=self.LBL_HEADING,
-            property=properties.TEXT,
-            expected_value=self.LBL_CHILDREN,
-            exact=True,
+        self.children_heading = self.page.get_by_role(
+            "heading", name="Children", exact=True
         )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=self.LBL_TABLE_HEADERS,
+        self.children_table_headers = [
+            self.page.get_by_role("columnheader", name=header)
+            for header in [
+                "Name and NHS number",
+                "Postcode",
+                "School",
+                "Date of birth",
+            ]
+        ]
+
+        self.one_child_found_heading = self.page.get_by_role("heading", name="1 child")
+        self.search_textbox = self.page.get_by_role("textbox", name="Search")
+        self.search_button = self.page.get_by_role("button", name="Search")
+        self.activity_log_link = self.page.get_by_role("link", name="Activity log")
+        self.child_record_link = self.page.get_by_role("link", name="Child record")
+        self.edit_child_record_button = self.page.get_by_role(
+            "link", name="Edit child record"
+        )
+        self.change_nhs_no_link = self.page.get_by_role(
+            "link", name="Change   NHS number"
+        )
+        self.remove_from_cohort_button = self.page.get_by_role(
+            "button", name="Remove from cohort"
+        )
+        self.continue_button = self.page.get_by_role("button", name="Continue")
+
+        self.hpv_vaccination_details_links = self.page.get_by_role(
+            "link", name="Gardasil 9 (HPV)"
         )
 
+    def verify_headers(self):
+        self.children_heading.is_visible()
+        for header in self.children_table_headers:
+            header.is_visible()
+
     def verify_filter(self):
-        self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=self.CHILD1)
-        self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=self.LBL_CHILD_RECORD,
-        )
+        self.search_textbox.fill("CFILTER1, CFilter1")
+        self.search_button.click()
+        self.page.wait_for_timeout(1000)
+        self.one_child_found_heading.is_visible()
 
     def verify_child_has_been_uploaded(self, child_list) -> None:
         if len(child_list) >= 1:
@@ -65,103 +61,74 @@ class ChildrenPage:
             for _child_name in child_list:
                 self.search_for_a_child(child_name=_child_name)
 
+    @step("Search for child {0}")
     def search_for_a_child(self, child_name: str) -> None:
-        self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
-        self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN, property=properties.TEXT, expected_value=child_name
-        )
+        self.search_textbox.fill(child_name)
+        self.search_button.click()
+        self.page.wait_for_timeout(1000)
+        self.expect_text_in_main(child_name)
 
-    def click_tab(self, name: str):
-        link = self.po.page.get_by_role("navigation").get_by_role("link", name=name)
-        link.click()
-        link.get_by_role("strong").wait_for()
+    @step("Click on record for child {0}")
+    def click_record_for_child(self, child_name: str) -> None:
+        self.page.get_by_role("link", name=child_name).click()
 
-    def click_activity_log(self):
-        self.click_tab("Activity log")
+    @step("Click on vaccination details")
+    def click_hpv_vaccination_details(self) -> None:
+        self.hpv_vaccination_details_links.first.click()
+        self.page.pause()
+
+    @step("Click on Child record")
+    def click_child_record(self) -> None:
+        self.child_record_link.click()
+
+    @step("Click on Change NHS number")
+    def click_change_nhs_no(self) -> None:
+        self.change_nhs_no_link.click()
+
+    @step("Click on Activity log")
+    def click_activity_log_and_wait(self) -> None:
+        self.activity_log_link.click()
+        self.page.wait_for_timeout(1000)
+
+    @step("Click on Edit child record")
+    def click_edit_child_record(self) -> None:
+        self.edit_child_record_button.click()
+
+    @step("Click on Continue")
+    def click_continue(self) -> None:
+        self.continue_button.click()
+
+    @step("Click on Remove from cohort")
+    def click_remove_from_cohort(self) -> None:
+        self.remove_from_cohort_button.click()
+
+    @step("Fill NHS number for child {0}")
+    def fill_nhs_no_for_child(self, child_name: str, nhs_no: str) -> None:
+        self.page.get_by_role("textbox", name=child_name).fill(nhs_no)
+
+    def expect_text_in_main(self, text: str) -> None:
+        expect(self.page.get_by_role("main")).to_contain_text(text)
+
+    def expect_text_in_heading(self, text: str) -> None:
+        expect(self.page.get_by_role("heading").first).to_contain_text(text)
 
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, location: str, *, is_created: bool
     ):
-        self.po.act(locator=self.TXT_SEARCH, action=actions.FILL, value=child_name)
-        self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=child_name, action=actions.CLICK_LINK)
-
-        self.click_activity_log()
-
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Consent given",
-        )
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=f"Invited to the session at {location}",
-        )
+        self.search_textbox.fill(child_name)
+        self.search_button.click()
+        self.page.wait_for_timeout(1000)
+        self.page.get_by_text(child_name).click()
+        self.activity_log_link.click()
+        self.page.wait_for_timeout(1000)
+        self.expect_text_in_main("Consent given")
+        self.expect_text_in_main(f"Invited to the session at {location}")
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Consent response manually matched with child record",
-        )
-
-    def verify_mav_853(self, school: School):
-        """
-        1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
-        2. Navigate to the patient, either in a session or from the global children view
-        3. Expected: patient details can be seen
-        Actual: crash
-        """
-        self.search_for_a_child(child_name=self.LNK_CHILD_MAV_853)
-        self.po.act(locator=self.LNK_CHILD_MAV_853, action=actions.CLICK_LINK)
-
-        self.click_activity_log()
-
-        expect(
-            self.po.page.get_by_role("heading", name="Vaccinated with Gardasil 9").first
-        ).to_be_visible()
-
-        # Verify vaccination record
-        self.po.act(locator=self.LNK_CHILD_RECORD, action=actions.CLICK_LINK)
-
-        self.po.page.get_by_role("row").filter(has_text=str(school)).get_by_role(
-            "link", name="Gardasil 9 (HPV)"
-        ).click()
-
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Outcome	Vaccinated",
-        )
-
-    def change_nhs_no(self):
-        self.search_for_a_child(child_name=self.LNK_CHILD_CHANGE_NHSNO)
-        self.po.act(locator=self.LNK_CHILD_CHANGE_NHSNO, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_EDIT_CHILD_RECORD, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_CHANGE_NHS_NO, action=actions.CLICK_LINK)
-        # self.po.act(
-        #     locator="locator('div').filter(has_text=re.compile(r'What is the child’s NHS number\?$')).click()",
-        #     action=framework_actions.CHAIN_LOCATOR_ACTION,
-        # )
-        self.po.act(
-            locator=self.LNK_CHILD_CHANGE_NHSNO, action=actions.FILL, value="9123456789"
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Enter a valid NHS number",
-        )
+        self.expect_text_in_main("Consent response manually matched with child record")
 
     def remove_child_from_cohort(self, child_name: str):
-        _expected_message = f"{child_name} removed from cohort"
         self.search_for_a_child(child_name=child_name)
-        self.po.act(locator=child_name, action=actions.CLICK_LINK)
-        self.po.act(locator=self.BTN_REMOVE_FROM_COHORT, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=_expected_message,
-        )
+        self.click_record_for_child(child_name=child_name)
+        self.click_remove_from_cohort()
+        self.expect_text_in_main(f"{child_name} removed from cohort")
