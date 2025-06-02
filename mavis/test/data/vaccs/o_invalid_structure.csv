@@ -1,4 +1,3 @@
-#The file is missing the following headers: ORGANISATION_CODE, SCHOOL_NAME, NHS_NUMBER, PERSON_FORENAME, PERSON_SURNAME, PERSON_DOB, PERSON_POSTCODE, DATE_OF_VACCINATION, VACCINE_GIVEN, BATCH_NUMBER, BATCH_EXPIRY_DATE, ANATOMICAL_SITE
 Row 2 VACCINATED is required DATE_OF_VACCINATION or Event date is required PERSON_DOB or Date of birth is required PERSON_FORENAME or First name is required
  PERSON_GENDER_CODE, PERSON_GENDER or Sex is required PERSON_SURNAME or Surname is required PERSON_POSTCODE or Postcode is required PROGRAMME or Vaccination type is required
  REASON_NOT_VACCINATED is required
