@@ -70,8 +70,8 @@ def log_in_page(page):
 
 
 @pytest.fixture
-def programmes_page(test_data, playwright_operations, dashboard_page):
-    return ProgrammesPage(test_data, playwright_operations, dashboard_page)
+def programmes_page(test_data, page):
+    return ProgrammesPage(page, test_data)
 
 
 @pytest.fixture
