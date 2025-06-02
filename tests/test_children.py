@@ -89,7 +89,7 @@ def test_headers_and_filter(setup_children_page, children_page):
 
 @allure.issue("MAV-853")
 @pytest.mark.bug
-def test_details_mav_853(setup_mav_853, children_page):
+def test_details_mav_853(setup_mav_853, children_page, schools):
     """
     1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
     2. Navigate to the patient, either in a session or from the global children view
@@ -105,7 +105,7 @@ def test_details_mav_853(setup_mav_853, children_page):
     children_page.expect_text_in_main("Vaccinated with Gardasil 9")
     # Verify vaccination record
     children_page.click_child_record()
-    children_page.click_hpv_vaccination_details()
+    children_page.click_hpv_vaccination_details_for_school(schools[0])
     children_page.expect_text_in_main("OutcomeVaccinated")
 
 

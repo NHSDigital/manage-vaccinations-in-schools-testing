@@ -1,3 +1,4 @@
+from mavis.test.onboarding import School
 from .dashboard import DashboardPage
 
 from playwright.sync_api import Page, expect
@@ -39,10 +40,6 @@ class ChildrenPage:
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
 
-        self.hpv_vaccination_details_links = self.page.get_by_role(
-            "link", name="Gardasil 9 (HPV)"
-        )
-
     def verify_headers(self):
         self.children_heading.is_visible()
         for header in self.children_table_headers:
@@ -73,9 +70,10 @@ class ChildrenPage:
         self.page.get_by_role("link", name=child_name).click()
 
     @step("Click on vaccination details")
-    def click_hpv_vaccination_details(self) -> None:
-        self.hpv_vaccination_details_links.first.click()
-        self.page.pause()
+    def click_hpv_vaccination_details_for_school(self, school: School) -> None:
+        self.page.get_by_role("row").filter(has_text=str(school)).get_by_role(
+            "link", name="Gardasil 9 (HPV)"
+        ).click()
 
     @step("Click on Child record")
     def click_child_record(self) -> None:
