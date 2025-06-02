@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
+from mavis.test.models.import_records import ImportRecordsPage
+
 from ..data import TestData
 from ..wrappers import format_datetime_for_upload_link, get_current_datetime
 
@@ -15,13 +17,12 @@ from playwright.sync_api import Page, expect
 
 class ProgrammesPage:
     def __init__(
-        self,
-        page: Page,
-        test_data: TestData,
+        self, page: Page, test_data: TestData, import_records_page: ImportRecordsPage
     ):
         self.test_data = test_data
 
         self.page = page
+        self.import_records_page = import_records_page
 
         self.programme_links = {
             programme: page.get_by_role("link", name=programme)
@@ -138,15 +139,11 @@ class ProgrammesPage:
         self._record_upload_time()
         self.click_continue()
 
-        if self._is_processing_in_background():
+        if self.import_records_page.is_processing_in_background():
             self._click_uploaded_file_datetime()
-            ### FIXME
+            self.import_records_page.wait_for_processed()
 
         self.verify_upload_output(file_path=_output_file_path)
-
-    def _is_processing_in_background(self):
-        self.page.wait_for_load_state()
-        return self.import_processing_started_alert.is_visible()
 
     @step("Edit dose to not given")
     def edit_dose_to_not_given(self):
