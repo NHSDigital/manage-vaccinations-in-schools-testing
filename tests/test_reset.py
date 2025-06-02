@@ -3,15 +3,6 @@ import pytest
 from mavis.test.mavis_constants import Programme, test_data_file_paths, Vaccine
 
 
-@pytest.fixture
-def setup_tests(reset_environment, nurse, organisation, log_in_page, start_page):
-    reset_environment()
-    wait_for_reset()
-    start_page.navigate_and_start()
-    log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
-    yield
-    log_in_page.log_out()
-
 
 @pytest.fixture
 def setup_mav_965(

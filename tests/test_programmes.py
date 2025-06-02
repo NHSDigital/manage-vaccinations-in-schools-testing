@@ -206,7 +206,7 @@ def test_rav_verify_excel_mav_854(
 ):
     children_page.search_for_a_child(child_name="MAV_854, MAV_854")
     programmes_page.click_mav_854_child()
-    sessions_page.click_location(clinics)
+    sessions_page.click_location("Community clinics")
     sessions_page._vaccinate_child_mav_854(clinics[0])
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
