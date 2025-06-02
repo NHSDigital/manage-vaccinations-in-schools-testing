@@ -3,7 +3,6 @@ import pytest
 from mavis.test.mavis_constants import Programme, test_data_file_paths, Vaccine
 
 
-
 @pytest.fixture
 def setup_mav_965(
     log_in_as_nurse,
