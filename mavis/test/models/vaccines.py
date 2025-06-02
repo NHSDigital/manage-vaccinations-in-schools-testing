@@ -74,7 +74,6 @@ class VaccinesPage:
         self.click_archive_this_batch()
         expect(self.page.get_by_role("alert")).to_contain_text("Batch archived.")
 
-    @step("Click on batch option")
     def __click_batch_option(self, batch_name: str, link_text: str):
         row = self.page.locator("tr").filter(
             has=self.page.locator("td:first-child", has_text=batch_name)
