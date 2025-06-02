@@ -42,7 +42,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -158,7 +158,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
         <stringProp name="delimiter">,</stringProp>
         <stringProp name="fileEncoding">UTF-8</stringProp>
         <stringProp name="filename">${BaseDirectory}${InputFile}</stringProp>
@@ -179,7 +179,7 @@
         <stringProp name="HTTPSampler.implementation"></stringProp>
       </ConfigTestElement>
       <hashTree/>
-      <DNSCacheManager guiclass="DNSCachePanel" testclass="DNSCacheManager" testname="DNS Cache Manager">
+      <DNSCacheManager guiclass="DNSCachePanel" testclass="DNSCacheManager" testname="DNS Cache Manager" enabled="true">
         <collectionProp name="DNSCacheManager.servers"/>
         <collectionProp name="DNSCacheManager.hosts"/>
         <boolProp name="DNSCacheManager.clearEachIteration">true</boolProp>
@@ -203,7 +203,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -223,7 +223,7 @@
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -267,211 +267,195 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
 </stringProp>
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223Sampler>
-          <hashTree/>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage" enabled="true">
-            <boolProp name="TransactionController.includeTimers">false</boolProp>
-          </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Homepage" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
-              <stringProp name="HTTPSampler.path">start</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <stringProp name="HTTPSampler.method">GET</stringProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                <collectionProp name="Arguments.arguments"/>
-              </elementProp>
-            </HTTPSamplerProxy>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">prev.setIgnore()</stringProp>
+            </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Sign-In Page" enabled="true">
-            <boolProp name="TransactionController.includeTimers">false</boolProp>
-          </TransactionController>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.1 Homepage">
+            <stringProp name="HTTPSampler.port">0</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">start</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2 Sign-in page">
+            <stringProp name="HTTPSampler.port">0</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+          </HTTPSamplerProxy>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign-in page" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
-              <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <stringProp name="HTTPSampler.method">GET</stringProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                <collectionProp name="Arguments.arguments"/>
-              </elementProp>
-            </HTTPSamplerProxy>
-            <hashTree>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
-                <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
-              </ConstantTimer>
-              <hashTree/>
-            </hashTree>
+            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
+              <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
+              <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
+              <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
+              <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
+              <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+              <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
+              <stringProp name="BoundaryExtractor.match_number">1</stringProp>
+            </BoundaryExtractor>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
+              <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Sign-in" enabled="true">
-            <boolProp name="TransactionController.includeTimers">false</boolProp>
-          </TransactionController>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3 Sign-in">
+            <stringProp name="HTTPSampler.port">0</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="user[email]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">user[email]</stringProp>
+                  <stringProp name="Argument.value">nurse.jackie@example.org</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="user[password]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">user[password]</stringProp>
+                  <stringProp name="Argument.value">nurse.jackie@example.org</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="authenticity_token" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">authenticity_token</stringProp>
+                  <stringProp name="Argument.value">${Authenticity_Token}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign-in">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
-              <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <stringProp name="HTTPSampler.method">POST</stringProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                <collectionProp name="Arguments.arguments">
-                  <elementProp name="user[email]" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.name">user[email]</stringProp>
-                    <stringProp name="Argument.value">nurse.jackie@example.org</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  </elementProp>
-                  <elementProp name="user[password]" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.name">user[password]</stringProp>
-                    <stringProp name="Argument.value">nurse.jackie@example.org</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  </elementProp>
-                  <elementProp name="authenticity_token" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.name">authenticity_token</stringProp>
-                    <stringProp name="Argument.value">${Authenticity_Token}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  </elementProp>
-                </collectionProp>
-              </elementProp>
-            </HTTPSamplerProxy>
-            <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
-                <collectionProp name="HeaderManager.headers">
-                  <elementProp name="Content-Type" elementType="Header">
-                    <stringProp name="Header.name">Content-Type</stringProp>
-                    <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </HeaderManager>
-              <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/organisations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 20-35s" enabled="true">
-                <stringProp name="ConstantTimer.delay">${__Random(20000,35000,)}</stringProp>
-              </ConstantTimer>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                <stringProp name="RegexExtractor.refname">organisationId</stringProp>
-                <stringProp name="RegexExtractor.regex">organisation_id&quot; type=&quot;submit&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">orgNotFound</stringProp>
-                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
-                <stringProp name="RegexExtractor.match_number"></stringProp>
-              </RegexExtractor>
-              <hashTree/>
-            </hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
+              <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
+              <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
+              <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/organisations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
+              <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
+              <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+              <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
+              <stringProp name="BoundaryExtractor.match_number">1</stringProp>
+            </BoundaryExtractor>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 20-35s" enabled="true">
+              <stringProp name="ConstantTimer.delay">${__Random(20000,35000,)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">organisationId</stringProp>
+              <stringProp name="RegexExtractor.regex">organisation_id&quot; type=&quot;submit&quot; value=&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">orgNotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number"></stringProp>
+            </RegexExtractor>
+            <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Select Organisations">
-            <boolProp name="TransactionController.includeTimers">false</boolProp>
-          </TransactionController>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4 Select Organisations">
+            <stringProp name="HTTPSampler.port">0</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">users/organisations</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="organisation_id" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">organisation_id</stringProp>
+                  <stringProp name="Argument.value">${organisationId}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="authenticity_token" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">authenticity_token</stringProp>
+                  <stringProp name="Argument.value">${Authenticity_Token}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+          </HTTPSamplerProxy>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Select Organisations">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
-              <stringProp name="HTTPSampler.path">users/organisations</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <stringProp name="HTTPSampler.method">POST</stringProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                <collectionProp name="Arguments.arguments">
-                  <elementProp name="organisation_id" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.name">organisation_id</stringProp>
-                    <stringProp name="Argument.value">${organisationId}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  </elementProp>
-                  <elementProp name="authenticity_token" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.name">authenticity_token</stringProp>
-                    <stringProp name="Argument.value">${Authenticity_Token}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  </elementProp>
-                </collectionProp>
-              </elementProp>
-            </HTTPSamplerProxy>
-            <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
-                <collectionProp name="HeaderManager.headers">
-                  <elementProp name="Content-Type" elementType="Header">
-                    <stringProp name="Header.name">Content-Type</stringProp>
-                    <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </HeaderManager>
-              <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
-                <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
-              </ConstantTimer>
-              <hashTree/>
-            </hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
+              <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Sessions list">
-            <boolProp name="TransactionController.includeTimers">false</boolProp>
-          </TransactionController>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list">
+            <stringProp name="HTTPSampler.port">0</stringProp>
+            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.path">sessions</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+          </HTTPSamplerProxy>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
-              <stringProp name="HTTPSampler.path">sessions</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <stringProp name="HTTPSampler.method">GET</stringProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                <collectionProp name="Arguments.arguments"/>
-              </elementProp>
-            </HTTPSamplerProxy>
-            <hashTree>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="SessionId Regular Expression Extractor" enabled="false">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                <stringProp name="RegexExtractor.refname">SessionId</stringProp>
-                <stringProp name="RegexExtractor.regex">&lt;a class=&quot;nhsuk-link&quot; href=&quot;/sessions/(\w+)[\S\s]+Cohort&lt;/span&gt;\s+[1-9]+</stringProp>
-                <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">SessionId_NotFound</stringProp>
-                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
-                <stringProp name="RegexExtractor.match_number">1</stringProp>
-              </RegexExtractor>
-              <hashTree/>
-              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s" enabled="true">
-                <stringProp name="ConstantTimer.delay">${__Random(7000,12000,)}</stringProp>
-              </ConstantTimer>
-              <hashTree/>
-            </hashTree>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="SessionId Regular Expression Extractor" enabled="false">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">SessionId</stringProp>
+              <stringProp name="RegexExtractor.regex">&lt;a class=&quot;nhsuk-link&quot; href=&quot;/sessions/(\w+)[\S\s]+Cohort&lt;/span&gt;\s+[1-9]+</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">SessionId_NotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 7-12s" enabled="true">
+              <stringProp name="ConstantTimer.delay">${__Random(7000,12000,)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True" enabled="true">
@@ -650,17 +634,17 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == False" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == False">
           <stringProp name="IfController.condition">${__jexl3(&quot;${ReadOnlyMode}&quot; == &quot;False&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="RegisterAttendance">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="2. Register attendance">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}</stringProp>
@@ -678,7 +662,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session register" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.2 Session register">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register</stringProp>
@@ -696,7 +680,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Search by first/last name" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3 Search by first/last name">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register?search_form%5Bq%5D=${CHILD_FIRST_NAME}+${CHILD_LAST_NAME}&amp;search_form%5Bregister_status%5D=&amp;search_form%5Byear_groups%5D%5B%5D=&amp;search_form%5Bdate_of_birth_day%5D=&amp;search_form%5Bdate_of_birth_month%5D=&amp;search_form%5Bdate_of_birth_year%5D=&amp;search_form%5Bmissing_nhs_number%5D=0</stringProp>
@@ -778,7 +762,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <boolProp name="IfController.useExpression">true</boolProp>
             </IfController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
@@ -816,14 +800,14 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout" enabled="true">
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6. Logout">
                 <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
                 <boolProp name="IfController.evaluateAll">false</boolProp>
                 <boolProp name="IfController.useExpression">true</boolProp>
                 <stringProp name="TestPlan.comments">Use the same if controller as login</stringProp>
               </IfController>
               <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">logout</stringProp>
@@ -878,7 +862,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient attending session">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4 Patient attending session">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register/${PatientId}/present</stringProp>
@@ -903,7 +887,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-449183188">is attending today’s session.&lt;/p&gt;</stringProp>
                 </collectionProp>
@@ -914,7 +898,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to consent page">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.5 Patient return to consent page">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv?return_to=consent</stringProp>
@@ -927,7 +911,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
                 <collectionProp name="HeaderManager.headers">
                   <elementProp name="Content-Type" elementType="Header">
                     <stringProp name="Header.name">Content-Type</stringProp>
@@ -970,7 +954,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="VaccinationPages Regular Expression Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="VaccinationPages Regular Expression Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">VaccinationPages</stringProp>
                 <stringProp name="RegexExtractor.regex">data-turbo-action=&quot;replace&quot; href=&quot;/sessions/${SessionId}/patients/${PatientId}/(\w+)</stringProp>
@@ -980,7 +964,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="RegexExtractor.match_number">-1</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/sessions/${SessionId}/patients/${PatientId}/hpv/consents&quot;&gt;&lt;button class=&quot;nhsuk-button app-button--secondary&quot; data-module=&quot;nhsuk-button&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Get consent response&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
@@ -990,7 +974,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; \/&gt;</stringProp>
@@ -1002,29 +986,23 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
           </hashTree>
-          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler">
-            <boolProp name="displayJMeterProperties">false</boolProp>
-            <boolProp name="displayJMeterVariables">true</boolProp>
-            <boolProp name="displaySystemProperties">false</boolProp>
-          </DebugSampler>
-          <hashTree/>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If NotVaccinated">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If NotVaccinated" enabled="true">
             <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinatedStatus}&quot; == &quot;NotVaccinated&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">false</boolProp>
           </IfController>
           <hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadyForNurseStatus">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadyForNurseStatus" enabled="true">
               <stringProp name="IfController.condition">${__jexl3(&quot;${ReadyForNurseStatus}&quot; == &quot;Ready for nurse&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">false</boolProp>
             </IfController>
             <hashTree>
-              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Nurse Triage">
+              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="3. Nurse triage">
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nurse triage new">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.1 Nurse triage new">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/triages/new</stringProp>
@@ -1037,7 +1015,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   </elementProp>
                 </HTTPSamplerProxy>
                 <hashTree>
-                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
+                  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
                     <collectionProp name="HeaderManager.headers">
                       <elementProp name="Content-Type" elementType="Header">
                         <stringProp name="Header.name">Content-Type</stringProp>
@@ -1050,7 +1028,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
-                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
                     <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">patients/\d+/hpv/triages&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
@@ -1061,7 +1039,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nurse triage result">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.2 Nurse triage result">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/triages</stringProp>
@@ -1109,7 +1087,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                     <stringProp name="ConstantTimer.delay">${__Random(17000,25000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
-                  <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+                  <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                     <collectionProp name="Asserion.test_strings">
                       <stringProp name="135128417">Triage outcome updated</stringProp>
                     </collectionProp>
@@ -1120,7 +1098,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   </ResponseAssertion>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nurse triage complete" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.3 Nurse triage complete">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv</stringProp>
@@ -1146,7 +1124,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
-                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor">
+                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor" enabled="true">
                     <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                     <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
@@ -1159,11 +1137,11 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 </hashTree>
               </hashTree>
             </hashTree>
-            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Vaccinate">
+            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4. Vaccination">
               <boolProp name="TransactionController.includeTimers">false</boolProp>
             </TransactionController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/vaccinations</stringProp>
@@ -1280,7 +1258,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="BatchId Regular Expression Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="BatchId Regular Expression Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">BatchId</stringProp>
                   <stringProp name="RegexExtractor.regex">&lt;input id=&quot;draft-vaccination-record-batch-id-(\d+)-field&quot; class=&quot;nhsuk-radios__input&quot;</stringProp>
@@ -1294,7 +1272,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   <stringProp name="ConstantTimer.delay">${__Random(35000,48000,)}</stringProp>
                 </ConstantTimer>
                 <hashTree/>
-                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
                     <stringProp name="-676372573">Which batch did you use?</stringProp>
                   </collectionProp>
@@ -1318,7 +1296,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 </stringProp>
               </JSR223Sampler>
               <hashTree/>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination batch">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
@@ -1353,7 +1331,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 </elementProp>
               </HTTPSamplerProxy>
               <hashTree>
-                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
                   <collectionProp name="HeaderManager.headers">
                     <elementProp name="Content-Type" elementType="Header">
                       <stringProp name="Header.name">Content-Type</stringProp>
@@ -1394,7 +1372,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 </ResponseAssertion>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination confirm" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.3 Vaccination confirm">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
@@ -1478,11 +1456,11 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
               <boolProp name="IfController.useExpression">false</boolProp>
             </IfController>
             <hashTree>
-              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Get Parental Consent">
+              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5. Consent">
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent homepage">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.1 Consent homepage">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/consents</stringProp>
@@ -1548,7 +1526,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </JSR223PostProcessor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent who" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.2 Consent who">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/who</stringProp>
@@ -1607,7 +1585,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent parent details">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.3 Consent parent details">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/parent-details</stringProp>
@@ -1680,7 +1658,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent route" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.4 Consent route">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/route</stringProp>
@@ -1746,7 +1724,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent agree" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.5 Consent agree">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/agree</stringProp>
@@ -1805,7 +1783,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent questions" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.6 Consent questions">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/questions</stringProp>
@@ -1927,7 +1905,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent triage" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.7 Consent triage">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/triage</stringProp>
@@ -1993,7 +1971,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </RegexExtractor>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent confirm" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.8 Consent confirm">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/confirm</stringProp>
@@ -2045,7 +2023,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </ResponseAssertion>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to HPV vaccination page" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.9 Patient return to HPV vaccination page">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv?return_to=consent</stringProp>
@@ -2071,7 +2049,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                   </ConstantTimer>
                   <hashTree/>
-                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor">
+                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor" enabled="true">
                     <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                     <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
@@ -2085,13 +2063,13 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
               </hashTree>
             </hashTree>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
             <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinatedStatus}&quot; == &quot;Vaccinated&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Already vaccinated" enabled="true">
+            <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Already vaccinated">
               <boolProp name="WAITING">true</boolProp>
               <boolProp name="SUCCESFULL">true</boolProp>
               <stringProp name="RESPONSE_CODE">200</stringProp>
@@ -2107,7 +2085,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               <stringProp name="RESULT_CLASS">org.apache.jmeter.samplers.SampleResult</stringProp>
             </kg.apc.jmeter.samplers.DummySampler>
             <hashTree>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated" enabled="true">
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Already vaccinated">
                 <stringProp name="cacheKey">true</stringProp>
                 <stringProp name="filename"></stringProp>
                 <stringProp name="parameters"></stringProp>
@@ -2117,7 +2095,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               <hashTree/>
             </hashTree>
           </hashTree>
-          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller">
+          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
             <stringProp name="ForeachController.inputVal">VaccinationPages</stringProp>
             <stringProp name="ForeachController.returnVal">VaccinationPage</stringProp>
             <boolProp name="ForeachController.useSeparator">true</boolProp>
@@ -2132,7 +2110,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               <boolProp name="IfController.useExpression">true</boolProp>
             </IfController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Sessions list" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list">
                 <stringProp name="HTTPSampler.port">0</stringProp>
                 <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
@@ -2170,14 +2148,14 @@ without actual network activity. This helps debugging tests.</stringProp>
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout" enabled="true">
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6. Logout">
                 <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
                 <boolProp name="IfController.evaluateAll">false</boolProp>
                 <boolProp name="IfController.useExpression">true</boolProp>
                 <stringProp name="TestPlan.comments">Use the same if controller as login</stringProp>
               </IfController>
               <hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">logout</stringProp>
@@ -2232,7 +2210,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to ${VaccinationPage} vaccination page">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.9 Patient return to ${VaccinationPage} vaccination page">
               <stringProp name="TestPlan.comments">Should only get here for MenACWY and IPV</stringProp>
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -2299,14 +2277,14 @@ without actual network activity. This helps debugging tests.</stringProp>
                 <stringProp name="RegexExtractor.match_number">-1</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor">
+              <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="true">
                 <boolProp name="displayJMeterProperties">false</boolProp>
                 <boolProp name="displayJMeterVariables">true</boolProp>
                 <boolProp name="displaySamplerProperties">true</boolProp>
                 <boolProp name="displaySystemProperties">false</boolProp>
               </DebugPostProcessor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/consents&quot;&gt;&lt;button class=&quot;nhsuk-button app-button--secondary&quot; data-module=&quot;nhsuk-button&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Get consent response&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
@@ -2317,7 +2295,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If NotVaccinated">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If NotVaccinated" enabled="true">
               <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinatedStatus}&quot; == &quot;NotVaccinated&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">false</boolProp>
@@ -2329,11 +2307,11 @@ without actual network activity. This helps debugging tests.</stringProp>
                 <boolProp name="IfController.useExpression">false</boolProp>
               </IfController>
               <hashTree>
-                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Get Parental Consent" enabled="true">
+                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5. Consent">
                   <boolProp name="TransactionController.includeTimers">false</boolProp>
                 </TransactionController>
                 <hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent homepage">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.1 Consent homepage">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/consents</stringProp>
@@ -2399,7 +2377,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </JSR223PostProcessor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent who" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.2 Consent who">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/who</stringProp>
@@ -2458,7 +2436,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent parent details" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.3 Consent parent details">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/parent-details</stringProp>
@@ -2531,7 +2509,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent route" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.4 Consent route">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/route</stringProp>
@@ -2597,7 +2575,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent agree" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.5 Consent agree">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/agree</stringProp>
@@ -2656,7 +2634,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent questions" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.6 Consent questions">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/questions</stringProp>
@@ -2778,7 +2756,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent triage" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.7 Consent triage">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/triage</stringProp>
@@ -2844,7 +2822,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Consent confirm" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.8 Consent confirm">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/confirm</stringProp>
@@ -2896,7 +2874,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </ResponseAssertion>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patient return to ${VaccinationPage} vaccination page" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.9 Patient return to ${VaccinationPage} vaccination page">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}?return_to=consent</stringProp>
@@ -2972,7 +2950,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
                     <hashTree/>
-                    <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor">
+                    <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor" enabled="true">
                       <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                       <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
@@ -2991,11 +2969,11 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 <boolProp name="IfController.useExpression">false</boolProp>
               </IfController>
               <hashTree>
-                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Nurse Triage" enabled="true">
+                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="3. Nurse triage">
                   <boolProp name="TransactionController.includeTimers">false</boolProp>
                 </TransactionController>
                 <hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nurse triage new">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.1 Nurse triage new">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/triages/new</stringProp>
@@ -3021,7 +2999,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
-                    <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+                    <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
                       <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/sessions/\w+/patients/\d+/\w+/triages&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
@@ -3032,7 +3010,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </RegexExtractor>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nurse triage result" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.2 Nurse triage result">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/triages</stringProp>
@@ -3091,7 +3069,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     </ResponseAssertion>
                     <hashTree/>
                   </hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Nurse triage complete" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.3 Nurse triage complete">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}</stringProp>
@@ -3117,7 +3095,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
-                    <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor">
+                    <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor" enabled="true">
                       <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                       <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
@@ -3130,17 +3108,17 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </hashTree>
                 </hashTree>
               </hashTree>
-              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Vaccinate">
+              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Vaccinate" enabled="true">
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
-                <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If MenACWY">
+                <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If MenACWY" enabled="true">
                   <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinationPage}&quot; == &quot;menacwy&quot;)}</stringProp>
                   <boolProp name="IfController.evaluateAll">false</boolProp>
                   <boolProp name="IfController.useExpression">false</boolProp>
                 </IfController>
                 <hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/vaccinations</stringProp>
@@ -3275,7 +3253,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
                     </ConstantTimer>
                     <hashTree/>
-                    <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+                    <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                       <collectionProp name="Asserion.test_strings">
                         <stringProp name="-676372573">Which batch did you use?</stringProp>
                       </collectionProp>
@@ -3306,7 +3284,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                   <boolProp name="IfController.useExpression">false</boolProp>
                 </IfController>
                 <hashTree>
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination questions" enabled="true">
+                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions">
                     <stringProp name="HTTPSampler.port">0</stringProp>
                     <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/vaccinations</stringProp>
@@ -3473,7 +3451,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 </stringProp>
                 </JSR223Sampler>
                 <hashTree/>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination batch" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
@@ -3542,7 +3520,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                   </ResponseAssertion>
                   <hashTree/>
                 </hashTree>
-                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Vaccination confirm" enabled="true">
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.3 Vaccination confirm">
                   <stringProp name="HTTPSampler.port">0</stringProp>
                   <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
@@ -3625,7 +3603,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 </hashTree>
               </hashTree>
             </hashTree>
-            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
               <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinatedStatus}&quot; == &quot;Vaccinated&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">true</boolProp>
@@ -3659,14 +3637,14 @@ without actual network activity. This helps debugging tests.</stringProp>
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Logout" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6. Logout">
           <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
           <stringProp name="TestPlan.comments">Use the same if controller as login</stringProp>
         </IfController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout">
             <stringProp name="HTTPSampler.port">0</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.path">logout</stringProp>
@@ -3706,7 +3684,7 @@ without actual network activity. This helps debugging tests.</stringProp>
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
