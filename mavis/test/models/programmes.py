@@ -1,50 +1,26 @@
-from typing import Final
-
 import pandas as pd
 
 
 from ..mavis_constants import (
     ReportFormat,
-    test_data_file_paths,
     Programme,
 )
-from ..playwright_ops import PlaywrightOperations
 from ..step import step
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
 from ..wrappers import get_current_datetime, get_link_formatted_date_time
 
-from .children import ChildrenPage
-from .consent import ConsentPage
-from .dashboard import DashboardPage
-from .import_records import ImportRecordsPage
-from .sessions import SessionsPage
-
 
 class ProgrammesPage:
-    LNK_MAV_965_CHILD: Final[str] = "MAV_965, MAV_965"
-    LNK_MAV_909_CHILD: Final[str] = "MAV_909, MAV_909"
-
     def __init__(
         self,
         page: Page,
-        playwright_operations: PlaywrightOperations,
         test_data: TestData,
-        dashboard_page: DashboardPage,
     ):
         self.test_data = test_data
 
         self.page = page
-        self.dashboard_page = dashboard_page
-        self.sessions_page = SessionsPage(
-            test_data, playwright_operations, dashboard_page
-        )
-        self.children_page = ChildrenPage(playwright_operations, dashboard_page)
-        self.consent_page = ConsentPage(playwright_operations)
-        self.import_records_page = ImportRecordsPage(
-            test_data, playwright_operations, dashboard_page
-        )
 
         self.programme_links = {
             programme: page.get_by_role("link", name=programme)
@@ -83,6 +59,10 @@ class ProgrammesPage:
         )
         self.resolve_duplicate_button = page.get_by_role(
             "button", name="Resolve duplicate"
+        )
+
+        self.import_processing_started_alert = page.get_by_role(
+            "alert", name="Import processing started"
         )
 
     @step("Click on {0}")
@@ -130,7 +110,7 @@ class ProgrammesPage:
         _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
-                expect(self.page.get_by_role("main")).to_contain_text(_msg)
+                self.expect_text(_msg)
 
     @step("Upload cohort {0}")
     def upload_cohorts(self, file_paths: str, wait_long: bool = False):
@@ -144,11 +124,15 @@ class ProgrammesPage:
         self.click_continue()
         recorded_file_upload_time = get_link_formatted_date_time()
 
-        if self.import_records_page.is_processing_in_background():
+        if self._is_processing_in_background():
             self.page.wait_for_timeout(10 * 1000)  # 10 seconds in milliseconds
             self.click_uploaded_file_datetime(recorded_file_upload_time)
 
         self.verify_upload_output(file_path=_output_file_path)
+
+    def _is_processing_in_background(self):
+        self.page.wait_for_load_state()
+        return self.import_processing_started_alert.is_visible()
 
     @step("Edit dose to not given")
     def edit_dose_to_not_given(self):
@@ -229,105 +213,5 @@ class ProgrammesPage:
                 f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
             )
 
-    def verify_mav_854(self, schools, clinics):
-        """
-        1. Find a child who is in an HPV school session
-        2. Ensure there is a clinic session date for today
-        3. Navigate to the clinic, find the child, record a vaccination against that child
-        4. Navigate to that child's school
-        5. Download offline spreadsheet
-        6. Expected: offline spreadsheet downloaded
-        Actual: crash
-        """
-        self.children_page.search_for_a_child(child_name="MAV_854, MAV_854")
-        self.click_mav_854_child()
-        self.sessions_page.click_location(clinics)
-        self.sessions_page._vaccinate_child_mav_854(clinics[0])
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.click_scheduled()
-        self.sessions_page.click_location(schools[0])
-        assert self.sessions_page.get_session_id_from_offline_excel()
-
-    def verify_mav_965(self, location: str):
-        """
-        Steps to reproduce:
-        Patient setup: in a school session today, marked as attending, session has HPV and doubles, patients is eligible for all vaccines (has consent, correct year group, no history)
-        Complete pre-screening questions and vaccinate the patient for any one vaccine (eg. HPV)
-        Testing has confirmed the following:
-        Two vaccinations in same session
-        - If HPV is followed by MenACWY then "feeling well" is pre-filled
-        - If HPV is followed by Td/IPV  then both "feeling well" and "not pregnant" are pre-populated
-        - If MenACWY followed by Td/IPV then "feeling well" is pre-filled
-        - If MenCAWY followed by HPV then "feeling well" is pre-filled
-        - If Td/IPV followed by MenACWY  then "feeling well" is pre-filled
-        - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
-        """
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_sessions()
-        self.sessions_page.click_location(location)
-        self.sessions_page.click_consent_tab()
-        self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.click_programme_tab(Programme.HPV)
-        self.sessions_page.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(change_phone=False)
-        self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.click_programme_tab(Programme.MENACWY)
-        self.sessions_page.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(
-            change_phone=False, programme=Programme.MENACWY
-        )
-        self.sessions_page.search_child(child_name=self.LNK_MAV_965_CHILD)
-        self.sessions_page.click_programme_tab(Programme.TD_IPV)
-        self.sessions_page.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(
-            change_phone=False, programme=Programme.TD_IPV
-        )
-        self.sessions_page.register_child_as_attending(
-            child_name=self.LNK_MAV_965_CHILD
-        )
-        self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme=Programme.HPV
-        )
-        self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme=Programme.MENACWY
-        )
-        self.sessions_page.record_vaccs_for_child(
-            child_name=self.LNK_MAV_965_CHILD, programme=Programme.TD_IPV
-        )
-
-    def verify_mav_909(self):
-        """
-        Steps to reproduce:
-        Find a patient in Year 8 and remove them from cohort using the button
-        Upload a cohort list with their first name, surname, URN, date of birth and postcode
-
-        Scenario 1
-            Duplicate review is not flagged
-
-            Expected result:
-            The child is added back into the cohort, and in all the relevant sessions
-            Actual Result:
-            Server error page and user cannot bring the child back into the cohort
-
-        Scenario 2
-            The import screen flags for duplicate review, and user clicks "Review" next to the child's name
-
-            Expected result:
-            System allows you to review the new details against the previous record (before removing from cohort) and lets you choose which record to keep. Once review confirmed, the child is added back into the cohort, and in all the relevant sessions.
-            Actual Result:
-            Server error page and user cannot bring the child back into the cohort
-        """
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_children()
-        self.children_page.remove_child_from_cohort(child_name=self.LNK_MAV_909_CHILD)
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_programmes()
-        self.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "1 duplicate record needs review"
-        )
-        self.click_review()
-        self.click_use_duplicate()
-        self.click_resolve_duplicate()
-        expect(self.page.get_by_role("main")).to_contain_text("Record updated")
+    def expect_text(self, text: str):
+        expect(self.page.get_by_role("main")).to_contain_text(text)
