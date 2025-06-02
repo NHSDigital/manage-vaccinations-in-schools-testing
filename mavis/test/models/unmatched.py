@@ -1,6 +1,6 @@
 from typing import Final
 
-from ..generic_constants import actions, properties, wait_time
+from ..generic_constants import actions, properties
 from ..playwright_ops import PlaywrightOperations
 
 from .children import ChildrenPage
@@ -55,7 +55,6 @@ class UnmatchedPage:
             value=full_name,
         )
         self.po.act(locator=self.BTN_SEARCH, action=actions.CLICK_BUTTON)
-        self.po.act(locator=None, action=actions.WAIT, value=wait_time.MIN)
         self.po.act(locator=full_name, action=actions.CLICK_LINK, index=0)
         self.po.act(
             locator=self.BTN_LINK_RESPONSE_WITH_RECORD, action=actions.CLICK_BUTTON
