@@ -4,8 +4,8 @@ import pandas as pd
 
 from ..generic_constants import actions, escape_characters, properties
 from ..mavis_constants import report_headers
+from ..onboarding import School
 from ..playwright_ops import PlaywrightOperations
-from ..school import School
 from ..wrappers import get_current_datetime
 
 from .dashboard import DashboardPage

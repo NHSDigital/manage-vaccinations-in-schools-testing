@@ -1,14 +1,12 @@
 import pytest
 
 from mavis.test.mavis_constants import test_data_file_paths
-from mavis.test.wrappers import wait_for_reset
 
 pytestmark = pytest.mark.e2e
 
 
 @pytest.fixture(autouse=True)
 def setup_tests(
-    reset_environment,
     nurse,
     organisation,
     schools,
@@ -17,10 +15,8 @@ def setup_tests(
     sessions_page,
     start_page,
 ):
-    reset_environment()
-    wait_for_reset()
     start_page.navigate_and_start()
-    log_in_page.log_in_and_select_organisation(**nurse, organisation=organisation)
+    log_in_page.log_in_and_select_organisation(nurse, organisation)
     yield
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()

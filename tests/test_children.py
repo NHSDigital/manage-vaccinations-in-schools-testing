@@ -89,8 +89,8 @@ def test_headers_and_filter(setup_children_page, children_page):
 
 @allure.issue("MAV-853")
 @pytest.mark.bug
-def test_details_mav_853(setup_mav_853, children_page):
-    children_page.verify_mav_853()
+def test_details_mav_853(setup_mav_853, children_page, schools):
+    children_page.verify_mav_853(schools[0])
 
 
 @pytest.mark.bug

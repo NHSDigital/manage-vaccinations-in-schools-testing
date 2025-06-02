@@ -330,6 +330,7 @@ allure-report/
 allure-results/
 
 # Playwright
+screenshots/
 test-results/
 
 # Project

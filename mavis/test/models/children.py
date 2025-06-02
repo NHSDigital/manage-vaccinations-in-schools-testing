@@ -1,6 +1,7 @@
 from typing import Final
 
 from ..generic_constants import actions, properties, wait_time
+from ..onboarding import School
 from ..playwright_ops import PlaywrightOperations
 
 from .dashboard import DashboardPage
@@ -22,7 +23,6 @@ class ChildrenPage:
     LNK_ACTIVITY_LOG: Final[str] = "Activity log"
     LNK_CHILD_RECORD: Final[str] = "Child record"
     LNK_CHILD_MAV_853: Final[str] = "MAV_853, MAV_853"
-    LNK_VACCS_DETAILS_MAV_853: Final[str] = "Gardasil 9 (HPV)"
     LNK_CHILD_CHANGE_NHSNO: Final[str] = "CHANGENHSNO, CHANGENHSNO"
     LNK_EDIT_CHILD_RECORD: Final[str] = "Edit child record"
     LNK_CHANGE_NHS_NO: Final[str] = "Change   NHS number"
@@ -100,7 +100,7 @@ class ChildrenPage:
             expected_value="Consent response manually matched with child record",
         )
 
-    def verify_mav_853(self):
+    def verify_mav_853(self, school: School):
         """
         1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
         2. Navigate to the patient, either in a session or from the global children view
@@ -119,7 +119,11 @@ class ChildrenPage:
         )
         # Verify vaccination record
         self.po.act(locator=self.LNK_CHILD_RECORD, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LNK_VACCS_DETAILS_MAV_853, action=actions.CLICK_LINK)
+
+        self.po.page.get_by_role("row").filter(has_text=str(school)).get_by_role(
+            "link", name="Gardasil 9 (HPV)"
+        ).click()
+
         self.po.verify(
             locator=self.LBL_MAIN,
             property=properties.TEXT,
