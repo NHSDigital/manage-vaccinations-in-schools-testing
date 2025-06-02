@@ -177,15 +177,20 @@ class TestData:
                 _cols = ["PERSON_SURNAME", "PERSON_FORENAME"]
             case mavis_file_types.VACCS_SYSTMONE:
                 _cols = ["Surname", "First name"]
-        # Strip whitespace from both columns before combining
-        col0 = _file_df[_cols[0]].apply(self._normalize)
-        col1 = _file_df[_cols[1]].apply(self._normalize)
+
+        col0 = _file_df[_cols[0]].apply(self.normalize_whitespace)
+        col1 = _file_df[_cols[1]].apply(self.normalize_whitespace)
         _names_list = (col0 + ", " + col1).tolist()
         return _names_list
 
-    def _normalize(self, string: str) -> str:
-        # Remove all Unicode whitespace including NBSP and ZWJ
-        return re.sub(r"[\s\u00A0\u200D]+", "", str(string)).strip()
+    def normalize_whitespace(self, string: str) -> str:
+        # Remove zero-width joiner
+        string = string.replace("\u200d", "")
+        # Replace non-breaking spaces with regular spaces
+        string = string.replace("\u00a0", " ")
+        # Strip leading/trailing whitespace, and replace consecutive whitespace with a single space
+        string = re.sub(r"\s+", " ", string.strip())
+        return string
 
     def get_session_id(self, path: str) -> str:
         """
