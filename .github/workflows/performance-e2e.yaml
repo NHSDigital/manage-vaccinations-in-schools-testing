@@ -168,7 +168,6 @@ jobs:
           publish_dir: nurse-output/report
           destination_dir: JMeter/report-${{ env.timestamp }}
           keep_files: true
-          enable_jekyll: true
 
       - name: Set Job Summary
         run: |
