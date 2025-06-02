@@ -160,7 +160,7 @@ jobs:
           path: nurse-output
           if-no-files-found: warn
 
-      - name: Publish test report
+      - name: Publish report to GH Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -169,4 +169,9 @@ jobs:
           destination_dir: JMeter/report-${{ env.timestamp }}
           keep_files: true
           enable_jekyll: true
+
+      - name: Set Job Summary
+        run: |
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> $GITHUB_STEP_SUMMARY
+     
           
