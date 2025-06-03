@@ -39,3 +39,4 @@ Row 37 TIME_OF_VACCINATION: Enter a time in the past.
 Row 38 REASON_NOT_VACCINATED: must be blank
 Row 40 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
 Row 42 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
+Row 43 BATCH_NUMBER: is greater than 100 characters long
