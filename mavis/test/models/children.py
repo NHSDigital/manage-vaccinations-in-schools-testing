@@ -75,6 +75,10 @@ class ChildrenPage:
             "link", name="Gardasil 9 (HPV)"
         ).click()
 
+    @step("Click on vaccination details")
+    def click_hpv_vaccination_details(self) -> None:
+        self.page.get_by_role("link", name="Gardasil 9 (HPV)").click()
+
     @step("Click on Child record")
     def click_child_record(self) -> None:
         self.child_record_link.click()

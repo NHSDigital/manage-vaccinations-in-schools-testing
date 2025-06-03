@@ -109,7 +109,7 @@ def test_class_list_file_upload_positive(
     setup_class_list, schools, import_records_page
 ):
     import_records_page.import_class_list_records(
-        schools[0], test_data_file_paths.CLASS_POSITIVE
+        str(schools[0]), test_data_file_paths.CLASS_POSITIVE
     )
 
 
@@ -118,35 +118,35 @@ def test_class_list_file_upload_negative(
     setup_class_list, schools, import_records_page
 ):
     import_records_page.import_class_list_records(
-        schools[0], test_data_file_paths.CLASS_NEGATIVE
+        str(schools[0]), test_data_file_paths.CLASS_NEGATIVE
     )
 
 
 @pytest.mark.classlist
 def test_class_list_file_structure(setup_class_list, schools, import_records_page):
     import_records_page.import_class_list_records(
-        schools[0], test_data_file_paths.CLASS_INVALID_STRUCTURE
+        str(schools[0]), test_data_file_paths.CLASS_INVALID_STRUCTURE
     )
 
 
 @pytest.mark.classlist
 def test_class_list_no_record(setup_class_list, schools, import_records_page):
     import_records_page.import_class_list_records(
-        schools[0], test_data_file_paths.CLASS_HEADER_ONLY
+        str(schools[0]), test_data_file_paths.CLASS_HEADER_ONLY
     )
 
 
 @pytest.mark.classlist
 def test_class_list_empty_file(setup_class_list, schools, import_records_page):
     import_records_page.import_class_list_records(
-        schools[0], test_data_file_paths.CLASS_EMPTY_FILE
+        str(schools[0]), test_data_file_paths.CLASS_EMPTY_FILE
     )
 
 
 @pytest.mark.classlist
 def test_class_list_year_group(setup_class_list, schools, import_records_page):
     import_records_page.import_class_list_records(
-        schools[0],
+        str(schools[0]),
         test_data_file_paths.CLASS_YEAR_GROUP,
         year_groups=[8],
     )
@@ -156,7 +156,9 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
 @pytest.mark.bug
 def test_class_list_space_normalization(setup_class_list, schools, import_records_page):
     import_records_page.import_class_list_records(
-        schools[0], test_data_file_paths.CLASS_MAV_1080, verify_on_children_page=True
+        str(schools[0]),
+        test_data_file_paths.CLASS_MAV_1080,
+        verify_on_children_page=True,
     )
 
 
@@ -240,15 +242,19 @@ def test_vaccs_historic_negative_file_upload(setup_vaccs, import_records_page):
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccs_historic_no_urn_mav_855(
-    setup_vaccs, schools, dashboard_page, import_records_page
+    setup_vaccs, schools, dashboard_page, import_records_page, children_page
 ):
+    mav_855_child = "MAV_855, MAV_855"
     import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_HPV_MAV_855,
         file_type=mavis_file_types.VACCS_MAVIS,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    import_records_page.verify_mav_855(schools[0])
+    children_page.search_for_a_child(child_name=mav_855_child)
+    children_page.click_record_for_child(child_name=mav_855_child)
+    children_page.click_hpv_vaccination_details()
+    children_page.expect_text_in_main(str(schools[0]))
 
 
 @pytest.mark.vaccinations

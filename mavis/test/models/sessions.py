@@ -105,15 +105,14 @@ class SessionsPage:
         playwright_operations: PlaywrightOperations,
         dashboard_page: DashboardPage,
         children_page: ChildrenPage,
+        import_records_page: ImportRecordsPage,
     ):
         self.test_data = test_data
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
         self.consent_page = ConsentPage(playwright_operations)
         self.children_page = children_page
-        self.import_records_page = ImportRecordsPage(
-            test_data, playwright_operations, dashboard_page, children_page
-        )
+        self.import_records_page = import_records_page
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")

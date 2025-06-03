@@ -154,7 +154,9 @@ class TestData:
 
         return _input_file_path, _output_template_path
 
-    def create_child_list_from_file(self, file_path: str, file_type: mavis_file_types):
+    def create_child_list_from_file(
+        self, file_path: str, file_type: mavis_file_types
+    ) -> list[str]:
         """
         Create a list of child names from a file.
 

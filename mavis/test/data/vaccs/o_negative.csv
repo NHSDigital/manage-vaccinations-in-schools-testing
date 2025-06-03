@@ -32,7 +32,7 @@ Row 32 CLINIC_NAME: Enter a clinic name
 Row 33 TIME_OF_VACCINATION: Enter a time in the correct format.
 !Row 33 TIME_OF_VACCINATION: Enter a time in the correct format.TIME_OF_VACCINATION: Enter a time in the correct format.
 Row 34 REASON_NOT_VACCINATED: must be blank
-Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: must be blankBATCH_NUMBER: must be blankANATOMICAL_SITE: must be blankREASON_NOT_VACCINATED: Enter a valid reason
+Row 35 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: must be blank BATCH_NUMBER: must be blank ANATOMICAL_SITE: must be blank REASON_NOT_VACCINATED: Enter a valid reason
 !Row 36 DATE_OF_VACCINATION: Enter a date for a current session
 Row 36 CARE_SETTING: Enter a valid care setting.
 Row 37 TIME_OF_VACCINATION: Enter a time in the past.
