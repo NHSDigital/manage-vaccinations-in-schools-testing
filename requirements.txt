@@ -40,7 +40,7 @@ ptyprocess==0.7.0
 pure_eval==0.2.3
 pyee==13.0.0
 Pygments==2.19.1
-pytest==8.3.5
+pytest==8.4.0
 pytest-dependency==0.6.0
 pytest-dotenv==0.5.2
 pytest-playwright==0.7.0
