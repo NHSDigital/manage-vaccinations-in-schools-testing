@@ -62,7 +62,6 @@ class ProgrammesPage:
         self.resolve_duplicate_button = page.get_by_role(
             "button", name="Resolve duplicate"
         )
-
         self.import_processing_started_alert = page.get_by_role(
             "alert", name="Import processing started"
         )

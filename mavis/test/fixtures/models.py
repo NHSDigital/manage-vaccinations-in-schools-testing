@@ -27,8 +27,8 @@ def archive_consent_response_page(page):
 
 
 @pytest.fixture
-def children_page(playwright_operations, dashboard_page):
-    return ChildrenPage(playwright_operations, dashboard_page)
+def children_page(page, dashboard_page):
+    return ChildrenPage(page, dashboard_page)
 
 
 @pytest.fixture
@@ -57,8 +57,12 @@ def download_school_moves_page(page):
 
 
 @pytest.fixture
-def import_records_page(test_data, playwright_operations, dashboard_page):
-    return ImportRecordsPage(test_data, playwright_operations, dashboard_page)
+def import_records_page(
+    test_data, playwright_operations, dashboard_page, children_page
+):
+    return ImportRecordsPage(
+        test_data, playwright_operations, dashboard_page, children_page
+    )
 
 
 @pytest.fixture
@@ -87,8 +91,8 @@ def school_moves_page(page):
 
 
 @pytest.fixture
-def sessions_page(test_data, playwright_operations, dashboard_page):
-    return SessionsPage(test_data, playwright_operations, dashboard_page)
+def sessions_page(test_data, playwright_operations, dashboard_page, children_page):
+    return SessionsPage(test_data, playwright_operations, dashboard_page, children_page)
 
 
 @pytest.fixture

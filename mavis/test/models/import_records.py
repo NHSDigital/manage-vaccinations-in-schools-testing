@@ -35,11 +35,12 @@ class ImportRecordsPage:
         test_data: TestData,
         playwright_operations: PlaywrightOperations,
         dashboard_page: DashboardPage,
+        children_page: ChildrenPage,
     ):
         self.test_data = test_data
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
-        self.children_page = ChildrenPage(playwright_operations, dashboard_page)
+        self.children_page = children_page
 
     @property
     def alert_success(self):
