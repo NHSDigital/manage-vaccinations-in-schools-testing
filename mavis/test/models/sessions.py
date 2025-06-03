@@ -106,11 +106,12 @@ class SessionsPage:
         dashboard_page: DashboardPage,
         children_page: ChildrenPage,
         import_records_page: ImportRecordsPage,
+        consent_page: ConsentPage,
     ):
         self.test_data = test_data
         self.po = playwright_operations
         self.dashboard_page = dashboard_page
-        self.consent_page = ConsentPage(playwright_operations)
+        self.consent_page = consent_page
         self.children_page = children_page
         self.import_records_page = import_records_page
 

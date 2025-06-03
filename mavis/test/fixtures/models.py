@@ -32,8 +32,8 @@ def children_page(page, dashboard_page):
 
 
 @pytest.fixture
-def consent_page(playwright_operations):
-    return ConsentPage(playwright_operations)
+def consent_page(page):
+    return ConsentPage(page)
 
 
 @pytest.fixture
@@ -57,8 +57,8 @@ def download_school_moves_page(page):
 
 
 @pytest.fixture
-def import_records_page(test_data, page, dashboard_page, children_page):
-    return ImportRecordsPage(test_data, page, dashboard_page, children_page)
+def import_records_page(test_data, page, children_page):
+    return ImportRecordsPage(test_data, page, children_page)
 
 
 @pytest.fixture
@@ -88,7 +88,12 @@ def school_moves_page(page):
 
 @pytest.fixture
 def sessions_page(
-    test_data, playwright_operations, dashboard_page, children_page, import_records_page
+    test_data,
+    playwright_operations,
+    dashboard_page,
+    children_page,
+    import_records_page,
+    consent_page,
 ):
     return SessionsPage(
         test_data,
@@ -96,6 +101,7 @@ def sessions_page(
         dashboard_page,
         children_page,
         import_records_page,
+        consent_page,
     )
 
 

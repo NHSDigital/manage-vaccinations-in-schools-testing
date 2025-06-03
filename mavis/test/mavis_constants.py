@@ -98,6 +98,23 @@ class PrescreeningQuestion(StrEnum):
     NOT_PREGNANT = "are not pregnant"
 
 
+class ConsentRefusalReason(StrEnum):
+    VACCINE_ALREADY_RECEIVED = "Vaccine already received"
+    VACCINE_WILL_BE_GIVEN_ELSEWHERE = "Vaccine will be given elsewhere"
+    MEDICAL_REASONS = "Medical reasons"
+    PERSONAL_CHOICE = "Personal choice"
+    OTHER = "Other"
+
+    @property
+    def requires_details(self) -> bool:
+        return self is not ConsentRefusalReason.PERSONAL_CHOICE
+
+
+class ConsentMethod(StrEnum):
+    ONLINE = "Online"
+    IN_PERSON = "In person"
+
+
 class mavis_file_types(Enum):
     CHILD_LIST = auto()
     COHORT = auto()

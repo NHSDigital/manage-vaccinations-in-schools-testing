@@ -10,7 +10,6 @@ from ..mavis_constants import mavis_file_types
 from ..wrappers import format_datetime_for_upload_link
 
 from .children import ChildrenPage
-from .dashboard import DashboardPage
 
 
 class ImportRecordsPage:
@@ -18,12 +17,10 @@ class ImportRecordsPage:
         self,
         test_data: TestData,
         page: Page,
-        dashboard_page: DashboardPage,
         children_page: ChildrenPage,
     ):
         self.test_data = test_data
         self.page = page
-        self.dashboard_page = dashboard_page
         self.children_page = children_page
 
         self.alert_success = self.page.get_by_text("Import processing started")

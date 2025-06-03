@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import Programme
+from mavis.test.mavis_constants import Programme, ConsentRefusalReason
 
 pytestmark = pytest.mark.consent
 
@@ -21,16 +21,15 @@ def test_refused(consent_page, faker, schools):
     consent_page.fill_child_dob(3, 1, 2011)
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_hpv_vaccination(False)
+    consent_page.select_consent_for_programmes([])
     consent_page.select_consent_not_given_reason(
-        reason="Vaccine already received",
-        notes="Vaccine already received in previous school",
+        reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
+        details="Vaccine already received in previous school",
     )
-    consent_page.click_confirm_details()
-    consent_page.verify_final_message("""
-        Consent refused
-        You’ve told us that you do not want LIEN MAH to get the HPV vaccination at school
-    """)
+    consent_page.click_confirm()
+    consent_page.expect_text_in_main(
+        "Consent refusedYou’ve told us that you do not want LIEN MAH to get the HPV vaccination at school"
+    )
 
 
 @pytest.mark.parametrize("change_school", (False, True))
@@ -45,7 +44,7 @@ def test_given(consent_page, faker, schools, change_school, health_question):
         consent_page.select_child_school(schools[0])
 
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_hpv_vaccination(True)
+    consent_page.select_consent_for_programmes([Programme.HPV])
     consent_page.fill_address_details(
         "1 ROWSLEY AVENUE",
         "",
@@ -59,14 +58,14 @@ def test_given(consent_page, faker, schools, change_school, health_question):
         else:
             consent_page.select_and_provide_details(None)
 
-    consent_page.click_confirm_details()
+    consent_page.click_confirm()
 
     title = "Consent confirmed"
 
     if health_question:
-        body = "As you answered ‘yes’ to some of the health questions, we need to check the HPV vaccination is suitable for ROSE VOSE. We’ll review your answers and get in touch again soon."
+        body = " As you answered ‘yes’ to some of the health questions, we need to check the HPV vaccination is suitable for ROSE VOSE. We’ll review your answers and get in touch again soon."
     else:
         body = "ROSE VOSE is due to get the HPV vaccination at school"
 
     final_message = "".join([title, body])
-    consent_page.verify_final_message(final_message)
+    consent_page.expect_text_in_main(final_message)
