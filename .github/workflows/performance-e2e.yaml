@@ -25,26 +25,27 @@ on:
         description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
         type: string
+        default: '3600'
       threads:
         description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
         required: false
         type: string
+        default: '70'
       ramp_up:
         description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
         required: false
         type: string
+        default: '900'
       vaccination_loop:
         description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
         required: false
         type: string
+        default: '20'
       row_count:
         description: "Optional (default 1000) number of rows in the cohort file."
         required: false
         type: string
-
-
-# env:
-#   JMETER_PLUGIN_INSTALL_LIST: "jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv"
+        default: '1000'
 
 jobs:
   nurse_journey_performance_test:
