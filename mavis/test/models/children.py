@@ -42,15 +42,15 @@ class ChildrenPage:
         self.continue_button = self.page.get_by_role("button", name="Continue")
 
     def verify_headers(self):
-        self.children_heading.is_visible()
+        expect(self.children_heading).to_be_visible()
         for header in self.children_table_headers:
-            header.is_visible()
+            expect(header).to_be_visible()
 
     def verify_filter(self):
         self.search_textbox.fill("CFILTER1, CFilter1")
         self.search_button.click()
         self.page.wait_for_timeout(1000)
-        self.one_child_found_heading.is_visible()
+        expect(self.one_child_found_heading).to_be_visible()
 
     def verify_child_has_been_uploaded(self, child_list) -> None:
         if len(child_list) >= 1:
