@@ -2,8 +2,6 @@ from datetime import date, datetime, timedelta
 
 from faker import Faker
 
-from .generic_constants import escape_characters
-
 faker = Faker()
 
 
@@ -38,36 +36,6 @@ def get_current_time() -> str:
         str: Current date and time in "HH:MM:SS" format.
     """
     return datetime.now().strftime("%H:%M:%S")
-
-
-def clean_text(text: str) -> str:
-    """
-    Remove unwanted characters from a string based on UI formatting rules.
-
-    Args:
-        text (str): Input text to clean.
-
-    Returns:
-        str: Cleaned text.
-    """
-    for _chr in escape_characters.UI_FORMATTING:
-        text = text.replace(_chr, "")
-    return text
-
-
-def clean_file_name(file_name: str) -> str:
-    """
-    Remove invalid characters from a file name.
-
-    Args:
-        file_name (str): Input file name to clean.
-
-    Returns:
-        str: Cleaned file name.
-    """
-    for _chr in escape_characters.FILE_NAME:
-        file_name = file_name.replace(_chr, "")
-    return file_name
 
 
 def get_offset_date(offset_days: int) -> str:
