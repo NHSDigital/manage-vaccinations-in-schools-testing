@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.mavis_constants import mavis_file_types, test_data_file_paths
+from mavis.test.mavis_constants import Vaccine, mavis_file_types, test_data_file_paths
 
 pytestmark = pytest.mark.children
 
@@ -105,7 +105,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools):
     children_page.expect_text_in_main("Vaccinated with Gardasil 9")
     # Verify vaccination record
     children_page.click_child_record()
-    children_page.click_hpv_vaccination_details_for_school(schools[0])
+    children_page.click_vaccination_details_for_school(Vaccine.GARDASIL_9, schools[0])
     children_page.expect_text_in_main("OutcomeVaccinated")
 
 

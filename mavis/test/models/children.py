@@ -1,3 +1,4 @@
+from mavis.test.mavis_constants import Vaccine
 from mavis.test.onboarding import School
 from .dashboard import DashboardPage
 
@@ -69,11 +70,17 @@ class ChildrenPage:
     def click_record_for_child(self, child_name: str) -> None:
         self.page.get_by_role("link", name=child_name).click()
 
-    @step("Click on vaccination details")
-    def click_hpv_vaccination_details_for_school(self, school: School) -> None:
+    @step("Click on {0} vaccination details for school {1}")
+    def click_vaccination_details_for_school(
+        self, vaccine: Vaccine, school: School
+    ) -> None:
         self.page.get_by_role("row").filter(has_text=str(school)).get_by_role(
-            "link", name="Gardasil 9 (HPV)"
+            "link", name=str(vaccine), exact=False
         ).click()
+
+    @step("Click on {0} vaccination details")
+    def click_vaccination_details(self, vaccine: Vaccine) -> None:
+        self.page.get_by_role("link", name=str(vaccine), exact=False).click()
 
     @step("Click on Child record")
     def click_child_record(self) -> None:

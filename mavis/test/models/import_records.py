@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 import time
-from typing import Final, Optional
+from typing import Optional
 
-from playwright.sync_api import expect
+from ..step import step
+from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..generic_constants import actions, escape_characters, properties
 from ..mavis_constants import mavis_file_types
-from ..playwright_ops import PlaywrightOperations
 from ..wrappers import format_datetime_for_upload_link
 
 from .children import ChildrenPage
@@ -15,51 +14,76 @@ from .dashboard import DashboardPage
 
 
 class ImportRecordsPage:
-    LNK_CHILD_MAV_855: Final[str] = "MAV_855, MAV_855"
-    LNK_IMPORT_RECORDS: Final[str] = "Import records"
-    RDO_CHILD_RECORDS: Final[str] = "Child records"
-    RDO_CLASS_LIST_RECORDS: Final[str] = "Class list records"
-    RDO_VACCINATION_RECORDS: Final[str] = "Vaccination records"
-    BTN_CONTINUE: Final[str] = "Continue"
-    LBL_CHILD_RECORDS: Final[str] = "Upload file"
-    LBL_CLASS_LIST_RECORDS: Final[str] = "Upload file"
-    LBL_VACCINATION_RECORDS: Final[str] = "Upload file"
-    LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1: Final[str] = "Upload file"
-    LBL_SCHOOL_NAME: Final[str] = "Which school is this class"
-    LBL_HPV_VACCINE_NAME: Final[str] = "Gardasil 9 (HPV)"
-    LBL_MAIN: Final[str] = "main"
-    LNK_IMPORT_CLASS_LIST_RECORDS: Final[str] = "Import class lists"
-
     def __init__(
         self,
         test_data: TestData,
-        playwright_operations: PlaywrightOperations,
+        page: Page,
         dashboard_page: DashboardPage,
         children_page: ChildrenPage,
     ):
         self.test_data = test_data
-        self.po = playwright_operations
+        self.page = page
         self.dashboard_page = dashboard_page
         self.children_page = children_page
 
-    @property
-    def alert_success(self):
-        return self.po.page.get_by_text("Import processing started")
+        self.alert_success = self.page.get_by_text("Import processing started")
+        self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
+        self.invalid_tag = self.page.get_by_role("strong").get_by_text("Invalid")
+        self.import_records_link = self.page.get_by_role("link", name="Import records")
+        self.import_class_lists_link = self.page.get_by_role(
+            "link", name="Import class lists"
+        )
+        self.child_records_radio_button = self.page.get_by_role(
+            "radio", name="Child records"
+        )
+        self.class_list_records_radio_button = self.page.get_by_role(
+            "radio", name="Class list records"
+        )
+        self.vaccination_records_radio_button = self.page.get_by_role(
+            "radio", name="Vaccination records"
+        )
+        self.continue_button = self.page.get_by_role("button", name="Continue")
+        self.file_input = self.page.locator('input[type="file"]')
+        self.location_combobox = self.page.get_by_role("combobox")
 
-    @property
-    def completed_tag(self):
-        return self.po.page.get_by_role("strong").get_by_text("Completed")
+    @step("Click on Import Records")
+    def click_import_records(self):
+        self.import_records_link.click()
 
-    @property
-    def invalid_tag(self):
-        return self.po.page.get_by_role("strong").get_by_text("Invalid")
+    @step("Click on Import class lists")
+    def click_import_class_lists(self):
+        self.import_class_lists_link.click()
+
+    @step("Select Child Records")
+    def select_child_records(self):
+        self.child_records_radio_button.click()
+
+    @step("Select Class List Records")
+    def select_class_list_records(self):
+        self.class_list_records_radio_button.click()
+
+    @step("Select Vaccination Records")
+    def select_vaccination_records(self):
+        self.vaccination_records_radio_button.click()
+
+    @step("Click Continue")
+    def click_continue(self):
+        self.continue_button.click()
+
+    @step("Set input file to {0}")
+    def set_input_file(self, file_path: str):
+        self.file_input.set_input_files(file_path)
+
+    @step("Fill location combobox with {0}")
+    def fill_location(self, location: str):
+        self.location_combobox.fill(location)
 
     def is_processing_in_background(self):
-        self.po.page.wait_for_load_state()
+        self.page.wait_for_load_state()
         return self.alert_success.is_visible()
 
     def wait_for_processed(self):
-        self.po.page.wait_for_load_state()
+        self.page.wait_for_load_state()
 
         # Wait up to 10 seconds for file to be processed.
 
@@ -71,7 +95,7 @@ class ImportRecordsPage:
 
             time.sleep(0.5)
 
-            self.po.page.reload()
+            self.page.reload()
         else:
             expect(tag).to_be_visible()
 
@@ -81,30 +105,14 @@ class ImportRecordsPage:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
-
-        _cl = []
+        self.click_import_records()
+        self.select_child_records()
+        self.click_continue()
+        self._upload_and_verify_output(_input_file_path, _output_file_path)
         if verify_on_children_page:
             _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
-
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
-        self.po.act(locator=self.RDO_CHILD_RECORDS, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(
-            locator=self.LBL_CHILD_RECORDS,
-            action=actions.SELECT_FILE,
-            value=_input_file_path,
-        )
-        self._record_upload_time()
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-        if self.is_processing_in_background():
-            self._click_uploaded_file_datetime()
-            self.wait_for_processed()
-
-        self._verify_upload_output(file_path=_output_file_path)
-        if verify_on_children_page:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def import_class_list_records(
@@ -120,61 +128,32 @@ class ImportRecordsPage:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
-        _cl = []
+        self.click_import_records()
+        self.select_class_list_records()
+        self.click_continue()
+
+        self.page.wait_for_load_state()
+
+        self.fill_location(location)
+        self.page.get_by_role("option", name=str(location)).click()
+
+        self.click_continue()
+        self._select_year_groups(*year_groups)
+        self._upload_and_verify_output(_input_file_path, _output_file_path)
+
         if verify_on_children_page:
             _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
             )
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
-        self.po.act(
-            locator=self.RDO_CLASS_LIST_RECORDS, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-        self.po.page.wait_for_load_state()
-
-        self.po.page.get_by_role("combobox").fill(str(location))
-        self.po.page.get_by_role("option", name=str(location)).click()
-
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self._select_year_groups(*year_groups)
-        self.po.act(
-            locator=self.LBL_CLASS_LIST_RECORDS,
-            action=actions.SELECT_FILE,
-            value=_input_file_path,
-        )
-        self._record_upload_time()
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-        if self.is_processing_in_background():
-            self._click_uploaded_file_datetime()
-            self.wait_for_processed()
-
-        self._verify_upload_output(file_path=_output_file_path)
-        if verify_on_children_page:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def import_class_list_records_from_school_session(self, file_paths: str):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
-        self.po.act(
-            locator=self.LNK_IMPORT_CLASS_LIST_RECORDS, action=actions.CLICK_LINK
-        )
+        self.click_import_class_lists()
         self._select_year_groups(8, 9, 10, 11)
-        self.po.act(
-            locator=self.LBL_CLASS_LIST_RECORDS_FOR_SCHOOL1,
-            action=actions.SELECT_FILE,
-            value=_input_file_path,
-        )
-        self._record_upload_time()
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-        if self.is_processing_in_background():
-            self._click_uploaded_file_datetime()
-            self.wait_for_processed()
-
-        self._verify_upload_output(file_path=_output_file_path)
+        self._upload_and_verify_output(_input_file_path, _output_file_path)
 
     def import_vaccination_records(
         self,
@@ -186,40 +165,38 @@ class ImportRecordsPage:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths, session_id=session_id
         )
+        self.click_import_records()
+        self.select_vaccination_records()
+        self.click_continue()
+        self._upload_and_verify_output(_input_file_path, _output_file_path)
+
         if verify_on_children_page:
             _cl = self.test_data.create_child_list_from_file(
                 file_path=_input_file_path, file_type=file_type
             )
-        self.po.act(locator=self.LNK_IMPORT_RECORDS, action=actions.CLICK_LINK)
-        self.po.act(
-            locator=self.RDO_VACCINATION_RECORDS, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(
-            locator=self.LBL_VACCINATION_RECORDS,
-            action=actions.SELECT_FILE,
-            value=_input_file_path,
-        )
+            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
+
+    def _upload_and_verify_output(self, _input_file_path, _output_file_path):
+        self.set_input_file(file_path=_input_file_path)
         self._record_upload_time()
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
 
         if self.is_processing_in_background():
             self._click_uploaded_file_datetime()
             self.wait_for_processed()
 
         self._verify_upload_output(file_path=_output_file_path)
-        if verify_on_children_page:
-            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def _record_upload_time(self):
         self.upload_time = datetime.now()
 
+    @step("Click link with uploaded datetime")
     def _click_uploaded_file_datetime(self):
         # FIXME: This logic is duplicated in three places, we should extract it somewhere else.
-        first_link = self.po.page.get_by_role(
+        first_link = self.page.get_by_role(
             "link", name=format_datetime_for_upload_link(self.upload_time)
         )
-        second_link = self.po.page.get_by_role(
+        second_link = self.page.get_by_role(
             "link",
             name=format_datetime_for_upload_link(
                 self.upload_time + timedelta(minutes=1)
@@ -233,41 +210,13 @@ class ImportRecordsPage:
     def _verify_upload_output(self, file_path: str):
         _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
-            # Verify messages individually
             for _msg in _expected_errors:
-                self.po.verify(
-                    locator=self.LBL_MAIN,
-                    property=properties.TEXT,
-                    expected_value=_msg,
-                    exact=False,
-                )
-            # Verify all messages together
-            _all_errors = "".join(
-                [
-                    x
-                    for x in _expected_errors
-                    if not x.startswith(escape_characters.COMMENT_OPERATOR)
-                    and not x.startswith(escape_characters.NOT_OPERATOR)
-                ]
-            )
-            self.po.verify(
-                locator=self.LBL_MAIN,
-                property=properties.TEXT,
-                expected_value=_all_errors,
-                exact=False,
-            )
+                if _msg.startswith("!"):
+                    expect(self.page.get_by_role("main")).not_to_contain_text(_msg[1:])
+                else:
+                    expect(self.page.get_by_role("main")).to_contain_text(_msg)
 
     def _select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
-            self.po.act(locator=f"Year {year_group}", action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    def verify_mav_855(self, location: str):
-        self.children_page.search_for_a_child(child_name=self.LNK_CHILD_MAV_855)
-        self.po.act(locator=self.LNK_CHILD_MAV_855, action=actions.CLICK_LINK)
-        self.po.act(locator=self.LBL_HPV_VACCINE_NAME, action=actions.CLICK_LINK)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=str(location),
-        )
+            self.page.get_by_label(f"Year {year_group}").check()
+        self.click_continue()
