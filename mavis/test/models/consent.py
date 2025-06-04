@@ -1,92 +1,131 @@
 from typing import Final, Optional
 
-from ..generic_constants import actions, properties
-from ..mavis_constants import Programme
+from ..mavis_constants import ConsentMethod, Programme, ConsentRefusalReason
 from ..onboarding import School
-from ..playwright_ops import PlaywrightOperations
+from playwright.sync_api import Page, expect
+
+from ..step import step
 
 
 class ConsentPage:
-    TXT_CHILD_FIRST_NAME: Final[str] = "First name"
-    TXT_CHILD_LAST_NAME: Final[str] = "Last name"
-    RDO_KNOWN_BY_ANOTHER_NAME_YES: Final[str] = "Yes"
-    RDO_KNOWN_BY_ANOTHER_NAME_NO: Final[str] = "No"
-    TXT_KNOWN_AS_FIRST: Final[str] = "Preferred first name (optional)"
-    TXT_KNOWN_AS_LAST: Final[str] = "Preferred last name (optional)"
-    BTN_CONTINUE: Final[str] = "Continue"
-    TXT_DOB_DAY: Final[str] = "Day"
-    TXT_DOB_MONTH: Final[str] = "Month"
-    TXT_DOB_YEAR: Final[str] = "Year"
-    RDO_SELECT_SCHOOL: Final[str] = "Yes, they go to this school"
-    RDO_SELECT_DIFFERENT_SCHOOL: Final[str] = "No, they go to a different school"
-    TXT_SCHOOL_NAME: Final[str] = "Select a school"
-    TXT_PARENT_FULL_NAME: Final[str] = "Full name"
-    RDO_RELATION_DAD: Final[str] = "Dad"
-    RDO_RELATION_MUM: Final[str] = "Mum"
-    RDO_RELATION_GUARDIAN: Final[str] = "Guardian"
-    TXT_EMAIL_ADDRESS: Final[str] = "Email address"
-    TXT_PHONE_OPTIONAL: Final[str] = "Phone number (optional)"
-    TXT_PHONE: Final[str] = "Phone number"
-    CHK_TEXT_ALERTS: Final[str] = "Tick this box if you’d like"
-    CHK_TEXT_UPDATES: Final[str] = "Get updates by text message"
-    CHK_MOBILE_ONLY_TEXT: Final[str] = "I can only receive text"
-    CHK_MOBILE_ONLY_VOICE: Final[str] = "I can only receive voice calls"
-    CHK_MOBILE_OTHER: Final[str] = "Other"
-    RDO_GP_REGISTERED: Final[str] = "Yes, they are registered with a GP"
-    RDO_GP_NOT_REGISTERED: Final[str] = "No, they are not registered with a GP"
-    RDO_GP_NOT_KNOWN: Final[str] = "I don’t know"
-    TXT_GP_NAME: Final[str] = "Name of GP surgery"
-    TXT_ADDRESS_LINE_1: Final[str] = "Address line 1"
-    TXT_ADDRESS_LINE_2: Final[str] = "Address line 2 (optional)"
-    TXT_ADDRESS_CITY: Final[str] = "Town or city"
-    TXT_ADDRESS_POSTCODE: Final[str] = "Postcode"
-    RDO_YES: Final[str] = "Yes"
-    RDO_NO: Final[str] = "No"
-    TXT_GIVE_DETAILS: Final[str] = "Give details"
-    BTN_CONFIRM: Final[str] = "Confirm"
-    LBL_SCHOOL_NAME: Final[str] = "school-name"
-    RDO_VACCINE_ALREADY_RECEIVED: Final[str] = "Vaccine already received"
-    RDO_VACCINE_WILL_BE_GIVEN_ELSEWHERE: Final[str] = "Vaccine will be given elsewhere"
-    RDO_VACCINE_MEDICAL_REASONS: Final[str] = "Medical reasons"
-    RDO_PERSONAL_CHOICE: Final[str] = "Personal choice"
-    RDO_OTHER: Final[str] = "Other"
-    RDO_ONLINE: Final[str] = "Online"
-    RDO_IN_PERSON: Final[str] = "In person"
-    RDO_YES_THEY_AGREE: Final[str] = "Yes, they agree"
-    RDO_NO_THEY_DO_NOT_AGREE: Final[str] = "No, they do not agree"
-    RDO_NO_RESPONSE: Final[str] = "No response"
-    RDO_YES_SAFE_TO_VACCINATE: Final[str] = "Yes, it’s safe to vaccinate"
-    LBL_MAIN: Final[str] = "main"
     RDO_PARENT1_DAD: Final[str] = "Parent1 (Dad)"
     RDO_PARENT2_MUM: Final[str] = "Parent2 (Mum)"
-    LBL_HEADING: Final[str] = "heading"
-    LNK_CHANGE_PHONE: Final[str] = "Change   your phone"
-    LNK_ADD_PHONE_NUMBER: Final[str] = "Add phone number"
-    RDO_CHILD_GILLICK_COMPETENT: Final[str] = "Child (Gillick competent)"
-    BTN_SAVE_TRIAGE: Final[str] = "Save triage"
 
-    # DOUBLES
-    RDO_DOUBLES_CONSENT_BOTH: Final[str] = "Yes, I agree to them having"
-    RDO_DOUBLES_CONSENT_ONE: Final[str] = "I agree to them having one of"
-    RDO_DOUBLES_CONSENT_MENACWY: Final[str] = "MenACWY"
-    RDO_DOUBLES_CONSENT_TDIPV: Final[str] = "Td/IPV"
-    RDO_DOUBLES_CONSENT_NONE: Final[str] = "No"
-    LBL_DOUBLES_CONSENT_RECORDED: Final[str] = "Consent recorded for CF"
+    def __init__(self, page: Page):
+        self.page = page
 
-    # HPV
-    CHK_HPV_CONSENT_AGREE: Final[str] = "Yes, I agree"
-    CHK_HPV_CONSENT_DISAGREE: Final[str] = "No"
-    LBL_HPV_CONSENT_RECORDED: Final[str] = "Consent recorded for CLAST, CFirst"
+        self.first_name_textbox = self.page.get_by_role("textbox", name="First name")
+        self.last_name_textbox = self.page.get_by_role("textbox", name="Last name")
+        self.yes_radio = self.page.get_by_role("radio", name="Yes")
+        self.no_radio = self.page.get_by_role("radio", name="No")
+        self.preferred_first_name_textbox = self.page.get_by_role(
+            "textbox", name="Preferred first name (optional)"
+        )
+        self.preferred_last_name_textbox = self.page.get_by_role(
+            "textbox", name="Preferred last name (optional)"
+        )
+        self.continue_button = self.page.get_by_role("button", name="Continue")
+        self.dob_day_textbox = self.page.get_by_role("textbox", name="Day")
+        self.dob_month_textbox = self.page.get_by_role("textbox", name="Month")
+        self.dob_year_textbox = self.page.get_by_role("textbox", name="Year")
+        self.displayed_school_name = self.page.get_by_test_id("school-name")
+        self.confirm_school_radio = self.page.get_by_role(
+            "radio", name="Yes, they go to this school"
+        )
+        self.select_different_school_radio = self.page.get_by_role(
+            "radio", name="No, they go to a different school"
+        )
+        self.school_name_combobox = self.page.get_by_role("combobox")
+        self.full_name_textbox = self.page.get_by_role("textbox", name="Full name")
+        self.email_address_textbox = self.page.get_by_role(
+            "textbox", name="Email address"
+        )
+        self.phone_textbox = self.page.get_by_role("textbox", name="Phone number")
+        self.text_alerts_checkbox = self.page.get_by_role(
+            "checkbox", name="Get updates by text message"
+        )
+        self.mobile_only_text_checkbox = self.page.get_by_role(
+            "checkbox", name="I can only receive text"
+        )
+        self.mobile_only_voice_checkbox = self.page.get_by_role(
+            "checkbox", name="I can only receive voice calls"
+        )
+        self.address_line_1_textbox = self.page.get_by_role(
+            "textbox", name="Address line 1"
+        )
+        self.address_line_2_textbox = self.page.get_by_role(
+            "textbox", name="Address line 2 (optional)"
+        )
+        self.address_city_textbox = self.page.get_by_role(
+            "textbox", name="Town or city"
+        )
+        self.address_postcode_textbox = self.page.get_by_role(
+            "textbox", name="Postcode"
+        )
+        self.give_details_textbox = self.page.get_by_role(
+            "textbox", name="Give details"
+        )
+        self.consent_refusal_radios = {
+            reason: self.page.get_by_role("radio", name=reason)
+            for reason in ConsentRefusalReason
+        }
+        self.consent_method_radios = {
+            method: self.page.get_by_role("radio", name=method)
+            for method in ConsentMethod
+        }
+        self.change_phone_link = self.page.get_by_role(
+            "link", name="Change   your phone"
+        )
+        self.add_phone_number_link = self.page.get_by_role(
+            "link", name="Add phone number"
+        )
+        self.confirm_button = self.page.get_by_role("button", name="Confirm")
+        self.no_response_radio = self.page.get_by_role("radio", name="No response")
+        self.save_triage_button = self.page.get_by_role("button", name="Save triage")
+        self.yes_safe_to_vaccinate_radio = self.page.get_by_role(
+            "radio", name="Yes, it’s safe to vaccinate"
+        )
+        self.child_gillick_competent_radio = self.page.get_by_role(
+            "radio", name="Child (Gillick competent)"
+        )
+        self.they_do_not_agree_radio = self.page.get_by_role(
+            "radio", name="No, they do not agree"
+        )
+        self.yes_they_agree_radio = self.page.get_by_role(
+            "radio", name="Yes, they agree"
+        )
 
-    # CONSTANTS
-    VACCINE_ALREADY_RECEIVED: Final[str] = "vaccine already received"
-    VACCINE_WILL_BE_GIVEN_ELSEWHERE: Final[str] = "vaccine will be given elsewhere"
-    MEDICAL_REASONS: Final[str] = "medical reasons"
-    PERSONAL_CHOICE: Final[str] = "personal choice"
+        self.doubles_consent_both_radio = self.page.get_by_role(
+            "radio", name="Yes, I agree to them having"
+        )
+        self.doubles_consent_one_radio = self.page.get_by_role(
+            "radio", name="I agree to them having one of"
+        )
+        self.doubles_consent_menacwy_radio = self.page.get_by_role(
+            "radio", name="MenACWY"
+        )
+        self.doubles_consent_tdipv_radio = self.page.get_by_role("radio", name="Td/IPV")
 
-    def __init__(self, playwright_operations: PlaywrightOperations):
-        self.po = playwright_operations
+        self.hpv_consent_agree_radio = self.page.get_by_role(
+            "radio", name="Yes, I agree"
+        )
+        self.no_consent_radio = self.page.get_by_role("radio", name="No")
 
+    @step("Click Continue")
+    def click_continue(self):
+        self.continue_button.click()
+
+    @step("Click Confirm")
+    def click_confirm(self) -> None:
+        self.confirm_button.click()
+
+    @step("Fill phone number {0} and receive text alerts")
+    def fill_phone_number_and_receive_text_alerts(self, phone: str) -> None:
+        self.page.pause()
+        self.phone_textbox.fill(phone)
+        self.text_alerts_checkbox.check()
+
+    @step("Fill child name details")
     def fill_child_name_details(
         self,
         first_name: str,
@@ -94,66 +133,53 @@ class ConsentPage:
         known_as_first: Optional[str] = None,
         known_as_last: Optional[str] = None,
     ) -> None:
-        self.po.act(
-            locator=self.TXT_CHILD_FIRST_NAME,
-            action=actions.FILL,
-            value=first_name,
-        )
-        self.po.act(
-            locator=self.TXT_CHILD_LAST_NAME, action=actions.FILL, value=last_name
-        )
+        self.first_name_textbox.fill(first_name)
+        self.last_name_textbox.fill(last_name)
 
         if known_as_first or known_as_last:
-            self.po.act(
-                locator=self.RDO_KNOWN_BY_ANOTHER_NAME_YES,
-                action=actions.RADIO_BUTTON_SELECT,
-            )
-            self.po.act(
-                locator=self.TXT_KNOWN_AS_FIRST,
-                action=actions.FILL,
-                value=known_as_first,
-            )
-            self.po.act(
-                locator=self.TXT_KNOWN_AS_LAST, action=actions.FILL, value=known_as_last
-            )
+            self.yes_radio.click()
+            self.preferred_first_name_textbox.fill(str(known_as_first))
+            self.preferred_last_name_textbox.fill(str(known_as_last))
         else:
-            self.po.act(
-                locator=self.RDO_KNOWN_BY_ANOTHER_NAME_NO,
-                action=actions.RADIO_BUTTON_SELECT,
-            )
+            self.no_radio.click()
 
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
 
+    @step("Fill child date of birth")
     def fill_child_dob(self, dob_day: int, dob_month: int, dob_year: int) -> None:
-        self.po.act(locator=self.TXT_DOB_DAY, action=actions.FILL, value=str(dob_day))
-        self.po.act(
-            locator=self.TXT_DOB_MONTH, action=actions.FILL, value=str(dob_month)
-        )
-        self.po.act(locator=self.TXT_DOB_YEAR, action=actions.FILL, value=str(dob_year))
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.dob_day_textbox.fill(str(dob_day))
+        self.dob_month_textbox.fill(str(dob_month))
+        self.dob_year_textbox.fill(str(dob_year))
+        self.click_continue()
 
+    @step("Select child school")
     def select_child_school(self, school: School) -> None:
         name = str(school)
 
-        if name == self.po.get_element_property(
-            locator=self.LBL_SCHOOL_NAME, property=properties.TEXT, by_test_id=True
-        ):
-            self.po.act(
-                locator=self.RDO_SELECT_SCHOOL, action=actions.RADIO_BUTTON_SELECT
-            )
+        if name == self.displayed_school_name:
+            self.confirm_school_radio.click()
         else:
-            self.po.act(
-                locator=self.RDO_SELECT_DIFFERENT_SCHOOL,
-                action=actions.RADIO_BUTTON_SELECT,
-            )
-            self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+            self.select_different_school_radio.click()
+            self.click_continue()
 
-            self.po.page.wait_for_load_state()
+            self.page.wait_for_load_state()
 
-            self.po.page.get_by_role("combobox").fill(name)
-            self.po.page.get_by_role("option", name=name).click()
+            self.school_name_combobox.fill(name)
+            self.page.get_by_role("option", name=name).click()
 
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
+
+    @step("Click on {0} radio button")
+    def click_radio_button(self, name: str) -> None:
+        self.page.get_by_role("radio", name=name).check()
+
+    @step("Fill email address")
+    def fill_email_address(self, email):
+        self.email_address_textbox.fill(email)
+
+    @step("Fill parent name")
+    def fill_parent_name(self, parent_name: str) -> None:
+        self.full_name_textbox.fill(parent_name)
 
     def fill_parent_details(
         self,
@@ -163,328 +189,225 @@ class ConsentPage:
         email: Optional[str] = None,
         phone: Optional[str] = None,
     ) -> None:
-        self.po.act(
-            locator=self.TXT_PARENT_FULL_NAME, action=actions.FILL, value=parent_name
-        )
-        self.po.act(locator=relation, action=actions.RADIO_BUTTON_SELECT)
+        self.fill_parent_name(parent_name)
+        self.click_radio_button(relation)
 
         if email:
-            self.po.act(
-                locator=self.TXT_EMAIL_ADDRESS, action=actions.FILL, value=email
-            )
+            self.fill_email_address(email)
 
         if phone:
-            self.po.act(
-                locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value=phone
-            )
-            self.po.act(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
+            self.fill_phone_number_and_receive_text_alerts(phone)
 
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
 
-    def check_phone_options(self) -> None:
-        self.po.act(locator=self.CHK_MOBILE_ONLY_TEXT, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    def select_consent_for_double_vaccinations(
-        self,
-        consent_for: Optional[str] = None,
+    @step("Select consent for programmes {0}")
+    def select_consent_for_programmes(
+        self, list_of_programmes: list[Programme]
     ) -> None:
-        match (consent_for or "").lower():
-            case "both":
-                self.po.act(
-                    locator=self.RDO_DOUBLES_CONSENT_BOTH,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-            case "menacwy":
-                self.po.act(
-                    locator=self.RDO_DOUBLES_CONSENT_ONE,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-                self.po.act(
-                    locator=self.RDO_DOUBLES_CONSENT_MENACWY,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-            case "td_ipv":
-                self.po.act(
-                    locator=self.RDO_DOUBLES_CONSENT_ONE,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-                self.po.act(
-                    locator=self.RDO_DOUBLES_CONSENT_TDIPV,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-            case _:
-                self.po.act(
-                    locator=self.RDO_DOUBLES_CONSENT_NONE,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    def select_consent_for_hpv_vaccination(self, consented: bool) -> None:
-        if consented:
-            self.po.act(
-                locator=self.CHK_HPV_CONSENT_AGREE, action=actions.CHECKBOX_CHECK
-            )
+        if (
+            Programme.MENACWY in list_of_programmes
+            and Programme.TD_IPV in list_of_programmes
+        ):
+            self.doubles_consent_both_radio.check()
+        elif Programme.MENACWY in list_of_programmes:
+            self.doubles_consent_one_radio.check()
+            self.doubles_consent_menacwy_radio.check()
+        elif Programme.TD_IPV in list_of_programmes:
+            self.doubles_consent_one_radio.check()
+            self.doubles_consent_tdipv_radio.check()
+        elif Programme.HPV in list_of_programmes:
+            self.hpv_consent_agree_radio.check()
         else:
-            self.po.act(
-                locator=self.CHK_HPV_CONSENT_DISAGREE, action=actions.CHECKBOX_CHECK
-            )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+            self.no_consent_radio.check()
+        self.click_continue()
 
+    @step("Fill address details")
     def fill_address_details(
         self, line1: str, line2: str, city: str, postcode: str
     ) -> None:
-        self.po.act(locator=self.TXT_ADDRESS_LINE_1, action=actions.FILL, value=line1)
-        self.po.act(locator=self.TXT_ADDRESS_LINE_2, action=actions.FILL, value=line2)
-        self.po.act(locator=self.TXT_ADDRESS_CITY, action=actions.FILL, value=city)
-        self.po.act(
-            locator=self.TXT_ADDRESS_POSTCODE, action=actions.FILL, value=postcode
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.address_line_1_textbox.fill(line1)
+        self.address_line_2_textbox.fill(line2)
+        self.address_city_textbox.fill(city)
+        self.address_postcode_textbox.fill(postcode)
+        self.click_continue()
 
     def set_all_health_questions_to_no(self, programme: Programme):
         for locator_text in programme.health_questions:
-            self.po.act(
-                locator=self._get_no_action(locator_text),
-                action=actions.CHAIN_LOCATOR_ACTION,
-            )
+            self.select_no_for_health_question(locator_text)
 
-    def _get_no_action(self, locator: str) -> str:
-        return f"get_by_role('group', name='{locator}').get_by_label('No').check()"
+    @step("Select No for health question {0}")
+    def select_no_for_health_question(self, question: str) -> None:
+        self.page.get_by_role("group", name=question).get_by_label("No").check()
+
+    @step("Select Yes")
+    def select_yes(self) -> None:
+        self.yes_radio.check()
+
+    @step("Select No")
+    def select_no(self) -> None:
+        self.no_radio.check()
+
+    @step("Give details")
+    def give_details(self, details: str) -> None:
+        self.give_details_textbox.fill(details)
+
+    @step("Select consent refusal reason")
+    def click_consent_refusal_reason(self, reason: ConsentRefusalReason) -> None:
+        self.consent_refusal_radios[reason].check()
+
+    @step("Select consent method")
+    def click_consent_method(self, method: ConsentMethod) -> None:
+        self.consent_method_radios[method].check()
+
+    @step("Click on Add phone number")
+    def click_add_phone_number(self):
+        self.add_phone_number_link.click()
+
+    @step("Click on Yes, it’s safe to vaccinate")
+    def click_safe_to_vaccinate(self):
+        self.yes_safe_to_vaccinate_radio.check()
+
+    @step("Click on Save triage")
+    def click_save_triage(self):
+        self.save_triage_button.click()
+
+    @step("Click on Yes, they agree")
+    def click_yes_they_agree(self):
+        self.yes_they_agree_radio.check()
+
+    @step("Click on No, they do not agree")
+    def click_no_they_do_not_agree(self):
+        self.they_do_not_agree_radio.check()
+
+    @step("Click on Child (Gillick competent)")
+    def click_gillick_competent(self):
+        self.child_gillick_competent_radio.check()
 
     def select_and_provide_details(self, details: Optional[str] = None) -> None:
         if details:
-            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.act(
-                locator=self.TXT_GIVE_DETAILS, action=actions.FILL, value=details
-            )
+            self.select_yes()
+            self.give_details(details)
         else:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
+            self.select_no()
 
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
 
-    def select_medical_condition(self, notes: Optional[str] = None):
-        if notes:
-            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.act(
-                locator=self.TXT_GIVE_DETAILS,
-                action=actions.FILL,
-                value=notes,
-            )
-        else:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+    def select_consent_not_given_reason(
+        self, reason: ConsentRefusalReason, details: Optional[str] = None
+    ) -> None:
+        self.click_consent_refusal_reason(reason)
+        if reason.requires_details:
+            self.click_continue()
+            self.give_details(str(details))
 
-    def select_severe_reaction(self, notes: Optional[str] = None):
-        if notes:
-            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.act(
-                locator=self.TXT_GIVE_DETAILS,
-                action=actions.FILL,
-                value=notes,
-            )
-        else:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
 
-    def select_extra_support(self, notes: Optional[str] = None):
-        if notes:
-            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.act(
-                locator=self.TXT_GIVE_DETAILS,
-                action=actions.FILL,
-                value=notes,
-            )
-        else:
-            self.po.act(locator=self.RDO_NO, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    def select_consent_not_given_reason(self, reason: str, notes: str) -> None:
-        match reason.lower():
-            case self.VACCINE_ALREADY_RECEIVED:
-                self.po.act(
-                    locator=self.RDO_VACCINE_ALREADY_RECEIVED,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-                self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.act(
-                    locator=self.TXT_GIVE_DETAILS,
-                    action=actions.FILL,
-                    value=notes,
-                )
-            case self.VACCINE_WILL_BE_GIVEN_ELSEWHERE:
-                self.po.act(
-                    locator=self.RDO_VACCINE_WILL_BE_GIVEN_ELSEWHERE,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-                self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.act(
-                    locator=self.TXT_GIVE_DETAILS,
-                    action=actions.FILL,
-                    value=notes,
-                )
-            case self.MEDICAL_REASONS:
-                self.po.act(
-                    locator=self.RDO_VACCINE_MEDICAL_REASONS,
-                    action=actions.RADIO_BUTTON_SELECT,
-                )
-                self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.act(
-                    locator=self.TXT_GIVE_DETAILS,
-                    action=actions.FILL,
-                    value=notes,
-                )
-            case self.PERSONAL_CHOICE:
-                self.po.act(
-                    locator=self.RDO_PERSONAL_CHOICE, action=actions.RADIO_BUTTON_SELECT
-                )
-            case _:  # Other
-                self.po.act(locator=self.RDO_OTHER, action=actions.RADIO_BUTTON_SELECT)
-                self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-                self.po.act(
-                    locator=self.TXT_GIVE_DETAILS,
-                    action=actions.FILL,
-                    value=notes,
-                )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-
-    # --- Shared methods for confirmation and verification ---
-    def click_confirm_details(self, scenario_id: str = "") -> None:
-        if "mavis-1778" in scenario_id.lower():
-            self.po.act(locator=self.LNK_CHANGE_PHONE, action=actions.CLICK_LINK)
-            self.change_parent_phone()
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
-
-    def verify_final_message(self, expected_message: str) -> None:
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=expected_message,
-        )
+    def expect_text_in_main(self, text: str) -> None:
+        expect(self.page.get_by_role("main")).to_contain_text(text)
 
     def change_parent_phone(self):
-        self.po.act(
-            locator=self.TXT_PHONE_OPTIONAL, action=actions.FILL, value="7700900000"
-        )
-        self.po.act(locator=self.CHK_TEXT_ALERTS, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.check_phone_options()
+        self.fill_phone_number_and_receive_text_alerts("7700900000")
+        self.click_continue()
+        self.mobile_only_text_checkbox.check()
+        self.click_continue()
 
     def parent_1_verbal_positive(
         self, change_phone: bool = True, programme: Programme = Programme.HPV
     ):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(method_locator=self.RDO_IN_PERSON)
-        self._process_consent_confirmation(programme=programme)
+        self._select_consent_method(ConsentMethod.IN_PERSON)
+        self._process_consent_confirmation(programme)
         if change_phone:
-            self.po.act(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
+            self.click_add_phone_number()
             self.change_parent_phone()
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self.click_confirm()
 
     def parent_1_verbal_no_response(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(method_locator=self.RDO_IN_PERSON)
-        self.po.act(locator=self.RDO_NO_RESPONSE, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self._select_consent_method(ConsentMethod.IN_PERSON)
+        self.no_response_radio.check()
+        self.click_continue()
+        self.click_confirm()
 
     def parent_2_verbal_refuse_consent(self):
         self._select_parent(parent_locator=self.RDO_PARENT2_MUM)
-        self._select_consent_method(method_locator=self.RDO_IN_PERSON)
-        self._handle_refusal_of_consent(reason_locator=self.RDO_PERSONAL_CHOICE)
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self._select_consent_method(ConsentMethod.IN_PERSON)
+        self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
+        self.click_confirm()
 
-    def parent_1_online_positive(self):
+    def parent_1_written_positive(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(method_locator=self.RDO_ONLINE)
+        self._select_consent_method(ConsentMethod.PAPER)
         self._process_consent_confirmation()
-        self.po.act(locator=self.LNK_ADD_PHONE_NUMBER, action=actions.CLICK_LINK)
-        self.po.act(locator=self.TXT_PHONE, action=actions.FILL, value="7700900000")
-        self.po.act(locator=self.CHK_TEXT_UPDATES, action=actions.CHECKBOX_CHECK)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self.click_add_phone_number()
+        self.fill_phone_number_and_receive_text_alerts("7700900000")
+        self.click_continue()
+        self.click_continue()
+        self.click_continue()
+        self.click_continue()
+        self.click_continue()
+        self.click_confirm()
 
     def update_triage_outcome_positive(self):
-        self.po.act(
-            locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_SAVE_TRIAGE, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value="Triage outcome updated for",
+        self.click_safe_to_vaccinate()
+        self.click_save_triage()
+        expect(self.page.get_by_role("main")).to_contain_text(
+            "Triage outcome updated for"
         )
 
     def parent_1_verbal_refuse_consent(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(method_locator=self.RDO_IN_PERSON)
-        self._handle_refusal_of_consent(reason_locator=self.RDO_PERSONAL_CHOICE)
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self._select_consent_method(ConsentMethod.IN_PERSON)
+        self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
+        self.click_confirm()
 
     def service_give_consent(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(method_locator=self.RDO_ONLINE)
+        self._select_consent_method(ConsentMethod.PHONE)
         self._process_consent_confirmation()
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self.click_confirm()
 
     def service_refuse_consent(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(method_locator=self.RDO_ONLINE)
-        self._handle_refusal_of_consent(reason_locator=self.VACCINE_ALREADY_RECEIVED)
-        self.po.act(
-            locator=self.TXT_GIVE_DETAILS,
-            action=actions.FILL,
-            value=self.VACCINE_WILL_BE_GIVEN_ELSEWHERE,
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
-        self.po.verify(
-            locator=self.LBL_MAIN,
-            property=properties.TEXT,
-            expected_value=self.LBL_HPV_CONSENT_RECORDED,
-            exact=False,
+        self._select_consent_method(ConsentMethod.PAPER)
+        self._handle_refusal_of_consent(ConsentRefusalReason.VACCINE_ALREADY_RECEIVED)
+        self.give_details("vaccine will be given elsewhere")
+        self.click_continue()
+        self.click_confirm()
+        expect(self.page.get_by_role("main")).to_contain_text(
+            "Consent recorded for CLAST, CFirst"
         )
 
     def child_consent_verbal_positive(self):
-        self.po.act(
-            locator=self.RDO_CHILD_GILLICK_COMPETENT, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.child_gillick_competent_radio.check()
+        self.click_continue()
         self._process_consent_confirmation(child_consent=True)
-        self.po.act(locator=self.BTN_CONFIRM, action=actions.CLICK_BUTTON)
+        self.click_confirm()
 
-    def _handle_refusal_of_consent(self, reason_locator: str):
-        self.po.act(
-            locator=self.RDO_NO_THEY_DO_NOT_AGREE, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=reason_locator, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+    def _handle_refusal_of_consent(self, reason: ConsentRefusalReason):
+        self.click_no_they_do_not_agree()
+        self.click_continue()
+        self.click_consent_refusal_reason(reason)
+        self.click_continue()
 
     def _select_parent(self, parent_locator: str):
-        self.po.page.get_by_role("radio", name=parent_locator).check()
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_radio_button(parent_locator)
+        self.click_continue()
+        self.click_continue()
 
-    def _select_consent_method(self, method_locator: str):
-        self.po.act(locator=method_locator, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+    def _select_consent_method(self, method: ConsentMethod):
+        self.click_consent_method(method)
+        self.click_continue()
 
     def _process_consent_confirmation(
         self, programme=Programme.HPV, child_consent: bool = False
     ):
-        self.po.act(locator=self.RDO_YES_THEY_AGREE, action=actions.RADIO_BUTTON_SELECT)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_yes_they_agree()
+        self.click_continue()
         if child_consent:
-            self.po.act(locator=self.RDO_YES, action=actions.RADIO_BUTTON_SELECT)
-            self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+            self.select_yes()
+            self.click_continue()
         self.set_all_health_questions_to_no(programme=programme)
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
-        self.po.act(
-            locator=self.RDO_YES_SAFE_TO_VACCINATE, action=actions.RADIO_BUTTON_SELECT
-        )
-        self.po.act(locator=self.BTN_CONTINUE, action=actions.CLICK_BUTTON)
+        self.click_continue()
+        self.click_safe_to_vaccinate()
+        self.click_continue()
