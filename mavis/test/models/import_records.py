@@ -190,7 +190,7 @@ class ImportRecordsPage:
     def _record_upload_time(self):
         self.upload_time = datetime.now()
 
-    @step("Click on {0}")
+    @step("Click link with uploaded datetime")
     def _click_uploaded_file_datetime(self):
         # FIXME: This logic is duplicated in three places, we should extract it somewhere else.
         first_link = self.page.get_by_role(
