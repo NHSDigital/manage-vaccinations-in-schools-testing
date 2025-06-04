@@ -175,20 +175,20 @@ class ImportRecordsPage:
 
     def _upload_and_verify_output(self, _input_file_path, _output_file_path):
         self.set_input_file(file_path=_input_file_path)
-        self._record_upload_time()
+        self.record_upload_time()
         self.click_continue()
 
         if self.is_processing_in_background():
-            self._click_uploaded_file_datetime()
+            self.click_uploaded_file_datetime()
             self.wait_for_processed()
 
-        self._verify_upload_output(file_path=_output_file_path)
+        self.verify_upload_output(file_path=_output_file_path)
 
-    def _record_upload_time(self):
+    def record_upload_time(self):
         self.upload_time = datetime.now()
 
     @step("Click link with uploaded datetime")
-    def _click_uploaded_file_datetime(self):
+    def click_uploaded_file_datetime(self):
         # FIXME: This logic is duplicated in three places, we should extract it somewhere else.
         first_link = self.page.get_by_role(
             "link", name=format_datetime_for_upload_link(self.upload_time)
@@ -204,7 +204,7 @@ class ImportRecordsPage:
         # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
         first_link.or_(second_link).first.click()
 
-    def _verify_upload_output(self, file_path: str):
+    def verify_upload_output(self, file_path: str):
         _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
