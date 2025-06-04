@@ -648,7 +648,7 @@ class SessionsPage:
         self.select_no_response()
         self.click_child_consent_twice()
         self.click_get_consent_response()
-        self.consent_page.parent_1_online_positive()
+        self.consent_page.parent_1_written_positive()
         self.select_consent_given()
         self.click_child_consent_twice()
         self.click_update_triage_outcome()

@@ -335,9 +335,9 @@ class ConsentPage:
         self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
         self.click_confirm()
 
-    def parent_1_online_positive(self):
+    def parent_1_written_positive(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(ConsentMethod.ONLINE)
+        self._select_consent_method(ConsentMethod.PAPER)
         self._process_consent_confirmation()
         self.click_add_phone_number()
         self.fill_phone_number_and_receive_text_alerts("7700900000")
@@ -363,13 +363,13 @@ class ConsentPage:
 
     def service_give_consent(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(ConsentMethod.ONLINE)
+        self._select_consent_method(ConsentMethod.PHONE)
         self._process_consent_confirmation()
         self.click_confirm()
 
     def service_refuse_consent(self):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(ConsentMethod.ONLINE)
+        self._select_consent_method(ConsentMethod.PAPER)
         self._handle_refusal_of_consent(ConsentRefusalReason.VACCINE_ALREADY_RECEIVED)
         self.give_details("vaccine will be given elsewhere")
         self.click_continue()

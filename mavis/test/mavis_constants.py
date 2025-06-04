@@ -111,7 +111,8 @@ class ConsentRefusalReason(StrEnum):
 
 
 class ConsentMethod(StrEnum):
-    ONLINE = "Online"
+    PHONE = "By phone"
+    PAPER = "Paper"
     IN_PERSON = "In person"
 
 
