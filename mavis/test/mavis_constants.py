@@ -165,6 +165,7 @@ class test_data_file_paths:
     CLASS_MAV_854: Final[str] = "CLASS_MAV_854"
     CLASS_MAV_965: Final[str] = "CLASS_MAV_965"
     CLASS_MAV_1080: Final[str] = "CLASS_MAV_1080"
+    CLASS_NOTES: Final[str] = "CLASS_NOTES"
     COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
     COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
     COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"

@@ -128,6 +128,7 @@ class SessionsPage:
             "button", name="Mark as invalid"
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
+        self.note_textbox = self.page.get_by_role("textbox", name="Note")
         self.get_consent_response_button = self.page.get_by_role(
             "button", name="Get consent response"
         )
@@ -147,6 +148,8 @@ class SessionsPage:
         )
         self.attending_button = self.page.get_by_role("button", name="Attending")
         self.success_alert = self.page.get_by_role("alert", name="Success")
+        self.add_a_note_span = self.page.get_by_text("Add a note")
+        self.save_note_button = self.page.get_by_role("button", name="Save note")
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -198,11 +201,35 @@ class SessionsPage:
     def click_register_tab(self):
         self._click_tab("Register")
 
-    @step("Click on Activity log tab")
-    def click_activity_log(self):
-        self._click_tab("Activity log")
+    @step("Click on Session activity and notes tab")
+    def click_session_activity_and_notes(self):
+        self._click_tab("Session activity and notes")
 
-    @step("Click on location {0}")
+    @step("Click on Add a note")
+    def click_add_a_note(self):
+        self.add_a_note_span.click()
+
+    @step("Fill note textbox with {1}")
+    def fill_note_textbox(self, note: str):
+        self.note_textbox.fill(note)
+
+    @step("Click on Save note")
+    def click_save_note(self):
+        self.save_note_button.click()
+
+    @step("Check that notes appear in order")
+    def check_notes_appear_in_order(self, notes: List[str]):
+        for i, note in enumerate(notes):
+            expect(self.page.get_by_role("blockquote").nth(i)).to_have_text(note)
+
+    def add_note(self, note: str):
+        self.click_add_a_note()
+        self.fill_note_textbox(note)
+        self.click_save_note()
+        expect(self.success_alert).to_contain_text("Note added")
+        self.check_notes_appear_in_order([note])
+
+    @step("Click on location {1}")
     def click_location(self, location: str):
         self.page.get_by_role("link", name=str(location)).click()
 
@@ -214,15 +241,16 @@ class SessionsPage:
     def click_continue_button(self):
         self.continue_button.click()
 
-    @step("Upload file {0}")
+    @step("Upload file {1}")
     def choose_file_child_records(self, file_path: str):
         self.file_input.set_input_files(file_path)
 
-    @step("Click on child {0}")
+    @step("Click on child {1}")
     def click_child(self, child_name: str):
+        self.page.pause()
         self.page.get_by_role("heading", name=child_name).get_by_role("link").click()
 
-    @step("Search and click on {0}")
+    @step("Search and click on {1}")
     def search_and_click_child(self, child_name: str):
         self.filter_name_textbox.fill(child_name)
         self.click_child(child_name)
@@ -334,10 +362,17 @@ class SessionsPage:
     def click_on_attending(self):
         self.attending_button.click()
 
-    @step("Search for {0}")
+    @step("Search for {1}")
     def search_for(self, name: str):
         self.search_textbox.fill(name)
         self.search_button.click()
+
+    @step("Check note {2} appears in search for {1}")
+    def check_note_appears_in_search(self, child: str, note: str):
+        self.page.pause()
+        heading = self.page.get_by_role("heading", name=child)
+        next_element = heading.locator("xpath=following-sibling::*[1]")
+        expect(next_element.get_by_role("blockquote")).to_have_text(note)
 
     @step("Fill date fields")
     def fill_date_fields(self, day: str, month: str, year: str):
@@ -509,7 +544,7 @@ class SessionsPage:
         self.click_location(location)
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records(_input_file_path)
         self.click_continue_button()
         self.dashboard_page.click_mavis()
 
@@ -529,7 +564,7 @@ class SessionsPage:
         self.consent_page.service_refuse_consent()
         self.select_consent_refused()
         self.click_child(self.LNK_CHILD_FULL_NAME)
-        self.click_activity_log()
+        self.click_session_activity_and_notes()
         self.verify_activity_log_entry(consent_given=False)
 
     def __handle_consent_approval(self, location: str):
@@ -584,7 +619,7 @@ class SessionsPage:
         )
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records(_input_file_path)
         self.import_records_page.record_upload_time()
         self.import_records_page.click_continue()
 
@@ -628,7 +663,7 @@ class SessionsPage:
         self.consent_page.parent_2_verbal_refuse_consent()
         self.click_child(self.LNK_CHILD_CONFLICTING_CONSENT)
         self.invalidate_parent2_refusal()
-        self.click_activity_log()
+        self.click_session_activity_and_notes()
         # FIXME: Make the following generic
         expect(self.page.get_by_role("main")).to_contain_text(
             "Consent from Parent2 invalidated"
@@ -658,7 +693,7 @@ class SessionsPage:
         expect(self.page.get_by_role("main")).to_contain_text(
             "Dad refused to give consent."
         )
-        self.click_activity_log()
+        self.click_session_activity_and_notes()
         expect(self.page.get_by_role("main")).to_contain_text(
             "Consent refused by Parent1 (Dad)"
         )
@@ -727,7 +762,7 @@ class SessionsPage:
             f"NURSE, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse."
         )
         expect(self.page.get_by_role("main")).to_contain_text("Consent given")
-        self.click_activity_log()
+        self.click_session_activity_and_notes()
         expect(self.page.get_by_role("main")).to_contain_text(
             f"Consent given by {self.LNK_CHILD_CONFLICTING_GILLICK} (Child (Gillick competent))"
         )
@@ -785,6 +820,7 @@ class SessionsPage:
         Actual: The user sees a page saying "An error has occurred."
         """
         self.click_consent_tab()
+        self.page.pause()
         self.search_for("a very long string that won't match any names")
         expect(self.page.get_by_role("main")).to_contain_text(
             "No children matching search criteria found"

@@ -40,6 +40,7 @@ CLASS_SINGLE_VACC,class_list/i_single_vacc.csv,class_list/o_single_vacc.csv,clas
 CLASS_MAV_965,class_list/i_mav_965.csv,class_list/o_mav_965.csv,classmav965
 CLASS_CHANGE_NHSNO,class_list/i_change_nhsno.csv,class_list/o_change_nhsno.csv,classchangenhsno
 CLASS_MAV_1080,class_list/i_mav_1080.csv,class_list/o_mav_1080.csv,classmav1080
+CLASS_NOTES,class_list/i_notes.csv,class_list/o_notes.csv,classnotes
 COHORTS_NO_CONSENT,cohorts/i_no_consent.csv,cohorts/o_no_consent.csv,cohortnoconsent
 COHORTS_CONFLICTING_CONSENT,cohorts/i_conflicting_consent.csv,cohorts/o_conflicting_consent.csv,cohortconflict
 COHORTS_E2E_1,cohorts/i_e2e_1.csv,cohorts/o_e2e_1.csv,cohort_e2e
