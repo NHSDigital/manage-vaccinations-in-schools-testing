@@ -20,7 +20,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Generate cohort row" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Generate cohort row">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
@@ -59,6 +59,7 @@ def CHILD_SCHOOL_URN =[]
 
 def startDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2011-09-01&apos;)
 def endDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2012-08-31&apos;)
+def newNHSNumbers = []
 
 try {
 	reader = new BufferedReader(new FileReader(vars.get(&quot;BaseDirectory&quot;) + vars.get(&quot;SourceCohort&quot;)));
@@ -105,42 +106,49 @@ writer.println(&quot;CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_POSTCODE,CH
 rowcount=vars.get(&quot;RowCount&quot;).toInteger()
 
 for(outrow=1;outrow&lt;=rowcount;outrow++){
-vars.put(&quot;CHILD_ADDRESS_LINE_1&quot;,r.nextInt(100000).toString() + &quot; &quot; + CHILD_ADDRESS_LINE_1.get(r.nextInt(CHILD_ADDRESS_LINE_1.size())).tokenize(&apos; &apos;)[-2]  + &quot; &quot; + CHILD_ADDRESS_LINE_1.get(r.nextInt(CHILD_ADDRESS_LINE_1.size())).tokenize(&apos; &apos;).last())
-vars.put(&quot;CHILD_ADDRESS_LINE_2&quot;,CHILD_ADDRESS_LINE_2.get(r.nextInt(CHILD_ADDRESS_LINE_2.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + CHILD_ADDRESS_LINE_2.get(r.nextInt(CHILD_ADDRESS_LINE_2.size())).tokenize(&apos; &apos;).last())
-vars.put(&quot;CHILD_POSTCODE&quot;,CHILD_POSTCODE.get(r.nextInt(CHILD_POSTCODE.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + CHILD_POSTCODE.get(r.nextInt(CHILD_POSTCODE.size())).tokenize(&apos; &apos;).last())
-vars.put(&quot;CHILD_TOWN&quot;,CHILD_TOWN.get(r.nextInt(CHILD_TOWN.size())))
-vars.put(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;,&quot;&quot;)
-vars.put(&quot;CHILD_DATE_OF_BIRTH&quot;,(startDate + r.nextInt(endDate-startDate)).format(&apos;yyyy-MM-dd&apos;))
-vars.put(&quot;CHILD_FIRST_NAME&quot;,CHILD_FIRST_NAME.get(r.nextInt(CHILD_FIRST_NAME.size())))
-vars.put(&quot;CHILD_LAST_NAME&quot;,CHILD_LAST_NAME.get(r.nextInt(CHILD_LAST_NAME.size())))
-
-checkdigit=&quot;10&quot;
-while(checkdigit==&quot;10&quot;){
-	nhsnumber=(r.nextInt(999999) + 999000000).toString()
-	checkdigit = (11-(nhsnumber[0].toInteger()*10 + nhsnumber[1].toInteger()*9 + nhsnumber[2].toInteger()*8 + nhsnumber[3].toInteger()*7 + nhsnumber[4].toInteger()*6 + nhsnumber[5].toInteger()*5 + nhsnumber[6].toInteger()*4 + nhsnumber[7].toInteger()*3 + nhsnumber[8].toInteger()*2) % 11).toString()
-	if(checkdigit==&quot;11&quot;){
-		checkdigit=&quot;0&quot;
+	vars.put(&quot;CHILD_ADDRESS_LINE_1&quot;,r.nextInt(100000).toString() + &quot; &quot; + CHILD_ADDRESS_LINE_1.get(r.nextInt(CHILD_ADDRESS_LINE_1.size())).tokenize(&apos; &apos;)[-2]  + &quot; &quot; + CHILD_ADDRESS_LINE_1.get(r.nextInt(CHILD_ADDRESS_LINE_1.size())).tokenize(&apos; &apos;).last())
+	vars.put(&quot;CHILD_ADDRESS_LINE_2&quot;,CHILD_ADDRESS_LINE_2.get(r.nextInt(CHILD_ADDRESS_LINE_2.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + CHILD_ADDRESS_LINE_2.get(r.nextInt(CHILD_ADDRESS_LINE_2.size())).tokenize(&apos; &apos;).last())
+	vars.put(&quot;CHILD_POSTCODE&quot;,CHILD_POSTCODE.get(r.nextInt(CHILD_POSTCODE.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + CHILD_POSTCODE.get(r.nextInt(CHILD_POSTCODE.size())).tokenize(&apos; &apos;).last())
+	vars.put(&quot;CHILD_TOWN&quot;,CHILD_TOWN.get(r.nextInt(CHILD_TOWN.size())))
+	vars.put(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;,&quot;&quot;)
+	vars.put(&quot;CHILD_DATE_OF_BIRTH&quot;,(startDate + r.nextInt(endDate-startDate)).format(&apos;yyyy-MM-dd&apos;))
+	vars.put(&quot;CHILD_FIRST_NAME&quot;,CHILD_FIRST_NAME.get(r.nextInt(CHILD_FIRST_NAME.size())))
+	vars.put(&quot;CHILD_LAST_NAME&quot;,CHILD_LAST_NAME.get(r.nextInt(CHILD_LAST_NAME.size())))
+	
+	checkdigit=&quot;10&quot;
+	while(checkdigit==&quot;10&quot;){
+		nhsnumber=(r.nextInt(999999) + 999000000).toString()
+		checkdigit = (11-(nhsnumber[0].toInteger()*10 + nhsnumber[1].toInteger()*9 + nhsnumber[2].toInteger()*8 + nhsnumber[3].toInteger()*7 + nhsnumber[4].toInteger()*6 + nhsnumber[5].toInteger()*5 + nhsnumber[6].toInteger()*4 + nhsnumber[7].toInteger()*3 + nhsnumber[8].toInteger()*2) % 11).toString()
+		if(checkdigit==&quot;11&quot;){
+			checkdigit=&quot;0&quot;
+		}
+		nhsnumber=nhsnumber + checkdigit
+		//  Check the NHS number hasn&apos;t been used before
+		if(newNHSNumbers.contains(nhsnumber)){
+			log.error(&quot;found a duplicate &quot; + nhsnumber)
+			checkdigit=&quot;10&quot; //force the while loop to retry
+		}
 	}
-	nhsnumber=nhsnumber + checkdigit
-}
-vars.put(&quot;CHILD_NHS_NUMBER&quot;,nhsnumber)
-
-vars.put(&quot;PARENT_1_NAME&quot;,PARENT_1_NAME.get(r.nextInt(PARENT_1_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
-vars.put(&quot;PARENT_2_NAME&quot;,PARENT_2_NAME.get(r.nextInt(PARENT_2_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
-vars.put(&quot;PARENT_1_EMAIL&quot;,vars.get(&quot;PARENT_1_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
-vars.put(&quot;PARENT_2_EMAIL&quot;,vars.get(&quot;PARENT_2_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
-vars.put(&quot;PARENT_1_PHONE&quot;,PARENT_1_PHONE.get(r.nextInt(PARENT_1_PHONE.size())))
-vars.put(&quot;PARENT_2_PHONE&quot;,PARENT_2_PHONE.get(r.nextInt(PARENT_2_PHONE.size())))
-vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,PARENT_1_RELATIONSHIP.get(r.nextInt(PARENT_1_RELATIONSHIP.size())))
-vars.put(&quot;PARENT_2_RELATIONSHIP&quot;,PARENT_2_RELATIONSHIP.get(r.nextInt(PARENT_2_RELATIONSHIP.size())))
-
-vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;URN&quot;))
-
-rowPartOne=(vars.get(&quot;CHILD_ADDRESS_LINE_1&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_ADDRESS_LINE_2&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_POSTCODE&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_TOWN&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_DATE_OF_BIRTH&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_NHS_NUMBER&quot;) + &quot;,&quot;)
-rowPartTwo=(vars.get(&quot;PARENT_1_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_SCHOOL_URN&quot;))
-
-writer.println(rowPartOne + rowPartTwo)
-log.info(vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
+	//Add the unique nhs number to the array
+	newNHSNumbers.add(nhsnumber)
+	vars.put(&quot;CHILD_NHS_NUMBER&quot;,nhsnumber)
+	
+	vars.put(&quot;PARENT_1_NAME&quot;,PARENT_1_NAME.get(r.nextInt(PARENT_1_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
+	vars.put(&quot;PARENT_2_NAME&quot;,PARENT_2_NAME.get(r.nextInt(PARENT_2_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
+	vars.put(&quot;PARENT_1_EMAIL&quot;,vars.get(&quot;PARENT_1_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
+	vars.put(&quot;PARENT_2_EMAIL&quot;,vars.get(&quot;PARENT_2_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
+	vars.put(&quot;PARENT_1_PHONE&quot;,PARENT_1_PHONE.get(r.nextInt(PARENT_1_PHONE.size())))
+	vars.put(&quot;PARENT_2_PHONE&quot;,PARENT_2_PHONE.get(r.nextInt(PARENT_2_PHONE.size())))
+	vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,PARENT_1_RELATIONSHIP.get(r.nextInt(PARENT_1_RELATIONSHIP.size())))
+	vars.put(&quot;PARENT_2_RELATIONSHIP&quot;,PARENT_2_RELATIONSHIP.get(r.nextInt(PARENT_2_RELATIONSHIP.size())))
+	
+	vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;URN&quot;))
+	
+	rowPartOne=(vars.get(&quot;CHILD_ADDRESS_LINE_1&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_ADDRESS_LINE_2&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_POSTCODE&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_TOWN&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_DATE_OF_BIRTH&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_NHS_NUMBER&quot;) + &quot;,&quot;)
+	rowPartTwo=(vars.get(&quot;PARENT_1_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_SCHOOL_URN&quot;))
+	
+	writer.println(rowPartOne + rowPartTwo)
+//	log.info(vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
 }
 
 writer.flush();
