@@ -7,44 +7,31 @@ pytestmark = pytest.mark.children
 
 
 @pytest.fixture
-def setup_children_page(log_in_as_nurse, schools, dashboard_page, sessions_page):
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_location(schools[0])
-        sessions_page.upload_class_list(
-            test_data_file_paths.CLASS_CHILDREN_FILTER,
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_children()
-        yield
-    finally:
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
-
+def setup_children_session(log_in_as_nurse, schools, dashboard_page, sessions_page):
+    def _setup(class_list_file):
+        try:
+            dashboard_page.click_sessions()
+            sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            sessions_page.click_location(schools[0])
+            sessions_page.upload_class_list(class_list_file)
+            dashboard_page.click_mavis()
+            dashboard_page.click_children()
+            yield
+        finally:
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            sessions_page.delete_all_sessions(schools[0])
+    return _setup
 
 @pytest.fixture
-def setup_change_nhsno(log_in_as_nurse, schools, dashboard_page, sessions_page):
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_location(schools[0])
-        sessions_page.upload_class_list(
-            test_data_file_paths.CLASS_CHANGE_NHSNO,
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_children()
-        yield
-    finally:
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+def setup_children_page(setup_children_session):
+    yield from setup_children_session(test_data_file_paths.CLASS_CHILDREN_FILTER)
 
+@pytest.fixture
+def setup_change_nhsno(setup_children_session):
+    yield from setup_children_session(test_data_file_paths.CLASS_CHANGE_NHSNO)
 
 @pytest.fixture
 def setup_mav_853(

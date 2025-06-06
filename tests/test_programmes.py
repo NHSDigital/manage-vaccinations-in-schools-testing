@@ -66,22 +66,27 @@ def setup_mav_854(
     sessions_page,
     vaccines_page,
 ):
-    session = "Community clinics"
-    dashboard_page.click_vaccines()
-    vaccines_page.add_batch(Vaccine.GARDASIL_9)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(schools[0], for_today=True)
-    import_records_page.import_class_list_records_from_school_session(
-        test_data_file_paths.CLASS_MAV_854
-    )
-    sessions_page.click_location(schools[0])
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(session, for_today=True)
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
-    yield
+    try:
+        session = "Community clinics"
+        dashboard_page.click_vaccines()
+        vaccines_page.add_batch(Vaccine.GARDASIL_9)
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        import_records_page.import_class_list_records_from_school_session(
+            test_data_file_paths.CLASS_MAV_854
+        )
+        sessions_page.click_location(schools[0])
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.schedule_a_valid_session(session, for_today=True)
+        dashboard_page.click_mavis()
+        dashboard_page.click_children()
+        yield
+    finally:
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.delete_all_sessions(schools[0])
 
 
 @pytest.fixture
@@ -170,19 +175,12 @@ def test_cohorts_readd_to_cohort(
     programmes_page.expect_text("Record updated")
 
 
+@pytest.mark.parametrize("consent_given", (True, False))
 @pytest.mark.rav
-def test_rav_triage_positive(setup_record_a_vaccine, schools, sessions_page):
-    sessions_page.update_triage_outcome_positive(
-        schools[0], test_data_file_paths.COHORTS_FULL_NAME
+def test_rav_triage(setup_record_a_vaccine, schools, sessions_page, consent_given):
+    sessions_page.update_triage_outcome(
+        schools[0], test_data_file_paths.COHORTS_FULL_NAME, consent_given=consent_given
     )
-
-
-@pytest.mark.rav
-def test_rav_triage_consent_refused(setup_record_a_vaccine, schools, sessions_page):
-    sessions_page.update_triage_outcome_consent_refused(
-        schools[0], test_data_file_paths.COHORTS_FULL_NAME
-    )
-
 
 @allure.issue("MAVIS-1729")
 @pytest.mark.rav
