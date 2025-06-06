@@ -113,12 +113,10 @@ def test_details_mav_853(setup_mav_853, children_page, schools):
 def test_change_nhsno(setup_change_nhsno, children_page):
     change_nhs_no_child = "CHANGENHSNO, CHANGENHSNO"
 
-    children_page.search_for_a_child(child_name=change_nhs_no_child)
-    children_page.click_record_for_child(child_name=change_nhs_no_child)
+    children_page.search_for_a_child(change_nhs_no_child)
+    children_page.click_record_for_child(change_nhs_no_child)
     children_page.click_edit_child_record()
     children_page.click_change_nhs_no()
-    children_page.fill_nhs_no_for_child(
-        child_name=change_nhs_no_child, nhs_no="9123456789"
-    )
+    children_page.fill_nhs_no_for_child(change_nhs_no_child, "9123456789")
     children_page.click_continue()
     children_page.expect_text_in_main("Enter a valid NHS number")

@@ -26,7 +26,7 @@ def setup_tests(
 
 def test_e2e(schools, dashboard_page, programmes_page, sessions_page):
     dashboard_page.click_programmes()
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_E2E_1)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_E2E_1)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0])

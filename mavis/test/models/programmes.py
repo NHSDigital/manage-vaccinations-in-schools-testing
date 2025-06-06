@@ -64,7 +64,7 @@ class ProgrammesPage:
             "alert", name="Import processing started"
         )
 
-    @step("Click on {0}")
+    @step("Click on {1}")
     def click_programme(self, programme: Programme):
         step(f"Click on {programme.value}")
         self.programme_links[programme].click()
@@ -89,7 +89,7 @@ class ProgrammesPage:
     def click_continue(self):
         self.continue_button.click()
 
-    @step("Set input file to {0}")
+    @step("Set input file to {1}")
     def choose_file_child_records(self, file_path: str):
         self.file_input.set_input_files(file_path)
 
@@ -97,7 +97,7 @@ class ProgrammesPage:
     def click_dose2_child(self):
         self.dose2_child_link.click()
 
-    @step("Upload cohort {0}")
+    @step("Upload cohort {1}")
     def upload_cohorts(self, file_paths: str, wait_long: bool = False):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
@@ -105,7 +105,7 @@ class ProgrammesPage:
         self.click_programme(Programme.HPV)
         self.click_cohorts()
         self.click_import_child_records()
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records(_input_file_path)
         self.import_records_page.record_upload_time()
         self.import_records_page.click_continue()
 
@@ -161,7 +161,7 @@ class ProgrammesPage:
     def click_download_report(self):
         self.download_report_button.click()
 
-    @step("Click on {0}")
+    @step("Click on {1}")
     def click_report_format(self, report_format: ReportFormat):
         self.report_format_radio_buttons[report_format].click()
 
