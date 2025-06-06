@@ -13,9 +13,9 @@ def setup_mav_965(
     vaccines_page,
 ):
     dashboard_page.click_vaccines()
-    vaccines_page.add_batch(vaccine=Vaccine.GARDASIL_9)
-    vaccines_page.add_batch(vaccine=Vaccine.MENQUADFI)
-    vaccines_page.add_batch(vaccine=Vaccine.REVAXIS)
+    vaccines_page.add_batch(Vaccine.GARDASIL_9)
+    vaccines_page.add_batch(Vaccine.MENQUADFI)
+    vaccines_page.add_batch(Vaccine.REVAXIS)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0], for_today=True)

@@ -92,7 +92,7 @@ def test_match(
 ):
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_UCR_MATCH)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_UCR_MATCH)
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
 

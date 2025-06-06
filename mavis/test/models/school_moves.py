@@ -21,7 +21,7 @@ class SchoolMovesPage:
             has_text="ignored"
         )
 
-    @step("Click on school move for {0} {1}")
+    @step("Click on school move for {1} {2}")
     def click_child(self, first_name: str, last_name: str):
         row = self.get_row_for_child(first_name, last_name)
         row.get_by_role("link", name="Review").click()

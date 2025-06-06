@@ -20,13 +20,13 @@ class LogInPage:
     def navigate(self):
         self.page.goto("/users/sign-in")
 
-    @step("Log in as {0}")
+    @step("Log in as {1}")
     def log_in(self, user: User):
         self.username_input.fill(user.username)
         self.password_input.fill(user.password)
         self.log_in_button.click()
 
-    @step("Select organisation {0}")
+    @step("Select organisation {1}")
     def select_organisation(self, organisation: Organisation):
         self.page.get_by_role("button", name=str(organisation)).click()
 
