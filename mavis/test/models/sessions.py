@@ -190,7 +190,7 @@ class SessionsPage:
         link.click()
         link.get_by_role("strong").wait_for()
 
-    @step("Click on {0} tab")
+    @step("Click on {1} tab")
     def click_programme_tab(self, programme: Programme):
         self._click_tab(str(programme))
 
@@ -202,7 +202,7 @@ class SessionsPage:
     def click_activity_log(self):
         self._click_tab("Activity log")
 
-    @step("Click on location {0}")
+    @step("Click on location {1}")
     def click_location(self, location: str):
         self.page.get_by_role("link", name=str(location)).click()
 
@@ -214,15 +214,15 @@ class SessionsPage:
     def click_continue_button(self):
         self.continue_button.click()
 
-    @step("Upload file {0}")
+    @step("Upload file {1}")
     def choose_file_child_records(self, file_path: str):
         self.file_input.set_input_files(file_path)
 
-    @step("Click on child {0}")
+    @step("Click on child {1}")
     def click_child(self, child_name: str):
         self.page.get_by_role("heading", name=child_name).get_by_role("link").click()
 
-    @step("Search and click on {0}")
+    @step("Search and click on {1}")
     def search_and_click_child(self, child_name: str):
         self.filter_name_textbox.fill(child_name)
         self.click_child(child_name)
@@ -334,7 +334,7 @@ class SessionsPage:
     def click_on_attending(self):
         self.attending_button.click()
 
-    @step("Search for {0}")
+    @step("Search for {1}")
     def search_for(self, name: str):
         self.search_textbox.fill(name)
         self.search_button.click()
@@ -509,7 +509,7 @@ class SessionsPage:
         self.click_location(location)
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records(_input_file_path)
         self.click_continue_button()
         self.dashboard_page.click_mavis()
 
@@ -584,7 +584,7 @@ class SessionsPage:
         )
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(file_path=_input_file_path)
+        self.choose_file_child_records(_input_file_path)
         self.import_records_page.record_upload_time()
         self.import_records_page.click_continue()
 

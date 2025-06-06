@@ -119,7 +119,7 @@ class ConsentPage:
     def click_confirm(self) -> None:
         self.confirm_button.click()
 
-    @step("Fill phone number {0} and receive text alerts")
+    @step("Fill phone number {1} and receive text alerts")
     def fill_phone_number_and_receive_text_alerts(self, phone: str) -> None:
         self.page.pause()
         self.phone_textbox.fill(phone)
@@ -169,7 +169,7 @@ class ConsentPage:
 
         self.click_continue()
 
-    @step("Click on {0} radio button")
+    @step("Click on {1} radio button")
     def click_radio_button(self, name: str) -> None:
         self.page.get_by_role("radio", name=name).check()
 
@@ -200,7 +200,7 @@ class ConsentPage:
 
         self.click_continue()
 
-    @step("Select consent for programmes {0}")
+    @step("Select consent for programmes {1}")
     def select_consent_for_programmes(
         self, list_of_programmes: list[Programme]
     ) -> None:
@@ -235,7 +235,7 @@ class ConsentPage:
         for locator_text in programme.health_questions:
             self.select_no_for_health_question(locator_text)
 
-    @step("Select No for health question {0}")
+    @step("Select No for health question {1}")
     def select_no_for_health_question(self, question: str) -> None:
         self.page.get_by_role("group", name=question).get_by_label("No").check()
 

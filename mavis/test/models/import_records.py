@@ -67,11 +67,11 @@ class ImportRecordsPage:
     def click_continue(self):
         self.continue_button.click()
 
-    @step("Set input file to {0}")
+    @step("Set input file to {1}")
     def set_input_file(self, file_path: str):
         self.file_input.set_input_files(file_path)
 
-    @step("Fill location combobox with {0}")
+    @step("Fill location combobox with {1}")
     def fill_location(self, location: str):
         self.location_combobox.fill(location)
 
@@ -174,7 +174,7 @@ class ImportRecordsPage:
             self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def _upload_and_verify_output(self, _input_file_path, _output_file_path):
-        self.set_input_file(file_path=_input_file_path)
+        self.set_input_file(_input_file_path)
         self.record_upload_time()
         self.click_continue()
 
