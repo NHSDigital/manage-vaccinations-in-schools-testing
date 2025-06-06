@@ -116,7 +116,6 @@ def test_cohort_upload_negative(setup_cohort_upload_and_reports, programmes_page
 def test_cohorts_file_structure(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(test_data_file_paths.COHORTS_INVALID_STRUCTURE)
 
-
 @pytest.mark.cohorts
 def test_cohorts_no_record(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(test_data_file_paths.COHORTS_HEADER_ONLY)
