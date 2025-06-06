@@ -145,7 +145,7 @@ class SessionsPage:
         self.left_arm_upper_radio = self.page.get_by_role(
             "radio", name="Left arm (upper position)"
         )
-        self.attending_button = self.page.get_by_role("button", name="Attending")
+        self.attending_button = self.page.get_by_role("button", name="Attending").first
         self.success_alert = self.page.get_by_role("alert", name="Success")
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
@@ -220,7 +220,7 @@ class SessionsPage:
 
     @step("Click on child {1}")
     def click_child(self, child_name: str):
-        self.page.get_by_role("heading", name=child_name).get_by_role("link").click()
+        self.page.get_by_role("heading", name=child_name).get_by_role("link").first.click()
 
     @step("Search and click on {1}")
     def search_and_click_child(self, child_name: str):
@@ -483,9 +483,9 @@ class SessionsPage:
         expect(self.page.get_by_role("main")).to_contain_text(message)
         self.click_continue_link()
 
-    def update_triage_outcome_positive(self, location: str, file_paths):
+    def update_triage_outcome(self, location: str, file_paths: str, consent_given: bool = True):
         self.__import_class_list_and_select_year_groups(location, file_paths)
-        self.__update_triage_consent(consent_given=True, location=location)
+        self.__update_triage_consent(consent_given=consent_given, location=location)
 
     def verify_mav_nnn(self, location: str):
         self.click_scheduled()
@@ -494,10 +494,6 @@ class SessionsPage:
         self.click_child(self.LNK_CHILD_FULL_NAME)
         self.click_get_consent_response()
         self.__handle_consent_approval(location=location)
-
-    def update_triage_outcome_consent_refused(self, location: str, file_paths: str):
-        self.__import_class_list_and_select_year_groups(location, file_paths)
-        self.__update_triage_consent(consent_given=False, location=location)
 
     def __import_class_list_and_select_year_groups(
         self,

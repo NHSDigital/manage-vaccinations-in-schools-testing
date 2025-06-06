@@ -24,9 +24,9 @@ def setup_confirm_and_ignore(
     def upload_class_list():
         sessions_page.click_import_class_list()
         sessions_page.select_year_groups(8, 9, 10, 11)
-        sessions_page.choose_file_child_records(file_path=input_file_path)
+        sessions_page.choose_file_child_records(input_file_path)
         sessions_page.click_continue_button()
-        import_records_page.verify_upload_output(file_path=output_file_path)
+        import_records_page.verify_upload_output(output_file_path)
 
     try:
         dashboard_page.click_sessions()
