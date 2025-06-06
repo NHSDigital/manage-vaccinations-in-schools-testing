@@ -42,35 +42,35 @@ class ChildrenPage:
         self.continue_button = self.page.get_by_role("button", name="Continue")
 
     def verify_headers(self):
-        self.children_heading.is_visible()
+        expect(self.children_heading).to_be_visible()
         for header in self.children_table_headers:
-            header.is_visible()
+            expect(header).to_be_visible()
 
     def verify_filter(self):
         self.search_textbox.fill("CFILTER1, CFilter1")
         self.search_button.click()
         self.page.wait_for_timeout(1000)
-        self.one_child_found_heading.is_visible()
+        expect(self.one_child_found_heading).to_be_visible()
 
     def verify_child_has_been_uploaded(self, child_list) -> None:
         if len(child_list) >= 1:
             self.dashboard_page.click_mavis()
             self.dashboard_page.click_children()
             for _child_name in child_list:
-                self.search_for_a_child(child_name=_child_name)
+                self.search_for_a_child(_child_name)
 
-    @step("Search for child {0}")
+    @step("Search for child {1}")
     def search_for_a_child(self, child_name: str) -> None:
         self.search_textbox.fill(child_name)
         self.search_button.click()
         self.page.wait_for_timeout(1000)
         self.expect_text_in_main(child_name)
 
-    @step("Click on record for child {0}")
+    @step("Click on record for child {1}")
     def click_record_for_child(self, child_name: str) -> None:
         self.page.get_by_role("link", name=child_name).click()
 
-    @step("Click on {0} vaccination details for school {1}")
+    @step("Click on {1} vaccination details for school {2}")
     def click_vaccination_details_for_school(
         self, vaccine: Vaccine, school: School
     ) -> None:
@@ -78,7 +78,7 @@ class ChildrenPage:
             "link", name=str(vaccine), exact=False
         ).click()
 
-    @step("Click on {0} vaccination details")
+    @step("Click on {1} vaccination details")
     def click_vaccination_details(self, vaccine: Vaccine) -> None:
         self.page.get_by_role("link", name=str(vaccine), exact=False).click()
 
@@ -107,7 +107,7 @@ class ChildrenPage:
     def click_remove_from_cohort(self) -> None:
         self.remove_from_cohort_button.click()
 
-    @step("Fill NHS number for child {0}")
+    @step("Fill NHS number {2} for child {1}")
     def fill_nhs_no_for_child(self, child_name: str, nhs_no: str) -> None:
         self.page.get_by_role("textbox", name=child_name).fill(nhs_no)
 
@@ -133,7 +133,7 @@ class ChildrenPage:
         self.expect_text_in_main("Consent response manually matched with child record")
 
     def remove_child_from_cohort(self, child_name: str):
-        self.search_for_a_child(child_name=child_name)
-        self.click_record_for_child(child_name=child_name)
+        self.search_for_a_child(child_name)
+        self.click_record_for_child(child_name)
         self.click_remove_from_cohort()
         self.expect_text_in_main(f"{child_name} removed from cohort")

@@ -89,7 +89,7 @@ def school_moves_page(page):
 @pytest.fixture
 def sessions_page(
     test_data,
-    playwright_operations,
+    page,
     dashboard_page,
     children_page,
     import_records_page,
@@ -97,7 +97,7 @@ def sessions_page(
 ):
     return SessionsPage(
         test_data,
-        playwright_operations,
+        page,
         dashboard_page,
         children_page,
         import_records_page,
