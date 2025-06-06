@@ -68,7 +68,7 @@ def setup_mav_854(
 ):
     session = "Community clinics"
     dashboard_page.click_vaccines()
-    vaccines_page.add_batch(vaccine=Vaccine.GARDASIL_9)
+    vaccines_page.add_batch(Vaccine.GARDASIL_9)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0], for_today=True)
@@ -104,29 +104,29 @@ def setup_mav_nnn(
 
 @pytest.mark.cohorts
 def test_cohort_upload_positive(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_POSITIVE)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_POSITIVE)
 
 
 @pytest.mark.cohorts
 def test_cohort_upload_negative(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_NEGATIVE)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_NEGATIVE)
 
 
 @pytest.mark.cohorts
 def test_cohorts_file_structure(setup_cohort_upload_and_reports, programmes_page):
     programmes_page.upload_cohorts(
-        file_paths=test_data_file_paths.COHORTS_INVALID_STRUCTURE
+        test_data_file_paths.COHORTS_INVALID_STRUCTURE
     )
 
 
 @pytest.mark.cohorts
 def test_cohorts_no_record(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_HEADER_ONLY)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_HEADER_ONLY)
 
 
 @pytest.mark.cohorts
 def test_cohorts_empty_file(setup_cohort_upload_and_reports, programmes_page):
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_EMPTY_FILE)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_EMPTY_FILE)
 
 
 @allure.issue("MAV-909")
@@ -157,14 +157,14 @@ def test_cohorts_readd_to_cohort(
         Server error page and user cannot bring the child back into the cohort
     """
     mav_909_child = "MAV_909, MAV_909"
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_MAV_909)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.remove_child_from_cohort(child_name=mav_909_child)
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.upload_cohorts(file_paths=test_data_file_paths.COHORTS_MAV_909)
+    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_MAV_909)
     programmes_page.expect_text("1 duplicate record needs review")
     programmes_page.click_review()
     programmes_page.click_use_duplicate()
@@ -204,7 +204,7 @@ def test_rav_verify_excel_mav_854(
     sessions_page,
     dashboard_page,
 ):
-    children_page.search_for_a_child(child_name="MAV_854, MAV_854")
+    children_page.search_for_a_child("MAV_854, MAV_854")
     programmes_page.click_mav_854_child()
     sessions_page.click_session("Community clinics", Programme.HPV)
     sessions_page._vaccinate_child_mav_854(clinics[0])

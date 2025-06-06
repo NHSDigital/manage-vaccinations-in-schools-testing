@@ -24,7 +24,7 @@ class UnmatchedConsentResponsesPage:
             has_text="matched"
         )
 
-    @step("Click on consent response for {0} {1}")
+    @step("Click on consent response for {1} {2}")
     def click_child(self, first_name: str, last_name: str):
         row = self._get_row_for_child(first_name, last_name)
         row.get_by_role("link").first.click()
@@ -87,7 +87,7 @@ class MatchConsentResponsePage:
         self.search_button = page.get_by_role("button", name="Search")
         self.link_button = page.get_by_role("button", name="Link response with record")
 
-    @step("Match consent response with {0} {1}")
+    @step("Match consent response with {1} {2}")
     def match(self, first_name: str, last_name: str):
         full_name = get_child_full_name(first_name, last_name)
 
