@@ -13,7 +13,7 @@ def step(title: str, attach_screenshot: bool = True):
 
             if attach_screenshot:
                 allure.attach(
-                    self.page.screenshot(),
+                    self.page.screenshot(full_page=True),
                     name="Screenshot",
                     attachment_type=allure.attachment_type.PNG,
                 )

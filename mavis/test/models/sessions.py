@@ -217,7 +217,7 @@ class SessionsPage:
     def click_save_note(self):
         self.save_note_button.click()
 
-    @step("Check that notes appear in order")
+    @step("Check that note(s) {1} appear in order")
     def check_notes_appear_in_order(self, notes: List[str]):
         for i, note in enumerate(notes):
             expect(self.page.get_by_role("blockquote").nth(i)).to_have_text(note)
