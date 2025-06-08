@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Final, Optional
 
 from ..mavis_constants import ConsentMethod, Programme, ConsentRefusalReason
@@ -146,10 +147,10 @@ class ConsentPage:
         self.click_continue()
 
     @step("Fill child date of birth")
-    def fill_child_dob(self, dob_day: int, dob_month: int, dob_year: int) -> None:
-        self.dob_day_textbox.fill(str(dob_day))
-        self.dob_month_textbox.fill(str(dob_month))
-        self.dob_year_textbox.fill(str(dob_year))
+    def fill_child_date_of_birth(self, date_of_birth: date) -> None:
+        self.dob_day_textbox.fill(str(date_of_birth.day))
+        self.dob_month_textbox.fill(str(date_of_birth.month))
+        self.dob_year_textbox.fill(str(date_of_birth.year))
         self.click_continue()
 
     @step("Select child school")
