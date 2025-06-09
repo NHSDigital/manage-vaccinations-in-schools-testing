@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.mavis_constants import Vaccine, mavis_file_types, test_data_file_paths
+from mavis.test.mavis_constants import Vaccine, test_data_file_paths
 
 pytestmark = pytest.mark.children
 
@@ -59,10 +59,9 @@ def setup_mav_853(
         programmes_page.upload_cohorts(test_data_file_paths.COHORTS_MAV_853)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
-        import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_MAV_853,
-            file_type=mavis_file_types.VACCS_MAVIS,
-            session_id=session_id,
+        import_records_page.navigate_to_vaccination_records_import()
+        import_records_page.upload_and_verify_output(
+            file_paths=test_data_file_paths.VACCS_MAV_853, session_id=session_id
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()

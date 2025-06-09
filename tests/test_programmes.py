@@ -2,7 +2,6 @@ import allure
 import pytest
 
 from mavis.test.mavis_constants import (
-    mavis_file_types,
     test_data_file_paths,
     Programme,
     Vaccine,
@@ -43,10 +42,9 @@ def setup_mavis_1729(
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
-        import_records_page.import_vaccination_records(
-            file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO,
-            file_type=mavis_file_types.VACCS_MAVIS,
-            session_id=session_id,
+        import_records_page.navigate_to_vaccination_records_import()
+        import_records_page.upload_and_verify_output(
+            file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO, session_id=session_id
         )
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()

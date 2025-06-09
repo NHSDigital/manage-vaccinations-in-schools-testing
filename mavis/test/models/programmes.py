@@ -115,6 +115,12 @@ class ProgrammesPage:
 
         self.import_records_page.verify_upload_output(file_path=_output_file_path)
 
+    @step("Navigate to cohort import for programme {1}")
+    def navigate_to_cohort_import(self, programme: Programme):
+        self.click_programme(programme)
+        self.click_cohorts()
+        self.click_import_child_records()
+
     @step("Edit dose to not given")
     def edit_dose_to_not_given(self):
         self.click_programme(Programme.HPV)

@@ -137,23 +137,17 @@ class ImportRecordsPage:
         self.upload_and_verify_output(_input_file_path, _output_file_path)
         return _input_file_path, _output_file_path
 
-    def import_vaccination_records(
-        self,
-        file_paths: str,
-        file_type: mavis_file_types = mavis_file_types.VACCS_MAVIS,
-        session_id: Optional[str] = None,
+    def navigate_to_vaccination_records_import(self):
+        self.click_import_records()
+        self.select_vaccination_records()
+        self.click_continue()
+
+    def upload_and_verify_output(
+        self, file_paths: str, session_id: Optional[str] = None
     ):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths, session_id=session_id
         )
-        self.click_import_records()
-        self.select_vaccination_records()
-        self.click_continue()
-        self.upload_and_verify_output(_input_file_path, _output_file_path)
-
-        return _input_file_path, _output_file_path
-
-    def upload_and_verify_output(self, _input_file_path, _output_file_path):
         self.set_input_file(_input_file_path)
         self.record_upload_time()
         self.click_continue()
@@ -163,6 +157,7 @@ class ImportRecordsPage:
             self.wait_for_processed()
 
         self.verify_upload_output(file_path=_output_file_path)
+        return _input_file_path, _output_file_path
 
     def record_upload_time(self):
         self.upload_time = datetime.now()
