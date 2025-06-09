@@ -1,5 +1,7 @@
+from mavis.test.data import TestData
 from mavis.test.mavis_constants import Vaccine
 from mavis.test.onboarding import School
+from ..mavis_constants import mavis_file_types
 from .dashboard import DashboardPage
 
 from playwright.sync_api import Page, expect
@@ -8,8 +10,9 @@ from ..step import step
 
 
 class ChildrenPage:
-    def __init__(self, page: Page, dashboard_page: DashboardPage):
+    def __init__(self, page: Page, dashboard_page: DashboardPage, test_data: TestData):
         self.page = page
+        self.test_data = test_data
         self.dashboard_page = dashboard_page
 
         self.children_heading = self.page.get_by_role(
@@ -52,11 +55,16 @@ class ChildrenPage:
         self.page.wait_for_timeout(1000)
         expect(self.one_child_found_heading).to_be_visible()
 
-    def verify_child_has_been_uploaded(self, child_list) -> None:
-        if len(child_list) >= 1:
+    def verify_list_has_been_uploaded(
+        self, list: str, file_type: mavis_file_types = mavis_file_types.CHILD_LIST
+    ) -> None:
+        _child_name_list = self.test_data.create_child_list_from_file(
+            file_path=list, file_type=file_type
+        )
+        if _child_name_list:
             self.dashboard_page.click_mavis()
             self.dashboard_page.click_children()
-            for _child_name in child_list:
+            for _child_name in _child_name_list:
                 self.search_for_a_child(_child_name)
 
     @step("Search for child {1}")

@@ -27,8 +27,8 @@ def archive_consent_response_page(page):
 
 
 @pytest.fixture
-def children_page(page, dashboard_page):
-    return ChildrenPage(page, dashboard_page)
+def children_page(page, dashboard_page, test_data):
+    return ChildrenPage(page, dashboard_page, test_data)
 
 
 @pytest.fixture
@@ -57,8 +57,8 @@ def download_school_moves_page(page):
 
 
 @pytest.fixture
-def import_records_page(test_data, page, children_page):
-    return ImportRecordsPage(test_data, page, children_page)
+def import_records_page(test_data, page):
+    return ImportRecordsPage(test_data, page)
 
 
 @pytest.fixture
@@ -91,7 +91,6 @@ def sessions_page(
     test_data,
     page,
     dashboard_page,
-    children_page,
     import_records_page,
     consent_page,
 ):
@@ -99,7 +98,6 @@ def sessions_page(
         test_data,
         page,
         dashboard_page,
-        children_page,
         import_records_page,
         consent_page,
     )

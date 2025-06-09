@@ -9,14 +9,13 @@ from playwright.sync_api import Page, expect
 
 from ..data import TestData
 from ..onboarding import Clinic
-from ..mavis_constants import mavis_file_types, PrescreeningQuestion, Programme
+from ..mavis_constants import PrescreeningQuestion, Programme
 
 from ..wrappers import (
     get_current_datetime,
     get_offset_date,
 )
 
-from .children import ChildrenPage
 from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .import_records import ImportRecordsPage
@@ -38,7 +37,6 @@ class SessionsPage:
         test_data: TestData,
         page: Page,
         dashboard_page: DashboardPage,
-        children_page: ChildrenPage,
         import_records_page: ImportRecordsPage,
         consent_page: ConsentPage,
     ):
@@ -46,7 +44,6 @@ class SessionsPage:
         self.page = page
         self.dashboard_page = dashboard_page
         self.consent_page = consent_page
-        self.children_page = children_page
         self.import_records_page = import_records_page
 
         self.today_tab_link = self.page.get_by_role("link", name="Today")
@@ -579,7 +576,6 @@ class SessionsPage:
     def upload_class_list(
         self,
         file_paths: str,
-        verify_on_children: bool = False,
     ):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
@@ -595,11 +591,6 @@ class SessionsPage:
             self.import_records_page.wait_for_processed()
 
         self.import_records_page.verify_upload_output(file_path=_output_file_path)
-        if verify_on_children:
-            _cl = self.test_data.create_child_list_from_file(
-                file_path=_input_file_path, file_type=mavis_file_types.CLASS_LIST
-            )
-            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
 
     def set_gillick_competence_for_student(self, session: str):
         self.click_today()
