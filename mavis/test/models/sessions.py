@@ -655,6 +655,7 @@ class SessionsPage:
         self.consent_page.update_triage_outcome_positive()
         self.click_consent_tab()
         self.click_child(self.LNK_CHILD_CONSENT_TWICE)
+        self.click_programme_tab(Programme.HPV)
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_refuse_consent()
         self.select_consent_refused()
