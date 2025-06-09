@@ -6,8 +6,11 @@ from mavis.test.mavis_constants import test_data_file_paths
 
 pytestmark = pytest.mark.consent
 
+
 @pytest.fixture
-def setup_session_with_file_upload(log_in_as_nurse, schools, dashboard_page, sessions_page):
+def setup_session_with_file_upload(
+    log_in_as_nurse, schools, dashboard_page, sessions_page
+):
     def _setup(class_list_file):
         try:
             dashboard_page.click_sessions()

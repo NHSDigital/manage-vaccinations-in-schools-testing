@@ -23,15 +23,19 @@ def setup_children_session(log_in_as_nurse, schools, dashboard_page, sessions_pa
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(schools[0])
+
     return _setup
+
 
 @pytest.fixture
 def setup_children_page(setup_children_session):
     yield from setup_children_session(test_data_file_paths.CLASS_CHILDREN_FILTER)
 
+
 @pytest.fixture
 def setup_change_nhsno(setup_children_session):
     yield from setup_children_session(test_data_file_paths.CLASS_CHANGE_NHSNO)
+
 
 @pytest.fixture
 def setup_mav_853(

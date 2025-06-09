@@ -220,7 +220,9 @@ class SessionsPage:
 
     @step("Click on child {1}")
     def click_child(self, child_name: str):
-        self.page.get_by_role("heading", name=child_name).get_by_role("link").first.click()
+        self.page.get_by_role("heading", name=child_name).get_by_role(
+            "link"
+        ).first.click()
 
     @step("Search and click on {1}")
     def search_and_click_child(self, child_name: str):
@@ -483,7 +485,9 @@ class SessionsPage:
         expect(self.page.get_by_role("main")).to_contain_text(message)
         self.click_continue_link()
 
-    def update_triage_outcome(self, location: str, file_paths: str, consent_given: bool = True):
+    def update_triage_outcome(
+        self, location: str, file_paths: str, consent_given: bool = True
+    ):
         self.__import_class_list_and_select_year_groups(location, file_paths)
         self.__update_triage_consent(consent_given=consent_given, location=location)
 

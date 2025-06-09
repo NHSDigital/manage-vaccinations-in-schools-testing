@@ -182,6 +182,7 @@ def test_rav_triage(setup_record_a_vaccine, schools, sessions_page, consent_give
         schools[0], test_data_file_paths.COHORTS_FULL_NAME, consent_given=consent_given
     )
 
+
 @allure.issue("MAVIS-1729")
 @pytest.mark.rav
 @pytest.mark.bug

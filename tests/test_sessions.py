@@ -2,13 +2,14 @@ import allure
 import pytest
 
 from mavis.test.mavis_constants import test_data_file_paths
-from mavis.test.models import dashboard
 
 pytestmark = pytest.mark.sessions
+
 
 @pytest.fixture
 def setup_tests(log_in_as_nurse, dashboard_page):
     dashboard_page.click_sessions()
+
 
 @pytest.fixture
 def setup_session_with_file_upload(setup_tests, schools, dashboard_page, sessions_page):
