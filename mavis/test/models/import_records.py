@@ -9,19 +9,15 @@ from ..data import TestData
 from ..mavis_constants import mavis_file_types
 from ..wrappers import format_datetime_for_upload_link
 
-from .children import ChildrenPage
-
 
 class ImportRecordsPage:
     def __init__(
         self,
         test_data: TestData,
         page: Page,
-        children_page: ChildrenPage,
     ):
         self.test_data = test_data
         self.page = page
-        self.children_page = children_page
 
         self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
@@ -96,28 +92,21 @@ class ImportRecordsPage:
         else:
             expect(tag).to_be_visible()
 
-    def import_child_records(
-        self, file_paths: str, verify_on_children_page: bool = False
-    ):
+    def import_child_records(self, file_paths: str):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths
         )
         self.click_import_records()
         self.select_child_records()
         self.click_continue()
-        self._upload_and_verify_output(_input_file_path, _output_file_path)
-        if verify_on_children_page:
-            _cl = self.test_data.create_child_list_from_file(
-                file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
-            )
-            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
+        self.upload_and_verify_output(_input_file_path, _output_file_path)
+        return _input_file_path, _output_file_path
 
     def import_class_list_records(
         self,
         location: str,
         file_paths: str,
         year_groups: Optional[list[int]] = None,
-        verify_on_children_page: bool = False,
     ):
         if year_groups is None:
             year_groups = [8, 9, 10, 11]
@@ -136,13 +125,8 @@ class ImportRecordsPage:
 
         self.click_continue()
         self._select_year_groups(*year_groups)
-        self._upload_and_verify_output(_input_file_path, _output_file_path)
-
-        if verify_on_children_page:
-            _cl = self.test_data.create_child_list_from_file(
-                file_path=_input_file_path, file_type=mavis_file_types.CHILD_LIST
-            )
-            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
+        self.upload_and_verify_output(_input_file_path, _output_file_path)
+        return _input_file_path, _output_file_path
 
     def import_class_list_records_from_school_session(self, file_paths: str):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
@@ -150,13 +134,13 @@ class ImportRecordsPage:
         )
         self.click_import_class_lists()
         self._select_year_groups(8, 9, 10, 11)
-        self._upload_and_verify_output(_input_file_path, _output_file_path)
+        self.upload_and_verify_output(_input_file_path, _output_file_path)
+        return _input_file_path, _output_file_path
 
     def import_vaccination_records(
         self,
         file_paths: str,
         file_type: mavis_file_types = mavis_file_types.VACCS_MAVIS,
-        verify_on_children_page: bool = False,
         session_id: Optional[str] = None,
     ):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
@@ -165,15 +149,11 @@ class ImportRecordsPage:
         self.click_import_records()
         self.select_vaccination_records()
         self.click_continue()
-        self._upload_and_verify_output(_input_file_path, _output_file_path)
+        self.upload_and_verify_output(_input_file_path, _output_file_path)
 
-        if verify_on_children_page:
-            _cl = self.test_data.create_child_list_from_file(
-                file_path=_input_file_path, file_type=file_type
-            )
-            self.children_page.verify_child_has_been_uploaded(child_list=_cl)
+        return _input_file_path, _output_file_path
 
-    def _upload_and_verify_output(self, _input_file_path, _output_file_path):
+    def upload_and_verify_output(self, _input_file_path, _output_file_path):
         self.set_input_file(_input_file_path)
         self.record_upload_time()
         self.click_continue()
