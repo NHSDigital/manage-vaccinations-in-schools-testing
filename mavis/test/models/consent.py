@@ -122,7 +122,6 @@ class ConsentPage:
 
     @step("Fill phone number {1} and receive text alerts")
     def fill_phone_number_and_receive_text_alerts(self, phone: str) -> None:
-        self.page.pause()
         self.phone_textbox.fill(phone)
         self.text_alerts_checkbox.check()
 
