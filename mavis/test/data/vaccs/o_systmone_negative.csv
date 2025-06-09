@@ -17,4 +17,4 @@ Row 18 Event date: The vaccination date is before the date of birth.
 Row 19 Event time: Enter a time in the correct format.
 Row 20 Event time: Enter a time in the past.
 Row 21 School code: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
-Row 22 Vaccination batch number: is greater than 100 characters long
+Row 22 Vaccination batch number: must be at most 100 characters long
