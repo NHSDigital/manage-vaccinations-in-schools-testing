@@ -25,7 +25,7 @@ class VaccinesPage:
         self.month = self.future_expiry_date[4:6]
         self.year = self.future_expiry_date[:4]
 
-    @step("Add a new batch for {0}")
+    @step("Add a new batch for {1}")
     def add_batch(self, vaccine: Vaccine):
         self._calculate_batch_details(vaccine)
         expect(self.page.get_by_role("main")).to_contain_text(vaccine)
@@ -58,7 +58,7 @@ class VaccinesPage:
     def click_archive_this_batch(self):
         self.confirm_archive_button.click()
 
-    @step("Change the batch for {0}")
+    @step("Change the batch for {1}")
     def change_batch(self, vaccine: Vaccine):
         batch_name = self.batch_name or str(vaccine)
         self.__click_batch_option(batch_name, "Change")
@@ -67,7 +67,7 @@ class VaccinesPage:
         _success_message = f"Batch {self.batch_name} updated"
         expect(self.page.get_by_role("alert")).to_contain_text(_success_message)
 
-    @step("Archive the batch for {0}")
+    @step("Archive the batch for {1}")
     def archive_batch(self, vaccine: Vaccine):
         batch_name = self.batch_name or str(vaccine)
         self.__click_batch_option(batch_name, "Archive")

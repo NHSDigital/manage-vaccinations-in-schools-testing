@@ -36,7 +36,6 @@ from .playwright import (
     basic_auth,
     browser_context_args,
     browser_type,
-    playwright_operations,
     screenshots_path,
 )
 
@@ -64,7 +63,6 @@ __all__ = [
     "onboard",
     "onboarding",
     "organisation",
-    "playwright_operations",
     "programmes_page",
     "reset",
     "review_school_move_page",
