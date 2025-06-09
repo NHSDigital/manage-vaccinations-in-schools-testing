@@ -519,6 +519,7 @@ class SessionsPage:
         self.click_location(location)
         self.click_consent_tab()
         self.click_child(self.LNK_CHILD_FULL_NAME)
+        self.click_programme_tab(Programme.HPV)
         self.click_get_consent_response()
         if consent_given:
             self.__handle_consent_approval(location)
@@ -540,6 +541,7 @@ class SessionsPage:
         self.click_location(location)
         self.click_register_tab()
         self.click_child(self.LNK_CHILD_FULL_NAME)
+        self.click_programme_tab(Programme.HPV)
         self.click_update_triage_outcome()
         self.select_yes_safe_to_vaccinate()
         self.click_save_triage()
@@ -643,10 +645,12 @@ class SessionsPage:
     def bug_mavis_1864(self):
         self.select_no_response()
         self.click_child(self.LNK_CHILD_CONSENT_TWICE)
+        self.click_programme_tab(Programme.HPV)
         self.click_get_consent_response()
         self.consent_page.parent_1_written_positive()
         self.select_consent_given()
         self.click_child(self.LNK_CHILD_CONSENT_TWICE)
+        self.click_programme_tab(Programme.HPV)
         self.click_update_triage_outcome()
         self.consent_page.update_triage_outcome_positive()
         self.click_consent_tab()
@@ -655,6 +659,7 @@ class SessionsPage:
         self.consent_page.parent_1_verbal_refuse_consent()
         self.select_consent_refused()
         self.click_child(self.LNK_CHILD_CONSENT_TWICE)
+        self.click_programme_tab(Programme.HPV)
         expect(self.page.get_by_role("main")).to_contain_text(
             "Dad refused to give consent."
         )
@@ -690,18 +695,21 @@ class SessionsPage:
         self.click_child(
             self.LNK_CHILD_CONFLICTING_GILLICK
         )  # Click appropriate child name
+        self.click_programme_tab(Programme.HPV)
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
         self.select_consent_given()
         self.click_child(
             self.LNK_CHILD_CONFLICTING_GILLICK
         )  # Click appropriate child name
+        self.click_programme_tab(Programme.HPV)
         self.click_get_consent_response()
         self.consent_page.parent_2_verbal_refuse_consent()
         self.select_conflicting_consent()
         self.click_child(
             self.LNK_CHILD_CONFLICTING_GILLICK
         )  # Click appropriate child name
+        self.click_programme_tab(Programme.HPV)
         expect(self.page.get_by_role("main")).to_contain_text("Conflicting consent")
         expect(self.page.get_by_role("main")).to_contain_text(
             "You can only vaccinate if all respondents give consent."
@@ -722,6 +730,7 @@ class SessionsPage:
         self.click_child(
             self.LNK_CHILD_CONFLICTING_GILLICK
         )  # Click appropriate child name
+        self.click_programme_tab(Programme.HPV)
         expect(self.page.get_by_role("main")).to_contain_text("Ready for nurse")
         expect(self.page.get_by_role("main")).to_contain_text(
             f"NURSE, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse."
@@ -735,6 +744,7 @@ class SessionsPage:
     def give_consent_for_e2e1_child_by_parent_1(self):
         self.click_consent_tab()
         self.click_child(self.LNK_CHILD_E2E1)
+        self.click_programme_tab(Programme.HPV)
         self.click_get_consent_response()
         self.consent_page.parent_1_verbal_positive(change_phone=False)
 

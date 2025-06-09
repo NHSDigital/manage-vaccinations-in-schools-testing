@@ -94,7 +94,7 @@ def onboarding(clinics, schools, team, organisation, users):
     return {
         "clinics": {team.key: [it.to_onboarding() for it in clinics]},
         "organisation": organisation.to_onboarding(),
-        "programmes": ["hpv", "menacwy", "td_ipv"],
+        "programmes": ["flu", "hpv", "menacwy", "td_ipv"],
         "schools": {team.key: [it.to_onboarding() for it in schools]},
         "teams": team.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
