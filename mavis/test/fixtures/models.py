@@ -27,8 +27,8 @@ def archive_consent_response_page(page):
 
 
 @pytest.fixture
-def children_page(page, dashboard_page, test_data):
-    return ChildrenPage(page, dashboard_page, test_data)
+def children_page(page, test_data):
+    return ChildrenPage(page, test_data)
 
 
 @pytest.fixture

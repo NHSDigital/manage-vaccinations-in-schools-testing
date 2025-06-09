@@ -96,11 +96,13 @@ def test_child_list_empty_file(setup_child_list, import_records_page):
 @pytest.mark.childlist
 @pytest.mark.bug
 def test_child_list_space_normalization(
-    setup_child_list, import_records_page, children_page
+    setup_child_list, import_records_page, children_page, dashboard_page
 ):
     input_file, _ = import_records_page.import_child_records(
         file_paths=test_data_file_paths.CHILD_MAV_1080
     )
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file)
 
 
@@ -158,12 +160,14 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
 @pytest.mark.classlist
 @pytest.mark.bug
 def test_class_list_space_normalization(
-    setup_class_list, schools, import_records_page, children_page
+    setup_class_list, schools, import_records_page, children_page, dashboard_page
 ):
     input_file, _ = import_records_page.import_class_list_records(
         str(schools[0]),
         test_data_file_paths.CLASS_MAV_1080,
     )
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file)
 
 
@@ -290,11 +294,15 @@ def test_vaccs_systmone_negative_historical_file_upload(
 
 @pytest.mark.vaccinations
 @pytest.mark.bug
-def test_vaccs_hpv_space_normalization(setup_vaccs, import_records_page, children_page):
+def test_vaccs_hpv_space_normalization(
+    setup_vaccs, import_records_page, children_page, dashboard_page
+):
     input_file, _ = import_records_page.import_vaccination_records(
         file_paths=test_data_file_paths.VACCS_MAV_1080,
         file_type=mavis_file_types.VACCS_MAVIS,
     )
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(
         input_file,
         mavis_file_types.VACCS_MAVIS,
