@@ -57,7 +57,7 @@ def PARENT_2_PHONE = []
 def PARENT_2_RELATIONSHIP = []
 def CHILD_SCHOOL_URN =[]
 
-def startDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2011-09-01&apos;)
+def startDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2008-09-01&apos;)
 def endDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2012-08-31&apos;)
 def newNHSNumbers = []
 
@@ -88,7 +88,7 @@ try {
 		PARENT_2_PHONE.add(lineSplit[15])
 		PARENT_2_RELATIONSHIP.add(lineSplit[16])
 		CHILD_SCHOOL_URN.add(lineSplit[17])
-		
+
           line = reader.readLine();
      }
 
@@ -114,7 +114,7 @@ for(outrow=1;outrow&lt;=rowcount;outrow++){
 	vars.put(&quot;CHILD_DATE_OF_BIRTH&quot;,(startDate + r.nextInt(endDate-startDate)).format(&apos;yyyy-MM-dd&apos;))
 	vars.put(&quot;CHILD_FIRST_NAME&quot;,CHILD_FIRST_NAME.get(r.nextInt(CHILD_FIRST_NAME.size())))
 	vars.put(&quot;CHILD_LAST_NAME&quot;,CHILD_LAST_NAME.get(r.nextInt(CHILD_LAST_NAME.size())))
-	
+
 	checkdigit=&quot;10&quot;
 	while(checkdigit==&quot;10&quot;){
 		nhsnumber=(r.nextInt(999999) + 999000000).toString()
@@ -132,7 +132,7 @@ for(outrow=1;outrow&lt;=rowcount;outrow++){
 	//Add the unique nhs number to the array
 	newNHSNumbers.add(nhsnumber)
 	vars.put(&quot;CHILD_NHS_NUMBER&quot;,nhsnumber)
-	
+
 	vars.put(&quot;PARENT_1_NAME&quot;,PARENT_1_NAME.get(r.nextInt(PARENT_1_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
 	vars.put(&quot;PARENT_2_NAME&quot;,PARENT_2_NAME.get(r.nextInt(PARENT_2_NAME.size())).tokenize(&apos; &apos;).first()  + &quot; &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
 	vars.put(&quot;PARENT_1_EMAIL&quot;,vars.get(&quot;PARENT_1_NAME&quot;).replaceAll(&apos; &apos;,&apos;.&apos;) + &quot;@example.com&quot;)
@@ -141,12 +141,12 @@ for(outrow=1;outrow&lt;=rowcount;outrow++){
 	vars.put(&quot;PARENT_2_PHONE&quot;,PARENT_2_PHONE.get(r.nextInt(PARENT_2_PHONE.size())))
 	vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,PARENT_1_RELATIONSHIP.get(r.nextInt(PARENT_1_RELATIONSHIP.size())))
 	vars.put(&quot;PARENT_2_RELATIONSHIP&quot;,PARENT_2_RELATIONSHIP.get(r.nextInt(PARENT_2_RELATIONSHIP.size())))
-	
+
 	vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;URN&quot;))
-	
+
 	rowPartOne=(vars.get(&quot;CHILD_ADDRESS_LINE_1&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_ADDRESS_LINE_2&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_POSTCODE&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_TOWN&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_PREFERRED_GIVEN_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_DATE_OF_BIRTH&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_NHS_NUMBER&quot;) + &quot;,&quot;)
 	rowPartTwo=(vars.get(&quot;PARENT_1_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_1_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_EMAIL&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_NAME&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_PHONE&quot;) + &quot;,&quot; + vars.get(&quot;PARENT_2_RELATIONSHIP&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_SCHOOL_URN&quot;))
-	
+
 	writer.println(rowPartOne + rowPartTwo)
 //	log.info(vars.get(&quot;CHILD_FIRST_NAME&quot;) + &quot;,&quot; + vars.get(&quot;CHILD_LAST_NAME&quot;))
 }

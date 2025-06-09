@@ -1294,7 +1294,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="script">SampleResult.setIgnore()
 if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 	log.error(&quot;No batch found&quot;)
-	
+
 }
 </stringProp>
               </JSR223Sampler>
@@ -3005,7 +3005,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
                       <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                      <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/sessions/\w+/patients/\d+/\w+/triages&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
+                      <stringProp name="RegexExtractor.regex">&lt;form action=&quot;\/sessions\/.*?\/patients\/\d+\/.*?\/triages&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; \/&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
                       <stringProp name="RegexExtractor.default">Authenticity_Token_NotFoundfromhere</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3276,7 +3276,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <stringProp name="script">SampleResult.setIgnore()
 if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 	log.error(&quot;No batch found&quot;)
-	
+
 }
 </stringProp>
                 </JSR223Sampler>
@@ -3449,7 +3449,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                   <stringProp name="script">SampleResult.setIgnore()
 if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 	log.error(&quot;No batch found&quot;)
-	
+
 }
 </stringProp>
                 </JSR223Sampler>
