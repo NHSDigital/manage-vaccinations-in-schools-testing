@@ -1,7 +1,11 @@
+from datetime import date
+import random
+
 import allure
 from playwright.sync_api import expect
 import pytest
 
+from mavis.test.data import pds as pds_test_data
 from mavis.test.mavis_constants import test_data_file_paths, Programme
 
 pytestmark = pytest.mark.consent_responses
@@ -19,7 +23,7 @@ def child_name(faker):
 
 @pytest.fixture
 def child_date_of_birth():
-    return 12, 8, 2009
+    return date(2009, 8, 12)
 
 
 @pytest.fixture
@@ -47,7 +51,7 @@ def give_online_consent(
     page.goto(online_consent_url)
     start_page.start()
     consent_page.fill_child_name_details(*child_name)
-    consent_page.fill_child_dob(*child_date_of_birth)
+    consent_page.fill_child_date_of_birth(child_date_of_birth)
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
     consent_page.select_consent_for_programmes([Programme.HPV])
@@ -111,12 +115,13 @@ def test_match(
     )
 
 
+patient = random.choice(pds_test_data.patients)
+
+
 @allure.issue("MAVIS-1812")
-@pytest.mark.parametrize("child_name", [("Helena", "Hoyte")])
-@pytest.mark.parametrize("child_date_of_birth", [(20, 8, 2011)])
-@pytest.mark.parametrize(
-    "child_address", [("1 WEST PARK PLACE", "RETFORD", "NOTTS", "DN22 7PP")]
-)
+@pytest.mark.parametrize("child_name", [patient.full_name])
+@pytest.mark.parametrize("child_date_of_birth", [patient.date_of_birth])
+@pytest.mark.parametrize("child_address", [patient.address])
 def test_create_with_nhs_number(
     child_name,
     children_page,

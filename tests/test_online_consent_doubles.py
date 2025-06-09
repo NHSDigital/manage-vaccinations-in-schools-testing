@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 
 from mavis.test.mavis_constants import Programme, ConsentRefusalReason
@@ -18,7 +20,7 @@ def start_consent(url, page, start_page):
 
 def test_refused(consent_page, faker, schools):
     consent_page.fill_child_name_details("ROSS", "HAYES", "AKAFirst", "AKALast")
-    consent_page.fill_child_dob(10, 8, 2009)
+    consent_page.fill_child_date_of_birth(date(2009, 8, 10))
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
     consent_page.select_consent_for_programmes([])
@@ -42,7 +44,7 @@ def test_given(
     consent_page, faker, schools, programmes, change_school, health_question
 ):
     consent_page.fill_child_name_details("ROSE", "VOSE")
-    consent_page.fill_child_dob(12, 8, 2009)
+    consent_page.fill_child_date_of_birth(date(2009, 8, 12))
 
     if change_school:
         consent_page.select_child_school(schools[1])
