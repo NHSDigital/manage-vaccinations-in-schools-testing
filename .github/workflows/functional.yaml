@@ -19,8 +19,8 @@ jobs:
           - Galaxy S9+
           - Pixel 7
           - iPad (gen 7) landscape
-          - iPhone 14
           - iPhone 15
+      max-parallel: 2
 
     permissions: {}
 
