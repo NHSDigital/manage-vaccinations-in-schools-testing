@@ -40,7 +40,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -123,7 +123,7 @@
           </elementProp>
           <elementProp name="Threads" elementType="Argument">
             <stringProp name="Argument.name">Threads</stringProp>
-            <stringProp name="Argument.value">${__P(Threads, 1)}</stringProp>
+            <stringProp name="Argument.value">${__P(Threads, 10)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc"></stringProp>
           </elementProp>
@@ -135,7 +135,7 @@
           </elementProp>
           <elementProp name="RampUp" elementType="Argument">
             <stringProp name="Argument.name">RampUp</stringProp>
-            <stringProp name="Argument.value">${__P(RampUp, 900)}</stringProp>
+            <stringProp name="Argument.value">${__P(RampUp, 1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="Duration" elementType="Argument">
@@ -215,13 +215,13 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Login decision">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Login decision" enabled="true">
           <stringProp name="IfController.condition">${__groovy((vars.getIteration()-1) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -266,7 +266,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223Sampler>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -275,11 +275,11 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Login">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Login" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.1 Homepage">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.1 Homepage" enabled="true">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">start</stringProp>
@@ -310,7 +310,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                 <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_01</stringProp>
                 <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
@@ -369,7 +369,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/organisations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                 <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_02</stringProp>
                 <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
@@ -431,7 +431,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list" enabled="true">
               <stringProp name="HTTPSampler.port">0</stringProp>
               <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions</stringProp>
@@ -461,13 +461,13 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True" enabled="true">
           <stringProp name="IfController.condition">${__jexl3(&quot;${ReadOnlyMode}&quot; == &quot;True&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Session">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Session" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
@@ -619,7 +619,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="BoundaryExtractor.refname">LogOut_Authenticity_Token</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/logout&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;delete&quot; autocomplete=&quot;off&quot; /&gt;&lt;button class=&quot;app-header__account-button&quot; type=&quot;submit&quot;&gt;Log out&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                 <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">LogOut_Authenticity_Token_NotFound</stringProp>
+                <stringProp name="BoundaryExtractor.default">LogOut_Authenticity_Token_NotFound_03</stringProp>
                 <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
@@ -643,7 +643,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="2.0 Register attendance">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="2.0 Register attendance" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
@@ -705,7 +705,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">type=&quot;submit&quot;&gt;Attending&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_04</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
@@ -797,13 +797,13 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   <stringProp name="RegexExtractor.refname">LogOut_Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">Log out&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
-                  <stringProp name="RegexExtractor.default">LogOut_Authenticity_Token_NotFound</stringProp>
+                  <stringProp name="RegexExtractor.default">LogOut_Authenticity_Token_NotFound_05</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6.0 Logout">
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6.0 Logout" enabled="true">
                 <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
                 <boolProp name="IfController.evaluateAll">false</boolProp>
                 <boolProp name="IfController.useExpression">true</boolProp>
@@ -972,7 +972,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/sessions/${SessionId}/patients/${PatientId}/hpv/consents&quot;&gt;&lt;button class=&quot;nhsuk-button app-button--secondary&quot; data-module=&quot;nhsuk-button&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Get consent response&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound1</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_06</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
@@ -982,7 +982,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; \/&gt;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound</stringProp>
+                <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound_07</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
@@ -1001,7 +1001,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <boolProp name="IfController.useExpression">false</boolProp>
             </IfController>
             <hashTree>
-              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="3.0 Nurse triage">
+              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="3.0 Nurse triage" enabled="true">
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
@@ -1036,7 +1036,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">patients/\d+/hpv/triages&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_08</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1132,7 +1132,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                     <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound_09</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1140,7 +1140,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                 </hashTree>
               </hashTree>
             </hashTree>
-            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4.0 Vaccination">
+            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4.0 Vaccination" enabled="true">
               <boolProp name="TransactionController.includeTimers">false</boolProp>
             </TransactionController>
             <hashTree>
@@ -1256,7 +1256,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-vaccination-record/batch&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
-                  <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                  <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_10</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
@@ -1348,7 +1348,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                   <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                   <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/draft-vaccination-record/confirm&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                   <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                  <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+                  <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_11</stringProp>
                   <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                   <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                 </BoundaryExtractor>
@@ -1424,7 +1424,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                   <stringProp name="BoundaryExtractor.refname">LogOut_Authenticity_Token</stringProp>
                   <stringProp name="BoundaryExtractor.lboundary">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/logout&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;delete&quot; autocomplete=&quot;off&quot; /&gt;&lt;button class=&quot;app-header__account-button&quot; type=&quot;submit&quot;&gt;Log out&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                   <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                  <stringProp name="BoundaryExtractor.default">LogOut_Authenticity_Token_NotFound</stringProp>
+                  <stringProp name="BoundaryExtractor.default">LogOut_Authenticity_Token_NotFound_12</stringProp>
                   <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                   <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                 </BoundaryExtractor>
@@ -1459,7 +1459,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
               <boolProp name="IfController.useExpression">false</boolProp>
             </IfController>
             <hashTree>
-              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5.0 Consent">
+              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5.0 Consent" enabled="true">
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
@@ -1502,7 +1502,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/who&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_13</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1582,7 +1582,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/parent-details&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_14</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1655,7 +1655,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/route&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_15</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1721,7 +1721,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/agree&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_16</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1780,7 +1780,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/questions&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_17</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1902,7 +1902,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/triage&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_18</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -1968,7 +1968,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/draft-consent/confirm&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;button class=&quot;nhsuk-button&quot; data-module=&quot;nhsuk-button&quot; data-prevent-double-click=&quot;true&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Confirm&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_19</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -2057,7 +2057,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                     <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                     <stringProp name="RegexExtractor.template">$1$</stringProp>
-                    <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound_20</stringProp>
                     <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                     <stringProp name="RegexExtractor.match_number">1</stringProp>
                   </RegexExtractor>
@@ -2107,8 +2107,14 @@ without actual network activity. This helps debugging tests.</stringProp>
             <stringProp name="TestPlan.comments">Cycles through whether the patient can take the MENACWY or IPV, if they&apos;re too young they won&apos;t</stringProp>
           </ForeachController>
           <hashTree>
+            <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+              <boolProp name="displayJMeterProperties">false</boolProp>
+              <boolProp name="displayJMeterVariables">true</boolProp>
+              <boolProp name="displaySystemProperties">false</boolProp>
+            </DebugSampler>
+            <hashTree/>
             <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
-              <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinationPage}&quot; == &quot;log&quot;)}</stringProp>
+              <stringProp name="IfController.condition">${__jexl3(&quot;${VaccinationPage}&quot; == &quot;activity&quot;)}</stringProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
               <boolProp name="IfController.useExpression">true</boolProp>
             </IfController>
@@ -2145,13 +2151,13 @@ without actual network activity. This helps debugging tests.</stringProp>
                   <stringProp name="RegexExtractor.refname">LogOut_Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">Log out&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
-                  <stringProp name="RegexExtractor.default">LogOut_Authenticity_Token_NotFound</stringProp>
+                  <stringProp name="RegexExtractor.default">LogOut_Authenticity_Token_NotFound_21</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                   <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6.0 Logout">
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6.0 Logout" enabled="true">
                 <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
                 <boolProp name="IfController.evaluateAll">false</boolProp>
                 <boolProp name="IfController.useExpression">true</boolProp>
@@ -2290,9 +2296,9 @@ without actual network activity. This helps debugging tests.</stringProp>
               <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/consents&quot;&gt;&lt;button class=&quot;nhsuk-button app-button--secondary&quot; data-module=&quot;nhsuk-button&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Get consent response&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
+                <stringProp name="RegexExtractor.regex">Get consent response&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_22</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
@@ -2310,7 +2316,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                 <boolProp name="IfController.useExpression">false</boolProp>
               </IfController>
               <hashTree>
-                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5.0 Consent">
+                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5.0 Consent" enabled="true">
                   <boolProp name="TransactionController.includeTimers">false</boolProp>
                 </TransactionController>
                 <hashTree>
@@ -2353,7 +2359,7 @@ without actual network activity. This helps debugging tests.</stringProp>
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/who&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_23</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2433,7 +2439,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/parent-details&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_24</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2506,7 +2512,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/route&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_25</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2572,7 +2578,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/agree&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_26</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2631,7 +2637,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/questions&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_27</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2753,7 +2759,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;/draft-consent/triage&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_28</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2819,7 +2825,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/draft-consent/confirm&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;button class=&quot;nhsuk-button&quot; data-module=&quot;nhsuk-button&quot; data-prevent-double-click=&quot;true&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Confirm&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_29</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2948,7 +2954,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/consents&quot;&gt;&lt;button class=&quot;nhsuk-button app-button--secondary&quot; data-module=&quot;nhsuk-button&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Get consent response&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_30</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2958,7 +2964,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound_31</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -2972,7 +2978,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 <boolProp name="IfController.useExpression">false</boolProp>
               </IfController>
               <hashTree>
-                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="3.0 Nurse triage">
+                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="3.0 Nurse triage" enabled="true">
                   <boolProp name="TransactionController.includeTimers">false</boolProp>
                 </TransactionController>
                 <hashTree>
@@ -3007,7 +3013,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">&lt;form action=&quot;\/sessions\/.*?\/patients\/\d+\/.*?\/triages&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; \/&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFoundfromhere</stringProp>
+                      <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_32</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -3103,7 +3109,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
                       <stringProp name="RegexExtractor.regex">vaccinations&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.+?)&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
                       <stringProp name="RegexExtractor.template">$1$</stringProp>
-                      <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="RegexExtractor.default">Vaccinate_Authenticity_Token_NotFound_33</stringProp>
                       <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                       <stringProp name="RegexExtractor.match_number">1</stringProp>
                     </RegexExtractor>
@@ -3111,7 +3117,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   </hashTree>
                 </hashTree>
               </hashTree>
-              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4.0 Vaccination">
+              <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4.0 Vaccination" enabled="true">
                 <boolProp name="TransactionController.includeTimers">false</boolProp>
               </TransactionController>
               <hashTree>
@@ -3233,7 +3239,7 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                       <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/draft-vaccination-record/batch&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                       <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                      <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_34</stringProp>
                       <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                       <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                     </BoundaryExtractor>
@@ -3406,7 +3412,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                       <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                       <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/draft-vaccination-record/batch&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                       <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                      <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+                      <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_35</stringProp>
                       <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                       <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                     </BoundaryExtractor>
@@ -3503,7 +3509,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                     <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
                     <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/draft-vaccination-record/confirm&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                     <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                    <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_36</stringProp>
                     <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                     <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                   </BoundaryExtractor>
@@ -3572,7 +3578,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                     <stringProp name="BoundaryExtractor.refname">LogOut_Authenticity_Token</stringProp>
                     <stringProp name="BoundaryExtractor.lboundary">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/logout&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;delete&quot; autocomplete=&quot;off&quot; /&gt;&lt;button class=&quot;app-header__account-button&quot; type=&quot;submit&quot;&gt;Log out&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
                     <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                    <stringProp name="BoundaryExtractor.default">LogOut_Authenticity_Token_NotFound</stringProp>
+                    <stringProp name="BoundaryExtractor.default">LogOut_Authenticity_Token_NotFound_37</stringProp>
                     <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
                     <stringProp name="BoundaryExtractor.match_number">1</stringProp>
                   </BoundaryExtractor>
@@ -3640,7 +3646,7 @@ without actual network activity. This helps debugging tests.</stringProp>
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6.0 Logout">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="6.0 Logout" enabled="true">
           <stringProp name="IfController.condition">${__groovy((vars.getIteration()) % (&quot;${VaccinationLoop}&quot;).toInteger() == 0)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
@@ -3687,7 +3693,7 @@ without actual network activity. This helps debugging tests.</stringProp>
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
