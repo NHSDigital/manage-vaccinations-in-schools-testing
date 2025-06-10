@@ -126,6 +126,9 @@ jobs:
               -l $consent_output_dir/samples.jtl \
               -j $consent_output_dir/jmeter.log \
               -e -o $consent_output_dir/consent-report \
+              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+              -Jjmeter.reportgenerator.overall_granularity=10000 \
+              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JInputFile="cohortnew.csv"
 
@@ -138,6 +141,9 @@ jobs:
               -l $nurse_output_dir/samples.jtl \
               -j $nurse_output_dir/jmeter.log \
               -e -o $nurse_output_dir/report \
+              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+              -Jjmeter.reportgenerator.overall_granularity=10000 \
+              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JDuration=${{inputs.duration}} \
               -JThreads=${{inputs.threads}} \
@@ -174,5 +180,5 @@ jobs:
       - name: Set Job Summary
         run: |
           echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> $GITHUB_STEP_SUMMARY
-     
-          
+
+
