@@ -32,11 +32,11 @@ class Patient(NamedTuple):
         )
 
     @property
-    def full_name(self) -> (str, str):
+    def full_name(self) -> tuple[str, str]:
         return (self.given_name, self.family_name)
 
     @property
-    def address(self) -> (str, str, str, str):
+    def address(self) -> tuple[str, str, str, str]:
         return (
             self.address_line_1,
             self.address_line_2,
@@ -45,6 +45,6 @@ class Patient(NamedTuple):
         )
 
 
-with (Path(__file__).parent / "pds.csv").open(newline="") as file:
+with (Path(__file__).parent / "pds_children.csv").open(newline="") as file:
     reader = csv.DictReader(file)
     patients = [Patient.from_csv_row(row) for row in reader]
