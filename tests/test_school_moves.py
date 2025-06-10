@@ -115,21 +115,23 @@ def test_download(
 
 @pytest.fixture
 def setup_to_homeschool_and_unknown(
-    log_in_as_nurse, schools, dashboard_page, sessions_page
+    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
 ):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0])
         sessions_page.click_location(schools[0])
-        sessions_page.upload_class_list(
-            test_data_file_paths.CLASS_MOVES_UNKNOWN_HOMESCHOOLED,
+        sessions_page.navigate_to_class_list_import()
+        import_records_page.upload_and_verify_output(
+            test_data_file_paths.CLASS_MOVES_UNKNOWN_HOMESCHOOLED
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_location(schools[1])
-        sessions_page.upload_class_list(
-            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE,
+        sessions_page.navigate_to_class_list_import()
+        import_records_page.upload_and_verify_output(
+            test_data_file_paths.CLASS_MOVES_CONFIRM_IGNORE
         )
         yield
     finally:

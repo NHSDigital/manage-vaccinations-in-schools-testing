@@ -6,7 +6,6 @@ from ..step import step
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..mavis_constants import mavis_file_types
 from ..wrappers import format_datetime_for_upload_link
 
 
@@ -92,28 +91,19 @@ class ImportRecordsPage:
         else:
             expect(tag).to_be_visible()
 
-    def import_child_records(self, file_paths: str):
-        _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_paths=file_paths
-        )
+    def navigate_to_child_record_import(self):
         self.click_import_records()
         self.select_child_records()
         self.click_continue()
-        self.upload_and_verify_output(_input_file_path, _output_file_path)
-        return _input_file_path, _output_file_path
 
-    def import_class_list_records(
+    def navigate_to_class_list_record_import(
         self,
         location: str,
-        file_paths: str,
         year_groups: Optional[list[int]] = None,
     ):
         if year_groups is None:
             year_groups = [8, 9, 10, 11]
 
-        _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_paths=file_paths
-        )
         self.click_import_records()
         self.select_class_list_records()
         self.click_continue()
@@ -125,17 +115,10 @@ class ImportRecordsPage:
 
         self.click_continue()
         self._select_year_groups(*year_groups)
-        self.upload_and_verify_output(_input_file_path, _output_file_path)
-        return _input_file_path, _output_file_path
 
-    def import_class_list_records_from_school_session(self, file_paths: str):
-        _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_paths=file_paths
-        )
+    def navigate_to_class_list_import(self):
         self.click_import_class_lists()
         self._select_year_groups(8, 9, 10, 11)
-        self.upload_and_verify_output(_input_file_path, _output_file_path)
-        return _input_file_path, _output_file_path
 
     def navigate_to_vaccination_records_import(self):
         self.click_import_records()

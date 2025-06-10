@@ -1,6 +1,5 @@
 import pandas as pd
 
-from mavis.test.models.import_records import ImportRecordsPage
 
 from ..data import TestData
 from ..wrappers import get_current_datetime
@@ -14,13 +13,10 @@ from playwright.sync_api import Page, expect
 
 
 class ProgrammesPage:
-    def __init__(
-        self, page: Page, test_data: TestData, import_records_page: ImportRecordsPage
-    ):
+    def __init__(self, page: Page, test_data: TestData):
         self.test_data = test_data
 
         self.page = page
-        self.import_records_page = import_records_page
 
         self.programme_links = {
             programme: page.get_by_role("link", name=programme)
@@ -35,7 +31,6 @@ class ProgrammesPage:
 
         self.import_child_records_link = page.get_by_text("Import child records")
 
-        self.file_input = page.locator('input[type="file"]')
         self.continue_button = page.get_by_role("button", name="Continue")
         self.edit_vaccination_record_button = page.get_by_role(
             "button", name="Edit vaccination record"
@@ -89,33 +84,10 @@ class ProgrammesPage:
     def click_continue(self):
         self.continue_button.click()
 
-    @step("Set input file to {1}")
-    def choose_file_child_records(self, file_path: str):
-        self.file_input.set_input_files(file_path)
-
     @step("Click on DOSE2, Dose2")
     def click_dose2_child(self):
         self.dose2_child_link.click()
 
-    @step("Upload cohort {1}")
-    def upload_cohorts(self, file_paths: str, wait_long: bool = False):
-        _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_paths=file_paths
-        )
-        self.click_programme(Programme.HPV)
-        self.click_cohorts()
-        self.click_import_child_records()
-        self.choose_file_child_records(_input_file_path)
-        self.import_records_page.record_upload_time()
-        self.import_records_page.click_continue()
-
-        if self.import_records_page.is_processing_in_background():
-            self.import_records_page.click_uploaded_file_datetime()
-            self.import_records_page.wait_for_processed()
-
-        self.import_records_page.verify_upload_output(file_path=_output_file_path)
-
-    @step("Navigate to cohort import for programme {1}")
     def navigate_to_cohort_import(self, programme: Programme):
         self.click_programme(programme)
         self.click_cohorts()

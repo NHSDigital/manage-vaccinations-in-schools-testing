@@ -1,13 +1,15 @@
 import allure
 import pytest
 
-from mavis.test.mavis_constants import Vaccine, test_data_file_paths
+from mavis.test.mavis_constants import Programme, Vaccine, test_data_file_paths
 
 pytestmark = pytest.mark.children
 
 
 @pytest.fixture
-def setup_children_session(log_in_as_nurse, schools, dashboard_page, sessions_page):
+def setup_children_session(
+    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+):
     def _setup(class_list_file):
         try:
             dashboard_page.click_sessions()
@@ -15,7 +17,8 @@ def setup_children_session(log_in_as_nurse, schools, dashboard_page, sessions_pa
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_location(schools[0])
-            sessions_page.upload_class_list(class_list_file)
+            sessions_page.navigate_to_class_list_import()
+            import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_children()
             yield
@@ -49,14 +52,18 @@ def setup_mav_853(
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
-        import_records_page.import_class_list_records_from_school_session(
-            file_paths=test_data_file_paths.CLASS_SESSION_ID
+        import_records_page.navigate_to_class_list_import()
+        import_records_page.upload_and_verify_output(
+            test_data_file_paths.CLASS_SESSION_ID
         )
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
-        programmes_page.upload_cohorts(test_data_file_paths.COHORTS_MAV_853)
+        programmes_page.navigate_to_cohort_import(Programme.HPV)
+        import_records_page.upload_and_verify_output(
+            test_data_file_paths.COHORTS_MAV_853
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()

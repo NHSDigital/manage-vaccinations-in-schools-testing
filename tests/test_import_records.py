@@ -4,12 +4,15 @@ from mavis.test.mavis_constants import Vaccine, mavis_file_types, test_data_file
 
 
 @pytest.fixture
-def setup_child_list(log_in_as_nurse, dashboard_page):
+def setup_child_list(log_in_as_nurse, dashboard_page, import_records_page):
     dashboard_page.click_import_records()
+    import_records_page.navigate_to_child_record_import()
 
 
 @pytest.fixture
-def setup_class_list(log_in_as_nurse, schools, dashboard_page, sessions_page):
+def setup_class_list(
+    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0])
@@ -29,8 +32,9 @@ def setup_vaccs(
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
-        import_records_page.import_class_list_records_from_school_session(
-            file_paths=test_data_file_paths.CLASS_SESSION_ID
+        import_records_page.navigate_to_class_list_import()
+        import_records_page.upload_and_verify_output(
+            test_data_file_paths.CLASS_SESSION_ID
         )
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
@@ -45,12 +49,15 @@ def setup_vaccs(
 
 
 @pytest.fixture
-def setup_vaccs_systmone(log_in_as_nurse, schools, dashboard_page, sessions_page):
+def setup_vaccs_systmone(
+    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
+        import_records_page.navigate_to_vaccination_records_import()
         yield
     finally:
         dashboard_page.click_mavis()
@@ -61,37 +68,29 @@ def setup_vaccs_systmone(log_in_as_nurse, schools, dashboard_page, sessions_page
 ########################################### CHILD LIST ###########################################
 @pytest.mark.childlist
 def test_child_list_file_upload_positive(setup_child_list, import_records_page):
-    import_records_page.import_child_records(
-        file_paths=test_data_file_paths.CHILD_POSITIVE
-    )
+    import_records_page.upload_and_verify_output(test_data_file_paths.CHILD_POSITIVE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_negative(setup_child_list, import_records_page):
-    import_records_page.import_child_records(
-        file_paths=test_data_file_paths.CHILD_NEGATIVE
-    )
+    import_records_page.upload_and_verify_output(test_data_file_paths.CHILD_NEGATIVE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_structure(setup_child_list, import_records_page):
-    import_records_page.import_child_records(
-        file_paths=test_data_file_paths.CHILD_INVALID_STRUCTURE
+    import_records_page.upload_and_verify_output(
+        test_data_file_paths.CHILD_INVALID_STRUCTURE
     )
 
 
 @pytest.mark.childlist
 def test_child_list_no_record(setup_child_list, import_records_page):
-    import_records_page.import_child_records(
-        file_paths=test_data_file_paths.CHILD_HEADER_ONLY
-    )
+    import_records_page.upload_and_verify_output(test_data_file_paths.CHILD_HEADER_ONLY)
 
 
 @pytest.mark.childlist
 def test_child_list_empty_file(setup_child_list, import_records_page):
-    import_records_page.import_child_records(
-        file_paths=test_data_file_paths.CHILD_EMPTY_FILE
-    )
+    import_records_page.upload_and_verify_output(test_data_file_paths.CHILD_EMPTY_FILE)
 
 
 @pytest.mark.childlist
@@ -99,8 +98,8 @@ def test_child_list_empty_file(setup_child_list, import_records_page):
 def test_child_list_space_normalization(
     setup_child_list, import_records_page, children_page, dashboard_page
 ):
-    input_file, _ = import_records_page.import_child_records(
-        file_paths=test_data_file_paths.CHILD_MAV_1080
+    input_file, _ = import_records_page.upload_and_verify_output(
+        test_data_file_paths.CHILD_MAV_1080
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -114,48 +113,42 @@ def test_child_list_space_normalization(
 def test_class_list_file_upload_positive(
     setup_class_list, schools, import_records_page
 ):
-    import_records_page.import_class_list_records(
-        str(schools[0]), test_data_file_paths.CLASS_POSITIVE
-    )
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_POSITIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_negative(
     setup_class_list, schools, import_records_page
 ):
-    import_records_page.import_class_list_records(
-        str(schools[0]), test_data_file_paths.CLASS_NEGATIVE
-    )
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_NEGATIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_structure(setup_class_list, schools, import_records_page):
-    import_records_page.import_class_list_records(
-        str(schools[0]), test_data_file_paths.CLASS_INVALID_STRUCTURE
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    import_records_page.upload_and_verify_output(
+        test_data_file_paths.CLASS_INVALID_STRUCTURE
     )
 
 
 @pytest.mark.classlist
 def test_class_list_no_record(setup_class_list, schools, import_records_page):
-    import_records_page.import_class_list_records(
-        str(schools[0]), test_data_file_paths.CLASS_HEADER_ONLY
-    )
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_HEADER_ONLY)
 
 
 @pytest.mark.classlist
 def test_class_list_empty_file(setup_class_list, schools, import_records_page):
-    import_records_page.import_class_list_records(
-        str(schools[0]), test_data_file_paths.CLASS_EMPTY_FILE
-    )
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_EMPTY_FILE)
 
 
 @pytest.mark.classlist
 def test_class_list_year_group(setup_class_list, schools, import_records_page):
-    import_records_page.import_class_list_records(
-        str(schools[0]),
-        test_data_file_paths.CLASS_YEAR_GROUP,
-        year_groups=[8],
-    )
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]), [8])
+    import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_YEAR_GROUP)
 
 
 @pytest.mark.classlist
@@ -163,9 +156,9 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
 def test_class_list_space_normalization(
     setup_class_list, schools, import_records_page, children_page, dashboard_page
 ):
-    input_file, _ = import_records_page.import_class_list_records(
-        str(schools[0]),
-        test_data_file_paths.CLASS_MAV_1080,
+    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    input_file, _ = import_records_page.upload_and_verify_output(
+        test_data_file_paths.CLASS_MAV_1080
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()

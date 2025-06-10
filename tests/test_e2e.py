@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import test_data_file_paths
+from mavis.test.mavis_constants import Programme, test_data_file_paths
 
 pytestmark = pytest.mark.e2e
 
@@ -24,9 +24,12 @@ def setup_tests(
     log_in_page.log_out()
 
 
-def test_e2e(schools, dashboard_page, programmes_page, sessions_page):
+def test_e2e(
+    schools, dashboard_page, programmes_page, sessions_page, import_records_page
+):
     dashboard_page.click_programmes()
-    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_E2E_1)
+    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_E2E_1)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0])

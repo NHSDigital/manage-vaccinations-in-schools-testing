@@ -93,10 +93,13 @@ def test_match(
     programmes_page,
     schools,
     unmatched_consent_responses_page,
+    import_records_page,
 ):
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.upload_cohorts(test_data_file_paths.COHORTS_UCR_MATCH)
+    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_UCR_MATCH)
+
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
 

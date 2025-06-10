@@ -72,8 +72,8 @@ def match_consent_response_page(page):
 
 
 @pytest.fixture
-def programmes_page(page, test_data, import_records_page):
-    return ProgrammesPage(page, test_data, import_records_page)
+def programmes_page(page, test_data):
+    return ProgrammesPage(page, test_data)
 
 
 @pytest.fixture
@@ -91,14 +91,12 @@ def sessions_page(
     test_data,
     page,
     dashboard_page,
-    import_records_page,
     consent_page,
 ):
     return SessionsPage(
         test_data,
         page,
         dashboard_page,
-        import_records_page,
         consent_page,
     )
 
