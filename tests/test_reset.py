@@ -19,9 +19,8 @@ def setup_mav_965(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0], for_today=True)
-    import_records_page.import_class_list_records_from_school_session(
-        file_paths=test_data_file_paths.CLASS_MAV_965
-    )
+    import_records_page.navigate_to_class_list_import()
+    import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_MAV_965)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 

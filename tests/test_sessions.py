@@ -12,14 +12,17 @@ def setup_tests(log_in_as_nurse, dashboard_page):
 
 
 @pytest.fixture
-def setup_session_with_file_upload(setup_tests, schools, dashboard_page, sessions_page):
+def setup_session_with_file_upload(
+    setup_tests, schools, dashboard_page, sessions_page, import_records_page
+):
     def _setup(class_list_file):
         try:
             sessions_page.schedule_a_valid_session(schools[0], for_today=True)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_location(schools[0])
-            sessions_page.upload_class_list(class_list_file)
+            sessions_page.navigate_to_class_list_import()
+            import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_today()

@@ -18,7 +18,6 @@ from ..wrappers import (
 
 from .consent import ConsentPage
 from .dashboard import DashboardPage
-from .import_records import ImportRecordsPage
 
 
 class SessionsPage:
@@ -37,14 +36,12 @@ class SessionsPage:
         test_data: TestData,
         page: Page,
         dashboard_page: DashboardPage,
-        import_records_page: ImportRecordsPage,
         consent_page: ConsentPage,
     ):
         self.test_data = test_data
         self.page = page
         self.dashboard_page = dashboard_page
         self.consent_page = consent_page
-        self.import_records_page = import_records_page
 
         self.today_tab_link = self.page.get_by_role("link", name="Today")
         self.scheduled_tab_link = self.page.get_by_role(
@@ -573,24 +570,9 @@ class SessionsPage:
         self.click_location(location)
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
-    def upload_class_list(
-        self,
-        file_paths: str,
-    ):
-        _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_paths=file_paths
-        )
+    def navigate_to_class_list_import(self):
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(_input_file_path)
-        self.import_records_page.record_upload_time()
-        self.import_records_page.click_continue()
-
-        if self.import_records_page.is_processing_in_background():
-            self.import_records_page.click_uploaded_file_datetime()
-            self.import_records_page.wait_for_processed()
-
-        self.import_records_page.verify_upload_output(file_path=_output_file_path)
 
     def set_gillick_competence_for_student(self, session: str):
         self.click_today()
