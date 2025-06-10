@@ -9,6 +9,10 @@ class Programme(StrEnum):
     TD_IPV = "Td/IPV"
 
     @property
+    def is_doubles(self) -> bool:
+        return self == self.MENACWY or self == self.TD_IPV
+
+    @property
     def vaccines(self):
         match self:
             case self.FLU:
@@ -43,24 +47,21 @@ class Programme(StrEnum):
         return programme_specific_questions[self]
 
     @property
-    def prescreening_questions(self):
-        common_questions = [
-            PrescreeningQuestion.FEELING_WELL,
-            PrescreeningQuestion.NO_RELEVANT_ALLERGIES,
-            PrescreeningQuestion.NOT_ALREADY_HAD,
-            PrescreeningQuestion.KNOW_PURPOSE_AND_CONSENT,
+    def pre_screening_checks(self):
+        checks = [
+            PreScreeningCheck.NOT_ACUTELY_UNWELL,
+            PreScreeningCheck.NO_RELEVANT_ALLERGIES,
+            PreScreeningCheck.NOT_ALREADY_HAD,
+            PreScreeningCheck.KNOW_VACCINATION,
         ]
-        programme_specific_questions = {
-            Programme.MENACWY: common_questions
-            + [PrescreeningQuestion.NO_RELEVANT_MEDICATION],
-            Programme.TD_IPV: common_questions
-            + [
-                PrescreeningQuestion.NO_RELEVANT_MEDICATION,
-                PrescreeningQuestion.NOT_PREGNANT,
-            ],
-            Programme.HPV: common_questions,
-        }
-        return programme_specific_questions[self]
+
+        if self.is_doubles:
+            checks.append(PreScreeningCheck.NO_RELEVANT_MEDICATION)
+
+        if self == self.TD_IPV:
+            checks.append(PreScreeningCheck.NOT_PREGNANT)
+
+        return checks
 
 
 class Vaccine(StrEnum):
@@ -93,15 +94,13 @@ class HealthQuestion(StrEnum):
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
 
-class PrescreeningQuestion(StrEnum):
-    FEELING_WELL = "are feeling well"
-    NO_RELEVANT_ALLERGIES = "have no allergies which would prevent vaccination"
-    NOT_ALREADY_HAD = "have not already had the vaccination"
-    KNOW_PURPOSE_AND_CONSENT = (
-        "know what the vaccination is for, and are happy to have it"
-    )
-    NO_RELEVANT_MEDICATION = "are not taking any medication which prevents vaccination"
+class PreScreeningCheck(StrEnum):
+    KNOW_VACCINATION = "know what the vaccination is for, and are happy to have it"
+    NOT_ACUTELY_UNWELL = "are not acutely unwell"
+    NOT_ALREADY_HAD = "have not already had this vaccination"
     NOT_PREGNANT = "are not pregnant"
+    NO_RELEVANT_ALLERGIES = "have no allergies which would prevent vaccination"
+    NO_RELEVANT_MEDICATION = "are not taking any medication which prevents vaccination"
 
 
 class ConsentRefusalReason(StrEnum):

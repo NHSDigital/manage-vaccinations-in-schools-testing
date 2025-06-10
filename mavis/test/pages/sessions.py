@@ -1,12 +1,11 @@
 import re
-import time
 from datetime import datetime
 from typing import List
 
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..models import PrescreeningQuestion, Programme
+from ..models import Programme
 from ..step import step
 from ..wrappers import generate_random_string, get_current_datetime, get_offset_date
 
@@ -121,12 +120,16 @@ class SessionsPage:
         self.notes_length_error = (
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
-        self.prescreening_notes = self.page.get_by_role(
-            "textbox", name="Pre-screening notes (optional)"
-        )
         self.vaccination_notes = self.page.get_by_role(
             "textbox", name="Notes (optional)"
         )
+
+        pre_screening = self.page.locator("section").filter(
+            has=page.get_by_role("heading", name="Pre-screening checks")
+        )
+        self.pre_screening_listitem = pre_screening.get_by_role("listitem")
+        self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
+        self.pre_screening_notes = pre_screening.get_by_role("textbox")
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -327,6 +330,14 @@ class SessionsPage:
     @step("Click on Record vaccinations")
     def click_record_vaccinations(self):
         self.record_vaccinations_link.click()
+
+    @step("Confirm pre-screening checks are true")
+    def confirm_pre_screening_checks(self, programme: Programme):
+        for check in programme.pre_screening_checks:
+            locator = self.pre_screening_listitem.get_by_text(check)
+            # TODO: Can we highlight in the report that we're checking this?
+            expect(locator).to_be_visible()
+        self.pre_screening_checkbox.check()
 
     @step("Click on Yes")
     def select_yes(self):
@@ -570,18 +581,6 @@ class SessionsPage:
             self.page.get_by_role("checkbox", name=f"Year {year_group}").check()
         self.click_continue_button()
 
-    def _answer_prescreening_questions(self, programme: Programme):
-        for question in programme.prescreening_questions:
-            locator = self.page.get_by_role("checkbox", name=question)
-
-            if question == PrescreeningQuestion.FEELING_WELL and programme in [
-                Programme.MENACWY,
-                Programme.TD_IPV,
-            ]:
-                expect(locator).to_be_checked()
-            else:
-                locator.check()
-
     def register_child_as_attending(self, child_name: str):
         self.click_register_tab()
         self.search_for(child_name)
@@ -614,20 +613,16 @@ class SessionsPage:
         self.search_child(child_name=child_name)
         self.click_programme_tab(programme)
 
-        # FIXME: Figure out why we need this. Without this pause, the form
-        #  elements seem to clear out when the continue button is pressed
-        #  and the form fails to submit.
-        time.sleep(0.25)
+        self.confirm_pre_screening_checks(programme)
+        self.pre_screening_notes.fill(notes)
 
-        self._answer_prescreening_questions(programme=programme)
-        self.prescreening_notes.fill(notes)
         self.select_yes()
         self.select_left_arm_upper_position()
         self.click_continue_button()
 
         if len(notes) > 1000:
             expect(self.notes_length_error).to_be_visible()
-            self.prescreening_notes.fill("Prescreening notes")
+            self.pre_screening_notes.fill("Prescreening notes")
             self.click_continue_button()
 
         self.page.get_by_role("radio", name=programme.vaccines[0]).check()
