@@ -63,5 +63,5 @@ patients_without_date_of_death = [
 child_patients_without_date_of_death = [
     patient
     for patient in patients_without_date_of_death
-    if patient.date_of_birth >= date(2003, 6, 10)
+    if patient.date_of_birth >= date.today().replace(year=date.today().year - 22)
 ]
