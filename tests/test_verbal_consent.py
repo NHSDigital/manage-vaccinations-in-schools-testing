@@ -193,9 +193,9 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.select_consent_given()
     sessions_page.click_child(conflicting_gillick_consent_child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.expect_main_to_contain_text("Ready for nurse")
+    sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
     sessions_page.expect_main_to_contain_text(
-        f"NURSE, Nurse decided that {conflicting_gillick_consent_child} is ready for the nurse."
+        f"NURSE, Nurse decided that {conflicting_gillick_consent_child} is safe to vaccinate."
     )
     sessions_page.expect_main_to_contain_text("Consent given")
     sessions_page.click_activity_log()

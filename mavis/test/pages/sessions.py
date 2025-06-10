@@ -529,9 +529,7 @@ class SessionsPage:
 
         self.click_back_to_child()
         self.expect_main_to_contain_text("Consent refusedInvalid")
-        self.expect_main_to_contain_text(
-            "No-one responded to our requests for consent."
-        )
+        self.expect_main_to_contain_text("No requests have been sent.")
 
     def verify_scheduled_date(self, message: str):
         self.expect_main_to_contain_text(message)
