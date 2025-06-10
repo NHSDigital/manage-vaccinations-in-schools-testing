@@ -25,13 +25,17 @@ class SessionsPage:
             "link", name="Scheduled", exact=True
         )
         self.unscheduled_tab_link = self.page.get_by_role("link", name="Unscheduled")
-        self.no_response_radio = self.page.get_by_role("radio", name="No response")
+        self.no_response_checkbox = self.page.get_by_role(
+            "checkbox", name="No response"
+        )
         self.update_results_button = self.page.get_by_role(
             "button", name="Update results"
         )
-        self.consent_given_radio = self.page.get_by_role("radio", name="Consent given")
-        self.conflicting_consent_radio = self.page.get_by_role(
-            "radio", name="Conflicting consent"
+        self.consent_given_checkbox = self.page.get_by_role(
+            "checkbox", name="Consent given"
+        )
+        self.conflicting_consent_checkbox = self.page.get_by_role(
+            "checkbox", name="Conflicting consent"
         )
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
@@ -61,8 +65,8 @@ class SessionsPage:
         self.could_not_vaccinate_link = self.page.get_by_role(
             "link", name="Could not vaccinate"
         )
-        self.consent_refused_radio = self.page.get_by_role(
-            "radio", name="Consent refused"
+        self.consent_refused_checkbox = self.page.get_by_role(
+            "checkbox", name="Consent refused"
         )
         self.record_offline_link = self.page.get_by_role("link", name="Record offline")
         self.assessment_notes_textbox = self.page.get_by_role(
@@ -162,22 +166,22 @@ class SessionsPage:
 
     @step("Select No response")
     def select_no_response(self):
-        self.no_response_radio.click()
+        self.no_response_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Consent given")
     def select_consent_given(self):
-        self.consent_given_radio.click()
+        self.consent_given_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Conflicting consent")
     def select_conflicting_consent(self):
-        self.conflicting_consent_radio.click()
+        self.conflicting_consent_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Consent refused")
     def select_consent_refused(self):
-        self.consent_refused_radio.click()
+        self.consent_refused_checkbox.check()
         self.update_results_button.click()
 
     def _click_tab(self, name: str):
