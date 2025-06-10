@@ -184,8 +184,8 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.add_gillick_competence(
         is_competent=True, competence_details="Gillick competent"
     )
-    sessions_page.expect_main_to_contain_text("Triaged decision: Safe to vaccinate")
-    sessions_page.click_get_consent_response()
+    sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
+    sessions_page.click_get_verbal_consent()
     consent_page.child_consent_verbal_positive()
     sessions_page.expect_main_to_contain_text(
         f"Consent recorded for {conflicting_gillick_consent_child}"
