@@ -115,7 +115,7 @@ def test_match(
     )
 
 
-patient = random.choice(pds_test_data.patients)
+patient = random.choice(pds_test_data.child_patients_without_date_of_death)
 
 
 @allure.issue("MAVIS-1812")
