@@ -1,7 +1,6 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping, ChildFileMapping, VaccsFileMapping
-from mavis.test.models import Vaccine
 
 
 @pytest.fixture
@@ -224,7 +223,7 @@ def test_vaccs_historic_no_urn_mav_855(
     dashboard_page.click_children()
     children_page.search_for_a_child(mav_855_child)
     children_page.click_record_for_child(mav_855_child)
-    children_page.click_vaccination_details(Vaccine.GARDASIL_9)
+    children_page.click_vaccination_details(schools[0])
     children_page.expect_text_in_main(str(schools[0]))
 
 
