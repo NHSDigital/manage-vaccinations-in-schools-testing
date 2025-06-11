@@ -1,12 +1,8 @@
 import allure
 import pytest
 
-from mavis.test.mavis_constants import (
-    test_data_file_paths,
-    Programme,
-    Vaccine,
-    ReportFormat,
-)
+from mavis.test.data import FilePath
+from mavis.test.mavis_constants import Programme, Vaccine, ReportFormat
 
 
 @pytest.fixture
@@ -42,16 +38,14 @@ def setup_mavis_1729(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(
-            test_data_file_paths.CLASS_SESSION_ID
-        )
+        import_records_page.upload_and_verify_output(FilePath.CLASS_SESSION_ID)
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
         import_records_page.upload_and_verify_output(
-            file_paths=test_data_file_paths.VACCS_HPV_DOSE_TWO, session_id=session_id
+            file_paths=FilePath.VACCS_HPV_DOSE_TWO, session_id=session_id
         )
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
@@ -79,7 +73,7 @@ def setup_mav_854(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(test_data_file_paths.CLASS_MAV_854)
+        import_records_page.upload_and_verify_output(FilePath.CLASS_MAV_854)
         sessions_page.click_location(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -101,9 +95,7 @@ def setup_mav_nnn(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(
-            test_data_file_paths.CLASS_SINGLE_VACC
-        )
+        import_records_page.upload_and_verify_output(FilePath.CLASS_SINGLE_VACC)
         sessions_page.click_location(schools[0])
         yield
     finally:
@@ -114,33 +106,27 @@ def setup_mav_nnn(
 
 @pytest.mark.cohorts
 def test_cohort_upload_positive(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_POSITIVE)
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_POSITIVE)
 
 
 @pytest.mark.cohorts
 def test_cohort_upload_negative(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_NEGATIVE)
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_NEGATIVE)
 
 
 @pytest.mark.cohorts
 def test_cohorts_file_structure(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(
-        test_data_file_paths.COHORTS_INVALID_STRUCTURE
-    )
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_INVALID_STRUCTURE)
 
 
 @pytest.mark.cohorts
 def test_cohorts_no_record(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(
-        test_data_file_paths.COHORTS_HEADER_ONLY
-    )
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_HEADER_ONLY)
 
 
 @pytest.mark.cohorts
 def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(
-        test_data_file_paths.COHORTS_EMPTY_FILE
-    )
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_EMPTY_FILE)
 
 
 @allure.issue("MAV-909")
@@ -175,7 +161,7 @@ def test_cohorts_readd_to_cohort(
         Server error page and user cannot bring the child back into the cohort
     """
     mav_909_child = "MAV_909, MAV_909"
-    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_MAV_909)
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_MAV_909)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -183,7 +169,7 @@ def test_cohorts_readd_to_cohort(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_MAV_909)
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_MAV_909)
     programmes_page.expect_text("1 duplicate record needs review")
     programmes_page.click_review()
     programmes_page.click_use_duplicate()
@@ -195,7 +181,7 @@ def test_cohorts_readd_to_cohort(
 @pytest.mark.rav
 def test_rav_triage(setup_record_a_vaccine, schools, sessions_page, consent_given):
     sessions_page.update_triage_outcome(
-        schools[0], test_data_file_paths.COHORTS_FULL_NAME, consent_given=consent_given
+        schools[0], FilePath.COHORTS_FULL_NAME, consent_given=consent_given
     )
 
 

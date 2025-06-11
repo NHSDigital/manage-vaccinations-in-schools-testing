@@ -5,8 +5,8 @@ import allure
 from playwright.sync_api import expect
 import pytest
 
-from mavis.test.data import pds as pds_test_data
-from mavis.test.mavis_constants import test_data_file_paths, Programme
+from mavis.test.data import pds as pds_test_data, FilePath
+from mavis.test.mavis_constants import Programme
 
 pytestmark = pytest.mark.consent_responses
 
@@ -98,7 +98,7 @@ def test_match(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(test_data_file_paths.COHORTS_UCR_MATCH)
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_UCR_MATCH)
 
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
