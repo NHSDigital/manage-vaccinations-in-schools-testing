@@ -304,9 +304,10 @@ class SessionsPage:
         self.click_today()
         self.click_location(location)
 
-    def navigate_to_gillick_competence(self, child: str):
+    def navigate_to_gillick_competence(self, child: str, programme: Programme):
         self.click_consent_tab()
         self.click_child(child)
+        self.click_programme_tab(programme)
         self.click_assess_gillick_competence()
 
     def navigate_to_consent_response(self, child: str, programme: Programme):
@@ -416,7 +417,7 @@ class SessionsPage:
 
         self.assessment_notes_textbox.fill(competence_details)
         if is_add:
-            self.click_complete_assessment
+            self.click_complete_assessment()
         else:
             self.click_update_assessment()
         if is_competent:
@@ -490,7 +491,6 @@ class SessionsPage:
         expect(locator).to_be_visible()
 
     def invalidate_parent2_refusal(self):
-        self.page.pause()
         self.page.get_by_role("link", name="Parent2").click()
         self.click_mark_as_invalid_link()
         self.fill_notes("Invalidation notes.")

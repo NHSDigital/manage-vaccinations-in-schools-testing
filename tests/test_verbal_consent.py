@@ -60,7 +60,7 @@ def test_gillick_competence(setup_gillick, schools, sessions_page):
     full_name_child = "CLAST, CFirst"
 
     sessions_page.navigate_to_todays_sessions(schools[0])
-    sessions_page.navigate_to_gillick_competence(full_name_child)
+    sessions_page.navigate_to_gillick_competence(full_name_child, Programme.HPV)
 
     sessions_page.add_gillick_competence(
         is_competent=True, competence_details="Gillick competent"
@@ -76,7 +76,9 @@ def test_gillick_competence_notes(setup_gillick_notes_length, schools, sessions_
     gillick_competence_child = "GILLICK1, GILLICK1"
 
     sessions_page.navigate_to_todays_sessions(schools[0])
-    sessions_page.navigate_to_gillick_competence(gillick_competence_child)
+    sessions_page.navigate_to_gillick_competence(
+        gillick_competence_child, Programme.HPV
+    )
 
     sessions_page.answer_gillick_competence_questions(is_competent=True)
     sessions_page.fill_assessment_notes_with_string_of_length(1001)
