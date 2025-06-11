@@ -47,6 +47,7 @@ COHORTS_UCR_MATCH,cohorts/i_ucr_match.csv,cohorts/o_ucr_match.csv,cohortmatch
 COHORTS_CONSENT_TWICE,cohorts/i_consent_twice.csv,cohorts/o_consent_twice.csv,cohorttwice
 COHORTS_CONFLICTING_GILLICK,cohorts/i_conflicting_gillick.csv,cohorts/o_conflicting_gillick.csv,cohortgillick
 COHORTS_FULL_NAME,cohorts/i_full_name.csv,cohorts/o_full_name.csv,cohortfullname
+COHORTS_GILLICK_NOTES_LENGTH,cohorts/i_gillick_notes_length.csv,cohorts/o_gillick_notes_length.csv,cohortgillicklen
 COHORTS_MAV_909,cohorts/i_mav_909.csv,cohorts/o_mav_909.csv,cohortmav909
 COHORTS_MAV_853,cohorts/i_mav_853.csv,cohorts/o_mav_853.csv,cohortmav853
 CLASS_MOVES_CONFIRM_IGNORE,class_list/i_moves_1.csv,class_list/o_moves_1.csv,classmoves1

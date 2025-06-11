@@ -1,6 +1,7 @@
 from playwright.sync_api import Page, expect
-from ..step import step
+
 from ..mavis_constants import Vaccine
+from ..step import step
 from ..wrappers import get_current_datetime, get_offset_date
 
 
@@ -17,27 +18,38 @@ class VaccinesPage:
         self.confirm_archive_button = self.page.get_by_role(
             "button", name="Yes, archive this batch"
         )
+        self.batch_added_alert = page.get_by_role("alert", name="Success").filter(
+            has_text="added"
+        )
+        self.batch_name_error = (
+            page.locator("div").filter(has_text="There is a problemEnter a").nth(3)
+        )
 
-    def _calculate_batch_details(self, vaccine: Vaccine):
-        self.batch_name = f"{vaccine.replace(' ', '')}{get_current_datetime()}"
+    def _calculate_batch_details(self, vaccine: Vaccine, batch_name: str):
+        self.batch_name = (
+            f"{vaccine.replace(' ', '')}{get_current_datetime()}"
+            if batch_name == ""
+            else batch_name
+        )
         self.future_expiry_date = get_offset_date(offset_days=365)
         self.day = self.future_expiry_date[-2:]
         self.month = self.future_expiry_date[4:6]
         self.year = self.future_expiry_date[:4]
 
     @step("Add a new batch for {1}")
-    def add_batch(self, vaccine: Vaccine):
-        self._calculate_batch_details(vaccine)
+    def add_batch(self, vaccine: Vaccine, batch_name: str = ""):
+        self._calculate_batch_details(vaccine, batch_name=batch_name)
         expect(self.page.get_by_role("main")).to_contain_text(vaccine)
 
         self.page.get_by_role("link", name=f"Add a new {vaccine} batch").click()
 
         expect(self.page.get_by_role("main")).to_contain_text(vaccine)
-
         self.fill_batch_details()
         self.click_add_batch_button()
-        _success_message = f"Batch {self.batch_name} added"
-        expect(self.page.get_by_role("main")).to_contain_text(_success_message)
+        if len(batch_name) <= 100:
+            expect(self.batch_added_alert).to_be_visible()
+        else:
+            expect(self.batch_name_error).to_be_visible()
 
     @step("Fill the batch details")
     def fill_batch_details(self):

@@ -63,3 +63,20 @@ def get_date_of_birth_for_year_group(year_group: int) -> str:
     end_date = date(academic_year + 1, 8, 31)
 
     return str(faker.date_between(start_date, end_date))
+
+
+def generate_random_string(target_length: int = 100, spaces: bool = False) -> str:
+    generated_string = ""
+    if spaces:
+        sentence = faker.sentence()
+        while len(sentence) < target_length:
+            sentence += " " + faker.word()
+        generated_string = sentence[:target_length]
+    else:
+        generated_string = "".join(
+            faker.random_choices(
+                elements="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                length=target_length,
+            )
+        )
+    return generated_string
