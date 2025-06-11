@@ -1,4 +1,4 @@
-from enum import auto, Enum, StrEnum
+from enum import Enum, StrEnum, auto
 from typing import Final
 
 
@@ -178,6 +178,7 @@ class test_data_file_paths:
     COHORTS_MAV_927_PERF: Final[str] = "COHORTS_MAV_927_PERF"
     COHORTS_MAV_909: Final[str] = "COHORTS_MAV_909"
     COHORTS_MAV_853: Final[str] = "COHORTS_MAV_853"
+    COHORTS_GILLICK_NOTES_LENGTH: Final[str] = "COHORTS_GILLICK_NOTES_LENGTH"
 
 
 class ReportFormat(StrEnum):

@@ -1,6 +1,8 @@
+import allure
 import pytest
 
-from mavis.test.mavis_constants import Programme, test_data_file_paths, Vaccine
+from mavis.test.mavis_constants import Programme, Vaccine, test_data_file_paths
+from mavis.test.wrappers import generate_random_string
 
 
 @pytest.fixture
@@ -25,6 +27,8 @@ def setup_mav_965(
     dashboard_page.click_sessions()
 
 
+@allure.issue("MAV-965")
+@allure.issue("MAV-955")
 @pytest.mark.rav
 @pytest.mark.bug
 def test_programmes_rav_prescreening_questions(
@@ -68,11 +72,17 @@ def test_programmes_rav_prescreening_questions(
     )
     sessions_page.register_child_as_attending(child_name=mav_965_child)
     sessions_page.record_vaccs_for_child(
-        child_name=mav_965_child, programme=Programme.HPV
+        child_name=mav_965_child,
+        programme=Programme.HPV,
+        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
     sessions_page.record_vaccs_for_child(
-        child_name=mav_965_child, programme=Programme.MENACWY
+        child_name=mav_965_child,
+        programme=Programme.MENACWY,
+        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
     sessions_page.record_vaccs_for_child(
-        child_name=mav_965_child, programme=Programme.TD_IPV
+        child_name=mav_965_child,
+        programme=Programme.TD_IPV,
+        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )

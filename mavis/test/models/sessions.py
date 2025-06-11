@@ -1,27 +1,22 @@
-from datetime import datetime
-import time
 import re
+import time
+from datetime import datetime
 from typing import Final, List
 
-
-from ..step import step
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..onboarding import Clinic
 from ..mavis_constants import PrescreeningQuestion, Programme
-
-from ..wrappers import (
-    get_current_datetime,
-    get_offset_date,
-)
-
+from ..onboarding import Clinic
+from ..step import step
+from ..wrappers import generate_random_string, get_current_datetime, get_offset_date
 from .consent import ConsentPage
 from .dashboard import DashboardPage
 
 
 class SessionsPage:
     LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
+    LNK_CHILD_GILLICK_NOTES_LENGTH: Final[str] = "GILLICK1, GILLICK1"
     LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
     LNK_CHILD_CONFLICTING_CONSENT: Final[str] = (
         "CONFLICTINGCONSENT1, ConflictingConsent1"
@@ -141,6 +136,15 @@ class SessionsPage:
         )
         self.attending_button = self.page.get_by_role("button", name="Attending").first
         self.success_alert = self.page.get_by_role("alert", name="Success")
+        self.notes_length_error = (
+            page.locator("div").filter(has_text="There is a problemEnter").nth(3)
+        )
+        self.prescreening_notes = self.page.get_by_role(
+            "textbox", name="Pre-screening notes (optional)"
+        )
+        self.vaccination_notes = self.page.get_by_role(
+            "textbox", name="Notes (optional)"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -588,6 +592,28 @@ class SessionsPage:
             is_competent=False, competence_details="Not Gillick competent"
         )
 
+    def set_gillick_competence_and_verify_notes_length(self, session: str):
+        self.click_today()
+        self.click_location(session)
+        self.click_consent_tab()
+        self.click_child(self.LNK_CHILD_GILLICK_NOTES_LENGTH)
+        self.click_assess_gillick_competence()
+        self.__answer_gillick_competence_questions(is_competent=True)
+        self.assessment_notes_textbox.fill(
+            generate_random_string(target_length=1001, spaces=True)
+        )
+        self.complete_assessment_button.click()
+        expect(self.notes_length_error).to_be_visible()
+        self.assessment_notes_textbox.fill("Gillick competent")
+        self.complete_assessment_button.click()
+        self.click_edit_gillick_competence()
+        self.__answer_gillick_competence_questions(is_competent=True)
+        self.assessment_notes_textbox.fill(
+            generate_random_string(target_length=1001, spaces=True)
+        )
+        self.update_assessment_button.click()
+        expect(self.notes_length_error).to_be_visible()
+
     def get_online_consent_url(self, *programmes: List[Programme]) -> str:
         link_text = f"View the {' and '.join(programmes)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
@@ -779,7 +805,11 @@ class SessionsPage:
         self.page.get_by_role("link", name=child_name).click()
 
     def record_vaccs_for_child(
-        self, child_name: str, programme: Programme, at_school: bool = True
+        self,
+        child_name: str,
+        programme: Programme,
+        at_school: bool = True,
+        notes: str = "",
     ):
         self.click_record_vaccinations()
         self.search_child(child_name=child_name)
@@ -791,17 +821,22 @@ class SessionsPage:
         time.sleep(0.25)
 
         self._answer_prescreening_questions(programme=programme)
-
+        self.prescreening_notes.fill(notes)
         self.select_yes()
         self.select_left_arm_upper_position()
 
         self.click_continue_button()
-
+        expect(self.notes_length_error).to_be_visible()
+        self.prescreening_notes.fill("Prescreening notes")
+        self.click_continue_button()
         self.page.get_by_role("radio", name=programme.vaccines[0]).check()
         self.click_continue_button()
-
+        self.vaccination_notes.fill(notes)
         if at_school:  # only skips MAV-854
             self.click_confirm_button()
-            expect(self.page.get_by_role("main")).to_contain_text(
+            expect(self.notes_length_error).to_be_visible()
+            self.vaccination_notes.fill("Confirmation notes")
+            self.click_confirm_button()
+            expect(self.success_alert).to_contain_text(
                 f"Vaccination outcome recorded for {programme}"
             )
