@@ -824,19 +824,25 @@ class SessionsPage:
         self.prescreening_notes.fill(notes)
         self.select_yes()
         self.select_left_arm_upper_position()
+        self.click_continue_button()
 
-        self.click_continue_button()
-        expect(self.notes_length_error).to_be_visible()
-        self.prescreening_notes.fill("Prescreening notes")
-        self.click_continue_button()
+        if len(notes) > 1000:
+            expect(self.notes_length_error).to_be_visible()
+            self.prescreening_notes.fill("Prescreening notes")
+            self.click_continue_button()
+
         self.page.get_by_role("radio", name=programme.vaccines[0]).check()
         self.click_continue_button()
-        self.vaccination_notes.fill(notes)
+
         if at_school:  # only skips MAV-854
+            self.vaccination_notes.fill(notes)
             self.click_confirm_button()
-            expect(self.notes_length_error).to_be_visible()
-            self.vaccination_notes.fill("Confirmation notes")
-            self.click_confirm_button()
+
+            if len(notes) > 1000:
+                expect(self.notes_length_error).to_be_visible()
+                self.vaccination_notes.fill("Confirmation notes")
+                self.click_confirm_button()
+
             expect(self.success_alert).to_contain_text(
                 f"Vaccination outcome recorded for {programme}"
             )
