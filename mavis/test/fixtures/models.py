@@ -1,116 +1,124 @@
+import random
+import time
+from typing import List
+import urllib.parse
+
+from faker import Faker
 import pytest
+import requests
 
-from ..models import (
-    ArchiveConsentResponsePage,
-    ChildrenPage,
-    ConsentPage,
-    ConsentResponsePage,
-    CreateNewRecordConsentResponsePage,
-    DashboardPage,
-    DownloadSchoolMovesPage,
-    ImportRecordsPage,
-    LogInPage,
-    MatchConsentResponsePage,
-    ProgrammesPage,
-    ReviewSchoolMovePage,
-    SchoolMovesPage,
-    SessionsPage,
-    StartPage,
-    UnmatchedConsentResponsesPage,
-    VaccinesPage,
-)
+from ..models import Clinic, School, Team, Organisation, User
 
 
-@pytest.fixture
-def archive_consent_response_page(page):
-    return ArchiveConsentResponsePage(page)
+onboarding_faker = Faker(locale="en_GB")
+onboarding_faker.seed_instance(seed=time.time())
+onboarding_faker.unique.clear()
 
 
-@pytest.fixture
-def children_page(page, test_data):
-    return ChildrenPage(page, test_data)
+@pytest.fixture(scope="session")
+def admin():
+    email = onboarding_faker.email()
+    return User(username=email, password=email, role="admin")
 
 
-@pytest.fixture
-def consent_page(page):
-    return ConsentPage(page)
+@pytest.fixture(scope="session")
+def clinics() -> List[Clinic]:
+    return [
+        Clinic(name=onboarding_faker.company()),
+    ]
 
 
-@pytest.fixture
-def consent_response_page(page):
-    return ConsentResponsePage(page)
+@pytest.fixture(scope="session")
+def nurse():
+    email = onboarding_faker.email()
+    return User(username=email, password=email, role="nurse")
 
 
-@pytest.fixture
-def create_new_record_consent_response_page(page):
-    return CreateNewRecordConsentResponsePage(page)
+@pytest.fixture(scope="session")
+def schools(base_url) -> List[School]:
+    url = urllib.parse.urljoin(base_url, "api/locations")
+    params = {
+        "type": "school",
+        "status": "open",
+        "is_attached_to_organisation": "false",
+        "year_groups[]": ["8", "9", "10", "11"],  # HPV and Doubles
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    data = response.json()
+    schools_data = random.choices(data, k=2)
+
+    return [
+        School(name=school_data["name"], urn=school_data["urn"])
+        for school_data in schools_data
+    ]
 
 
-@pytest.fixture
-def dashboard_page(page):
-    return DashboardPage(page)
+@pytest.fixture(scope="session")
+def superuser():
+    email = onboarding_faker.email()
+    return User(username=email, password=email, role="superuser")
 
 
-@pytest.fixture
-def download_school_moves_page(page):
-    return DownloadSchoolMovesPage(page)
-
-
-@pytest.fixture
-def import_records_page(test_data, page):
-    return ImportRecordsPage(test_data, page)
-
-
-@pytest.fixture
-def log_in_page(page):
-    return LogInPage(page)
-
-
-@pytest.fixture
-def match_consent_response_page(page):
-    return MatchConsentResponsePage(page)
-
-
-@pytest.fixture
-def programmes_page(page, test_data):
-    return ProgrammesPage(page, test_data)
-
-
-@pytest.fixture
-def review_school_move_page(page):
-    return ReviewSchoolMovePage(page)
-
-
-@pytest.fixture
-def school_moves_page(page):
-    return SchoolMovesPage(page)
-
-
-@pytest.fixture
-def sessions_page(
-    test_data,
-    page,
-    dashboard_page,
-    consent_page,
-):
-    return SessionsPage(
-        test_data,
-        page,
-        dashboard_page,
-        consent_page,
+@pytest.fixture(scope="session")
+def team():
+    return Team(
+        key="team",
+        name=onboarding_faker.company(),
+        email=onboarding_faker.email(),
+        phone=onboarding_faker.cellphone_number(),
     )
 
 
-@pytest.fixture
-def start_page(page):
-    return StartPage(page)
+@pytest.fixture(scope="session")
+def organisation(team) -> Organisation:
+    ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    return Organisation(
+        name=team.name, ods_code=ods_code, email=team.email, phone=team.phone
+    )
 
 
-@pytest.fixture
-def unmatched_consent_responses_page(page):
-    return UnmatchedConsentResponsesPage(page)
+@pytest.fixture(scope="session")
+def users(admin, nurse, superuser) -> dict[str, User]:
+    return {
+        "admin": admin,
+        "nurse": nurse,
+        "superuser": superuser,
+    }
 
 
-@pytest.fixture
-def vaccines_page(page):
-    return VaccinesPage(page)
+@pytest.fixture(scope="session")
+def onboarding(clinics, schools, team, organisation, users):
+    return {
+        "clinics": {team.key: [it.to_onboarding() for it in clinics]},
+        "organisation": organisation.to_onboarding(),
+        "programmes": ["flu", "hpv", "menacwy", "td_ipv"],
+        "schools": {team.key: [it.to_onboarding() for it in schools]},
+        "teams": team.to_onboarding(),
+        "users": [it.to_onboarding() for it in users.values()],
+    }
+
+
+@pytest.fixture(scope="session", autouse=True)
+def onboard(base_url, onboarding):
+    url = urllib.parse.urljoin(base_url, "api/onboard")
+    response = requests.post(url, json=onboarding)
+    if response.ok:
+        return
+
+    print(response.json())
+    response.raise_for_status()
+
+
+@pytest.fixture(scope="module", autouse=True)
+def reset(base_url, organisation):
+    yield
+
+    url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
+    response = requests.delete(url)
+    if response.ok:
+        return
+
+    response.raise_for_status()

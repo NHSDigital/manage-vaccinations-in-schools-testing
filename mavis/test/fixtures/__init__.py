@@ -1,5 +1,5 @@
 from .helpers import get_online_consent_url, log_in_as_admin, log_in_as_nurse, test_data
-from .models import (
+from .pages import (
     archive_consent_response_page,
     children_page,
     consent_page,
@@ -18,7 +18,7 @@ from .models import (
     unmatched_consent_responses_page,
     vaccines_page,
 )
-from .onboarding import (
+from .models import (
     admin,
     clinics,
     nurse,

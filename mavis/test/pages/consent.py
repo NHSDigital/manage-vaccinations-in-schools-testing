@@ -1,10 +1,8 @@
 from datetime import date
+from playwright.sync_api import Page, expect
 from typing import Final, Optional
 
-from ..mavis_constants import ConsentMethod, Programme, ConsentRefusalReason
-from ..onboarding import School
-from playwright.sync_api import Page, expect
-
+from ..models import ConsentMethod, ConsentRefusalReason, Programme, School
 from ..step import step
 
 

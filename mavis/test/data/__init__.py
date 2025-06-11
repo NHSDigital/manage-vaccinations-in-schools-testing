@@ -5,7 +5,7 @@ import nhs_number
 import pandas as pd
 import re
 
-from ..onboarding import Organisation, School
+from ..models import Organisation, School
 from ..wrappers import (
     get_current_datetime,
     get_current_time,
