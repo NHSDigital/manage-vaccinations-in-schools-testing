@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta
+from playwright.sync_api import Page, expect
 import time
 from typing import Optional
 
-from ..step import step
-from playwright.sync_api import Page, expect
-
 from ..data import TestData
+from ..step import step
 from ..wrappers import format_datetime_for_upload_link
 
 

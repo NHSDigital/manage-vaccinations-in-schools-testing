@@ -1,15 +1,10 @@
 import pandas as pd
-
+from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..wrappers import get_current_datetime
-
-from ..mavis_constants import (
-    ReportFormat,
-    Programme,
-)
+from ..mavis_constants import ReportFormat, Programme
 from ..step import step
-from playwright.sync_api import Page, expect
+from ..wrappers import get_current_datetime
 
 
 class ProgrammesPage:

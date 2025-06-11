@@ -1,6 +1,6 @@
 import pytest
 
-from ..models import (
+from ..pages import (
     ArchiveConsentResponsePage,
     ChildrenPage,
     ConsentPage,
