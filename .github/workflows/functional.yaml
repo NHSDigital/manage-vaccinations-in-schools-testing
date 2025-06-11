@@ -31,20 +31,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version-file: .tool-versions
 
-      - name: Install dependencies
-        run: |
-          pip install -U pip
-          pip install -r requirements.txt
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Install Playwright
-        run: playwright install --with-deps
+        run: uv run playwright install --with-deps
 
       - name: Run tests
-        run: pytest --device "${{ matrix.device }}"
+        run: uv run pytest --device "${{ matrix.device }}"
         env:
           BASE_URL: ${{ vars.BASE_URL }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}

@@ -19,28 +19,28 @@ jobs:
       - name: Check for secrets
         run: gitleaks detect --verbose --redact
 
-  pip:
-    name: Pip
+  uv:
+    name: uv
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version-file: .tool-versions
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        
+      - name: Install project
+        run: uv sync --locked --all-extras --dev
 
   ruff:
     name: Ruff
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version-file: .tool-versions
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Check formatting
-        run: ruff format --check
+        run: uv run ruff format --check
       - name: Check linting
-        run: ruff check
+        run: uv run ruff check
