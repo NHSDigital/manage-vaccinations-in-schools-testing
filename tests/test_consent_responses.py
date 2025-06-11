@@ -6,7 +6,7 @@ from playwright.sync_api import expect
 import pytest
 
 from mavis.test.data import pds as pds_test_data, FilePath
-from mavis.test.mavis_constants import Programme
+from mavis.test.models import Programme
 
 pytestmark = pytest.mark.consent_responses
 

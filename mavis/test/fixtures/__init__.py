@@ -18,7 +18,7 @@ from .pages import (
     unmatched_consent_responses_page,
     vaccines_page,
 )
-from .onboarding import (
+from .models import (
     admin,
     clinics,
     nurse,

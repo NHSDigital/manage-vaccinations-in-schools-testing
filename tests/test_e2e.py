@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import FilePath
-from mavis.test.mavis_constants import Programme
+from mavis.test.models import Programme
 
 pytestmark = pytest.mark.e2e
 

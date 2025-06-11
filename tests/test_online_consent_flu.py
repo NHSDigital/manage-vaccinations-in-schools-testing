@@ -1,7 +1,7 @@
 from datetime import date
 import pytest
 
-from mavis.test.mavis_constants import Programme, ConsentRefusalReason
+from mavis.test.models import Programme, ConsentRefusalReason
 
 pytestmark = pytest.mark.consent
 

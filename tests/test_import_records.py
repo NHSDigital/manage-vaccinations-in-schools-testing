@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import FilePath
-from mavis.test.mavis_constants import Vaccine
+from mavis.test.models import Vaccine
 
 
 @pytest.fixture

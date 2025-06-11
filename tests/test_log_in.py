@@ -1,7 +1,7 @@
 from playwright.sync_api import expect
 import pytest
 
-from mavis.test.onboarding import User
+from mavis.test.models import User
 
 
 pytestmark = pytest.mark.log_in

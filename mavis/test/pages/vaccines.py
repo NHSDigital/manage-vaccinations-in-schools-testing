@@ -1,6 +1,6 @@
 from playwright.sync_api import Page, expect
 
-from ..mavis_constants import Vaccine
+from ..models import Vaccine
 from ..step import step
 from ..wrappers import get_current_datetime, get_offset_date
 

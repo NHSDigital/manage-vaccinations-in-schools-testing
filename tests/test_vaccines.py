@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.mavis_constants import Vaccine
+from mavis.test.models import Vaccine
 
 pytestmark = pytest.mark.vaccines
 

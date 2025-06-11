@@ -6,8 +6,7 @@ from typing import Final, List
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..mavis_constants import PrescreeningQuestion, Programme
-from ..onboarding import Clinic
+from ..models import Clinic, PrescreeningQuestion, Programme
 from ..step import step
 from ..wrappers import generate_random_string, get_current_datetime, get_offset_date
 from .consent import ConsentPage

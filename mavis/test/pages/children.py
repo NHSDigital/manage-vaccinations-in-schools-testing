@@ -1,8 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..mavis_constants import Vaccine
-from ..onboarding import School
+from ..models import School, Vaccine
 from ..step import step
 
 

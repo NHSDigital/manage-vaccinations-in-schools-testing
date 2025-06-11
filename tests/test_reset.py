@@ -2,7 +2,7 @@ import allure
 import pytest
 
 from mavis.test.data import FilePath
-from mavis.test.mavis_constants import Programme, Vaccine
+from mavis.test.models import Programme, Vaccine
 from mavis.test.wrappers import generate_random_string
 
 

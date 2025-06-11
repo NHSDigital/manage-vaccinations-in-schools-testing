@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from ..onboarding import Organisation, User
+from ..models import Organisation, User
 from ..step import step
 
 

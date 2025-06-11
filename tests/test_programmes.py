@@ -2,7 +2,7 @@ import allure
 import pytest
 
 from mavis.test.data import FilePath
-from mavis.test.mavis_constants import Programme, Vaccine, ReportFormat
+from mavis.test.models import Programme, Vaccine, ReportFormat
 
 
 @pytest.fixture

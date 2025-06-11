@@ -7,7 +7,7 @@ from faker import Faker
 import pytest
 import requests
 
-from ..onboarding import Clinic, School, Team, Organisation, User
+from ..models import Clinic, School, Team, Organisation, User
 
 
 onboarding_faker = Faker(locale="en_GB")

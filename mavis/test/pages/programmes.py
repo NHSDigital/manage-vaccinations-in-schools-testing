@@ -2,7 +2,7 @@ import pandas as pd
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..mavis_constants import ReportFormat, Programme
+from ..models import ReportFormat, Programme
 from ..step import step
 from ..wrappers import get_current_datetime
 
