@@ -126,10 +126,6 @@ class ProgrammesPage:
     def click_resolve_duplicate(self):
         self.resolve_duplicate_button.click()
 
-    @step("Click on MAV_854, MAV_854")
-    def click_mav_854_child(self):
-        self.mav_854_child_link.click()
-
     @step("Click on Download vaccination report")
     def click_download_report(self):
         self.download_report_button.click()
