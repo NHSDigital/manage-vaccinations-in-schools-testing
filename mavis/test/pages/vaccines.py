@@ -27,7 +27,7 @@ class VaccinesPage:
 
     def _calculate_batch_details(self, vaccine: Vaccine, batch_name: str):
         self.batch_name = (
-            f"{vaccine.replace(' ', '')}{get_current_datetime()}"
+            f"{vaccine.replace(' ', '').replace('-', '')}{get_current_datetime()}"
             if batch_name == ""
             else batch_name
         )
