@@ -90,14 +90,10 @@ def school_moves_page(page):
 def sessions_page(
     test_data,
     page,
-    dashboard_page,
-    consent_page,
 ):
     return SessionsPage(
         test_data,
         page,
-        dashboard_page,
-        consent_page,
     )
 
 

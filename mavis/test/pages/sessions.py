@@ -1,41 +1,24 @@
 import re
 import time
 from datetime import datetime
-from typing import Final, List
+from typing import List
 
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..models import Clinic, PrescreeningQuestion, Programme
+from ..models import PrescreeningQuestion, Programme
 from ..step import step
 from ..wrappers import generate_random_string, get_current_datetime, get_offset_date
-from .consent import ConsentPage
-from .dashboard import DashboardPage
 
 
 class SessionsPage:
-    LNK_CHILD_FULL_NAME: Final[str] = "CLAST, CFirst"
-    LNK_CHILD_GILLICK_NOTES_LENGTH: Final[str] = "GILLICK1, GILLICK1"
-    LNK_CHILD_NO_CONSENT: Final[str] = "NOCONSENT1, NoConsent1"
-    LNK_CHILD_CONFLICTING_CONSENT: Final[str] = (
-        "CONFLICTINGCONSENT1, ConflictingConsent1"
-    )
-    LNK_CHILD_E2E1: Final[str] = "CE2E1, CE2E1"
-    LNK_CHILD_CONFLICTING_GILLICK: Final[str] = "GILLICK1, Conflicting1"
-    LNK_CHILD_CONSENT_TWICE: Final[str] = "TWICE1, Consent1"
-    LNK_MAV_854_CHILD: Final[str] = "MAV_854, MAV_854"
-
     def __init__(
         self,
         test_data: TestData,
         page: Page,
-        dashboard_page: DashboardPage,
-        consent_page: ConsentPage,
     ):
         self.test_data = test_data
         self.page = page
-        self.dashboard_page = dashboard_page
-        self.consent_page = consent_page
 
         self.today_tab_link = self.page.get_by_role("link", name="Today")
         self.scheduled_tab_link = self.page.get_by_role(
@@ -203,6 +186,10 @@ class SessionsPage:
     def click_location(self, location: str):
         self.page.get_by_role("link", name=str(location)).click()
 
+    @step("Click on location radio {1}")
+    def check_location_radio(self, location: str):
+        self.page.get_by_role("radio", name=str(location)).check()
+
     @step("Click on Import class list")
     def click_import_class_list(self):
         self.import_class_list_link.click()
@@ -313,6 +300,26 @@ class SessionsPage:
     def click_get_consent_response(self):
         self.get_consent_response_button.click()
 
+    def navigate_to_todays_sessions(self, location: str):
+        self.click_today()
+        self.click_location(location)
+
+    def navigate_to_gillick_competence(self, child: str, programme: Programme):
+        self.click_consent_tab()
+        self.click_child(child)
+        self.click_programme_tab(programme)
+        self.click_assess_gillick_competence()
+
+    def navigate_to_consent_response(self, child: str, programme: Programme):
+        self.click_child(child)
+        self.click_programme_tab(programme)
+        self.click_get_consent_response()
+
+    def navigate_to_update_triage_outcome(self, child: str, programme: Programme):
+        self.click_child(child)
+        self.click_programme_tab(programme)
+        self.click_update_triage_outcome()
+
     @step("Click on Confirm")
     def click_confirm_button(self):
         self.confirm_button.click()
@@ -332,6 +339,26 @@ class SessionsPage:
     @step("Click on Attending")
     def click_on_attending(self):
         self.attending_button.click()
+
+    @step("Click on Complete your assessment")
+    def click_complete_assessment(self):
+        self.complete_assessment_button.click()
+
+    @step("Click on Update your assessment")
+    def click_update_assessment(self):
+        self.update_assessment_button.click()
+
+    @step("Check notes length error appears")
+    def check_notes_length_error_appears(self):
+        expect(self.notes_length_error).to_be_visible()
+
+    @step("Fill assessment notes with {1}")
+    def fill_assessment_notes(self, notes: str):
+        self.assessment_notes_textbox.fill(notes)
+
+    def fill_assessment_notes_with_string_of_length(self, length: int):
+        notes = generate_random_string(target_length=length, spaces=True)
+        self.fill_assessment_notes(notes)
 
     @step("Search for {1}")
     def search_for(self, name: str):
@@ -354,6 +381,10 @@ class SessionsPage:
         download.save_as(_file_path)
 
         return _file_path
+
+    @step("Expect text {1}")
+    def expect_main_to_contain_text(self, text: str):
+        expect(self.page.locator("main")).to_contain_text(text)
 
     def get_session_id_from_offline_excel(self):
         file_path = self.download_offline_recording_excel()
@@ -382,24 +413,20 @@ class SessionsPage:
     def __set_gillick_competence(
         self, is_add: bool, is_competent: bool, competence_details: str
     ) -> None:
-        self.__answer_gillick_competence_questions(is_competent)
+        self.answer_gillick_competence_questions(is_competent)
 
         self.assessment_notes_textbox.fill(competence_details)
         if is_add:
-            self.complete_assessment_button.click()
+            self.click_complete_assessment()
         else:
-            self.update_assessment_button.click()
+            self.click_update_assessment()
         if is_competent:
-            expect(self.page.get_by_role("main")).to_contain_text(
-                "Child assessed as Gillick competent"
-            )
+            self.expect_main_to_contain_text("Child assessed as Gillick competent")
         else:
-            expect(self.page.get_by_role("main")).to_contain_text(
-                "Child assessed as not Gillick competent"
-            )
-        expect(self.page.get_by_role("main")).to_contain_text(competence_details)
+            self.expect_main_to_contain_text("Child assessed as not Gillick competent")
+        self.expect_main_to_contain_text(competence_details)
 
-    def __answer_gillick_competence_questions(self, is_competent):
+    def answer_gillick_competence_questions(self, is_competent):
         questions = [
             "The child knows which vaccination they will have",
             "The child knows which disease the vaccination protects against",
@@ -421,8 +448,7 @@ class SessionsPage:
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
         if expect_error:
-            _expected_message = "There is a problemEnter a date"
-            expect(self.page.get_by_role("main")).to_contain_text(_expected_message)
+            self.expect_main_to_contain_text("There is a problemEnter a date")
 
     def __delete_sessions(self):
         self.click_edit_session()
@@ -430,7 +456,7 @@ class SessionsPage:
         self.click_delete()
         self.click_back()
         self.click_continue_link()
-        expect(self.page.get_by_role("main")).to_contain_text("No sessions scheduled")
+        self.expect_main_to_contain_text("No sessions scheduled")
 
     def __edit_session(self, to_date: str):
         _day = to_date[-2:]
@@ -469,80 +495,26 @@ class SessionsPage:
         self.click_mark_as_invalid_link()
         self.fill_notes("Invalidation notes.")
         self.click_mark_as_invalid_button()
-        expect(self.page.get_by_role("main")).to_contain_text("Consent refusedInvalid")
-        expect(self.page.get_by_role("main")).to_contain_text("Invalidation notes.")
+        self.expect_main_to_contain_text("Consent refusedInvalid")
+        self.expect_main_to_contain_text("Invalidation notes.")
 
         self.click_back_to_child()
-        expect(self.page.get_by_role("main")).to_contain_text("Consent refusedInvalid")
-        expect(self.page.get_by_role("main")).to_contain_text(
+        self.expect_main_to_contain_text("Consent refusedInvalid")
+        self.expect_main_to_contain_text(
             "No-one responded to our requests for consent."
         )
 
     def verify_scheduled_date(self, message: str):
-        expect(self.page.get_by_role("main")).to_contain_text(message)
+        self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
-    def update_triage_outcome(
-        self, location: str, file_paths: str, consent_given: bool = True
-    ):
-        self.__import_class_list_and_select_year_groups(location, file_paths)
-        self.__update_triage_consent(consent_given=consent_given, location=location)
-
-    def verify_mav_nnn(self, location: str):
+    def navigate_to_scheduled_sessions(self, location: str):
         self.click_scheduled()
         self.click_location(location)
-        self.click_consent_tab()
-        self.click_child(self.LNK_CHILD_FULL_NAME)
-        self.click_get_consent_response()
-        self.__handle_consent_approval(location=location)
 
-    def __import_class_list_and_select_year_groups(
-        self,
-        location: str,
-        file_paths: str,
-    ):
-        _input_file_path, _ = self.test_data.get_file_paths(file_paths=file_paths)
-        self.click_scheduled()
-        self.click_location(location)
+    def navigate_to_class_list_import(self):
         self.click_import_class_list()
         self.select_year_groups(8, 9, 10, 11)
-        self.choose_file_child_records(_input_file_path)
-        self.click_continue_button()
-        self.dashboard_page.click_mavis()
-
-    def __update_triage_consent(self, consent_given: bool, location: str):
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_location(location)
-        self.click_consent_tab()
-        self.click_child(self.LNK_CHILD_FULL_NAME)
-        self.click_programme_tab(Programme.HPV)
-        self.click_get_consent_response()
-        if consent_given:
-            self.__handle_consent_approval(location)
-        else:
-            self.__handle_refused_consent()
-
-    def __handle_refused_consent(self):
-        self.consent_page.service_refuse_consent()
-        self.select_consent_refused()
-        self.click_child(self.LNK_CHILD_FULL_NAME)
-        self.click_activity_log()
-        self.verify_activity_log_entry(consent_given=False)
-
-    def __handle_consent_approval(self, location: str):
-        self.consent_page.service_give_consent()
-        self.dashboard_page.click_mavis()
-        self.dashboard_page.click_sessions()
-        self.click_scheduled()
-        self.click_location(location)
-        self.click_register_tab()
-        self.click_child(self.LNK_CHILD_FULL_NAME)
-        self.click_programme_tab(Programme.HPV)
-        self.click_update_triage_outcome()
-        self.select_yes_safe_to_vaccinate()
-        self.click_save_triage()
-        self.verify_triage_updated_for_child(child_name=self.LNK_CHILD_FULL_NAME)
 
     def schedule_a_valid_session(self, location: str, for_today: bool = False):
         _future_date = (
@@ -573,105 +545,9 @@ class SessionsPage:
         self.click_location(location)
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
-    def navigate_to_class_list_import(self):
-        self.click_import_class_list()
-        self.select_year_groups(8, 9, 10, 11)
-
-    def set_gillick_competence_for_student(self, session: str):
-        self.click_today()
-        self.click_location(session)
-        self.click_consent_tab()
-        self.click_child(self.LNK_CHILD_FULL_NAME)
-        self.click_assess_gillick_competence()
-        self.add_gillick_competence(
-            is_competent=True, competence_details="Gillick competent"
-        )
-        self.click_edit_gillick_competence()
-        self.edit_gillick_competence(
-            is_competent=False, competence_details="Not Gillick competent"
-        )
-
-    def set_gillick_competence_and_verify_notes_length(self, session: str):
-        self.click_today()
-        self.click_location(session)
-        self.click_consent_tab()
-        self.click_child(self.LNK_CHILD_GILLICK_NOTES_LENGTH)
-        self.click_assess_gillick_competence()
-        self.__answer_gillick_competence_questions(is_competent=True)
-        self.assessment_notes_textbox.fill(
-            generate_random_string(target_length=1001, spaces=True)
-        )
-        self.complete_assessment_button.click()
-        expect(self.notes_length_error).to_be_visible()
-        self.assessment_notes_textbox.fill("Gillick competent")
-        self.complete_assessment_button.click()
-        self.click_edit_gillick_competence()
-        self.__answer_gillick_competence_questions(is_competent=True)
-        self.assessment_notes_textbox.fill(
-            generate_random_string(target_length=1001, spaces=True)
-        )
-        self.update_assessment_button.click()
-        expect(self.notes_length_error).to_be_visible()
-
     def get_online_consent_url(self, *programmes: List[Programme]) -> str:
         link_text = f"View the {' and '.join(programmes)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
-
-    def bug_mavis_1696(self):
-        self.select_no_response()
-        self.click_child(self.LNK_CHILD_CONFLICTING_CONSENT)
-        self.click_get_consent_response()
-        self.consent_page.parent_1_verbal_no_response()
-        self.select_no_response()
-        self.click_child(self.LNK_CHILD_CONFLICTING_CONSENT)
-        self.click_get_consent_response()
-        self.consent_page.parent_2_verbal_refuse_consent()
-        self.click_child(self.LNK_CHILD_CONFLICTING_CONSENT)
-        self.invalidate_parent2_refusal()
-        self.click_activity_log()
-        # FIXME: Make the following generic
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Consent from Parent2 invalidated"
-        )
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Consent refused by Parent2 (Mum)"
-        )
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Consent not_provided by Parent1 (Dad)"
-        )
-
-    def bug_mavis_1864(self):
-        self.select_no_response()
-        self.click_child(self.LNK_CHILD_CONSENT_TWICE)
-        self.click_programme_tab(Programme.HPV)
-        self.click_get_consent_response()
-        self.consent_page.parent_1_written_positive()
-        self.select_consent_given()
-        self.click_child(self.LNK_CHILD_CONSENT_TWICE)
-        self.click_programme_tab(Programme.HPV)
-        self.click_update_triage_outcome()
-        self.consent_page.update_triage_outcome_positive()
-        self.click_consent_tab()
-        self.click_child(self.LNK_CHILD_CONSENT_TWICE)
-        self.click_programme_tab(Programme.HPV)
-        self.click_get_consent_response()
-        self.consent_page.parent_1_verbal_refuse_consent()
-        self.select_consent_refused()
-        self.click_child(self.LNK_CHILD_CONSENT_TWICE)
-        self.click_programme_tab(Programme.HPV)
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Dad refused to give consent."
-        )
-        self.click_activity_log()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Consent refused by Parent1 (Dad)"
-        )
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Triaged decision: Safe to vaccinate"
-        )
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Consent given by Parent1 (Dad)"
-        )
 
     def verify_attendance_filters(self):
         self.click_register_tab()
@@ -688,64 +564,6 @@ class SessionsPage:
         self.click_on_update_results()
 
         expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-
-    def bug_mavis_1818(self):
-        self.select_no_response()
-        self.click_child(
-            self.LNK_CHILD_CONFLICTING_GILLICK
-        )  # Click appropriate child name
-        self.click_programme_tab(Programme.HPV)
-        self.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(change_phone=False)
-        self.select_consent_given()
-        self.click_child(
-            self.LNK_CHILD_CONFLICTING_GILLICK
-        )  # Click appropriate child name
-        self.click_programme_tab(Programme.HPV)
-        self.click_get_consent_response()
-        self.consent_page.parent_2_verbal_refuse_consent()
-        self.select_conflicting_consent()
-        self.click_child(
-            self.LNK_CHILD_CONFLICTING_GILLICK
-        )  # Click appropriate child name
-        self.click_programme_tab(Programme.HPV)
-        expect(self.page.get_by_role("main")).to_contain_text("Conflicting consent")
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "You can only vaccinate if all respondents give consent."
-        )
-        self.click_assess_gillick_competence()
-        self.add_gillick_competence(
-            is_competent=True, competence_details="Gillick competent"
-        )
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Triaged decision: Safe to vaccinate"
-        )
-        self.click_get_consent_response()
-        self.consent_page.child_consent_verbal_positive()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            f"Consent recorded for {self.LNK_CHILD_CONFLICTING_GILLICK}"
-        )
-        self.select_consent_given()
-        self.click_child(
-            self.LNK_CHILD_CONFLICTING_GILLICK
-        )  # Click appropriate child name
-        self.click_programme_tab(Programme.HPV)
-        expect(self.page.get_by_role("main")).to_contain_text("Ready for nurse")
-        expect(self.page.get_by_role("main")).to_contain_text(
-            f"NURSE, Nurse decided that {self.LNK_CHILD_CONFLICTING_GILLICK} is ready for the nurse."
-        )
-        expect(self.page.get_by_role("main")).to_contain_text("Consent given")
-        self.click_activity_log()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            f"Consent given by {self.LNK_CHILD_CONFLICTING_GILLICK} (Child (Gillick competent))"
-        )
-
-    def give_consent_for_e2e1_child_by_parent_1(self):
-        self.click_consent_tab()
-        self.click_child(self.LNK_CHILD_E2E1)
-        self.click_programme_tab(Programme.HPV)
-        self.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(change_phone=False)
 
     def select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
@@ -764,22 +582,6 @@ class SessionsPage:
             else:
                 locator.check()
 
-    def _vaccinate_child_mav_854(self, clinic: Clinic):
-        self.click_get_consent_response()
-        self.consent_page.parent_1_verbal_positive(change_phone=False)
-        self.register_child_as_attending(child_name=self.LNK_MAV_854_CHILD)
-        self.record_vaccs_for_child(
-            child_name=self.LNK_MAV_854_CHILD,
-            programme=Programme.HPV,
-            at_school=False,
-        )
-        self.page.get_by_role("radio", name=str(clinic)).check()
-        self.click_continue_button()
-        self.click_confirm_button()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Vaccination outcome recorded for HPV"
-        )
-
     def register_child_as_attending(self, child_name: str):
         self.click_register_tab()
         self.search_for(child_name)
@@ -795,9 +597,7 @@ class SessionsPage:
         """
         self.click_consent_tab()
         self.search_for("a very long string that won't match any names")
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "No children matching search criteria found"
-        )
+        self.expect_main_to_contain_text("No children matching search criteria found")
 
     def search_child(self, child_name: str) -> None:
         self.search_for(child_name)

@@ -66,7 +66,8 @@ def setup_mav_854(
     vaccines_page,
 ):
     try:
-        session = "Community clinics"
+        community_clinics_session = "Community clinics"
+
         dashboard_page.click_vaccines()
         vaccines_page.add_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
@@ -77,7 +78,9 @@ def setup_mav_854(
         sessions_page.click_location(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(session, for_today=True)
+        sessions_page.schedule_a_valid_session(
+            community_clinics_session, for_today=True
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield
@@ -177,12 +180,67 @@ def test_cohorts_readd_to_cohort(
     programmes_page.expect_text("Record updated")
 
 
-@pytest.mark.parametrize("consent_given", (True, False))
 @pytest.mark.rav
-def test_rav_triage(setup_record_a_vaccine, schools, sessions_page, consent_given):
-    sessions_page.update_triage_outcome(
-        schools[0], FilePath.COHORTS_FULL_NAME, consent_given=consent_given
-    )
+def test_rav_triage_consent_given(
+    setup_record_a_vaccine,
+    schools,
+    sessions_page,
+    import_records_page,
+    dashboard_page,
+    consent_page,
+):
+    full_name_child = "CLAST, CFirst"
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_class_list_import()
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_FULL_NAME)
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.click_consent_tab()
+    sessions_page.navigate_to_consent_response(full_name_child, Programme.HPV)
+    consent_page.service_give_consent()
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+
+    sessions_page.click_register_tab()
+    sessions_page.navigate_to_update_triage_outcome(full_name_child, Programme.HPV)
+    sessions_page.select_yes_safe_to_vaccinate()
+    sessions_page.click_save_triage()
+    sessions_page.verify_triage_updated_for_child(full_name_child)
+
+
+@pytest.mark.rav
+def test_rav_triage_consent_refused(
+    setup_record_a_vaccine,
+    schools,
+    sessions_page,
+    import_records_page,
+    dashboard_page,
+    consent_page,
+):
+    full_name_child = "CLAST, CFirst"
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_class_list_import()
+    import_records_page.upload_and_verify_output(FilePath.COHORTS_FULL_NAME)
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.click_consent_tab()
+    sessions_page.navigate_to_consent_response(full_name_child, Programme.HPV)
+
+    consent_page.service_refuse_consent()
+    sessions_page.select_consent_refused()
+    sessions_page.click_child(full_name_child)
+    sessions_page.click_activity_log()
+    sessions_page.verify_activity_log_entry(consent_given=False)
 
 
 @allure.issue("MAVIS-1729")
@@ -198,15 +256,28 @@ def test_rav_verify_excel_mav_854(
     setup_mav_854,
     schools,
     clinics,
-    programmes_page,
     children_page,
     sessions_page,
     dashboard_page,
+    consent_page,
 ):
-    children_page.search_for_a_child("MAV_854, MAV_854")
-    programmes_page.click_mav_854_child()
+    mav_854_child = "MAV_854, MAV_854"
+
+    children_page.search_for_a_child(mav_854_child)
+    children_page.click_record_for_child(mav_854_child)
     sessions_page.click_session("Community clinics", Programme.HPV)
-    sessions_page._vaccinate_child_mav_854(clinics[0])
+    sessions_page.click_get_consent_response()
+    consent_page.parent_1_verbal_positive(change_phone=False)
+    sessions_page.register_child_as_attending(child_name=mav_854_child)
+    sessions_page.record_vaccs_for_child(
+        child_name=mav_854_child,
+        programme=Programme.HPV,
+        at_school=False,
+    )
+    sessions_page.check_location_radio(clinics[0])
+    sessions_page.click_continue_button()
+    sessions_page.click_confirm_button()
+    sessions_page.expect_main_to_contain_text("Vaccination outcome recorded for HPV")
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
@@ -216,8 +287,13 @@ def test_rav_verify_excel_mav_854(
 
 @pytest.mark.rav
 @pytest.mark.skip(reason="Test under construction")
-def test_rav_verify_banners(setup_mav_nnn):
-    # programmes_page.verify_mav_nnn()
+def test_rav_verify_banners(setup_mav_nnn, sessions_page, schools):
+    # sessions_page.click_scheduled()
+    # sessions_page.click_location(schools[0])
+    # sessions_page.click_consent_tab()
+    # sessions_page.click_child(sessions_page.LNK_CHILD_FULL_NAME)
+    # sessions_page.click_get_consent_response()
+    # sessions_page.__handle_consent_approval(schools)
     pass
 
 
