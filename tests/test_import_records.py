@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.mavis_constants import Vaccine, mavis_file_types, test_data_file_paths
+from mavis.test.mavis_constants import Vaccine, test_data_file_paths
 
 
 @pytest.fixture
@@ -103,7 +103,7 @@ def test_child_list_space_normalization(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_list_has_been_uploaded(input_file)
+    children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
 
 
 ########################################### CLASS LIST ###########################################
@@ -162,7 +162,7 @@ def test_class_list_space_normalization(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_list_has_been_uploaded(input_file)
+    children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
 
 
 ########################################### VACCINATIONS ###########################################
@@ -282,10 +282,7 @@ def test_vaccs_hpv_space_normalization(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_list_has_been_uploaded(
-        input_file,
-        mavis_file_types.VACCS_MAVIS,
-    )
+    children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=True)
 
 
 @pytest.mark.vaccinations
