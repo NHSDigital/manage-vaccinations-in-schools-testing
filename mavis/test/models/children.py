@@ -1,10 +1,8 @@
-from mavis.test.data import TestData
-from mavis.test.mavis_constants import Vaccine
-from mavis.test.onboarding import School
-from ..mavis_constants import mavis_file_types
-
 from playwright.sync_api import Page, expect
 
+from ..data import TestData
+from ..mavis_constants import Vaccine
+from ..onboarding import School
 from ..step import step
 
 
@@ -54,13 +52,13 @@ class ChildrenPage:
         expect(self.one_child_found_heading).to_be_visible()
 
     def verify_list_has_been_uploaded(
-        self, list: str, file_type: mavis_file_types = mavis_file_types.CHILD_LIST
+        self, file_path: str, is_vaccinations: bool
     ) -> None:
-        _child_name_list = self.test_data.create_child_list_from_file(
-            file_path=list, file_type=file_type
+        child_names = self.test_data.create_child_list_from_file(
+            file_path, is_vaccinations
         )
-        for _child_name in _child_name_list:
-            self.search_for_a_child(_child_name)
+        for child_name in child_names:
+            self.search_for_a_child(child_name)
 
     @step("Search for child {1}")
     def search_for_a_child(self, child_name: str) -> None:

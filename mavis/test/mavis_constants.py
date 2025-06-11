@@ -1,4 +1,4 @@
-from enum import Enum, StrEnum, auto
+from enum import StrEnum
 from typing import Final
 
 
@@ -120,14 +120,6 @@ class ConsentMethod(StrEnum):
     PHONE = "By phone"
     PAPER = "Paper"
     IN_PERSON = "In person"
-
-
-class mavis_file_types(Enum):
-    CHILD_LIST = auto()
-    COHORT = auto()
-    CLASS_LIST = auto()
-    VACCS_MAVIS = auto()
-    VACCS_SYSTMONE = auto()
 
 
 class test_data_file_paths:

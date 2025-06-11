@@ -5,7 +5,6 @@ import nhs_number
 import pandas as pd
 import re
 
-from ..mavis_constants import mavis_file_types
 from ..onboarding import Organisation, School
 from ..wrappers import (
     get_current_datetime,
@@ -155,30 +154,24 @@ class TestData:
         return _input_file_path, _output_template_path
 
     def create_child_list_from_file(
-        self, file_path: str, file_type: mavis_file_types
+        self, file_path: str, is_vaccinations: bool
     ) -> list[str]:
         """
         Create a list of child names from a file.
 
         Args:
             file_path (str): Path to the file.
-            file_type (mavis_file_types): Type of file
+            is_vaccinations (bool): Whether the file type is for vaccinations.
 
         Returns:
             list: List of child names.
         """
         _file_df = pd.read_csv(file_path)
-        match file_type:
-            case (
-                mavis_file_types.CHILD_LIST
-                | mavis_file_types.COHORT
-                | mavis_file_types.CLASS_LIST
-            ):
-                _cols = ["CHILD_LAST_NAME", "CHILD_FIRST_NAME"]
-            case mavis_file_types.VACCS_MAVIS:
-                _cols = ["PERSON_SURNAME", "PERSON_FORENAME"]
-            case mavis_file_types.VACCS_SYSTMONE:
-                _cols = ["Surname", "First name"]
+
+        if is_vaccinations:
+            _cols = ["PERSON_SURNAME", "PERSON_FORENAME"]
+        else:
+            _cols = ["CHILD_LAST_NAME", "CHILD_FIRST_NAME"]
 
         col0 = _file_df[_cols[0]].apply(self.normalize_whitespace)
         col1 = _file_df[_cols[1]].apply(self.normalize_whitespace)
