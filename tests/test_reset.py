@@ -32,7 +32,7 @@ def setup_mav_965(
 @allure.issue("MAV-955")
 @pytest.mark.rav
 @pytest.mark.bug
-def test_programmes_rav_prescreening_questions(
+def test_programmes_rav_pre_screening_questions(
     setup_mav_965, schools, programmes_page, dashboard_page, sessions_page, consent_page
 ):
     """
