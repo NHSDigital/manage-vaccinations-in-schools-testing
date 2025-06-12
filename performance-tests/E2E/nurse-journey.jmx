@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
@@ -39,6 +41,18 @@
           </elementProp>
         </collectionProp>
       </HeaderManager>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+        <stringProp name="delimiter">,</stringProp>
+        <stringProp name="fileEncoding">UTF-8</stringProp>
+        <stringProp name="filename">${BaseDirectory}${InputFile}</stringProp>
+        <boolProp name="ignoreFirstLine">true</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">false</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">true</boolProp>
+        <stringProp name="variableNames"></stringProp>
+      </CSVDataSet>
       <hashTree/>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
@@ -98,7 +112,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables for standalone" enabled="false">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone" enabled="false">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -123,7 +137,7 @@
           </elementProp>
           <elementProp name="Threads" elementType="Argument">
             <stringProp name="Argument.name">Threads</stringProp>
-            <stringProp name="Argument.value">${__P(Threads, 10)}</stringProp>
+            <stringProp name="Argument.value">${__P(Threads, 1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc"></stringProp>
           </elementProp>
@@ -156,21 +170,19 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-        <stringProp name="delimiter">,</stringProp>
-        <stringProp name="fileEncoding">UTF-8</stringProp>
-        <stringProp name="filename">${BaseDirectory}${InputFile}</stringProp>
-        <boolProp name="ignoreFirstLine">true</boolProp>
-        <boolProp name="quotedData">false</boolProp>
-        <boolProp name="recycle">false</boolProp>
-        <stringProp name="shareMode">shareMode.all</stringProp>
-        <boolProp name="stopThread">true</boolProp>
-        <stringProp name="variableNames"></stringProp>
-      </CSVDataSet>
-      <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
         <stringProp name="HTTPSampler.domain">qa.mavistesting.com</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.implementation"></stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults localhost" enabled="false">
+        <stringProp name="HTTPSampler.domain">localhost</stringProp>
+        <stringProp name="HTTPSampler.port">4000</stringProp>
+        <stringProp name="HTTPSampler.protocol">http</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
@@ -195,7 +207,7 @@
         <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
       </CookieManager>
       <hashTree/>
-      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager" enabled="true">
+      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager">
         <boolProp name="clearEachIteration">false</boolProp>
         <boolProp name="useExpires">false</boolProp>
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
@@ -280,8 +292,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
           </TransactionController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.1 Homepage" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">start</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -293,8 +303,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </HTTPSamplerProxy>
             <hashTree/>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2 Sign-in page" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -321,8 +329,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3 Sign-in" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -390,8 +396,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4 Select Organisations" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">users/organisations</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -432,8 +436,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -472,8 +474,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
           </TransactionController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -506,8 +506,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session consent" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/consent</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -530,8 +528,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session triage" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/triage</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -554,8 +550,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session register" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -578,8 +572,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session records" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/record</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -602,8 +594,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Session outcome" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/outcome</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -648,8 +638,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
           </TransactionController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -666,8 +654,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.2 Session register" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -684,8 +670,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3 Search by first/last name" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register?search_form%5Bq%5D=${CHILD_FIRST_NAME}+${CHILD_LAST_NAME}&amp;search_form%5Bregister_status%5D=&amp;search_form%5Byear_groups%5D%5B%5D=&amp;search_form%5Bdate_of_birth_day%5D=&amp;search_form%5Bdate_of_birth_month%5D=&amp;search_form%5Bdate_of_birth_year%5D=&amp;search_form%5Bmissing_nhs_number%5D=0</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -766,8 +750,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </IfController>
             <hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list" enabled="true">
-                <stringProp name="HTTPSampler.port">0</stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -811,8 +793,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </IfController>
               <hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">logout</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -866,8 +846,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </hashTree>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4 Patient attending session" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register/${PatientId}/present</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -902,8 +880,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.5 Patient return to consent page" enabled="true">
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv?return_to=consent</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1006,8 +982,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </TransactionController>
               <hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.1 Nurse triage new" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/triages/new</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1043,8 +1017,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.2 Nurse triage result" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/triages</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1102,8 +1074,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.3 Nurse triage complete" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1145,8 +1115,6 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </TransactionController>
             <hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions" enabled="true">
-                <stringProp name="HTTPSampler.port">0</stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/vaccinations</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1300,8 +1268,6 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
               </JSR223Sampler>
               <hashTree/>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch" enabled="true">
-                <stringProp name="HTTPSampler.port">0</stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1376,8 +1342,6 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 <hashTree/>
               </hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.3 Vaccination confirm" enabled="true">
-                <stringProp name="HTTPSampler.port">0</stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1464,8 +1428,6 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
               </TransactionController>
               <hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.1 Consent homepage" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv/consents</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1530,8 +1492,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.2 Consent who" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/who</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1589,8 +1549,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.3 Consent parent details" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/parent-details</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1662,8 +1620,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.4 Consent route" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/route</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1728,8 +1684,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.5 Consent agree" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/agree</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1787,8 +1741,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.6 Consent questions" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/questions</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1909,8 +1861,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.7 Consent triage" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/triage</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1975,8 +1925,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.8 Consent confirm" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-consent/confirm</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2027,8 +1975,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.9 Patient return to HPV vaccination page" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/hpv?return_to=consent</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -2120,8 +2066,6 @@ without actual network activity. This helps debugging tests.</stringProp>
             </IfController>
             <hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list" enabled="true">
-                <stringProp name="HTTPSampler.port">0</stringProp>
-                <stringProp name="HTTPSampler.protocol">https</stringProp>
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -2165,8 +2109,6 @@ without actual network activity. This helps debugging tests.</stringProp>
               </IfController>
               <hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">logout</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2221,8 +2163,6 @@ without actual network activity. This helps debugging tests.</stringProp>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.9 Patient return to ${VaccinationPage} vaccination page" enabled="true">
               <stringProp name="TestPlan.comments">Should only get here for MenACWY and IPV</stringProp>
-              <stringProp name="HTTPSampler.port">0</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}?return_to=consent</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -2321,8 +2261,6 @@ without actual network activity. This helps debugging tests.</stringProp>
                 </TransactionController>
                 <hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.1 Consent homepage" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/consents</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2387,8 +2325,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.2 Consent who" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/who</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2446,8 +2382,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.3 Consent parent details" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/parent-details</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2519,8 +2453,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.4 Consent route" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/route</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2585,8 +2517,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.5 Consent agree" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/agree</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2644,8 +2574,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.6 Consent questions" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/questions</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2766,8 +2694,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.7 Consent triage" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/triage</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2832,8 +2758,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.8 Consent confirm" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">draft-consent/confirm</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2884,8 +2808,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.9 Patient return to ${VaccinationPage} vaccination page" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}?return_to=consent</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -2983,8 +2905,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 </TransactionController>
                 <hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.1 Nurse triage new" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/triages/new</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -3020,8 +2940,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.2 Nurse triage result" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/triages</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -3079,8 +2997,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                     <hashTree/>
                   </hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3.3 Nurse triage complete" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -3128,8 +3044,6 @@ vars.put(&quot;ParentPhone&quot;,vars.get(&quot;ExistingContact_g4&quot;));</str
                 </IfController>
                 <hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/vaccinations</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -3294,8 +3208,6 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 </IfController>
                 <hashTree>
                   <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions" enabled="true">
-                    <stringProp name="HTTPSampler.port">0</stringProp>
-                    <stringProp name="HTTPSampler.protocol">https</stringProp>
                     <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccinationPage}/vaccinations</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -3461,8 +3373,6 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 </JSR223Sampler>
                 <hashTree/>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -3530,8 +3440,6 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                   <hashTree/>
                 </hashTree>
                 <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.3 Vaccination confirm" enabled="true">
-                  <stringProp name="HTTPSampler.port">0</stringProp>
-                  <stringProp name="HTTPSampler.protocol">https</stringProp>
                   <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -3654,8 +3562,6 @@ without actual network activity. This helps debugging tests.</stringProp>
         </IfController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout" enabled="true">
-            <stringProp name="HTTPSampler.port">0</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.path">logout</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -3693,7 +3599,7 @@ without actual network activity. This helps debugging tests.</stringProp>
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
