@@ -1,0 +1,49 @@
+[project]
+name = "manage-vaccinations-in-schools-testing"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "allure-pytest==2.14.3",
+    "allure-python-commons==2.14.3",
+    "faker==37.4.0",
+    "nhs-number==1.3.4",
+    "openpyxl==3.1.5",
+    "pandas==2.3.0",
+    "playwright==1.52.0",
+    "pytest==8.4.0",
+    "pytest-dotenv==0.5.2",
+    "pytest-playwright==0.7.0",
+    "pytest-xdist==3.7.0",
+    "requests==2.32.4",
+    "ruff==0.11.13",
+]
+
+[tool.pytest.ini_options]
+log_file = "logs/pytest.log"
+log_file_date_format = "%Y-%m-%d %H:%M:%S"
+log_file_format = "%(asctime)s - %(name)s %(levelname)s %(message)s"
+addopts = "-vs -rf --alluredir allure-results -n auto --dist=loadscope"
+markers = [
+  "bug",
+  "childlist",
+  "children",
+  "classlist",
+  "cohorts",
+  "consent",
+  "consent_responses",
+  "consentworkflow",
+  "e2e",
+  "log_in",
+  "order",
+  "rav",
+  "reports",
+  "school_moves",
+  "sessions",
+  "smoke",
+  "vaccinations",
+  "vaccines",
+]
+
+[tool.ruff]
+output-format = "github"

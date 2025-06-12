@@ -22,44 +22,37 @@ The functional tests are written using [Playwright] with [Pytest].
 
 To execute the tests from your system, please follow the steps below:
 
-1. Install Python
-
-   The version of Python is specified in the `.tool-versions` file meaning it can be managed automatically using tools
-   such as [Mise](https://mise.jdx.dev) or [Asdf](https://asdf-vm.com).
-
-   ```shell
-   mise install
-   ```
-
-1. Create a virtual environment
-
-    ```shell
-    python -m venv .venv
-    ```
-
-1. Install all dependencies
-
-    ```shell
-    pip install -r requirements.txt
-    ```
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods). `uv` will attempt to detect and use a compatible Python installation. Otherwise, it will install a compatible version to use at runtime.
 
 1. Create a .env file.  Speak to a team member to get the contents of the .env file.
 
    ```shell
-   cp .env.generic .env
+   $ cp .env.generic .env
    ```
 
-1. Finally, verify the setup by running a self-test
+1. Check the setup is working by running a smoke test
 
-    ```shell
-    pytest -m smoke
-    ```
+   ```shell
+   $ uv run pytest -m smoke
+   ```
 
 ### Running
 
-```shell
-$ pytest
-```
+There are two ways to run commands with `uv`
+
+* You can run commands from outside the `uv` virtual environment:
+
+    ```shell
+    $ uv run pytest
+    ```
+
+* You can run commands from inside the `uv` virtual environment, by first creating the environment and then activating it.
+
+    ```shell
+    $ uv venv
+    $ source .venv/bin/activate
+    $ pytest
+    ```
 
 #### Browsers and devices
 
@@ -92,9 +85,8 @@ $ pytest --device "Desktop Edge"
 
 #### Headless mode
 
-If running in a CI environment (determined by the presence of a `CI`
-environment variable) then by default the tests will run in headless mode. To
-run the tests in headed more, use the following command:
+By default the tests will run in headless mode. To
+run the tests in headed mode, use the following command:
 
 ```shell
 $ pytest --headed
@@ -125,7 +117,7 @@ $ pytest --slowmo 1000
 Tests for individual endpoints can be executed using individual markers. For example:
 
 ```shell
-$ pytest -m regression
+$ pytest -m log_in
 ```
 
 #### Tracing
