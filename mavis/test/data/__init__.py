@@ -5,7 +5,7 @@ import nhs_number
 import pandas as pd
 import re
 
-from ..models import Organisation, School
+from ..models import Organisation, School, User
 from ..wrappers import (
     get_current_datetime,
     get_current_time,
@@ -79,9 +79,10 @@ class TestData:
     template_path = Path(__file__).parent
     working_path = Path("working")
 
-    def __init__(self, organisation: Organisation, schools: List[School]):
+    def __init__(self, organisation: Organisation, schools: List[School], nurse: User):
         self.organisation = organisation
         self.schools = schools
+        self.nurse = nurse
         self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
 
         self.working_path.mkdir(parents=True, exist_ok=True)
@@ -125,6 +126,9 @@ class TestData:
             for index, school in enumerate(self.schools):
                 replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
                 replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
+
+        if self.nurse:
+            replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         for year_group in range(8, 12):
             replacements[f"<<DOB_YEAR_{year_group}>>"] = (
