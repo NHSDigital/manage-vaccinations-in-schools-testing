@@ -43,5 +43,5 @@ def log_in_as_nurse(nurse, organisation, log_in_page):
 
 
 @pytest.fixture(scope="session")
-def test_data(organisation, schools):
-    return TestData(organisation, schools)
+def test_data(organisation, schools, nurse):
+    return TestData(organisation, schools, nurse)
