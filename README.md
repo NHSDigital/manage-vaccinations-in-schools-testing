@@ -22,7 +22,7 @@ The functional tests are written using [Playwright] with [Pytest].
 
 To execute the tests from your system, please follow the steps below:
 
-1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods). `uv` will attempt to detect and use a Python installation matching the version in `.python-version`. Otherwise, it will install this version to use at runtime.
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods). `uv` will attempt to detect and use a compatible Python installation. Otherwise, it will install a compatible version to use at runtime.
 
 1. Create a .env file.  Speak to a team member to get the contents of the .env file.
 
