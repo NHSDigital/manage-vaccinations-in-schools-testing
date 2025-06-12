@@ -67,7 +67,7 @@
           </elementProp>
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
-            <stringProp name="Argument.value">${__P(AuthToken,bWFuYWdlOnZhY2NpbmF0aW9ucw== )}</stringProp>
+            <stringProp name="Argument.value">${__P(AuthToken,null)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="Threads" elementType="Argument">
@@ -107,7 +107,7 @@
           </elementProp>
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
-            <stringProp name="Argument.value">${__P(AuthToken,bWFuYWdlOnZhY2NpbmF0aW9ucw== )}</stringProp>
+            <stringProp name="Argument.value">${__P(AuthToken,null)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="Threads" elementType="Argument">
