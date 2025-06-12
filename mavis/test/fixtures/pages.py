@@ -1,6 +1,8 @@
 import pytest
 
 from ..pages import (
+    AddBatchPage,
+    ArchiveBatchPage,
     ArchiveConsentResponsePage,
     ChildrenPage,
     ConsentPage,
@@ -8,6 +10,7 @@ from ..pages import (
     CreateNewRecordConsentResponsePage,
     DashboardPage,
     DownloadSchoolMovesPage,
+    EditBatchPage,
     ImportRecordsPage,
     LogInPage,
     MatchConsentResponsePage,
@@ -19,6 +22,16 @@ from ..pages import (
     UnmatchedConsentResponsesPage,
     VaccinesPage,
 )
+
+
+@pytest.fixture
+def add_batch_page(page):
+    return AddBatchPage(page)
+
+
+@pytest.fixture
+def archive_batch_page(page):
+    return ArchiveBatchPage(page)
 
 
 @pytest.fixture
@@ -54,6 +67,11 @@ def dashboard_page(page):
 @pytest.fixture
 def download_school_moves_page(page):
     return DownloadSchoolMovesPage(page)
+
+
+@pytest.fixture
+def edit_batch_page(page):
+    return EditBatchPage(page)
 
 
 @pytest.fixture
