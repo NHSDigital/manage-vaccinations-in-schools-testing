@@ -4,7 +4,10 @@ from .hooks import (
     pytest_sessionstart,
 )
 from .fixtures import (
+    add_batch_page,
+    add_vaccine_batch,
     admin,
+    archive_batch_page,
     archive_consent_response_page,
     base_url,
     basic_auth,
@@ -17,6 +20,7 @@ from .fixtures import (
     create_new_record_consent_response_page,
     dashboard_page,
     download_school_moves_page,
+    edit_batch_page,
     get_online_consent_url,
     import_records_page,
     log_in_as_admin,
@@ -45,7 +49,10 @@ from .fixtures import (
 
 
 __all__ = [
+    "add_batch_page",
+    "add_vaccine_batch",
     "admin",
+    "archive_batch_page",
     "archive_consent_response_page",
     "base_url",
     "basic_auth",
@@ -58,6 +65,7 @@ __all__ = [
     "create_new_record_consent_response_page",
     "dashboard_page",
     "download_school_moves_page",
+    "edit_batch_page",
     "get_online_consent_url",
     "import_records_page",
     "log_in_as_admin",
