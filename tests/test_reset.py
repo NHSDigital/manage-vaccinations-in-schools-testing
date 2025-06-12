@@ -9,16 +9,16 @@ from mavis.test.wrappers import generate_random_string
 @pytest.fixture
 def setup_mav_965(
     log_in_as_nurse,
+    add_vaccine_batch,
     schools,
     dashboard_page,
     import_records_page,
     sessions_page,
-    vaccines_page,
 ):
-    dashboard_page.click_vaccines()
-    vaccines_page.add_batch(Vaccine.GARDASIL_9)
-    vaccines_page.add_batch(Vaccine.MENQUADFI)
-    vaccines_page.add_batch(Vaccine.REVAXIS)
+    add_vaccine_batch(Vaccine.GARDASIL_9)
+    add_vaccine_batch(Vaccine.MENQUADFI)
+    add_vaccine_batch(Vaccine.REVAXIS)
+
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0], for_today=True)
