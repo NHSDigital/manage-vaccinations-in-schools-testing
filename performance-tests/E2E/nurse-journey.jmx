@@ -42,7 +42,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
         <stringProp name="delimiter">,</stringProp>
         <stringProp name="fileEncoding">UTF-8</stringProp>
         <stringProp name="filename">${BaseDirectory}${InputFile}</stringProp>
@@ -54,7 +54,7 @@
         <stringProp name="variableNames"></stringProp>
       </CSVDataSet>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -170,7 +170,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
         <stringProp name="HTTPSampler.domain">qa.mavistesting.com</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -207,7 +207,7 @@
         <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
       </CookieManager>
       <hashTree/>
-      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager">
+      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager" enabled="true">
         <boolProp name="clearEachIteration">false</boolProp>
         <boolProp name="useExpires">false</boolProp>
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
@@ -233,7 +233,7 @@
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="false">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -278,7 +278,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223Sampler>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -287,7 +287,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Login" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Login">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
@@ -395,7 +395,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4 Select Organisations" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4 Select Organisations">
               <stringProp name="HTTPSampler.path">users/organisations</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -435,6 +435,135 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
               </ConstantTimer>
               <hashTree/>
             </hashTree>
+            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Determine session slug">
+              <boolProp name="TransactionController.includeTimers">false</boolProp>
+            </TransactionController>
+            <hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get school name">
+                <stringProp name="HTTPSampler.path">api/locations?type=school&amp;status=open</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                  <collectionProp name="Arguments.arguments"/>
+                </elementProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="schoolname regex" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">schoolName</stringProp>
+                  <stringProp name="RegexExtractor.regex">&quot;id&quot;:[0-9]{0,7}?,&quot;name&quot;:&quot;(.{0,40}?)&quot;,&quot;address_line_1&quot;:&quot;.{0,40}?&quot;,&quot;address_line_2&quot;:&quot;.{0,40}?&quot;,&quot;address_town&quot;:&quot;.{0,40}?&quot;,&quot;address_postcode&quot;:&quot;.{0,30}?&quot;,&quot;url&quot;:null,&quot;urn&quot;:&quot;${CHILD_SCHOOL_URN}&quot;</stringProp>
+                  <stringProp name="RegexExtractor.template">$1$</stringProp>
+                  <stringProp name="RegexExtractor.default">schoolNotFound</stringProp>
+                  <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                  <stringProp name="Sample.scope">all</stringProp>
+                </RegexExtractor>
+                <hashTree/>
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="script">prev.setIgnore()</stringProp>
+                </JSR223PostProcessor>
+                <hashTree/>
+              </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Scheduled sessions list">
+                <stringProp name="HTTPSampler.path">sessions/scheduled</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                  <collectionProp name="Arguments.arguments"/>
+                </elementProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="slug regex">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">scheduledSlug</stringProp>
+                  <stringProp name="RegexExtractor.regex">href=&quot;\/sessions\/(.*?)&quot;&gt;${schoolName}&lt;\/a&gt;</stringProp>
+                  <stringProp name="RegexExtractor.template">$1$</stringProp>
+                  <stringProp name="RegexExtractor.default">scheduledSlugNotFound</stringProp>
+                  <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                </RegexExtractor>
+                <hashTree/>
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="script">prev.setIgnore()</stringProp>
+                </JSR223PostProcessor>
+                <hashTree/>
+              </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Completed sessions list">
+                <stringProp name="HTTPSampler.path">sessions/completed</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                  <collectionProp name="Arguments.arguments"/>
+                </elementProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="slug regex">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">completedSlug</stringProp>
+                  <stringProp name="RegexExtractor.regex">href=&quot;\/sessions\/(.*?)&quot;&gt;${schoolName}&lt;\/a&gt;</stringProp>
+                  <stringProp name="RegexExtractor.template">$1$</stringProp>
+                  <stringProp name="RegexExtractor.default">completedSlugNotFound</stringProp>
+                  <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                </RegexExtractor>
+                <hashTree/>
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="script">prev.setIgnore()</stringProp>
+                </JSR223PostProcessor>
+                <hashTree/>
+              </hashTree>
+              <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate slug">
+                <stringProp name="scriptLanguage">groovy</stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="script">completedSlug=vars.get(&quot;completedSlug&quot;)
+scheduledSlug=vars.get(&quot;scheduledSlug&quot;)
+
+log.info(completedSlug)
+log.info(scheduledSlug)
+
+if(completedSlug==&quot;completedSlugNotFound&quot;){
+	if(scheduledSlug==&quot;scheduledSlugNotFound&quot;){
+		//School not found in either one so output &apos;not found&apos;
+		ConsentSession=&quot;SessionNotFound&quot;
+	}else{
+		ConsentSession=scheduledSlug
+	}
+}else{
+	ConsentSession=completedSlug
+}
+vars.put(&quot;ConsentSession&quot;, ConsentSession);</stringProp>
+              </JSR223Sampler>
+              <hashTree>
+                <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="script">prev.setIgnore()</stringProp>
+                </JSR223PostProcessor>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5 Open Sessions list" enabled="true">
               <stringProp name="HTTPSampler.path">sessions</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -463,7 +592,7 @@ vars.put(&quot;SessionId&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If ReadOnlyMode == True">
           <stringProp name="IfController.condition">${__jexl3(&quot;${ReadOnlyMode}&quot; == &quot;True&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
@@ -3599,7 +3728,7 @@ without actual network activity. This helps debugging tests.</stringProp>
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
