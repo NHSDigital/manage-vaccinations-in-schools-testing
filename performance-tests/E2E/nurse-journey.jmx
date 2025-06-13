@@ -196,7 +196,7 @@
         <boolProp name="DNSCacheManager.isCustomResolver">false</boolProp>
       </DNSCacheManager>
       <hashTree/>
-      <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
+      <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager">
         <collectionProp name="AuthManager.auth_list"/>
         <boolProp name="AuthManager.controlledByThreadGroup">false</boolProp>
       </AuthManager>
@@ -573,7 +573,9 @@ props.put(&quot;SessionIdProp&quot;,ConsentSession)</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
                 <stringProp name="cacheKey">true</stringProp>
-                <stringProp name="script">vars.put(&quot;SessionId&quot;,props.get(&quot;SessionIdProp&quot;))</stringProp>
+                <stringProp name="script">vars.put(&quot;SessionId&quot;,props.get(&quot;SessionIdProp&quot;))
+
+log.info(&quot;session ID is &quot; + vars.get(&quot;SessionId&quot;))</stringProp>
               </JSR223PreProcessor>
               <hashTree/>
             </hashTree>
@@ -753,7 +755,7 @@ props.put(&quot;SessionIdProp&quot;,ConsentSession)</stringProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session ${SessionId}">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session">
               <stringProp name="HTTPSampler.path">sessions/${SessionId}</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -769,7 +771,7 @@ props.put(&quot;SessionIdProp&quot;,ConsentSession)</stringProp>
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.2 Session register" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.2 Session register">
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
