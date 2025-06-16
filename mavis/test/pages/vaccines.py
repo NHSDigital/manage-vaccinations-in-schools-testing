@@ -37,7 +37,7 @@ class VaccinesPage:
         self.year = self.future_expiry_date[:4]
 
     @step("Add a new batch for {1}")
-    def add_batch(self, vaccine: Vaccine, batch_name: str = ""):
+    def add_batch(self, vaccine: Vaccine, batch_name: str = "") -> str:
         self._calculate_batch_details(vaccine, batch_name=batch_name)
         expect(self.page.get_by_role("main")).to_contain_text(vaccine)
 
@@ -50,6 +50,8 @@ class VaccinesPage:
             expect(self.batch_added_alert).to_be_visible()
         else:
             expect(self.batch_name_error).to_be_visible()
+
+        return self.batch_name
 
     @step("Fill the batch details")
     def fill_batch_details(self):

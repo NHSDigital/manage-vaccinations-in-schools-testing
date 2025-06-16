@@ -69,7 +69,7 @@ def setup_mav_854(
         community_clinics_session = "Community clinics"
 
         dashboard_page.click_vaccines()
-        vaccines_page.add_batch(Vaccine.GARDASIL_9)
+        batch_name = vaccines_page.add_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
@@ -83,7 +83,7 @@ def setup_mav_854(
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
-        yield
+        yield batch_name
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -262,6 +262,7 @@ def test_rav_verify_excel_mav_854(
     consent_page,
 ):
     mav_854_child = "MAV_854, MAV_854"
+    batch_name = setup_mav_854
 
     children_page.search_for_a_child(mav_854_child)
     children_page.click_record_for_child(mav_854_child)
@@ -272,6 +273,7 @@ def test_rav_verify_excel_mav_854(
     sessions_page.record_vaccs_for_child(
         child_name=mav_854_child,
         programme=Programme.HPV,
+        batch_name=batch_name,
         at_school=False,
     )
     sessions_page.check_location_radio(clinics[0])
