@@ -55,9 +55,9 @@ def test_given(consent_page, faker, schools, change_school, health_question):
 
     for _ in range(4):
         if health_question:
-            consent_page.select_and_provide_details("More details")
+            consent_page.answer_yes("More details")
         else:
-            consent_page.select_and_provide_details(None)
+            consent_page.answer_no()
 
     consent_page.click_confirm()
 

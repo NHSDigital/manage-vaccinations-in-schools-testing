@@ -281,13 +281,14 @@ class ConsentPage:
     def click_gillick_competent(self):
         self.child_gillick_competent_radio.check()
 
-    def select_and_provide_details(self, details: Optional[str] = None) -> None:
+    def answer_yes(self, details: Optional[str] = None):
+        self.select_yes()
         if details:
-            self.select_yes()
             self.give_details(details)
-        else:
-            self.select_no()
+        self.click_continue()
 
+    def answer_no(self):
+        self.select_no()
         self.click_continue()
 
     def select_consent_not_given_reason(

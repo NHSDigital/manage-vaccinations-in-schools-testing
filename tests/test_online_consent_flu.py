@@ -53,21 +53,16 @@ def test_given(consent_page, faker, schools, change_school, health_question):
         "DE23 6JZ",
     )
 
-    # Asthma question doesn't have "More details"
     if health_question:
-        consent_page.select_yes()
+        # Asthma question doesn't have "More details"
+        consent_page.answer_yes()
+
+        # Asthma follow-up questions are only shown if answering "Yes"
+        for _ in range(10):
+            consent_page.answer_yes("More details")
     else:
-        consent_page.select_no()
-    consent_page.click_continue()
-
-    # Asthma follow-up questions are only shown if answering "Yes"
-    number_of_questions = 10 if health_question else 8
-
-    for _ in range(number_of_questions):
-        if health_question:
-            consent_page.select_and_provide_details("More details")
-        else:
-            consent_page.select_and_provide_details()
+        for _ in range(9):
+            consent_page.answer_no()
 
     consent_page.click_confirm()
 

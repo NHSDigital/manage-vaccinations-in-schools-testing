@@ -57,7 +57,7 @@ def give_online_consent(
     consent_page.select_consent_for_programmes([Programme.HPV])
     consent_page.fill_address_details(*child_address)
     for _ in range(4):
-        consent_page.select_and_provide_details(None)
+        consent_page.answer_no()
     consent_page.click_confirm()
 
 
