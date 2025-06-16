@@ -1,3 +1,4 @@
+import logging
 import random
 import time
 from typing import List
@@ -9,6 +10,8 @@ import requests
 
 from ..models import Clinic, School, Team, Organisation, User
 
+
+logger = logging.getLogger(__name__)
 
 onboarding_faker = Faker(locale="en_GB")
 onboarding_faker.seed_instance(seed=time.time())
@@ -108,7 +111,7 @@ def onboard(base_url, onboarding):
     if response.ok:
         return
 
-    print(response.json())
+    logger.warning(response.content)
     response.raise_for_status()
 
 
@@ -121,4 +124,5 @@ def reset(base_url, organisation):
     if response.ok:
         return
 
+    logger.warning(response.content)
     response.raise_for_status()
