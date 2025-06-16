@@ -54,7 +54,7 @@ def test_given(consent_page, faker, schools, change_school, health_question):
     )
 
     # Asthma follow-up questions are only shown if answering "Yes"
-    number_of_questions = 12 if health_question else 10
+    number_of_questions = 11 if health_question else 9
 
     for _ in range(number_of_questions):
         if health_question:
