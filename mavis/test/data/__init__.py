@@ -22,7 +22,7 @@ class BaseFilePath(StrEnum):
 
     @property
     def output_path(self) -> str:
-        return f"{self.folder}/o_{self.value}.csv"
+        return f"{self.folder}/o_{self.value}.txt"
 
     @property
     def folder(self) -> str:
