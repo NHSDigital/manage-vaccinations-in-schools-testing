@@ -123,7 +123,6 @@ class TestData:
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
-        self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
 
         self.working_path.mkdir(parents=True, exist_ok=True)
 
