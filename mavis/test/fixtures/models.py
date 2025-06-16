@@ -10,7 +10,6 @@ import requests
 
 from ..models import Clinic, School, Team, Organisation, User
 
-logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 onboarding_faker = Faker(locale="en_GB")
