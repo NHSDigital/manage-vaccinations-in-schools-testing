@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 import time
 from typing import Optional
 
-from ..data import TestData
+from ..data import TestData, BaseFilePath
 from ..step import step
 from ..wrappers import format_datetime_for_upload_link
 
@@ -125,7 +125,7 @@ class ImportRecordsPage:
         self.click_continue()
 
     def upload_and_verify_output(
-        self, file_paths: str, session_id: Optional[str] = None
+        self, file_paths: BaseFilePath, session_id: Optional[str] = None
     ):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths, session_id=session_id

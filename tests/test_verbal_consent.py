@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.data import FilePath
+from mavis.test.data import CohortsFilePath
 from mavis.test.models import Programme
 
 pytestmark = pytest.mark.consent
@@ -33,27 +33,27 @@ def setup_session_with_file_upload(
 
 @pytest.fixture
 def setup_gillick(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(FilePath.COHORTS_FULL_NAME)
+    yield from setup_session_with_file_upload(CohortsFilePath.FULL_NAME)
 
 
 @pytest.fixture
 def setup_gillick_notes_length(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(FilePath.COHORTS_GILLICK_NOTES_LENGTH)
+    yield from setup_session_with_file_upload(CohortsFilePath.GILLICK_NOTES_LENGTH)
 
 
 @pytest.fixture
 def setup_mavis_1696(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(FilePath.COHORTS_CONFLICTING_CONSENT)
+    yield from setup_session_with_file_upload(CohortsFilePath.CONFLICTING_CONSENT)
 
 
 @pytest.fixture
 def setup_mavis_1864(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(FilePath.COHORTS_CONSENT_TWICE)
+    yield from setup_session_with_file_upload(CohortsFilePath.CONSENT_TWICE)
 
 
 @pytest.fixture
 def setup_mavis_1818(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(FilePath.COHORTS_CONFLICTING_GILLICK)
+    yield from setup_session_with_file_upload(CohortsFilePath.CONFLICTING_GILLICK)
 
 
 def test_gillick_competence(setup_gillick, schools, sessions_page):

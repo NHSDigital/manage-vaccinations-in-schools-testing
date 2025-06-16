@@ -1,8 +1,8 @@
 import pandas
 from playwright.sync_api import expect
+from mavis.test.data import ClassFilePath
 import pytest
 
-from mavis.test.data import FilePath
 
 pytestmark = pytest.mark.school_moves
 
@@ -18,7 +18,7 @@ def setup_confirm_and_ignore(
 ):
     # We need to make sure we're uploading the same class with the same NHS numbers.
     input_file_path, output_file_path = test_data.get_file_paths(
-        FilePath.CLASS_MOVES_CONFIRM_IGNORE
+        ClassFilePath.MOVES_CONFIRM_IGNORE
     )
 
     def upload_class_list():
@@ -123,16 +123,14 @@ def setup_to_homeschool_and_unknown(
         sessions_page.click_location(schools[0])
         sessions_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
-            FilePath.CLASS_MOVES_UNKNOWN_HOMESCHOOLED
+            ClassFilePath.MOVES_UNKNOWN_HOMESCHOOLED
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_location(schools[1])
         sessions_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(
-            FilePath.CLASS_MOVES_CONFIRM_IGNORE
-        )
+        import_records_page.upload_and_verify_output(ClassFilePath.MOVES_CONFIRM_IGNORE)
         yield
     finally:
         dashboard_page.click_mavis()

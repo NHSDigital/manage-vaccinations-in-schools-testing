@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.data import FilePath
+from mavis.test.data import ClassFilePath, CohortsFilePath, VaccsFilePath
 from mavis.test.models import Programme, Vaccine
 
 pytestmark = pytest.mark.children
@@ -33,12 +33,12 @@ def setup_children_session(
 
 @pytest.fixture
 def setup_children_page(setup_children_session):
-    yield from setup_children_session(FilePath.CLASS_CHILDREN_FILTER)
+    yield from setup_children_session(ClassFilePath.CHILDREN_FILTER)
 
 
 @pytest.fixture
 def setup_change_nhsno(setup_children_session):
-    yield from setup_children_session(FilePath.CLASS_CHANGE_NHSNO)
+    yield from setup_children_session(ClassFilePath.CHANGE_NHSNO)
 
 
 @pytest.fixture
@@ -54,18 +54,18 @@ def setup_mav_853(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(FilePath.CLASS_SESSION_ID)
+        import_records_page.upload_and_verify_output(ClassFilePath.SESSION_ID)
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
         programmes_page.navigate_to_cohort_import(Programme.HPV)
-        import_records_page.upload_and_verify_output(FilePath.COHORTS_MAV_853)
+        import_records_page.upload_and_verify_output(CohortsFilePath.MAV_853)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
         import_records_page.upload_and_verify_output(
-            file_paths=FilePath.VACCS_MAV_853, session_id=session_id
+            file_paths=VaccsFilePath.MAV_853, session_id=session_id
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()

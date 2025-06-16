@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Final, List, Optional
+from typing import List, Optional
+from enum import StrEnum
 
 import nhs_number
 import pandas as pd
@@ -14,61 +15,100 @@ from ..wrappers import (
 )
 
 
-class FilePath:
-    VACCS_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
-    VACCS_NEGATIVE: Final[str] = "VACCS_HPV_NEGATIVE"
-    VACCS_HIST_POSITIVE: Final[str] = "VACCS_HIST_HPV_POSITIVE"
-    VACCS_HIST_NEGATIVE: Final[str] = "VACCS_HIST_HPV_NEGATIVE"
-    VACCS_DUP_1: Final[str] = "VACCS_HPV_DUP_1"
-    VACCS_DUP_2: Final[str] = "VACCS_HPV_DUP_2"
-    VACCS_INVALID_STRUCTURE: Final[str] = "VACCS_HPV_INVALID_STRUCTURE"
-    VACCS_EMPTY_FILE: Final[str] = "VACCS_HPV_EMPTY_FILE"
-    VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
-    VACCS_HEADER_ONLY: Final[str] = "VACCS_HPV_HEADER_ONLY"
-    VACCS_MAV_853: Final[str] = "VACCS_HPV_MAV_853"
-    VACCS_HPV_MAV_855: Final[str] = "VACCS_HPV_MAV_855"
-    VACCS_SYSTMONE_POSITIVE: Final[str] = "VACCS_SYSTMONE_POSITIVE"
-    VACCS_SYSTMONE_NEGATIVE: Final[str] = "VACCS_SYSTMONE_NEGATIVE"
-    VACCS_SYSTMONE_HIST_NEGATIVE: Final[str] = "VACCS_SYSTMONE_HIST_NEGATIVE"
-    VACCS_MAV_1080: Final[str] = "VACCS_MAV_1080"
-    VACCS_SYSTMONE_MAV_1080: Final[str] = "VACCS_SYSTMONE_MAV_1080"
-    COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
-    COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
-    COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
-    COHORTS_EMPTY_FILE: Final[str] = "COHORTS_EMPTY_FILE"
-    COHORTS_HEADER_ONLY: Final[str] = "COHORTS_HEADER_ONLY"
-    CHILD_POSITIVE: Final[str] = "CHILD_POSITIVE"
-    CHILD_NEGATIVE: Final[str] = "CHILD_NEGATIVE"
-    CHILD_INVALID_STRUCTURE: Final[str] = "CHILD_INVALID_STRUCTURE"
-    CHILD_EMPTY_FILE: Final[str] = "CHILD_EMPTY_FILE"
-    CHILD_HEADER_ONLY: Final[str] = "CHILD_HEADER_ONLY"
-    CHILD_MAV_1080: Final[str] = "CHILD_MAV_1080"
-    CLASS_POSITIVE: Final[str] = "CLASS_POSITIVE"
-    CLASS_NEGATIVE: Final[str] = "CLASS_NEGATIVE"
-    CLASS_INVALID_STRUCTURE: Final[str] = "CLASS_INVALID_STRUCTURE"
-    CLASS_EMPTY_FILE: Final[str] = "CLASS_EMPTY_FILE"
-    CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"
-    CLASS_CHILDREN_FILTER: Final[str] = "CLASS_CHILDREN_FILTER"
-    CLASS_YEAR_GROUP: Final[str] = "CLASS_YEAR_GROUP"
-    CLASS_SESSION_ID: Final[str] = "CLASS_SESSION_ID"
-    CLASS_SINGLE_VACC: Final[str] = "CLASS_SINGLE_VACC"
-    CLASS_MAV_854: Final[str] = "CLASS_MAV_854"
-    CLASS_MAV_965: Final[str] = "CLASS_MAV_965"
-    CLASS_MAV_1080: Final[str] = "CLASS_MAV_1080"
-    COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
-    COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
-    COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
-    CLASS_MOVES_CONFIRM_IGNORE: Final[str] = "CLASS_MOVES_CONFIRM_IGNORE"
-    CLASS_MOVES_UNKNOWN_HOMESCHOOLED: Final[str] = "CLASS_MOVES_UNKNOWN_HOMESCHOOLED"
-    CLASS_CHANGE_NHSNO: Final[str] = "CLASS_CHANGE_NHSNO"
-    COHORTS_UCR_MATCH: Final[str] = "COHORTS_UCR_MATCH"
-    COHORTS_CONSENT_TWICE: Final[str] = "COHORTS_CONSENT_TWICE"
-    COHORTS_CONFLICTING_GILLICK: Final[str] = "COHORTS_CONFLICTING_GILLICK"
-    COHORTS_FULL_NAME: Final[str] = "COHORTS_FULL_NAME"
-    COHORTS_MAV_927_PERF: Final[str] = "COHORTS_MAV_927_PERF"
-    COHORTS_MAV_909: Final[str] = "COHORTS_MAV_909"
-    COHORTS_MAV_853: Final[str] = "COHORTS_MAV_853"
-    COHORTS_GILLICK_NOTES_LENGTH: Final[str] = "COHORTS_GILLICK_NOTES_LENGTH"
+class BaseFilePath(StrEnum):
+    @property
+    def input_template(self) -> str:
+        return f"{self.folder}/i_{self.value}.csv"
+
+    @property
+    def output_path(self) -> str:
+        return f"{self.folder}/o_{self.value}.csv"
+
+    @property
+    def folder(self) -> str:
+        return ""
+
+
+class VaccsFilePath(BaseFilePath):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    HIST_POSITIVE = "hist_positive"
+    HIST_NEGATIVE = "hist_negative"
+    DUP_1 = "dup_1"
+    DUP_2 = "dup_2"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HPV_DOSE_TWO = "hpv_dose_two"
+    HEADER_ONLY = "header_only"
+    MAV_853 = "mav_853"
+    MAV_855 = "mav_855"
+    SYSTMONE_POSITIVE = "systmone_positive"
+    SYSTMONE_NEGATIVE = "systmone_negative"
+    SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
+    MAV_1080 = "mav_1080"
+    SYSTMONE_MAV_1080 = "systmone_mav_1080"
+
+    @property
+    def folder(self) -> str:
+        return "vaccs"
+
+
+class CohortsFilePath(BaseFilePath):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HEADER_ONLY = "header_only"
+    NO_CONSENT = "no_consent"
+    CONFLICTING_CONSENT = "conflicting_consent"
+    E2E_1 = "e2e_1"
+    UCR_MATCH = "ucr_match"
+    CONSENT_TWICE = "consent_twice"
+    CONFLICTING_GILLICK = "conflicting_gillick"
+    FULL_NAME = "full_name"
+    MAV_927_PERF = "mav_927_perf"
+    MAV_909 = "mav_909"
+    MAV_853 = "mav_853"
+    GILLICK_NOTES_LENGTH = "gillick_notes_length"
+
+    @property
+    def folder(self) -> str:
+        return "cohorts"
+
+
+class ChildFilePath(BaseFilePath):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HEADER_ONLY = "header_only"
+    MAV_1080 = "mav_1080"
+
+    @property
+    def folder(self) -> str:
+        return "child"
+
+
+class ClassFilePath(BaseFilePath):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HEADER_ONLY = "header_only"
+    CHILDREN_FILTER = "children_filter"
+    YEAR_GROUP = "year_group"
+    SESSION_ID = "session_id"
+    SINGLE_VACC = "single_vacc"
+    MAV_854 = "mav_854"
+    MAV_965 = "mav_965"
+    MAV_1080 = "mav_1080"
+    MOVES_CONFIRM_IGNORE = "moves_confirm_ignore"
+    MOVES_UNKNOWN_HOMESCHOOLED = "moves_unknown_homeschooled"
+    CHANGE_NHSNO = "change_nhsno"
+
+    @property
+    def folder(self) -> str:
+        return "class_list"
 
 
 class TestData:
@@ -189,30 +229,27 @@ class TestData:
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
-        self, file_paths: str, session_id: Optional[str] = None
+        self, file_paths: BaseFilePath, session_id: Optional[str] = None
     ) -> tuple[str, str]:
         """
         Get input and output file paths based on a mapping.
 
         Args:
-            file_paths (str): Identifier for the file paths.
+            file (BaseFilePath): Identifier for the file paths.
 
         Returns:
             tuple[str, str]: Input and output file paths.
         """
-        query = self.file_mapping.query("ID==@file_paths")
-
-        _input_template_path: str = query["INPUT_TEMPLATE"].to_string(index=False)
-        _output_template_path: str = query["OUTPUT_TEMPLATE"].to_string(index=False)
-        _file_prefix: str = query["FILE_PREFIX"].to_string(index=False)
 
         _input_file_path: str = self.create_file_from_template(
-            template_path=_input_template_path,
-            file_name_prefix=_file_prefix,
+            template_path=file_paths.input_template,
+            file_name_prefix=str(file_paths),
             session_id=session_id,
         )
 
-        return _input_file_path, _output_template_path
+        _output_file_path = file_paths.output_path
+
+        return _input_file_path, _output_file_path
 
     def create_child_list_from_file(
         self, file_path: str, is_vaccinations: bool
