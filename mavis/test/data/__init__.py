@@ -15,9 +15,9 @@ from ..wrappers import (
 )
 
 
-class BaseFilePath(StrEnum):
+class FileMapping(StrEnum):
     @property
-    def input_template(self) -> str:
+    def input_template_path(self) -> str:
         return f"{self.folder}/i_{self.value}.csv"
 
     @property
@@ -29,7 +29,7 @@ class BaseFilePath(StrEnum):
         return ""
 
 
-class VaccsFilePath(BaseFilePath):
+class VaccsFileMapping(FileMapping):
     POSITIVE = "positive"
     NEGATIVE = "negative"
     HIST_POSITIVE = "hist_positive"
@@ -53,7 +53,7 @@ class VaccsFilePath(BaseFilePath):
         return "vaccs"
 
 
-class CohortsFilePath(BaseFilePath):
+class CohortsFileMapping(FileMapping):
     POSITIVE = "positive"
     NEGATIVE = "negative"
     INVALID_STRUCTURE = "invalid_structure"
@@ -76,7 +76,7 @@ class CohortsFilePath(BaseFilePath):
         return "cohorts"
 
 
-class ChildFilePath(BaseFilePath):
+class ChildFileMapping(FileMapping):
     POSITIVE = "positive"
     NEGATIVE = "negative"
     INVALID_STRUCTURE = "invalid_structure"
@@ -89,7 +89,7 @@ class ChildFilePath(BaseFilePath):
         return "child"
 
 
-class ClassFilePath(BaseFilePath):
+class ClassFileMapping(FileMapping):
     POSITIVE = "positive"
     NEGATIVE = "negative"
     INVALID_STRUCTURE = "invalid_structure"
@@ -229,20 +229,20 @@ class TestData:
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
-        self, file_paths: BaseFilePath, session_id: Optional[str] = None
+        self, file_paths: FileMapping, session_id: Optional[str] = None
     ) -> tuple[str, str]:
         """
         Get input and output file paths based on a mapping.
 
         Args:
-            file (BaseFilePath): Identifier for the file paths.
+            file (BaseFileMapping): Identifier for the file paths.
 
         Returns:
             tuple[str, str]: Input and output file paths.
         """
 
         _input_file_path: str = self.create_file_from_template(
-            template_path=file_paths.input_template,
+            template_path=file_paths.input_template_path,
             file_name_prefix=str(file_paths),
             session_id=session_id,
         )

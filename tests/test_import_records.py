@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.data import ClassFilePath, ChildFilePath, VaccsFilePath
+from mavis.test.data import ClassFileMapping, ChildFileMapping, VaccsFileMapping
 from mavis.test.models import Vaccine
 
 
@@ -34,7 +34,7 @@ def setup_vaccs(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(ClassFilePath.SESSION_ID)
+        import_records_page.upload_and_verify_output(ClassFileMapping.SESSION_ID)
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
@@ -67,27 +67,27 @@ def setup_vaccs_systmone(
 ########################################### CHILD LIST ###########################################
 @pytest.mark.childlist
 def test_child_list_file_upload_positive(setup_child_list, import_records_page):
-    import_records_page.upload_and_verify_output(ChildFilePath.POSITIVE)
+    import_records_page.upload_and_verify_output(ChildFileMapping.POSITIVE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_negative(setup_child_list, import_records_page):
-    import_records_page.upload_and_verify_output(ChildFilePath.NEGATIVE)
+    import_records_page.upload_and_verify_output(ChildFileMapping.NEGATIVE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_structure(setup_child_list, import_records_page):
-    import_records_page.upload_and_verify_output(ChildFilePath.INVALID_STRUCTURE)
+    import_records_page.upload_and_verify_output(ChildFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.childlist
 def test_child_list_no_record(setup_child_list, import_records_page):
-    import_records_page.upload_and_verify_output(ChildFilePath.HEADER_ONLY)
+    import_records_page.upload_and_verify_output(ChildFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.childlist
 def test_child_list_empty_file(setup_child_list, import_records_page):
-    import_records_page.upload_and_verify_output(ChildFilePath.EMPTY_FILE)
+    import_records_page.upload_and_verify_output(ChildFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.childlist
@@ -95,7 +95,9 @@ def test_child_list_empty_file(setup_child_list, import_records_page):
 def test_child_list_space_normalization(
     setup_child_list, import_records_page, children_page, dashboard_page
 ):
-    input_file, _ = import_records_page.upload_and_verify_output(ChildFilePath.MAV_1080)
+    input_file, _ = import_records_page.upload_and_verify_output(
+        ChildFileMapping.MAV_1080
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
@@ -109,7 +111,7 @@ def test_class_list_file_upload_positive(
     setup_class_list, schools, import_records_page
 ):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
-    import_records_page.upload_and_verify_output(ClassFilePath.POSITIVE)
+    import_records_page.upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
 @pytest.mark.classlist
@@ -117,31 +119,31 @@ def test_class_list_file_upload_negative(
     setup_class_list, schools, import_records_page
 ):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
-    import_records_page.upload_and_verify_output(ClassFilePath.NEGATIVE)
+    import_records_page.upload_and_verify_output(ClassFileMapping.NEGATIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_structure(setup_class_list, schools, import_records_page):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
-    import_records_page.upload_and_verify_output(ClassFilePath.INVALID_STRUCTURE)
+    import_records_page.upload_and_verify_output(ClassFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.classlist
 def test_class_list_no_record(setup_class_list, schools, import_records_page):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
-    import_records_page.upload_and_verify_output(ClassFilePath.HEADER_ONLY)
+    import_records_page.upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.classlist
 def test_class_list_empty_file(setup_class_list, schools, import_records_page):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
-    import_records_page.upload_and_verify_output(ClassFilePath.EMPTY_FILE)
+    import_records_page.upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.classlist
 def test_class_list_year_group(setup_class_list, schools, import_records_page):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]), [8])
-    import_records_page.upload_and_verify_output(ClassFilePath.YEAR_GROUP)
+    import_records_page.upload_and_verify_output(ClassFileMapping.YEAR_GROUP)
 
 
 @pytest.mark.classlist
@@ -150,7 +152,9 @@ def test_class_list_space_normalization(
     setup_class_list, schools, import_records_page, children_page, dashboard_page
 ):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
-    input_file, _ = import_records_page.upload_and_verify_output(ClassFilePath.MAV_1080)
+    input_file, _ = import_records_page.upload_and_verify_output(
+        ClassFileMapping.MAV_1080
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
@@ -162,14 +166,14 @@ def test_class_list_space_normalization(
 @pytest.mark.vaccinations
 def test_vaccs_positive_file_upload(setup_vaccs, import_records_page):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.POSITIVE, session_id=setup_vaccs
+        file_paths=VaccsFileMapping.POSITIVE, session_id=setup_vaccs
     )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_negative_file_upload(setup_vaccs, import_records_page):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.NEGATIVE, session_id=setup_vaccs
+        file_paths=VaccsFileMapping.NEGATIVE, session_id=setup_vaccs
     )
 
 
@@ -177,40 +181,46 @@ def test_vaccs_negative_file_upload(setup_vaccs, import_records_page):
 def test_vaccs_duplicate_record_upload(
     setup_vaccs, dashboard_page, import_records_page
 ):
-    import_records_page.upload_and_verify_output(file_paths=VaccsFilePath.DUP_1)
+    import_records_page.upload_and_verify_output(file_paths=VaccsFileMapping.DUP_1)
     dashboard_page.click_mavis()
     dashboard_page.click_import_records()
     import_records_page.navigate_to_vaccination_records_import()
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.DUP_2,
+        file_paths=VaccsFileMapping.DUP_2,
     )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_file_structure(setup_vaccs, import_records_page):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.INVALID_STRUCTURE
+        file_paths=VaccsFileMapping.INVALID_STRUCTURE
     )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_no_record(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(file_paths=VaccsFilePath.HEADER_ONLY)
+    import_records_page.upload_and_verify_output(
+        file_paths=VaccsFileMapping.HEADER_ONLY
+    )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_empty_file(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(file_paths=VaccsFilePath.EMPTY_FILE)
+    import_records_page.upload_and_verify_output(file_paths=VaccsFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.vaccinations
 def test_vaccs_historic_positive_file_upload(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(file_paths=VaccsFilePath.HIST_POSITIVE)
+    import_records_page.upload_and_verify_output(
+        file_paths=VaccsFileMapping.HIST_POSITIVE
+    )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_historic_negative_file_upload(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(file_paths=VaccsFilePath.HIST_NEGATIVE)
+    import_records_page.upload_and_verify_output(
+        file_paths=VaccsFileMapping.HIST_NEGATIVE
+    )
 
 
 @pytest.mark.vaccinations
@@ -220,7 +230,7 @@ def test_vaccs_historic_no_urn_mav_855(
 ):
     mav_855_child = "MAV_855, MAV_855"
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.MAV_855,
+        file_paths=VaccsFileMapping.MAV_855,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -233,14 +243,14 @@ def test_vaccs_historic_no_urn_mav_855(
 @pytest.mark.vaccinations
 def test_vaccs_systmone_positive_file_upload(setup_vaccs_systmone, import_records_page):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.SYSTMONE_POSITIVE
+        file_paths=VaccsFileMapping.SYSTMONE_POSITIVE
     )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_systmone_negative_file_upload(setup_vaccs_systmone, import_records_page):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.SYSTMONE_NEGATIVE
+        file_paths=VaccsFileMapping.SYSTMONE_NEGATIVE
     )
 
 
@@ -249,7 +259,7 @@ def test_vaccs_systmone_negative_historical_file_upload(
     setup_vaccs_systmone, import_records_page
 ):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.SYSTMONE_HIST_NEGATIVE
+        file_paths=VaccsFileMapping.SYSTMONE_HIST_NEGATIVE
     )
 
 
@@ -259,7 +269,7 @@ def test_vaccs_hpv_space_normalization(
     setup_vaccs, import_records_page, children_page, dashboard_page
 ):
     input_file, _ = import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.MAV_1080,
+        file_paths=VaccsFileMapping.MAV_1080,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -270,5 +280,5 @@ def test_vaccs_hpv_space_normalization(
 @pytest.mark.bug
 def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records_page):
     import_records_page.upload_and_verify_output(
-        file_paths=VaccsFilePath.SYSTMONE_MAV_1080,
+        file_paths=VaccsFileMapping.SYSTMONE_MAV_1080,
     )

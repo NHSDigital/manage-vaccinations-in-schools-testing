@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.data import ClassFilePath
+from mavis.test.data import ClassFileMapping
 
 pytestmark = pytest.mark.sessions
 
@@ -38,12 +38,12 @@ def setup_session_with_file_upload(
 
 @pytest.fixture
 def setup_mavis_1822(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFilePath.POSITIVE)
+    yield from setup_session_with_file_upload(ClassFileMapping.POSITIVE)
 
 
 @pytest.fixture
 def setup_mav_1018(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFilePath.SESSION_ID)
+    yield from setup_session_with_file_upload(ClassFileMapping.SESSION_ID)
 
 
 def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
