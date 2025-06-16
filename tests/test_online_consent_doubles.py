@@ -67,9 +67,9 @@ def test_given(
 
     for _ in range(number_of_health_questions):
         if health_question:
-            consent_page.select_and_provide_details("More details")
+            consent_page.answer_yes("More details")
         else:
-            consent_page.select_and_provide_details(None)
+            consent_page.answer_no()
 
     if programmes != [Programme.MENACWY, Programme.TD_IPV]:
         consent_page.select_consent_not_given_reason(
