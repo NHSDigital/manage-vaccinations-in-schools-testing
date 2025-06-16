@@ -606,6 +606,7 @@ class SessionsPage:
         self,
         child_name: str,
         programme: Programme,
+        batch_name: str,
         at_school: bool = True,
         notes: str = "",
     ):
@@ -625,7 +626,7 @@ class SessionsPage:
             self.pre_screening_notes.fill("Prescreening notes")
             self.click_continue_button()
 
-        self.page.get_by_role("radio", name=programme.vaccines[0]).check()
+        self.page.get_by_role("radio", name=batch_name).check()
         self.click_continue_button()
 
         if at_school:  # only skips MAV-854

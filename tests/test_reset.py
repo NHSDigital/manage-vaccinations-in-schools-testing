@@ -16,9 +16,9 @@ def setup_mav_965(
     vaccines_page,
 ):
     dashboard_page.click_vaccines()
-    vaccines_page.add_batch(Vaccine.GARDASIL_9)
-    vaccines_page.add_batch(Vaccine.MENQUADFI)
-    vaccines_page.add_batch(Vaccine.REVAXIS)
+    gardasil_9_batch_name = vaccines_page.add_batch(Vaccine.GARDASIL_9)
+    menquadfi_batch_name = vaccines_page.add_batch(Vaccine.MENQUADFI)
+    revaxis_batch_name = vaccines_page.add_batch(Vaccine.REVAXIS)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0], for_today=True)
@@ -26,6 +26,7 @@ def setup_mav_965(
     import_records_page.upload_and_verify_output(FilePath.CLASS_MAV_965)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
+    return gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name
 
 
 @allure.issue("MAV-965")
@@ -50,6 +51,7 @@ def test_programmes_rav_pre_screening_questions(
     """
 
     mav_965_child = "MAV_965, MAV_965"
+    gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name = setup_mav_965
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
@@ -75,15 +77,18 @@ def test_programmes_rav_pre_screening_questions(
     sessions_page.record_vaccs_for_child(
         child_name=mav_965_child,
         programme=Programme.HPV,
+        batch_name=gardasil_9_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
     sessions_page.record_vaccs_for_child(
         child_name=mav_965_child,
         programme=Programme.MENACWY,
+        batch_name=menquadfi_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
     sessions_page.record_vaccs_for_child(
         child_name=mav_965_child,
         programme=Programme.TD_IPV,
+        batch_name=revaxis_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
