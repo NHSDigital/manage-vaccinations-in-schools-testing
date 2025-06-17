@@ -1,5 +1,13 @@
-from .helpers import get_online_consent_url, log_in_as_admin, log_in_as_nurse, test_data
+from .helpers import (
+    add_vaccine_batch,
+    get_online_consent_url,
+    log_in_as_admin,
+    log_in_as_nurse,
+    test_data,
+)
 from .pages import (
+    add_batch_page,
+    archive_batch_page,
     archive_consent_response_page,
     children_page,
     consent_page,
@@ -7,6 +15,7 @@ from .pages import (
     create_new_record_consent_response_page,
     dashboard_page,
     download_school_moves_page,
+    edit_batch_page,
     import_records_page,
     log_in_page,
     match_consent_response_page,
@@ -40,7 +49,10 @@ from .playwright import (
 )
 
 __all__ = [
+    "add_vaccine_batch",
+    "add_batch_page",
     "admin",
+    "archive_batch_page",
     "archive_consent_response_page",
     "base_url",
     "basic_auth",
@@ -53,6 +65,7 @@ __all__ = [
     "create_new_record_consent_response_page",
     "dashboard_page",
     "download_school_moves_page",
+    "edit_batch_page",
     "get_online_consent_url",
     "import_records_page",
     "log_in_as_admin",

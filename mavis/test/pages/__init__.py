@@ -14,10 +14,12 @@ from .consent_responses import (
     MatchConsentResponsePage,
     UnmatchedConsentResponsesPage,
 )
-from .vaccines import VaccinesPage
+from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
 
 
 __all__ = [
+    "AddBatchPage",
+    "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
     "ChildrenPage",
     "ConsentPage",
@@ -25,6 +27,7 @@ __all__ = [
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",
     "DownloadSchoolMovesPage",
+    "EditBatchPage",
     "ImportRecordsPage",
     "LogInPage",
     "MatchConsentResponsePage",

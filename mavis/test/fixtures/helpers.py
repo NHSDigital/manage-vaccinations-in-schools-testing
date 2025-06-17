@@ -1,6 +1,22 @@
+from datetime import date, timedelta
+
 import pytest
 
 from ..data import TestData
+from ..models import Vaccine
+
+
+@pytest.fixture
+def add_vaccine_batch(add_batch_page, dashboard_page, vaccines_page):
+    def wrapper(vaccine: Vaccine, batch_name: str = "ABC123"):
+        vaccines_page.navigate()
+        vaccines_page.click_add_batch(vaccine)
+        add_batch_page.fill_name(batch_name)
+        add_batch_page.fill_expiry_date(date.today() + timedelta(days=1))
+        add_batch_page.confirm()
+        return batch_name
+
+    return wrapper
 
 
 @pytest.fixture

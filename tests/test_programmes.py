@@ -59,17 +59,14 @@ def setup_mavis_1729(
 @pytest.fixture
 def setup_mav_854(
     log_in_as_nurse,
+    add_vaccine_batch,
     schools,
     dashboard_page,
     import_records_page,
     sessions_page,
-    vaccines_page,
 ):
     try:
-        community_clinics_session = "Community clinics"
-
-        dashboard_page.click_vaccines()
-        batch_name = vaccines_page.add_batch(Vaccine.GARDASIL_9)
+        batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
@@ -78,9 +75,7 @@ def setup_mav_854(
         sessions_page.click_location(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            community_clinics_session, for_today=True
-        )
+        sessions_page.schedule_a_valid_session("Community clinics", for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield batch_name
