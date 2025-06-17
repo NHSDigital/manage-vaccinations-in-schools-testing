@@ -104,25 +104,27 @@ def onboarding(clinics, schools, team, organisation, users):
     }
 
 
-@pytest.fixture(scope="session", autouse=True)
-def onboard(base_url, onboarding):
-    url = urllib.parse.urljoin(base_url, "api/onboard")
-    response = requests.post(url, json=onboarding)
-    if response.ok:
-        return
-
-    logger.warning(response.content)
+def _check_response_status(response):
+    if not response.ok:
+        logger.warning(response.content)
     response.raise_for_status()
 
 
-@pytest.fixture(scope="module", autouse=True)
-def reset(base_url, organisation):
+@pytest.fixture(scope="session", autouse=True)
+def onboard_and_delete(base_url, onboarding, organisation):
+    url = urllib.parse.urljoin(base_url, "api/onboard")
+    response = requests.post(url, json=onboarding)
+    _check_response_status(response)
+
     yield
 
     url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
     response = requests.delete(url)
-    if response.ok:
-        return
+    _check_response_status(response)
 
-    logger.warning(response.content)
-    response.raise_for_status()
+
+@pytest.fixture(scope="module", autouse=True)
+def reset_before_each_module(base_url, organisation):
+    url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
+    response = requests.delete(url, params={"keep_itself": "true"})
+    _check_response_status(response)
