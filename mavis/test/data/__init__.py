@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List, Optional
-from enum import StrEnum
+from enum import Enum
 
 import nhs_number
 import pandas as pd
@@ -15,7 +15,7 @@ from ..wrappers import (
 )
 
 
-class FileMapping(StrEnum):
+class FileMapping(Enum):
     @property
     def input_template_path(self) -> Path:
         return self.folder / f"i_{self.value}.csv"
@@ -59,7 +59,6 @@ class CohortsFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    NO_CONSENT = "no_consent"
     CONFLICTING_CONSENT = "conflicting_consent"
     E2E_1 = "e2e_1"
     UCR_MATCH = "ucr_match"
@@ -131,7 +130,6 @@ class TestData:
         file_name_prefix: str,
         session_id: Optional[str] = None,
     ) -> Path:
-
         static_replacements = {
             "<<VACCS_DATE>>": get_current_datetime()[:8],
             "<<VACCS_TIME>>": get_current_time(),
@@ -151,7 +149,9 @@ class TestData:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         for year_group in range(8, 12):
-            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = get_date_of_birth_for_year_group(year_group)
+            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = (
+                get_date_of_birth_for_year_group(year_group)
+            )
 
         file_content = self._replace_placeholders(
             template_path=template_path, static_replacements=static_replacements
@@ -160,8 +160,9 @@ class TestData:
 
         output_path = self.working_path / filename
         output_path.write_text(file_content, encoding="utf-8")
+
         return output_path
-    
+
     def _replace_placeholders(
         self, template_path: Path, static_replacements: dict[str, str]
     ) -> str:
@@ -178,7 +179,7 @@ class TestData:
                 "<<PARENT_EMAIL>>": f"{current_dt}{index}@example.com",
             }
             all_replacements = {**static_replacements, **dynamic_replacements}
-            
+
             for key, value in all_replacements.items():
                 line = line.replace(key, str(value) if value else "")
             lines.append(line)
