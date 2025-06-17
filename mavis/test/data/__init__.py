@@ -17,16 +17,16 @@ from ..wrappers import (
 
 class FileMapping(StrEnum):
     @property
-    def input_template_path(self) -> str:
-        return f"{self.folder}/i_{self.value}.csv"
+    def input_template_path(self) -> Path:
+        return self.folder / f"i_{self.value}.csv"
 
     @property
-    def output_path(self) -> str:
-        return f"{self.folder}/o_{self.value}.txt"
+    def output_path(self) -> Path:
+        return self.folder / f"o_{self.value}.txt"
 
     @property
-    def folder(self) -> str:
-        return ""
+    def folder(self) -> Path:
+        return Path("")
 
 
 class VaccsFileMapping(FileMapping):
@@ -49,8 +49,8 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_MAV_1080 = "systmone_mav_1080"
 
     @property
-    def folder(self) -> str:
-        return "vaccs"
+    def folder(self) -> Path:
+        return Path("vaccs")
 
 
 class CohortsFileMapping(FileMapping):
@@ -72,8 +72,8 @@ class CohortsFileMapping(FileMapping):
     GILLICK_NOTES_LENGTH = "gillick_notes_length"
 
     @property
-    def folder(self) -> str:
-        return "cohorts"
+    def folder(self) -> Path:
+        return Path("cohorts")
 
 
 class ChildFileMapping(FileMapping):
@@ -85,8 +85,8 @@ class ChildFileMapping(FileMapping):
     MAV_1080 = "mav_1080"
 
     @property
-    def folder(self) -> str:
-        return "child"
+    def folder(self) -> Path:
+        return Path("child")
 
 
 class ClassFileMapping(FileMapping):
@@ -107,15 +107,11 @@ class ClassFileMapping(FileMapping):
     CHANGE_NHSNO = "change_nhsno"
 
     @property
-    def folder(self) -> str:
-        return "class_list"
+    def folder(self) -> Path:
+        return Path("class_list")
 
 
 class TestData:
-    """
-    A class to handle operations related to test data.
-    """
-
     template_path = Path(__file__).parent
     working_path = Path("working")
 
@@ -131,138 +127,89 @@ class TestData:
 
     def create_file_from_template(
         self,
-        template_path: str,
+        template_path: Path,
         file_name_prefix: str,
         session_id: Optional[str] = None,
-    ) -> str:
-        """
-        Create a file from a template while replacing placeholders with calculated values.
+    ) -> Path:
 
-        Args:
-            template_path (str): Path to the template file.
-            file_name_prefix (str): Prefix for the generated file name.
-
-        Returns:
-            str: Path to the created file.
-        """
-
-        template_text = self.read_file(template_path)
-
-        _dt = get_current_datetime()
-        _hist_dt = get_offset_date(offset_days=-(365 * 2))
-
-        replacements = {
-            "<<VACCS_DATE>>": _dt[:8],
+        static_replacements = {
+            "<<VACCS_DATE>>": get_current_datetime()[:8],
             "<<VACCS_TIME>>": get_current_time(),
-            "<<HIST_VACCS_DATE>>": _hist_dt,
+            "<<HIST_VACCS_DATE>>": get_offset_date(offset_days=-(365 * 2)),
             "<<SESSION_ID>>": session_id,
         }
 
         if self.organisation:
-            replacements["<<ORG_CODE>>"] = self.organisation.ods_code
+            static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
 
         if self.schools:
             for index, school in enumerate(self.schools):
-                replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
-                replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
+                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
+                static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
         if self.nurse:
-            replacements["<<NURSE_EMAIL>>"] = self.nurse.username
+            static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         for year_group in range(8, 12):
-            replacements[f"<<DOB_YEAR_{year_group}>>"] = (
-                get_date_of_birth_for_year_group(year_group)
-            )
+            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = get_date_of_birth_for_year_group(year_group)
 
-        _file_text = []
-        _ctr = 0
-
-        for line in template_text.splitlines():
-            dynamic_replacements = replacements.copy()
-            dynamic_replacements["<<FNAME>>"] = f"F{_dt}{_ctr}"
-            dynamic_replacements["<<LNAME>>"] = f"L{_dt}{_ctr}"
-            dynamic_replacements["<<NHS_NO>>"] = self.get_new_nhs_no(valid=True)
-            dynamic_replacements["<<INVALID_NHS_NO>>"] = self.get_new_nhs_no(
-                valid=False
-            )
-            dynamic_replacements["<<PARENT_EMAIL>>"] = f"{_dt}{_ctr}@example.com"
-
-            for key, value in dynamic_replacements.items():
-                line = line.replace(key, str(value) if value else "")
-
-            _file_text.append(line)
-            _ctr += 1
-
+        file_content = self._replace_placeholders(
+            template_path=template_path, static_replacements=static_replacements
+        )
         filename = f"{file_name_prefix}{get_current_datetime()}.csv"
 
-        path = self.working_path / filename
-        path.write_text("\n".join(_file_text), encoding="utf-8")
-        return str(path)
+        output_path = self.working_path / filename
+        output_path.write_text(file_content, encoding="utf-8")
+        return output_path
+    
+    def _replace_placeholders(
+        self, template_path: Path, static_replacements: dict[str, str]
+    ) -> str:
+        template_text = self.read_file(template_path)
+        current_dt = get_current_datetime()
+
+        lines = []
+        for index, line in enumerate(template_text.splitlines()):
+            dynamic_replacements = {
+                "<<FNAME>>": f"F{current_dt}{index}",
+                "<<LNAME>>": f"L{current_dt}{index}",
+                "<<NHS_NO>>": self.get_new_nhs_no(valid=True),
+                "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
+                "<<PARENT_EMAIL>>": f"{current_dt}{index}@example.com",
+            }
+            all_replacements = {**static_replacements, **dynamic_replacements}
+            
+            for key, value in all_replacements.items():
+                line = line.replace(key, str(value) if value else "")
+            lines.append(line)
+
+        return "\n".join(lines)
 
     def get_new_nhs_no(self, valid=True) -> str:
-        """
-        Generate a new NHS number.
-
-        Args:
-            valid (bool, optional): Whether to generate a valid NHS number. Defaults to True.
-
-        Returns:
-            str: Generated NHS number.
-        """
         return nhs_number.generate(
             valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1
         )[0]
 
-    def get_expected_errors(self, file_path: str):
-        """
-        Get expected errors from a file.
-
-        Args:
-            file_path (str): Path to the file.
-
-        Returns:
-            list[str]: List of expected errors.
-        """
+    def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
         file_content = self.read_file(file_path)
-
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
-        self, file_paths: FileMapping, session_id: Optional[str] = None
-    ) -> tuple[str, str]:
-        """
-        Get input and output file paths based on a mapping.
-
-        Args:
-            file (BaseFileMapping): Identifier for the file paths.
-
-        Returns:
-            tuple[str, str]: Input and output file paths.
-        """
-
-        _input_file_path: str = self.create_file_from_template(
-            template_path=file_paths.input_template_path,
-            file_name_prefix=str(file_paths),
+        self, file_mapping: FileMapping, session_id: Optional[str] = None
+    ) -> tuple[Path, Path]:
+        _input_file_path = self.create_file_from_template(
+            template_path=file_mapping.input_template_path,
+            file_name_prefix=str(file_mapping),
             session_id=session_id,
         )
 
-        _output_file_path = file_paths.output_path
+        _output_file_path = file_mapping.output_path
 
         return _input_file_path, _output_file_path
 
     def create_child_list_from_file(
-        self, file_path: str, is_vaccinations: bool
+        self, file_path: Path, is_vaccinations: bool
     ) -> list[str]:
-        """
-        Create a list of child names from a file.
-
-        Args:
-            file_path (str): Path to the file.
-            is_vaccinations (bool): Whether the file type is for vaccinations.
-
-        Returns:
-            list: List of child names.
-        """
         _file_df = pd.read_csv(file_path)
 
         if is_vaccinations:
@@ -276,24 +223,17 @@ class TestData:
         return _names_list
 
     def normalize_whitespace(self, string: str) -> str:
-        # Remove zero-width joiner
+        """
+        Normalize whitespace in a string:
+        - Remove zero-width joiners
+        - Replace non-breaking spaces with regular spaces
+        - Collapse consecutive whitespace to a single space
+        - Strip leading/trailing whitespace
+        """
         string = string.replace("\u200d", "")
-        # Replace non-breaking spaces with regular spaces
         string = string.replace("\u00a0", " ")
-        # Strip leading/trailing whitespace, and replace consecutive whitespace with a single space
-        string = re.sub(r"\s+", " ", string.strip())
-        return string
+        return re.sub(r"\s+", " ", string).strip()
 
-    def get_session_id(self, path: str) -> str:
-        """
-        Get the session ID from an Excel file.
-
-        Args:
-            path (str): Path to the Excel file.
-
-        Returns:
-            str: Session ID.
-        """
-
+    def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations")
         return data_frame["SESSION_ID"].iloc[0]

@@ -65,7 +65,7 @@ def setup_mav_853(
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
         import_records_page.upload_and_verify_output(
-            file_paths=VaccsFileMapping.MAV_853, session_id=session_id
+            file_mapping=VaccsFileMapping.MAV_853, session_id=session_id
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()

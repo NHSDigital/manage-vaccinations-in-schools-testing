@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pathlib import Path
 from playwright.sync_api import Page, expect
 import time
 from typing import Optional
@@ -62,7 +63,7 @@ class ImportRecordsPage:
         self.continue_button.click()
 
     @step("Set input file to {1}")
-    def set_input_file(self, file_path: str):
+    def set_input_file(self, file_path: Path):
         self.file_input.set_input_files(file_path)
 
     @step("Fill location combobox with {1}")
@@ -125,10 +126,10 @@ class ImportRecordsPage:
         self.click_continue()
 
     def upload_and_verify_output(
-        self, file_paths: FileMapping, session_id: Optional[str] = None
-    ):
+        self, file_mapping: FileMapping, session_id: Optional[str] = None
+    ) -> tuple[Path, Path]:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_paths=file_paths, session_id=session_id
+            file_mapping=file_mapping, session_id=session_id
         )
         self.set_input_file(_input_file_path)
         self.record_upload_time()
@@ -146,7 +147,6 @@ class ImportRecordsPage:
 
     @step("Click link with uploaded datetime")
     def click_uploaded_file_datetime(self):
-        # FIXME: This logic is duplicated in three places, we should extract it somewhere else.
         first_link = self.page.get_by_role(
             "link", name=format_datetime_for_upload_link(self.upload_time)
         )
@@ -161,8 +161,8 @@ class ImportRecordsPage:
         # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
         first_link.or_(second_link).first.click()
 
-    def verify_upload_output(self, file_path: str):
-        _expected_errors = self.test_data.get_expected_errors(file_path=file_path)
+    def verify_upload_output(self, file_path: Path):
+        _expected_errors = self.test_data.get_expected_errors(file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 if _msg.startswith("!"):

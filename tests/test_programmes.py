@@ -45,7 +45,7 @@ def setup_mavis_1729(
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
         import_records_page.upload_and_verify_output(
-            file_paths=VaccsFileMapping.HPV_DOSE_TWO, session_id=session_id
+            file_mapping=VaccsFileMapping.HPV_DOSE_TWO, session_id=session_id
         )
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()

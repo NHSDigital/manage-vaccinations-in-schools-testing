@@ -1,3 +1,4 @@
+from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
@@ -51,7 +52,7 @@ class ChildrenPage:
         expect(self.one_child_found_heading).to_be_visible()
 
     def verify_list_has_been_uploaded(
-        self, file_path: str, is_vaccinations: bool
+        self, file_path: Path, is_vaccinations: bool
     ) -> None:
         child_names = self.test_data.create_child_list_from_file(
             file_path, is_vaccinations
