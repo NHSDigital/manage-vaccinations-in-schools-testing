@@ -18,17 +18,17 @@ def online_consent_url(get_online_consent_url):
 
 
 @pytest.fixture
-def child_name(faker):
+def child_name(faker) -> tuple[str, str]:
     return faker.first_name(), faker.last_name()
 
 
 @pytest.fixture
-def child_date_of_birth():
+def child_date_of_birth() -> date:
     return date(2009, 8, 12)
 
 
 @pytest.fixture
-def child_address():
+def child_address() -> tuple[str, str, str, str]:
     return (
         "1 ROWSLEY AVENUE",
         "",

@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List, Optional
 from enum import Enum
+from faker import Faker
 
 import nhs_number
 import pandas as pd
@@ -119,6 +120,8 @@ class TestData:
         self.schools = schools
         self.nurse = nurse
 
+        self.faker = Faker(locale="en_GB")
+
         self.working_path.mkdir(parents=True, exist_ok=True)
 
     def read_file(self, filename):
@@ -167,16 +170,15 @@ class TestData:
         self, template_path: Path, static_replacements: dict[str, str]
     ) -> str:
         template_text = self.read_file(template_path)
-        current_dt = get_current_datetime()
 
         lines = []
-        for index, line in enumerate(template_text.splitlines()):
+        for line in template_text.splitlines():
             dynamic_replacements = {
-                "<<FNAME>>": f"F{current_dt}{index}",
-                "<<LNAME>>": f"L{current_dt}{index}",
+                "<<FNAME>>": self.faker.first_name(),
+                "<<LNAME>>": self.faker.last_name().upper(),
                 "<<NHS_NO>>": self.get_new_nhs_no(valid=True),
                 "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
-                "<<PARENT_EMAIL>>": f"{current_dt}{index}@example.com",
+                "<<PARENT_EMAIL>>": self.faker.email(),
             }
             all_replacements = {**static_replacements, **dynamic_replacements}
 
