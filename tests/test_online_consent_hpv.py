@@ -22,7 +22,7 @@ def test_refused(consent_page, faker, schools):
     consent_page.fill_child_date_of_birth(date(2011, 1, 3))
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_programmes([])
+    consent_page.dont_agree_to_vaccination()
     consent_page.select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
@@ -45,7 +45,7 @@ def test_given(consent_page, faker, schools, change_school, health_question):
         consent_page.select_child_school(schools[0])
 
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_programmes([Programme.HPV])
+    consent_page.agree_to_hpv_vaccination()
     consent_page.fill_address_details(
         "1 ROWSLEY AVENUE",
         "",

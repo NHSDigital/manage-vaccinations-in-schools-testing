@@ -22,7 +22,7 @@ def test_refused(consent_page, faker, schools):
     consent_page.fill_child_date_of_birth(date(2011, 1, 3))
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_programmes([])
+    consent_page.dont_agree_to_vaccination()
     consent_page.select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
@@ -34,8 +34,9 @@ def test_refused(consent_page, faker, schools):
 
 
 @pytest.mark.parametrize("change_school", (False, True))
+@pytest.mark.parametrize("injection", (False, True))
 @pytest.mark.parametrize("health_question", (False, True))
-def test_given(consent_page, faker, schools, change_school, health_question):
+def test_given(consent_page, faker, schools, change_school, injection, health_question):
     consent_page.fill_child_name_details("ROSE", "VOSE")
     consent_page.fill_child_date_of_birth(date(2009, 8, 12))
 
@@ -45,7 +46,7 @@ def test_given(consent_page, faker, schools, change_school, health_question):
         consent_page.select_child_school(schools[0])
 
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_programmes([Programme.HPV])
+    consent_page.agree_to_flu_vaccination(injection=injection)
     consent_page.fill_address_details(
         "1 ROWSLEY AVENUE",
         "",
@@ -63,6 +64,10 @@ def test_given(consent_page, faker, schools, change_school, health_question):
     else:
         for _ in range(9):
             consent_page.answer_no()
+
+    # If consenting to nasal spray, a question is asked about injection as an alternative
+    if not injection:
+        consent_page.answer_yes()
 
     consent_page.click_confirm()
 

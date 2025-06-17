@@ -104,7 +104,12 @@ class ConsentPage:
             "radio", name="MenACWY"
         )
         self.doubles_consent_tdipv_radio = self.page.get_by_role("radio", name="Td/IPV")
-
+        self.flu_agree_injection_radio = self.page.get_by_role(
+            "radio", name="Yes, I agree to the alternative flu injection"
+        )
+        self.flu_agree_nasal_radio = self.page.get_by_role(
+            "radio", name="Yes, I agree to them having the nasal spray vaccine"
+        )
         self.hpv_consent_agree_radio = self.page.get_by_role(
             "radio", name="Yes, I agree"
         )
@@ -198,25 +203,34 @@ class ConsentPage:
 
         self.click_continue()
 
-    @step("Select consent for programmes {1}")
-    def select_consent_for_programmes(
-        self, list_of_programmes: list[Programme]
-    ) -> None:
-        if (
-            Programme.MENACWY in list_of_programmes
-            and Programme.TD_IPV in list_of_programmes
-        ):
+    @step("Agree to doubles vaccinations: {1}")
+    def agree_to_doubles_vaccinations(self, *programmes: Programme):
+        if Programme.MENACWY in programmes and Programme.TD_IPV in programmes:
             self.doubles_consent_both_radio.check()
-        elif Programme.MENACWY in list_of_programmes:
+        elif Programme.MENACWY in programmes:
             self.doubles_consent_one_radio.check()
             self.doubles_consent_menacwy_radio.check()
-        elif Programme.TD_IPV in list_of_programmes:
+        elif Programme.TD_IPV in programmes:
             self.doubles_consent_one_radio.check()
             self.doubles_consent_tdipv_radio.check()
-        elif Programme.HPV in list_of_programmes:
-            self.hpv_consent_agree_radio.check()
+        self.click_continue()
+
+    @step("Agree to Flu vaccination (injection = {injection})")
+    def agree_to_flu_vaccination(self, *, injection: bool):
+        if injection:
+            self.flu_agree_injection_radio.check()
         else:
-            self.no_consent_radio.check()
+            self.flu_agree_nasal_radio.check()
+        self.click_continue()
+
+    @step("Agree to HPV vaccination")
+    def agree_to_hpv_vaccination(self):
+        self.hpv_consent_agree_radio.check()
+        self.click_continue()
+
+    @step("Don't agree to vaccination")
+    def dont_agree_to_vaccination(self):
+        self.no_consent_radio.check()
         self.click_continue()
 
     @step("Fill address details")
