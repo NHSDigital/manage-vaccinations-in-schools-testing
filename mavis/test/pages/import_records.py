@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
-from playwright.sync_api import Page, expect
 import time
+from datetime import datetime, timedelta
 from typing import Optional
+
+from playwright.sync_api import Page, expect
 
 from ..data import TestData
 from ..step import step
@@ -125,7 +126,9 @@ class ImportRecordsPage:
         self.click_continue()
 
     def upload_and_verify_output(
-        self, file_paths: str, session_id: Optional[str] = None
+        self,
+        file_paths: str,
+        session_id: Optional[str] = None,
     ):
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_paths=file_paths, session_id=session_id

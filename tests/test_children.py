@@ -60,7 +60,9 @@ def setup_mav_853(
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
         programmes_page.navigate_to_cohort_import(Programme.HPV)
-        import_records_page.upload_and_verify_output(FilePath.COHORTS_MAV_853)
+        _input_file, _ = import_records_page.upload_and_verify_output(
+            FilePath.COHORTS_MAV_853
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
@@ -69,7 +71,7 @@ def setup_mav_853(
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
-        yield
+        yield _input_file
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -90,7 +92,10 @@ def test_details_mav_853(setup_mav_853, children_page, schools):
     3. Expected: patient details can be seen
     Actual: crash
     """
-    mav_853_child = "MAV_853, MAV_853"
+    test_data = children_page.test_data
+    mav_853_child = test_data.create_child_list_from_file(
+        file_path=setup_mav_853, is_vaccinations=False
+    )[0]
 
     children_page.search_for_a_child(mav_853_child)
     children_page.click_record_for_child(mav_853_child)
