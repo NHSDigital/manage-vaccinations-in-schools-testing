@@ -54,7 +54,7 @@ def give_online_consent(
     consent_page.fill_child_date_of_birth(child_date_of_birth)
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
-    consent_page.select_consent_for_programmes([Programme.HPV])
+    consent_page.agree_to_hpv_vaccination()
     consent_page.fill_address_details(*child_address)
     for _ in range(4):
         consent_page.answer_no()
