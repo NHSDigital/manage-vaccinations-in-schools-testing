@@ -10,7 +10,6 @@ import requests
 
 from ..models import Clinic, School, Team, Organisation, User
 
-
 logger = logging.getLogger(__name__)
 
 onboarding_faker = Faker(locale="en_GB")

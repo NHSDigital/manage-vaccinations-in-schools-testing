@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.data import FilePath
+from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme
 
 pytestmark = pytest.mark.e2e
@@ -37,7 +37,7 @@ def test_e2e(
 
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(FilePath.COHORTS_E2E_1)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.E2E_1)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0])

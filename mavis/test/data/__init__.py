@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Final, List, Optional
+from typing import List, Optional
+from enum import Enum
 
 import nhs_number
 import pandas as pd
@@ -14,68 +15,102 @@ from ..wrappers import (
 )
 
 
-class FilePath:
-    VACCS_POSITIVE: Final[str] = "VACCS_HPV_POSITIVE"
-    VACCS_NEGATIVE: Final[str] = "VACCS_HPV_NEGATIVE"
-    VACCS_HIST_POSITIVE: Final[str] = "VACCS_HIST_HPV_POSITIVE"
-    VACCS_HIST_NEGATIVE: Final[str] = "VACCS_HIST_HPV_NEGATIVE"
-    VACCS_DUP_1: Final[str] = "VACCS_HPV_DUP_1"
-    VACCS_DUP_2: Final[str] = "VACCS_HPV_DUP_2"
-    VACCS_INVALID_STRUCTURE: Final[str] = "VACCS_HPV_INVALID_STRUCTURE"
-    VACCS_EMPTY_FILE: Final[str] = "VACCS_HPV_EMPTY_FILE"
-    VACCS_HPV_DOSE_TWO: Final[str] = "VACCS_HPV_DOSE_TWO"
-    VACCS_HEADER_ONLY: Final[str] = "VACCS_HPV_HEADER_ONLY"
-    VACCS_MAV_853: Final[str] = "VACCS_HPV_MAV_853"
-    VACCS_HPV_MAV_855: Final[str] = "VACCS_HPV_MAV_855"
-    VACCS_SYSTMONE_POSITIVE: Final[str] = "VACCS_SYSTMONE_POSITIVE"
-    VACCS_SYSTMONE_NEGATIVE: Final[str] = "VACCS_SYSTMONE_NEGATIVE"
-    VACCS_SYSTMONE_HIST_NEGATIVE: Final[str] = "VACCS_SYSTMONE_HIST_NEGATIVE"
-    VACCS_MAV_1080: Final[str] = "VACCS_MAV_1080"
-    VACCS_SYSTMONE_MAV_1080: Final[str] = "VACCS_SYSTMONE_MAV_1080"
-    COHORTS_POSITIVE: Final[str] = "COHORTS_POSITIVE"
-    COHORTS_NEGATIVE: Final[str] = "COHORTS_NEGATIVE"
-    COHORTS_INVALID_STRUCTURE: Final[str] = "COHORTS_INVALID_STRUCTURE"
-    COHORTS_EMPTY_FILE: Final[str] = "COHORTS_EMPTY_FILE"
-    COHORTS_HEADER_ONLY: Final[str] = "COHORTS_HEADER_ONLY"
-    CHILD_POSITIVE: Final[str] = "CHILD_POSITIVE"
-    CHILD_NEGATIVE: Final[str] = "CHILD_NEGATIVE"
-    CHILD_INVALID_STRUCTURE: Final[str] = "CHILD_INVALID_STRUCTURE"
-    CHILD_EMPTY_FILE: Final[str] = "CHILD_EMPTY_FILE"
-    CHILD_HEADER_ONLY: Final[str] = "CHILD_HEADER_ONLY"
-    CHILD_MAV_1080: Final[str] = "CHILD_MAV_1080"
-    CLASS_POSITIVE: Final[str] = "CLASS_POSITIVE"
-    CLASS_NEGATIVE: Final[str] = "CLASS_NEGATIVE"
-    CLASS_INVALID_STRUCTURE: Final[str] = "CLASS_INVALID_STRUCTURE"
-    CLASS_EMPTY_FILE: Final[str] = "CLASS_EMPTY_FILE"
-    CLASS_HEADER_ONLY: Final[str] = "CLASS_HEADER_ONLY"
-    CLASS_CHILDREN_FILTER: Final[str] = "CLASS_CHILDREN_FILTER"
-    CLASS_YEAR_GROUP: Final[str] = "CLASS_YEAR_GROUP"
-    CLASS_SESSION_ID: Final[str] = "CLASS_SESSION_ID"
-    CLASS_SINGLE_VACC: Final[str] = "CLASS_SINGLE_VACC"
-    CLASS_MAV_854: Final[str] = "CLASS_MAV_854"
-    CLASS_MAV_965: Final[str] = "CLASS_MAV_965"
-    CLASS_MAV_1080: Final[str] = "CLASS_MAV_1080"
-    COHORTS_NO_CONSENT: Final[str] = "COHORTS_NO_CONSENT"
-    COHORTS_CONFLICTING_CONSENT: Final[str] = "COHORTS_CONFLICTING_CONSENT"
-    COHORTS_E2E_1: Final[str] = "COHORTS_E2E_1"
-    CLASS_MOVES_CONFIRM_IGNORE: Final[str] = "CLASS_MOVES_CONFIRM_IGNORE"
-    CLASS_MOVES_UNKNOWN_HOMESCHOOLED: Final[str] = "CLASS_MOVES_UNKNOWN_HOMESCHOOLED"
-    CLASS_CHANGE_NHSNO: Final[str] = "CLASS_CHANGE_NHSNO"
-    COHORTS_UCR_MATCH: Final[str] = "COHORTS_UCR_MATCH"
-    COHORTS_CONSENT_TWICE: Final[str] = "COHORTS_CONSENT_TWICE"
-    COHORTS_CONFLICTING_GILLICK: Final[str] = "COHORTS_CONFLICTING_GILLICK"
-    COHORTS_FULL_NAME: Final[str] = "COHORTS_FULL_NAME"
-    COHORTS_MAV_927_PERF: Final[str] = "COHORTS_MAV_927_PERF"
-    COHORTS_MAV_909: Final[str] = "COHORTS_MAV_909"
-    COHORTS_MAV_853: Final[str] = "COHORTS_MAV_853"
-    COHORTS_GILLICK_NOTES_LENGTH: Final[str] = "COHORTS_GILLICK_NOTES_LENGTH"
+class FileMapping(Enum):
+    @property
+    def input_template_path(self) -> Path:
+        return self.folder / f"i_{self.value}.csv"
+
+    @property
+    def output_path(self) -> Path:
+        return self.folder / f"o_{self.value}.txt"
+
+    @property
+    def folder(self) -> Path:
+        return Path("")
+
+
+class VaccsFileMapping(FileMapping):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    HIST_POSITIVE = "hist_positive"
+    HIST_NEGATIVE = "hist_negative"
+    DUP_1 = "dup_1"
+    DUP_2 = "dup_2"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HPV_DOSE_TWO = "hpv_dose_two"
+    HEADER_ONLY = "header_only"
+    MAV_853 = "mav_853"
+    MAV_855 = "mav_855"
+    SYSTMONE_POSITIVE = "systmone_positive"
+    SYSTMONE_NEGATIVE = "systmone_negative"
+    SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
+    MAV_1080 = "mav_1080"
+    SYSTMONE_MAV_1080 = "systmone_mav_1080"
+
+    @property
+    def folder(self) -> Path:
+        return Path("vaccs")
+
+
+class CohortsFileMapping(FileMapping):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HEADER_ONLY = "header_only"
+    CONFLICTING_CONSENT = "conflicting_consent"
+    E2E_1 = "e2e_1"
+    UCR_MATCH = "ucr_match"
+    CONSENT_TWICE = "consent_twice"
+    CONFLICTING_GILLICK = "conflicting_gillick"
+    FULL_NAME = "full_name"
+    MAV_927_PERF = "mav_927_perf"
+    MAV_909 = "mav_909"
+    MAV_853 = "mav_853"
+    GILLICK_NOTES_LENGTH = "gillick_notes_length"
+
+    @property
+    def folder(self) -> Path:
+        return Path("cohorts")
+
+
+class ChildFileMapping(FileMapping):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HEADER_ONLY = "header_only"
+    MAV_1080 = "mav_1080"
+
+    @property
+    def folder(self) -> Path:
+        return Path("child")
+
+
+class ClassFileMapping(FileMapping):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INVALID_STRUCTURE = "invalid_structure"
+    EMPTY_FILE = "empty"
+    HEADER_ONLY = "header_only"
+    CHILDREN_FILTER = "children_filter"
+    YEAR_GROUP = "year_group"
+    SESSION_ID = "session_id"
+    SINGLE_VACC = "single_vacc"
+    MAV_854 = "mav_854"
+    MAV_965 = "mav_965"
+    MAV_1080 = "mav_1080"
+    MOVES_CONFIRM_IGNORE = "moves_confirm_ignore"
+    MOVES_UNKNOWN_HOMESCHOOLED = "moves_unknown_homeschooled"
+    CHANGE_NHSNO = "change_nhsno"
+
+    @property
+    def folder(self) -> Path:
+        return Path("class_list")
 
 
 class TestData:
-    """
-    A class to handle operations related to test data.
-    """
-
     template_path = Path(__file__).parent
     working_path = Path("working")
 
@@ -83,7 +118,6 @@ class TestData:
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
-        self.file_mapping = pd.read_csv(self.template_path / "file_mapping.csv")
 
         self.working_path.mkdir(parents=True, exist_ok=True)
 
@@ -92,141 +126,91 @@ class TestData:
 
     def create_file_from_template(
         self,
-        template_path: str,
+        template_path: Path,
         file_name_prefix: str,
         session_id: Optional[str] = None,
-    ) -> str:
-        """
-        Create a file from a template while replacing placeholders with calculated values.
-
-        Args:
-            template_path (str): Path to the template file.
-            file_name_prefix (str): Prefix for the generated file name.
-
-        Returns:
-            str: Path to the created file.
-        """
-
-        template_text = self.read_file(template_path)
-
-        _dt = get_current_datetime()
-        _hist_dt = get_offset_date(offset_days=-(365 * 2))
-
-        replacements = {
-            "<<VACCS_DATE>>": _dt[:8],
+    ) -> Path:
+        static_replacements = {
+            "<<VACCS_DATE>>": get_current_datetime()[:8],
             "<<VACCS_TIME>>": get_current_time(),
-            "<<HIST_VACCS_DATE>>": _hist_dt,
+            "<<HIST_VACCS_DATE>>": get_offset_date(offset_days=-(365 * 2)),
             "<<SESSION_ID>>": session_id,
         }
 
         if self.organisation:
-            replacements["<<ORG_CODE>>"] = self.organisation.ods_code
+            static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
 
         if self.schools:
             for index, school in enumerate(self.schools):
-                replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
-                replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
+                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
+                static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
         if self.nurse:
-            replacements["<<NURSE_EMAIL>>"] = self.nurse.username
+            static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         for year_group in range(8, 12):
-            replacements[f"<<DOB_YEAR_{year_group}>>"] = (
+            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = (
                 get_date_of_birth_for_year_group(year_group)
             )
 
-        _file_text = []
-        _ctr = 0
-
-        for line in template_text.splitlines():
-            dynamic_replacements = replacements.copy()
-            dynamic_replacements["<<FNAME>>"] = f"F{_dt}{_ctr}"
-            dynamic_replacements["<<LNAME>>"] = f"L{_dt}{_ctr}"
-            dynamic_replacements["<<NHS_NO>>"] = self.get_new_nhs_no(valid=True)
-            dynamic_replacements["<<INVALID_NHS_NO>>"] = self.get_new_nhs_no(
-                valid=False
-            )
-            dynamic_replacements["<<PARENT_EMAIL>>"] = f"{_dt}{_ctr}@example.com"
-
-            for key, value in dynamic_replacements.items():
-                line = line.replace(key, str(value) if value else "")
-
-            _file_text.append(line)
-            _ctr += 1
-
+        file_content = self._replace_placeholders(
+            template_path=template_path, static_replacements=static_replacements
+        )
         filename = f"{file_name_prefix}{get_current_datetime()}.csv"
 
-        path = self.working_path / filename
-        path.write_text("\n".join(_file_text), encoding="utf-8")
-        return str(path)
+        output_path = self.working_path / filename
+        output_path.write_text(file_content, encoding="utf-8")
+
+        return output_path
+
+    def _replace_placeholders(
+        self, template_path: Path, static_replacements: dict[str, str]
+    ) -> str:
+        template_text = self.read_file(template_path)
+        current_dt = get_current_datetime()
+
+        lines = []
+        for index, line in enumerate(template_text.splitlines()):
+            dynamic_replacements = {
+                "<<FNAME>>": f"F{current_dt}{index}",
+                "<<LNAME>>": f"L{current_dt}{index}",
+                "<<NHS_NO>>": self.get_new_nhs_no(valid=True),
+                "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
+                "<<PARENT_EMAIL>>": f"{current_dt}{index}@example.com",
+            }
+            all_replacements = {**static_replacements, **dynamic_replacements}
+
+            for key, value in all_replacements.items():
+                line = line.replace(key, str(value) if value else "")
+            lines.append(line)
+
+        return "\n".join(lines)
 
     def get_new_nhs_no(self, valid=True) -> str:
-        """
-        Generate a new NHS number.
-
-        Args:
-            valid (bool, optional): Whether to generate a valid NHS number. Defaults to True.
-
-        Returns:
-            str: Generated NHS number.
-        """
         return nhs_number.generate(
             valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1
         )[0]
 
-    def get_expected_errors(self, file_path: str):
-        """
-        Get expected errors from a file.
-
-        Args:
-            file_path (str): Path to the file.
-
-        Returns:
-            list[str]: List of expected errors.
-        """
+    def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
         file_content = self.read_file(file_path)
-
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
-        self, file_paths: str, session_id: Optional[str] = None
-    ) -> tuple[str, str]:
-        """
-        Get input and output file paths based on a mapping.
-
-        Args:
-            file_paths (str): Identifier for the file paths.
-
-        Returns:
-            tuple[str, str]: Input and output file paths.
-        """
-        query = self.file_mapping.query("ID==@file_paths")
-
-        _input_template_path: str = query["INPUT_TEMPLATE"].to_string(index=False)
-        _output_template_path: str = query["OUTPUT_TEMPLATE"].to_string(index=False)
-        _file_prefix: str = query["FILE_PREFIX"].to_string(index=False)
-
-        _input_file_path: str = self.create_file_from_template(
-            template_path=_input_template_path,
-            file_name_prefix=_file_prefix,
+        self, file_mapping: FileMapping, session_id: Optional[str] = None
+    ) -> tuple[Path, Path]:
+        _input_file_path = self.create_file_from_template(
+            template_path=file_mapping.input_template_path,
+            file_name_prefix=str(file_mapping),
             session_id=session_id,
         )
 
-        return _input_file_path, _output_template_path
+        _output_file_path = file_mapping.output_path
+
+        return _input_file_path, _output_file_path
 
     def create_child_list_from_file(
-        self, file_path: str, is_vaccinations: bool
+        self, file_path: Path, is_vaccinations: bool
     ) -> list[str]:
-        """
-        Create a list of child names from a file.
-
-        Args:
-            file_path (str): Path to the file.
-            is_vaccinations (bool): Whether the file type is for vaccinations.
-
-        Returns:
-            list: List of child names.
-        """
         _file_df = pd.read_csv(file_path)
 
         if is_vaccinations:
@@ -240,24 +224,17 @@ class TestData:
         return _names_list
 
     def normalize_whitespace(self, string: str) -> str:
-        # Remove zero-width joiner
+        """
+        Normalize whitespace in a string:
+        - Remove zero-width joiners
+        - Replace non-breaking spaces with regular spaces
+        - Collapse consecutive whitespace to a single space
+        - Strip leading/trailing whitespace
+        """
         string = string.replace("\u200d", "")
-        # Replace non-breaking spaces with regular spaces
         string = string.replace("\u00a0", " ")
-        # Strip leading/trailing whitespace, and replace consecutive whitespace with a single space
-        string = re.sub(r"\s+", " ", string.strip())
-        return string
+        return re.sub(r"\s+", " ", string).strip()
 
-    def get_session_id(self, path: str) -> str:
-        """
-        Get the session ID from an Excel file.
-
-        Args:
-            path (str): Path to the Excel file.
-
-        Returns:
-            str: Session ID.
-        """
-
+    def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations")
         return data_frame["SESSION_ID"].iloc[0]

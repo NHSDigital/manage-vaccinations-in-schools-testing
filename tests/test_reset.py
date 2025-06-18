@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from mavis.test.data import FilePath
+from mavis.test.data import ClassFileMapping
 from mavis.test.models import Programme, Vaccine
 from mavis.test.wrappers import generate_random_string
 
@@ -22,7 +22,7 @@ def setup_mav_965(
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0], for_today=True)
     import_records_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(FilePath.CLASS_MAV_965)
+    import_records_page.upload_and_verify_output(ClassFileMapping.MAV_965)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     return gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name

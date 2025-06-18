@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from typing import List
+from pathlib import Path
 
 from playwright.sync_api import Page, expect
 
@@ -383,8 +384,8 @@ class SessionsPage:
         self.year_textbox.fill(year)
 
     @step("Click on Record offline")
-    def download_offline_recording_excel(self) -> str:
-        _file_path = f"working/excel_{get_current_datetime()}.xlsx"
+    def download_offline_recording_excel(self) -> Path:
+        _file_path = Path(f"working/excel_{get_current_datetime()}.xlsx")
 
         with self.page.expect_download() as download_info:
             self.record_offline_link.click()
