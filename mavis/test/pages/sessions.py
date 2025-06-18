@@ -128,6 +128,17 @@ class SessionsPage:
         pre_screening = self.page.locator("section").filter(
             has=page.get_by_role("heading", name="Pre-screening checks")
         )
+        self.change_programmes_link = self.page.get_by_role(
+            "link", name="Change   programmes"
+        )
+        self.flu_programme_checkbox = self.page.get_by_role("checkbox", name="Flu")
+        self.hpv_programme_checkbox = self.page.get_by_role("checkbox", name="HPV")
+        self.menacwy_programme_checkbox = self.page.get_by_role(
+            "checkbox", name="MenACWY"
+        )
+        self.td_ipv_programme_checkbox = self.page.get_by_role(
+            "checkbox", name="Td/IPV"
+        )
         self.pre_screening_listitem = pre_screening.get_by_role("listitem")
         self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
         self.pre_screening_notes = pre_screening.get_by_role("textbox")
@@ -456,6 +467,12 @@ class SessionsPage:
         _month = on_date[4:6]
         _year = on_date[:4]
         self.click_schedule_sessions()
+        self.change_programmes_link.click()
+        self.flu_programme_checkbox.check()
+        self.hpv_programme_checkbox.check()
+        self.menacwy_programme_checkbox.check()
+        self.td_ipv_programme_checkbox.check()
+        self.continue_button.click()
         self.click_add_session_dates()
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
