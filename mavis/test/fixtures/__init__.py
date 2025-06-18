@@ -40,13 +40,7 @@ from .models import (
     team,
     users,
 )
-from .playwright import (
-    base_url,
-    basic_auth,
-    browser_context_args,
-    browser_type,
-    screenshots_path,
-)
+from .playwright import base_url, basic_auth, browser_context_args, browser_type
 
 __all__ = [
     "add_vaccine_batch",
@@ -81,7 +75,6 @@ __all__ = [
     "review_school_move_page",
     "school_moves_page",
     "schools",
-    "screenshots_path",
     "sessions_page",
     "start_page",
     "superuser",
