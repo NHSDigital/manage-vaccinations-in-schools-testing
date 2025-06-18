@@ -150,6 +150,11 @@ $ ruff format
 $ ruff check
 ```
 
+### More information
+
+Further details on the scope and approach of the automation are on the [NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).
+
+
 ## Performance tests
 
 ### Installation
@@ -198,6 +203,3 @@ The following changes will be added soon:
 - complete automation of data prep. The first step of the workflow will be to generate a new valid cohort file to be used by the rest of the workflow. This will remove the need for URN and input file to be added as inputs.
 - Better reporting. Current thinking is to have the test results uploaded to Splunk for better analysis, however it is currently unknown whether this will be permitted. Another option would be to publish the reports to github pages, again this may be blocked by permissions. Lastly, a tabular version of the results could be generated directly on the workflow output, this is most definitely a 'backup' option.
 
-## More information
-
-Further details on the scope and approach of the automation are on the [NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).
