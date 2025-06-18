@@ -55,14 +55,15 @@ def test_given(consent_page, faker, schools, change_school, injection, health_qu
     )
 
     if health_question:
-        # Asthma question doesn't have "More details"
-        consent_page.answer_yes()
+        if not injection:
+            # Asthma question doesn't have "More details"
+            consent_page.answer_yes()
 
         # Asthma follow-up questions are only shown if answering "Yes"
-        for _ in range(10):
+        for _ in range(5 if injection else 11):
             consent_page.answer_yes("More details")
     else:
-        for _ in range(9):
+        for _ in range(5 if injection else 10):
             consent_page.answer_no()
 
     # If consenting to nasal spray, a question is asked about injection as an alternative
