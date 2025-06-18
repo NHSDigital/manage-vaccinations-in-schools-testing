@@ -68,11 +68,18 @@ def test_given(
     consent_page.fill_address_details(*child.address)
 
     if health_question:
-        # Asthma question doesn't have "More details"
-        consent_page.answer_yes()
+        if not injection:
+            # Asthma question doesn't have "More details"
+            consent_page.answer_yes()
+
+    number_of_health_questions = (
+        5 if injection
+        else 11 if health_question
+        else 10
+    )
 
     consent_page.answer_health_questions(
-        10 if health_question else 9, health_question=health_question
+        number_of_health_questions, health_question=health_question
     )
 
     # If consenting to nasal spray, a question is asked about injection as an alternative
