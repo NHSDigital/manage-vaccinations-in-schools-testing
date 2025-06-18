@@ -1,7 +1,7 @@
 import os
 
 #  This script is designed to be run manually to clear down the 'working', 'reports' and 'screenshots' directories.
-folders_to_clean = ["working", "screenshots"]  # "reports"
+folders_to_clean = ["working", "allure-results"]  # "reports"
 
 
 def cleanup() -> None:
