@@ -58,17 +58,17 @@ def test_programmes_rav_pre_screening_questions(
     sessions_page.click_consent_tab()
     sessions_page.search_child(child_name=mav_965_child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.click_get_consent_response()
+    sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(change_phone=False)
     sessions_page.search_child(child_name=mav_965_child)
     sessions_page.click_programme_tab(Programme.MENACWY)
-    sessions_page.click_get_consent_response()
+    sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(
         change_phone=False, programme=Programme.MENACWY
     )
     sessions_page.search_child(child_name=mav_965_child)
     sessions_page.click_programme_tab(Programme.TD_IPV)
-    sessions_page.click_get_consent_response()
+    sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(
         change_phone=False, programme=Programme.TD_IPV
     )

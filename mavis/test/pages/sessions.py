@@ -99,8 +99,8 @@ class SessionsPage:
             "button", name="Mark as invalid"
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
-        self.get_consent_response_button = self.page.get_by_role(
-            "button", name="Get consent response"
+        self.get_verbal_consent_button = self.page.get_by_role(
+            "button", name="Get verbal consent"
         )
         self.update_results_button = self.page.get_by_role(
             "button", name="Update results"
@@ -311,9 +311,9 @@ class SessionsPage:
     def fill_notes(self, notes: str):
         self.notes_textbox.fill(notes)
 
-    @step("Click on Get consent response")
-    def click_get_consent_response(self):
-        self.get_consent_response_button.click()
+    @step("Click on Get verbal consent")
+    def click_get_verbal_consent(self):
+        self.get_verbal_consent_button.click()
 
     def navigate_to_todays_sessions(self, location: str):
         self.click_today()
@@ -328,7 +328,7 @@ class SessionsPage:
     def navigate_to_consent_response(self, child: str, programme: Programme):
         self.click_child(child)
         self.click_programme_tab(programme)
-        self.click_get_consent_response()
+        self.click_get_verbal_consent()
 
     def navigate_to_update_triage_outcome(self, child: str, programme: Programme):
         self.click_child(child)
@@ -529,9 +529,7 @@ class SessionsPage:
 
         self.click_back_to_child()
         self.expect_main_to_contain_text("Consent refusedInvalid")
-        self.expect_main_to_contain_text(
-            "No-one responded to our requests for consent."
-        )
+        self.expect_main_to_contain_text("No requests have been sent.")
 
     def verify_scheduled_date(self, message: str):
         self.expect_main_to_contain_text(message)

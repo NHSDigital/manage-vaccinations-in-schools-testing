@@ -2,7 +2,7 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from ..data import TestData
-from ..models import School, Vaccine
+from ..models import School
 from ..step import step
 
 
@@ -40,6 +40,11 @@ class ChildrenPage:
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
 
+        vaccinations_card = page.locator("section").filter(
+            has=page.get_by_role("heading", name="Vaccinations")
+        )
+        self.vaccinations_card_row = vaccinations_card.get_by_role("row")
+
     def verify_headers(self):
         expect(self.children_heading).to_be_visible()
         for header in self.children_table_headers:
@@ -71,17 +76,11 @@ class ChildrenPage:
     def click_record_for_child(self, child_name: str) -> None:
         self.page.get_by_role("link", name=child_name).click()
 
-    @step("Click on {1} vaccination details for school {2}")
-    def click_vaccination_details_for_school(
-        self, vaccine: Vaccine, school: School
-    ) -> None:
-        self.page.get_by_role("row").filter(has_text=str(school)).get_by_role(
-            "link", name=str(vaccine), exact=False
-        ).click()
-
     @step("Click on {1} vaccination details")
-    def click_vaccination_details(self, vaccine: Vaccine) -> None:
-        self.page.get_by_role("link", name=str(vaccine), exact=False).click()
+    def click_vaccination_details(self, school: School) -> None:
+        self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
+            "link"
+        ).click()
 
     @step("Click on Child record")
     def click_child_record(self) -> None:
