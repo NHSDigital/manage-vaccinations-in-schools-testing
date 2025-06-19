@@ -95,7 +95,7 @@ $ pytest --headed
 #### Screenshots
 
 To take screenshots while the tests are running there is a `--screenshot`
-command line option. The screenshots will be saved in a `screenshots`
+command line option. The screenshots will be saved in a `test-results`
 directory.
 
 ```shell
@@ -202,4 +202,3 @@ The following changes will be added soon:
 
 - complete automation of data prep. The first step of the workflow will be to generate a new valid cohort file to be used by the rest of the workflow. This will remove the need for URN and input file to be added as inputs.
 - Better reporting. Current thinking is to have the test results uploaded to Splunk for better analysis, however it is currently unknown whether this will be permitted. Another option would be to publish the reports to github pages, again this may be blocked by permissions. Lastly, a tabular version of the results could be generated directly on the workflow output, this is most definitely a 'backup' option.
-

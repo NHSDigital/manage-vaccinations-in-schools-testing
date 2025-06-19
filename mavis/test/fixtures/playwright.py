@@ -1,5 +1,3 @@
-from datetime import datetime
-from pathlib import Path
 import os
 from typing import Optional
 
@@ -18,19 +16,6 @@ def basic_auth() -> dict[str, str]:
         "username": os.environ["BASIC_AUTH_USERNAME"],
         "password": os.environ["BASIC_AUTH_PASSWORD"],
     }
-
-
-@pytest.fixture(scope="session")
-def screenshots_path(pytestconfig) -> Optional[Path]:
-    screenshot = pytestconfig.getoption("screenshot")
-
-    if screenshot == "off":
-        return None
-
-    session_name = datetime.now().isoformat()
-    path = Path("screenshots") / session_name
-    path.mkdir(parents=True, exist_ok=True)
-    return path
 
 
 @pytest.fixture(scope="session")
