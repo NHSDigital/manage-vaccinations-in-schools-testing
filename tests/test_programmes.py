@@ -136,6 +136,7 @@ def test_cohorts_readd_to_cohort(
     dashboard_page,
     children_page,
     import_records_page,
+    test_data,
 ):
     """
     Steps to reproduce:
@@ -159,7 +160,9 @@ def test_cohorts_readd_to_cohort(
         Server error page and user cannot bring the child back into the cohort
     """
     mav_909_child = "MAV_909, MAV_909"
-    import_records_page.upload_and_verify_output(CohortsFileMapping.MAV_909)
+    input_file_path, _ = import_records_page.upload_and_verify_output(
+        CohortsFileMapping.MAV_909
+    )
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -167,7 +170,11 @@ def test_cohorts_readd_to_cohort(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(CohortsFileMapping.MAV_909)
+
+    test_data.increment_date_of_birth_for_records(input_file_path)
+    import_records_page.set_input_file(input_file_path)
+    import_records_page.click_continue()
+
     programmes_page.expect_text("1 duplicate record needs review")
     programmes_page.click_review()
     programmes_page.click_use_duplicate()
