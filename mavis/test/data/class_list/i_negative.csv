@@ -1,9 +1,9 @@
 CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_PREFERRED_FIRST_NAME,CHILD_PREFERRED_LAST_NAME,CHILD_DATE_OF_BIRTH,CHILD_NHS_NUMBER,CHILD_GENDER,CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_TOWN,CHILD_REGISTRATION,CHILD_POSTCODE,PARENT_1_NAME,PARENT_1_RELATIONSHIP,PARENT_1_EMAIL,PARENT_1_PHONE,PARENT_2_NAME,PARENT_2_RELATIONSHIP,PARENT_2_EMAIL,PARENT_2_PHONE,CHILD_YEAR_GROUP
-,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
-C<<FNAME>>,,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
-C<<FNAME>>,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
-C<<FNAME>>,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>1,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
-C<<FNAME>>,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,ABCDEF,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
-C<<FNAME>>,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,example.com,,Mom Name,Mom,mom@example.com,,9
-C<<FNAME>>,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,example.com,,9
-C<<FNAME>>,C<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,19
+,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
+<<FNAME>>,,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
+<<FNAME>>,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
+<<FNAME>>,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>1,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
+<<FNAME>>,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,ABCDEF,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,9
+<<FNAME>>,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,example.com,,Mom Name,Mom,mom@example.com,,9
+<<FNAME>>,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,example.com,,9
+<<FNAME>>,<<LNAME>>,P<<FNAME>>,P<<LNAME>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,,AA1 1AA,Dad Name,Dad,dad@example.com,,Mom Name,Mom,mom@example.com,,19
