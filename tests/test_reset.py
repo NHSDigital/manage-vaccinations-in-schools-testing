@@ -33,7 +33,13 @@ def setup_mav_965(
 @pytest.mark.rav
 @pytest.mark.bug
 def test_programmes_rav_pre_screening_questions(
-    setup_mav_965, schools, programmes_page, dashboard_page, sessions_page, consent_page
+    setup_mav_965,
+    schools,
+    programmes_page,
+    dashboard_page,
+    sessions_page,
+    consent_page,
+    children,
 ):
     """
     Steps to reproduce:
@@ -49,44 +55,44 @@ def test_programmes_rav_pre_screening_questions(
     - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
     """
 
-    mav_965_child = "MAV_965, MAV_965"
+    child_name = str(children[0])
     gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name = setup_mav_965
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_location(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.search_child(child_name=mav_965_child)
+    sessions_page.search_child(child_name=child_name)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(change_phone=False)
-    sessions_page.search_child(child_name=mav_965_child)
+    sessions_page.search_child(child_name=child_name)
     sessions_page.click_programme_tab(Programme.MENACWY)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(
         change_phone=False, programme=Programme.MENACWY
     )
-    sessions_page.search_child(child_name=mav_965_child)
+    sessions_page.search_child(child_name=child_name)
     sessions_page.click_programme_tab(Programme.TD_IPV)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(
         change_phone=False, programme=Programme.TD_IPV
     )
-    sessions_page.register_child_as_attending(child_name=mav_965_child)
+    sessions_page.register_child_as_attending(child_name=child_name)
     sessions_page.record_vaccs_for_child(
-        child_name=mav_965_child,
+        child_name=child_name,
         programme=Programme.HPV,
         batch_name=gardasil_9_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
     sessions_page.record_vaccs_for_child(
-        child_name=mav_965_child,
+        child_name=child_name,
         programme=Programme.MENACWY,
         batch_name=menquadfi_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
     )
     sessions_page.record_vaccs_for_child(
-        child_name=mav_965_child,
+        child_name=child_name,
         programme=Programme.TD_IPV,
         batch_name=revaxis_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955

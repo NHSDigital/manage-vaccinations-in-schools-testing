@@ -56,13 +56,13 @@ def get_offset_date(offset_days: int) -> str:
     return _offset_date.strftime("%Y%m%d")
 
 
-def get_date_of_birth_for_year_group(year_group: int) -> str:
+def get_date_of_birth_for_year_group(year_group: int) -> date:
     academic_year = date.today().year - year_group - 6
 
     start_date = date(academic_year, 9, 1)
     end_date = date(academic_year + 1, 8, 31)
 
-    return str(faker.date_between(start_date, end_date))
+    return faker.date_between(start_date, end_date)
 
 
 def generate_random_string(target_length: int = 100, spaces: bool = False) -> str:

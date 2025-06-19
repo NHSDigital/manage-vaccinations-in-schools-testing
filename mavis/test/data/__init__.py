@@ -1,12 +1,14 @@
 from pathlib import Path
 from typing import List, Optional
 from enum import Enum
+from faker import Faker
+
 
 import nhs_number
 import pandas as pd
 import re
 
-from ..models import Organisation, School, User
+from ..models import Organisation, School, User, Child
 from ..wrappers import (
     get_current_datetime,
     get_current_time,
@@ -114,10 +116,19 @@ class TestData:
     template_path = Path(__file__).parent
     working_path = Path("working")
 
-    def __init__(self, organisation: Organisation, schools: List[School], nurse: User):
+    def __init__(
+        self,
+        organisation: Organisation,
+        schools: List[School],
+        nurse: User,
+        children: List[Child],
+    ):
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
+        self.children = children
+
+        self.faker = Faker(locale="en_GB")
 
         self.working_path.mkdir(parents=True, exist_ok=True)
 
@@ -148,13 +159,20 @@ class TestData:
         if self.nurse:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
+        if self.children:
+            for index, child in enumerate(self.children):
+                static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
+                static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
+                static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
+
         for year_group in range(8, 12):
-            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = (
+            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
                 get_date_of_birth_for_year_group(year_group)
             )
 
         file_content = self._replace_placeholders(
-            template_path=template_path, static_replacements=static_replacements
+            template_path=template_path,
+            static_replacements=static_replacements,
         )
         filename = f"{file_name_prefix}{get_current_datetime()}.csv"
 
@@ -164,27 +182,37 @@ class TestData:
         return output_path
 
     def _replace_placeholders(
-        self, template_path: Path, static_replacements: dict[str, str]
+        self,
+        template_path: Path,
+        static_replacements: dict[str, str],
     ) -> str:
         template_text = self.read_file(template_path)
-        current_dt = get_current_datetime()
 
-        lines = []
-        for index, line in enumerate(template_text.splitlines()):
-            dynamic_replacements = {
-                "<<FNAME>>": f"F{current_dt}{index}",
-                "<<LNAME>>": f"L{current_dt}{index}",
-                "<<NHS_NO>>": self.get_new_nhs_no(valid=True),
-                "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
-                "<<PARENT_EMAIL>>": f"{current_dt}{index}@example.com",
-            }
-            all_replacements = {**static_replacements, **dynamic_replacements}
-
-            for key, value in all_replacements.items():
-                line = line.replace(key, str(value) if value else "")
-            lines.append(line)
-
+        lines = [
+            self._process_line(line, static_replacements)
+            for line in template_text.splitlines()
+        ]
         return "\n".join(lines)
+
+    def _process_line(
+        self,
+        line: str,
+        static_replacements: dict[str, str],
+    ) -> str:
+        dynamic_replacements = {
+            "<<RANDOM_FNAME>>": self.faker.first_name(),
+            "<<RANDOM_LNAME>>": self.faker.last_name().upper(),
+            "<<RANDOM_NHS_NO>>": self.get_new_nhs_no(valid=True),
+            "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
+            "<<PARENT_EMAIL>>": self.faker.email(),
+        }
+        all_replacements = {**static_replacements, **dynamic_replacements}
+        return self._apply_replacements(line, all_replacements)
+
+    def _apply_replacements(self, line: str, replacements: dict[str, str]) -> str:
+        for key, value in replacements.items():
+            line = line.replace(key, str(value) if value else "")
+        return line
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
@@ -196,7 +224,9 @@ class TestData:
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
-        self, file_mapping: FileMapping, session_id: Optional[str] = None
+        self,
+        file_mapping: FileMapping,
+        session_id: Optional[str] = None,
     ) -> tuple[Path, Path]:
         _input_file_path = self.create_file_from_template(
             template_path=file_mapping.input_template_path,
@@ -238,3 +268,10 @@ class TestData:
     def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations")
         return data_frame["SESSION_ID"].iloc[0]
+
+    def increment_date_of_birth_for_records(self, file_path: Path):
+        _file_df = pd.read_csv(file_path)
+        _file_df["CHILD_DATE_OF_BIRTH"] = pd.to_datetime(
+            _file_df["CHILD_DATE_OF_BIRTH"]
+        ) + pd.Timedelta(days=1)
+        _file_df.to_csv(file_path, index=False)

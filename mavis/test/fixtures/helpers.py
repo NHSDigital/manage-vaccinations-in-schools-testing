@@ -4,6 +4,7 @@ import pytest
 
 from ..data import TestData
 from ..models import Vaccine
+from ..wrappers import get_date_of_birth_for_year_group
 
 
 @pytest.fixture
@@ -58,6 +59,14 @@ def log_in_as_nurse(nurse, organisation, log_in_page):
     log_in_page.log_out()
 
 
-@pytest.fixture(scope="session")
-def test_data(organisation, schools, nurse):
-    return TestData(organisation, schools, nurse)
+@pytest.fixture
+def test_data(organisation, schools, nurse, children):
+    return TestData(organisation, schools, nurse, children)
+
+
+@pytest.fixture
+def date_of_birth_for_year():
+    def _get(year_group: int) -> date:
+        return get_date_of_birth_for_year_group(year_group)
+
+    return _get
