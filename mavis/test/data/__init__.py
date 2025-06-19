@@ -240,3 +240,10 @@ class TestData:
     def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations")
         return data_frame["SESSION_ID"].iloc[0]
+
+    def increment_date_of_birth_for_records(self, file_path: Path):
+        _file_df = pd.read_csv(file_path)
+        _file_df["CHILD_DATE_OF_BIRTH"] = pd.to_datetime(
+            _file_df["CHILD_DATE_OF_BIRTH"]
+        ) + pd.Timedelta(days=1)
+        _file_df.to_csv(file_path, index=False)
