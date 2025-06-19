@@ -380,16 +380,14 @@ class ConsentPage:
         self._process_consent_confirmation()
         self.click_confirm()
 
-    def service_refuse_consent(self):
+    def service_refuse_consent(self, child_name: str):
         self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
         self._select_consent_method(ConsentMethod.PAPER)
         self._handle_refusal_of_consent(ConsentRefusalReason.VACCINE_ALREADY_RECEIVED)
         self.give_details("vaccine will be given elsewhere")
         self.click_continue()
         self.click_confirm()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Consent recorded for CLAST, CFirst"
-        )
+        self.expect_text_in_main(f"Consent recorded for {child_name}")
 
     def child_consent_verbal_positive(self):
         self.child_gillick_competent_radio.check()

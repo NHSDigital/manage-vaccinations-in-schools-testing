@@ -32,8 +32,9 @@ def test_e2e(
     sessions_page,
     import_records_page,
     consent_page,
+    children,
 ):
-    e2e_child = "CE2E1, CE2E1"
+    child_name = str(children[0])
 
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
@@ -42,5 +43,5 @@ def test_e2e(
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.navigate_to_consent_response(e2e_child, Programme.HPV)
+    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
     consent_page.parent_1_verbal_positive(change_phone=False)

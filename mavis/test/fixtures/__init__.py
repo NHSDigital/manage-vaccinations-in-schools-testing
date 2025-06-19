@@ -1,5 +1,6 @@
 from .helpers import (
     add_vaccine_batch,
+    date_of_birth_for_year,
     get_online_consent_url,
     log_in_as_admin,
     log_in_as_nurse,
@@ -29,6 +30,7 @@ from .pages import (
 )
 from .models import (
     admin,
+    children,
     clinics,
     nurse,
     onboard_and_delete,
@@ -53,11 +55,13 @@ __all__ = [
     "browser_context_args",
     "browser_type",
     "children_page",
+    "children",
     "clinics",
     "consent_page",
     "consent_response_page",
     "create_new_record_consent_response_page",
     "dashboard_page",
+    "date_of_birth_for_year",
     "download_school_moves_page",
     "edit_batch_page",
     "get_online_consent_url",
