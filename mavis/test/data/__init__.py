@@ -3,11 +3,12 @@ from typing import List, Optional
 from enum import Enum
 from faker import Faker
 
+
 import nhs_number
 import pandas as pd
 import re
 
-from ..models import Organisation, School, User
+from ..models import Organisation, School, User, Child
 from ..wrappers import (
     get_current_datetime,
     get_current_time,
@@ -115,10 +116,17 @@ class TestData:
     template_path = Path(__file__).parent
     working_path = Path("working")
 
-    def __init__(self, organisation: Organisation, schools: List[School], nurse: User):
+    def __init__(
+        self,
+        organisation: Organisation,
+        schools: List[School],
+        nurse: User,
+        children: List[Child],
+    ):
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
+        self.children = children
 
         self.faker = Faker(locale="en_GB")
 
@@ -151,8 +159,14 @@ class TestData:
         if self.nurse:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
+        if self.children:
+            for index, child in enumerate(self.children):
+                static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
+                static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
+                static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
+
         for year_group in range(8, 12):
-            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = (
+            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
                 get_date_of_birth_for_year_group(year_group)
             )
 

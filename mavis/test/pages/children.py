@@ -24,7 +24,6 @@ class ChildrenPage:
             ]
         ]
 
-        self.one_child_found_heading = self.page.get_by_role("heading", name="1 child")
         self.search_textbox = self.page.get_by_role("textbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
         self.activity_log_link = self.page.get_by_role("link", name="Activity log")
@@ -50,12 +49,6 @@ class ChildrenPage:
         for header in self.children_table_headers:
             expect(header).to_be_visible()
 
-    def verify_filter(self):
-        self.search_textbox.fill("CFILTER1, CFilter1")
-        self.search_button.click()
-        self.page.wait_for_timeout(1000)
-        expect(self.one_child_found_heading).to_be_visible()
-
     def verify_list_has_been_uploaded(
         self, file_path: Path, is_vaccinations: bool
     ) -> None:
@@ -71,6 +64,11 @@ class ChildrenPage:
         self.search_button.click()
         self.page.wait_for_timeout(1000)
         self.expect_text_in_main(child_name)
+
+    def assert_n_children_found(self, n: int) -> None:
+        expect(
+            self.page.get_by_role("heading", name=f"{n} child{'ren' if n > 1 else ''}")
+        ).to_be_visible()
 
     @step("Click on record for child {1}")
     def click_record_for_child(self, child_name: str) -> None:
@@ -115,7 +113,7 @@ class ChildrenPage:
         expect(self.page.get_by_role("main")).to_contain_text(text)
 
     def expect_text_in_heading(self, text: str) -> None:
-        expect(self.page.get_by_role("heading").first).to_contain_text(text)
+        expect(self.page.get_by_role("heading")).to_contain_text(text)
 
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, location: str, *, is_created: bool

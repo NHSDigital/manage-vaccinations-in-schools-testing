@@ -7,8 +7,9 @@ import urllib.parse
 from faker import Faker
 import pytest
 import requests
+import nhs_number
 
-from ..models import Clinic, School, Team, Organisation, User
+from ..models import Clinic, School, Team, Organisation, User, Child
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,23 @@ def schools(base_url) -> List[School]:
         School(name=school_data["name"], urn=school_data["urn"])
         for school_data in schools_data
     ]
+
+
+@pytest.fixture
+def children():
+    def _generate_children(n: int) -> list[Child]:
+        return [
+            Child(
+                first_name=onboarding_faker.first_name(),
+                last_name=onboarding_faker.last_name().upper(),
+                nhs_number=nhs_number.generate(
+                    for_region=nhs_number.REGION_ENGLAND,
+                )[0],
+            )
+            for _ in range(n)
+        ]
+
+    return _generate_children(2)
 
 
 @pytest.fixture(scope="session")
