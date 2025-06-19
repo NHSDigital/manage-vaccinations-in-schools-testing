@@ -157,7 +157,8 @@ class TestData:
             )
 
         file_content = self._replace_placeholders(
-            template_path=template_path, static_replacements=static_replacements
+            template_path=template_path,
+            static_replacements=static_replacements,
         )
         filename = f"{file_name_prefix}{get_current_datetime()}.csv"
 
@@ -167,26 +168,37 @@ class TestData:
         return output_path
 
     def _replace_placeholders(
-        self, template_path: Path, static_replacements: dict[str, str]
+        self,
+        template_path: Path,
+        static_replacements: dict[str, str],
     ) -> str:
         template_text = self.read_file(template_path)
 
-        lines = []
-        for line in template_text.splitlines():
-            dynamic_replacements = {
-                "<<FNAME>>": self.faker.first_name(),
-                "<<LNAME>>": self.faker.last_name().upper(),
-                "<<NHS_NO>>": self.get_new_nhs_no(valid=True),
-                "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
-                "<<PARENT_EMAIL>>": self.faker.email(),
-            }
-            all_replacements = {**static_replacements, **dynamic_replacements}
-
-            for key, value in all_replacements.items():
-                line = line.replace(key, str(value) if value else "")
-            lines.append(line)
-
+        lines = [
+            self._process_line(line, static_replacements)
+            for line in template_text.splitlines()
+        ]
         return "\n".join(lines)
+
+    def _process_line(
+        self,
+        line: str,
+        static_replacements: dict[str, str],
+    ) -> str:
+        dynamic_replacements = {
+            "<<RANDOM_FNAME>>": self.faker.first_name(),
+            "<<RANDOM_LNAME>>": self.faker.last_name().upper(),
+            "<<RANDOM_NHS_NO>>": self.get_new_nhs_no(valid=True),
+            "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
+            "<<PARENT_EMAIL>>": self.faker.email(),
+        }
+        all_replacements = {**static_replacements, **dynamic_replacements}
+        return self._apply_replacements(line, all_replacements)
+
+    def _apply_replacements(self, line: str, replacements: dict[str, str]) -> str:
+        for key, value in replacements.items():
+            line = line.replace(key, str(value) if value else "")
+        return line
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
@@ -198,7 +210,9 @@ class TestData:
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
-        self, file_mapping: FileMapping, session_id: Optional[str] = None
+        self,
+        file_mapping: FileMapping,
+        session_id: Optional[str] = None,
     ) -> tuple[Path, Path]:
         _input_file_path = self.create_file_from_template(
             template_path=file_mapping.input_template_path,
