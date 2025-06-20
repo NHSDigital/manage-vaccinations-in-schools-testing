@@ -1,11 +1,12 @@
-from datetime import date
 import random
+from datetime import date
 
 import allure
-from playwright.sync_api import expect
 import pytest
+from playwright.sync_api import expect
 
-from mavis.test.data import pds as pds_test_data, CohortsFileMapping
+from mavis.test.data import CohortsFileMapping
+from mavis.test.data import pds as pds_test_data
 from mavis.test.models import Programme
 
 pytestmark = pytest.mark.consent_responses
@@ -83,7 +84,9 @@ def test_archive(
 
 
 @allure.issue("MAVIS-1812")
-@pytest.mark.parametrize("child_name", [("CMatch1", "CMatch1")])
+@pytest.mark.parametrize(
+    "child_name", [("CMatch1", "CMatch1")], ids=lambda v: f"child_name: {v}"
+)
 def test_match(
     child_name,
     children_page,
@@ -122,9 +125,18 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
 
 
 @allure.issue("MAVIS-1812")
-@pytest.mark.parametrize("child_name", [patient.full_name])
-@pytest.mark.parametrize("child_date_of_birth", [patient.date_of_birth])
-@pytest.mark.parametrize("child_address", [patient.address])
+@pytest.mark.parametrize(
+    "child_name",
+    [patient.full_name],
+)
+@pytest.mark.parametrize(
+    "child_date_of_birth",
+    [patient.date_of_birth],
+)
+@pytest.mark.parametrize(
+    "child_address",
+    [patient.address],
+)
 def test_create_with_nhs_number(
     child_name,
     children_page,
