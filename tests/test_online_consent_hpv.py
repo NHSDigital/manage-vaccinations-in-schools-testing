@@ -1,7 +1,8 @@
 from datetime import date
+
 import pytest
 
-from mavis.test.models import Programme, ConsentRefusalReason
+from mavis.test.models import ConsentRefusalReason, Programme
 
 pytestmark = pytest.mark.consent
 
@@ -33,8 +34,12 @@ def test_refused(consent_page, faker, schools):
     )
 
 
-@pytest.mark.parametrize("change_school", (False, True))
-@pytest.mark.parametrize("health_question", (False, True))
+@pytest.mark.parametrize(
+    "change_school", (False, True), ids=lambda v: f"change_school: {v}"
+)
+@pytest.mark.parametrize(
+    "health_question", (False, True), ids=lambda v: f"health_question: {v}"
+)
 def test_given(consent_page, faker, schools, change_school, health_question):
     consent_page.fill_child_name_details("ROSE", "VOSE")
     consent_page.fill_child_date_of_birth(date(2009, 8, 12))

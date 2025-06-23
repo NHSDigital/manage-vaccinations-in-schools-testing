@@ -1,8 +1,7 @@
-from playwright.sync_api import expect
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.models import User
-
 
 pytestmark = pytest.mark.log_in
 
@@ -12,8 +11,8 @@ def go_to_log_in_page(start_page):
     start_page.navigate_and_start()
 
 
-@pytest.mark.parametrize("username", ("", "invalid"))
-@pytest.mark.parametrize("password", ("", "invalid"))
+@pytest.mark.parametrize("username", ("", "invalid"), ids=lambda v: f"username: {v}")
+@pytest.mark.parametrize("password", ("", "invalid"), ids=lambda v: f"password: {v}")
 def test_invalid(username, password, log_in_page):
     log_in_page.log_in(User(username=username, password=password, role="unknown"))
     expect(log_in_page.error_message).to_be_visible()
@@ -28,7 +27,9 @@ def users(admin, nurse, superuser) -> dict[str, User]:
     }
 
 
-@pytest.mark.parametrize("role", ("admin", "nurse", "superuser"))
+@pytest.mark.parametrize(
+    "role", ("admin", "nurse", "superuser"), ids=lambda v: f"role: {v}"
+)
 def test_valid(role, users, organisation, dashboard_page, log_in_page):
     log_in_page.log_in(users[role])
     expect(log_in_page.log_out_button).to_be_visible()
