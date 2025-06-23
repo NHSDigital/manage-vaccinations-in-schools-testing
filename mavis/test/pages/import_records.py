@@ -126,7 +126,9 @@ class ImportRecordsPage:
         self.click_continue()
 
     def upload_and_verify_output(
-        self, file_mapping: FileMapping, session_id: Optional[str] = None
+        self,
+        file_mapping: FileMapping,
+        session_id: Optional[str] = None,
     ) -> tuple[Path, Path]:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_mapping=file_mapping, session_id=session_id
@@ -141,6 +143,11 @@ class ImportRecordsPage:
 
         self.verify_upload_output(file_path=_output_file_path)
         return _input_file_path, _output_file_path
+
+    def get_uploaded_child_names(
+        self, file_path: Path, is_vaccinations: bool
+    ) -> list[str]:
+        return self.test_data.create_child_list_from_file(file_path, is_vaccinations)
 
     def record_upload_time(self):
         self.upload_time = datetime.now()

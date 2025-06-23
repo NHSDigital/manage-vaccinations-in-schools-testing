@@ -36,8 +36,6 @@ class ProgrammesPage:
         self.report_format_radio_buttons = {
             format: page.get_by_role("radio", name=format) for format in ReportFormat
         }
-        self.dose2_child_link = page.get_by_role("link", name="DOSE2, Dose2")
-        self.mav_854_child_link = page.get_by_role("link", name="MAV_854, MAV_854")
         self.change_outcome_link = page.get_by_role("link", name="Change   outcome")
         self.they_refused_it_radio_button = page.get_by_role(
             "radio", name="They refused it"
@@ -79,28 +77,14 @@ class ProgrammesPage:
     def click_continue(self):
         self.continue_button.click()
 
-    @step("Click on DOSE2, Dose2")
-    def click_dose2_child(self):
-        self.dose2_child_link.click()
+    @step("Click on {1}")
+    def click_child(self, child_name: str):
+        self.page.get_by_role("link", name=child_name).click()
 
     def navigate_to_cohort_import(self, programme: Programme):
         self.click_programme(programme)
         self.click_cohorts()
         self.click_import_child_records()
-
-    @step("Edit dose to not given")
-    def edit_dose_to_not_given(self):
-        self.click_programme(Programme.HPV)
-        self.click_vaccinations()
-        self.click_dose2_child()
-        self.click_edit_vaccination_record()
-        self.click_change_outcome()
-        self.click_they_refused_it()
-        self.click_continue()
-        self.click_save_changes()
-        expect(self.page.get_by_role("main")).not_to_contain_text(
-            "Sorry, there’s a problem with the service"
-        )
 
     @step("Click on Save changes")
     def click_save_changes(self):
@@ -165,3 +149,6 @@ class ProgrammesPage:
 
     def expect_text(self, text: str):
         expect(self.page.get_by_role("main")).to_contain_text(text)
+
+    def expect_to_not_see_text(self, text: str):
+        expect(self.page.get_by_role("main")).not_to_contain_text(text)

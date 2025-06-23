@@ -1,12 +1,12 @@
 CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_SCHOOL_URN,CHILD_DATE_OF_BIRTH,CHILD_NHS_NUMBER,CHILD_GENDER,CHILD_ADDRESS_LINE_1,CHILD_ADDRESS_LINE_2,CHILD_TOWN,CHILD_POSTCODE,CHILD_REGISTRATION,PARENT_1_NAME,PARENT_1_RELATIONSHIP,PARENT_1_EMAIL,PARENT_1_PHONE,PARENT_2_NAME,PARENT_2_RELATIONSHIP,PARENT_2_EMAIL,PARENT_2_PHONE,CHILD_YEAR_GROUP
-,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,,<<SCHOOL_0_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,19729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,ABC DEF,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,example.com,,Parent2,Mum,mum@example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,example.com,,9
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,20100101,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,19
-C<<FNAME>>,C<<LNAME>>,<<SCHOOL_0_URN>>,2010010‍‍ ‍1,<<NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,,<<SCHOOL_0_URN>>,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,19729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,729852545,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,ABC DEF,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,example.com,,Parent2,Mum,mum@example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,example.com,,9
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,20100101,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,19
+<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,2010010‍‍ ‍1,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,AA1 1AA,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,9

@@ -32,7 +32,11 @@ def setup_record_a_vaccine(log_in_as_nurse, schools, dashboard_page, sessions_pa
 
 @pytest.fixture
 def setup_mavis_1729(
-    log_in_as_nurse, schools, dashboard_page, import_records_page, sessions_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    import_records_page,
+    sessions_page,
 ):
     try:
         dashboard_page.click_sessions()
@@ -136,6 +140,8 @@ def test_cohorts_readd_to_cohort(
     dashboard_page,
     children_page,
     import_records_page,
+    test_data,
+    children,
 ):
     """
     Steps to reproduce:
@@ -158,16 +164,23 @@ def test_cohorts_readd_to_cohort(
         Actual Result:
         Server error page and user cannot bring the child back into the cohort
     """
-    mav_909_child = "MAV_909, MAV_909"
-    import_records_page.upload_and_verify_output(CohortsFileMapping.MAV_909)
+    child_name = str(children[0])
+
+    input_file_path, _ = import_records_page.upload_and_verify_output(
+        CohortsFileMapping.MAV_909
+    )
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.remove_child_from_cohort(child_name=mav_909_child)
+    children_page.remove_child_from_cohort(child_name=child_name)
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(CohortsFileMapping.MAV_909)
+
+    test_data.increment_date_of_birth_for_records(input_file_path)
+    import_records_page.set_input_file(input_file_path)
+    import_records_page.click_continue()
+
     programmes_page.expect_text("1 duplicate record needs review")
     programmes_page.click_review()
     programmes_page.click_use_duplicate()
@@ -183,19 +196,19 @@ def test_rav_triage_consent_given(
     import_records_page,
     dashboard_page,
     consent_page,
+    children,
 ):
-    full_name_child = "CLAST, CFirst"
-
+    child_name = str(children[0])
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
 
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.navigate_to_consent_response(full_name_child, Programme.HPV)
+    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
     consent_page.service_give_consent()
 
     dashboard_page.click_mavis()
@@ -204,10 +217,10 @@ def test_rav_triage_consent_given(
     sessions_page.navigate_to_scheduled_sessions(schools[0])
 
     sessions_page.click_register_tab()
-    sessions_page.navigate_to_update_triage_outcome(full_name_child, Programme.HPV)
+    sessions_page.navigate_to_update_triage_outcome(child_name, Programme.HPV)
     sessions_page.select_yes_safe_to_vaccinate()
     sessions_page.click_save_triage()
-    sessions_page.verify_triage_updated_for_child(full_name_child)
+    sessions_page.verify_triage_updated_for_child(child_name)
 
 
 @pytest.mark.rav
@@ -218,31 +231,39 @@ def test_rav_triage_consent_refused(
     import_records_page,
     dashboard_page,
     consent_page,
+    children,
 ):
-    full_name_child = "CLAST, CFirst"
-
+    child_name = str(children[0])
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
 
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.navigate_to_consent_response(full_name_child, Programme.HPV)
+    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
 
-    consent_page.service_refuse_consent()
+    consent_page.service_refuse_consent(child_name)
     sessions_page.select_consent_refused()
-    sessions_page.click_child(full_name_child)
-    sessions_page.click_activity_log()
+    sessions_page.click_child(child_name)
+    sessions_page.click_session_activity_and_notes()
     sessions_page.verify_activity_log_entry(consent_given=False)
 
 
 @allure.issue("MAVIS-1729")
 @pytest.mark.rav
 @pytest.mark.bug
-def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page):
-    programmes_page.edit_dose_to_not_given()
+def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page, children):
+    programmes_page.click_programme(Programme.HPV)
+    programmes_page.click_vaccinations()
+    programmes_page.click_child(str(children[0]))
+    programmes_page.click_edit_vaccination_record()
+    programmes_page.click_change_outcome()
+    programmes_page.click_they_refused_it()
+    programmes_page.click_continue()
+    programmes_page.click_save_changes()
+    programmes_page.expect_to_not_see_text("Sorry, there’s a problem with the service")
 
 
 @pytest.mark.rav
@@ -255,18 +276,19 @@ def test_rav_verify_excel_mav_854(
     sessions_page,
     dashboard_page,
     consent_page,
+    children,
 ):
-    mav_854_child = "MAV_854, MAV_854"
+    child_name = str(children[0])
     batch_name = setup_mav_854
 
-    children_page.search_for_a_child(mav_854_child)
-    children_page.click_record_for_child(mav_854_child)
+    children_page.search_for_a_child(child_name)
+    children_page.click_record_for_child(child_name)
     sessions_page.click_session("Community clinics", Programme.HPV)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_1_verbal_positive(change_phone=False)
-    sessions_page.register_child_as_attending(child_name=mav_854_child)
+    sessions_page.register_child_as_attending(child_name=child_name)
     sessions_page.record_vaccs_for_child(
-        child_name=mav_854_child,
+        child_name=child_name,
         programme=Programme.HPV,
         batch_name=batch_name,
         at_school=False,

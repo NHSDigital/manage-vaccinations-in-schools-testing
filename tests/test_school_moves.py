@@ -57,26 +57,32 @@ def setup_confirm_and_ignore(
 
 
 def test_confirm_and_ignore(
-    setup_confirm_and_ignore, schools, school_moves_page, review_school_move_page
+    setup_confirm_and_ignore,
+    schools,
+    school_moves_page,
+    review_school_move_page,
+    children,
 ):
-    row1 = school_moves_page.get_row_for_child("CFMoves1", "CLMoves1")
-    row2 = school_moves_page.get_row_for_child("CFMoves2", "CLMoves2")
+    child_1, child_2 = children[0], children[1]
+
+    row1 = school_moves_page.get_row_for_child(*child_1.name)
+    row2 = school_moves_page.get_row_for_child(*child_2.name)
 
     expect(row1).to_contain_text(f"Class list updated {schools[0]} to {schools[1]}")
     expect(row2).to_contain_text(f"Class list updated {schools[0]} to {schools[1]}")
 
-    school_moves_page.click_child("CFMoves1", "CLMoves1")
+    school_moves_page.click_child(*child_1.name)
     review_school_move_page.confirm()
 
     expect(school_moves_page.confirmed_alert).to_contain_text(
-        "CLMOVES1, CFMoves1’s school record updated"
+        f"{str(child_1)}’s school record updated"
     )
 
-    school_moves_page.click_child("CFMoves2", "CLMoves2")
+    school_moves_page.click_child(*child_2.name)
     review_school_move_page.ignore()
 
     expect(school_moves_page.ignored_alert).to_contain_text(
-        "CLMOVES2, CFMoves2’s school move ignored"
+        f"{str(child_2)}’s school move ignored"
     )
 
 
