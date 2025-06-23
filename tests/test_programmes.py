@@ -247,7 +247,7 @@ def test_rav_triage_consent_refused(
     consent_page.service_refuse_consent(child_name)
     sessions_page.select_consent_refused()
     sessions_page.click_child(child_name)
-    sessions_page.click_activity_log()
+    sessions_page.click_session_activity_and_notes()
     sessions_page.verify_activity_log_entry(consent_given=False)
 
 

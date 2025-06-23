@@ -115,7 +115,7 @@ def test_invalid_consent(
     sessions_page.click_child(child_name)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.invalidate_parent2_refusal()
-    sessions_page.click_activity_log()
+    sessions_page.click_session_activity_and_notes()
     # FIXME: Make the following generic
     sessions_page.expect_main_to_contain_text("Consent from Parent2 invalidated")
     sessions_page.expect_main_to_contain_text("Consent refused by Parent2 (Mum)")
@@ -148,7 +148,7 @@ def test_parent_provides_consent_twice(
     sessions_page.click_child(child_name)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_main_to_contain_text("Dad refused to give consent.")
-    sessions_page.click_activity_log()
+    sessions_page.click_session_activity_and_notes()
     sessions_page.expect_main_to_contain_text("Consent refused by Parent1 (Dad)")
     sessions_page.expect_main_to_contain_text("Triaged decision: Safe to vaccinate")
     sessions_page.expect_main_to_contain_text("Consent given by Parent1 (Dad)")
@@ -194,7 +194,7 @@ def test_conflicting_consent_with_gillick_consent(
         f"NURSE, Nurse decided that {child_name} is safe to vaccinate."
     )
     sessions_page.expect_main_to_contain_text("Consent given")
-    sessions_page.click_activity_log()
+    sessions_page.click_session_activity_and_notes()
     sessions_page.expect_main_to_contain_text(
         f"Consent given by {child_name} (Child (Gillick competent))"
     )

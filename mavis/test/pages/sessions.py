@@ -197,9 +197,9 @@ class SessionsPage:
     def click_register_tab(self):
         self._click_tab("Register")
 
-    @step("Click on Activity log tab")
-    def click_activity_log(self):
-        self._click_tab("Activity log")
+    @step("Click on Session activity and notes tab")
+    def click_session_activity_and_notes(self):
+        self._click_tab("Session activity and notes")
 
     @step("Click on location {1}")
     def click_location(self, location: str):
