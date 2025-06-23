@@ -1,5 +1,6 @@
 import pandas as pd
 from playwright.sync_api import Page, expect
+from io import StringIO
 
 from ..data import TestData
 from ..models import ReportFormat, Programme
@@ -129,12 +130,24 @@ class ProgrammesPage:
     def _download_and_verify_report_headers(self, expected_headers: str):
         _file_path = f"working/rpt_{get_current_datetime()}.csv"
 
-        with self.page.expect_download() as download_info:
-            self.continue_button.click()
-        download = download_info.value
-        download.save_as(_file_path)
+        browser = getattr(self.page.context, "browser", None)
+        browser_type_name = getattr(
+            getattr(browser, "browser_type", None), "name", None
+        )
 
-        _actual_df = pd.read_csv(_file_path)
+        # Playwrights webkit browser always opens CSVs in the browser, unlike Chromium and Firefox
+        if browser_type_name == "webkit":
+            self.click_continue()
+            csv_content = self.page.locator("pre").inner_text()
+            _actual_df = pd.read_csv(StringIO(csv_content))
+            self.page.go_back()
+        else:
+            with self.page.expect_download() as download_info:
+                self.click_continue()
+            download = download_info.value
+            download.save_as(_file_path)
+            _actual_df = pd.read_csv(_file_path)
+
         actual_headers = ",".join(_actual_df.columns.tolist())
         _e_not_a = [
             h for h in expected_headers.split(",") if h not in actual_headers.split(",")

@@ -1,4 +1,3 @@
-import pandas
 from playwright.sync_api import expect
 from mavis.test.data import ClassFileMapping
 import pytest
@@ -91,9 +90,9 @@ def test_download(
 ):
     school_moves_page.click_download()
     download_school_moves_page.enter_date_range()
-    path = download_school_moves_page.confirm()
+    school_moves_csv = download_school_moves_page.confirm()
 
-    actual_headers = set(pandas.read_csv(path).columns)
+    actual_headers = set(school_moves_csv.columns)
     expected_headers = {
         "NHS_REF",
         "SURNAME",
