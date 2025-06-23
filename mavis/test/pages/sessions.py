@@ -39,8 +39,8 @@ class SessionsPage:
         )
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
-        self.import_class_list_link = self.page.get_by_role(
-            "link", name="Import class list"
+        self.import_class_lists_link = self.page.get_by_role(
+            "link", name="Import class lists"
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.file_input = self.page.locator('input[type="file"]')
@@ -170,14 +170,17 @@ class SessionsPage:
     @step("Click on Today tab")
     def click_today(self):
         self.today_tab_link.click()
+        expect(self.today_tab_link).to_have_attribute("aria-current", "true")
 
     @step("Click on Scheduled tab")
     def click_scheduled(self):
         self.scheduled_tab_link.click()
+        expect(self.scheduled_tab_link).to_have_attribute("aria-current", "true")
 
     @step("Click on Unscheduled tab")
     def click_unscheduled(self):
         self.unscheduled_tab_link.click()
+        expect(self.unscheduled_tab_link).to_have_attribute("aria-current", "true")
 
     @step("Select No response")
     def select_no_response(self):
@@ -224,9 +227,9 @@ class SessionsPage:
     def check_location_radio(self, location: str):
         self.page.get_by_role("radio", name=str(location)).check()
 
-    @step("Click on Import class list")
-    def click_import_class_list(self):
-        self.import_class_list_link.click()
+    @step("Click on Import class lists")
+    def click_import_class_lists(self):
+        self.import_class_lists_link.click()
 
     @step("Click on Continue")
     def click_continue_button(self):
@@ -559,7 +562,7 @@ class SessionsPage:
         self.click_location(location)
 
     def navigate_to_class_list_import(self):
-        self.click_import_class_list()
+        self.click_import_class_lists()
         self.select_year_groups(8, 9, 10, 11)
 
     def schedule_a_valid_session(self, location: str, for_today: bool = False):
