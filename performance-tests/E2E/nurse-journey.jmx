@@ -653,7 +653,7 @@ log.info(&quot;session ID is &quot; + vars.get(&quot;SessionId&quot;))</stringPr
             <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get PatientID" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">PatientId</stringProp>
-              <stringProp name="RegexExtractor.regex">&lt;a class=&quot;nhsuk-card__link&quot; href=&quot;\/sessions\/.*?\/patients\/(.*?)\/hpv</stringProp>
+              <stringProp name="RegexExtractor.regex">href=&quot;\/sessions\/.*?\/patients\/(.*?)\/hpv</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default">PatientId_NotFound</stringProp>
               <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
