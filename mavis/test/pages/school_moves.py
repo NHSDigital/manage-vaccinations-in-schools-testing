@@ -1,6 +1,8 @@
 from datetime import date
-from pathlib import Path
 from typing import Optional
+import pandas as pd
+from pandas import DataFrame
+from io import StringIO
 
 from ..step import step
 
@@ -67,10 +69,22 @@ class DownloadSchoolMovesPage:
 
         self.continue_button.click()
 
-    def confirm(self) -> Path:
-        with self.page.expect_download() as download_info:
+    def confirm(self) -> DataFrame:
+        browser = getattr(self.page.context, "browser", None)
+        browser_type_name = getattr(
+            getattr(browser, "browser_type", None), "name", None
+        )
+
+        # Playwrights webkit browser always opens CSVs in the browser, unlike Chromium and Firefox
+        if browser_type_name == "webkit":
             self.confirm_button.click()
-        return download_info.value.path()
+            csv_content = self.page.locator("pre").inner_text()
+            self.page.go_back()
+            return pd.read_csv(StringIO(csv_content))
+        else:
+            with self.page.expect_download() as download_info:
+                self.confirm_button.click()
+            return pd.read_csv(download_info.value.path())
 
 
 class ReviewSchoolMovePage:

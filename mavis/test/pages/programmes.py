@@ -135,7 +135,7 @@ class ProgrammesPage:
             getattr(browser, "browser_type", None), "name", None
         )
 
-        # In Safari, downloaded files are not saved to disk, but instead immediately displayed in the browser
+        # Playwrights webkit browser always opens CSVs in the browser, unlike Chromium and Firefox
         if browser_type_name == "webkit":
             self.click_continue()
             csv_content = self.page.locator("pre").inner_text()
