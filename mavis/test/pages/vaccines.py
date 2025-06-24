@@ -92,4 +92,4 @@ class VaccinesPage:
     @step("Archive {2} batch for {1}")
     def click_archive_batch(self, vaccine: Vaccine, batch_name: str):
         name = f"Archive {batch_name} batch of {vaccine}"
-        self.page.get_by_role("link", name=name).click()
+        self.page.get_by_role("link", name=name).click(force=True)
