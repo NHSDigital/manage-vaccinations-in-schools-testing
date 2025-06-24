@@ -1,27 +1,17 @@
-name: Functional tests (all devices)
+name: Functional tests (selected device)
 
 on:
-  schedule:
-    - cron: "0 3 * * *"
   workflow_dispatch:
+    inputs:
+      device:
+        description: 'Device to test (exact name - defaults to "Desktop Chrome")'
+        required: false
+        default: 'Desktop Chrome'
+  pull_request:
 
 jobs:
   test:
     name: Test
-
-    strategy:
-      fail-fast: false
-      matrix:
-        device:
-          - Desktop Chrome
-          - Desktop Edge
-          - Desktop Firefox
-          - Desktop Safari
-          - Galaxy S9+
-          - Pixel 7
-          - iPad (gen 7) landscape
-          - iPhone 15
-      max-parallel: 2
 
     permissions: {}
 
@@ -32,6 +22,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Set device variable
+        id: set-device
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
+          else
+            echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
@@ -40,7 +39,7 @@ jobs:
         run: uv run playwright install --with-deps
 
       - name: Run tests
-        run: uv run pytest --device "${{ matrix.device }}"
+        run: uv run pytest --device "${{ steps.set-device.outputs.device }}"
         env:
           BASE_URL: ${{ vars.BASE_URL }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
@@ -49,5 +48,5 @@ jobs:
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.device }}
+          name: results
           path: allure-results
