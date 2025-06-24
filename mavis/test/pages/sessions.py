@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
-from typing import List
 from pathlib import Path
+from typing import List
 
 from playwright.sync_api import Page, expect
 
@@ -146,6 +146,21 @@ class SessionsPage:
         self.pre_screening_listitem = pre_screening.get_by_role("listitem")
         self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
         self.pre_screening_notes = pre_screening.get_by_role("textbox")
+        self.review_no_consent_response_link = self.page.get_by_role(
+            "link", name="Review   no consent response"
+        )
+        self.parent_1_radio = self.page.get_by_text("Parent1")
+        self.dad_radio = self.page.get_by_text("Dad")
+        self.in_person_radio = self.page.get_by_text("In person")
+        self.no_they_no_not_agree_radio = self.page.get_by_text("No, they do not agree")
+        self.consent_refusal_reason_other_radio = self.page.get_by_text("Other")
+        self.consent_refusal_details_textbox = self.page.get_by_role(
+            "textbox", name="Give details"
+        )
+        self.review_consent_refused_link = self.page.get_by_role(
+            "link", name="Review   consent refused"
+        )
+        self.overview_tab_link = self.page.get_by_role("link", name="Overview")
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -661,3 +676,24 @@ class SessionsPage:
             expect(self.success_alert).to_contain_text(
                 f"Vaccination outcome recorded for {programme}"
             )
+
+    def verify_consent_filters(self, children):
+        child_name = str(children[0])
+        self.review_no_consent_response_link.click()
+        self.page.get_by_role("link", name=child_name).click()
+        self.click_get_verbal_consent()
+        self.parent_1_radio.click()
+        self.click_continue_button()
+        self.click_continue_button()  # Parent details
+        self.in_person_radio.click()
+        self.click_continue_button()
+        self.no_they_no_not_agree_radio.click()
+        self.click_continue_button()
+        self.consent_refusal_reason_other_radio.click()
+        self.click_continue_button()
+        self.consent_refusal_details_textbox.fill("MAV-1381")
+        self.click_continue_button()
+        self.click_confirm_button()
+        self.overview_tab_link.click()
+        self.review_consent_refused_link.click()
+        expect(self.consent_refused_checkbox).to_be_checked()
