@@ -1,19 +1,18 @@
+import re
+from enum import Enum
 from pathlib import Path
 from typing import List, Optional
-from enum import Enum
-from faker import Faker
-
 
 import nhs_number
 import pandas as pd
-import re
+from faker import Faker
 
-from ..models import Organisation, School, User, Child
+from ..models import Child, Organisation, School, User
 from ..wrappers import (
     get_current_datetime,
     get_current_time,
-    get_offset_date,
     get_date_of_birth_for_year_group,
+    get_offset_date,
 )
 
 
@@ -103,6 +102,7 @@ class ClassFileMapping(FileMapping):
     MAV_854 = "mav_854"
     MAV_965 = "mav_965"
     MAV_1080 = "mav_1080"
+    MAV_1381 = "mav_1381"
     MOVES_CONFIRM_IGNORE = "moves_confirm_ignore"
     MOVES_UNKNOWN_HOMESCHOOLED = "moves_unknown_homeschooled"
     CHANGE_NHSNO = "change_nhsno"

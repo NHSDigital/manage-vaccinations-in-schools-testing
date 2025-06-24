@@ -46,6 +46,11 @@ def setup_mav_1018(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.SESSION_ID)
 
 
+@pytest.fixture
+def setup_mav_1381(setup_session_with_file_upload):
+    yield from setup_session_with_file_upload(ClassFileMapping.MAV_1381)
+
+
 def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
     sessions_page.schedule_a_valid_session(schools[0])
     dashboard_page.click_mavis()
@@ -70,3 +75,9 @@ def test_verify_attendance_filters(setup_mavis_1822, sessions_page):
 @pytest.mark.bug
 def test_verify_search(setup_mav_1018, sessions_page):
     sessions_page.verify_search()
+
+
+@allure.issue("MAV-1381")
+@pytest.mark.bug
+def test_verify_consent_filters(setup_mav_1381, sessions_page, children):
+    sessions_page.verify_consent_filters(children)
