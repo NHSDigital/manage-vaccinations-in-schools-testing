@@ -177,6 +177,24 @@ class TestData:
                 static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
                     child.date_of_birth.strftime("%Y%m%d")
                 )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = (
+                    child.parent_1.full_name
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_NAME>>"] = (
+                    child.parent_2.full_name
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_EMAIL>>"] = (
+                    child.parent_1.email_address
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_EMAIL>>"] = (
+                    child.parent_2.email_address
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_RELATIONSHIP>>"] = (
+                    child.parent_1.relationship
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_RELATIONSHIP>>"] = (
+                    child.parent_2.relationship
+                )
 
         for year_group in range(8, 12):
             static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(

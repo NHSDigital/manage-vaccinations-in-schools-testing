@@ -9,7 +9,7 @@ import pytest
 import requests
 import nhs_number
 
-from mavis.test.models import Clinic, School, Team, Organisation, User, Child
+from mavis.test.models import Clinic, School, Team, Organisation, User, Child, Parent
 from mavis.test.wrappers import get_date_of_birth_for_year_group
 
 
@@ -78,6 +78,16 @@ def children():
                     onboarding_faker.postcode(),
                 ),
                 date_of_birth=get_date_of_birth_for_year_group(9),
+                parent_1=Parent(
+                    full_name=onboarding_faker.full_name(gender="M"),
+                    relationship="Dad",
+                    email_address=onboarding_faker.email(),
+                ),
+                parent_2=Parent(
+                    full_name=onboarding_faker.full_name(gender="F"),
+                    relationship="Mum",
+                    email_address=onboarding_faker.email(),
+                ),
             )
             for _ in range(n)
         ]

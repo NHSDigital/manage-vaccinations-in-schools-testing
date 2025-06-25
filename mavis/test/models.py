@@ -210,12 +210,20 @@ class User(NamedTuple):
         }
 
 
+class Parent(NamedTuple):
+    full_name: str
+    relationship: str
+    email_address: str
+
+
 class Child(NamedTuple):
     first_name: str
     last_name: str
     nhs_number: str
     address: tuple[str, str, str, str]
     date_of_birth: date
+    parent_1: Parent
+    parent_2: Parent
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"
