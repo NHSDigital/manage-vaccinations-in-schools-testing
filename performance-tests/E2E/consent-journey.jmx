@@ -57,7 +57,7 @@
         <stringProp name="variableNames"></stringProp>
       </CSVDataSet>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="false">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -102,7 +102,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone" enabled="false">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -185,7 +185,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Open a consent session for tomorrow">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Open a consent session for tomorrow" enabled="true">
         <stringProp name="TestPlan.comments">Setup thread group takes the first row from the data table, so to avoid it always failing for the first patient, this group includes a single consent run</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
@@ -1024,18 +1024,18 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu" enabled="true">
           <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/flu/start">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/flu/start" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1076,7 +1076,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -1086,7 +1086,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="RegexExtractor.match_number"></stringProp>
               </RegexExtractor>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">Session_Slug</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;session_slug&quot; id=&quot;session_slug&quot; value=&quot;</stringProp>
@@ -1096,7 +1096,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">Programme_Types</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;programme_types&quot; id=&quot;programme_types&quot; value=&quot;</stringProp>
@@ -1118,12 +1118,12 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ChildsData - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ChildsData - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1225,7 +1225,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/name">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/name" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1345,7 +1345,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/date-of-birth">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/date-of-birth" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1464,7 +1464,7 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/confirm-school">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/confirm-school" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1556,7 +1556,7 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/parent">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/parent" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1700,7 +1700,7 @@ else
                 <boolProp name="displaySystemProperties">false</boolProp>
               </DebugPostProcessor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="861961564">&lt;h1 class=&quot;nhsuk-fieldset__heading&quot;&gt;Do you agree to your child having the flu vaccination in school?&lt;/h1&gt;</stringProp>
                 </collectionProp>
@@ -1715,7 +1715,7 @@ else
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-flu">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-flu" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1808,12 +1808,12 @@ else
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="HomeAddress - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="HomeAddress - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/address">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/address" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1911,7 +1911,7 @@ else
                 <stringProp name="RegexExtractor.match_number"></stringProp>
               </RegexExtractor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="276846590">&lt;h1 class=&quot;nhsuk-fieldset__heading&quot;&gt;Has your child been diagnosed with asthma?&lt;/h1&gt;</stringProp>
                 </collectionProp>
@@ -1927,7 +1927,7 @@ else
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MedicalQuestions">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MedicalQuestions" enabled="true">
             <stringProp name="TestPlan.comments">This transaction controller starts with an authenticity token from the previous request, and question_number of 0. The request for health-question needs to increment question_number and loop until the title is;
 
 &lt;title&gt;Check and confirm – Give or refuse consent for vaccinations&lt;/title&gt;
@@ -1938,7 +1938,7 @@ else
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reset loop variables">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reset loop variables" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -1951,11 +1951,11 @@ vars.put(&quot;question_number&quot;,&quot;0&quot;)
 vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
             </JSR223Sampler>
             <hashTree/>
-            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller">
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
               <stringProp name="WhileController.condition">${__jexl3(&quot;${PageTitle}&quot; != &quot;If your child cannot have the nasal spray&quot;)}</stringProp>
             </WhileController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/health-question (${question_number})">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/health-question (${question_number})" enabled="true">
                 <boolProp name="HTTPSampler.image_parser">true</boolProp>
                 <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
                 <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2005,7 +2005,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                 </elementProp>
               </HTTPSamplerProxy>
               <hashTree>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">health-question&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -2015,7 +2015,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="injection-alternative_Authenticity_Token RegEx Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="injection-alternative_Authenticity_Token RegEx Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">injection-alternative_Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">injection-alternative&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -2025,7 +2025,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Title RegEx Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Title RegEx Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">PageTitle</stringProp>
                   <stringProp name="RegexExtractor.regex">&lt;title&gt;(.*?),</stringProp>
@@ -2040,7 +2040,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                 </ConstantTimer>
                 <hashTree/>
               </hashTree>
-              <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Increment question number">
+              <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Increment question number" enabled="true">
                 <stringProp name="scriptLanguage">groovy</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
@@ -2057,7 +2057,7 @@ vars.put(&quot;question_number&quot;,questionNumber.toString())</stringProp>
               </JSR223Sampler>
               <hashTree/>
             </hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move auth tokens">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move auth tokens" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2068,12 +2068,12 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
             </JSR223Sampler>
             <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Injection-Alternative - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Injection-Alternative - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/injection-alternative">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/injection-alternative" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2130,7 +2130,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">Confirm&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -2146,12 +2146,12 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Submit - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Submit - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/record">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/record" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2215,7 +2215,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
                 <stringProp name="ConstantTimer.delay">${__Random(5000,7000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
-              <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Log consent">
+              <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Log consent" enabled="true">
                 <stringProp name="scriptLanguage">groovy</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
@@ -4467,7 +4467,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
           </hashTree>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -4571,18 +4571,18 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu" enabled="true">
           <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/flu/start">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/flu/start" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -4623,7 +4623,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -4633,7 +4633,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="RegexExtractor.match_number"></stringProp>
               </RegexExtractor>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">Session_Slug</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;session_slug&quot; id=&quot;session_slug&quot; value=&quot;</stringProp>
@@ -4643,7 +4643,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor">
+              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor" enabled="true">
                 <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
                 <stringProp name="BoundaryExtractor.refname">Programme_Types</stringProp>
                 <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;programme_types&quot; id=&quot;programme_types&quot; value=&quot;</stringProp>
@@ -4665,12 +4665,12 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ChildsData - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ChildsData - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -4772,7 +4772,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/name">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/name" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -4892,7 +4892,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/date-of-birth">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/date-of-birth" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5011,7 +5011,7 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/confirm-school">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/confirm-school" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5103,7 +5103,7 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/parent">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/parent" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5247,7 +5247,7 @@ else
                 <boolProp name="displaySystemProperties">false</boolProp>
               </DebugPostProcessor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="861961564">&lt;h1 class=&quot;nhsuk-fieldset__heading&quot;&gt;Do you agree to your child having the flu vaccination in school?&lt;/h1&gt;</stringProp>
                 </collectionProp>
@@ -5262,7 +5262,7 @@ else
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-flu">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-flu" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5355,12 +5355,12 @@ else
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="HomeAddress - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="HomeAddress - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/address">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/address" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5458,7 +5458,7 @@ else
                 <stringProp name="RegexExtractor.match_number"></stringProp>
               </RegexExtractor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="276846590">&lt;h1 class=&quot;nhsuk-fieldset__heading&quot;&gt;Has your child been diagnosed with asthma?&lt;/h1&gt;</stringProp>
                 </collectionProp>
@@ -5474,7 +5474,7 @@ else
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MedicalQuestions">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MedicalQuestions" enabled="true">
             <stringProp name="TestPlan.comments">This transaction controller starts with an authenticity token from the previous request, and question_number of 0. The request for health-question needs to increment question_number and loop until the title is;
 
 &lt;title&gt;Check and confirm – Give or refuse consent for vaccinations&lt;/title&gt;
@@ -5485,7 +5485,7 @@ else
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reset loop variables">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reset loop variables" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -5498,11 +5498,11 @@ vars.put(&quot;question_number&quot;,&quot;0&quot;)
 vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
             </JSR223Sampler>
             <hashTree/>
-            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller">
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
               <stringProp name="WhileController.condition">${__jexl3(&quot;${PageTitle}&quot; != &quot;If your child cannot have the nasal spray&quot;)}</stringProp>
             </WhileController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/health-question (${question_number})">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/health-question (${question_number})" enabled="true">
                 <boolProp name="HTTPSampler.image_parser">true</boolProp>
                 <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
                 <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5552,7 +5552,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                 </elementProp>
               </HTTPSamplerProxy>
               <hashTree>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">health-question&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -5562,7 +5562,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="injection-alternative_Authenticity_Token RegEx Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="injection-alternative_Authenticity_Token RegEx Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">injection-alternative_Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">injection-alternative&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -5572,7 +5572,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Title RegEx Extractor">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Title RegEx Extractor" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">PageTitle</stringProp>
                   <stringProp name="RegexExtractor.regex">&lt;title&gt;(.*?),</stringProp>
@@ -5587,7 +5587,7 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                 </ConstantTimer>
                 <hashTree/>
               </hashTree>
-              <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Increment question number">
+              <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Increment question number" enabled="true">
                 <stringProp name="scriptLanguage">groovy</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
@@ -5604,7 +5604,7 @@ vars.put(&quot;question_number&quot;,questionNumber.toString())</stringProp>
               </JSR223Sampler>
               <hashTree/>
             </hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move auth tokens">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move auth tokens" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -5615,12 +5615,12 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
             </JSR223Sampler>
             <hashTree/>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Injection-Alternative - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Injection-Alternative - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/injection-alternative">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/injection-alternative" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5677,7 +5677,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">Confirm&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -5693,12 +5693,12 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Submit - FLU">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Submit - FLU" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/record">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/record" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5762,7 +5762,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
                 <stringProp name="ConstantTimer.delay">${__Random(5000,7000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
-              <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Log consent">
+              <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Log consent" enabled="true">
                 <stringProp name="scriptLanguage">groovy</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
@@ -5773,18 +5773,18 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for HPV">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for HPV" enabled="true">
           <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - HPV">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - HPV" enabled="true">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/hpv/start">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/hpv/start" enabled="true">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -8014,7 +8014,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
