@@ -21,7 +21,7 @@ def setup_confirm_and_ignore(
     )
 
     def upload_class_list():
-        sessions_page.click_import_class_list()
+        sessions_page.click_import_class_lists()
         sessions_page.select_year_groups(8, 9, 10, 11)
         sessions_page.choose_file_child_records(input_file_path)
         sessions_page.click_continue_button()

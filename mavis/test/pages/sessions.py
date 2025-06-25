@@ -39,8 +39,8 @@ class SessionsPage:
         )
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
-        self.import_class_list_link = self.page.get_by_role(
-            "link", name="Import class list"
+        self.import_class_lists_link = self.page.get_by_role(
+            "link", name="Import class lists"
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.file_input = self.page.locator('input[type="file"]')
@@ -53,9 +53,6 @@ class SessionsPage:
             "radio", name="Yes, it’s safe to vaccinate"
         )
         self.save_triage_button = self.page.get_by_role("button", name="Save triage")
-        self.consent_tab_link = self.page.get_by_role(
-            "link", name="Consent", exact=True
-        )
         self.assess_gillick_competence_link = self.page.get_by_role(
             "link", name="Assess Gillick competence"
         )
@@ -170,14 +167,17 @@ class SessionsPage:
     @step("Click on Today tab")
     def click_today(self):
         self.today_tab_link.click()
+        self.today_tab_link.get_by_role("strong").wait_for()
 
     @step("Click on Scheduled tab")
     def click_scheduled(self):
         self.scheduled_tab_link.click()
+        self.scheduled_tab_link.get_by_role("strong").wait_for()
 
     @step("Click on Unscheduled tab")
     def click_unscheduled(self):
         self.unscheduled_tab_link.click()
+        self.unscheduled_tab_link.get_by_role("strong").wait_for()
 
     @step("Select No response")
     def select_no_response(self):
@@ -219,14 +219,17 @@ class SessionsPage:
     @step("Click on location {1}")
     def click_location(self, location: str):
         self.page.get_by_role("link", name=str(location)).click()
+        expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
+            timeout=10000
+        )
 
     @step("Click on location radio {1}")
     def check_location_radio(self, location: str):
         self.page.get_by_role("radio", name=str(location)).check()
 
-    @step("Click on Import class list")
-    def click_import_class_list(self):
-        self.import_class_list_link.click()
+    @step("Click on Import class lists")
+    def click_import_class_lists(self):
+        self.import_class_lists_link.click()
 
     @step("Click on Continue")
     def click_continue_button(self):
@@ -238,9 +241,10 @@ class SessionsPage:
 
     @step("Click on child {1}")
     def click_child(self, child_name: str):
-        self.page.get_by_role("heading", name=child_name).get_by_role(
-            "link"
-        ).first.click()
+        with self.page.expect_navigation():
+            self.page.get_by_role("heading", name=child_name).get_by_role(
+                "link"
+            ).first.click()
 
     @step("Search and click on {1}")
     def search_and_click_child(self, child_name: str):
@@ -261,7 +265,7 @@ class SessionsPage:
 
     @step("Click on Consent tab")
     def click_consent_tab(self):
-        self.consent_tab_link.click()
+        self._click_tab("Consent")
 
     @step("Click on Assess Gillick competence")
     def click_assess_gillick_competence(self):
@@ -559,7 +563,7 @@ class SessionsPage:
         self.click_location(location)
 
     def navigate_to_class_list_import(self):
-        self.click_import_class_list()
+        self.click_import_class_lists()
         self.select_year_groups(8, 9, 10, 11)
 
     def schedule_a_valid_session(self, location: str, for_today: bool = False):

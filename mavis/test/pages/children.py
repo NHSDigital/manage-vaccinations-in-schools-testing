@@ -72,17 +72,20 @@ class ChildrenPage:
 
     @step("Click on record for child {1}")
     def click_record_for_child(self, child_name: str) -> None:
-        self.page.get_by_role("link", name=child_name).click()
+        with self.page.expect_navigation():
+            self.page.get_by_role("link", name=child_name).click()
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
-        self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
-            "link"
-        ).click()
+        with self.page.expect_navigation():
+            self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
+                "link"
+            ).click()
 
     @step("Click on Child record")
     def click_child_record(self) -> None:
-        self.child_record_link.click()
+        with self.page.expect_navigation():
+            self.child_record_link.click()
 
     @step("Click on Change NHS number")
     def click_change_nhs_no(self) -> None:
