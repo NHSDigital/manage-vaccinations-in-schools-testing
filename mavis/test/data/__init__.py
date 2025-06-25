@@ -164,6 +164,14 @@ class TestData:
                 static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
                 static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
                 static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
+                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_1>>"] = (
+                    child.address[0]
+                )
+                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_2>>"] = (
+                    child.address[1]
+                )
+                static_replacements[f"<<CHILD_{index}_TOWN>>"] = child.address[2]
+                static_replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
 
         for year_group in range(8, 12):
             static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(

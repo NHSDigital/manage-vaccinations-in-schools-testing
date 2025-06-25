@@ -213,6 +213,7 @@ class Child(NamedTuple):
     first_name: str
     last_name: str
     nhs_number: str
+    address: tuple[str, str, str, str]
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"

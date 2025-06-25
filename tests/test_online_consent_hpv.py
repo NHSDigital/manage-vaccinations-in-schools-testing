@@ -10,16 +10,6 @@ def url(get_online_consent_url):
     yield from get_online_consent_url(Programme.HPV)
 
 
-@pytest.fixture
-def child_address() -> tuple[str, str, str, str]:
-    return (
-        "1 ROWSLEY AVENUE",
-        "",
-        "DERBY",
-        "DE23 6JZ",
-    )
-
-
 @pytest.fixture(autouse=True)
 def start_consent(url, page, start_page):
     page.goto(url)
@@ -57,7 +47,6 @@ def test_given(
     health_question,
     children,
     date_of_birth_for_year,
-    child_address,
 ):
     child = children[0]
     consent_page.fill_child_name_details(*child.name)
@@ -70,7 +59,7 @@ def test_given(
 
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
     consent_page.agree_to_hpv_vaccination()
-    consent_page.fill_address_details(*child_address)
+    consent_page.fill_address_details(*child.address)
 
     for _ in range(4):
         if health_question:
