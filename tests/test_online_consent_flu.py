@@ -16,10 +16,10 @@ def start_consent(url, page, start_page):
     start_page.start()
 
 
-def test_refused(consent_page, faker, schools, children, date_of_birth_for_year):
+def test_refused(consent_page, faker, schools, children):
     child = children[0]
     consent_page.fill_child_name_details(*child.name, "AKAFirst", "AKALast")
-    consent_page.fill_child_date_of_birth(date_of_birth_for_year(9))
+    consent_page.fill_child_date_of_birth(child.date_of_birth)
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
     consent_page.dont_agree_to_vaccination()
@@ -48,12 +48,11 @@ def test_given(
     injection,
     health_question,
     children,
-    date_of_birth_for_year,
 ):
     child = children[0]
 
     consent_page.fill_child_name_details(*child.name)
-    consent_page.fill_child_date_of_birth(date_of_birth_for_year(10))
+    consent_page.fill_child_date_of_birth(child.date_of_birth)
 
     if change_school:
         consent_page.select_child_school(schools[1])
