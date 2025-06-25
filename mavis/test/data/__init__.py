@@ -238,6 +238,17 @@ class TestData:
 
         return _input_file_path, _output_file_path
 
+    def read_scenario_list_from_file(self, input_file_path: str) -> Optional[str]:
+        try:
+            _df = pd.read_csv(input_file_path)
+            return (
+                ", ".join(_df["TEST_DESC_IGNORED"].tolist())
+                if "TEST_DESC_IGNORED" in _df.columns
+                else None
+            )
+        except pd.errors.EmptyDataError:
+            return None
+
     def create_child_list_from_file(
         self, file_path: Path, is_vaccinations: bool
     ) -> list[str]:
