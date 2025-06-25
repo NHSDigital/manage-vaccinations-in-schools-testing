@@ -5,7 +5,7 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.data import pds as pds_test_data, CohortsFileMapping
-from mavis.test.models import Programme, Child
+from mavis.test.models import Programme, Child, Parent
 
 pytestmark = pytest.mark.consent_responses
 
@@ -32,7 +32,7 @@ def give_online_consent(
     consent_page.fill_child_name_details(*child.name)
     consent_page.fill_child_date_of_birth(child.date_of_birth)
     consent_page.select_child_school(schools[0])
-    consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
+    consent_page.fill_parent_details(child.parents[0])
     consent_page.agree_to_hpv_vaccination()
     consent_page.fill_address_details(*child.address)
     for _ in range(4):
@@ -111,6 +111,7 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
                 patient.nhs_number,
                 patient.address,
                 patient.date_of_birth,
+                (Parent.get("Dad"), Parent.get("Mum")),
             )
         ]
     ],

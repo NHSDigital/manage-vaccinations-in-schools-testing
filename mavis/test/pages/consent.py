@@ -1,15 +1,18 @@
 from datetime import date
 from playwright.sync_api import Page, expect
-from typing import Final, Optional
+from typing import Optional
 
-from ..models import ConsentMethod, ConsentRefusalReason, Programme, School
-from ..step import step
+from mavis.test.models import (
+    ConsentMethod,
+    ConsentRefusalReason,
+    Programme,
+    School,
+    Parent,
+)
+from mavis.test.step import step
 
 
 class ConsentPage:
-    RDO_PARENT1_DAD: Final[str] = "Parent1 (Dad)"
-    RDO_PARENT2_MUM: Final[str] = "Parent2 (Mum)"
-
     def __init__(self, page: Page):
         self.page = page
 
@@ -186,17 +189,14 @@ class ConsentPage:
 
     def fill_parent_details(
         self,
-        parent_name: str,
-        relation: str,
-        *,
-        email: Optional[str] = None,
+        parent: Parent,
         phone: Optional[str] = None,
     ) -> None:
-        self.fill_parent_name(parent_name)
-        self.click_radio_button(relation)
+        self.fill_parent_name(parent.full_name)
+        self.click_radio_button(parent.relationship)
 
-        if email:
-            self.fill_email_address(email)
+        if parent.email_address:
+            self.fill_email_address(parent.email_address)
 
         if phone:
             self.fill_phone_number_and_receive_text_alerts(phone)
@@ -324,10 +324,13 @@ class ConsentPage:
         self.mobile_only_text_checkbox.check()
         self.click_continue()
 
-    def parent_1_verbal_positive(
-        self, change_phone: bool = True, programme: Programme = Programme.HPV
+    def parent_verbal_positive(
+        self,
+        parent: Parent,
+        change_phone: bool = True,
+        programme: Programme = Programme.HPV,
     ):
-        self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
+        self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
         self._process_consent_confirmation(programme)
         if change_phone:
@@ -335,21 +338,21 @@ class ConsentPage:
             self.change_parent_phone()
         self.click_confirm()
 
-    def parent_1_verbal_no_response(self):
-        self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
+    def parent_verbal_no_response(self, parent: Parent):
+        self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
         self.no_response_radio.check()
         self.click_continue()
         self.click_confirm()
 
-    def parent_2_verbal_refuse_consent(self):
-        self._select_parent(parent_locator=self.RDO_PARENT2_MUM)
+    def parent_verbal_refuse_consent(self, parent: Parent):
+        self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
         self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
         self.click_confirm()
 
-    def parent_1_written_positive(self):
-        self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
+    def parent_written_positive(self, parent: Parent):
+        self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
         self._process_consent_confirmation()
         self.click_add_phone_number()
@@ -368,26 +371,19 @@ class ConsentPage:
             "Triage outcome updated for"
         )
 
-    def parent_1_verbal_refuse_consent(self):
-        self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
-        self._select_consent_method(ConsentMethod.IN_PERSON)
-        self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
-        self.click_confirm()
-
-    def service_give_consent(self):
-        self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
+    def parent_phone_positive(self, parent: Parent):
+        self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PHONE)
         self._process_consent_confirmation()
         self.click_confirm()
 
-    def service_refuse_consent(self, child_name: str):
-        self._select_parent(parent_locator=self.RDO_PARENT1_DAD)
+    def parent_paper_refuse_consent(self, parent: Parent):
+        self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
         self._handle_refusal_of_consent(ConsentRefusalReason.VACCINE_ALREADY_RECEIVED)
         self.give_details("vaccine will be given elsewhere")
         self.click_continue()
         self.click_confirm()
-        self.expect_text_in_main(f"Consent recorded for {child_name}")
 
     def child_consent_verbal_positive(self):
         self.child_gillick_competent_radio.check()

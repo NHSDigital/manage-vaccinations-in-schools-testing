@@ -78,16 +78,7 @@ def children():
                     onboarding_faker.postcode(),
                 ),
                 date_of_birth=get_date_of_birth_for_year_group(9),
-                parent_1=Parent(
-                    full_name=onboarding_faker.full_name(gender="M"),
-                    relationship="Dad",
-                    email_address=onboarding_faker.email(),
-                ),
-                parent_2=Parent(
-                    full_name=onboarding_faker.full_name(gender="F"),
-                    relationship="Mum",
-                    email_address=onboarding_faker.email(),
-                ),
+                parents=(Parent.get("Dad"), Parent.get("Mum")),
             )
             for _ in range(n)
         ]
