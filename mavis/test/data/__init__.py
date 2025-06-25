@@ -153,7 +153,7 @@ class TestData:
 
         if self.schools:
             for index, school in enumerate(self.schools):
-                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
+                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = f'"{school.name}"'
                 static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
         if self.nurse:
