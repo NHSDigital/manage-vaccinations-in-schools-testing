@@ -1,10 +1,11 @@
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from playwright.sync_api import Page, expect
-import time
 from typing import Optional
 
-from ..data import TestData, FileMapping
+from playwright.sync_api import Page, expect
+
+from ..data import FileMapping, TestData
 from ..step import step
 from ..wrappers import format_datetime_for_upload_link
 
@@ -59,7 +60,7 @@ class ImportRecordsPage:
         self.vaccination_records_radio_button.click()
 
     @step("Click Continue")
-    def click_continue(self):
+    def click_continue(self, coverage=""):
         self.continue_button.click()
 
     @step("Set input file to {1}")
@@ -133,9 +134,11 @@ class ImportRecordsPage:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
             file_mapping=file_mapping, session_id=session_id
         )
+        _scenario_list = self.test_data.read_scenario_list_from_file(_input_file_path)
+
         self.set_input_file(_input_file_path)
         self.record_upload_time()
-        self.click_continue()
+        self.click_continue(coverage=_scenario_list)
 
         if self.is_processing_in_background():
             self.click_uploaded_file_datetime()
