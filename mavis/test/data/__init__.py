@@ -1,3 +1,5 @@
+import csv
+import os
 import re
 from enum import Enum
 from pathlib import Path
@@ -153,7 +155,7 @@ class TestData:
 
         if self.schools:
             for index, school in enumerate(self.schools):
-                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = f'"{school.name}"'
+                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
                 static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
         if self.nurse:
@@ -170,49 +172,49 @@ class TestData:
                 get_date_of_birth_for_year_group(year_group)
             )
 
-        file_content = self._replace_placeholders(
-            template_path=template_path,
-            static_replacements=static_replacements,
-        )
-        filename = f"{file_name_prefix}{get_current_datetime()}.csv"
+        dynamic_replacements = {
+            "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
+            "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
+            "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
+            "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
+            "<<PARENT_EMAIL>>": lambda: self.faker.email(),
+        }
 
-        output_path = self.working_path / filename
-        output_path.write_text(file_content, encoding="utf-8")
+        output_filename = f"{file_name_prefix}{get_current_datetime()}.csv"
+        output_path = self.working_path / output_filename
 
+        if os.path.getsize(self.template_path / template_path) > 0:
+            template_df = pd.read_csv(self.template_path / template_path, dtype=str)
+            # template_df.replace(static_replacements, inplace=True)
+            template_df = self.replace_substrings_in_df(
+                template_df, static_replacements
+            )
+            template_df = template_df.apply(
+                lambda col: col.apply(
+                    lambda x: dynamic_replacements[x.strip()]()
+                    if isinstance(x, str) and x.strip() in dynamic_replacements
+                    else x
+                )
+            )
+            template_df.to_csv(
+                path_or_buf=output_path,
+                quoting=csv.QUOTE_MINIMAL,
+                encoding="utf-8",
+                index=None,
+            )
+        else:
+            open(output_path, "w").close()
         return output_path
 
-    def _replace_placeholders(
-        self,
-        template_path: Path,
-        static_replacements: dict[str, str],
-    ) -> str:
-        template_text = self.read_file(template_path)
+    def replace_substrings_in_df(self, df, replacements):
+        def replace_substrings(cell):
+            if isinstance(cell, str):
+                for old, new in replacements.items():
+                    if old and new:
+                        cell = cell.replace(old, new)
+            return cell
 
-        lines = [
-            self._process_line(line, static_replacements)
-            for line in template_text.splitlines()
-        ]
-        return "\n".join(lines)
-
-    def _process_line(
-        self,
-        line: str,
-        static_replacements: dict[str, str],
-    ) -> str:
-        dynamic_replacements = {
-            "<<RANDOM_FNAME>>": self.faker.first_name(),
-            "<<RANDOM_LNAME>>": self.faker.last_name().upper(),
-            "<<RANDOM_NHS_NO>>": self.get_new_nhs_no(valid=True),
-            "<<INVALID_NHS_NO>>": self.get_new_nhs_no(valid=False),
-            "<<PARENT_EMAIL>>": self.faker.email(),
-        }
-        all_replacements = {**static_replacements, **dynamic_replacements}
-        return self._apply_replacements(line, all_replacements)
-
-    def _apply_replacements(self, line: str, replacements: dict[str, str]) -> str:
-        for key, value in replacements.items():
-            line = line.replace(key, str(value) if value else "")
-        return line
+        return df.applymap(replace_substrings)
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
@@ -277,7 +279,7 @@ class TestData:
         return re.sub(r"\s+", " ", string).strip()
 
     def get_session_id(self, path: Path) -> str:
-        data_frame = pd.read_excel(path, sheet_name="Vaccinations")
+        data_frame = pd.read_excel(path, sheet_name="Vaccinations", dtype=str)
         return data_frame["SESSION_ID"].iloc[0]
 
     def increment_date_of_birth_for_records(self, file_path: Path):
