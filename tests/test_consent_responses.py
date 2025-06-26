@@ -5,7 +5,7 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.data import pds as pds_test_data, CohortsFileMapping
-from mavis.test.models import Programme, Child, Parent
+from mavis.test.models import Programme, Child, Parent, Relationship
 
 pytestmark = pytest.mark.consent_responses
 
@@ -111,7 +111,7 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
                 patient.nhs_number,
                 patient.address,
                 patient.date_of_birth,
-                (Parent.get("Dad"), Parent.get("Mum")),
+                (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
             )
         ]
     ],
