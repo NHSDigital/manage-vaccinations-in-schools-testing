@@ -69,6 +69,12 @@ def children():
                 nhs_number=nhs_number.generate(
                     for_region=nhs_number.REGION_ENGLAND,
                 )[0],
+                address=(
+                    onboarding_faker.secondary_address(),
+                    onboarding_faker.street_name(),
+                    onboarding_faker.city(),
+                    onboarding_faker.postcode(),
+                ),
             )
             for _ in range(n)
         ]

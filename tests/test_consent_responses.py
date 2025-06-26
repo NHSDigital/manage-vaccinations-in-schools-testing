@@ -15,16 +15,6 @@ def online_consent_url(get_online_consent_url):
     yield from get_online_consent_url(Programme.HPV)
 
 
-@pytest.fixture
-def child_address() -> tuple[str, str, str, str]:
-    return (
-        "1 ROWSLEY AVENUE",
-        "",
-        "DERBY",
-        "DE23 6JZ",
-    )
-
-
 @pytest.fixture(autouse=True)
 def give_online_consent(
     page,
@@ -33,7 +23,6 @@ def give_online_consent(
     online_consent_url,
     children,
     date_of_birth_for_year,
-    child_address,
     schools,
     faker,
 ):
@@ -44,7 +33,7 @@ def give_online_consent(
     consent_page.select_child_school(schools[0])
     consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
     consent_page.agree_to_hpv_vaccination()
-    consent_page.fill_address_details(*child_address)
+    consent_page.fill_address_details(*children[0].address)
     for _ in range(4):
         consent_page.answer_no()
     consent_page.click_confirm()
@@ -112,7 +101,17 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
 
 @allure.issue("MAVIS-1812")
 @pytest.mark.parametrize(
-    "children", [[Child(patient.given_name, patient.family_name, patient.nhs_number)]]
+    "children",
+    [
+        [
+            Child(
+                patient.given_name,
+                patient.family_name,
+                patient.nhs_number,
+                patient.address,
+            )
+        ]
+    ],
 )
 def test_create_with_nhs_number(
     children,
