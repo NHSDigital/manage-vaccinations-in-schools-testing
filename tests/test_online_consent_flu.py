@@ -21,7 +21,7 @@ def test_refused(consent_page, faker, schools, children):
     consent_page.fill_child_name_details(*child.name, "AKAFirst", "AKALast")
     consent_page.fill_child_date_of_birth(child.date_of_birth)
     consent_page.select_child_school(schools[0])
-    consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
+    consent_page.fill_parent_details(child.parents[0])
     consent_page.dont_agree_to_vaccination()
     consent_page.select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
@@ -59,7 +59,7 @@ def test_given(
     else:
         consent_page.select_child_school(schools[0])
 
-    consent_page.fill_parent_details("Parent Full", "Dad", email=faker.email())
+    consent_page.fill_parent_details(child.parents[0])
     consent_page.agree_to_flu_vaccination(injection=injection)
     consent_page.fill_address_details(*child.address)
 

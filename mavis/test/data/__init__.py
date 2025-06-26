@@ -177,6 +177,24 @@ class TestData:
                 static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
                     child.date_of_birth.strftime("%Y%m%d")
                 )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
+                    0
+                ].full_name
+                static_replacements[f"<<CHILD_{index}_PARENT_2_NAME>>"] = child.parents[
+                    1
+                ].full_name
+                static_replacements[f"<<CHILD_{index}_PARENT_1_EMAIL>>"] = (
+                    child.parents[0].email_address
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_EMAIL>>"] = (
+                    child.parents[1].email_address
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_RELATIONSHIP>>"] = (
+                    child.parents[0].relationship
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_RELATIONSHIP>>"] = (
+                    child.parents[1].relationship
+                )
 
         for year_group in range(8, 12):
             static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
@@ -188,7 +206,6 @@ class TestData:
             "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
             "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
             "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
-            "<<PARENT_EMAIL>>": lambda: self.faker.email(),
         }
 
         output_filename = f"{file_name_prefix}{get_current_datetime()}.csv"

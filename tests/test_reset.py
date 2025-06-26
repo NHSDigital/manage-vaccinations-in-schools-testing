@@ -65,18 +65,21 @@ def test_programmes_rav_pre_screening_questions(
     sessions_page.search_child(child_name=child_name)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.click_get_verbal_consent()
-    consent_page.parent_1_verbal_positive(change_phone=False)
+    consent_page.parent_verbal_positive(
+        parent=children[0].parents[0], change_phone=False
+    )
     sessions_page.search_child(child_name=child_name)
     sessions_page.click_programme_tab(Programme.MENACWY)
     sessions_page.click_get_verbal_consent()
-    consent_page.parent_1_verbal_positive(
-        change_phone=False, programme=Programme.MENACWY
+    consent_page.parent_verbal_positive(
+        parent=children[0].parents[0], change_phone=False, programme=Programme.MENACWY
     )
+
     sessions_page.search_child(child_name=child_name)
     sessions_page.click_programme_tab(Programme.TD_IPV)
     sessions_page.click_get_verbal_consent()
-    consent_page.parent_1_verbal_positive(
-        change_phone=False, programme=Programme.TD_IPV
+    consent_page.parent_verbal_positive(
+        parent=children[0].parents[0], change_phone=False, programme=Programme.TD_IPV
     )
     sessions_page.register_child_as_attending(child_name=child_name)
     sessions_page.record_vaccs_for_child(

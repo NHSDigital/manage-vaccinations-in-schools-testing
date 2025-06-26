@@ -209,7 +209,7 @@ def test_rav_triage_consent_given(
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.service_give_consent()
+    consent_page.parent_phone_positive(children[0].parents[0])
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
@@ -244,11 +244,15 @@ def test_rav_triage_consent_refused(
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
 
-    consent_page.service_refuse_consent(child_name)
+    consent_page.parent_paper_refuse_consent(children[0].parents[0])
+    consent_page.expect_text_in_main(child_name)
+
     sessions_page.select_consent_refused()
     sessions_page.click_child(child_name)
     sessions_page.click_session_activity_and_notes()
-    sessions_page.verify_activity_log_entry(consent_given=False)
+    sessions_page.expect_main_to_contain_text(
+        f"Consent refused by {children[0].parents[0].name_and_relationship}"
+    )
 
 
 @allure.issue("MAVIS-1729")
@@ -285,7 +289,9 @@ def test_rav_verify_excel_mav_854(
     children_page.click_record_for_child(child_name)
     sessions_page.click_session("Community clinics", Programme.HPV)
     sessions_page.click_get_verbal_consent()
-    consent_page.parent_1_verbal_positive(change_phone=False)
+    consent_page.parent_verbal_positive(
+        parent=children[0].parents[0], change_phone=False
+    )
     sessions_page.register_child_as_attending(child_name=child_name)
     sessions_page.record_vaccs_for_child(
         child_name=child_name,

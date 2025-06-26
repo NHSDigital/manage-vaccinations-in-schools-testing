@@ -5,10 +5,14 @@ from typing import List
 
 from playwright.sync_api import Page, expect
 
-from ..data import TestData
-from ..models import Programme
-from ..step import step
-from ..wrappers import generate_random_string, get_current_datetime, get_offset_date
+from mavis.test.data import TestData
+from mavis.test.models import Programme, Parent
+from mavis.test.step import step
+from mavis.test.wrappers import (
+    generate_random_string,
+    get_current_datetime,
+    get_offset_date,
+)
 
 
 class SessionsPage:
@@ -146,8 +150,6 @@ class SessionsPage:
         self.review_no_consent_response_link = self.page.get_by_role(
             "link", name="Review   no consent response"
         )
-        self.parent_1_radio = self.page.get_by_text("Parent1")
-        self.dad_radio = self.page.get_by_text("Dad")
         self.in_person_radio = self.page.get_by_text("In person")
         self.no_they_no_not_agree_radio = self.page.get_by_text("No, they do not agree")
         self.consent_refusal_reason_other_radio = self.page.get_by_text("Other")
@@ -337,6 +339,10 @@ class SessionsPage:
     @step("Click on Get verbal consent")
     def click_get_verbal_consent(self):
         self.get_verbal_consent_button.click()
+
+    @step("Click {1} radio button")
+    def click_parent_radio_button(self, name: str) -> None:
+        self.page.get_by_role("radio", name=name).check()
 
     def navigate_to_todays_sessions(self, location: str):
         self.click_today()
@@ -530,20 +536,8 @@ class SessionsPage:
             f"Triage outcome updated for {child_name}"
         )
 
-    def verify_activity_log_entry(self, consent_given: bool):
-        if consent_given:
-            locator = self.page.get_by_role(
-                "heading", name="Triaged decision: Safe to vaccinate"
-            ).first
-        else:
-            locator = self.page.get_by_role(
-                "heading", name="Consent refused by Parent1 (Dad)"
-            ).first
-
-        expect(locator).to_be_visible()
-
-    def invalidate_parent2_refusal(self):
-        self.page.get_by_role("link", name="Parent2").click()
+    def invalidate_parent_refusal(self, parent: Parent):
+        self.page.get_by_role("link", name=parent.full_name).click()
         self.click_mark_as_invalid_link()
         self.fill_notes("Invalidation notes.")
         self.click_mark_as_invalid_button()
@@ -686,7 +680,7 @@ class SessionsPage:
         self.review_no_consent_response_link.click()
         self.page.get_by_role("link", name=child_name).click()
         self.click_get_verbal_consent()
-        self.parent_1_radio.click()
+        self.click_parent_radio_button(children[0].parents[0].full_name)
         self.click_continue_button()
         self.click_continue_button()  # Parent details
         self.in_person_radio.click()

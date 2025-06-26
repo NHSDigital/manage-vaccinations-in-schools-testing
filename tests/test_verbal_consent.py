@@ -106,20 +106,26 @@ def test_invalid_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_1_verbal_no_response()
+    consent_page.parent_verbal_no_response(children[0].parents[0])
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_2_verbal_refuse_consent()
+    consent_page.parent_verbal_refuse_consent(children[0].parents[1])
 
     sessions_page.click_child(child_name)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.invalidate_parent2_refusal()
+    sessions_page.invalidate_parent_refusal(children[0].parents[1])
     sessions_page.click_session_activity_and_notes()
-    # FIXME: Make the following generic
-    sessions_page.expect_main_to_contain_text("Consent from Parent2 invalidated")
-    sessions_page.expect_main_to_contain_text("Consent refused by Parent2 (Mum)")
-    sessions_page.expect_main_to_contain_text("Consent not_provided by Parent1 (Dad)")
+
+    sessions_page.expect_main_to_contain_text(
+        f"Consent from {children[0].parents[1].full_name} invalidated"
+    )
+    sessions_page.expect_main_to_contain_text(
+        f"Consent refused by {children[0].parents[1].name_and_relationship}"
+    )
+    sessions_page.expect_main_to_contain_text(
+        f"Consent not_provided by {children[0].parents[0].name_and_relationship}"
+    )
 
 
 @allure.issue("MAVIS-1864")
@@ -134,7 +140,7 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_1_written_positive()
+    consent_page.parent_written_positive(children[0].parents[0])
     sessions_page.select_consent_given()
 
     sessions_page.navigate_to_update_triage_outcome(child_name, Programme.HPV)
@@ -142,16 +148,22 @@ def test_parent_provides_consent_twice(
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_1_verbal_refuse_consent()
+    consent_page.parent_verbal_refuse_consent(children[0].parents[0])
     sessions_page.select_consent_refused()
 
     sessions_page.click_child(child_name)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.expect_main_to_contain_text("Dad refused to give consent.")
+    sessions_page.expect_main_to_contain_text(
+        f"{children[0].parents[0].relationship} refused to give consent."
+    )
     sessions_page.click_session_activity_and_notes()
-    sessions_page.expect_main_to_contain_text("Consent refused by Parent1 (Dad)")
+    sessions_page.expect_main_to_contain_text(
+        f"Consent refused by {children[0].parents[0].name_and_relationship}"
+    )
     sessions_page.expect_main_to_contain_text("Triaged decision: Safe to vaccinate")
-    sessions_page.expect_main_to_contain_text("Consent given by Parent1 (Dad)")
+    sessions_page.expect_main_to_contain_text(
+        f"Consent given by {children[0].parents[0].name_and_relationship}"
+    )
 
 
 @allure.issue("MAVIS-1818")
@@ -165,11 +177,13 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_1_verbal_positive(change_phone=False)
+    consent_page.parent_verbal_positive(
+        parent=children[0].parents[0], change_phone=False
+    )
     sessions_page.select_consent_given()
 
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_2_verbal_refuse_consent()
+    consent_page.parent_verbal_refuse_consent(children[0].parents[1])
     sessions_page.select_conflicting_consent()
 
     sessions_page.click_child(child_name)

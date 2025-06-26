@@ -44,4 +44,6 @@ def test_e2e(
     sessions_page.schedule_a_valid_session(schools[0])
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_1_verbal_positive(change_phone=False)
+    consent_page.parent_verbal_positive(
+        parent=children[0].parents[0], change_phone=False
+    )

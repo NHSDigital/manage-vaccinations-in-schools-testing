@@ -1,6 +1,9 @@
 from enum import StrEnum
 from typing import NamedTuple
 from datetime import date
+from faker import Faker
+
+faker = Faker("en_GB")
 
 
 class Programme(StrEnum):
@@ -210,12 +213,47 @@ class User(NamedTuple):
         }
 
 
+class Relationship(StrEnum):
+    DAD = "Dad"
+    MUM = "Mum"
+    GUARDIAN = "Guardian"
+    CARER = "Carer"
+    OTHER = "Other"
+
+    @property
+    def generate_name(self) -> str:
+        if self == Relationship.DAD:
+            return faker.name_male()
+        if self == Relationship.MUM:
+            return faker.name_female()
+        return faker.name_nonbinary()
+
+
+class Parent(NamedTuple):
+    full_name: str
+    relationship: str
+    email_address: str
+
+    @property
+    def name_and_relationship(self) -> str:
+        return f"{self.full_name} ({self.relationship})"
+
+    @classmethod
+    def get(cls, relationship: Relationship) -> "Parent":
+        return cls(
+            full_name=relationship.generate_name,
+            relationship=str(relationship),
+            email_address=faker.email(),
+        )
+
+
 class Child(NamedTuple):
     first_name: str
     last_name: str
     nhs_number: str
     address: tuple[str, str, str, str]
     date_of_birth: date
+    parents: tuple[Parent, Parent]
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"
