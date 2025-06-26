@@ -131,7 +131,7 @@
           </elementProp>
           <elementProp name="Loops" elementType="Argument">
             <stringProp name="Argument.name">Loops</stringProp>
-            <stringProp name="Argument.value">${__P(Loops, 20)}</stringProp>
+            <stringProp name="Argument.value">${__P(Loops, 10)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="BaseDirectory" elementType="Argument">
@@ -185,7 +185,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Open a consent session for tomorrow" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Open a consent session for tomorrow">
         <stringProp name="TestPlan.comments">Setup thread group takes the first row from the data table, so to avoid it always failing for the first patient, this group includes a single consent run</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
@@ -203,51 +203,6 @@
           <stringProp name="filename"></stringProp>
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="script">log.info(&quot;setup thread &quot; + vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot; &quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;));</stringProp>
-        </JSR223Sampler>
-        <hashTree/>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug" enabled="false">
-          <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="filename"></stringProp>
-          <stringProp name="parameters"></stringProp>
-          <stringProp name="script">import java.util.HashMap;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.format.*;
-
-BufferedReader reader;
-HashMap&lt;String, String&gt; cohortCodes = new HashMap&lt;String,String&gt;();
-
-//Opens file to populate HashMap of URNs and Slug
-try {
-	reader = new BufferedReader(new FileReader(vars.get(&quot;BaseDirectory&quot;) + vars.get(&quot;UrnMapping&quot;)));
-     String line = reader.readLine();
-
-     line = reader.readLine();
-
-     while (line != null)
-     {
-		String[] lineSplit = line.split(&quot;,&quot;);
-
-		cohortCodes.put(lineSplit[1],lineSplit[0])
-
-          line = reader.readLine();
-     }
-
-	reader.close();
-}
-catch (IOException e)
-{
-	e.printStackTrace();
-}
-
-//Uses HashMap above to cross reference URN code in feeder file to use a specific slug in URL
-vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&quot;)));
-</stringProp>
-          <stringProp name="scriptLanguage">groovy</stringProp>
         </JSR223Sampler>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage" enabled="true">
@@ -365,7 +320,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Organisation" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Organisation">
             <stringProp name="HTTPSampler.path">users/organisations</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -402,7 +357,52 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Determine session slug" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug from UrnMapping" enabled="false">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.format.*;
+
+BufferedReader reader;
+HashMap&lt;String, String&gt; cohortCodes = new HashMap&lt;String,String&gt;();
+
+//Opens file to populate HashMap of URNs and Slug
+try {
+	reader = new BufferedReader(new FileReader(vars.get(&quot;BaseDirectory&quot;) + vars.get(&quot;UrnMapping&quot;)));
+     String line = reader.readLine();
+
+     line = reader.readLine();
+
+     while (line != null)
+     {
+		String[] lineSplit = line.split(&quot;,&quot;);
+
+		cohortCodes.put(lineSplit[1],lineSplit[0])
+
+          line = reader.readLine();
+     }
+
+	reader.close();
+}
+catch (IOException e)
+{
+	e.printStackTrace();
+}
+
+//Uses HashMap above to cross reference URN code in feeder file to use a specific slug in URL
+vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&quot;)));
+</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Calculate slug from API">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
@@ -499,7 +499,7 @@ vars.put(&quot;ConsentSession&quot;, ConsentSession);</stringProp>
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Sessions List" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Open Sessions List">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
@@ -526,7 +526,7 @@ vars.put(&quot;ConsentSession&quot;, ConsentSession);</stringProp>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Edit session" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Edit session">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
@@ -832,7 +832,7 @@ vars.put(&quot;postbody&quot;,postbody);
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
@@ -847,7 +847,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -888,7 +888,7 @@ vars.put(&quot;postbody&quot;,postbody);
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
               <collectionProp name="Asserion.test_strings">
                 <stringProp name="1451931259">Manage vaccinations in schools</stringProp>
               </collectionProp>
@@ -897,6 +897,16 @@ vars.put(&quot;postbody&quot;,postbody);
               <boolProp name="Assertion.assume_success">false</boolProp>
               <intProp name="Assertion.test_type">16</intProp>
             </ResponseAssertion>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinations regex">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">Vaccinations</stringProp>
+              <stringProp name="RegexExtractor.regex">&lt;p class=&quot;nhsuk-caption-l nhsuk-u-margin-bottom-4&quot;&gt;\n(.*?)\n&lt;\/p&gt;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">Vaccinations_notfound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress" enabled="true">
@@ -946,7 +956,7 @@ vars.put(&quot;postbody&quot;,postbody);
             <hashTree/>
           </hashTree>
         </hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate SchoolYear" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate SchoolYear">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
@@ -1011,6 +1021,10 @@ int yearGroup = (int) ChronoUnit.YEARS.between(birthSchoolYear, schoolYearStart)
 schoolYear = Math.max(yearGroup, -1); // -1 represents pre-school
 
 vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
+
+//Save vaccinations list for thread group
+
+props.put(&quot;Vaccinations&quot;,vars.get(&quot;Vaccinations&quot;))
 </stringProp>
           <stringProp name="scriptLanguage">groovy</stringProp>
         </JSR223Sampler>
@@ -1024,18 +1038,18 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu" enabled="true">
-          <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu">
+          <stringProp name="IfController.condition">${__groovy((vars.get(&quot;SchoolYear&quot;).toInteger() &gt;=8),)} &amp;&amp; ${__groovy((vars.get(&quot;Vaccinations&quot;).contains(&quot;Flu&quot;)),)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - FLU" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - FLU">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/flu/start" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/flu/start">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2226,18 +2240,18 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for HPV" enabled="true">
-          <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for HPV">
+          <stringProp name="IfController.condition">${__groovy((vars.get(&quot;SchoolYear&quot;).toInteger() &gt;=8),)} &amp;&amp; ${__groovy((vars.get(&quot;Vaccinations&quot;).contains(&quot;HPV&quot;)),)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - HPV" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Homepage - HPV">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/hpv/start" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession}/hpv/start">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -3346,8 +3360,8 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for MenACWY/IPV" enabled="true">
-          <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 9,)}</stringProp>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for MenACWY/IPV">
+          <stringProp name="IfController.condition">${__groovy((vars.get(&quot;SchoolYear&quot;).toInteger() &gt;=8),)} &amp;&amp; ${__groovy((vars.get(&quot;Vaccinations&quot;).contains(&quot;Men&quot;)),)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
@@ -4467,7 +4481,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
           </hashTree>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -4485,15 +4499,19 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
           <stringProp name="RandomTimer.range">100</stringProp>
         </UniformRandomTimer>
         <hashTree/>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Log name and address" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Log name and address">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="script">log.info(vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot; &quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;));</stringProp>
+          <stringProp name="script">log.info(vars.get(&quot;CHILD_LAST_NAME&quot;) + &quot; &quot; + vars.get(&quot;CHILD_FIRST_NAME&quot;));
+
+//retrieve vaccinations list
+
+vars.put(&quot;Vaccinations&quot;,props.get(&quot;Vaccinations&quot;))</stringProp>
         </JSR223Sampler>
         <hashTree/>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate SchoolYear" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate SchoolYear">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
@@ -4571,8 +4589,8 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu" enabled="true">
-          <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for Flu">
+          <stringProp name="IfController.condition">${__groovy((vars.get(&quot;SchoolYear&quot;).toInteger() &gt;=8),)} &amp;&amp; ${__groovy((vars.get(&quot;Vaccinations&quot;).contains(&quot;Flu&quot;)),)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
@@ -5773,8 +5791,8 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;injection-alternative_Aut
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for HPV" enabled="true">
-          <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 8,)}</stringProp>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for HPV">
+          <stringProp name="IfController.condition">${__groovy((vars.get(&quot;SchoolYear&quot;).toInteger() &gt;=8),)} &amp;&amp; ${__groovy((vars.get(&quot;Vaccinations&quot;).contains(&quot;HPV&quot;)),)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
@@ -6893,8 +6911,8 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for MenACWY/IPV" enabled="true">
-          <stringProp name="IfController.condition">${__javaScript(parseInt(&quot;${SchoolYear}&quot;) &gt;= 9,)}</stringProp>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Student Old Enough for MenACWY/IPV">
+          <stringProp name="IfController.condition">${__groovy((vars.get(&quot;SchoolYear&quot;).toInteger() &gt;=8),)} &amp;&amp; ${__groovy((vars.get(&quot;Vaccinations&quot;).contains(&quot;Men&quot;)),)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
@@ -8014,7 +8032,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
