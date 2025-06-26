@@ -172,6 +172,9 @@ class TestData:
                 )
                 static_replacements[f"<<CHILD_{index}_TOWN>>"] = child.address[2]
                 static_replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
+                static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
+                    child.date_of_birth.strftime("%Y%m%d")
+                )
 
         for year_group in range(8, 12):
             static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(

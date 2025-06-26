@@ -1,5 +1,6 @@
 from enum import StrEnum
 from typing import NamedTuple
+from datetime import date
 
 
 class Programme(StrEnum):
@@ -214,6 +215,7 @@ class Child(NamedTuple):
     last_name: str
     nhs_number: str
     address: tuple[str, str, str, str]
+    date_of_birth: date
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"

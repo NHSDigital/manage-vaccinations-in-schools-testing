@@ -9,7 +9,9 @@ import pytest
 import requests
 import nhs_number
 
-from ..models import Clinic, School, Team, Organisation, User, Child
+from mavis.test.models import Clinic, School, Team, Organisation, User, Child
+from mavis.test.wrappers import get_date_of_birth_for_year_group
+
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +77,7 @@ def children():
                     onboarding_faker.city(),
                     onboarding_faker.postcode(),
                 ),
+                date_of_birth=get_date_of_birth_for_year_group(9),
             )
             for _ in range(n)
         ]
