@@ -95,7 +95,7 @@ def superuser():
 def team():
     return Team(
         key="team",
-        name=onboarding_faker.company(),
+        name=f"{onboarding_faker.company()} est. {random.randint(1600, 2025)}",
         email=onboarding_faker.email(),
         phone=onboarding_faker.cellphone_number(),
     )
