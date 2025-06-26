@@ -590,7 +590,7 @@ class SessionsPage:
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def get_online_consent_url(self, *programmes: List[Programme]) -> str:
-        link_text = f"View the {' and '.join(programmes)} online consent form"
+        link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
 
     def verify_attendance_filters(self):

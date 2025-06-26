@@ -23,20 +23,15 @@ def give_online_consent(
     online_consent_url,
     children,
     schools,
-    faker,
 ):
     child = children[0]
 
     page.goto(online_consent_url)
     start_page.start()
-    consent_page.fill_child_name_details(*child.name)
-    consent_page.fill_child_date_of_birth(child.date_of_birth)
-    consent_page.select_child_school(schools[0])
-    consent_page.fill_parent_details(child.parents[0])
+    consent_page.fill_details(child, child.parents[0], schools)
     consent_page.agree_to_hpv_vaccination()
     consent_page.fill_address_details(*child.address)
-    for _ in range(4):
-        consent_page.answer_no()
+    consent_page.answer_health_questions(4, health_question=False)
     consent_page.click_confirm()
 
 
