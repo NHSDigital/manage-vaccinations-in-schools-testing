@@ -8,6 +8,7 @@ from mavis.test.models import (
     Programme,
     School,
     Parent,
+    Child,
 )
 from mavis.test.step import step
 
@@ -418,3 +419,54 @@ class ConsentPage:
         self.click_continue()
         self.click_safe_to_vaccinate()
         self.click_continue()
+
+    def fill_details(
+        self,
+        child: Child,
+        parent: Parent,
+        schools: list[School],
+        change_school: bool = False,
+    ):
+        self.fill_child_name_details(*child.name)
+        self.fill_child_date_of_birth(child.date_of_birth)
+
+        if change_school:
+            self.select_child_school(schools[1])
+        else:
+            self.select_child_school(schools[0])
+
+        self.fill_parent_details(parent)
+
+    def answer_health_questions(self, number_of_questions: int, health_question: bool):
+        for _ in range(number_of_questions):
+            if health_question:
+                self.answer_yes("More details")
+            else:
+                self.answer_no()
+
+    def check_final_consent_message(
+        self, child: Child, programmes: list[Programme], health_question: bool
+    ):
+        def programme_display(programme):
+            return "nasal flu" if programme == Programme.FLU else str(programme)
+
+        programmes_str = " and ".join(
+            programme_display(programme) for programme in programmes
+        )
+
+        if programmes == [Programme.MENACWY] or programmes == [Programme.TD_IPV]:
+            title = f"Consent for the {programmes_str} vaccination confirmed"
+        else:
+            title = "Consent confirmed"
+
+        if health_question:
+            body = (
+                f" As you answered ‘yes’ to some of the health questions, "
+                f"we need to check the {programmes_str} vaccination{'s are' if len(programmes) > 1 else ' is'} suitable for "
+                f"{child.first_name} {child.last_name}. We’ll review your answers and get in touch again soon."
+            )
+        else:
+            body = f"{child.first_name} {child.last_name} is due to get the {programmes_str} vaccination{'s' if len(programmes) > 1 else ''} at school"
+
+        final_message = "".join([title, body])
+        self.expect_text_in_main(final_message)
