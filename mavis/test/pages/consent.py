@@ -118,6 +118,9 @@ class ConsentPage:
             "radio", name="Yes, I agree"
         )
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
+        self.sessions_link = self.page.get_by_label("Primary navigation").get_by_role(
+            "link", name="Sessions"
+        )
 
     @step("Click Continue")
     def click_continue(self):
@@ -163,7 +166,7 @@ class ConsentPage:
     def select_child_school(self, school: School) -> None:
         name = str(school)
 
-        if name == self.displayed_school_name:
+        if name == self.displayed_school_name.inner_text().strip():
             self.confirm_school_radio.click()
         else:
             self.select_different_school_radio.click()
@@ -217,7 +220,7 @@ class ConsentPage:
         self.click_continue()
 
     @step("Agree to Flu vaccination (injection = {injection})")
-    def agree_to_flu_vaccination(self, *, injection: bool):
+    def agree_to_flu_vaccination(self, injection: bool):
         if injection:
             self.flu_agree_injection_radio.check()
         else:
@@ -295,6 +298,10 @@ class ConsentPage:
     @step("Click on Child (Gillick competent)")
     def click_gillick_competent(self):
         self.child_gillick_competent_radio.check()
+
+    @step("Click on Sessions")
+    def click_sessions(self):
+        self.sessions_link.click()
 
     def answer_yes(self, details: Optional[str] = None):
         self.select_yes()
@@ -417,6 +424,9 @@ class ConsentPage:
         self.click_continue()
         self.click_safe_to_vaccinate()
         self.click_continue()
+
+    def go_to_url(self, url: str):
+        self.page.goto(url)
 
     def fill_details(
         self,
