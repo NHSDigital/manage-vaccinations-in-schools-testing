@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.data import ClassFileMapping, ChildFileMapping, VaccsFileMapping
+from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 
 
 @pytest.fixture
@@ -180,11 +180,15 @@ def test_vaccs_negative_file_upload(setup_vaccs, import_records_page):
 def test_vaccs_duplicate_record_upload(
     setup_vaccs, dashboard_page, import_records_page
 ):
-    import_records_page.upload_and_verify_output(VaccsFileMapping.DUP_1)
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.DUP_1, session_id=setup_vaccs
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_import_records()
     import_records_page.navigate_to_vaccination_records_import()
-    import_records_page.upload_and_verify_output(VaccsFileMapping.DUP_2)
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.DUP_2, session_id=setup_vaccs
+    )
 
 
 @pytest.mark.vaccinations
@@ -254,7 +258,7 @@ def test_vaccs_hpv_space_normalization(
     setup_vaccs, import_records_page, children_page, dashboard_page
 ):
     input_file, _ = import_records_page.upload_and_verify_output(
-        VaccsFileMapping.MAV_1080,
+        VaccsFileMapping.MAV_1080, session_id=setup_vaccs
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
