@@ -8,9 +8,7 @@ pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
-def setup_session_with_file_upload(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
-):
+def setup_session_with_file_upload(log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page):
     def _setup(class_list_file):
         try:
             dashboard_page.click_sessions()
@@ -62,19 +60,13 @@ def test_gillick_competence(setup_gillick, schools, sessions_page, children):
     sessions_page.navigate_to_todays_sessions(schools[0])
     sessions_page.navigate_to_gillick_competence(child_name, Programme.HPV)
 
-    sessions_page.add_gillick_competence(
-        is_competent=True, competence_details="Gillick competent"
-    )
+    sessions_page.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
     sessions_page.click_edit_gillick_competence()
-    sessions_page.edit_gillick_competence(
-        is_competent=False, competence_details="Not Gillick competent"
-    )
+    sessions_page.edit_gillick_competence(is_competent=False, competence_details="Not Gillick competent")
 
 
 @allure.issue("MAV-955")
-def test_gillick_competence_notes(
-    setup_gillick_notes_length, schools, sessions_page, children
-):
+def test_gillick_competence_notes(setup_gillick_notes_length, schools, sessions_page, children):
     child_name = str(children[0])
 
     sessions_page.navigate_to_todays_sessions(schools[0])
@@ -97,9 +89,7 @@ def test_gillick_competence_notes(
 
 @allure.issue("MAVIS-1696")
 @pytest.mark.bug
-def test_invalid_consent(
-    setup_mavis_1696, sessions_page, schools, consent_page, children
-):
+def test_invalid_consent(setup_mavis_1696, sessions_page, schools, consent_page, children):
     child_name = str(children[0])
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
@@ -130,9 +120,7 @@ def test_invalid_consent(
 
 @allure.issue("MAVIS-1864")
 @pytest.mark.bug
-def test_parent_provides_consent_twice(
-    setup_mavis_1864, sessions_page, schools, consent_page, children
-):
+def test_parent_provides_consent_twice(setup_mavis_1864, sessions_page, schools, consent_page, children):
     child_name = str(children[0])
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
@@ -146,7 +134,6 @@ def test_parent_provides_consent_twice(
     sessions_page.navigate_to_update_triage_outcome(child_name, Programme.HPV)
     consent_page.update_triage_outcome_positive()
 
-    sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
     consent_page.parent_verbal_refuse_consent(children[0].parents[0])
     sessions_page.select_consent_refused()
@@ -168,9 +155,7 @@ def test_parent_provides_consent_twice(
 
 @allure.issue("MAVIS-1818")
 @pytest.mark.bug
-def test_conflicting_consent_with_gillick_consent(
-    setup_mavis_1818, sessions_page, schools, consent_page, children
-):
+def test_conflicting_consent_with_gillick_consent(setup_mavis_1818, sessions_page, schools, consent_page, children):
     child_name = str(children[0])
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
@@ -189,13 +174,9 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_child(child_name)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_main_to_contain_text("Conflicting consent")
-    sessions_page.expect_main_to_contain_text(
-        "You can only vaccinate if all respondents give consent."
-    )
+    sessions_page.expect_main_to_contain_text("You can only vaccinate if all respondents give consent.")
     sessions_page.click_assess_gillick_competence()
-    sessions_page.add_gillick_competence(
-        is_competent=True, competence_details="Gillick competent"
-    )
+    sessions_page.add_gillick_competence(is_competent=True, competence_details="Gillick competent")
     sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
     sessions_page.click_get_verbal_consent()
     consent_page.child_consent_verbal_positive()
@@ -204,11 +185,7 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_child(child_name)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
-    sessions_page.expect_main_to_contain_text(
-        f"NURSE, Nurse decided that {child_name} is safe to vaccinate."
-    )
+    sessions_page.expect_main_to_contain_text(f"NURSE, Nurse decided that {child_name} is safe to vaccinate.")
     sessions_page.expect_main_to_contain_text("Consent given")
     sessions_page.click_session_activity_and_notes()
-    sessions_page.expect_main_to_contain_text(
-        f"Consent given by {child_name} (Child (Gillick competent))"
-    )
+    sessions_page.expect_main_to_contain_text(f"Consent given by {child_name} (Child (Gillick competent))")

@@ -21,92 +21,44 @@ class ConsentPage:
         self.last_name_textbox = self.page.get_by_role("textbox", name="Last name")
         self.yes_radio = self.page.get_by_role("radio", name="Yes")
         self.no_radio = self.page.get_by_role("radio", name="No")
-        self.preferred_first_name_textbox = self.page.get_by_role(
-            "textbox", name="Preferred first name (optional)"
-        )
-        self.preferred_last_name_textbox = self.page.get_by_role(
-            "textbox", name="Preferred last name (optional)"
-        )
+        self.preferred_first_name_textbox = self.page.get_by_role("textbox", name="Preferred first name (optional)")
+        self.preferred_last_name_textbox = self.page.get_by_role("textbox", name="Preferred last name (optional)")
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.dob_day_textbox = self.page.get_by_role("textbox", name="Day")
         self.dob_month_textbox = self.page.get_by_role("textbox", name="Month")
         self.dob_year_textbox = self.page.get_by_role("textbox", name="Year")
         self.displayed_school_name = self.page.get_by_test_id("school-name")
-        self.confirm_school_radio = self.page.get_by_role(
-            "radio", name="Yes, they go to this school"
-        )
-        self.select_different_school_radio = self.page.get_by_role(
-            "radio", name="No, they go to a different school"
-        )
+        self.confirm_school_radio = self.page.get_by_role("radio", name="Yes, they go to this school")
+        self.select_different_school_radio = self.page.get_by_role("radio", name="No, they go to a different school")
         self.school_name_combobox = self.page.get_by_role("combobox")
         self.full_name_textbox = self.page.get_by_role("textbox", name="Full name")
-        self.email_address_textbox = self.page.get_by_role(
-            "textbox", name="Email address"
-        )
+        self.email_address_textbox = self.page.get_by_role("textbox", name="Email address")
         self.phone_textbox = self.page.get_by_role("textbox", name="Phone number")
-        self.text_alerts_checkbox = self.page.get_by_role(
-            "checkbox", name="Get updates by text message"
-        )
-        self.mobile_only_text_checkbox = self.page.get_by_role(
-            "checkbox", name="I can only receive text"
-        )
-        self.mobile_only_voice_checkbox = self.page.get_by_role(
-            "checkbox", name="I can only receive voice calls"
-        )
-        self.address_line_1_textbox = self.page.get_by_role(
-            "textbox", name="Address line 1"
-        )
-        self.address_line_2_textbox = self.page.get_by_role(
-            "textbox", name="Address line 2 (optional)"
-        )
-        self.address_city_textbox = self.page.get_by_role(
-            "textbox", name="Town or city"
-        )
-        self.address_postcode_textbox = self.page.get_by_role(
-            "textbox", name="Postcode"
-        )
-        self.give_details_textbox = self.page.get_by_role(
-            "textbox", name="Give details"
-        )
+        self.text_alerts_checkbox = self.page.get_by_role("checkbox", name="Get updates by text message")
+        self.mobile_only_text_checkbox = self.page.get_by_role("checkbox", name="I can only receive text")
+        self.mobile_only_voice_checkbox = self.page.get_by_role("checkbox", name="I can only receive voice calls")
+        self.address_line_1_textbox = self.page.get_by_role("textbox", name="Address line 1")
+        self.address_line_2_textbox = self.page.get_by_role("textbox", name="Address line 2 (optional)")
+        self.address_city_textbox = self.page.get_by_role("textbox", name="Town or city")
+        self.address_postcode_textbox = self.page.get_by_role("textbox", name="Postcode")
+        self.give_details_textbox = self.page.get_by_role("textbox", name="Give details")
         self.consent_refusal_radios = {
-            reason: self.page.get_by_role("radio", name=reason)
-            for reason in ConsentRefusalReason
+            reason: self.page.get_by_role("radio", name=reason) for reason in ConsentRefusalReason
         }
-        self.consent_method_radios = {
-            method: self.page.get_by_role("radio", name=method)
-            for method in ConsentMethod
-        }
-        self.change_phone_link = self.page.get_by_role(
-            "link", name="Change   your phone"
-        )
-        self.add_phone_number_link = self.page.get_by_role(
-            "link", name="Add phone number"
-        )
+        self.consent_method_radios = {method: self.page.get_by_role("radio", name=method) for method in ConsentMethod}
+        self.change_phone_link = self.page.get_by_role("link", name="Change   your phone")
+        self.add_phone_number_link = self.page.get_by_role("link", name="Add phone number")
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.no_response_radio = self.page.get_by_role("radio", name="No response")
         self.save_triage_button = self.page.get_by_role("button", name="Save triage")
-        self.yes_safe_to_vaccinate_radio = self.page.get_by_role(
-            "radio", name="Yes, it’s safe to vaccinate"
-        )
-        self.child_gillick_competent_radio = self.page.get_by_role(
-            "radio", name="Child (Gillick competent)"
-        )
-        self.they_do_not_agree_radio = self.page.get_by_role(
-            "radio", name="No, they do not agree"
-        )
-        self.yes_they_agree_radio = self.page.get_by_role(
-            "radio", name="Yes, they agree"
-        )
+        self.yes_safe_to_vaccinate_radio = self.page.get_by_role("radio", name="Yes, it’s safe to vaccinate")
+        self.child_gillick_competent_radio = self.page.get_by_role("radio", name="Child (Gillick competent)")
+        self.they_do_not_agree_radio = self.page.get_by_role("radio", name="No, they do not agree")
+        self.yes_they_agree_radio = self.page.get_by_role("radio", name="Yes, they agree")
 
-        self.doubles_consent_both_radio = self.page.get_by_role(
-            "radio", name="Yes, I agree to them having"
-        )
-        self.doubles_consent_one_radio = self.page.get_by_role(
-            "radio", name="I agree to them having one of"
-        )
-        self.doubles_consent_menacwy_radio = self.page.get_by_role(
-            "radio", name="MenACWY"
-        )
+        self.doubles_consent_both_radio = self.page.get_by_role("radio", name="Yes, I agree to them having")
+        self.doubles_consent_one_radio = self.page.get_by_role("radio", name="I agree to them having one of")
+        self.doubles_consent_menacwy_radio = self.page.get_by_role("radio", name="MenACWY")
         self.doubles_consent_tdipv_radio = self.page.get_by_role("radio", name="Td/IPV")
         self.flu_agree_injection_radio = self.page.get_by_role(
             "radio", name="Yes, I agree to the alternative flu injection"
@@ -114,9 +66,7 @@ class ConsentPage:
         self.flu_agree_nasal_radio = self.page.get_by_role(
             "radio", name="Yes, I agree to them having the nasal spray vaccine"
         )
-        self.hpv_consent_agree_radio = self.page.get_by_role(
-            "radio", name="Yes, I agree"
-        )
+        self.hpv_consent_agree_radio = self.page.get_by_role("radio", name="Yes, I agree")
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
 
     @step("Click Continue")
@@ -235,9 +185,7 @@ class ConsentPage:
         self.click_continue()
 
     @step("Fill address details")
-    def fill_address_details(
-        self, line1: str, line2: str, city: str, postcode: str
-    ) -> None:
+    def fill_address_details(self, line1: str, line2: str, city: str, postcode: str) -> None:
         self.address_line_1_textbox.fill(line1)
         self.address_line_2_textbox.fill(line2)
         self.address_city_textbox.fill(city)
@@ -306,9 +254,7 @@ class ConsentPage:
         self.select_no()
         self.click_continue()
 
-    def select_consent_not_given_reason(
-        self, reason: ConsentRefusalReason, details: Optional[str] = None
-    ) -> None:
+    def select_consent_not_given_reason(self, reason: ConsentRefusalReason, details: Optional[str] = None) -> None:
         self.click_consent_refusal_reason(reason)
         if reason.requires_details:
             self.click_continue()
@@ -368,9 +314,7 @@ class ConsentPage:
     def update_triage_outcome_positive(self):
         self.click_safe_to_vaccinate()
         self.click_save_triage()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Triage outcome updated for"
-        )
+        expect(self.page.get_by_role("main")).to_contain_text("Triage outcome updated")
 
     def parent_phone_positive(self, parent: Parent):
         self._select_parent(parent_locator=parent.name_and_relationship)
@@ -407,9 +351,7 @@ class ConsentPage:
         self.click_consent_method(method)
         self.click_continue()
 
-    def _process_consent_confirmation(
-        self, programme=Programme.HPV, child_consent: bool = False
-    ):
+    def _process_consent_confirmation(self, programme=Programme.HPV, child_consent: bool = False):
         self.click_yes_they_agree()
         self.click_continue()
         if child_consent:
