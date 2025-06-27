@@ -968,7 +968,7 @@ whether vaccination is given</stringProp>
             <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Consent_Authenticity_Token Extractor" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Consent_Authenticity_Token</stringProp>
-              <stringProp name="RegexExtractor.regex">type=&quot;submit&quot;&gt;Get verbal consent&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.regex">type=&quot;submit&quot;&gt;Record a new consent response&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default">Consent_Authenticity_Token_NotFound</stringProp>
               <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
