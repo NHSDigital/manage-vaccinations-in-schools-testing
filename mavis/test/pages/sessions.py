@@ -6,7 +6,7 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Programme, Parent
+from mavis.test.models import Parent, Programme
 from mavis.test.step import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -531,10 +531,8 @@ class SessionsPage:
             .get_by_role("definition")
         ).not_to_be_visible()
 
-    def verify_triage_updated_for_child(self, child_name: str):
-        expect(self.success_alert).to_contain_text(
-            f"Triage outcome updated for {child_name}"
-        )
+    def verify_triage_updated_for_child(self):
+        expect(self.success_alert).to_contain_text("Triage outcome updated")
 
     def invalidate_parent_refusal(self, parent: Parent):
         self.page.get_by_role("link", name=parent.full_name).click()

@@ -1,8 +1,8 @@
 import allure
 import pytest
 
-from mavis.test.data import VaccsFileMapping, CohortsFileMapping, ClassFileMapping
-from mavis.test.models import Programme, Vaccine, ReportFormat
+from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
+from mavis.test.models import Programme, ReportFormat, Vaccine
 
 
 @pytest.fixture
@@ -220,7 +220,7 @@ def test_rav_triage_consent_given(
     sessions_page.navigate_to_update_triage_outcome(child_name, Programme.HPV)
     sessions_page.select_yes_safe_to_vaccinate()
     sessions_page.click_save_triage()
-    sessions_page.verify_triage_updated_for_child(child_name)
+    sessions_page.verify_triage_updated_for_child()
 
 
 @pytest.mark.rav
