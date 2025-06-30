@@ -33,12 +33,12 @@ def setup_children_session(
 
 @pytest.fixture
 def setup_children_page(setup_children_session):
-    yield from setup_children_session(ClassFileMapping.CHILDREN_FILTER)
+    yield from setup_children_session(ClassFileMapping.FIXED_CHILD_YEAR_9)
 
 
 @pytest.fixture
 def setup_change_nhsno(setup_children_session):
-    yield from setup_children_session(ClassFileMapping.CHANGE_NHSNO)
+    yield from setup_children_session(ClassFileMapping.FIXED_CHILD_YEAR_10)
 
 
 @pytest.fixture
@@ -54,7 +54,9 @@ def setup_mav_853(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(ClassFileMapping.SESSION_ID)
+        import_records_page.upload_and_verify_output(
+            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        )
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()

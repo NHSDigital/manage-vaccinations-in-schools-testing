@@ -43,12 +43,12 @@ def setup_mavis_1822(setup_session_with_file_upload):
 
 @pytest.fixture
 def setup_mav_1018(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFileMapping.SESSION_ID)
+    yield from setup_session_with_file_upload(ClassFileMapping.RANDOM_CHILD_YEAR_9)
 
 
 @pytest.fixture
 def setup_mav_1381(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFileMapping.MAV_1381)
+    yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD_YEAR_9)
 
 
 def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):

@@ -97,17 +97,13 @@ class ClassFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    CHILDREN_FILTER = "children_filter"
-    YEAR_GROUP = "year_group"
-    SESSION_ID = "session_id"
-    SINGLE_VACC = "single_vacc"
-    MAV_854 = "mav_854"
-    MAV_965 = "mav_965"
     WHITESPACE = "whitespace"
-    MAV_1381 = "mav_1381"
-    MOVES_CONFIRM_IGNORE = "moves_confirm_ignore"
-    MOVES_UNKNOWN_HOMESCHOOLED = "moves_unknown_homeschooled"
-    CHANGE_NHSNO = "change_nhsno"
+    WRONG_YEAR_GROUP = "wrong_year_group"
+    RANDOM_CHILD_YEAR_9 = "random_child_year_9"
+    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
+    FIXED_CHILD_YEAR_10 = "fixed_child_year_10"
+    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children_year_9"
+    TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
 
     @property
     def folder(self) -> Path:
