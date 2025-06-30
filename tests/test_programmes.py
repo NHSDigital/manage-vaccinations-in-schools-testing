@@ -48,7 +48,9 @@ def setup_mavis_1729(
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
-        import_records_page.upload_and_verify_output(file_mapping=VaccsFileMapping.HPV_DOSE_TWO, session_id=session_id)
+        import_records_page.upload_and_verify_output(
+            file_mapping=VaccsFileMapping.HPV_DOSE_TWO, session_id=session_id
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
         yield
@@ -88,7 +90,9 @@ def setup_mav_854(
 
 
 @pytest.fixture
-def setup_mav_nnn(log_in_as_admin, schools, dashboard_page, import_records_page, sessions_page):
+def setup_mav_nnn(
+    log_in_as_admin, schools, dashboard_page, import_records_page, sessions_page
+):
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
@@ -162,7 +166,9 @@ def test_cohorts_readd_to_cohort(
     """
     child_name = str(children[0])
 
-    input_file_path, _ = import_records_page.upload_and_verify_output(CohortsFileMapping.MAV_909)
+    input_file_path, _ = import_records_page.upload_and_verify_output(
+        CohortsFileMapping.MAV_909
+    )
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -318,30 +324,46 @@ def test_rav_verify_banners(setup_mav_nnn, sessions_page, schools):
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
-    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.CAREPLUS)
+    programmes_page.verify_report_format(
+        programme=Programme.HPV, report_format=ReportFormat.CAREPLUS
+    )
 
 
 @pytest.mark.reports
-def test_verify_careplus_report_for_doubles(setup_reports, dashboard_page, programmes_page):
-    programmes_page.verify_report_format(programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS)
+def test_verify_careplus_report_for_doubles(
+    setup_reports, dashboard_page, programmes_page
+):
+    programmes_page.verify_report_format(
+        programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_report_format(programme=Programme.TD_IPV, report_format=ReportFormat.CAREPLUS)
+    programmes_page.verify_report_format(
+        programme=Programme.TD_IPV, report_format=ReportFormat.CAREPLUS
+    )
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
-    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.CSV)
+    programmes_page.verify_report_format(
+        programme=Programme.HPV, report_format=ReportFormat.CSV
+    )
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes_page):
-    programmes_page.verify_report_format(programme=Programme.MENACWY, report_format=ReportFormat.CSV)
+    programmes_page.verify_report_format(
+        programme=Programme.MENACWY, report_format=ReportFormat.CSV
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_report_format(programme=Programme.TD_IPV, report_format=ReportFormat.CSV)
+    programmes_page.verify_report_format(
+        programme=Programme.TD_IPV, report_format=ReportFormat.CSV
+    )
 
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
-    programmes_page.verify_report_format(programme=Programme.HPV, report_format=ReportFormat.SYSTMONE)
+    programmes_page.verify_report_format(
+        programme=Programme.HPV, report_format=ReportFormat.SYSTMONE
+    )
