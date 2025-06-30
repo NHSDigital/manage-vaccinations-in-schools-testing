@@ -62,16 +62,8 @@ class CohortsFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    CONFLICTING_CONSENT = "conflicting_consent"
-    E2E_1 = "e2e_1"
-    UCR_MATCH = "ucr_match"
-    CONSENT_TWICE = "consent_twice"
-    CONFLICTING_GILLICK = "conflicting_gillick"
-    FULL_NAME = "full_name"
-    MAV_927_PERF = "mav_927_perf"
-    MAV_909 = "mav_909"
-    MAV_853 = "mav_853"
-    GILLICK_NOTES_LENGTH = "gillick_notes_length"
+    FIXED_CHILD_YEAR_8 = "fixed_child_year_8"
+    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
 
     @property
     def folder(self) -> Path:

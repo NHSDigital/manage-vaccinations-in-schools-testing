@@ -173,7 +173,7 @@ def test_cohorts_readd_to_cohort(
     child_name = str(children[0])
 
     input_file_path, _ = import_records_page.upload_and_verify_output(
-        CohortsFileMapping.MAV_909
+        CohortsFileMapping.FIXED_CHILD_YEAR_8
     )
 
     dashboard_page.click_mavis()
@@ -208,7 +208,7 @@ def test_rav_triage_consent_given(
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.navigate_to_class_list_import()
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
@@ -243,7 +243,7 @@ def test_rav_triage_consent_refused(
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.navigate_to_class_list_import()
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.navigate_to_scheduled_sessions(schools[0])
