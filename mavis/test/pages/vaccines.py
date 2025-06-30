@@ -27,7 +27,9 @@ class AddBatchPage(BatchExpiryDateMixin):
 
         self.name_textbox = page.get_by_role("textbox", name="Batch")
         self.confirm_button = page.get_by_role("button", name="Add batch")
-        self.success_alert = page.get_by_role("alert", name="Success").filter(has_text="added")
+        self.success_alert = page.get_by_role("alert", name="Success").filter(
+            has_text="added"
+        )
 
         error_alert = page.get_by_role("alert").filter(has_text="There is a problem")
         self.error_listitem = error_alert.get_by_role("listitem")
@@ -48,7 +50,9 @@ class EditBatchPage(BatchExpiryDateMixin):
         self.page = page
 
         self.confirm_button = page.get_by_role("button", name="Save changes")
-        self.success_alert = page.get_by_role("alert", name="Success").filter(has_text="updated")
+        self.success_alert = page.get_by_role("alert", name="Success").filter(
+            has_text="updated"
+        )
 
     @step("Confirm edit batch")
     def confirm(self):
@@ -59,7 +63,9 @@ class ArchiveBatchPage:
     def __init__(self, page: Page):
         self.page = page
         self.confirm_button = page.get_by_role("button", name="Yes, archive this batch")
-        self.success_alert = page.get_by_role("alert", name="Success").filter(has_text="archived")
+        self.success_alert = page.get_by_role("alert", name="Success").filter(
+            has_text="archived"
+        )
 
     @step("Click on Archive this batch")
     def confirm(self):
@@ -90,15 +96,31 @@ class VaccinesPage:
 
     def verify_flu_not_available(self, programmes: list[str]):
         if "flu" not in programmes:
-            expect(self.page.get_by_role("link", name="Adjuvanted Quadrivalent - aQIV (Flu)")).not_to_be_visible()
-            expect(self.page.get_by_role("link", name="Cell-based Quadrivalent - QIVc (Flu)")).not_to_be_visible()
-            expect(self.page.get_by_role("link", name="Fluenz Tetra - LAIV (Flu)")).not_to_be_visible()
             expect(
-                self.page.get_by_role("link", name="Quadrivalent Influenza vaccine - QIVe (Flu)")
+                self.page.get_by_role(
+                    "link", name="Adjuvanted Quadrivalent - aQIV (Flu)"
+                )
             ).not_to_be_visible()
             expect(
-                self.page.get_by_role("link", name="Quadrivalent Influvac sub-unit Tetra - QIVe (Flu)")
+                self.page.get_by_role(
+                    "link", name="Cell-based Quadrivalent - QIVc (Flu)"
+                )
             ).not_to_be_visible()
-            expect(self.page.get_by_role("link", name="Supemtek - QIVr (Flu)")).not_to_be_visible()
+            expect(
+                self.page.get_by_role("link", name="Fluenz Tetra - LAIV (Flu)")
+            ).not_to_be_visible()
+            expect(
+                self.page.get_by_role(
+                    "link", name="Quadrivalent Influenza vaccine - QIVe (Flu)"
+                )
+            ).not_to_be_visible()
+            expect(
+                self.page.get_by_role(
+                    "link", name="Quadrivalent Influvac sub-unit Tetra - QIVe (Flu)"
+                )
+            ).not_to_be_visible()
+            expect(
+                self.page.get_by_role("link", name="Supemtek - QIVr (Flu)")
+            ).not_to_be_visible()
         else:
             pass
