@@ -42,6 +42,7 @@ jobs:
         run: uv run pytest --device "${{ steps.set-device.outputs.device }}"
         env:
           BASE_URL: ${{ vars.BASE_URL }}
+          PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
 

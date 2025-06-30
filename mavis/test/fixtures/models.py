@@ -1,26 +1,26 @@
 import logging
+import os
 import random
 import time
-from typing import List
 import urllib.parse
+from typing import List
 
-from faker import Faker
+import nhs_number
 import pytest
 import requests
-import nhs_number
+from faker import Faker
 
 from mavis.test.models import (
-    Clinic,
-    School,
-    Team,
-    Organisation,
-    User,
     Child,
+    Clinic,
+    Organisation,
     Parent,
     Relationship,
+    School,
+    Team,
+    User,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group
-
 
 logger = logging.getLogger(__name__)
 
@@ -64,10 +64,7 @@ def schools(base_url) -> List[School]:
     data = response.json()
     schools_data = random.choices(data, k=2)
 
-    return [
-        School(name=school_data["name"], urn=school_data["urn"])
-        for school_data in schools_data
-    ]
+    return [School(name=school_data["name"], urn=school_data["urn"]) for school_data in schools_data]
 
 
 @pytest.fixture
@@ -114,9 +111,7 @@ def team():
 @pytest.fixture(scope="session")
 def organisation(team) -> Organisation:
     ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    return Organisation(
-        name=team.name, ods_code=ods_code, email=team.email, phone=team.phone
-    )
+    return Organisation(name=team.name, ods_code=ods_code, email=team.email, phone=team.phone)
 
 
 @pytest.fixture(scope="session")
@@ -129,11 +124,11 @@ def users(admin, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.fixture(scope="session")
-def onboarding(clinics, schools, team, organisation, users):
+def onboarding(clinics, schools, team, organisation, users, programmes_enabled):
     return {
         "clinics": {team.key: [it.to_onboarding() for it in clinics]},
         "organisation": organisation.to_onboarding(),
-        "programmes": ["flu", "hpv", "menacwy", "td_ipv"],
+        "programmes": programmes_enabled,
         "schools": {team.key: [it.to_onboarding() for it in schools]},
         "teams": team.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
@@ -164,3 +159,16 @@ def reset_before_each_module(base_url, organisation):
     url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
+
+
+@pytest.fixture(scope="session")
+def programmes_enabled() -> list[str]:
+    _programmes = []
+    if "HPV" in os.environ["PROGRAMMES_ENABLED"].upper():
+        _programmes.append("hpv")
+    if "DOUBLES" in os.environ["PROGRAMMES_ENABLED"].upper():
+        _programmes.append("menacwy")
+        _programmes.append("td_ipv")
+    if "FLU" in os.environ["PROGRAMMES_ENABLED"].upper():
+        _programmes.append("flu")
+    return _programmes

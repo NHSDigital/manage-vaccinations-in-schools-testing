@@ -6,6 +6,21 @@ from .helpers import (
     log_in_as_nurse,
     test_data,
 )
+from .models import (
+    admin,
+    children,
+    clinics,
+    nurse,
+    onboard_and_delete,
+    onboarding,
+    organisation,
+    programmes_enabled,
+    reset_before_each_module,
+    schools,
+    superuser,
+    team,
+    users,
+)
 from .pages import (
     add_batch_page,
     archive_batch_page,
@@ -27,20 +42,6 @@ from .pages import (
     start_page,
     unmatched_consent_responses_page,
     vaccines_page,
-)
-from .models import (
-    admin,
-    children,
-    clinics,
-    nurse,
-    onboard_and_delete,
-    onboarding,
-    organisation,
-    reset_before_each_module,
-    schools,
-    superuser,
-    team,
-    users,
 )
 from .playwright import base_url, basic_auth, browser_context_args, browser_type
 
@@ -75,6 +76,7 @@ __all__ = [
     "onboarding",
     "organisation",
     "programmes_page",
+    "programmes_enabled",
     "reset_before_each_module",
     "review_school_move_page",
     "school_moves_page",

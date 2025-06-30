@@ -1,8 +1,3 @@
-from .hooks import (
-    pytest_runtest_logreport,
-    pytest_sessionfinish,
-    pytest_sessionstart,
-)
 from .fixtures import (
     add_batch_page,
     add_vaccine_batch,
@@ -33,6 +28,7 @@ from .fixtures import (
     onboard_and_delete,
     onboarding,
     organisation,
+    programmes_enabled,
     programmes_page,
     reset_before_each_module,
     review_school_move_page,
@@ -47,7 +43,7 @@ from .fixtures import (
     users,
     vaccines_page,
 )
-
+from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
 
 __all__ = [
     "add_batch_page",
@@ -80,6 +76,7 @@ __all__ = [
     "onboarding",
     "organisation",
     "programmes_page",
+    "programmes_enabled",
     "pytest_runtest_logreport",
     "pytest_sessionfinish",
     "pytest_sessionstart",

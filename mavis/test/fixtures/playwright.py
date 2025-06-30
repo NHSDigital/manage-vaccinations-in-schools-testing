@@ -1,8 +1,8 @@
 import os
 from typing import Optional
 
-from playwright.sync_api import BrowserType, Playwright
 import pytest
+from playwright.sync_api import BrowserType, Playwright
 
 
 @pytest.fixture(scope="session")
