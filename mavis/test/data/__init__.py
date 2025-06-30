@@ -48,8 +48,8 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_POSITIVE = "systmone_positive"
     SYSTMONE_NEGATIVE = "systmone_negative"
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
-    MAV_1080 = "mav_1080"
-    SYSTMONE_MAV_1080 = "systmone_mav_1080"
+    WHITESPACE = "whitespace"
+    SYSTMONE_WHITESPACE = "systmone_whitespace"
 
     @property
     def folder(self) -> Path:
@@ -84,7 +84,7 @@ class ChildFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    MAV_1080 = "mav_1080"
+    WHITESPACE = "whitespace"
 
     @property
     def folder(self) -> Path:
@@ -103,7 +103,7 @@ class ClassFileMapping(FileMapping):
     SINGLE_VACC = "single_vacc"
     MAV_854 = "mav_854"
     MAV_965 = "mav_965"
-    MAV_1080 = "mav_1080"
+    WHITESPACE = "whitespace"
     MAV_1381 = "mav_1381"
     MOVES_CONFIRM_IGNORE = "moves_confirm_ignore"
     MOVES_UNKNOWN_HOMESCHOOLED = "moves_unknown_homeschooled"
