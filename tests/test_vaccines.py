@@ -15,7 +15,9 @@ def go_to_vaccines_page(log_in_as_nurse, dashboard_page):
 
 
 @pytest.mark.parametrize("vaccine", Vaccine)
-def test_batch_add_change_archive(vaccine, add_batch_page, archive_batch_page, edit_batch_page, vaccines_page):
+def test_batch_add_change_archive(
+    vaccine, add_batch_page, archive_batch_page, edit_batch_page, vaccines_page
+):
     batch_name = "ABC123"
 
     vaccines_page.click_add_batch(vaccine)
@@ -42,7 +44,9 @@ def test_batch_name_too_short(vaccine, add_batch_page, vaccines_page):
     add_batch_page.fill_expiry_date(date.today() + timedelta(days=1))
     add_batch_page.confirm()
     expect(
-        add_batch_page.error_listitem.filter(has_text="Enter a batch that is more than 2 characters long")
+        add_batch_page.error_listitem.filter(
+            has_text="Enter a batch that is more than 2 characters long"
+        )
     ).to_be_visible()
 
 
@@ -54,7 +58,9 @@ def test_batch_name_too_long(vaccine, add_batch_page, vaccines_page):
     add_batch_page.fill_expiry_date(date.today() + timedelta(days=1))
     add_batch_page.confirm()
     expect(
-        add_batch_page.error_listitem.filter(has_text="Enter a batch that is less than 100 characters long")
+        add_batch_page.error_listitem.filter(
+            has_text="Enter a batch that is less than 100 characters long"
+        )
     ).to_be_visible()
 
 
