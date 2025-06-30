@@ -216,7 +216,7 @@ class TestData:
                 path_or_buf=output_path,
                 quoting=csv.QUOTE_MINIMAL,
                 encoding="utf-8",
-                index=None,
+                index=False,
             )
         else:
             open(output_path, "w").close()
@@ -230,7 +230,9 @@ class TestData:
                         cell = cell.replace(old, new)
             return cell
 
-        return df.applymap(replace_substrings)
+        for col in df.columns:
+            df[col] = df[col].map(replace_substrings)
+        return df
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
