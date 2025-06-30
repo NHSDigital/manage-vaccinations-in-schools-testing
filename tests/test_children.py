@@ -63,7 +63,7 @@ def setup_mav_853(
         dashboard_page.click_programmes()
         programmes_page.navigate_to_cohort_import(Programme.HPV)
         import_records_page.upload_and_verify_output(
-            CohortsFileMapping.MAV_853,
+            CohortsFileMapping.FIXED_CHILD_YEAR_9,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()

@@ -72,7 +72,7 @@ def test_match(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(CohortsFileMapping.UCR_MATCH)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
 
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
