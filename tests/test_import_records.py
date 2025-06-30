@@ -95,7 +95,7 @@ def test_child_list_space_normalization(
     setup_child_list, import_records_page, children_page, dashboard_page
 ):
     input_file, _ = import_records_page.upload_and_verify_output(
-        ChildFileMapping.MAV_1080
+        ChildFileMapping.WHITESPACE
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -152,7 +152,7 @@ def test_class_list_space_normalization(
 ):
     import_records_page.navigate_to_class_list_record_import(str(schools[0]))
     input_file, _ = import_records_page.upload_and_verify_output(
-        ClassFileMapping.MAV_1080
+        ClassFileMapping.WHITESPACE
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -258,7 +258,7 @@ def test_vaccs_hpv_space_normalization(
     setup_vaccs, import_records_page, children_page, dashboard_page
 ):
     input_file, _ = import_records_page.upload_and_verify_output(
-        VaccsFileMapping.MAV_1080, session_id=setup_vaccs
+        VaccsFileMapping.WHITESPACE, session_id=setup_vaccs
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -269,5 +269,5 @@ def test_vaccs_hpv_space_normalization(
 @pytest.mark.bug
 def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records_page):
     import_records_page.upload_and_verify_output(
-        VaccsFileMapping.SYSTMONE_MAV_1080,
+        VaccsFileMapping.SYSTMONE_WHITESPACE,
     )
