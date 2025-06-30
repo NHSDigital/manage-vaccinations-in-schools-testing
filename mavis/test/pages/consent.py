@@ -368,9 +368,7 @@ class ConsentPage:
     def update_triage_outcome_positive(self):
         self.click_safe_to_vaccinate()
         self.click_save_triage()
-        expect(self.page.get_by_role("main")).to_contain_text(
-            "Triage outcome updated for"
-        )
+        expect(self.page.get_by_role("main")).to_contain_text("Triage outcome updated")
 
     def parent_phone_positive(self, parent: Parent):
         self._select_parent(parent_locator=parent.name_and_relationship)
