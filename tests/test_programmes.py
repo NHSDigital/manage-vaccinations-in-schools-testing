@@ -42,7 +42,9 @@ def setup_mavis_1729(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(ClassFileMapping.SESSION_ID)
+        import_records_page.upload_and_verify_output(
+            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        )
         sessions_page.click_location(schools[0])
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
@@ -75,7 +77,9 @@ def setup_mav_854(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(ClassFileMapping.MAV_854)
+        import_records_page.upload_and_verify_output(
+            ClassFileMapping.FIXED_CHILD_YEAR_9
+        )
         sessions_page.click_location(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -97,7 +101,9 @@ def setup_mav_nnn(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(schools[0], for_today=True)
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(ClassFileMapping.SINGLE_VACC)
+        import_records_page.upload_and_verify_output(
+            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        )
         sessions_page.click_location(schools[0])
         yield
     finally:
