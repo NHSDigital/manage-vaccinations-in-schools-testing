@@ -47,7 +47,7 @@ def setup_mav_1018(setup_session_with_file_upload):
 
 
 @pytest.fixture
-def setup_mav_1381(setup_session_with_file_upload):
+def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD_YEAR_9)
 
 
@@ -79,5 +79,26 @@ def test_verify_search(setup_mav_1018, sessions_page):
 
 @allure.issue("MAV-1381")
 @pytest.mark.bug
-def test_verify_consent_filters(setup_mav_1381, sessions_page, children):
+def test_verify_consent_filters(setup_fixed_child, sessions_page, children):
     sessions_page.verify_consent_filters(children)
+
+
+@allure.issue("MAV-1265")
+def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
+    child = str(children[0])
+    NOTE_1 = "Note 1"
+    NOTE_2 = "Note 2"
+
+    sessions_page.click_consent_tab()
+    sessions_page.search_for(child)
+    sessions_page.click_child(child)
+    sessions_page.click_session_activity_and_notes()
+    sessions_page.add_note(NOTE_1)
+    sessions_page.add_note(NOTE_2)
+    sessions_page.click_location(schools[0])
+    sessions_page.click_consent_tab()
+    sessions_page.search_for(child)
+    sessions_page.check_note_appears_in_search(child, NOTE_2)
+    sessions_page.click_child(child)
+    sessions_page.click_session_activity_and_notes()
+    sessions_page.check_notes_appear_in_order([NOTE_2, NOTE_1])
