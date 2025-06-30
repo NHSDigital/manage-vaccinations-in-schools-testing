@@ -161,6 +161,10 @@ class SessionsPage:
         )
         self.overview_tab_link = self.page.get_by_role("link", name="Overview")
 
+        self.note_textbox = self.page.get_by_role("textbox", name="Note")
+        self.add_a_note_span = self.page.get_by_text("Add a note")
+        self.save_note_button = self.page.get_by_role("button", name="Save note")
+
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
         _formatted_date = _parsed_date.strftime("%A %d %B %Y").replace(" 0", " ")
@@ -414,6 +418,36 @@ class SessionsPage:
     def fill_assessment_notes_with_string_of_length(self, length: int):
         notes = generate_random_string(target_length=length, spaces=True)
         self.fill_assessment_notes(notes)
+
+    @step("Click on Add a note")
+    def click_add_a_note(self):
+        self.add_a_note_span.click()
+
+    @step("Fill note textbox with {1}")
+    def fill_note_textbox(self, note: str):
+        self.note_textbox.fill(note)
+
+    @step("Click on Save note")
+    def click_save_note(self):
+        self.save_note_button.click()
+
+    @step("Check that notes appear in order")
+    def check_notes_appear_in_order(self, notes: List[str]):
+        for i, note in enumerate(notes):
+            expect(self.page.get_by_role("blockquote").nth(i)).to_have_text(note)
+
+    @step("Check note {2} appears in search for {1}")
+    def check_note_appears_in_search(self, child: str, note: str):
+        heading = self.page.get_by_role("heading", name=child)
+        next_element = heading.locator("xpath=following-sibling::*[1]")
+        expect(next_element.get_by_role("blockquote")).to_have_text(note)
+
+    def add_note(self, note: str):
+        self.click_add_a_note()
+        self.fill_note_textbox(note)
+        self.click_save_note()
+        expect(self.success_alert).to_contain_text("Note added")
+        self.check_notes_appear_in_order([note])
 
     @step("Search for {1}")
     def search_for(self, name: str):
