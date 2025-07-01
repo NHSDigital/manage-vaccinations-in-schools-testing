@@ -443,13 +443,20 @@ class ConsentPage:
                 self.answer_no()
 
     def check_final_consent_message(
-        self, child: Child, programmes: list[Programme], health_question: bool
+        self,
+        child: Child,
+        programmes: list[Programme],
+        health_question: bool,
+        injection: bool = False,
     ):
-        def programme_display(programme):
-            return "nasal flu" if programme == Programme.FLU else str(programme)
+        def programme_display(programme, injection) -> str:
+            if programme == Programme.FLU:
+                return "flu injection" if injection else "nasal flu"
+            else:
+                return str(programme)
 
         programmes_str = " and ".join(
-            programme_display(programme) for programme in programmes
+            programme_display(programme, injection) for programme in programmes
         )
 
         if programmes == [Programme.MENACWY] or programmes == [Programme.TD_IPV]:
