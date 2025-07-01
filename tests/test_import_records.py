@@ -11,11 +11,16 @@ def setup_child_list(log_in_as_nurse, dashboard_page, import_records_page):
 
 @pytest.fixture
 def setup_class_list(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    programmes_enabled,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0])
+        sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
@@ -27,11 +32,18 @@ def setup_class_list(
 
 @pytest.fixture
 def setup_vaccs(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    programmes_enabled,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        sessions_page.schedule_a_valid_session(
+            schools[0], programmes_enabled, for_today=True
+        )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(ClassFileMapping.SESSION_ID)
         sessions_page.click_location(schools[0])
@@ -48,11 +60,18 @@ def setup_vaccs(
 
 @pytest.fixture
 def setup_vaccs_systmone(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    programmes_enabled,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        sessions_page.schedule_a_valid_session(
+            schools[0], programmes_enabled, for_today=True
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()

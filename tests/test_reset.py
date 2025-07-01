@@ -14,13 +14,16 @@ def setup_mav_965(
     dashboard_page,
     import_records_page,
     sessions_page,
+    programmes_enabled,
 ):
     gardasil_9_batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     menquadfi_batch_name = add_vaccine_batch(Vaccine.MENQUADFI)
     revaxis_batch_name = add_vaccine_batch(Vaccine.REVAXIS)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+    sessions_page.schedule_a_valid_session(
+        schools[0], programmes_enabled, for_today=True
+    )
     import_records_page.navigate_to_class_list_import()
     import_records_page.upload_and_verify_output(ClassFileMapping.MAV_965)
     dashboard_page.click_mavis()

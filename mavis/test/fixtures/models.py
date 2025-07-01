@@ -168,12 +168,4 @@ def reset_before_each_module(base_url, organisation):
 
 @pytest.fixture(scope="session")
 def programmes_enabled() -> list[str]:
-    _programmes = []
-    if "HPV" in os.environ["PROGRAMMES_ENABLED"].upper():
-        _programmes.append("hpv")
-    if "DOUBLES" in os.environ["PROGRAMMES_ENABLED"].upper():
-        _programmes.append("menacwy")
-        _programmes.append("td_ipv")
-    if "FLU" in os.environ["PROGRAMMES_ENABLED"].upper():
-        _programmes.append("flu")
-    return _programmes
+    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")

@@ -8,13 +8,7 @@ pytestmark = pytest.mark.e2e
 
 @pytest.fixture(autouse=True)
 def setup_tests(
-    nurse,
-    organisation,
-    schools,
-    log_in_page,
-    dashboard_page,
-    sessions_page,
-    start_page,
+    nurse, organisation, schools, log_in_page, dashboard_page, sessions_page, start_page
 ):
     start_page.navigate_and_start()
     log_in_page.log_in_and_select_organisation(nurse, organisation)
@@ -33,6 +27,7 @@ def test_e2e(
     import_records_page,
     consent_page,
     children,
+    programmes_enabled,
 ):
     child_name = str(children[0])
 
@@ -41,7 +36,7 @@ def test_e2e(
     import_records_page.upload_and_verify_output(CohortsFileMapping.E2E_1)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(schools[0])
+    sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
     consent_page.parent_verbal_positive(
