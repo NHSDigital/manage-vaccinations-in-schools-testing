@@ -7,6 +7,9 @@ on:
 
 jobs:
   test:
+    permissions:
+      contents: write
+
     name: Test
 
     strategy:
@@ -23,8 +26,6 @@ jobs:
           - iPhone 15
       max-parallel: 2
 
-    permissions: {}
-
     runs-on: ubuntu-latest
 
     env:
@@ -39,6 +40,11 @@ jobs:
       - name: Install Playwright
         run: uv run playwright install --with-deps
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Run tests
         run: uv run pytest --device "${{ matrix.device }}"
         env:
@@ -47,8 +53,21 @@ jobs:
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
 
-      - name: Upload Allure results
-        uses: actions/upload-artifact@v4
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npx allure-commandline generate allure-results -o allure-report
+
+      - name: Deploy Allure report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          name: ${{ matrix.device }}
-          path: allure-results
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
+          force_orphan: true
+        
+      - name: Set Job Summary
+        if: always()
+        run: |
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/" >> $GITHUB_STEP_SUMMARY
