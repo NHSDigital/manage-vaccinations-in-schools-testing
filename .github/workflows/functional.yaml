@@ -34,6 +34,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Sanitize device name
+        id: sanitize-device
+        run: |
+          sanitized=$(echo "${{ matrix.device }}" | tr -cd '[:alnum:]_-')
+          echo "sanitized_device=$sanitized" >> $GITHUB_OUTPUT
+
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
@@ -65,9 +71,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./allure-report
           publish_branch: gh-pages
+          destination_dir: ${{ github.ref_name }}/${{ steps.sanitize-device.outputs.sanitized_device }}
           force_orphan: true
-        
+      
       - name: Set Job Summary
         if: always()
         run: |
-          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/" >> $GITHUB_STEP_SUMMARY
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ github.ref_name }}/${{ steps.sanitize-device.outputs.sanitized_device }}" >> $GITHUB_STEP_SUMMARY

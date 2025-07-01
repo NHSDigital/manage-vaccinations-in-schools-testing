@@ -1,4 +1,4 @@
-name: Functional tests (selected device)
+name: Functional tests
 
 on:
   workflow_dispatch:
@@ -37,6 +37,12 @@ jobs:
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Sanitize device name
+        id: sanitize-device
+        run: |
+          sanitized=$(echo "${{ steps.set-device.outputs.device }}" | tr -cd '[:alnum:]_-')
+          echo "sanitized_device=$sanitized" >> $GITHUB_OUTPUT
+
       - name: Set environment
         id: set-environment
         run: |
@@ -58,7 +64,7 @@ jobs:
 
       - name: Install Playwright
         run: uv run playwright install --with-deps
-
+ 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -84,10 +90,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./allure-report
           publish_branch: gh-pages
+          destination_dir: ${{ github.ref_name }}/${{ steps.sanitize-device.outputs.sanitized_device }}
           force_orphan: true
         
       
       - name: Set Job Summary
         if: always()
         run: |
-          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/" >> $GITHUB_STEP_SUMMARY
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ github.ref_name }}/${{ steps.sanitize-device.outputs.sanitized_device }}" >> $GITHUB_STEP_SUMMARY
