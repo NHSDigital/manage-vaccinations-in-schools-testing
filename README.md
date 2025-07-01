@@ -133,12 +133,12 @@ $ playwright show-trace test-results/.../trace.zip
 ### Reporting
 
 While the tests are running results are stored in `allure-results` which can
-then be used to generate a report:
+then be used to generate a report. This requires a Java installation.
 
 ```shell
 $ npm install
-$ npx allure generate allure-results
-$ npx allure open
+$ npx allure-commandline generate allure-results
+$ npx allure-commandline open
 ```
 
 ### Linting

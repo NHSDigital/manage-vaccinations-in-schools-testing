@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "allure": "^3.0.0-beta.14"
+    "allure-commandline": "^2.34.1"
   }
 }
