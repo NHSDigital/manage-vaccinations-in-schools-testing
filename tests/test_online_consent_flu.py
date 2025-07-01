@@ -26,7 +26,7 @@ def test_refused(consent_page, schools, children):
     )
     consent_page.click_confirm()
     consent_page.expect_text_in_main(
-        f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the nasal flu vaccination at school"
+        f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the flu injection vaccination at school"
     )
 
 
@@ -66,5 +66,8 @@ def test_given(
     consent_page.click_confirm()
 
     consent_page.check_final_consent_message(
-        child, programmes=[Programme.FLU], health_question=health_question
+        child,
+        programmes=[Programme.FLU],
+        health_question=health_question,
+        injection=injection,
     )
