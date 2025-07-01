@@ -1,4 +1,4 @@
-name: Functional tests (all devices)
+name: Functional tests (all devices on QA)
 
 on:
   schedule:

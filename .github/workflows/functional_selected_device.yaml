@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       device:
-        description: 'Device to test (exact name - defaults to "Desktop Chrome")'
+        description: 'Device to test (exact name)'
         required: false
         default: 'Desktop Chrome'
+      environment:
+        description: 'Environment to run tests on (qa, test, training)'
+        required: false
+        default: 'qa'
   pull_request:
 
 jobs:
@@ -33,6 +37,22 @@ jobs:
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Set environment
+        id: set-environment
+        run: |
+          declare -A env_map=(
+            [qa]="https://qa.mavistesting.com"
+            [test]="https://test.mavistesting.com"
+            [training]="https://training.manage-vaccinations-in-schools.nhs.uk"
+          )
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
+          else
+            input_env="${{ github.event.inputs.environment }}"
+            url="${env_map[$input_env]:-${env_map[qa]}}"
+            echo "environment=$url" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
@@ -47,7 +67,7 @@ jobs:
       - name: Run tests
         run: uv run pytest --device "${{ steps.set-device.outputs.device }}"
         env:
-          BASE_URL: ${{ vars.BASE_URL }}
+          BASE_URL: ${{ steps.set-environment.outputs.environment }}
           PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
