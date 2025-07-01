@@ -19,7 +19,7 @@ from mavis.test.models import (
     Parent,
     Relationship,
 )
-from mavis.test.wrappers import get_date_of_birth_for_year_group
+from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
 
 
 logger = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ def schools(base_url) -> List[School]:
     schools_data = random.choices(data, k=2)
 
     return [
-        School(name=school_data["name"], urn=school_data["urn"])
+        School(name=normalize_whitespace(school_data["name"]), urn=school_data["urn"])
         for school_data in schools_data
     ]
 

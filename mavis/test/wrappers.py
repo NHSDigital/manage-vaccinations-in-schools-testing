@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 
 from faker import Faker
+import re
 
 faker = Faker()
 
@@ -80,3 +81,16 @@ def generate_random_string(target_length: int = 100, spaces: bool = False) -> st
             )
         )
     return generated_string
+
+
+def normalize_whitespace(string: str) -> str:
+    """
+    Normalize whitespace in a string:
+    - Remove zero-width joiners
+    - Replace non-breaking spaces with regular spaces
+    - Collapse consecutive whitespace to a single space
+    - Strip leading/trailing whitespace
+    """
+    string = string.replace("\u200d", "")
+    string = string.replace("\u00a0", " ")
+    return re.sub(r"\s+", " ", string).strip()

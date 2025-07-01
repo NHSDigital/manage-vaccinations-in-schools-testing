@@ -1,6 +1,5 @@
 import csv
 import os
-import re
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional
@@ -15,6 +14,7 @@ from ..wrappers import (
     get_current_time,
     get_date_of_birth_for_year_group,
     get_offset_date,
+    normalize_whitespace,
 )
 
 
@@ -289,22 +289,10 @@ class TestData:
         else:
             _cols = ["CHILD_LAST_NAME", "CHILD_FIRST_NAME"]
 
-        col0 = _file_df[_cols[0]].apply(self.normalize_whitespace)
-        col1 = _file_df[_cols[1]].apply(self.normalize_whitespace)
+        col0 = _file_df[_cols[0]].apply(normalize_whitespace)
+        col1 = _file_df[_cols[1]].apply(normalize_whitespace)
         _names_list = (col0 + ", " + col1).tolist()
         return _names_list
-
-    def normalize_whitespace(self, string: str) -> str:
-        """
-        Normalize whitespace in a string:
-        - Remove zero-width joiners
-        - Replace non-breaking spaces with regular spaces
-        - Collapse consecutive whitespace to a single space
-        - Strip leading/trailing whitespace
-        """
-        string = string.replace("\u200d", "")
-        string = string.replace("\u00a0", " ")
-        return re.sub(r"\s+", " ", string).strip()
 
     def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations", dtype=str)
