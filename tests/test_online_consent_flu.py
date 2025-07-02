@@ -27,7 +27,7 @@ def setup_session_with_file_upload(
     sessions_page.click_scheduled()
     sessions_page.click_location(schools[0])
     sessions_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FULL_NAME)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
     yield url
 
 
