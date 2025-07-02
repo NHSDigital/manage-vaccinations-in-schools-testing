@@ -131,7 +131,10 @@ def test_correct_method_shown(
         consent_page.answer_no()
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
-        child, programmes=[Programme.FLU], health_question=False, injection=(consents[0] == INJECTION)
+        child,
+        programmes=[Programme.FLU],
+        health_question=False,
+        injection=(consents[0] == INJECTION),
     )
 
     consent_page.go_to_url(url)
@@ -147,7 +150,10 @@ def test_correct_method_shown(
         consent_page.answer_no()
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
-        child, programmes=[Programme.FLU], health_question=False, injection=(consents[1] == INJECTION)
+        child,
+        programmes=[Programme.FLU],
+        health_question=False,
+        injection=(consents[1] == INJECTION),
     )
 
     consent_page.click_sessions()
