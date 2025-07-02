@@ -1,1 +1,0 @@
-EmptyFirstName, EmptyLastName, EmptyDOB, LongNHSNo, InvalidPostCode, InvalidParent1Email, InvalidParent2Email, InvalidYearGroup
