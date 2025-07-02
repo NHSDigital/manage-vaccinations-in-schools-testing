@@ -6,7 +6,7 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Parent, Programme
+from mavis.test.models import Programme, Parent, Child
 from mavis.test.step import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -741,3 +741,11 @@ class SessionsPage:
         self.overview_tab_link.click()
         self.review_consent_refused_link.click()
         expect(self.consent_refused_checkbox).to_be_checked()
+
+    def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
+        patient_card = self.page.locator(
+            f"div.nhsuk-card.app-card--patient:has(h2:has-text('{str(child)}'))"
+        )
+        flu_consent_section = patient_card.locator("p:has-text('Flu')")
+        expect(flu_consent_section).to_contain_text("Consent given")
+        expect(flu_consent_section).to_contain_text(method)
