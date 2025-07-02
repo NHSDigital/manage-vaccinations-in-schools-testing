@@ -46,6 +46,11 @@ on:
         required: false
         type: string
         default: '1000'
+      user:
+        description: "Optional (default Nurse Jackie) user."
+        required: true
+        type: string
+        default: 'nurse.jackie@example.org'
 
 jobs:
   nurse_journey_performance_test:
@@ -115,6 +120,7 @@ jobs:
               -j $import_output_dir/jmeter.log \
               -e -o $import_output_dir/upload-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
 
       - name: Run Consent Journey for imported records
@@ -130,6 +136,7 @@ jobs:
               -Jjmeter.reportgenerator.overall_granularity=10000 \
               -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
 
       - name: Run nurse journey JMeter test
@@ -145,6 +152,7 @@ jobs:
               -Jjmeter.reportgenerator.overall_granularity=10000 \
               -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JUser=${{inputs.user}} \
               -JDuration=${{inputs.duration}} \
               -JThreads=${{inputs.threads}} \
               -JRampUp=${{inputs.ramp_up}} \
