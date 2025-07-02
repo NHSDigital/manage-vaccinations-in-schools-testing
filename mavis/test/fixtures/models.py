@@ -1,26 +1,26 @@
 import logging
+import os
 import random
 import time
-from typing import List
 import urllib.parse
+from typing import List
 
-from faker import Faker
+import nhs_number
 import pytest
 import requests
-import nhs_number
+from faker import Faker
 
 from mavis.test.models import (
-    Clinic,
-    School,
-    Team,
-    Organisation,
-    User,
     Child,
+    Clinic,
+    Organisation,
     Parent,
     Relationship,
+    School,
+    Team,
+    User,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group
-
 
 logger = logging.getLogger(__name__)
 
@@ -129,11 +129,11 @@ def users(admin, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.fixture(scope="session")
-def onboarding(clinics, schools, team, organisation, users):
+def onboarding(clinics, schools, team, organisation, users, programmes_enabled):
     return {
         "clinics": {team.key: [it.to_onboarding() for it in clinics]},
         "organisation": organisation.to_onboarding(),
-        "programmes": ["flu", "hpv", "menacwy", "td_ipv"],
+        "programmes": programmes_enabled,
         "schools": {team.key: [it.to_onboarding() for it in schools]},
         "teams": team.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
@@ -164,3 +164,8 @@ def reset_before_each_module(base_url, organisation):
     url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
+
+
+@pytest.fixture(scope="session")
+def programmes_enabled() -> list[str]:
+    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")

@@ -17,10 +17,14 @@ def setup_reports(log_in_as_nurse, dashboard_page):
 
 
 @pytest.fixture
-def setup_record_a_vaccine(log_in_as_nurse, schools, dashboard_page, sessions_page):
+def setup_record_a_vaccine(
+    log_in_as_nurse, schools, dashboard_page, sessions_page, programmes_enabled
+):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        sessions_page.schedule_a_valid_session(
+            schools[0], programmes_enabled, for_today=True
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         yield
@@ -37,10 +41,13 @@ def setup_mavis_1729(
     dashboard_page,
     import_records_page,
     sessions_page,
+    programmes_enabled,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        sessions_page.schedule_a_valid_session(
+            schools[0], programmes_enabled, for_today=True
+        )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
@@ -70,12 +77,15 @@ def setup_mav_854(
     dashboard_page,
     import_records_page,
     sessions_page,
+    programmes_enabled,
 ):
     try:
         batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        sessions_page.schedule_a_valid_session(
+            schools[0], programmes_enabled, for_today=True
+        )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.FIXED_CHILD_YEAR_9
@@ -83,7 +93,9 @@ def setup_mav_854(
         sessions_page.click_location(schools[0])
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session("Community clinics", for_today=True)
+        sessions_page.schedule_a_valid_session(
+            "Community clinics", programmes_enabled, for_today=True
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
         yield batch_name
@@ -95,11 +107,18 @@ def setup_mav_854(
 
 @pytest.fixture
 def setup_mav_nnn(
-    log_in_as_admin, schools, dashboard_page, import_records_page, sessions_page
+    log_in_as_admin,
+    schools,
+    dashboard_page,
+    import_records_page,
+    sessions_page,
+    programmes_enabled,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+        sessions_page.schedule_a_valid_session(
+            schools[0], programmes_enabled, for_today=True
+        )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9

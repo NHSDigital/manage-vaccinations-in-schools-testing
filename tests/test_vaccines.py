@@ -1,8 +1,8 @@
 from datetime import date, timedelta
 
 import allure
-from playwright.sync_api import expect
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.models import Vaccine
 
@@ -62,3 +62,8 @@ def test_batch_name_too_long(vaccine, add_batch_page, vaccines_page):
             has_text="Enter a batch that is less than 100 characters long"
         )
     ).to_be_visible()
+
+
+def test_verify_flu_not_available(onboarding, vaccines_page):
+    programmes = onboarding.get("programmes")
+    vaccines_page.verify_flu_not_available(programmes)

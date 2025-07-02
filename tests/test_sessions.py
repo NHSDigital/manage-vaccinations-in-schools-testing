@@ -13,11 +13,18 @@ def setup_tests(log_in_as_nurse, dashboard_page):
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    setup_tests, schools, dashboard_page, sessions_page, import_records_page
+    setup_tests,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    programmes_enabled,
 ):
     def _setup(class_list_file):
         try:
-            sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+            sessions_page.schedule_a_valid_session(
+                schools[0], programmes_enabled, for_today=True
+            )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_location(schools[0])
@@ -51,8 +58,10 @@ def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD_YEAR_9)
 
 
-def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
-    sessions_page.schedule_a_valid_session(schools[0])
+def test_lifecycle(
+    setup_tests, schools, dashboard_page, sessions_page, programmes_enabled
+):
+    sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.edit_a_session_to_today(schools[0])
@@ -61,8 +70,8 @@ def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
     sessions_page.delete_all_sessions(schools[0])
 
 
-def test_invalid(setup_tests, schools, sessions_page):
-    sessions_page.create_invalid_session(schools[0])
+def test_invalid(setup_tests, schools, sessions_page, programmes_enabled):
+    sessions_page.create_invalid_session(schools[0], programmes_enabled)
 
 
 @allure.issue("MAVIS-1822")

@@ -1,7 +1,7 @@
-from playwright.sync_api import expect
-from mavis.test.data import ClassFileMapping
 import pytest
+from playwright.sync_api import expect
 
+from mavis.test.data import ClassFileMapping
 
 pytestmark = pytest.mark.school_moves
 
@@ -14,6 +14,7 @@ def setup_confirm_and_ignore(
     dashboard_page,
     sessions_page,
     import_records_page,
+    programmes_enabled,
 ):
     # We need to make sure we're uploading the same class with the same NHS numbers.
     input_file_path, output_file_path = test_data.get_file_paths(
@@ -29,10 +30,10 @@ def setup_confirm_and_ignore(
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0])
+        sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[1])
+        sessions_page.schedule_a_valid_session(schools[1], programmes_enabled)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
@@ -120,11 +121,16 @@ def test_download(
 
 @pytest.fixture
 def setup_to_homeschool_and_unknown(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    programmes_enabled,
 ):
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0])
+        sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
         sessions_page.click_location(schools[0])
         sessions_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(

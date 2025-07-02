@@ -9,12 +9,19 @@ pytestmark = pytest.mark.consent
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    programmes_enabled,
 ):
     def _setup(class_list_file):
         try:
             dashboard_page.click_sessions()
-            sessions_page.schedule_a_valid_session(schools[0], for_today=True)
+            sessions_page.schedule_a_valid_session(
+                schools[0], programmes_enabled, for_today=True
+            )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_location(schools[0])

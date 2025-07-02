@@ -6,7 +6,7 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Programme, Parent
+from mavis.test.models import Parent, Programme
 from mavis.test.step import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -528,16 +528,23 @@ class SessionsPage:
         for question in questions:
             self.page.get_by_role("group", name=question).get_by_label(response).check()
 
-    def __schedule_session(self, on_date: str, expect_error: bool = False):
+    def __schedule_session(
+        self, on_date: str, programmes_list: list[str], expect_error: bool = False
+    ):
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
         self.click_schedule_sessions()
+        # TODO: Do we need to uncheck programmes if not listed in env?
         self.change_programmes_link.click()
-        self.flu_programme_checkbox.check()
-        self.hpv_programme_checkbox.check()
-        self.menacwy_programme_checkbox.check()
-        self.td_ipv_programme_checkbox.check()
+        if Programme.FLU.lower() in programmes_list:
+            self.flu_programme_checkbox.check()
+        if Programme.HPV.lower() in programmes_list:
+            self.hpv_programme_checkbox.check()
+        if Programme.MENACWY.lower() in programmes_list:
+            self.menacwy_programme_checkbox.check()
+        if Programme.TD_IPV.lower() in programmes_list:
+            self.td_ipv_programme_checkbox.check()
         self.continue_button.click()
         self.click_add_session_dates()
         self.fill_date_fields(_day, _month, _year)
@@ -595,7 +602,9 @@ class SessionsPage:
         self.click_import_class_lists()
         self.select_year_groups(8, 9, 10, 11)
 
-    def schedule_a_valid_session(self, location: str, for_today: bool = False):
+    def schedule_a_valid_session(
+        self, location: str, programmes_list: list[str], for_today: bool = False
+    ):
         _future_date = (
             get_offset_date(offset_days=0)
             if for_today
@@ -604,7 +613,7 @@ class SessionsPage:
         _expected_message = f"Session dates{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
         self.click_location(location)
-        self.__schedule_session(on_date=_future_date)
+        self.__schedule_session(on_date=_future_date, programmes_list=programmes_list)
         self.verify_scheduled_date(message=_expected_message)
 
     def edit_a_session_to_today(self, location: str):
@@ -618,11 +627,13 @@ class SessionsPage:
         self.click_location(location)
         self.__delete_sessions()
 
-    def create_invalid_session(self, location: str):
+    def create_invalid_session(self, location: str, programmes_list: list[str]):
         _invalid_date = "20251332"
         self.click_unscheduled()
         self.click_location(location)
-        self.__schedule_session(on_date=_invalid_date, expect_error=True)
+        self.__schedule_session(
+            on_date=_invalid_date, expect_error=True, programmes_list=programmes_list
+        )
 
     def get_online_consent_url(self, *programmes: List[Programme]) -> str:
         link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"
