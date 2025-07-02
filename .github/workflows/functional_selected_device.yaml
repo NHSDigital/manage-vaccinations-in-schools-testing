@@ -7,6 +7,10 @@ on:
         description: 'Device to test (exact name)'
         required: false
         default: 'Desktop Chrome'
+      programmes:
+        description: 'Programmes to use (HPV, MENACWY, TD_IPV, FLU)'
+        required: false
+        default: 'HPV,MENACWY,TD_IPV,FLU'
       environment:
         description: 'Environment to run tests on (qa, test, training)'
         required: false
@@ -74,7 +78,7 @@ jobs:
         run: uv run pytest --device "${{ steps.set-device.outputs.device }}"
         env:
           BASE_URL: ${{ steps.set-environment.outputs.environment }}
-          PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
+          PROGRAMMES_ENABLED: ${{ github.event.inputs.programmes }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
 
