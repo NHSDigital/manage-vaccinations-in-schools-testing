@@ -1,4 +1,4 @@
-name: Functional tests (all devices)
+name: Functional tests (all devices on QA)
 
 on:
   schedule:
@@ -7,6 +7,9 @@ on:
 
 jobs:
   test:
+    permissions:
+      contents: write
+
     name: Test
 
     strategy:
@@ -23,8 +26,6 @@ jobs:
           - iPhone 15
       max-parallel: 2
 
-    permissions: {}
-
     runs-on: ubuntu-latest
 
     env:
@@ -39,6 +40,11 @@ jobs:
       - name: Install Playwright
         run: uv run playwright install --with-deps
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Run tests
         run: uv run pytest --device "${{ matrix.device }}"
         env:
@@ -47,8 +53,46 @@ jobs:
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
 
-      - name: Upload Allure results
-        uses: actions/upload-artifact@v4
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npx allure-commandline generate allure-results -o allure-report
+
+      - name: Set GitHub Pages directory
+        if: always()
+        id: set-pages-dir
+        run: |
+          sanitized_device=$(echo "${{ matrix.device }}" | tr -cd '[:alnum:]_-')
+          echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
+
+      - name: Checkout gh-pages branch
+        if: always()
+        uses: actions/checkout@v4
         with:
-          name: ${{ matrix.device }}
-          path: allure-results
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Replace existing report with new report
+        if: always()
+        run: |
+          rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+          mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+          cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+
+      - name: Commit and push changes
+        if: always()
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ steps.set-pages-dir.outputs.dir }}
+          # Only commit if there are changes
+          git diff --cached --quiet || git commit -m "Deploy changes to pages"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set Job Summary
+        if: always()
+        run: |
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY

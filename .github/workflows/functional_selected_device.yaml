@@ -1,19 +1,28 @@
-name: Functional tests (selected device)
+name: Functional tests
 
 on:
   workflow_dispatch:
     inputs:
       device:
-        description: 'Device to test (exact name - defaults to "Desktop Chrome")'
+        description: 'Device to test (exact name)'
         required: false
         default: 'Desktop Chrome'
+      programmes:
+        description: 'Programmes to use (HPV, MENACWY, TD_IPV, FLU)'
+        required: false
+        default: 'HPV,MENACWY,TD_IPV,FLU'
+      environment:
+        description: 'Environment to run tests on (qa, test, training)'
+        required: false
+        default: 'qa'
   pull_request:
 
 jobs:
   test:
+    permissions:
+      contents: write
+    
     name: Test
-
-    permissions: {}
 
     runs-on: ubuntu-latest
 
@@ -23,13 +32,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set device variable
-        id: set-device
+      - name: Set variables
+        id: set-variables
         run: |
+          declare -A env_map=(
+            [qa]="https://qa.mavistesting.com"
+            [test]="https://test.mavistesting.com"
+            [training]="https://training.manage-vaccinations-in-schools.nhs.uk"
+          )
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
+            echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
+            echo "programmes=HPV,MENACWY,TD_IPV,FLU" >> $GITHUB_OUTPUT
+            echo "deploy_report=false" >> $GITHUB_OUTPUT
           else
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
+
+            input_env="${{ github.event.inputs.environment }}"
+            url="${env_map[$input_env]:-${env_map[qa]}}"
+            echo "environment=$url" >> $GITHUB_OUTPUT
+
+            echo "programmes=${{ github.event.inputs.programmes }}" >> $GITHUB_OUTPUT
+            echo "deploy_report=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Install uv
@@ -37,17 +61,59 @@ jobs:
 
       - name: Install Playwright
         run: uv run playwright install --with-deps
+ 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Run tests
-        run: uv run pytest --device "${{ steps.set-device.outputs.device }}"
+        run: uv run pytest --device "${{ steps.set-variables.outputs.device }}"
         env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
+          BASE_URL: ${{ steps.set-variables.outputs.environment }}
+          PROGRAMMES_ENABLED: ${{ steps.set-variables.outputs.programmes }}
           BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
 
-      - name: Upload Allure results
-        uses: actions/upload-artifact@v4
+      - name: Generate Allure report
+        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        run: |
+          npx allure-commandline generate allure-results -o allure-report
+
+      - name: Set GitHub Pages directory
+        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        run: |
+          sanitized_device=$(echo "${{ steps.set-variables.outputs.device }}" | tr -cd '[:alnum:]_-')
+          echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
+
+      - name: Checkout gh-pages branch
+        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        uses: actions/checkout@v4
         with:
-          name: results
-          path: allure-results
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Replace existing report with new report
+        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        run: |
+          rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+          mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+          cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+
+      - name: Commit and push changes
+        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ steps.set-pages-dir.outputs.dir }}
+          # Only commit if there are changes
+          git diff --cached --quiet || git commit -m "Deploy changes to pages"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set Job Summary
+        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        run: |
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY
