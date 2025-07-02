@@ -34,12 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sanitize device name
-        id: sanitize-device
-        run: |
-          sanitized=$(echo "${{ matrix.device }}" | tr -cd '[:alnum:]_-')
-          echo "sanitized_device=$sanitized" >> $GITHUB_OUTPUT
-
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
@@ -64,17 +58,41 @@ jobs:
         run: |
           npx allure-commandline generate allure-results -o allure-report
 
-      - name: Deploy Allure report to GitHub Pages
+      - name: Set GitHub Pages directory
         if: always()
-        uses: peaceiris/actions-gh-pages@v4
+        id: set-pages-dir
+        run: |
+          sanitized_device=$(echo "${{ matrix.device }}" | tr -cd '[:alnum:]_-')
+          echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
+
+      - name: Checkout gh-pages branch
+        if: always()
+        uses: actions/checkout@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
-          publish_branch: gh-pages
-          destination_dir: ${{ github.ref_name }}/${{ steps.sanitize-device.outputs.sanitized_device }}
-          force_orphan: true
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Replace existing report with new report
+        if: always()
+        run: |
+          rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+          mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+          cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+
+      - name: Commit and push changes
+        if: always()
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ steps.set-pages-dir.outputs.dir }}
+          # Only commit if there are changes
+          git diff --cached --quiet || git commit -m "Deploy changes to pages"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set Job Summary
         if: always()
         run: |
-          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ github.ref_name }}/${{ steps.sanitize-device.outputs.sanitized_device }}" >> $GITHUB_STEP_SUMMARY
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY
