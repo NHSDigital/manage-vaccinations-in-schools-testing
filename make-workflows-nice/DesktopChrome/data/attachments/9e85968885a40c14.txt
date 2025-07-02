@@ -1,1 +1,0 @@
-TwoSpaces, Tabs, NBSP, ZWJ, HistoricalTwoSpaces, HistoricalTabs, HistoricalNBSP, HistoricalZWJ
