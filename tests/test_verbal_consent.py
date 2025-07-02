@@ -32,31 +32,11 @@ def setup_session_with_file_upload(
 
 
 @pytest.fixture
-def setup_gillick(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.FULL_NAME)
+def setup_fixed_child(setup_session_with_file_upload):
+    yield from setup_session_with_file_upload(CohortsFileMapping.FIXED_CHILD_YEAR_9)
 
 
-@pytest.fixture
-def setup_gillick_notes_length(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.GILLICK_NOTES_LENGTH)
-
-
-@pytest.fixture
-def setup_mavis_1696(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.CONFLICTING_CONSENT)
-
-
-@pytest.fixture
-def setup_mavis_1864(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.CONSENT_TWICE)
-
-
-@pytest.fixture
-def setup_mavis_1818(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.CONFLICTING_GILLICK)
-
-
-def test_gillick_competence(setup_gillick, schools, sessions_page, children):
+def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
     child_name = str(children[0])
 
     sessions_page.navigate_to_todays_sessions(schools[0])
@@ -72,9 +52,7 @@ def test_gillick_competence(setup_gillick, schools, sessions_page, children):
 
 
 @allure.issue("MAV-955")
-def test_gillick_competence_notes(
-    setup_gillick_notes_length, schools, sessions_page, children
-):
+def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
     child_name = str(children[0])
 
     sessions_page.navigate_to_todays_sessions(schools[0])
@@ -98,7 +76,7 @@ def test_gillick_competence_notes(
 @allure.issue("MAVIS-1696")
 @pytest.mark.bug
 def test_invalid_consent(
-    setup_mavis_1696, sessions_page, schools, consent_page, children
+    setup_fixed_child, sessions_page, schools, consent_page, children
 ):
     child_name = str(children[0])
 
@@ -131,7 +109,7 @@ def test_invalid_consent(
 @allure.issue("MAVIS-1864")
 @pytest.mark.bug
 def test_parent_provides_consent_twice(
-    setup_mavis_1864, sessions_page, schools, consent_page, children
+    setup_fixed_child, sessions_page, schools, consent_page, children
 ):
     child_name = str(children[0])
 
@@ -168,7 +146,7 @@ def test_parent_provides_consent_twice(
 @allure.issue("MAVIS-1818")
 @pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
-    setup_mavis_1818, sessions_page, schools, consent_page, children
+    setup_fixed_child, sessions_page, schools, consent_page, children
 ):
     child_name = str(children[0])
 

@@ -48,8 +48,8 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_POSITIVE = "systmone_positive"
     SYSTMONE_NEGATIVE = "systmone_negative"
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
-    MAV_1080 = "mav_1080"
-    SYSTMONE_MAV_1080 = "systmone_mav_1080"
+    WHITESPACE = "whitespace"
+    SYSTMONE_WHITESPACE = "systmone_whitespace"
 
     @property
     def folder(self) -> Path:
@@ -62,16 +62,8 @@ class CohortsFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    CONFLICTING_CONSENT = "conflicting_consent"
-    E2E_1 = "e2e_1"
-    UCR_MATCH = "ucr_match"
-    CONSENT_TWICE = "consent_twice"
-    CONFLICTING_GILLICK = "conflicting_gillick"
-    FULL_NAME = "full_name"
-    MAV_927_PERF = "mav_927_perf"
-    MAV_909 = "mav_909"
-    MAV_853 = "mav_853"
-    GILLICK_NOTES_LENGTH = "gillick_notes_length"
+    FIXED_CHILD_YEAR_8 = "fixed_child_year_8"
+    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
 
     @property
     def folder(self) -> Path:
@@ -84,7 +76,7 @@ class ChildFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    MAV_1080 = "mav_1080"
+    WHITESPACE = "whitespace"
 
     @property
     def folder(self) -> Path:
@@ -97,17 +89,13 @@ class ClassFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    CHILDREN_FILTER = "children_filter"
-    YEAR_GROUP = "year_group"
-    SESSION_ID = "session_id"
-    SINGLE_VACC = "single_vacc"
-    MAV_854 = "mav_854"
-    MAV_965 = "mav_965"
-    MAV_1080 = "mav_1080"
-    MAV_1381 = "mav_1381"
-    MOVES_CONFIRM_IGNORE = "moves_confirm_ignore"
-    MOVES_UNKNOWN_HOMESCHOOLED = "moves_unknown_homeschooled"
-    CHANGE_NHSNO = "change_nhsno"
+    WHITESPACE = "whitespace"
+    WRONG_YEAR_GROUP = "wrong_year_group"
+    RANDOM_CHILD_YEAR_9 = "random_child_year_9"
+    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
+    FIXED_CHILD_YEAR_10 = "fixed_child_year_10"
+    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children_year_9"
+    TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
 
     @property
     def folder(self) -> Path:
@@ -228,7 +216,7 @@ class TestData:
                 path_or_buf=output_path,
                 quoting=csv.QUOTE_MINIMAL,
                 encoding="utf-8",
-                index=None,
+                index=False,
             )
         else:
             open(output_path, "w").close()
@@ -242,7 +230,9 @@ class TestData:
                         cell = cell.replace(old, new)
             return cell
 
-        return df.applymap(replace_substrings)
+        for col in df.columns:
+            df[col] = df[col].map(replace_substrings)
+        return df
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
