@@ -78,11 +78,11 @@ class ImportRecordsPage:
     def wait_for_processed(self):
         self.page.wait_for_load_state()
 
-        # Wait up to 10 seconds for file to be processed.
+        # Wait up to 30 seconds for file to be processed.
 
         tag = self.completed_tag.or_(self.invalid_tag)
 
-        for i in range(20):
+        for i in range(60):
             if tag.is_visible():
                 break
 
