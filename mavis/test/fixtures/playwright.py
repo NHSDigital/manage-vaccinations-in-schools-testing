@@ -11,11 +11,16 @@ def base_url() -> str:
 
 
 @pytest.fixture(scope="session")
-def basic_auth() -> dict[str, str]:
+def basic_auth_credentials() -> dict[str, str]:
     return {
         "username": os.environ["BASIC_AUTH_USERNAME"],
         "password": os.environ["BASIC_AUTH_PASSWORD"],
     }
+
+
+@pytest.fixture(scope="session")
+def basic_auth_token() -> str:
+    return os.environ["BASIC_AUTH_TOKEN"]
 
 
 @pytest.fixture(scope="session")
@@ -26,5 +31,13 @@ def browser_type(playwright: Playwright, device: Optional[str]) -> BrowserType:
 
 
 @pytest.fixture(scope="session")
-def browser_context_args(browser_context_args, basic_auth):
-    return {**browser_context_args, "http_credentials": basic_auth}
+def browser_context_args(
+    browser_context_args, basic_auth_credentials, basic_auth_token
+) -> dict:
+    if basic_auth_token:
+        return {
+            **browser_context_args,
+            "extra_http_headers": {"Authorization": f"Basic {basic_auth_token}"},
+        }
+
+    return {**browser_context_args, "http_credentials": basic_auth_credentials}

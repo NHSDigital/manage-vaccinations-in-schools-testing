@@ -43,7 +43,13 @@ from .pages import (
     unmatched_consent_responses_page,
     vaccines_page,
 )
-from .playwright import base_url, basic_auth, browser_context_args, browser_type
+from .playwright import (
+    base_url,
+    basic_auth_credentials,
+    basic_auth_token,
+    browser_context_args,
+    browser_type,
+)
 
 __all__ = [
     "add_vaccine_batch",
@@ -52,7 +58,8 @@ __all__ = [
     "archive_batch_page",
     "archive_consent_response_page",
     "base_url",
-    "basic_auth",
+    "basic_auth_credentials",
+    "basic_auth_token",
     "browser_context_args",
     "browser_type",
     "children_page",
