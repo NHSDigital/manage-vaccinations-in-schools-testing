@@ -445,7 +445,8 @@ class SessionsPage:
     def add_note(self, note: str):
         self.click_add_a_note()
         self.fill_note_textbox(note)
-        self.click_save_note()
+        with self.page.expect_navigation():
+            self.click_save_note()
         expect(self.success_alert).to_contain_text("Note added")
         self.check_notes_appear_in_order([note])
 

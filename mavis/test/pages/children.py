@@ -1,5 +1,6 @@
 from pathlib import Path
 from playwright.sync_api import Page, expect
+import time
 
 from ..data import TestData
 from ..models import School
@@ -43,6 +44,10 @@ class ChildrenPage:
             has=page.get_by_role("heading", name="Vaccinations")
         )
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
+
+        self.manually_matched_card = self.page.get_by_text(
+            "Consent response manually matched with child record"
+        )
 
     def verify_headers(self):
         expect(self.children_heading).to_be_visible()
@@ -118,6 +123,21 @@ class ChildrenPage:
     def expect_text_in_heading(self, text: str) -> None:
         expect(self.page.get_by_role("heading")).to_contain_text(text)
 
+    def check_log_updates_with_match(self):
+        self.page.wait_for_load_state()
+
+        # Wait up to 10 seconds for activity log to update
+
+        for i in range(20):
+            if self.manually_matched_card.is_visible():
+                break
+
+            time.sleep(0.5)
+
+            self.page.reload()
+
+        expect(self.manually_matched_card).to_be_visible()
+
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, location: str
     ):
@@ -128,7 +148,7 @@ class ChildrenPage:
         self.expect_text_in_main(f"Invited to the session at {location}")
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
-        self.expect_text_in_main("Consent response manually matched with child record")
+        self.check_log_updates_with_match()
 
     def remove_child_from_cohort(self, child_name: str):
         self.search_for_a_child(child_name)
