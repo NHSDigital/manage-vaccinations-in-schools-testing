@@ -88,7 +88,7 @@ def test_match(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_activity_log_for_created_or_matched_child(
-        str(children[0]), schools[0], is_created=False
+        str(children[0]), schools[0]
     )
 
 
@@ -132,7 +132,7 @@ def test_create_with_nhs_number(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_activity_log_for_created_or_matched_child(
-        f"{child_name[1]}, {child_name[0]}", schools[0], is_created=False
+        f"{child_name[1]}, {child_name[0]}", schools[0]
     )
 
 
@@ -157,5 +157,5 @@ def test_create_with_no_nhs_number(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_activity_log_for_created_or_matched_child(
-        str(children[0]), schools[0], is_created=False
+        str(children[0]), schools[0]
     )

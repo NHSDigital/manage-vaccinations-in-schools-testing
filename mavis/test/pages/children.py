@@ -119,7 +119,7 @@ class ChildrenPage:
         expect(self.page.get_by_role("heading")).to_contain_text(text)
 
     def verify_activity_log_for_created_or_matched_child(
-        self, child_name: str, location: str, *, is_created: bool
+        self, child_name: str, location: str
     ):
         self.search_textbox.fill(child_name)
         self.search_button.click()
