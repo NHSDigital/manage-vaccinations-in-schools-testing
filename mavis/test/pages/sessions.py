@@ -744,7 +744,7 @@ class SessionsPage:
 
     def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
         patient_card = self.page.locator(
-            f"div.nhsuk-card.app-card--patient:has(h2:has-text('{str(child)}'))"
+            f'div.nhsuk-card.app-card--patient:has(h2:has-text("{str(child)}"))'
         )
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
         expect(flu_consent_section).to_contain_text("Consent given")
