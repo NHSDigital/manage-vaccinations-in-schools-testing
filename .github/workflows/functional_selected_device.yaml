@@ -73,8 +73,6 @@ jobs:
           BASE_URL: ${{ steps.set-variables.outputs.environment }}
           PROGRAMMES_ENABLED: ${{ steps.set-variables.outputs.programmes }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
-          BASIC_AUTH_USERNAME: ""
-          BASIC_AUTH_PASSWORD: ""
 
       - name: Generate Allure report
         if: always() && steps.set-variables.outputs.deploy_report == 'true'

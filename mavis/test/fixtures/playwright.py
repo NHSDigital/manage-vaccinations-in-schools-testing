@@ -11,16 +11,16 @@ def base_url() -> str:
 
 
 @pytest.fixture(scope="session")
-def basic_auth_credentials() -> dict[str, str]:
+def basic_auth_credentials() -> dict[str | None, str | None]:
     return {
-        "username": os.environ["BASIC_AUTH_USERNAME"],
-        "password": os.environ["BASIC_AUTH_PASSWORD"],
+        "username": os.environ.get("BASIC_AUTH_USERNAME"),
+        "password": os.environ.get("BASIC_AUTH_PASSWORD"),
     }
 
 
 @pytest.fixture(scope="session")
-def basic_auth_token() -> str:
-    return os.environ["BASIC_AUTH_TOKEN"]
+def basic_auth_token() -> str | None:
+    return os.environ.get("BASIC_AUTH_TOKEN")
 
 
 @pytest.fixture(scope="session")
