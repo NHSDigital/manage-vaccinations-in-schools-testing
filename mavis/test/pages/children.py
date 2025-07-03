@@ -121,12 +121,9 @@ class ChildrenPage:
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, location: str
     ):
-        self.search_textbox.fill(child_name)
-        self.search_button.click()
-        self.page.wait_for_timeout(1000)
-        self.page.get_by_text(child_name).click()
-        self.activity_log_link.click()
-        self.page.wait_for_timeout(1000)
+        self.search_for_a_child(child_name)
+        self.click_record_for_child(child_name)
+        self.click_activity_log()
         self.expect_text_in_main("Consent given")
         self.expect_text_in_main(f"Invited to the session at {location}")
 
