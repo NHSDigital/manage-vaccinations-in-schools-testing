@@ -61,8 +61,8 @@ class ChildrenPage:
     @step("Search for child {1}")
     def search_for_a_child(self, child_name: str) -> None:
         self.search_textbox.fill(child_name)
-        self.search_button.click()
-        self.page.wait_for_timeout(1000)
+        with self.page.expect_navigation():
+            self.search_button.click()
         self.expect_text_in_main(child_name)
 
     def assert_n_children_found(self, n: int) -> None:
