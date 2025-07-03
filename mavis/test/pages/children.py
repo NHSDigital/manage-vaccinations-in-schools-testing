@@ -92,9 +92,9 @@ class ChildrenPage:
         self.change_nhs_no_link.click()
 
     @step("Click on Activity log")
-    def click_activity_log_and_wait(self) -> None:
-        self.activity_log_link.click()
-        self.page.wait_for_timeout(1000)
+    def click_activity_log(self) -> None:
+        with self.page.expect_navigation():
+            self.activity_log_link.click()
 
     @step("Click on Edit child record")
     def click_edit_child_record(self) -> None:

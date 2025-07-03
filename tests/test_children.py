@@ -113,7 +113,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     children_page.search_for_a_child(child_name)
     children_page.click_record_for_child(child_name)
     # Verify activity log
-    children_page.click_activity_log_and_wait()
+    children_page.click_activity_log()
     children_page.expect_text_in_main("Vaccinated with Gardasil 9")
     # Verify vaccination record
     children_page.click_child_record()
