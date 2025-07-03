@@ -105,32 +105,6 @@ def setup_mav_854(
         sessions_page.delete_all_sessions(schools[0])
 
 
-@pytest.fixture
-def setup_mav_nnn(
-    log_in_as_admin,
-    schools,
-    dashboard_page,
-    import_records_page,
-    sessions_page,
-    programmes_enabled,
-):
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
-        )
-        import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(
-            ClassFileMapping.RANDOM_CHILD_YEAR_9
-        )
-        sessions_page.click_location(schools[0])
-        yield
-    finally:
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
-
-
 @pytest.mark.cohorts
 def test_cohort_upload_positive(setup_cohort_upload, import_records_page):
     import_records_page.upload_and_verify_output(CohortsFileMapping.POSITIVE)
@@ -333,18 +307,6 @@ def test_rav_verify_excel_mav_854(
     sessions_page.click_scheduled()
     sessions_page.click_location(schools[0])
     assert sessions_page.get_session_id_from_offline_excel()
-
-
-@pytest.mark.rav
-@pytest.mark.skip(reason="Test under construction")
-def test_rav_verify_banners(setup_mav_nnn, sessions_page, schools):
-    # sessions_page.click_scheduled()
-    # sessions_page.click_location(schools[0])
-    # sessions_page.click_consent_tab()
-    # sessions_page.click_child(sessions_page.LNK_CHILD_FULL_NAME)
-    # sessions_page.click_get_consent_response()
-    # sessions_page.__handle_consent_approval(schools)
-    pass
 
 
 @pytest.mark.reports
