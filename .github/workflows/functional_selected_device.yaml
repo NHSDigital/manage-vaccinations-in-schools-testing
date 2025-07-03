@@ -76,32 +76,33 @@ jobs:
           BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
 
       - name: Generate Allure report
-        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
         run: |
           npx allure-commandline generate allure-results -o allure-report
 
       - name: Set GitHub Pages directory
-        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        id: set-pages-dir
         run: |
           sanitized_device=$(echo "${{ steps.set-variables.outputs.device }}" | tr -cd '[:alnum:]_-')
           echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
 
       - name: Checkout gh-pages branch
-        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           path: gh-pages
 
       - name: Replace existing report with new report
-        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
         run: |
           rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
           mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
           cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
 
       - name: Commit and push changes
-        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
         run: |
           cd gh-pages
           git config user.name "github-actions[bot]"
@@ -114,6 +115,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set Job Summary
-        if: ${{ steps.set-variables.outputs.deploy_report == 'true' }}
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
         run: |
           echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY
