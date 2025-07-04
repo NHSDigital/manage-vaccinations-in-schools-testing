@@ -38,8 +38,10 @@ class Programme(StrEnum):
             HealthQuestion.EXTRA_SUPPORT,
         ]
         programme_specific_questions = {
-            Programme.MENACWY: common_doubles_questions + [HealthQuestion.PAST_MENACWY_VACCINE],
-            Programme.TD_IPV: common_doubles_questions + [HealthQuestion.PAST_TDIPV_VACCINE],
+            Programme.MENACWY: common_doubles_questions
+            + [HealthQuestion.PAST_MENACWY_VACCINE],
+            Programme.TD_IPV: common_doubles_questions
+            + [HealthQuestion.PAST_TDIPV_VACCINE],
             Programme.HPV: [
                 HealthQuestion.SEVERE_ALLERGIES,
                 HealthQuestion.MEDICAL_CONDITIONS,
@@ -84,14 +86,16 @@ class Vaccine(StrEnum):
 
 
 class HealthQuestion(StrEnum):
-    BLEEDING_DISORDER = (
-        "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
-    )
+    BLEEDING_DISORDER = "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
     SEVERE_ALLERGIES = "Does your child have any severe allergies?"
-    MEDICAL_CONDITIONS = "Does your child have any medical conditions for which they receive treatment?"
+    MEDICAL_CONDITIONS = (
+        "Does your child have any medical conditions for which they receive treatment?"
+    )
     REACTION = "Has your child ever had a severe reaction to any medicines, including vaccines?"
     EXTRA_SUPPORT = "Does your child need extra support during vaccination sessions?"
-    PAST_MENACWY_VACCINE = "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
+    PAST_MENACWY_VACCINE = (
+        "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
+    )
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
 
