@@ -179,7 +179,7 @@ def _read_imms_api_credentials() -> dict[str, str]:
         "pem": base64.b64decode(os.environ["IMMS_API_PEM"]),
         "key": os.environ["IMMS_API_KEY"],
         "kid": os.environ["IMMS_API_KID"],
-        "url": os.environ["IMMS_AUTH_URL"],
+        "url": os.environ["IMMS_BASE_URL"],
     }
 
 
