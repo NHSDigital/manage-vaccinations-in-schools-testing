@@ -293,7 +293,7 @@ def test_rav_verify_excel_mav_854(
     )
     sessions_page.register_child_as_attending(child_name=child_name)
     sessions_page.record_vaccs_for_child(
-        child_name=child_name,
+        child=children[0],
         programme=Programme.HPV,
         batch_name=batch_name,
         at_school=False,

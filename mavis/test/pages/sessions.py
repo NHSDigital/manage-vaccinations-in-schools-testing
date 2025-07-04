@@ -117,7 +117,9 @@ class SessionsPage:
         self.record_vaccinations_link = self.page.get_by_role(
             "link", name="Record vaccinations"
         )
-        self.yes_radio = self.page.get_by_role("radio", name="Yes")
+        self.ready_for_vaccination_radio = self.page.locator(
+            "#vaccinate-form-administered-true-field"
+        )
         self.left_arm_upper_radio = self.page.get_by_role(
             "radio", name="Left arm (upper position)"
         )
@@ -388,8 +390,14 @@ class SessionsPage:
         self.pre_screening_checkbox.check()
 
     @step("Click on Yes")
-    def select_yes(self):
-        self.yes_radio.click()
+    def select_identity_confirmed_by_child(self, child: Child):
+        self.page.get_by_role(
+            "group", name=f"Has {child.first_name} confirmed their identity?"
+        ).get_by_label("Yes").check()
+
+    @step("Click on Yes")
+    def select_ready_for_vaccination(self):
+        self.ready_for_vaccination_radio.check()
 
     @step("Click on Left arm (upper position)")
     def select_left_arm_upper_position(self):
@@ -678,26 +686,28 @@ class SessionsPage:
         self.search_for("a very long string that won't match any names")
         self.expect_main_to_contain_text("No children matching search criteria found")
 
-    def search_child(self, child_name: str) -> None:
-        self.search_for(child_name)
-        self.page.get_by_role("link", name=child_name).click()
+    def search_child(self, child: Child) -> None:
+        self.search_for(str(child))
+        self.page.get_by_role("link", name=str(child)).click()
 
     def record_vaccs_for_child(
         self,
-        child_name: str,
+        child: Child,
         programme: Programme,
         batch_name: str,
         at_school: bool = True,
         notes: str = "",
     ):
         self.click_record_vaccinations()
-        self.search_child(child_name=child_name)
+        self.search_child(child)
         self.click_programme_tab(programme)
 
         self.confirm_pre_screening_checks(programme)
         self.pre_screening_notes.fill(notes)
 
-        self.select_yes()
+        self.select_identity_confirmed_by_child(child)
+
+        self.select_ready_for_vaccination()
         self.select_left_arm_upper_position()
         self.click_continue_button()
 
