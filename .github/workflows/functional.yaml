@@ -50,8 +50,7 @@ jobs:
         env:
           BASE_URL: ${{ vars.BASE_URL }}
           PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+          BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
 
       - name: Generate Allure report
         if: always()
