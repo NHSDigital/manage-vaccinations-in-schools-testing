@@ -103,6 +103,7 @@ def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
     sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()
     sessions_page.add_note(NOTE_1)
+    sessions_page.click_session_activity_and_notes()
     sessions_page.add_note(NOTE_2)
     sessions_page.click_location(schools[0])
     sessions_page.click_consent_tab()
