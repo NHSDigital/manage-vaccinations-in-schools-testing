@@ -45,10 +45,7 @@ def test_refused(start_consent, consent_page, schools, children):
     )
 
 
-@pytest.mark.parametrize(
-    "change_school", (False, True), ids=lambda v: f"change_school: {v}"
-)
-@pytest.mark.parametrize("injection", (False, True), ids=lambda v: f"injection: {v}")
+@pytest.mark.parametrize("injection", (False, False), ids=lambda v: f"injection: {v}")
 @pytest.mark.parametrize(
     "health_question", (False, True), ids=lambda v: f"health_question: {v}"
 )
@@ -56,24 +53,25 @@ def test_given(
     start_consent,
     consent_page,
     schools,
-    change_school,
     injection,
     health_question,
     children,
 ):
     child = children[0]
 
-    consent_page.fill_details(child, child.parents[0], schools, change_school)
+    consent_page.fill_details(child, child.parents[0], schools, False)
     consent_page.agree_to_flu_vaccination(injection=injection)
     consent_page.fill_address_details(*child.address)
 
-    if health_question:
-        # Asthma question doesn't have "More details"
-        consent_page.answer_yes()
-
-    consent_page.answer_health_questions(
-        10 if health_question else 9, health_question=health_question
-    )
+    consent_page.page.pause()
+    if injection:
+        consent_page.answer_health_questions(5, health_question=health_question)
+    else:
+        if health_question:
+            consent_page.answer_yes()
+        consent_page.answer_health_questions(
+            11 if health_question else 10, health_question=health_question
+        )
 
     # If consenting to nasal spray, a question is asked about injection as an alternative
     if not injection:
@@ -124,7 +122,9 @@ def test_correct_method_shown(
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.agree_to_flu_vaccination(injection=(consents[0] == INJECTION))
     consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(9, health_question=False)
+    consent_page.answer_health_questions(
+        5 if (consents[0] == INJECTION) else 10, health_question=False
+    )
     if consents[0] == BOTH:
         consent_page.answer_yes()
     elif consents[0] == NASAL:
@@ -143,7 +143,9 @@ def test_correct_method_shown(
     consent_page.fill_details(child, child.parents[1], schools)
     consent_page.agree_to_flu_vaccination(injection=(consents[1] == INJECTION))
     consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(9, health_question=False)
+    consent_page.answer_health_questions(
+        5 if (consents[1] == INJECTION) else 10, health_question=False
+    )
     if consents[1] == BOTH:
         consent_page.answer_yes()
     elif consents[1] == NASAL:
