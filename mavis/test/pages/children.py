@@ -89,8 +89,8 @@ class ChildrenPage:
 
     @step("Click on Child record")
     def click_child_record(self) -> None:
-        with self.page.expect_navigation():
-            self.child_record_link.click()
+        self.child_record_link.click()
+        self.child_record_link.get_by_role("strong").wait_for()
 
     @step("Click on Change NHS number")
     def click_change_nhs_no(self) -> None:
@@ -98,8 +98,8 @@ class ChildrenPage:
 
     @step("Click on Activity log")
     def click_activity_log(self) -> None:
-        with self.page.expect_navigation():
-            self.activity_log_link.click()
+        self.activity_log_link.click()
+        self.activity_log_link.get_by_role("strong").wait_for()
 
     @step("Click on Edit child record")
     def click_edit_child_record(self) -> None:
