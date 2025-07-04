@@ -68,7 +68,8 @@ def schools(base_url) -> List[School]:
     schools_data = random.choices(data, k=2)
 
     return [
-        School(name=normalize_whitespace(school_data["name"]), urn=school_data["urn"]) for school_data in schools_data
+        School(name=normalize_whitespace(school_data["name"]), urn=school_data["urn"])
+        for school_data in schools_data
     ]
 
 
@@ -116,7 +117,9 @@ def team():
 @pytest.fixture(scope="session")
 def organisation(team) -> Organisation:
     ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    return Organisation(name=team.name, ods_code=ods_code, email=team.email, phone=team.phone)
+    return Organisation(
+        name=team.name, ods_code=ods_code, email=team.email, phone=team.phone
+    )
 
 
 @pytest.fixture(scope="session")
