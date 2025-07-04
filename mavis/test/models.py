@@ -1,6 +1,7 @@
+from datetime import date
 from enum import StrEnum
 from typing import NamedTuple
-from datetime import date
+
 from faker import Faker
 
 faker = Faker("en_GB")
@@ -37,10 +38,8 @@ class Programme(StrEnum):
             HealthQuestion.EXTRA_SUPPORT,
         ]
         programme_specific_questions = {
-            Programme.MENACWY: common_doubles_questions
-            + [HealthQuestion.PAST_MENACWY_VACCINE],
-            Programme.TD_IPV: common_doubles_questions
-            + [HealthQuestion.PAST_TDIPV_VACCINE],
+            Programme.MENACWY: common_doubles_questions + [HealthQuestion.PAST_MENACWY_VACCINE],
+            Programme.TD_IPV: common_doubles_questions + [HealthQuestion.PAST_TDIPV_VACCINE],
             Programme.HPV: [
                 HealthQuestion.SEVERE_ALLERGIES,
                 HealthQuestion.MEDICAL_CONDITIONS,
@@ -85,16 +84,14 @@ class Vaccine(StrEnum):
 
 
 class HealthQuestion(StrEnum):
-    BLEEDING_DISORDER = "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
-    SEVERE_ALLERGIES = "Does your child have any severe allergies?"
-    MEDICAL_CONDITIONS = (
-        "Does your child have any medical conditions for which they receive treatment?"
+    BLEEDING_DISORDER = (
+        "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
     )
+    SEVERE_ALLERGIES = "Does your child have any severe allergies?"
+    MEDICAL_CONDITIONS = "Does your child have any medical conditions for which they receive treatment?"
     REACTION = "Has your child ever had a severe reaction to any medicines, including vaccines?"
     EXTRA_SUPPORT = "Does your child need extra support during vaccination sessions?"
-    PAST_MENACWY_VACCINE = (
-        "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
-    )
+    PAST_MENACWY_VACCINE = "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
 
@@ -261,3 +258,12 @@ class Child(NamedTuple):
     @property
     def name(self) -> tuple[str, str]:
         return self.first_name, self.last_name
+
+
+class ImmsEndpoints(StrEnum):
+    AUTH = "/oauth2/token"
+    CREATE = "/immunisation-fhir-api/Immunization"
+    READ = "/immunisation-fhir-api/Immunization/"
+    SEARCH = "/immunisation-fhir-api/Immunization/_search"
+    UPDATE = "/immunisation-fhir-api/Immunization/"
+    DELETE = "/immunisation-fhir-api/Immunization/"

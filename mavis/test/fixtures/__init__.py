@@ -9,8 +9,10 @@ from .helpers import (
 )
 from .models import (
     admin,
+    authenticate_api,
     children,
     clinics,
+    imms_base_url,
     nurse,
     onboard_and_delete,
     onboarding,
@@ -100,4 +102,6 @@ __all__ = [
     "unmatched_consent_responses_page",
     "users",
     "vaccines_page",
+    "authenticate_api",
+    "imms_base_url",
 ]
