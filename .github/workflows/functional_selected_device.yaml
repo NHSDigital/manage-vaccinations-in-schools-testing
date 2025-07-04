@@ -77,11 +77,13 @@ jobs:
 
       - name: Generate Allure report
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
         run: |
           npx allure-commandline generate allure-results -o allure-report
 
       - name: Set GitHub Pages directory
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
         id: set-pages-dir
         run: |
           sanitized_device=$(echo "${{ steps.set-variables.outputs.device }}" | tr -cd '[:alnum:]_-')
@@ -89,6 +91,7 @@ jobs:
 
       - name: Checkout gh-pages branch
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
         uses: actions/checkout@v4
         with:
           ref: gh-pages
@@ -96,6 +99,7 @@ jobs:
 
       - name: Replace existing report with new report
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
         run: |
           rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
           mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
@@ -103,6 +107,7 @@ jobs:
 
       - name: Commit and push changes
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
         run: |
           cd gh-pages
           git config user.name "github-actions[bot]"
@@ -110,11 +115,13 @@ jobs:
           git add ${{ steps.set-pages-dir.outputs.dir }}
           # Only commit if there are changes
           git diff --cached --quiet || git commit -m "Deploy changes to pages"
+          git pull --rebase origin gh-pages
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set Job Summary
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
         run: |
           echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY
