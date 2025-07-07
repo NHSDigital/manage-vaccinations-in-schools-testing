@@ -1,6 +1,18 @@
 from functools import wraps
 
 import allure
+from io import BytesIO
+from PIL import Image
+from PIL.Image import Palette
+
+
+def reduce_colors(image_bytes: bytes) -> bytes:
+    with BytesIO(image_bytes) as input_io:
+        img = Image.open(input_io)
+        img = img.convert("P", palette=Palette.ADAPTIVE, colors=32)
+        output_io = BytesIO()
+        img.save(output_io, format="PNG")
+        return output_io.getvalue()
 
 
 def step(title: str, attach_screenshot: bool = True):
@@ -12,8 +24,10 @@ def step(title: str, attach_screenshot: bool = True):
                     return_value = func(self, *args, **kwargs)
                 except Exception:
                     if attach_screenshot:
+                        screenshot_bytes = self.page.screenshot(full_page=True)
+                        reduced_bytes = reduce_colors(screenshot_bytes)
                         allure.attach(
-                            self.page.screenshot(),
+                            reduced_bytes,
                             name="Screenshot on failure",
                             attachment_type=allure.attachment_type.PNG,
                         )
@@ -28,8 +42,10 @@ def step(title: str, attach_screenshot: bool = True):
                     )
 
                 if attach_screenshot:
+                    screenshot_bytes = self.page.screenshot(full_page=True)
+                    reduced_bytes = reduce_colors(screenshot_bytes)
                     allure.attach(
-                        self.page.screenshot(),
+                        reduced_bytes,
                         name="Screenshot",
                         attachment_type=allure.attachment_type.PNG,
                     )
