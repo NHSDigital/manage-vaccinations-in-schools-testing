@@ -1,10 +1,10 @@
 from pathlib import Path
 from playwright.sync_api import Page, expect
-import time
 
 from ..data import TestData
 from ..models import School
 from ..step import step
+from ..wrappers import reload_until_element_is_visible
 
 
 class ChildrenPage:
@@ -66,9 +66,13 @@ class ChildrenPage:
     @step("Search for child {1}")
     def search_for_a_child(self, child_name: str) -> None:
         self.search_textbox.fill(child_name)
+
         with self.page.expect_navigation():
             self.search_button.click()
-        self.expect_text_in_main(child_name)
+
+        reload_until_element_is_visible(
+            self.page, self.page.get_by_role("link", name=child_name)
+        )
 
     def assert_n_children_found(self, n: int) -> None:
         expect(
@@ -125,18 +129,9 @@ class ChildrenPage:
 
     def check_log_updates_with_match(self):
         self.page.wait_for_load_state()
-
-        # Wait up to 10 seconds for activity log to update
-
-        for i in range(20):
-            if self.manually_matched_card.is_visible():
-                break
-
-            time.sleep(0.5)
-
-            self.page.reload()
-
-        expect(self.manually_matched_card).to_be_visible()
+        reload_until_element_is_visible(
+            self.page, self.manually_matched_card, seconds=30
+        )
 
     def verify_activity_log_for_created_or_matched_child(
         self, child_name: str, location: str

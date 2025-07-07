@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 
 from ..step import step
+from ..wrappers import reload_until_element_is_visible
 
 
 def get_child_full_name(first_name: str, last_name: str) -> str:
@@ -27,6 +28,7 @@ class UnmatchedConsentResponsesPage:
     @step("Click on consent response for {1} {2}")
     def click_child(self, first_name: str, last_name: str):
         row = self._get_row_for_child(first_name, last_name)
+        reload_until_element_is_visible(self.page, row)
         row.get_by_role("link").first.click()
 
     def _get_row_for_child(self, first_name: str, last_name: str):
