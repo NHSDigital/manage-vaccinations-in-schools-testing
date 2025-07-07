@@ -99,7 +99,7 @@ def normalize_whitespace(string: str) -> str:
 
 
 def reload_until_element_is_visible(page: Page, tag: Locator, seconds: int = 30):
-    for i in range(seconds * 2):
+    for _ in range(seconds * 2):
         if tag.is_visible():
             break
 

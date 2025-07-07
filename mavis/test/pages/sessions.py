@@ -12,6 +12,7 @@ from mavis.test.wrappers import (
     generate_random_string,
     get_current_datetime,
     get_offset_date,
+    reload_until_element_is_visible,
 )
 
 
@@ -455,7 +456,10 @@ class SessionsPage:
         self.fill_note_textbox(note)
         with self.page.expect_navigation():
             self.click_save_note()
+
         expect(self.success_alert).to_contain_text("Note added")
+        reload_until_element_is_visible(self.page, self.page.get_by_text(note))
+
         self.check_notes_appear_in_order([note])
 
     @step("Search for {1}")
