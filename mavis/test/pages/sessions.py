@@ -249,16 +249,16 @@ class SessionsPage:
         self.file_input.set_input_files(file_path)
 
     @step("Click on child {1}")
-    def click_child(self, child_name: str):
+    def click_child(self, child: Child):
         with self.page.expect_navigation():
-            self.page.get_by_role("heading", name=child_name).get_by_role(
+            self.page.get_by_role("heading", name=str(child)).get_by_role(
                 "link"
             ).first.click()
 
     @step("Search and click on {1}")
-    def search_and_click_child(self, child_name: str):
-        self.filter_name_textbox.fill(child_name)
-        self.click_child(child_name)
+    def search_and_click_child(self, child: Child):
+        self.filter_name_textbox.fill(str(child))
+        self.click_child(child)
 
     @step("Click on Update triage outcome")
     def click_update_triage_outcome(self):
@@ -355,13 +355,13 @@ class SessionsPage:
         self.click_today()
         self.click_location(location)
 
-    def navigate_to_gillick_competence(self, child: str, programme: Programme):
+    def navigate_to_gillick_competence(self, child: Child, programme: Programme):
         self.click_consent_tab()
         self.click_child(child)
         self.click_programme_tab(programme)
         self.click_assess_gillick_competence()
 
-    def navigate_to_consent_response(self, child: str, programme: Programme):
+    def navigate_to_consent_response(self, child: Child, programme: Programme):
         self.click_child(child)
         self.click_programme_tab(programme)
         self.click_get_verbal_consent()
@@ -369,7 +369,7 @@ class SessionsPage:
     def navigate_to_verbal_consent_response(self):
         self.click_get_verbal_consent()
 
-    def navigate_to_update_triage_outcome(self, child: str, programme: Programme):
+    def navigate_to_update_triage_outcome(self, child: Child, programme: Programme):
         self.click_child(child)
         self.click_programme_tab(programme)
         self.click_update_triage_outcome()
@@ -446,8 +446,8 @@ class SessionsPage:
             expect(self.page.get_by_role("blockquote").nth(i)).to_have_text(note)
 
     @step("Check note {2} appears in search for {1}")
-    def check_note_appears_in_search(self, child: str, note: str):
-        heading = self.page.get_by_role("heading", name=child)
+    def check_note_appears_in_search(self, child: Child, note: str):
+        heading = self.page.get_by_role("heading", name=str(child))
         next_element = heading.locator("xpath=following-sibling::*[1]")
         expect(next_element.get_by_role("blockquote")).to_have_text(note)
 
@@ -673,9 +673,9 @@ class SessionsPage:
             self.page.get_by_role("checkbox", name=f"Year {year_group}").check()
         self.click_continue_button()
 
-    def register_child_as_attending(self, child_name: str):
+    def register_child_as_attending(self, child: Child):
         self.click_register_tab()
-        self.search_for(child_name)
+        self.search_for(str(child))
         self.click_on_attending()
 
     def verify_search(self):
@@ -737,11 +737,11 @@ class SessionsPage:
             )
 
     def verify_consent_filters(self, children):
-        child_name = str(children[0])
+        child = children[0]
         self.review_no_consent_response_link.click()
-        self.page.get_by_role("link", name=child_name).click()
+        self.page.get_by_role("link", name=str(child)).click()
         self.click_get_verbal_consent()
-        self.click_parent_radio_button(children[0].parents[0].full_name)
+        self.click_parent_radio_button(child.parents[0].full_name)
         self.click_continue_button()
         self.click_continue_button()  # Parent details
         self.in_person_radio.click()

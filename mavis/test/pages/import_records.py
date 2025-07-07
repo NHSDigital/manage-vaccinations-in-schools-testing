@@ -4,9 +4,12 @@ from typing import Optional
 
 from playwright.sync_api import Page, expect
 
-from ..data import FileMapping, TestData
-from ..step import step
-from ..wrappers import format_datetime_for_upload_link, reload_until_element_is_visible
+from mavis.test.data import FileMapping, TestData
+from mavis.test.step import step
+from mavis.test.wrappers import (
+    format_datetime_for_upload_link,
+    reload_until_element_is_visible,
+)
 
 
 class ImportRecordsPage:

@@ -1,10 +1,10 @@
 from pathlib import Path
 from playwright.sync_api import Page, expect
 
-from ..data import TestData
-from ..models import School
-from ..step import step
-from ..wrappers import reload_until_element_is_visible
+from mavis.test.data import TestData
+from mavis.test.models import School, Child
+from mavis.test.step import step
+from mavis.test.wrappers import reload_until_element_is_visible
 
 
 class ChildrenPage:
@@ -61,10 +61,10 @@ class ChildrenPage:
             file_path, is_vaccinations
         )
         for child_name in child_names:
-            self.search_for_a_child(child_name)
+            self.search_for_a_child_name(child_name)
 
     @step("Search for child {1}")
-    def search_for_a_child(self, child_name: str) -> None:
+    def search_for_a_child_name(self, child_name: str) -> None:
         self.search_textbox.fill(child_name)
 
         with self.page.expect_navigation():
@@ -80,9 +80,9 @@ class ChildrenPage:
         ).to_be_visible()
 
     @step("Click on record for child {1}")
-    def click_record_for_child(self, child_name: str) -> None:
+    def click_record_for_child(self, child: Child) -> None:
         with self.page.expect_navigation():
-            self.page.get_by_role("link", name=child_name).click()
+            self.page.get_by_role("link", name=str(child)).click()
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
@@ -118,8 +118,8 @@ class ChildrenPage:
         self.remove_from_cohort_button.click()
 
     @step("Fill NHS number {2} for child {1}")
-    def fill_nhs_no_for_child(self, child_name: str, nhs_no: str) -> None:
-        self.page.get_by_role("textbox", name=child_name).fill(nhs_no)
+    def fill_nhs_no_for_child(self, child: Child, nhs_no: str) -> None:
+        self.page.get_by_role("textbox", name=str(child)).fill(nhs_no)
 
     def expect_text_in_main(self, text: str) -> None:
         expect(self.page.get_by_role("main")).to_contain_text(text)
@@ -134,10 +134,10 @@ class ChildrenPage:
         )
 
     def verify_activity_log_for_created_or_matched_child(
-        self, child_name: str, location: str
+        self, child: Child, location: str
     ):
-        self.search_for_a_child(child_name)
-        self.click_record_for_child(child_name)
+        self.search_for_a_child_name(str(child))
+        self.click_record_for_child(child)
         self.click_activity_log()
         self.expect_text_in_main("Consent given")
         self.expect_text_in_main(f"Invited to the session at {location}")
@@ -145,8 +145,8 @@ class ChildrenPage:
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
 
-    def remove_child_from_cohort(self, child_name: str):
-        self.search_for_a_child(child_name)
-        self.click_record_for_child(child_name)
+    def remove_child_from_cohort(self, child: Child):
+        self.search_for_a_child_name(str(child))
+        self.click_record_for_child(child)
         self.click_remove_from_cohort()
-        self.expect_text_in_main(f"{child_name} removed from cohort")
+        self.expect_text_in_main(f"{str(child)} removed from cohort")

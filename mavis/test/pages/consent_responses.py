@@ -1,11 +1,8 @@
 from playwright.sync_api import Page
 
-from ..step import step
-from ..wrappers import reload_until_element_is_visible
-
-
-def get_child_full_name(first_name: str, last_name: str) -> str:
-    return f"{last_name.upper()}, {first_name}"
+from mavis.test.step import step
+from mavis.test.wrappers import reload_until_element_is_visible
+from mavis.test.models import Child
 
 
 class UnmatchedConsentResponsesPage:
@@ -26,14 +23,10 @@ class UnmatchedConsentResponsesPage:
         )
 
     @step("Click on consent response for {1} {2}")
-    def click_child(self, first_name: str, last_name: str):
-        row = self._get_row_for_child(first_name, last_name)
+    def click_child(self, child: Child):
+        row = self.rows.filter(has=self.page.get_by_text(str(child)))
         reload_until_element_is_visible(self.page, row)
         row.get_by_role("link").first.click()
-
-    def _get_row_for_child(self, first_name: str, last_name: str):
-        full_name = get_child_full_name(first_name, last_name)
-        return self.rows.filter(has=self.page.get_by_text(full_name))
 
 
 class ConsentResponsePage:
@@ -65,7 +58,7 @@ class ArchiveConsentResponsePage:
         self.archive_button = page.get_by_role("button", name="Archive")
 
     @step("Archive consent response")
-    def archive(self, *, notes: str):
+    def archive(self, notes: str):
         self.notes_textbox.fill(notes)
         self.archive_button.click()
 
@@ -90,11 +83,9 @@ class MatchConsentResponsePage:
         self.link_button = page.get_by_role("button", name="Link response with record")
 
     @step("Match consent response with {1} {2}")
-    def match(self, first_name: str, last_name: str):
-        full_name = get_child_full_name(first_name, last_name)
-
-        self.search_textbox.fill(full_name)
+    def match(self, child: Child):
+        self.search_textbox.fill(str(child))
         self.search_button.click()
 
-        self.page.get_by_role("link", name=full_name).click()
+        self.page.get_by_role("link", name=str(child)).click()
         self.link_button.click()

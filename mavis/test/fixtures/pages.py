@@ -1,6 +1,6 @@
 import pytest
 
-from ..pages import (
+from mavis.test.pages import (
     AddBatchPage,
     ArchiveBatchPage,
     ArchiveConsentResponsePage,

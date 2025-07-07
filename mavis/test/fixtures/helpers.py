@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from ..data import TestData
-from ..models import Vaccine
-from ..wrappers import get_date_of_birth_for_year_group
+from mavis.test.data import TestData
+from mavis.test.models import Vaccine
+from mavis.test.wrappers import get_date_of_birth_for_year_group
 
 
 @pytest.fixture
