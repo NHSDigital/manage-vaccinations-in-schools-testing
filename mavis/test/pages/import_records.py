@@ -1,4 +1,3 @@
-import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
@@ -7,7 +6,7 @@ from playwright.sync_api import Page, expect
 
 from ..data import FileMapping, TestData
 from ..step import step
-from ..wrappers import format_datetime_for_upload_link
+from ..wrappers import format_datetime_for_upload_link, reload_until_element_is_visible
 
 
 class ImportRecordsPage:
@@ -78,19 +77,9 @@ class ImportRecordsPage:
     def wait_for_processed(self):
         self.page.wait_for_load_state()
 
-        # Wait up to 30 seconds for file to be processed.
-
         tag = self.completed_tag.or_(self.invalid_tag)
 
-        for i in range(60):
-            if tag.is_visible():
-                break
-
-            time.sleep(0.5)
-
-            self.page.reload()
-        else:
-            expect(tag).to_be_visible()
+        reload_until_element_is_visible(self.page, tag, seconds=30)
 
     def navigate_to_child_record_import(self):
         self.click_import_records()

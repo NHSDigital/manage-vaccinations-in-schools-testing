@@ -2,6 +2,8 @@ from datetime import date, datetime, timedelta
 
 from faker import Faker
 import re
+import time
+from playwright.sync_api import Page, Locator, expect
 
 faker = Faker()
 
@@ -94,3 +96,15 @@ def normalize_whitespace(string: str) -> str:
     string = string.replace("\u200d", "")
     string = string.replace("\u00a0", " ")
     return re.sub(r"\s+", " ", string).strip()
+
+
+def reload_until_element_is_visible(page: Page, tag: Locator, seconds: int = 30):
+    for i in range(seconds * 2):
+        if tag.is_visible():
+            break
+
+        time.sleep(0.5)
+
+        page.reload()
+    else:
+        expect(tag).to_be_visible()
