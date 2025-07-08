@@ -1,8 +1,8 @@
-import allure
 import pytest
 
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme
+from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.consent
 
@@ -58,7 +58,7 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
     )
 
 
-@allure.issue("MAV-955")
+@issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
     child = children[0]
 
@@ -80,7 +80,6 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
     sessions_page.check_notes_length_error_appears()
 
 
-@allure.issue("MAVIS-1696")
 @pytest.mark.bug
 def test_invalid_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
@@ -113,7 +112,6 @@ def test_invalid_consent(
     )
 
 
-@allure.issue("MAVIS-1864")
 @pytest.mark.bug
 def test_parent_provides_consent_twice(
     setup_fixed_child, sessions_page, schools, consent_page, children
@@ -150,7 +148,6 @@ def test_parent_provides_consent_twice(
     )
 
 
-@allure.issue("MAVIS-1818")
 @pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children

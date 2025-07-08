@@ -49,6 +49,7 @@ jobs:
         run: uv run pytest --device "${{ matrix.device }}"
         env:
           BASE_URL: ${{ vars.BASE_URL }}
+          JIRA_URL: ${{ vars.JIRA_URL }}
           PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
 

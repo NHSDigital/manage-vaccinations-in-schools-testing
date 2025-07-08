@@ -1,8 +1,8 @@
-import allure
 import pytest
 
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme, ReportFormat, Vaccine
+from mavis.test.annotations import issue
 
 
 @pytest.fixture
@@ -130,7 +130,7 @@ def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
     import_records_page.upload_and_verify_output(CohortsFileMapping.EMPTY_FILE)
 
 
-@allure.issue("MAV-909")
+@issue("MAV-909")
 @pytest.mark.cohorts
 @pytest.mark.bug
 def test_cohorts_readd_to_cohort(
@@ -254,7 +254,6 @@ def test_rav_triage_consent_refused(
     )
 
 
-@allure.issue("MAVIS-1729")
 @pytest.mark.rav
 @pytest.mark.bug
 def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page, children):

@@ -1,10 +1,10 @@
 from datetime import date, timedelta
 
-import allure
 import pytest
 from playwright.sync_api import expect
 
 from mavis.test.models import Vaccine
+from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.vaccines
 
@@ -36,7 +36,7 @@ def test_batch_add_change_archive(
     expect(archive_batch_page.success_alert).to_be_visible()
 
 
-@allure.issue("MAV-955")
+@issue("MAV-955")
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_name_too_short(vaccine, add_batch_page, vaccines_page):
     vaccines_page.click_add_batch(vaccine)
@@ -50,7 +50,7 @@ def test_batch_name_too_short(vaccine, add_batch_page, vaccines_page):
     ).to_be_visible()
 
 
-@allure.issue("MAV-955")
+@issue("MAV-955")
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_name_too_long(vaccine, add_batch_page, vaccines_page):
     vaccines_page.click_add_batch(vaccine)

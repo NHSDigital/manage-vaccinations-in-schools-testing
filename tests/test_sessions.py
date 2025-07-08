@@ -1,7 +1,7 @@
-import allure
 import pytest
 
 from mavis.test.data import ClassFileMapping
+from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.sessions
 
@@ -74,25 +74,24 @@ def test_invalid(setup_tests, schools, sessions_page, programmes_enabled):
     sessions_page.create_invalid_session(schools[0], programmes_enabled)
 
 
-@allure.issue("MAVIS-1822")
 @pytest.mark.bug
 def test_verify_attendance_filters(setup_mavis_1822, sessions_page):
     sessions_page.verify_attendance_filters()
 
 
-@allure.issue("MAV-1018")
+@issue("MAV-1018")
 @pytest.mark.bug
 def test_verify_search(setup_mav_1018, sessions_page):
     sessions_page.verify_search()
 
 
-@allure.issue("MAV-1381")
+@issue("MAV-1381")
 @pytest.mark.bug
 def test_verify_consent_filters(setup_fixed_child, sessions_page, children):
     sessions_page.verify_consent_filters(children)
 
 
-@allure.issue("MAV-1265")
+@issue("MAV-1265")
 def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
     child = children[0]
     NOTE_1 = "Note 1"
