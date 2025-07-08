@@ -52,6 +52,6 @@ def step(title: str, attach_screenshot: bool = True):
 
                 return return_value
 
-        return wrapper
+        return allure.step(title)(wrapper)
 
     return decorator
