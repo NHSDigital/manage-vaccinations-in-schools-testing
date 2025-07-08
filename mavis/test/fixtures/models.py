@@ -26,7 +26,6 @@ logger = logging.getLogger(__name__)
 
 onboarding_faker = Faker(locale="en_GB")
 onboarding_faker.seed_instance(seed=time.time())
-onboarding_faker.unique.clear()
 
 
 @pytest.fixture(scope="session")

@@ -5,6 +5,7 @@ from .helpers import (
     log_in_as_admin,
     log_in_as_nurse,
     test_data,
+    test_data_faker,
 )
 from .models import (
     admin,
@@ -93,6 +94,7 @@ __all__ = [
     "superuser",
     "team",
     "test_data",
+    "test_data_faker",
     "unmatched_consent_responses_page",
     "users",
     "vaccines_page",

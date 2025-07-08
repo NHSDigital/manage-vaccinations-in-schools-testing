@@ -2,8 +2,10 @@ from datetime import date, datetime, timedelta
 
 from faker import Faker
 import re
+import time
 
 faker = Faker()
+faker.seed_instance(seed=time.time())
 
 
 def format_datetime_for_upload_link(now: datetime) -> str:

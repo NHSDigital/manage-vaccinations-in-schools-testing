@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 
+from faker import Faker
 import pytest
+import time
 
 from ..data import TestData
 from ..models import Vaccine
@@ -66,8 +68,15 @@ def log_in_as_nurse(nurse, organisation, log_in_page):
 
 
 @pytest.fixture
-def test_data(organisation, schools, nurse, children):
-    return TestData(organisation, schools, nurse, children)
+def test_data_faker():
+    faker = Faker(locale="en_GB")
+    faker.seed_instance(seed=time.time())
+    return faker
+
+
+@pytest.fixture
+def test_data(organisation, schools, nurse, children, test_data_faker):
+    return TestData(organisation, schools, nurse, children, test_data_faker)
 
 
 @pytest.fixture

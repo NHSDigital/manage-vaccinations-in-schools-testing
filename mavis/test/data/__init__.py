@@ -112,13 +112,14 @@ class TestData:
         schools: List[School],
         nurse: User,
         children: List[Child],
+        faker: Faker,
     ):
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
         self.children = children
 
-        self.faker = Faker(locale="en_GB")
+        self.faker = faker
 
         self.working_path.mkdir(parents=True, exist_ok=True)
 

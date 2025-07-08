@@ -2,8 +2,10 @@ from enum import StrEnum
 from typing import NamedTuple
 from datetime import date
 from faker import Faker
+import time
 
 faker = Faker("en_GB")
+faker.seed_instance(seed=time.time())
 
 
 class Programme(StrEnum):
