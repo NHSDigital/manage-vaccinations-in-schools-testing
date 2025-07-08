@@ -137,6 +137,11 @@ class ChildrenPage:
         self, child: Child, location: str
     ):
         self.search_for_a_child_name(str(child))
+
+        reload_until_element_is_visible(
+            self.page, self.page.get_by_role("link", name=str(child))
+        )
+
         self.click_record_for_child(child)
         self.click_activity_log()
         self.expect_text_in_main("Consent given")
