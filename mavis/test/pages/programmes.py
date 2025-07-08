@@ -4,7 +4,7 @@ from io import StringIO
 
 from mavis.test.data import TestData
 from mavis.test.models import ReportFormat, Programme, Child
-from mavis.test.step import step
+from mavis.test.annotations import step
 from mavis.test.wrappers import get_current_datetime
 
 

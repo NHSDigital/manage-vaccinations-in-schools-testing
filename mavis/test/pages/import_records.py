@@ -5,7 +5,7 @@ from typing import Optional
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import FileMapping, TestData
-from mavis.test.step import step
+from mavis.test.annotations import step
 from mavis.test.wrappers import (
     format_datetime_for_upload_link,
     reload_until_element_is_visible,

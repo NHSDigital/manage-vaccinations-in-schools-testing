@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
 from mavis.test.models import School, Child
-from mavis.test.step import step
+from mavis.test.annotations import step
 from mavis.test.wrappers import reload_until_element_is_visible
 
 

@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from mavis.test.step import step
+from mavis.test.annotations import step
 
 
 class StartPage:

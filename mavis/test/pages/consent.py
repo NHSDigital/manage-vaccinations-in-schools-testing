@@ -10,7 +10,7 @@ from mavis.test.models import (
     Parent,
     Child,
 )
-from mavis.test.step import step
+from mavis.test.annotations import step
 
 
 class ConsentPage:
