@@ -1,6 +1,5 @@
 import random
 
-import allure
 import pytest
 from playwright.sync_api import expect
 
@@ -40,7 +39,6 @@ def go_to_unmatched_consent_responses(log_in_as_nurse, dashboard_page):
     dashboard_page.click_unmatched_consent_responses()
 
 
-@allure.issue("MAVIS-1782")
 def test_archive(
     archive_consent_response_page,
     children,
@@ -57,7 +55,6 @@ def test_archive(
     expect(unmatched_consent_responses_page.empty_paragraph).to_be_visible()
 
 
-@allure.issue("MAVIS-1812")
 def test_match(
     children,
     children_page,
@@ -94,7 +91,6 @@ def test_match(
 patient = random.choice(pds_test_data.child_patients_without_date_of_death)
 
 
-@allure.issue("MAVIS-1812")
 @pytest.mark.parametrize(
     "children",
     [
@@ -133,7 +129,6 @@ def test_create_with_nhs_number(
     children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])
 
 
-@allure.issue("MAVIS-1781")
 def test_create_with_no_nhs_number(
     children,
     children_page,

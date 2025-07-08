@@ -1,8 +1,8 @@
-import allure
 import pytest
 
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
+from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.children
 
@@ -99,7 +99,7 @@ def test_headers_and_filter(setup_children_page, children_page, children):
     children_page.assert_n_children_found(1)
 
 
-@allure.issue("MAV-853")
+@issue("MAV-853")
 @pytest.mark.bug
 def test_details_mav_853(setup_mav_853, children_page, schools, children):
     """
