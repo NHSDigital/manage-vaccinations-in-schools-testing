@@ -7,7 +7,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
 from mavis.test.models import Programme, Parent, Child
-from mavis.test.step import step
+from mavis.test.annotations import step
 from mavis.test.wrappers import (
     generate_random_string,
     get_current_datetime,

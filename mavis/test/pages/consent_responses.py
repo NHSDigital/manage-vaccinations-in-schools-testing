@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from mavis.test.step import step
+from mavis.test.annotations import step
 from mavis.test.wrappers import reload_until_element_is_visible
 from mavis.test.models import Child
 
