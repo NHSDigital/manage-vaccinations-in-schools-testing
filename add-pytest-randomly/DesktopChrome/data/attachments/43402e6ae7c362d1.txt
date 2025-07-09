@@ -1,1 +1,0 @@
-WARNING  mavis.test.fixtures.models:models.py:145 b'{"school.0.existing_team":["must be blank"],"school.1.existing_team":["must be blank"]}'
