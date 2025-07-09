@@ -29,26 +29,26 @@ onboarding_faker.seed_instance(seed=time.time())
 onboarding_faker.unique.clear()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def admin():
     email = onboarding_faker.email()
     return User(username=email, password=email, role="admin")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def clinics() -> List[Clinic]:
     return [
         Clinic(name=onboarding_faker.company()),
     ]
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def nurse():
     email = onboarding_faker.email()
     return User(username=email, password=email, role="nurse")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def schools(base_url) -> List[School]:
     url = urllib.parse.urljoin(base_url, "api/locations")
     params = {
@@ -95,13 +95,13 @@ def children():
     return _generate_children(2)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def superuser():
     email = onboarding_faker.email()
     return User(username=email, password=email, role="superuser")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def team():
     return Team(
         key="team",
@@ -111,7 +111,7 @@ def team():
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def organisation(team) -> Organisation:
     ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     return Organisation(
@@ -119,7 +119,7 @@ def organisation(team) -> Organisation:
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def users(admin, nurse, superuser) -> dict[str, User]:
     return {
         "admin": admin,
@@ -128,7 +128,7 @@ def users(admin, nurse, superuser) -> dict[str, User]:
     }
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def onboarding(clinics, schools, team, organisation, users, programmes_enabled):
     return {
         "clinics": {team.key: [it.to_onboarding() for it in clinics]},
@@ -146,7 +146,7 @@ def _check_response_status(response):
     response.raise_for_status()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def onboard_and_delete(base_url, onboarding, organisation):
     url = urllib.parse.urljoin(base_url, "api/onboard")
     response = requests.post(url, json=onboarding)

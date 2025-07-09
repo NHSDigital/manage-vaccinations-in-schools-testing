@@ -18,7 +18,7 @@ def test_invalid(username, password, log_in_page):
     expect(log_in_page.error_message).to_be_visible()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def users(admin, nurse, superuser) -> dict[str, User]:
     return {
         "admin": admin,
