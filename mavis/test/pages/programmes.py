@@ -2,10 +2,10 @@ import pandas as pd
 from playwright.sync_api import Page, expect
 from io import StringIO
 
-from ..data import TestData
-from ..models import ReportFormat, Programme
-from ..step import step
-from ..wrappers import get_current_datetime
+from mavis.test.data import TestData
+from mavis.test.models import ReportFormat, Programme, Child
+from mavis.test.step import step
+from mavis.test.wrappers import get_current_datetime
 
 
 class ProgrammesPage:
@@ -79,8 +79,8 @@ class ProgrammesPage:
         self.continue_button.click()
 
     @step("Click on {1}")
-    def click_child(self, child_name: str):
-        self.page.get_by_role("link", name=child_name).click()
+    def click_child(self, child: Child):
+        self.page.get_by_role("link", name=str(child)).click()
 
     def navigate_to_cohort_import(self, programme: Programme):
         self.click_programme(programme)

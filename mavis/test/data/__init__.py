@@ -8,8 +8,8 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from ..models import Child, Organisation, School, User
-from ..wrappers import (
+from mavis.test.models import Child, Organisation, School, User
+from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
     get_date_of_birth_for_year_group,

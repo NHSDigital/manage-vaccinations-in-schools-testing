@@ -2,8 +2,8 @@ from datetime import date
 
 from playwright.sync_api import Page, expect
 
-from ..models import Vaccine
-from ..step import step
+from mavis.test.models import Vaccine
+from mavis.test.step import step
 
 
 class BatchExpiryDateMixin:

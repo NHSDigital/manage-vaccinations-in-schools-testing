@@ -47,7 +47,8 @@ def test_archive(
     consent_response_page,
     unmatched_consent_responses_page,
 ):
-    unmatched_consent_responses_page.click_child(*children[0].name)
+    child = children[0]
+    unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_archive()
     archive_consent_response_page.archive(notes="Some notes.")
@@ -68,7 +69,7 @@ def test_match(
     unmatched_consent_responses_page,
     import_records_page,
 ):
-    child_name = children[0].name
+    child = children[0]
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
@@ -77,19 +78,17 @@ def test_match(
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
 
-    unmatched_consent_responses_page.click_child(*child_name)
+    unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_match()
-    match_consent_response_page.match(*child_name)
+    match_consent_response_page.match(child)
 
     expect(unmatched_consent_responses_page.matched_alert).to_be_visible()
     expect(unmatched_consent_responses_page.empty_paragraph).to_be_visible()
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(
-        str(children[0]), schools[0]
-    )
+    children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])
 
 
 patient = random.choice(pds_test_data.child_patients_without_date_of_death)
@@ -120,8 +119,8 @@ def test_create_with_nhs_number(
     schools,
     unmatched_consent_responses_page,
 ):
-    child_name = children[0].name
-    unmatched_consent_responses_page.click_child(*child_name)
+    child = children[0]
+    unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_create_new_record()
     create_new_record_consent_response_page.create_new_record()
@@ -131,9 +130,7 @@ def test_create_with_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(
-        f"{child_name[1]}, {child_name[0]}", schools[0]
-    )
+    children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])
 
 
 @allure.issue("MAVIS-1781")
@@ -146,7 +143,8 @@ def test_create_with_no_nhs_number(
     schools,
     unmatched_consent_responses_page,
 ):
-    unmatched_consent_responses_page.click_child(*children[0].name)
+    child = children[0]
+    unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_create_new_record()
     create_new_record_consent_response_page.create_new_record()
@@ -156,6 +154,4 @@ def test_create_with_no_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(
-        str(children[0]), schools[0]
-    )
+    children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])

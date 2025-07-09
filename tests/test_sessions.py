@@ -94,19 +94,18 @@ def test_verify_consent_filters(setup_fixed_child, sessions_page, children):
 
 @allure.issue("MAV-1265")
 def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
-    child = str(children[0])
+    child = children[0]
     NOTE_1 = "Note 1"
     NOTE_2 = "Note 2"
 
     sessions_page.click_consent_tab()
-    sessions_page.search_for(child)
-    sessions_page.click_child(child)
+    sessions_page.search_child(child)
     sessions_page.click_session_activity_and_notes()
     sessions_page.add_note(NOTE_1)
     sessions_page.add_note(NOTE_2)
     sessions_page.click_location(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.search_for(child)
+    sessions_page.search_for(str(child))
     sessions_page.check_note_appears_in_search(child, NOTE_2)
     sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()

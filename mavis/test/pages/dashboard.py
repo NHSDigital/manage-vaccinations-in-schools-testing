@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from ..step import step
+from mavis.test.step import step
 
 
 class DashboardPage:

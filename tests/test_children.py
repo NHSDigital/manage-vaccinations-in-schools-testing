@@ -92,10 +92,10 @@ def setup_mav_853(
 
 
 def test_headers_and_filter(setup_children_page, children_page, children):
-    child_name = str(children[0])
+    child = children[0]
 
     children_page.verify_headers()
-    children_page.search_for_a_child(child_name)
+    children_page.search_for_a_child_name(str(child))
     children_page.assert_n_children_found(1)
 
 
@@ -108,10 +108,10 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     3. Expected: patient details can be seen
     Actual: crash
     """
-    child_name = str(children[0])
+    child = children[0]
 
-    children_page.search_for_a_child(child_name)
-    children_page.click_record_for_child(child_name)
+    children_page.search_for_a_child_name(str(child))
+    children_page.click_record_for_child(child)
     # Verify activity log
     children_page.click_activity_log()
     children_page.expect_text_in_main("Vaccinated with Gardasil 9")
@@ -123,12 +123,12 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
 
 @pytest.mark.bug
 def test_change_nhsno(setup_change_nhsno, children_page, children):
-    child_name = str(children[0])
+    child = children[0]
 
-    children_page.search_for_a_child(child_name)
-    children_page.click_record_for_child(child_name)
+    children_page.search_for_a_child_name(str(child))
+    children_page.click_record_for_child(child)
     children_page.click_edit_child_record()
     children_page.click_change_nhs_no()
-    children_page.fill_nhs_no_for_child(child_name, "9123456789")
+    children_page.fill_nhs_no_for_child(child, "9123456789")
     children_page.click_continue()
     children_page.expect_text_in_main("Enter a valid NHS number")

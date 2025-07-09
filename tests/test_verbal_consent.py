@@ -44,10 +44,10 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
-    child_name = str(children[0])
+    child = children[0]
 
     sessions_page.navigate_to_todays_sessions(schools[0])
-    sessions_page.navigate_to_gillick_competence(child_name, Programme.HPV)
+    sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.add_gillick_competence(
         is_competent=True, competence_details="Gillick competent"
@@ -60,10 +60,10 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
 
 @allure.issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
-    child_name = str(children[0])
+    child = children[0]
 
     sessions_page.navigate_to_todays_sessions(schools[0])
-    sessions_page.navigate_to_gillick_competence(child_name, Programme.HPV)
+    sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.answer_gillick_competence_questions(is_competent=True)
     sessions_page.fill_assessment_notes_with_string_of_length(1001)
@@ -85,31 +85,31 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 def test_invalid_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
-    child_name = str(children[0])
+    child = children[0]
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_verbal_no_response(children[0].parents[0])
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    consent_page.parent_verbal_no_response(child.parents[0])
     sessions_page.select_no_response()
 
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_verbal_refuse_consent(children[0].parents[1])
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    consent_page.parent_verbal_refuse_consent(child.parents[1])
 
-    sessions_page.click_child(child_name)
+    sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.invalidate_parent_refusal(children[0].parents[1])
+    sessions_page.invalidate_parent_refusal(child.parents[1])
     sessions_page.click_session_activity_and_notes()
 
     sessions_page.expect_main_to_contain_text(
-        f"Consent from {children[0].parents[1].full_name} invalidated"
+        f"Consent from {child.parents[1].full_name} invalidated"
     )
     sessions_page.expect_main_to_contain_text(
-        f"Consent refused by {children[0].parents[1].name_and_relationship}"
+        f"Consent refused by {child.parents[1].name_and_relationship}"
     )
     sessions_page.expect_main_to_contain_text(
-        f"Consent not_provided by {children[0].parents[0].name_and_relationship}"
+        f"Consent not_provided by {child.parents[0].name_and_relationship}"
     )
 
 
@@ -118,35 +118,35 @@ def test_invalid_consent(
 def test_parent_provides_consent_twice(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
-    child_name = str(children[0])
+    child = children[0]
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
 
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_written_positive(children[0].parents[0])
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    consent_page.parent_written_positive(child.parents[0])
     sessions_page.select_consent_given()
 
-    sessions_page.navigate_to_update_triage_outcome(child_name, Programme.HPV)
+    sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     consent_page.update_triage_outcome_positive()
 
     sessions_page.click_get_verbal_consent()
-    consent_page.parent_verbal_refuse_consent(children[0].parents[0])
+    consent_page.parent_verbal_refuse_consent(child.parents[0])
     sessions_page.select_consent_refused()
 
-    sessions_page.click_child(child_name)
+    sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_main_to_contain_text(
-        f"{children[0].parents[0].relationship} refused to give consent."
+        f"{child.parents[0].relationship} refused to give consent."
     )
     sessions_page.click_session_activity_and_notes()
     sessions_page.expect_main_to_contain_text(
-        f"Consent refused by {children[0].parents[0].name_and_relationship}"
+        f"Consent refused by {child.parents[0].name_and_relationship}"
     )
     sessions_page.expect_main_to_contain_text("Triaged decision: Safe to vaccinate")
     sessions_page.expect_main_to_contain_text(
-        f"Consent given by {children[0].parents[0].name_and_relationship}"
+        f"Consent given by {child.parents[0].name_and_relationship}"
     )
 
 
@@ -155,22 +155,20 @@ def test_parent_provides_consent_twice(
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
-    child_name = str(children[0])
+    child = children[0]
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_verbal_positive(
-        parent=children[0].parents[0], change_phone=False
-    )
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.select_consent_given()
 
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_verbal_refuse_consent(children[0].parents[1])
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    consent_page.parent_verbal_refuse_consent(child.parents[1])
     sessions_page.select_conflicting_consent()
 
-    sessions_page.click_child(child_name)
+    sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_main_to_contain_text("Conflicting consent")
     sessions_page.expect_main_to_contain_text(
@@ -183,16 +181,16 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
     sessions_page.click_get_verbal_consent()
     consent_page.child_consent_verbal_positive()
-    sessions_page.expect_main_to_contain_text(f"Consent recorded for {child_name}")
+    sessions_page.expect_main_to_contain_text(f"Consent recorded for {str(child)}")
     sessions_page.select_consent_given()
-    sessions_page.click_child(child_name)
+    sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
     sessions_page.expect_main_to_contain_text(
-        f"NURSE, Nurse decided that {child_name} is safe to vaccinate."
+        f"NURSE, Nurse decided that {str(child)} is safe to vaccinate."
     )
     sessions_page.expect_main_to_contain_text("Consent given")
     sessions_page.click_session_activity_and_notes()
     sessions_page.expect_main_to_contain_text(
-        f"Consent given by {child_name} (Child (Gillick competent))"
+        f"Consent given by {str(child)} (Child (Gillick competent))"
     )

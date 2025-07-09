@@ -163,7 +163,7 @@ def test_cohorts_readd_to_cohort(
         Actual Result:
         Server error page and user cannot bring the child back into the cohort
     """
-    child_name = str(children[0])
+    child = children[0]
 
     input_file_path, _ = import_records_page.upload_and_verify_output(
         CohortsFileMapping.FIXED_CHILD_YEAR_8
@@ -171,7 +171,7 @@ def test_cohorts_readd_to_cohort(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.remove_child_from_cohort(child_name=child_name)
+    children_page.remove_child_from_cohort(child)
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
@@ -197,7 +197,7 @@ def test_rav_triage_consent_given(
     consent_page,
     children,
 ):
-    child_name = str(children[0])
+    child = children[0]
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.navigate_to_class_list_import()
 
@@ -207,8 +207,8 @@ def test_rav_triage_consent_given(
 
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
-    consent_page.parent_phone_positive(children[0].parents[0])
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    consent_page.parent_phone_positive(child.parents[0])
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
@@ -216,7 +216,7 @@ def test_rav_triage_consent_given(
     sessions_page.navigate_to_scheduled_sessions(schools[0])
 
     sessions_page.click_register_tab()
-    sessions_page.navigate_to_update_triage_outcome(child_name, Programme.HPV)
+    sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     sessions_page.select_yes_safe_to_vaccinate()
     sessions_page.click_save_triage()
     sessions_page.verify_triage_updated_for_child()
@@ -232,7 +232,7 @@ def test_rav_triage_consent_refused(
     consent_page,
     children,
 ):
-    child_name = str(children[0])
+    child = children[0]
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.navigate_to_class_list_import()
 
@@ -241,16 +241,16 @@ def test_rav_triage_consent_refused(
     dashboard_page.click_sessions()
     sessions_page.navigate_to_scheduled_sessions(schools[0])
     sessions_page.click_consent_tab()
-    sessions_page.navigate_to_consent_response(child_name, Programme.HPV)
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
-    consent_page.parent_paper_refuse_consent(children[0].parents[0])
-    consent_page.expect_text_in_main(child_name)
+    consent_page.parent_paper_refuse_consent(child.parents[0])
+    consent_page.expect_text_in_main(str(child))
 
     sessions_page.select_consent_refused()
-    sessions_page.click_child(child_name)
+    sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()
     sessions_page.expect_main_to_contain_text(
-        f"Consent refused by {children[0].parents[0].name_and_relationship}"
+        f"Consent refused by {child.parents[0].name_and_relationship}"
     )
 
 
@@ -258,9 +258,11 @@ def test_rav_triage_consent_refused(
 @pytest.mark.rav
 @pytest.mark.bug
 def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page, children):
+    child = children[0]
+
     programmes_page.click_programme(Programme.HPV)
     programmes_page.click_vaccinations()
-    programmes_page.click_child(str(children[0]))
+    programmes_page.click_child(child)
     programmes_page.click_edit_vaccination_record()
     programmes_page.click_change_outcome()
     programmes_page.click_they_refused_it()
@@ -281,19 +283,17 @@ def test_rav_verify_excel_mav_854(
     consent_page,
     children,
 ):
-    child_name = str(children[0])
+    child = children[0]
     batch_name = setup_mav_854
 
-    children_page.search_for_a_child(child_name)
-    children_page.click_record_for_child(child_name)
+    children_page.search_for_a_child_name(str(child))
+    children_page.click_record_for_child(child)
     sessions_page.click_session("Community clinics", Programme.HPV)
     sessions_page.click_get_verbal_consent()
-    consent_page.parent_verbal_positive(
-        parent=children[0].parents[0], change_phone=False
-    )
-    sessions_page.register_child_as_attending(child_name=child_name)
+    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
+    sessions_page.register_child_as_attending(child)
     sessions_page.record_vaccs_for_child(
-        child=children[0],
+        child=child,
         programme=Programme.HPV,
         batch_name=batch_name,
         at_school=False,
