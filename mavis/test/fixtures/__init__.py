@@ -4,6 +4,7 @@ from .helpers import (
     get_online_consent_url,
     log_in_as_admin,
     log_in_as_nurse,
+    set_feature_flags,
     test_data,
 )
 from .models import (
@@ -32,6 +33,7 @@ from .pages import (
     dashboard_page,
     download_school_moves_page,
     edit_batch_page,
+    flipper_page,
     import_records_page,
     log_in_page,
     match_consent_response_page,
@@ -72,6 +74,7 @@ __all__ = [
     "date_of_birth_for_year",
     "download_school_moves_page",
     "edit_batch_page",
+    "flipper_page",
     "get_online_consent_url",
     "import_records_page",
     "log_in_as_admin",
@@ -89,6 +92,7 @@ __all__ = [
     "school_moves_page",
     "schools",
     "sessions_page",
+    "set_feature_flags",
     "start_page",
     "superuser",
     "team",

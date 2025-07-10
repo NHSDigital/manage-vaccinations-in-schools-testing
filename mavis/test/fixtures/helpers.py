@@ -1,10 +1,26 @@
 from datetime import date, timedelta
 
 import pytest
+import os
 
 from mavis.test.data import TestData
 from mavis.test.models import Vaccine
 from mavis.test.wrappers import get_date_of_birth_for_year_group
+
+
+@pytest.fixture
+def set_feature_flags(flipper_page):
+    set_check_feature_flags = os.getenv("SET_FEATURE_FLAGS", "false").lower() == "true"
+
+    if set_check_feature_flags:
+        flipper_page.navigate()
+        flipper_page.set_feature_flags()
+
+    yield
+
+    if set_check_feature_flags:
+        flipper_page.navigate()
+        flipper_page.set_feature_flags(check_only=True)
 
 
 @pytest.fixture
@@ -22,6 +38,7 @@ def add_vaccine_batch(add_batch_page, dashboard_page, vaccines_page):
 
 @pytest.fixture
 def get_online_consent_url(
+    set_feature_flags,
     nurse,
     organisation,
     schools,
@@ -50,7 +67,7 @@ def get_online_consent_url(
 
 
 @pytest.fixture
-def log_in_as_admin(admin, organisation, log_in_page):
+def log_in_as_admin(set_feature_flags, admin, organisation, log_in_page):
     log_in_page.navigate()
     log_in_page.log_in_and_select_organisation(admin, organisation)
     yield
@@ -58,7 +75,7 @@ def log_in_as_admin(admin, organisation, log_in_page):
 
 
 @pytest.fixture
-def log_in_as_nurse(nurse, organisation, log_in_page):
+def log_in_as_nurse(set_feature_flags, nurse, organisation, log_in_page):
     log_in_page.navigate()
     log_in_page.log_in_and_select_organisation(nurse, organisation)
     yield
