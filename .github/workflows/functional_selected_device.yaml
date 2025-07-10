@@ -15,6 +15,14 @@ on:
         description: 'Environment to run tests on (qa, test, training)'
         required: false
         default: 'qa'
+      set_feature_flags:
+        description: 'Enable feature flags to be changed in the flipper page (true/false)'
+        required: false
+        default: 'false'
+      additional_feature_flags:
+        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        required: false
+        default: ''
   pull_request:
 
 jobs:
@@ -44,6 +52,8 @@ jobs:
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
             echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
             echo "programmes=HPV,MENACWY,TD_IPV,FLU" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=false" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=" >> $GITHUB_OUTPUT
             echo "deploy_report=false" >> $GITHUB_OUTPUT
           else
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
@@ -53,6 +63,8 @@ jobs:
             echo "environment=$url" >> $GITHUB_OUTPUT
 
             echo "programmes=${{ github.event.inputs.programmes }}" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
           fi
 
@@ -72,6 +84,8 @@ jobs:
         env:
           BASE_URL: ${{ steps.set-variables.outputs.environment }}
           PROGRAMMES_ENABLED: ${{ steps.set-variables.outputs.programmes }}
+          SET_FEATURE_FLAGS: ${{ steps.set-variables.outputs.set_feature_flags }}
+          ADDITIONAL_FEATURE_FLAGS: ${{ steps.set-variables.outputs.additional_feature_flags }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
 
       - name: Generate Allure report
