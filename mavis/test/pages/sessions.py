@@ -106,7 +106,7 @@ class SessionsPage:
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
         self.get_verbal_consent_button = self.page.get_by_role(
-            "button", name="Get verbal consent"
+            "button", name="Record a new consent response"
         )
         self.update_results_button = self.page.get_by_role(
             "button", name="Update results"
@@ -343,7 +343,7 @@ class SessionsPage:
     def fill_notes(self, notes: str):
         self.notes_textbox.fill(notes)
 
-    @step("Click on Get verbal consent")
+    @step("Click on Record a new consent response")
     def click_get_verbal_consent(self):
         self.get_verbal_consent_button.click()
 
