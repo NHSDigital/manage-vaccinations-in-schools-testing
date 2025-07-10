@@ -59,7 +59,7 @@ def step(title: str, attach_screenshot: bool = True):
 
 
 def issue(ticket_number: str):
-    base_url = os.environ.get("JIRA_URL", "")
+    base_url = os.environ.get("JIRA_URL", "https://nhsd-jira.digital.nhs.uk/browse/")
     if base_url:
         full_url = f"{base_url.rstrip('/')}/{ticket_number}"
         return allure.issue(url=full_url, name=ticket_number)

@@ -71,7 +71,6 @@ jobs:
         run: uv run pytest --device "${{ steps.set-variables.outputs.device }}"
         env:
           BASE_URL: ${{ steps.set-variables.outputs.environment }}
-          JIRA_URL: ${{ vars.JIRA_URL }}
           PROGRAMMES_ENABLED: ${{ steps.set-variables.outputs.programmes }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
 
