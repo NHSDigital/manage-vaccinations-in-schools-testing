@@ -1,6 +1,7 @@
 from .children import ChildrenPage
 from .consent import ConsentPage
 from .dashboard import DashboardPage
+from .flipper import FlipperPage
 from .import_records import ImportRecordsPage
 from .log_in import LogInPage
 from .programmes import ProgrammesPage
@@ -28,6 +29,7 @@ __all__ = [
     "DashboardPage",
     "DownloadSchoolMovesPage",
     "EditBatchPage",
+    "FlipperPage",
     "ImportRecordsPage",
     "LogInPage",
     "MatchConsentResponsePage",

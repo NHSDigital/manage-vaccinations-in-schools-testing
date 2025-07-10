@@ -11,6 +11,7 @@ from mavis.test.pages import (
     DashboardPage,
     DownloadSchoolMovesPage,
     EditBatchPage,
+    FlipperPage,
     ImportRecordsPage,
     LogInPage,
     MatchConsentResponsePage,
@@ -72,6 +73,11 @@ def download_school_moves_page(page):
 @pytest.fixture
 def edit_batch_page(page):
     return EditBatchPage(page)
+
+
+@pytest.fixture
+def flipper_page(page):
+    return FlipperPage(page)
 
 
 @pytest.fixture
