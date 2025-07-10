@@ -1,12 +1,13 @@
 from functools import wraps
 
+import os
 import allure
 from io import BytesIO
 from PIL import Image
 from PIL.Image import Palette
 
 
-def reduce_colors(image_bytes: bytes) -> bytes:
+def _reduce_colors(image_bytes: bytes) -> bytes:
     with BytesIO(image_bytes) as input_io:
         img = Image.open(input_io)
         img = img.convert("P", palette=Palette.ADAPTIVE, colors=32)
@@ -25,7 +26,7 @@ def step(title: str, attach_screenshot: bool = True):
                 except Exception:
                     if attach_screenshot:
                         screenshot_bytes = self.page.screenshot(full_page=True)
-                        reduced_bytes = reduce_colors(screenshot_bytes)
+                        reduced_bytes = _reduce_colors(screenshot_bytes)
                         allure.attach(
                             reduced_bytes,
                             name="Screenshot on failure",
@@ -43,7 +44,7 @@ def step(title: str, attach_screenshot: bool = True):
 
                 if attach_screenshot:
                     screenshot_bytes = self.page.screenshot(full_page=True)
-                    reduced_bytes = reduce_colors(screenshot_bytes)
+                    reduced_bytes = _reduce_colors(screenshot_bytes)
                     allure.attach(
                         reduced_bytes,
                         name="Screenshot",
@@ -55,3 +56,11 @@ def step(title: str, attach_screenshot: bool = True):
         return allure.step(title)(wrapper)
 
     return decorator
+
+
+def issue(ticket_number: str):
+    base_url = os.environ.get("JIRA_URL", "https://nhsd-jira.digital.nhs.uk/browse/")
+    if base_url:
+        full_url = f"{base_url.rstrip('/')}/{ticket_number}"
+        return allure.issue(url=full_url, name=ticket_number)
+    return allure.issue(ticket_number)

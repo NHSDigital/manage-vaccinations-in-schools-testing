@@ -1,8 +1,8 @@
 import pytest
-import allure
 
 from mavis.test.models import ConsentRefusalReason, Programme
 from mavis.test.data import CohortsFileMapping
+from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.consent
 
@@ -92,7 +92,7 @@ NASAL = "Nasal spray"
 BOTH = "Nasal spray (or injection)"
 
 
-@allure.issue("MAVIS-1782")
+@issue("MAV-1234")
 @pytest.mark.parametrize(
     "consents",
     (

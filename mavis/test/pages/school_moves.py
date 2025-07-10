@@ -4,7 +4,7 @@ import pandas as pd
 from pandas import DataFrame
 from io import StringIO
 
-from mavis.test.step import step
+from mavis.test.annotations import step
 
 
 def get_child_full_name(first_name: str, last_name: str) -> str:

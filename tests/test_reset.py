@@ -1,9 +1,9 @@
-import allure
 import pytest
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import Programme, Vaccine
 from mavis.test.wrappers import generate_random_string
+from mavis.test.annotations import issue
 
 
 @pytest.fixture
@@ -31,8 +31,8 @@ def setup_mav_965(
     return gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name
 
 
-@allure.issue("MAV-965")
-@allure.issue("MAV-955")
+@issue("MAV-965")
+@issue("MAV-955")
 @pytest.mark.rav
 @pytest.mark.bug
 def test_programmes_rav_pre_screening_questions(
