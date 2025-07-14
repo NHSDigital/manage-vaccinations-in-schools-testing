@@ -461,7 +461,7 @@ class ConsentPage:
     ):
         def programme_display(programme, injection) -> str:
             if programme == Programme.FLU:
-                return "flu injection" if injection else "nasal flu"
+                return "injected flu" if injection else "nasal spray flu"
             else:
                 return str(programme)
 
