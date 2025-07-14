@@ -145,7 +145,7 @@ class ChildrenPage:
         self.click_record_for_child(child)
         self.click_activity_log()
         self.expect_text_in_main("Consent given")
-        self.expect_text_in_main(f"Invited to the session at {location}")
+        self.expect_text_in_main(f"Added to the session at {location}")
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
