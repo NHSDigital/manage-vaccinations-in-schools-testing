@@ -99,12 +99,12 @@ class HealthQuestion(StrEnum):
 
 
 class PreScreeningCheck(StrEnum):
-    KNOW_VACCINATION = "know what the vaccination is for, and are happy to have it"
-    NOT_ACUTELY_UNWELL = "are not acutely unwell"
-    NOT_ALREADY_HAD = "have not already had this vaccination"
-    NOT_PREGNANT = "are not pregnant"
-    NO_RELEVANT_ALLERGIES = "have no allergies which would prevent vaccination"
-    NO_RELEVANT_MEDICATION = "are not taking any medication which prevents vaccination"
+    KNOW_VACCINATION = "knows what the vaccination is for, and is happy to have it"
+    NOT_ACUTELY_UNWELL = "is not acutely unwell"
+    NOT_ALREADY_HAD = "has not already had this vaccination"
+    NOT_PREGNANT = "is not pregnant"
+    NO_RELEVANT_ALLERGIES = "has no allergies which would prevent vaccination"
+    NO_RELEVANT_MEDICATION = "is not taking any medication which prevents vaccination"
 
 
 class ConsentRefusalReason(StrEnum):
