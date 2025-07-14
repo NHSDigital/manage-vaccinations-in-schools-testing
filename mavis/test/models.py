@@ -1,6 +1,7 @@
 from datetime import date
 from enum import StrEnum
 from typing import NamedTuple
+import os
 
 from faker import Faker
 
@@ -266,8 +267,13 @@ class Child(NamedTuple):
 
 class ImmsEndpoints(StrEnum):
     AUTH = "/oauth2/token"
-    CREATE = "/immunisation-fhir-api/Immunization"
-    READ = "/immunisation-fhir-api/Immunization/"
-    SEARCH = "/immunisation-fhir-api/Immunization/_search"
-    UPDATE = "/immunisation-fhir-api/Immunization/"
-    DELETE = "/immunisation-fhir-api/Immunization/"
+    CREATE = "/immunisation-fhir-api/FHIR/R4/Immunization/"
+    READ = "/immunisation-fhir-api/FHIR/R4/Immunization/"
+    SEARCH = "/immunisation-fhir-api/FHIR/R4/Immunization/_search"
+    UPDATE = "/immunisation-fhir-api/FHIR/R4/Immunization/"
+    DELETE = "/immunisation-fhir-api/FHIR/R4/Immunization/"
+
+    @property
+    def to_url(self) -> str:
+        return os.getenv("IMMS_BASE_URL", "PROVIDEURL") + self.value
+

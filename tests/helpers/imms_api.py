@@ -1,6 +1,4 @@
 import json
-import urllib
-import urllib.parse
 import uuid
 
 import requests
@@ -10,7 +8,7 @@ from mavis.test.models import ImmsEndpoints
 
 class imms_api_helper:
     def __init__(self, token):
-        self.header = {
+        self.headers = {
             "accept": "application/fhir+json",
             "content-type": "application/x-www-form-urlencoded",
             "x-correlation-id": str(uuid.uuid4()),
@@ -18,20 +16,16 @@ class imms_api_helper:
             "Authorization": f"Bearer {token}",
         }
 
-    def _make_url(self, endpoint: ImmsEndpoints):
-        return urllib.parse.urljoin()
-
     def _search_get_with_params(self, params: dict):
         return requests.get(
-            endpoint=ImmsEndpoints.SEARCH, header=self.header(), param=params
+            url=ImmsEndpoints.SEARCH.to_url, headers=self.headers, params=params
         )
 
     def _search_post_with_payload(self, payload: dict):
         return requests.post(
-            endpoint=ImmsEndpoints.SEARCH,
-            header=self.header(),
-            payload=payload,
-            param=None,
+            url=ImmsEndpoints.SEARCH.to_url,
+            headers=self.headers,
+            data=payload,
         )
 
     def search_with_both_methods(self, params: dict):
