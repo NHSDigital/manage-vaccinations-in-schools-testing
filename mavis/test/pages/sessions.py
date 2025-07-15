@@ -611,9 +611,12 @@ class SessionsPage:
         self.click_scheduled()
         self.click_location(location)
 
-    def navigate_to_class_list_import(self):
+    def navigate_to_class_list_import(self, *year_groups: int):
+        if not year_groups:
+            year_groups = (8, 9, 10, 11)
+
         self.click_import_class_lists()
-        self.select_year_groups(8, 9, 10, 11)
+        self.select_year_groups(*year_groups)
 
     def schedule_a_valid_session(
         self, location: str, programmes_list: list[str], for_today: bool = False
@@ -670,7 +673,12 @@ class SessionsPage:
 
     def select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
-            self.page.get_by_role("checkbox", name=f"Year {year_group}").check()
+            if year_group == 0:
+                self.page.get_by_role("checkbox", name="Reception").check()
+            else:
+                self.page.get_by_role(
+                    "checkbox", name=f"Year {year_group}", exact=True
+                ).check()
         self.click_continue_button()
 
     def register_child_as_attending(self, child: Child):
@@ -702,6 +710,7 @@ class SessionsPage:
         at_school: bool = True,
         notes: str = "",
     ):
+        self.page.pause()
         self.click_record_vaccinations()
         self.search_child(child)
         self.click_programme_tab(programme)
@@ -738,6 +747,7 @@ class SessionsPage:
 
     def verify_consent_filters(self, children):
         child = children[0]
+
         self.review_no_consent_response_link.click()
         self.page.get_by_role("link", name=str(child)).click()
         self.click_get_verbal_consent()
