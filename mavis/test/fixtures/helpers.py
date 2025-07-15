@@ -48,11 +48,12 @@ def get_online_consent_url(
     programmes_enabled,
 ):
     def wrapper(*programmes):
+        school = schools[programmes[0].group][0]
         try:
             log_in_page.navigate()
             log_in_page.log_in_and_select_organisation(nurse, organisation)
             dashboard_page.click_sessions()
-            sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
+            sessions_page.schedule_a_valid_session(school, programmes_enabled)
             url = sessions_page.get_online_consent_url(*programmes)
             log_in_page.log_out()
             yield url
@@ -60,7 +61,7 @@ def get_online_consent_url(
             log_in_page.navigate()
             log_in_page.log_in_and_select_organisation(nurse, organisation)
             dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(schools[0])
+            sessions_page.delete_all_sessions(school)
             log_in_page.log_out()
 
     return wrapper

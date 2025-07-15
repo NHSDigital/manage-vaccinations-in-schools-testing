@@ -17,14 +17,15 @@ def setup_children_session(
     programmes_enabled,
 ):
     def _setup(class_list_file):
+        school = schools[Programme.HPV][0]
         try:
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(
-                schools[0], programmes_enabled, for_today=True
+                school, programmes_enabled, for_today=True
             )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_location(schools[0])
+            sessions_page.click_location(school)
             sessions_page.navigate_to_class_list_import()
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
@@ -33,7 +34,7 @@ def setup_children_session(
         finally:
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(schools[0])
+            sessions_page.delete_all_sessions(school)
 
     return _setup
 
@@ -58,16 +59,17 @@ def setup_mav_853(
     sessions_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
+            school, programmes_enabled, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
         )
-        sessions_page.click_location(schools[0])
+        sessions_page.click_location(school)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
@@ -88,7 +90,7 @@ def setup_mav_853(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 def test_headers_and_filter(setup_children_page, children_page, children):
@@ -109,6 +111,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     Actual: crash
     """
     child = children[0]
+    school = schools[Programme.HPV][0]
 
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
@@ -117,7 +120,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     children_page.expect_text_in_main("Vaccinated with Gardasil 9")
     # Verify vaccination record
     children_page.click_child_record()
-    children_page.click_vaccination_details(schools[0])
+    children_page.click_vaccination_details(school)
     children_page.expect_text_in_main("OutcomeVaccinated")
 
 

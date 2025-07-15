@@ -24,10 +24,11 @@ def give_online_consent(
     schools,
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
 
     page.goto(online_consent_url)
     start_page.start()
-    consent_page.fill_details(child, child.parents[0], schools)
+    consent_page.fill_details(child, child.parents[0], school)
     consent_page.agree_to_hpv_vaccination()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(4, health_question=False)
@@ -67,6 +68,8 @@ def test_match(
     import_records_page,
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
+
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
@@ -85,7 +88,7 @@ def test_match(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])
+    children_page.verify_activity_log_for_created_or_matched_child(child, school)
 
 
 patient = random.choice(pds_test_data.child_patients_without_date_of_death)
@@ -116,6 +119,8 @@ def test_create_with_nhs_number(
     unmatched_consent_responses_page,
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
+
     unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_create_new_record()
@@ -126,7 +131,7 @@ def test_create_with_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])
+    children_page.verify_activity_log_for_created_or_matched_child(child, school)
 
 
 def test_create_with_no_nhs_number(
@@ -139,6 +144,7 @@ def test_create_with_no_nhs_number(
     unmatched_consent_responses_page,
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
     unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_create_new_record()
@@ -149,4 +155,4 @@ def test_create_with_no_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(child, schools[0])
+    children_page.verify_activity_log_for_created_or_matched_child(child, school)

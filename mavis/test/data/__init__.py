@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, School, User
+from mavis.test.models import Child, Organisation, School, User, Programme
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -109,7 +109,7 @@ class TestData:
     def __init__(
         self,
         organisation: Organisation,
-        schools: List[School],
+        schools: dict[str, list[School]],
         nurse: User,
         children: List[Child],
     ):
@@ -130,6 +130,7 @@ class TestData:
         template_path: Path,
         file_name_prefix: str,
         session_id: Optional[str] = None,
+        programme_group: str = Programme.HPV.group,
     ) -> Path:
         static_replacements = {
             "<<VACCS_DATE>>": get_current_datetime()[:8],
@@ -142,7 +143,8 @@ class TestData:
             static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
 
         if self.schools:
-            for index, school in enumerate(self.schools):
+            schools = self.schools[programme_group]
+            for index, school in enumerate(schools):
                 static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
                 static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
@@ -247,11 +249,13 @@ class TestData:
         self,
         file_mapping: FileMapping,
         session_id: Optional[str] = None,
+        programme_group: str = Programme.HPV.group,
     ) -> tuple[Path, Path]:
         _input_file_path = self.create_file_from_template(
             template_path=file_mapping.input_template_path,
             file_name_prefix=str(file_mapping),
             session_id=session_id,
+            programme_group=programme_group,
         )
 
         _output_file_path = file_mapping.output_path
