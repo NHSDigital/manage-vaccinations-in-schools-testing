@@ -93,9 +93,7 @@ def setup_mav_854(
             school, programmes_enabled, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(
-            ClassFileMapping.FIXED_CHILD_YEAR_9
-        )
+        import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
         sessions_page.click_location(school)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -169,7 +167,7 @@ def test_cohorts_readd_to_cohort(
         Actual Result:
         Server error page and user cannot bring the child back into the cohort
     """
-    child = children[0]
+    child = children[Programme.HPV][0]
 
     input_file_path, _ = import_records_page.upload_and_verify_output(
         CohortsFileMapping.FIXED_CHILD_YEAR_8
@@ -203,13 +201,13 @@ def test_rav_triage_consent_given(
     consent_page,
     children,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.navigate_to_class_list_import()
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
@@ -240,13 +238,13 @@ def test_rav_triage_consent_refused(
     consent_page,
     children,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.navigate_to_class_list_import()
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.navigate_to_scheduled_sessions(school)
@@ -267,7 +265,7 @@ def test_rav_triage_consent_refused(
 @pytest.mark.rav
 @pytest.mark.bug
 def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
 
     programmes_page.click_programme(Programme.HPV)
     programmes_page.click_vaccinations()
@@ -292,7 +290,7 @@ def test_rav_verify_excel_mav_854(
     consent_page,
     children,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     batch_name = setup_mav_854
 

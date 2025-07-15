@@ -20,23 +20,30 @@ def start_consent(url, page, start_page):
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    url, log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    url,
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    children,
 ):
     school = schools[Programme.FLU][0]
+    child = children[Programme.FLU][0]
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
     sessions_page.click_location(school)
-    sessions_page.navigate_to_class_list_import()
+    sessions_page.navigate_to_class_list_import(child.year_group)
     import_records_page.upload_and_verify_output(
-        CohortsFileMapping.FIXED_CHILD_YEAR_9, programme_group=Programme.FLU.group
+        CohortsFileMapping.FIXED_CHILD, programme_group=Programme.FLU.group
     )
     yield url
 
 
 def test_refused(start_consent, consent_page, schools, children):
-    child = children[0]
+    child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
     consent_page.fill_details(child, child.parents[0], schools)
@@ -63,7 +70,7 @@ def test_given(
     health_question,
     children,
 ):
-    child = children[0]
+    child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
     consent_page.fill_details(child, child.parents[0], schools, False)
@@ -118,7 +125,7 @@ def test_correct_method_shown(
     start_page,
     sessions_page,
 ):
-    child = children[0]
+    child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
     url = setup_session_with_file_upload
     number_of_health_questions = {

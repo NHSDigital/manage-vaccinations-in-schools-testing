@@ -253,7 +253,7 @@ def test_vaccs_historic_negative_file_upload(setup_vaccs, import_records_page):
 def test_vaccs_historic_no_urn_mav_855(
     setup_vaccs, schools, dashboard_page, import_records_page, children_page, children
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     import_records_page.upload_and_verify_output(VaccsFileMapping.MAV_855)

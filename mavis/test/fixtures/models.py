@@ -81,7 +81,7 @@ def schools(base_url) -> dict[str, list[School]]:
 
 @pytest.fixture
 def children():
-    def _generate_children(n: int) -> list[Child]:
+    def _generate_children(n: int, year_group: int) -> list[Child]:
         return [
             Child(
                 first_name=onboarding_faker.first_name(),
@@ -95,13 +95,19 @@ def children():
                     onboarding_faker.city(),
                     onboarding_faker.postcode(),
                 ),
-                date_of_birth=get_date_of_birth_for_year_group(9),
+                date_of_birth=get_date_of_birth_for_year_group(year_group),
+                year_group=year_group,
                 parents=(Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
             )
             for _ in range(n)
         ]
 
-    return _generate_children(2)
+    return {
+        programme.group: _generate_children(
+            2, int(random.choice(programme.year_groups))
+        )
+        for programme in Programme
+    }
 
 
 @pytest.fixture(scope="session")
