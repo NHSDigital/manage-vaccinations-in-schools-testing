@@ -45,7 +45,7 @@ def test_refused(start_consent, consent_page, schools, children):
     )
 
 
-@pytest.mark.parametrize("injection", (False, False), ids=lambda v: f"injection: {v}")
+@pytest.mark.parametrize("injection", (False, True), ids=lambda v: f"injection: {v}")
 @pytest.mark.parametrize(
     "health_question", (False, True), ids=lambda v: f"health_question: {v}"
 )
@@ -61,6 +61,9 @@ def test_given(
 
     consent_page.fill_details(child, child.parents[0], schools, False)
     consent_page.agree_to_flu_vaccination(injection=injection)
+    # If consenting to nasal spray, a question is asked about injection as an alternative
+    if not injection:
+        consent_page.answer_yes()
     consent_page.fill_address_details(*child.address)
 
     consent_page.page.pause()
@@ -70,12 +73,8 @@ def test_given(
         if health_question:
             consent_page.answer_yes()
         consent_page.answer_health_questions(
-            11 if health_question else 10, health_question=health_question
+            10 if health_question else 9, health_question=health_question
         )
-
-    # If consenting to nasal spray, a question is asked about injection as an alternative
-    if not injection:
-        consent_page.answer_yes()
 
     consent_page.click_confirm()
 
@@ -121,14 +120,14 @@ def test_correct_method_shown(
 
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.agree_to_flu_vaccination(injection=(consents[0] == INJECTION))
-    consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(
-        5 if (consents[0] == INJECTION) else 10, health_question=False
-    )
     if consents[0] == BOTH:
         consent_page.answer_yes()
     elif consents[0] == NASAL:
         consent_page.answer_no()
+    consent_page.fill_address_details(*child.address)
+    consent_page.answer_health_questions(
+        5 if (consents[0] == INJECTION) else 9, health_question=False
+    )
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
         child,
@@ -142,14 +141,14 @@ def test_correct_method_shown(
 
     consent_page.fill_details(child, child.parents[1], schools)
     consent_page.agree_to_flu_vaccination(injection=(consents[1] == INJECTION))
-    consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(
-        5 if (consents[1] == INJECTION) else 10, health_question=False
-    )
     if consents[1] == BOTH:
         consent_page.answer_yes()
     elif consents[1] == NASAL:
         consent_page.answer_no()
+    consent_page.fill_address_details(*child.address)
+    consent_page.answer_health_questions(
+        5 if (consents[1] == INJECTION) else 9, health_question=False
+    )
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
         child,
