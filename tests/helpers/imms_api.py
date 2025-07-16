@@ -1,9 +1,8 @@
-import json
 import uuid
 
 import requests
 
-from mavis.test.models import ImmsEndpoints
+from mavis.test.models import ImmsEndpoints, Child
 
 
 class imms_api_helper:
@@ -16,23 +15,40 @@ class imms_api_helper:
             "Authorization": f"Bearer {token}",
         }
 
-    def _search_get_with_params(self, params: dict):
-        return requests.get(
-            url=ImmsEndpoints.SEARCH.to_url, headers=self.headers, params=params
+    def check_hpv_record_in_imms_api(self, child: Child):
+        HPV_VACCINE_CODE = "33493111000001108"
+
+        _params = {
+            "_include": "Immunization:patient",
+            "-immunization.target": "COVID19,FLU,RSV,HPV",
+            "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
+        }
+
+        response = requests.get(
+            url=ImmsEndpoints.READ.to_url, headers=self.headers, params=_params
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        response_nhs_number = (
+            data.get("entry", [{}])[0]
+            .get("resource", {})
+            .get("patient", {})
+            .get("identifier", {})
+            .get("value")
         )
 
-    def _search_post_with_payload(self, payload: dict):
-        return requests.post(
-            url=ImmsEndpoints.SEARCH.to_url,
-            headers=self.headers,
-            data=payload,
+        response_vaccine_code = (
+            data.get("entry", [{}])[0]
+            .get("resource", {})
+            .get("vaccineCode", {})
+            .get("coding", [{}])[0]
+            .get("code")
         )
 
-    def search_with_both_methods(self, params: dict):
-        _resp1 = self._search_get_with_params(params=params)
-        _resp2 = self._search_post_with_payload(payload=params)
-        _json1 = json.loads(_resp1.text)
-        _json2 = json.loads(_resp2.text)
-        assert _json1 == _json2, (
-            f"Responses from param search and payload search do not match {_json1} and {_json2}."
+        assert response_nhs_number == str(child.nhs_number), (
+            f"Expected {child.nhs_number}, got {response_nhs_number}"
+        )
+        assert response_vaccine_code == HPV_VACCINE_CODE, (
+            f"Expected {HPV_VACCINE_CODE}, got {response_vaccine_code}"
         )

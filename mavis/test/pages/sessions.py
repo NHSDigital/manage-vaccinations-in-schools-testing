@@ -118,8 +118,9 @@ class SessionsPage:
         self.record_vaccinations_link = self.page.get_by_role(
             "link", name="Record vaccinations"
         )
+        # quick fix for the fhir imms work
         self.ready_for_vaccination_radio = self.page.locator(
-            "#vaccinate-form-administered-true-field"
+            "#vaccinate-form-vaccine-method-injection-field"
         )
         self.left_arm_upper_radio = self.page.get_by_role(
             "radio", name="Left arm (upper position)"
