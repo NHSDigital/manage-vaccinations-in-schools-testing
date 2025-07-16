@@ -23,7 +23,6 @@ class FlipperPage:
         self.page.goto("/flipper/features")
 
     def set_feature_flags(self, check_only: bool = False):
-        self.page.pause()
         feature_locators = self.page.query_selector_all(
             ".list-group-item.list-group-item-action"
         )
@@ -49,9 +48,7 @@ class FlipperPage:
 
     @step("Ensure feature flag {2} is enabled")
     def _ensure_feature_flag_enabled(self, feature_locator, feature_name):
-        self.page.pause()
         if feature_locator.query_selector('[aria-label="Off"]'):
-            self.page.pause()
             feature_locator.click()
             self.fully_enable_button.click()
             self.features_tab.click()

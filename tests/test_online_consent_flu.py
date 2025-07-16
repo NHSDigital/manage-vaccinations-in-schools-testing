@@ -63,7 +63,6 @@ def test_given(
     consent_page.agree_to_flu_vaccination(injection=injection)
     consent_page.fill_address_details(*child.address)
 
-    consent_page.page.pause()
     if injection:
         consent_page.answer_health_questions(5, health_question=health_question)
     else:
