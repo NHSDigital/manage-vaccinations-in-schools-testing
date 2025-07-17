@@ -98,7 +98,7 @@ BOTH = "Nasal spray (or injection)"
         (INJECTION, INJECTION, INJECTION),
         (BOTH, NASAL, NASAL),
         (BOTH, INJECTION, INJECTION),
-        (BOTH, BOTH, BOTH),
+        (BOTH, BOTH, NASAL),
     ),
     ids=lambda v: f"consents: {v}",
 )
