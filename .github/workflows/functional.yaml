@@ -89,8 +89,10 @@ jobs:
           cd gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash
+          git pull --rebase origin gh-pages
           git checkout --orphan temp-pages
-          git add .
+          git stash apply && git checkout --theirs -- . && git add .
           git diff --cached --quiet || git commit -m "Deploy fresh pages"
           git push --force origin HEAD:gh-pages
         env:
