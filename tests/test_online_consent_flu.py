@@ -72,7 +72,7 @@ def test_given(
         if health_question:
             consent_page.answer_yes()
         consent_page.answer_health_questions(
-            10 if health_question else 9, health_question=health_question
+            12 if health_question else 11, health_question=health_question
         )
 
     consent_page.click_confirm()
@@ -98,7 +98,7 @@ BOTH = "Nasal spray (or injection)"
         (INJECTION, INJECTION, INJECTION),
         (BOTH, NASAL, NASAL),
         (BOTH, INJECTION, INJECTION),
-        (BOTH, BOTH, BOTH),
+        (BOTH, BOTH, NASAL),
     ),
     ids=lambda v: f"consents: {v}",
 )
@@ -113,11 +113,17 @@ def test_correct_method_shown(
 ):
     child = children[0]
     url = setup_session_with_file_upload
+    number_of_health_questions = {
+        BOTH: 11,
+        NASAL: 9,
+        INJECTION: 5,
+    }
 
     consent_page.go_to_url(url)
     start_page.start()
 
     consent_page.fill_details(child, child.parents[0], schools)
+    consent_page.page.pause()  # Pause for debugging purposes
     consent_page.agree_to_flu_vaccination(injection=(consents[0] == INJECTION))
     if consents[0] == BOTH:
         consent_page.answer_yes()
@@ -125,7 +131,7 @@ def test_correct_method_shown(
         consent_page.answer_no()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
-        5 if (consents[0] == INJECTION) else 9, health_question=False
+        number_of_health_questions[consents[0]], health_question=False
     )
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
@@ -146,7 +152,7 @@ def test_correct_method_shown(
         consent_page.answer_no()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
-        5 if (consents[1] == INJECTION) else 9, health_question=False
+        number_of_health_questions[consents[1]], health_question=False
     )
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
