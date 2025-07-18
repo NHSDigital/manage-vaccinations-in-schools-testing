@@ -87,7 +87,7 @@ def children():
                 first_name=onboarding_faker.first_name(),
                 last_name=onboarding_faker.last_name().upper(),
                 nhs_number=nhs_number.generate(
-                    for_region=nhs_number.REGION_ENGLAND,
+                    for_region=nhs_number.REGION_SYNTHETIC,
                 )[0],
                 address=(
                     onboarding_faker.secondary_address(),

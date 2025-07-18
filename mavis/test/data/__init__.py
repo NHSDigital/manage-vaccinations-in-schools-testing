@@ -238,7 +238,7 @@ class TestData:
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
-            valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1
+            valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
         )[0]
 
     def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
