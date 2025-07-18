@@ -265,6 +265,7 @@ class Child(NamedTuple):
     nhs_number: str
     address: tuple[str, str, str, str]
     date_of_birth: date
+    year_group: int
     parents: tuple[Parent, Parent]
 
     def __str__(self):

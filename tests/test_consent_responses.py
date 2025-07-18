@@ -23,7 +23,7 @@ def give_online_consent(
     children,
     schools,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     page.goto(online_consent_url)
@@ -46,7 +46,7 @@ def test_archive(
     consent_response_page,
     unmatched_consent_responses_page,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     unmatched_consent_responses_page.click_child(child)
 
     consent_response_page.click_archive()
@@ -67,13 +67,13 @@ def test_match(
     unmatched_consent_responses_page,
     import_records_page,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
@@ -97,16 +97,19 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
 @pytest.mark.parametrize(
     "children",
     [
-        [
-            Child(
-                patient.given_name,
-                patient.family_name,
-                patient.nhs_number,
-                patient.address,
-                patient.date_of_birth,
-                (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
-            )
-        ]
+        {
+            Programme.HPV: [
+                Child(
+                    patient.given_name,
+                    patient.family_name,
+                    patient.nhs_number,
+                    patient.address,
+                    patient.date_of_birth,
+                    9,
+                    (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
+                )
+            ]
+        }
     ],
 )
 def test_create_with_nhs_number(
@@ -118,7 +121,7 @@ def test_create_with_nhs_number(
     schools,
     unmatched_consent_responses_page,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     unmatched_consent_responses_page.click_child(child)
@@ -143,7 +146,7 @@ def test_create_with_no_nhs_number(
     schools,
     unmatched_consent_responses_page,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     unmatched_consent_responses_page.click_child(child)
 

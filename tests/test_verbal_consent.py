@@ -42,11 +42,11 @@ def setup_session_with_file_upload(
 
 @pytest.fixture
 def setup_fixed_child(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    yield from setup_session_with_file_upload(CohortsFileMapping.FIXED_CHILD)
 
 
 def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_todays_sessions(school)
@@ -63,7 +63,7 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
 
 @issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_todays_sessions(school)
@@ -88,7 +88,7 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 def test_invalid_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_scheduled_sessions(school)
@@ -121,7 +121,7 @@ def test_invalid_consent(
 def test_parent_provides_consent_twice(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_scheduled_sessions(school)
@@ -158,7 +158,7 @@ def test_parent_provides_consent_twice(
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     sessions_page.navigate_to_scheduled_sessions(school)

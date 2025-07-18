@@ -66,7 +66,7 @@ def test_confirm_and_ignore(
     children,
 ):
     schools = schools[Programme.HPV]
-    child_1, child_2 = children[0], children[1]
+    child_1, child_2 = children[Programme.HPV][0], children[Programme.HPV][1]
 
     row1 = school_moves_page.get_row_for_child(*child_1.name)
     row2 = school_moves_page.get_row_for_child(*child_2.name)
