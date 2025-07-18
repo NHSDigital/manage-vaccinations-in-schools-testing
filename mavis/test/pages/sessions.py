@@ -6,7 +6,7 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Programme, Parent, Child
+from mavis.test.models import Programme, Parent, Child, ConsentOption
 from mavis.test.annotations import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -118,8 +118,11 @@ class SessionsPage:
         self.record_vaccinations_link = self.page.get_by_role(
             "link", name="Record vaccinations"
         )
-        self.ready_for_vaccination_radio = self.page.locator(
+        self.ready_for_injection_radio = self.page.locator(
             "#vaccinate-form-vaccine-method-injection-field"
+        )
+        self.ready_for_nasal_spray_radio = self.page.locator(
+            "#vaccinate-form-vaccine-method-nasal-field"
         )
         self.left_arm_upper_radio = self.page.get_by_role(
             "radio", name="Left arm (upper position)"
@@ -149,7 +152,9 @@ class SessionsPage:
         )
         self.pre_screening_listitem = pre_screening.get_by_role("listitem")
         self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
-        self.pre_screening_notes = pre_screening.get_by_role("textbox")
+        self.pre_screening_notes = pre_screening.get_by_role(
+            "textbox", name="Pre-screening notes (optional)"
+        )
         self.review_no_consent_response_link = self.page.get_by_role(
             "link", name="Review   no consent response"
         )
@@ -383,8 +388,12 @@ class SessionsPage:
         self.record_vaccinations_link.click()
 
     @step("Confirm pre-screening checks are true")
-    def confirm_pre_screening_checks(self, programme: Programme):
-        for check in programme.pre_screening_checks:
+    def confirm_pre_screening_checks(
+        self,
+        programme: Programme,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+    ):
+        for check in programme.pre_screening_checks(consent_option):
             locator = self.pre_screening_listitem.get_by_text(check)
             # TODO: Can we highlight in the report that we're checking this?
             expect(locator).to_be_visible()
@@ -397,8 +406,13 @@ class SessionsPage:
         ).get_by_label("Yes").check()
 
     @step("Click on Yes")
-    def select_ready_for_vaccination(self):
-        self.ready_for_vaccination_radio.check()
+    def select_ready_for_vaccination(
+        self, consent_option: ConsentOption = ConsentOption.INJECTION
+    ):
+        if consent_option is ConsentOption.INJECTION:
+            self.ready_for_injection_radio.check()
+        else:
+            self.ready_for_nasal_spray_radio.check()
 
     @step("Click on Left arm (upper position)")
     def select_left_arm_upper_position(self):
@@ -699,6 +713,7 @@ class SessionsPage:
         child: Child,
         programme: Programme,
         batch_name: str,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
         at_school: bool = True,
         notes: str = "",
     ):
@@ -706,13 +721,14 @@ class SessionsPage:
         self.search_child(child)
         self.click_programme_tab(programme)
 
-        self.confirm_pre_screening_checks(programme)
+        self.confirm_pre_screening_checks(programme, consent_option)
         self.pre_screening_notes.fill(notes)
 
         self.select_identity_confirmed_by_child(child)
 
-        self.select_ready_for_vaccination()
-        self.select_left_arm_upper_position()
+        self.select_ready_for_vaccination(consent_option)
+        if consent_option == ConsentOption.INJECTION:
+            self.select_left_arm_upper_position()
         self.click_continue_button()
 
         if len(notes) > 1000:

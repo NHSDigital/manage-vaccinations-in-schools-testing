@@ -6,8 +6,14 @@ from faker import Faker
 faker = Faker("en_GB")
 
 
+class ConsentOption(StrEnum):
+    INJECTION = "Injection"
+    NASAL_SPRAY = "Nasal spray"
+    BOTH = ""
+
+
 class Programme(StrEnum):
-    FLU = "Flu"
+    FLU = "flu"
     HPV = "HPV"
     MENACWY = "MenACWY"
     TD_IPV = "Td/IPV"
@@ -30,8 +36,28 @@ class Programme(StrEnum):
             case self.TD_IPV:
                 return [Vaccine.REVAXIS]
 
-    @property
-    def health_questions(self):
+    def health_questions(self, consent_option: ConsentOption = ConsentOption.INJECTION):
+        includes_nasal = consent_option is not ConsentOption.INJECTION
+        includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
+
+        flu_questions = [
+            HealthQuestion.ASTHMA_STEROIDS if includes_nasal else None,
+            HealthQuestion.ASTHMA_INTENSIVE_CARE if includes_nasal else None,
+            HealthQuestion.IMMUNE_SYSTEM if includes_nasal else None,
+            HealthQuestion.HOUSEHOLD_IMMUNE_SYSTEM if includes_nasal else None,
+            HealthQuestion.BLEEDING_DISORDER_FLU if includes_injection else None,
+            HealthQuestion.EGG_ALLERGY if includes_nasal else None,
+            HealthQuestion.SEVERE_ALLERGIC_REACTION_NASAL if includes_nasal else None,
+            HealthQuestion.SEVERE_ALLERGIC_REACTION_INJECTED
+            if includes_injection
+            else None,
+            HealthQuestion.MEDICAL_CONDITIONS_FLU,
+            HealthQuestion.ASPIRIN if includes_nasal else None,
+            HealthQuestion.FLU_PREVIOUSLY,
+            HealthQuestion.EXTRA_SUPPORT,
+        ]
+        flu_questions = [q for q in flu_questions if q is not None]
+
         common_doubles_questions = [
             HealthQuestion.BLEEDING_DISORDER,
             HealthQuestion.SEVERE_ALLERGIES,
@@ -49,11 +75,13 @@ class Programme(StrEnum):
                 HealthQuestion.REACTION,
                 HealthQuestion.EXTRA_SUPPORT,
             ],
+            Programme.FLU: flu_questions,
         }
         return programme_specific_questions[self]
 
-    @property
-    def pre_screening_checks(self):
+    def pre_screening_checks(
+        self, consent_option: ConsentOption = ConsentOption.INJECTION
+    ):
         checks = [
             PreScreeningCheck.NOT_ACUTELY_UNWELL,
             PreScreeningCheck.NO_RELEVANT_ALLERGIES,
@@ -64,8 +92,11 @@ class Programme(StrEnum):
         if self.group == "doubles":
             checks.append(PreScreeningCheck.NO_RELEVANT_MEDICATION)
 
-        if self == self.TD_IPV:
+        if self is self.TD_IPV:
             checks.append(PreScreeningCheck.NOT_PREGNANT)
+
+        if self is self.FLU and consent_option is ConsentOption.NASAL_SPRAY:
+            checks.append(PreScreeningCheck.NO_ASTHMA_FLARE_UP)
 
         return checks
 
@@ -109,6 +140,21 @@ class HealthQuestion(StrEnum):
     )
     PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
 
+    # flu
+    ASTHMA_STEROIDS = "Does your child take oral steroids for their asthma?"
+    ASTHMA_INTENSIVE_CARE = (
+        "Has your child ever been admitted to intensive care because of their asthma?"
+    )
+    IMMUNE_SYSTEM = "Does your child have a disease or treatment that severely affects their immune system?"
+    HOUSEHOLD_IMMUNE_SYSTEM = "Is your child in regular close contact with anyone currently having treatment that severely affects their immune system?"
+    BLEEDING_DISORDER_FLU = "Does your child have a bleeding disorder or are they taking anticoagulant therapy?"
+    EGG_ALLERGY = "Has your child ever been admitted to intensive care due to a severe allergic reaction (anaphylaxis) to egg?"
+    SEVERE_ALLERGIC_REACTION_NASAL = "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose of the nasal flu vaccine, or any ingredient of the vaccine?"
+    SEVERE_ALLERGIC_REACTION_INJECTED = "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose of the injected flu vaccine, or any ingredient of the vaccine?"
+    MEDICAL_CONDITIONS_FLU = "Does your child have any other medical conditions the immunisation team should be aware of?"
+    ASPIRIN = "Does your child take regular aspirin?"
+    FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
+
 
 class PreScreeningCheck(StrEnum):
     KNOW_VACCINATION = "knows what the vaccination is for, and is happy to have it"
@@ -117,6 +163,7 @@ class PreScreeningCheck(StrEnum):
     NOT_PREGNANT = "is not pregnant"
     NO_RELEVANT_ALLERGIES = "has no allergies which would prevent vaccination"
     NO_RELEVANT_MEDICATION = "is not taking any medication which prevents vaccination"
+    NO_ASTHMA_FLARE_UP = "if they have asthma, has not had a flare-up of symptoms in the past 72 hours, including wheezing or needing to use a reliever inhaler more than usual"
 
 
 class ConsentRefusalReason(StrEnum):
