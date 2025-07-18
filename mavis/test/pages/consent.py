@@ -9,6 +9,7 @@ from mavis.test.models import (
     School,
     Parent,
     Child,
+    ConsentOption,
 )
 from mavis.test.annotations import step
 
@@ -19,8 +20,8 @@ class ConsentPage:
 
         self.first_name_textbox = self.page.get_by_role("textbox", name="First name")
         self.last_name_textbox = self.page.get_by_role("textbox", name="Last name")
-        self.yes_radio = self.page.get_by_role("radio", name="Yes")
-        self.no_radio = self.page.get_by_role("radio", name="No")
+        self.yes_radio = self.page.get_by_role("radio", name="Yes", exact=True)
+        self.no_radio = self.page.get_by_role("radio", name="No", exact=True)
         self.preferred_first_name_textbox = self.page.get_by_role(
             "textbox", name="Preferred first name (optional)"
         )
@@ -86,7 +87,13 @@ class ConsentPage:
         self.no_response_radio = self.page.get_by_role("radio", name="No response")
         self.save_triage_button = self.page.get_by_role("button", name="Save triage")
         self.yes_safe_to_vaccinate_radio = self.page.get_by_role(
-            "radio", name="Yes, it’s safe to vaccinate"
+            "radio", name="Yes, it’s safe to vaccinate", exact=True
+        )
+        self.yes_safe_to_vaccinate_with_nasal_spray_radio = self.page.get_by_role(
+            "radio", name="Yes, it’s safe to vaccinate with nasal spray"
+        )
+        self.yes_safe_to_vaccinate_with_injection_radio = self.page.get_by_role(
+            "radio", name="Yes, it’s safe to vaccinate with injected vaccine"
         )
         self.child_gillick_competent_radio = self.page.get_by_role(
             "radio", name="Child (Gillick competent)"
@@ -120,6 +127,12 @@ class ConsentPage:
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
         self.sessions_link = self.page.get_by_label("Primary navigation").get_by_role(
             "link", name="Sessions"
+        )
+        self.online_flu_agree_nasal_radio = self.page.get_by_role(
+            "radio", name="Yes, for the nasal spray"
+        )
+        self.online_flu_agree_injection_radio = self.page.get_by_role(
+            "radio", name="Yes, for the injected vaccine only"
         )
 
     @step("Click Continue")
@@ -247,8 +260,12 @@ class ConsentPage:
         self.address_postcode_textbox.fill(postcode)
         self.click_continue()
 
-    def set_all_health_questions_to_no(self, programme: Programme):
-        for locator_text in programme.health_questions:
+    def set_all_health_questions_to_no(
+        self,
+        programme: Programme,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+    ):
+        for locator_text in programme.health_questions(consent_option):
             self.select_no_for_health_question(locator_text)
 
     @step("Select No for health question {1}")
@@ -280,8 +297,18 @@ class ConsentPage:
         self.add_phone_number_link.click()
 
     @step("Click on Yes, it’s safe to vaccinate")
-    def click_safe_to_vaccinate(self):
-        self.yes_safe_to_vaccinate_radio.check()
+    def click_safe_to_vaccinate(
+        self,
+        programme: Programme = Programme.HPV,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+    ):
+        if programme is Programme.FLU:
+            if consent_option is ConsentOption.INJECTION:
+                self.yes_safe_to_vaccinate_with_injection_radio.check()
+            else:
+                self.yes_safe_to_vaccinate_with_nasal_spray_radio.check()
+        else:
+            self.yes_safe_to_vaccinate_radio.check()
 
     @step("Click on Save triage")
     def click_save_triage(self):
@@ -302,6 +329,14 @@ class ConsentPage:
     @step("Click on Sessions")
     def click_sessions(self):
         self.sessions_link.click()
+
+    @step("Click on Yes, for the nasal spray")
+    def click_yes_for_nasal_spray(self):
+        self.online_flu_agree_nasal_radio.check()
+
+    @step("Click on Yes, for the injected vaccine only")
+    def click_yes_for_injected_vaccine(self):
+        self.online_flu_agree_injection_radio.check()
 
     def answer_yes(self, details: Optional[str] = None):
         self.select_yes()
@@ -337,10 +372,13 @@ class ConsentPage:
         parent: Parent,
         change_phone: bool = True,
         programme: Programme = Programme.HPV,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
-        self._process_consent_confirmation(programme)
+        self._process_consent_confirmation(
+            programme=programme, consent_option=consent_option
+        )
         if change_phone:
             self.click_add_phone_number()
             self.change_parent_phone()
@@ -359,10 +397,12 @@ class ConsentPage:
         self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
         self.click_confirm()
 
-    def parent_written_positive(self, parent: Parent):
+    def parent_written_positive(
+        self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION
+    ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
-        self._process_consent_confirmation()
+        self._process_consent_confirmation(consent_option=consent_option)
         self.click_add_phone_number()
         self.fill_phone_number_and_receive_text_alerts("7700900000")
         self.click_continue()
@@ -377,10 +417,12 @@ class ConsentPage:
         self.click_save_triage()
         expect(self.page.get_by_role("main")).to_contain_text("Triage outcome updated")
 
-    def parent_phone_positive(self, parent: Parent):
+    def parent_phone_positive(
+        self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION
+    ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PHONE)
-        self._process_consent_confirmation()
+        self._process_consent_confirmation(consent_option=consent_option)
         self.click_confirm()
 
     def parent_paper_refuse_consent(self, parent: Parent):
@@ -391,10 +433,14 @@ class ConsentPage:
         self.click_continue()
         self.click_confirm()
 
-    def child_consent_verbal_positive(self):
+    def child_consent_verbal_positive(
+        self, consent_option: ConsentOption = ConsentOption.INJECTION
+    ):
         self.child_gillick_competent_radio.check()
         self.click_continue()
-        self._process_consent_confirmation(child_consent=True)
+        self._process_consent_confirmation(
+            child_consent=True, consent_option=consent_option
+        )
         self.click_confirm()
 
     def _handle_refusal_of_consent(self, reason: ConsentRefusalReason):
@@ -413,16 +459,31 @@ class ConsentPage:
         self.click_continue()
 
     def _process_consent_confirmation(
-        self, programme=Programme.HPV, child_consent: bool = False
+        self,
+        programme=Programme.HPV,
+        child_consent: bool = False,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
     ):
-        self.click_yes_they_agree()
+        if programme is Programme.FLU:
+            if consent_option is ConsentOption.INJECTION:
+                self.click_yes_for_injected_vaccine()
+            else:
+                self.click_yes_for_nasal_spray()
+                if consent_option is ConsentOption.BOTH:
+                    self.select_yes()
+                else:
+                    self.select_no()
+        else:
+            self.click_yes_they_agree()
         self.click_continue()
         if child_consent:
             self.select_yes()
             self.click_continue()
-        self.set_all_health_questions_to_no(programme=programme)
+        self.set_all_health_questions_to_no(
+            programme=programme, consent_option=consent_option
+        )
         self.click_continue()
-        self.click_safe_to_vaccinate()
+        self.click_safe_to_vaccinate(programme=programme, consent_option=consent_option)
         self.click_continue()
 
     def go_to_url(self, url: str):
