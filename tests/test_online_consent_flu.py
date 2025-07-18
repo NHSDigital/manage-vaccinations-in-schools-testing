@@ -22,17 +22,23 @@ def start_consent(url, page, start_page):
 def setup_session_with_file_upload(
     url, log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
 ):
+    school = schools[Programme.FLU][0]
+
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
-    sessions_page.click_location(schools[0])
+    sessions_page.click_location(school)
     sessions_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(
+        CohortsFileMapping.FIXED_CHILD_YEAR_9, programme_group=Programme.FLU.group
+    )
     yield url
 
 
 def test_refused(start_consent, consent_page, schools, children):
     child = children[0]
+    schools = schools[Programme.FLU]
+
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.dont_agree_to_vaccination()
     consent_page.select_consent_not_given_reason(
@@ -58,6 +64,7 @@ def test_given(
     children,
 ):
     child = children[0]
+    schools = schools[Programme.FLU]
 
     consent_page.fill_details(child, child.parents[0], schools, False)
     consent_page.agree_to_flu_vaccination(injection=injection)
@@ -112,6 +119,7 @@ def test_correct_method_shown(
     sessions_page,
 ):
     child = children[0]
+    schools = schools[Programme.FLU]
     url = setup_session_with_file_upload
     number_of_health_questions = {
         BOTH: 11,

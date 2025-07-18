@@ -10,6 +10,7 @@ from mavis.test.wrappers import (
     format_datetime_for_upload_link,
     reload_until_element_is_visible,
 )
+from mavis.test.models import Programme
 
 
 class ImportRecordsPage:
@@ -122,9 +123,12 @@ class ImportRecordsPage:
         self,
         file_mapping: FileMapping,
         session_id: Optional[str] = None,
+        programme_group: str = Programme.HPV.group,
     ) -> tuple[Path, Path]:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
-            file_mapping=file_mapping, session_id=session_id
+            file_mapping=file_mapping,
+            session_id=session_id,
+            programme_group=programme_group,
         )
         _scenario_list = self.test_data.read_scenario_list_from_file(_input_file_path)
 

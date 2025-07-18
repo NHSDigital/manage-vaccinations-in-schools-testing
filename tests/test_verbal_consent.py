@@ -16,15 +16,17 @@ def setup_session_with_file_upload(
     import_records_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
+
     def _setup(class_list_file):
         try:
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(
-                schools[0], programmes_enabled, for_today=True
+                school, programmes_enabled, for_today=True
             )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_location(schools[0])
+            sessions_page.click_location(school)
             sessions_page.navigate_to_class_list_import()
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
@@ -33,7 +35,7 @@ def setup_session_with_file_upload(
         finally:
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(schools[0])
+            sessions_page.delete_all_sessions(school)
 
     return _setup
 
@@ -45,8 +47,9 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
     child = children[0]
+    school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_todays_sessions(schools[0])
+    sessions_page.navigate_to_todays_sessions(school)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.add_gillick_competence(
@@ -61,8 +64,9 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
 @issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
     child = children[0]
+    school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_todays_sessions(schools[0])
+    sessions_page.navigate_to_todays_sessions(school)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.answer_gillick_competence_questions(is_competent=True)
@@ -85,8 +89,9 @@ def test_invalid_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
@@ -117,8 +122,9 @@ def test_parent_provides_consent_twice(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
 
@@ -153,8 +159,9 @@ def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child, sessions_page, schools, consent_page, children
 ):
     child = children[0]
+    school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)

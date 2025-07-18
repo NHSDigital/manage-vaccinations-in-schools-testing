@@ -18,6 +18,7 @@ def start_consent(url, page, start_page):
 
 def test_refused(consent_page, schools, children):
     child = children[0]
+    schools = schools["doubles"]
 
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.dont_agree_to_vaccination()
@@ -51,6 +52,7 @@ def test_given(
     children,
 ):
     child = children[0]
+    schools = schools["doubles"]
 
     consent_page.fill_details(child, child.parents[0], schools, change_school)
     consent_page.agree_to_doubles_vaccinations(*programmes)

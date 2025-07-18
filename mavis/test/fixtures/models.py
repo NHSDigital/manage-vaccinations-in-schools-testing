@@ -19,6 +19,7 @@ from mavis.test.models import (
     School,
     Team,
     User,
+    Programme,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
 
@@ -49,25 +50,33 @@ def nurse():
 
 
 @pytest.fixture(scope="session")
-def schools(base_url) -> List[School]:
-    url = urllib.parse.urljoin(base_url, "api/locations")
-    params = {
-        "type": "school",
-        "status": "open",
-        "is_attached_to_organisation": "false",
-        "year_groups[]": ["8", "9", "10", "11"],  # HPV and Doubles
+def schools(base_url) -> dict[str, list[School]]:
+    def _get_schools_with_year_groups(year_groups: List[str]) -> list[School]:
+        url = urllib.parse.urljoin(base_url, "api/locations")
+        params = {
+            "type": "school",
+            "status": "open",
+            "is_attached_to_organisation": "false",
+            "year_groups[]": year_groups,
+        }
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        schools_data = random.choices(data, k=2)
+
+        return [
+            School(
+                name=normalize_whitespace(school_data["name"]), urn=school_data["urn"]
+            )
+            for school_data in schools_data
+        ]
+
+    return {
+        programme.group: _get_schools_with_year_groups(programme.year_groups)
+        for programme in Programme
     }
-
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-
-    data = response.json()
-    schools_data = random.choices(data, k=2)
-
-    return [
-        School(name=normalize_whitespace(school_data["name"]), urn=school_data["urn"])
-        for school_data in schools_data
-    ]
 
 
 @pytest.fixture
@@ -134,7 +143,13 @@ def onboarding(clinics, schools, team, organisation, users, programmes_enabled):
         "clinics": {team.key: [it.to_onboarding() for it in clinics]},
         "organisation": organisation.to_onboarding(),
         "programmes": programmes_enabled,
-        "schools": {team.key: [it.to_onboarding() for it in schools]},
+        "schools": {
+            team.key: [
+                school.to_onboarding()
+                for schools_list in schools.values()
+                for school in schools_list
+            ]
+        },
         "teams": team.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
     }

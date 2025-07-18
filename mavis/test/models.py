@@ -13,8 +13,10 @@ class Programme(StrEnum):
     TD_IPV = "Td/IPV"
 
     @property
-    def is_doubles(self) -> bool:
-        return self == self.MENACWY or self == self.TD_IPV
+    def group(self):
+        if self in {Programme.MENACWY, Programme.TD_IPV}:
+            return "doubles"
+        return self.value
 
     @property
     def vaccines(self):
@@ -59,13 +61,23 @@ class Programme(StrEnum):
             PreScreeningCheck.KNOW_VACCINATION,
         ]
 
-        if self.is_doubles:
+        if self.group == "doubles":
             checks.append(PreScreeningCheck.NO_RELEVANT_MEDICATION)
 
         if self == self.TD_IPV:
             checks.append(PreScreeningCheck.NOT_PREGNANT)
 
         return checks
+
+    @property
+    def year_groups(self) -> list[str]:
+        match self:
+            case self.FLU:
+                return ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
+            case self.HPV:
+                return ["8", "9", "10", "11"]
+            case self.MENACWY | self.TD_IPV:
+                return ["9", "10", "11"]
 
 
 class Vaccine(StrEnum):
