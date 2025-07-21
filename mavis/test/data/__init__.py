@@ -195,10 +195,10 @@ class TestData:
         dynamic_replacements = {
             "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
             "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
-            "<<RANDOM_NHS_NO>>": lambda: self.generate_valid_nhs_number_starting_with_9(
+            "<<RANDOM_NHS_NO>>": lambda: self.generate_nhs_number_starting_with_9(
                 valid=True
             ),
-            "<<INVALID_NHS_NO>>": lambda: self.generate_valid_nhs_number_starting_with_9(
+            "<<INVALID_NHS_NO>>": lambda: self.generate_nhs_number_starting_with_9(
                 valid=False
             ),
         }
@@ -248,7 +248,7 @@ class TestData:
             valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
         )[0]
 
-    def generate_valid_nhs_number_starting_with_9(self, valid=True):
+    def generate_nhs_number_starting_with_9(self, valid=True):
         while True:
             # Generate first 8 digits after the starting 9
             base_digits = [9] + [random.randint(0, 9) for _ in range(8)]
