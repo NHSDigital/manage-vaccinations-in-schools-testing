@@ -6,8 +6,10 @@ pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
-def url(get_online_consent_url):
-    yield from get_online_consent_url(Programme.MENACWY, Programme.TD_IPV)
+def url(get_online_consent_url, schools):
+    yield from get_online_consent_url(
+        schools["doubles"][0], Programme.MENACWY, Programme.TD_IPV
+    )
 
 
 @pytest.fixture(autouse=True)

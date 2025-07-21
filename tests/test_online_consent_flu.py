@@ -8,8 +8,8 @@ pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
-def url(get_online_consent_url):
-    yield from get_online_consent_url(Programme.FLU)
+def url(get_online_consent_url, schools):
+    yield from get_online_consent_url(schools[Programme.FLU.group][0], Programme.FLU)
 
 
 @pytest.fixture
@@ -23,6 +23,8 @@ def setup_session_with_file_upload(
     url,
     log_in_as_nurse,
     schools,
+    consent_page,
+    start_page,
     dashboard_page,
     sessions_page,
     import_records_page,
@@ -117,6 +119,7 @@ def test_given(
 )
 def test_correct_method_shown(
     setup_session_with_file_upload,
+    start_consent,
     consent_page,
     schools,
     children,
@@ -132,9 +135,6 @@ def test_correct_method_shown(
         ConsentOption.NASAL_SPRAY: 9,
         ConsentOption.INJECTION: 5,
     }
-
-    consent_page.go_to_url(url)
-    start_page.start()
 
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.agree_to_flu_vaccination(

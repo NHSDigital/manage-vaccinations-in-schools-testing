@@ -1,15 +1,37 @@
 import pytest
 
-from mavis.test.data import ClassFileMapping
+from mavis.test.data import ClassFileMapping, CohortsFileMapping
 from mavis.test.models import Programme, Vaccine, ConsentOption
 from mavis.test.wrappers import generate_random_string
 from mavis.test.annotations import issue
 
 
 @pytest.fixture
-def setup_mav_965(
+def url(get_online_consent_url, schools):
+    yield from get_online_consent_url(
+        schools["doubles"][0],
+        (Programme.MENACWY, Programme.HPV, Programme.TD_IPV, Programme.FLU),
+    )
+
+
+@pytest.fixture
+def add_all_batches(add_vaccine_batch):
+    gardasil_9_batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
+    menquadfi_batch_name = add_vaccine_batch(Vaccine.MENQUADFI)
+    revaxis_batch_name = add_vaccine_batch(Vaccine.REVAXIS)
+    fluenz_tetra_laiv_batch_name = add_vaccine_batch(Vaccine.FLUENZ_TETRA_LAIV)
+    return (
+        gardasil_9_batch_name,
+        menquadfi_batch_name,
+        revaxis_batch_name,
+        fluenz_tetra_laiv_batch_name,
+    )
+
+
+@pytest.fixture
+def setup_in_person_consent(
     log_in_as_nurse,
-    add_vaccine_batch,
+    add_all_batches,
     schools,
     dashboard_page,
     import_records_page,
@@ -18,10 +40,6 @@ def setup_mav_965(
 ):
     school = schools["doubles"][0]
 
-    gardasil_9_batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
-    menquadfi_batch_name = add_vaccine_batch(Vaccine.MENQUADFI)
-    revaxis_batch_name = add_vaccine_batch(Vaccine.REVAXIS)
-    fluenz_tetra_laiv_batch_name = add_vaccine_batch(Vaccine.FLUENZ_TETRA_LAIV)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(school, programmes_enabled, for_today=True)
@@ -31,12 +49,36 @@ def setup_mav_965(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    return (
-        gardasil_9_batch_name,
-        menquadfi_batch_name,
-        revaxis_batch_name,
-        fluenz_tetra_laiv_batch_name,
+    return add_all_batches
+
+
+@pytest.fixture
+def setup_online_consent(
+    url,
+    log_in_as_nurse,
+    add_all_batches,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    consent_page,
+    start_page,
+    children,
+):
+    school = schools["doubles"][0]
+    child = children["doubles"][0]
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_page.click_scheduled()
+    sessions_page.click_location(school)
+    sessions_page.navigate_to_class_list_import(child.year_group)
+    import_records_page.upload_and_verify_output(
+        CohortsFileMapping.FIXED_CHILD, programme_group="doubles"
     )
+    consent_page.go_to_url(url)
+    start_page.start()
+    yield add_all_batches
 
 
 @issue("MAV-965")
@@ -44,7 +86,7 @@ def setup_mav_965(
 @pytest.mark.rav
 @pytest.mark.bug
 def test_programmes_rav_pre_screening_questions(
-    setup_mav_965,
+    setup_in_person_consent,
     schools,
     dashboard_page,
     sessions_page,
@@ -72,7 +114,7 @@ def test_programmes_rav_pre_screening_questions(
         menquadfi_batch_name,
         revaxis_batch_name,
         fluenz_tetra_laiv_batch_name,
-    ) = setup_mav_965
+    ) = setup_in_person_consent
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
