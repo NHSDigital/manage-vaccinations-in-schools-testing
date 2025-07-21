@@ -58,7 +58,7 @@ def setup_mav_1018(setup_session_with_file_upload):
 
 @pytest.fixture
 def setup_fixed_child(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD_YEAR_9)
+    yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
 
 
 def test_lifecycle(
@@ -94,12 +94,12 @@ def test_verify_search(setup_mav_1018, sessions_page):
 @issue("MAV-1381")
 @pytest.mark.bug
 def test_verify_consent_filters(setup_fixed_child, sessions_page, children):
-    sessions_page.verify_consent_filters(children)
+    sessions_page.verify_consent_filters(children[Programme.HPV])
 
 
 @issue("MAV-1265")
 def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     NOTE_1 = "Note 1"
     NOTE_2 = "Note 2"

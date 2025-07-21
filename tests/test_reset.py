@@ -60,7 +60,7 @@ def test_programmes_rav_pre_screening_questions(
     - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
     """
 
-    child = children[0]
+    child = children["doubles"][0]
     school = schools["doubles"][0]
     gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name = setup_mav_965
 

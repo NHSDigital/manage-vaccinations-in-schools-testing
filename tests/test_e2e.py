@@ -31,17 +31,15 @@ def test_e2e(
     children,
     programmes_enabled,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(school, programmes_enabled)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_positive(
-        parent=children[0].parents[0], change_phone=False
-    )
+    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)

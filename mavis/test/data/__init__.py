@@ -2,7 +2,7 @@ import csv
 import os
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import nhs_number
 import pandas as pd
@@ -63,7 +63,7 @@ class CohortsFileMapping(FileMapping):
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
     FIXED_CHILD_YEAR_8 = "fixed_child_year_8"
-    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
+    FIXED_CHILD = "fixed_child"
 
     @property
     def folder(self) -> Path:
@@ -92,9 +92,9 @@ class ClassFileMapping(FileMapping):
     WHITESPACE = "whitespace"
     WRONG_YEAR_GROUP = "wrong_year_group"
     RANDOM_CHILD_YEAR_9 = "random_child_year_9"
-    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
+    FIXED_CHILD = "fixed_child"
     FIXED_CHILD_YEAR_10 = "fixed_child_year_10"
-    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children_year_9"
+    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
 
     @property
@@ -111,7 +111,7 @@ class TestData:
         organisation: Organisation,
         schools: dict[str, list[School]],
         nurse: User,
-        children: List[Child],
+        children: dict[str, list[Child]],
     ):
         self.organisation = organisation
         self.schools = schools
@@ -152,7 +152,8 @@ class TestData:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         if self.children:
-            for index, child in enumerate(self.children):
+            children = self.children[programme_group]
+            for index, child in enumerate(children):
                 static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
                 static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
                 static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
@@ -166,6 +167,9 @@ class TestData:
                 static_replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
                 static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
                     child.date_of_birth.strftime("%Y%m%d")
+                )
+                static_replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(
+                    child.year_group
                 )
                 static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
                     0

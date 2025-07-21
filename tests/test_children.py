@@ -41,7 +41,7 @@ def setup_children_session(
 
 @pytest.fixture
 def setup_children_page(setup_children_session):
-    yield from setup_children_session(ClassFileMapping.FIXED_CHILD_YEAR_9)
+    yield from setup_children_session(ClassFileMapping.FIXED_CHILD)
 
 
 @pytest.fixture
@@ -75,7 +75,7 @@ def setup_mav_853(
         dashboard_page.click_programmes()
         programmes_page.navigate_to_cohort_import(Programme.HPV)
         import_records_page.upload_and_verify_output(
-            CohortsFileMapping.FIXED_CHILD_YEAR_9,
+            CohortsFileMapping.FIXED_CHILD,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -94,7 +94,7 @@ def setup_mav_853(
 
 
 def test_headers_and_filter(setup_children_page, children_page, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
 
     children_page.verify_headers()
     children_page.search_for_a_child_name(str(child))
@@ -110,7 +110,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     3. Expected: patient details can be seen
     Actual: crash
     """
-    child = children[0]
+    child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
     children_page.search_for_a_child_name(str(child))
@@ -126,7 +126,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
 
 @pytest.mark.bug
 def test_change_nhsno(setup_change_nhsno, children_page, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
 
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)

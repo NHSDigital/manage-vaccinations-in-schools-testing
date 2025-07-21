@@ -178,5 +178,8 @@ class ImportRecordsPage:
 
     def _select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
-            self.page.get_by_label(f"Year {year_group}").check()
+            if year_group == 0:
+                self.page.get_by_label("Reception").check()
+            else:
+                self.page.get_by_label(text=f"Year {year_group}", exact=True).check()
         self.click_continue()
