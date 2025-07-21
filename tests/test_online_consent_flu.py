@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.models import ConsentRefusalReason, Programme
+from mavis.test.models import ConsentRefusalReason, Programme, ConsentOption
 from mavis.test.data import CohortsFileMapping
 from mavis.test.annotations import issue
 
@@ -99,20 +99,19 @@ def test_given(
     )
 
 
-INJECTION = "Injection"
-NASAL = "Nasal spray"
-BOTH = "Nasal spray (or injection)"
-
-
 @issue("MAV-1234")
 @pytest.mark.parametrize(
     "consents",
     (
-        (NASAL, NASAL, NASAL),
-        (INJECTION, INJECTION, INJECTION),
-        (BOTH, NASAL, NASAL),
-        (BOTH, INJECTION, INJECTION),
-        (BOTH, BOTH, NASAL),
+        (
+            ConsentOption.NASAL_SPRAY,
+            ConsentOption.NASAL_SPRAY,
+            ConsentOption.NASAL_SPRAY,
+        ),
+        (ConsentOption.INJECTION, ConsentOption.INJECTION, ConsentOption.INJECTION),
+        (ConsentOption.BOTH, ConsentOption.NASAL_SPRAY, ConsentOption.NASAL_SPRAY),
+        (ConsentOption.BOTH, ConsentOption.INJECTION, ConsentOption.INJECTION),
+        (ConsentOption.BOTH, ConsentOption.BOTH, ConsentOption.NASAL_SPRAY),
     ),
     ids=lambda v: f"consents: {v}",
 )
@@ -129,19 +128,21 @@ def test_correct_method_shown(
     schools = schools[Programme.FLU]
     url = setup_session_with_file_upload
     number_of_health_questions = {
-        BOTH: 11,
-        NASAL: 9,
-        INJECTION: 5,
+        ConsentOption.BOTH: 11,
+        ConsentOption.NASAL_SPRAY: 9,
+        ConsentOption.INJECTION: 5,
     }
 
     consent_page.go_to_url(url)
     start_page.start()
 
     consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_flu_vaccination(injection=(consents[0] == INJECTION))
-    if consents[0] == BOTH:
+    consent_page.agree_to_flu_vaccination(
+        injection=(consents[0] == ConsentOption.INJECTION)
+    )
+    if consents[0] == ConsentOption.BOTH:
         consent_page.answer_yes()
-    elif consents[0] == NASAL:
+    elif consents[0] == ConsentOption.NASAL_SPRAY:
         consent_page.answer_no()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
@@ -152,17 +153,19 @@ def test_correct_method_shown(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=(consents[0] == INJECTION),
+        injection=(consents[0] == ConsentOption.INJECTION),
     )
 
     consent_page.go_to_url(url)
     start_page.start()
 
     consent_page.fill_details(child, child.parents[1], schools)
-    consent_page.agree_to_flu_vaccination(injection=(consents[1] == INJECTION))
-    if consents[1] == BOTH:
+    consent_page.agree_to_flu_vaccination(
+        injection=(consents[1] == ConsentOption.INJECTION)
+    )
+    if consents[1] == ConsentOption.BOTH:
         consent_page.answer_yes()
-    elif consents[1] == NASAL:
+    elif consents[1] == ConsentOption.NASAL_SPRAY:
         consent_page.answer_no()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
@@ -173,7 +176,7 @@ def test_correct_method_shown(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=(consents[1] == INJECTION),
+        injection=(consents[1] == ConsentOption.INJECTION),
     )
 
     consent_page.click_sessions()
