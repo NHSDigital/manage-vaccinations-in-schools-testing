@@ -125,12 +125,14 @@ jobs:
           cd gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash
-          git pull --rebase origin gh-pages
           git checkout --orphan temp-pages
-          git stash apply && git checkout --theirs -- . && git add .
-          git diff --cached --quiet || git commit -m "Deploy fresh pages"
-          git push --force origin HEAD:gh-pages
+          git add --all
+          git commit -m "Deployment: $(date +%Y-%m-%d)"
+          git checkout gh-pages
+          git pull origin gh-pages --rebase
+          git reset --hard temp-pages
+          git push origin gh-pages --force
+          git branch -D temp-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
