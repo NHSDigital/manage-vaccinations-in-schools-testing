@@ -131,7 +131,6 @@ def test_correct_method_shown(
     start_page.start()
 
     consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.page.pause()  # Pause for debugging purposes
     consent_page.agree_to_flu_vaccination(injection=(consents[0] == INJECTION))
     if consents[0] == BOTH:
         consent_page.answer_yes()
