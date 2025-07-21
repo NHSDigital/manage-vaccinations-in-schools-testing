@@ -1,5 +1,6 @@
 import csv
 import os
+import random
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional
@@ -8,7 +9,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, School, User, Programme
+from mavis.test.models import Child, Organisation, Programme, School, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -194,8 +195,12 @@ class TestData:
         dynamic_replacements = {
             "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
             "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
-            "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
-            "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
+            "<<RANDOM_NHS_NO>>": lambda: self.generate_valid_nhs_number_starting_with_9(
+                valid=True
+            ),
+            "<<INVALID_NHS_NO>>": lambda: self.generate_valid_nhs_number_starting_with_9(
+                valid=False
+            ),
         }
 
         output_filename = f"{file_name_prefix}{get_current_datetime()}.csv"
@@ -209,9 +214,11 @@ class TestData:
             )
             template_df = template_df.apply(
                 lambda col: col.apply(
-                    lambda x: dynamic_replacements[x.strip()]()
-                    if isinstance(x, str) and x.strip() in dynamic_replacements
-                    else x
+                    lambda x: (
+                        dynamic_replacements[x.strip()]()
+                        if isinstance(x, str) and x.strip() in dynamic_replacements
+                        else x
+                    )
                 )
             )
             template_df.to_csv(
@@ -240,6 +247,31 @@ class TestData:
         return nhs_number.generate(
             valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
         )[0]
+
+    def generate_valid_nhs_number_starting_with_9(self, valid=True):
+        while True:
+            # Generate first 8 digits after the starting 9
+            base_digits = [9] + [random.randint(0, 9) for _ in range(8)]
+
+            # Compute checksum using NHS weighted formula
+            total = sum(d * (10 - i) for i, d in enumerate(base_digits))
+            remainder = total % 11
+
+            # Skip if remainder is 10, because checksum would be invalid
+            if remainder == 10:
+                continue
+
+            if valid:
+                check_digit = 11 - remainder if remainder != 0 else 0
+            else:
+                check_digit = 1
+
+            # Combine into final NHS number (10 digits)
+            nhs_number = "".join(map(str, base_digits + [check_digit]))
+
+            # Double-check length just in case
+            if len(nhs_number) == 10:
+                return nhs_number
 
     def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
         file_content = self.read_file(file_path)
