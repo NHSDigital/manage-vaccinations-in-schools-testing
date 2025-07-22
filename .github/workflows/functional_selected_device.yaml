@@ -126,7 +126,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout --orphan temp-pages
-          git add --all
+          git add .
           git commit -m "Deployment: $(date +%Y-%m-%d)"
           git checkout gh-pages
           git pull origin gh-pages --rebase
