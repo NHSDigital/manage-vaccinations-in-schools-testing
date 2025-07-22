@@ -17,7 +17,9 @@ def start_consent(url, page, start_page):
 
 
 def test_refused(consent_page, schools, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
+    schools = schools[Programme.HPV]
+
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.dont_agree_to_vaccination()
     consent_page.select_consent_not_given_reason(
@@ -43,7 +45,9 @@ def test_given(
     health_question,
     children,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
+    schools = schools[Programme.HPV]
+
     consent_page.fill_details(child, child.parents[0], schools, change_school)
     consent_page.agree_to_hpv_vaccination()
     consent_page.fill_address_details(*child.address)

@@ -82,18 +82,21 @@ jobs:
           mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
           cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
 
-      - name: Commit and push changes
+      - name: Commit and force-push fresh gh-pages
         if: always()
         continue-on-error: true
         run: |
           cd gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ${{ steps.set-pages-dir.outputs.dir }}
-          # Only commit if there are changes
-          git diff --cached --quiet || git commit -m "Deploy changes to pages"
-          git pull --rebase origin gh-pages
-          git push origin gh-pages
+          git checkout --orphan temp-pages
+          git add --all
+          git commit -m "Deployment: $(date +%Y-%m-%d)"
+          git checkout gh-pages
+          git pull origin gh-pages --rebase
+          git reset --hard temp-pages
+          git push origin gh-pages --force
+          git branch -D temp-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       

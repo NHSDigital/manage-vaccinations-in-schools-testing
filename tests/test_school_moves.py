@@ -2,6 +2,7 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.data import ClassFileMapping
+from mavis.test.models import Programme
 
 pytestmark = pytest.mark.school_moves
 
@@ -16,6 +17,7 @@ def setup_confirm_and_ignore(
     import_records_page,
     programmes_enabled,
 ):
+    schools = schools[Programme.HPV]
     # We need to make sure we're uploading the same class with the same NHS numbers.
     input_file_path, output_file_path = test_data.get_file_paths(
         ClassFileMapping.TWO_FIXED_CHILDREN_YEAR_9
@@ -63,7 +65,8 @@ def test_confirm_and_ignore(
     review_school_move_page,
     children,
 ):
-    child_1, child_2 = children[0], children[1]
+    schools = schools[Programme.HPV]
+    child_1, child_2 = children[Programme.HPV][0], children[Programme.HPV][1]
 
     row1 = school_moves_page.get_row_for_child(*child_1.name)
     row2 = school_moves_page.get_row_for_child(*child_2.name)

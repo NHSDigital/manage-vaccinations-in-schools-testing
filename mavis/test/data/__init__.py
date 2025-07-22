@@ -2,13 +2,13 @@ import csv
 import os
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, School, User
+from mavis.test.models import Child, Organisation, School, User, Programme
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -63,7 +63,7 @@ class CohortsFileMapping(FileMapping):
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
     FIXED_CHILD_YEAR_8 = "fixed_child_year_8"
-    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
+    FIXED_CHILD = "fixed_child"
 
     @property
     def folder(self) -> Path:
@@ -92,9 +92,9 @@ class ClassFileMapping(FileMapping):
     WHITESPACE = "whitespace"
     WRONG_YEAR_GROUP = "wrong_year_group"
     RANDOM_CHILD_YEAR_9 = "random_child_year_9"
-    FIXED_CHILD_YEAR_9 = "fixed_child_year_9"
+    FIXED_CHILD = "fixed_child"
     FIXED_CHILD_YEAR_10 = "fixed_child_year_10"
-    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children_year_9"
+    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
 
     @property
@@ -109,9 +109,9 @@ class TestData:
     def __init__(
         self,
         organisation: Organisation,
-        schools: List[School],
+        schools: dict[str, list[School]],
         nurse: User,
-        children: List[Child],
+        children: dict[str, list[Child]],
     ):
         self.organisation = organisation
         self.schools = schools
@@ -130,6 +130,7 @@ class TestData:
         template_path: Path,
         file_name_prefix: str,
         session_id: Optional[str] = None,
+        programme_group: str = Programme.HPV.group,
     ) -> Path:
         static_replacements = {
             "<<VACCS_DATE>>": get_current_datetime()[:8],
@@ -142,7 +143,8 @@ class TestData:
             static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
 
         if self.schools:
-            for index, school in enumerate(self.schools):
+            schools = self.schools[programme_group]
+            for index, school in enumerate(schools):
                 static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
                 static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
 
@@ -150,7 +152,8 @@ class TestData:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         if self.children:
-            for index, child in enumerate(self.children):
+            children = self.children[programme_group]
+            for index, child in enumerate(children):
                 static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
                 static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
                 static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
@@ -164,6 +167,9 @@ class TestData:
                 static_replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
                 static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
                     child.date_of_birth.strftime("%Y%m%d")
+                )
+                static_replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(
+                    child.year_group
                 )
                 static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
                     0
@@ -236,7 +242,7 @@ class TestData:
 
     def get_new_nhs_no(self, valid=True) -> str:
         return nhs_number.generate(
-            valid=valid, for_region=nhs_number.REGION_ENGLAND, quantity=1
+            valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
         )[0]
 
     def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
@@ -247,11 +253,13 @@ class TestData:
         self,
         file_mapping: FileMapping,
         session_id: Optional[str] = None,
+        programme_group: str = Programme.HPV.group,
     ) -> tuple[Path, Path]:
         _input_file_path = self.create_file_from_template(
             template_path=file_mapping.input_template_path,
             file_name_prefix=str(file_mapping),
             session_id=session_id,
+            programme_group=programme_group,
         )
 
         _output_file_path = file_mapping.output_path

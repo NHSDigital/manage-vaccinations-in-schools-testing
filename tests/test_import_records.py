@@ -1,6 +1,7 @@
 import pytest
 
 from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
+from mavis.test.models import Programme
 
 
 @pytest.fixture
@@ -18,16 +19,17 @@ def setup_class_list(
     import_records_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
+        sessions_page.schedule_a_valid_session(school, programmes_enabled)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 @pytest.fixture
@@ -39,16 +41,17 @@ def setup_vaccs(
     import_records_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
+            school, programmes_enabled, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
         )
-        sessions_page.click_location(schools[0])
+        sessions_page.click_location(school)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -57,7 +60,7 @@ def setup_vaccs(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 @pytest.fixture
@@ -69,10 +72,11 @@ def setup_vaccs_systmone(
     import_records_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
+            school, programmes_enabled, for_today=True
         )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -81,7 +85,7 @@ def setup_vaccs_systmone(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 ########################################### CHILD LIST ###########################################
@@ -130,7 +134,8 @@ def test_child_list_space_normalization(
 def test_class_list_file_upload_positive(
     setup_class_list, schools, import_records_page
 ):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
@@ -138,31 +143,36 @@ def test_class_list_file_upload_positive(
 def test_class_list_file_upload_negative(
     setup_class_list, schools, import_records_page
 ):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.NEGATIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_structure(setup_class_list, schools, import_records_page):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.classlist
 def test_class_list_no_record(setup_class_list, schools, import_records_page):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.classlist
 def test_class_list_empty_file(setup_class_list, schools, import_records_page):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.classlist
 def test_class_list_year_group(setup_class_list, schools, import_records_page):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]), [8])
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school), [8])
     import_records_page.upload_and_verify_output(ClassFileMapping.WRONG_YEAR_GROUP)
 
 
@@ -171,7 +181,8 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
 def test_class_list_space_normalization(
     setup_class_list, schools, import_records_page, children_page, dashboard_page
 ):
-    import_records_page.navigate_to_class_list_record_import(str(schools[0]))
+    school = schools[Programme.HPV][0]
+    import_records_page.navigate_to_class_list_record_import(str(school))
     input_file, _ = import_records_page.upload_and_verify_output(
         ClassFileMapping.WHITESPACE
     )
@@ -242,7 +253,8 @@ def test_vaccs_historic_negative_file_upload(setup_vaccs, import_records_page):
 def test_vaccs_historic_no_urn_mav_855(
     setup_vaccs, schools, dashboard_page, import_records_page, children_page, children
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
 
     import_records_page.upload_and_verify_output(VaccsFileMapping.MAV_855)
     dashboard_page.click_mavis()
@@ -250,8 +262,8 @@ def test_vaccs_historic_no_urn_mav_855(
 
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
-    children_page.click_vaccination_details(schools[0])
-    children_page.expect_text_in_main(str(schools[0]))
+    children_page.click_vaccination_details(school)
+    children_page.expect_text_in_main(str(school))
 
 
 @pytest.mark.vaccinations

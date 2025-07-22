@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import Programme, Vaccine
+from mavis.test.models import Programme, Vaccine, ConsentOption
 from mavis.test.wrappers import generate_random_string
 from mavis.test.annotations import issue
 
@@ -16,19 +16,27 @@ def setup_mav_965(
     sessions_page,
     programmes_enabled,
 ):
+    school = schools["doubles"][0]
+
     gardasil_9_batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     menquadfi_batch_name = add_vaccine_batch(Vaccine.MENQUADFI)
     revaxis_batch_name = add_vaccine_batch(Vaccine.REVAXIS)
+    fluenz_tetra_laiv_batch_name = add_vaccine_batch(Vaccine.FLUENZ_TETRA_LAIV)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(
-        schools[0], programmes_enabled, for_today=True
-    )
+    sessions_page.schedule_a_valid_session(school, programmes_enabled, for_today=True)
     import_records_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD_YEAR_10)
+    import_records_page.upload_and_verify_output(
+        ClassFileMapping.FIXED_CHILD_YEAR_10, programme_group="doubles"
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    return gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name
+    return (
+        gardasil_9_batch_name,
+        menquadfi_batch_name,
+        revaxis_batch_name,
+        fluenz_tetra_laiv_batch_name,
+    )
 
 
 @issue("MAV-965")
@@ -38,7 +46,6 @@ def setup_mav_965(
 def test_programmes_rav_pre_screening_questions(
     setup_mav_965,
     schools,
-    programmes_page,
     dashboard_page,
     sessions_page,
     consent_page,
@@ -58,12 +65,18 @@ def test_programmes_rav_pre_screening_questions(
     - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
     """
 
-    child = children[0]
-    gardasil_9_batch_name, menquadfi_batch_name, revaxis_batch_name = setup_mav_965
+    child = children["doubles"][0]
+    school = schools["doubles"][0]
+    (
+        gardasil_9_batch_name,
+        menquadfi_batch_name,
+        revaxis_batch_name,
+        fluenz_tetra_laiv_batch_name,
+    ) = setup_mav_965
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.click_location(schools[0])
+    sessions_page.click_location(school)
     sessions_page.click_consent_tab()
     sessions_page.search_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
@@ -81,6 +94,15 @@ def test_programmes_rav_pre_screening_questions(
     sessions_page.click_get_verbal_consent()
     consent_page.parent_verbal_positive(
         parent=child.parents[0], change_phone=False, programme=Programme.TD_IPV
+    )
+    sessions_page.search_child(child)
+    sessions_page.click_programme_tab(Programme.FLU)
+    sessions_page.click_get_verbal_consent()
+    consent_page.parent_verbal_positive(
+        parent=child.parents[0],
+        change_phone=False,
+        programme=Programme.FLU,
+        consent_option=ConsentOption.BOTH,
     )
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccs_for_child(
@@ -100,4 +122,11 @@ def test_programmes_rav_pre_screening_questions(
         programme=Programme.TD_IPV,
         batch_name=revaxis_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
+    )
+    sessions_page.record_vaccs_for_child(
+        child=child,
+        programme=Programme.FLU,
+        batch_name=fluenz_tetra_laiv_batch_name,
+        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
+        consent_option=ConsentOption.BOTH,
     )

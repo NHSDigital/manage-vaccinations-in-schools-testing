@@ -22,6 +22,7 @@ from mavis.test.models import (
     School,
     Team,
     User,
+    Programme,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
 
@@ -52,36 +53,44 @@ def nurse():
 
 
 @pytest.fixture(scope="session")
-def schools(base_url) -> List[School]:
-    url = urllib.parse.urljoin(base_url, "api/locations")
-    params = {
-        "type": "school",
-        "status": "open",
-        "is_attached_to_organisation": "false",
-        "year_groups[]": ["8", "9", "10", "11"],  # HPV and Doubles
+def schools(base_url) -> dict[str, list[School]]:
+    def _get_schools_with_year_groups(year_groups: List[str]) -> list[School]:
+        url = urllib.parse.urljoin(base_url, "api/locations")
+        params = {
+            "type": "school",
+            "status": "open",
+            "is_attached_to_organisation": "false",
+            "year_groups[]": year_groups,
+        }
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        schools_data = random.choices(data, k=2)
+
+        return [
+            School(
+                name=normalize_whitespace(school_data["name"]), urn=school_data["urn"]
+            )
+            for school_data in schools_data
+        ]
+
+    return {
+        programme.group: _get_schools_with_year_groups(programme.year_groups)
+        for programme in Programme
     }
-
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-
-    data = response.json()
-    schools_data = random.choices(data, k=2)
-
-    return [
-        School(name=normalize_whitespace(school_data["name"]), urn=school_data["urn"])
-        for school_data in schools_data
-    ]
 
 
 @pytest.fixture
 def children():
-    def _generate_children(n: int) -> list[Child]:
+    def _generate_children(n: int, year_group: int) -> list[Child]:
         return [
             Child(
                 first_name=onboarding_faker.first_name(),
                 last_name=onboarding_faker.last_name().upper(),
                 nhs_number=nhs_number.generate(
-                    for_region=nhs_number.REGION_ENGLAND,
+                    for_region=nhs_number.REGION_SYNTHETIC,
                 )[0],
                 address=(
                     onboarding_faker.secondary_address(),
@@ -89,13 +98,19 @@ def children():
                     onboarding_faker.city(),
                     onboarding_faker.postcode(),
                 ),
-                date_of_birth=get_date_of_birth_for_year_group(9),
+                date_of_birth=get_date_of_birth_for_year_group(year_group),
+                year_group=year_group,
                 parents=(Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
             )
             for _ in range(n)
         ]
 
-    return _generate_children(2)
+    return {
+        programme.group: _generate_children(
+            2, int(random.choice(programme.year_groups))
+        )
+        for programme in Programme
+    }
 
 
 @pytest.fixture(scope="session")
@@ -137,7 +152,13 @@ def onboarding(clinics, schools, team, organisation, users, programmes_enabled):
         "clinics": {team.key: [it.to_onboarding() for it in clinics]},
         "organisation": organisation.to_onboarding(),
         "programmes": programmes_enabled,
-        "schools": {team.key: [it.to_onboarding() for it in schools]},
+        "schools": {
+            team.key: [
+                school.to_onboarding()
+                for schools_list in schools.values()
+                for school in schools_list
+            ]
+        },
         "teams": team.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
     }

@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.models import ConsentRefusalReason, Programme
+from mavis.test.models import ConsentRefusalReason, Programme, ConsentOption
 from mavis.test.data import CohortsFileMapping
 from mavis.test.annotations import issue
 
@@ -20,19 +20,32 @@ def start_consent(url, page, start_page):
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    url, log_in_as_nurse, schools, dashboard_page, sessions_page, import_records_page
+    url,
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    children,
 ):
+    school = schools[Programme.FLU][0]
+    child = children[Programme.FLU][0]
+
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
-    sessions_page.click_location(schools[0])
-    sessions_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    sessions_page.click_location(school)
+    sessions_page.navigate_to_class_list_import(child.year_group)
+    import_records_page.upload_and_verify_output(
+        CohortsFileMapping.FIXED_CHILD, programme_group=Programme.FLU.group
+    )
     yield url
 
 
 def test_refused(start_consent, consent_page, schools, children):
-    child = children[0]
+    child = children[Programme.FLU][0]
+    schools = schools[Programme.FLU]
+
     consent_page.fill_details(child, child.parents[0], schools)
     consent_page.dont_agree_to_vaccination()
     consent_page.select_consent_not_given_reason(
@@ -57,7 +70,8 @@ def test_given(
     health_question,
     children,
 ):
-    child = children[0]
+    child = children[Programme.FLU][0]
+    schools = schools[Programme.FLU]
 
     consent_page.fill_details(child, child.parents[0], schools, False)
     consent_page.agree_to_flu_vaccination(injection=injection)
@@ -72,7 +86,7 @@ def test_given(
         if health_question:
             consent_page.answer_yes()
         consent_page.answer_health_questions(
-            10 if health_question else 9, health_question=health_question
+            12 if health_question else 11, health_question=health_question
         )
 
     consent_page.click_confirm()
@@ -85,20 +99,19 @@ def test_given(
     )
 
 
-INJECTION = "Injection"
-NASAL = "Nasal spray"
-BOTH = "Nasal spray (or injection)"
-
-
 @issue("MAV-1234")
 @pytest.mark.parametrize(
     "consents",
     (
-        (NASAL, NASAL, NASAL),
-        (INJECTION, INJECTION, INJECTION),
-        (BOTH, NASAL, NASAL),
-        (BOTH, INJECTION, INJECTION),
-        (BOTH, BOTH, BOTH),
+        (
+            ConsentOption.NASAL_SPRAY,
+            ConsentOption.NASAL_SPRAY,
+            ConsentOption.NASAL_SPRAY,
+        ),
+        (ConsentOption.INJECTION, ConsentOption.INJECTION, ConsentOption.INJECTION),
+        (ConsentOption.BOTH, ConsentOption.NASAL_SPRAY, ConsentOption.NASAL_SPRAY),
+        (ConsentOption.BOTH, ConsentOption.INJECTION, ConsentOption.INJECTION),
+        (ConsentOption.BOTH, ConsentOption.BOTH, ConsentOption.NASAL_SPRAY),
     ),
     ids=lambda v: f"consents: {v}",
 )
@@ -111,49 +124,59 @@ def test_correct_method_shown(
     start_page,
     sessions_page,
 ):
-    child = children[0]
+    child = children[Programme.FLU][0]
+    schools = schools[Programme.FLU]
     url = setup_session_with_file_upload
+    number_of_health_questions = {
+        ConsentOption.BOTH: 11,
+        ConsentOption.NASAL_SPRAY: 9,
+        ConsentOption.INJECTION: 5,
+    }
 
     consent_page.go_to_url(url)
     start_page.start()
 
     consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_flu_vaccination(injection=(consents[0] == INJECTION))
-    if consents[0] == BOTH:
+    consent_page.agree_to_flu_vaccination(
+        injection=(consents[0] == ConsentOption.INJECTION)
+    )
+    if consents[0] == ConsentOption.BOTH:
         consent_page.answer_yes()
-    elif consents[0] == NASAL:
+    elif consents[0] == ConsentOption.NASAL_SPRAY:
         consent_page.answer_no()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
-        5 if (consents[0] == INJECTION) else 9, health_question=False
+        number_of_health_questions[consents[0]], health_question=False
     )
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=(consents[0] == INJECTION),
+        injection=(consents[0] == ConsentOption.INJECTION),
     )
 
     consent_page.go_to_url(url)
     start_page.start()
 
     consent_page.fill_details(child, child.parents[1], schools)
-    consent_page.agree_to_flu_vaccination(injection=(consents[1] == INJECTION))
-    if consents[1] == BOTH:
+    consent_page.agree_to_flu_vaccination(
+        injection=(consents[1] == ConsentOption.INJECTION)
+    )
+    if consents[1] == ConsentOption.BOTH:
         consent_page.answer_yes()
-    elif consents[1] == NASAL:
+    elif consents[1] == ConsentOption.NASAL_SPRAY:
         consent_page.answer_no()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
-        5 if (consents[1] == INJECTION) else 9, health_question=False
+        number_of_health_questions[consents[1]], health_question=False
     )
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=(consents[1] == INJECTION),
+        injection=(consents[1] == ConsentOption.INJECTION),
     )
 
     consent_page.click_sessions()

@@ -20,10 +20,12 @@ def setup_reports(log_in_as_nurse, dashboard_page):
 def setup_record_a_vaccine(
     log_in_as_nurse, schools, dashboard_page, sessions_page, programmes_enabled
 ):
+    school = schools[Programme.HPV][0]
+
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
+            school, programmes_enabled, for_today=True
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -31,7 +33,7 @@ def setup_record_a_vaccine(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 @pytest.fixture
@@ -43,16 +45,18 @@ def setup_mavis_1729(
     sessions_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
+
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
+            school, programmes_enabled, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
         )
-        sessions_page.click_location(schools[0])
+        sessions_page.click_location(school)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -66,7 +70,7 @@ def setup_mavis_1729(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 @pytest.fixture
@@ -79,18 +83,18 @@ def setup_mav_854(
     sessions_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
+
     try:
         batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            schools[0], programmes_enabled, for_today=True
+            school, programmes_enabled, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(
-            ClassFileMapping.FIXED_CHILD_YEAR_9
-        )
-        sessions_page.click_location(schools[0])
+        import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
+        sessions_page.click_location(school)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
@@ -102,7 +106,7 @@ def setup_mav_854(
     finally:
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
+        sessions_page.delete_all_sessions(school)
 
 
 @pytest.mark.cohorts
@@ -163,7 +167,7 @@ def test_cohorts_readd_to_cohort(
         Actual Result:
         Server error page and user cannot bring the child back into the cohort
     """
-    child = children[0]
+    child = children[Programme.HPV][0]
 
     input_file_path, _ = import_records_page.upload_and_verify_output(
         CohortsFileMapping.FIXED_CHILD_YEAR_8
@@ -197,15 +201,17 @@ def test_rav_triage_consent_given(
     consent_page,
     children,
 ):
-    child = children[0]
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.navigate_to_class_list_import()
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     consent_page.parent_phone_positive(child.parents[0])
@@ -213,7 +219,7 @@ def test_rav_triage_consent_given(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(school)
 
     sessions_page.click_register_tab()
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
@@ -232,14 +238,16 @@ def test_rav_triage_consent_refused(
     consent_page,
     children,
 ):
-    child = children[0]
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.navigate_to_class_list_import()
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD_YEAR_9)
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(school)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
@@ -257,7 +265,7 @@ def test_rav_triage_consent_refused(
 @pytest.mark.rav
 @pytest.mark.bug
 def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page, children):
-    child = children[0]
+    child = children[Programme.HPV][0]
 
     programmes_page.click_programme(Programme.HPV)
     programmes_page.click_vaccinations()
@@ -282,7 +290,8 @@ def test_rav_verify_excel_mav_854(
     consent_page,
     children,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
     batch_name = setup_mav_854
 
     children_page.search_for_a_child_name(str(child))
@@ -304,7 +313,7 @@ def test_rav_verify_excel_mav_854(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
-    sessions_page.click_location(schools[0])
+    sessions_page.click_location(school)
     assert sessions_page.get_session_id_from_offline_excel()
 
 
