@@ -6,8 +6,8 @@ pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
-def url(get_online_consent_url):
-    yield from get_online_consent_url(Programme.HPV)
+def url(get_online_consent_url, schools):
+    yield from get_online_consent_url(schools[Programme.HPV.group][0], Programme.HPV)
 
 
 @pytest.fixture(autouse=True)
