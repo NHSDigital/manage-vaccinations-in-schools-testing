@@ -23,8 +23,6 @@ def setup_session_with_file_upload(
     url,
     log_in_as_nurse,
     schools,
-    consent_page,
-    start_page,
     dashboard_page,
     sessions_page,
     import_records_page,

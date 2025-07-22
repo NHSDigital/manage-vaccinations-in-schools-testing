@@ -162,12 +162,16 @@ def test_recording_flu_vaccination(
     consent_page.answer_yes()
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(11, health_question=False)
+    consent_page.fill_details(child, child.parents[0], schools)
+    consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    consent_page.fill_address_details(*child.address)
+    consent_page.answer_health_questions(11, health_question=False)
     consent_page.click_confirm()
     consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=False,
+        consent_option=ConsentOption.BOTH,
     )
 
     consent_page.click_sessions()
@@ -179,5 +183,5 @@ def test_recording_flu_vaccination(
         child,
         Programme.FLU,
         fluenz_tetra_laiv_batch_name,
-        consent_option=ConsentOption.BOTH,
+        ConsentOption.BOTH,
     )
