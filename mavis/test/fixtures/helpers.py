@@ -41,14 +41,12 @@ def get_online_consent_url(
     set_feature_flags,
     nurse,
     organisation,
-    schools,
     dashboard_page,
     log_in_page,
     sessions_page,
     programmes_enabled,
 ):
-    def wrapper(*programmes):
-        school = schools[programmes[0].group][0]
+    def wrapper(school, *programmes):
         try:
             log_in_page.navigate()
             log_in_page.log_in_and_select_organisation(nurse, organisation)
@@ -63,6 +61,28 @@ def get_online_consent_url(
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)
             log_in_page.log_out()
+
+    return wrapper
+
+
+@pytest.fixture
+def get_online_consent_url_without_cleanup(
+    set_feature_flags,
+    nurse,
+    organisation,
+    dashboard_page,
+    log_in_page,
+    sessions_page,
+    programmes_enabled,
+):
+    def wrapper(school, *programmes):
+        log_in_page.navigate()
+        log_in_page.log_in_and_select_organisation(nurse, organisation)
+        dashboard_page.click_sessions()
+        sessions_page.schedule_a_valid_session(school, programmes_enabled)
+        url = sessions_page.get_online_consent_url(*programmes)
+        log_in_page.log_out()
+        yield url
 
     return wrapper
 

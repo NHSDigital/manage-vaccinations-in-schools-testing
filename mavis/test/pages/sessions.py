@@ -172,6 +172,9 @@ class SessionsPage:
         self.note_textbox = self.page.get_by_role("textbox", name="Note")
         self.add_a_note_span = self.page.get_by_text("Add a note")
         self.save_note_button = self.page.get_by_role("button", name="Save note")
+        self.set_session_in_progress_button = self.page.get_by_role(
+            "button", name="Set session in progress for today"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -476,6 +479,10 @@ class SessionsPage:
 
         self.check_notes_appear_in_order([note])
 
+    @step("Click on Set session in progress for today")
+    def click_set_session_in_progress_for_today(self):
+        self.set_session_in_progress_button.click()
+
     @step("Search for {1}")
     def search_for(self, name: str):
         self.search_textbox.fill(name)
@@ -665,7 +672,7 @@ class SessionsPage:
             on_date=_invalid_date, expect_error=True, programmes_list=programmes_list
         )
 
-    def get_online_consent_url(self, *programmes: List[Programme]) -> str:
+    def get_online_consent_url(self, *programmes: list[Programme]) -> str:
         link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
 

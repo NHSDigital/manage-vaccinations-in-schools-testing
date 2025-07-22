@@ -1,45 +1,182 @@
 import pytest
 
 from mavis.test.data import CohortsFileMapping
-from mavis.test.models import Programme
+from mavis.test.models import Programme, ConsentOption
 
 pytestmark = pytest.mark.e2e
 
 
-@pytest.fixture(autouse=True)
-def setup_tests(
-    nurse, organisation, schools, log_in_page, dashboard_page, sessions_page, start_page
-):
-    school = schools[Programme.HPV][0]
-
-    start_page.navigate_and_start()
-    log_in_page.log_in_and_select_organisation(nurse, organisation)
-    yield
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.delete_all_sessions(school)
-    log_in_page.log_out()
-
-
-def test_e2e(
+@pytest.fixture
+def setup_session_with_file_upload(
+    log_in_as_nurse,
+    add_vaccine_batch,
     schools,
     dashboard_page,
-    programmes_page,
     sessions_page,
     import_records_page,
-    consent_page,
     children,
-    programmes_enabled,
+):
+    def _setup(programme_group):
+        school = schools[programme_group][0]
+        child = children[programme_group][0]
+
+        batch_names = [
+            add_vaccine_batch(prog.vaccines[0])
+            for prog in Programme
+            if prog.group == programme_group
+        ]
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.click_scheduled()
+        sessions_page.click_location(school)
+        sessions_page.navigate_to_class_list_import(child.year_group)
+        import_records_page.upload_and_verify_output(
+            CohortsFileMapping.FIXED_CHILD, programme_group=programme_group
+        )
+        return batch_names
+
+    return _setup
+
+
+@pytest.fixture
+def hpv_consent_url(get_online_consent_url_without_cleanup, schools):
+    yield from get_online_consent_url_without_cleanup(
+        schools[Programme.HPV][0], Programme.HPV
+    )
+
+
+@pytest.fixture
+def setup_session_for_hpv(setup_session_with_file_upload):
+    return setup_session_with_file_upload(Programme.HPV)
+
+
+def test_recording_hpv_vaccination(
+    hpv_consent_url,
+    setup_session_for_hpv,
+    consent_page,
+    sessions_page,
+    start_page,
+    schools,
+    children,
 ):
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
+    schools = schools[Programme.HPV]
+    gardasil_9_batch_name = setup_session_for_hpv[0]
 
-    dashboard_page.click_programmes()
-    programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(school, programmes_enabled)
-    sessions_page.click_consent_tab()
-    sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
+    consent_page.go_to_url(hpv_consent_url)
+    start_page.start()
+
+    consent_page.fill_details(child, child.parents[0], schools)
+    consent_page.agree_to_hpv_vaccination()
+    consent_page.fill_address_details(*child.address)
+    consent_page.answer_health_questions(4, health_question=False)
+    consent_page.click_confirm()
+    consent_page.check_final_consent_message(
+        child, programmes=[Programme.HPV], health_question=False
+    )
+
+    consent_page.click_sessions()
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.click_set_session_in_progress_for_today()
+    sessions_page.register_child_as_attending(str(child))
+    sessions_page.record_vaccs_for_child(child, Programme.HPV, gardasil_9_batch_name)
+
+
+@pytest.fixture
+def doubles_consent_url(get_online_consent_url_without_cleanup, schools):
+    yield from get_online_consent_url_without_cleanup(
+        schools["doubles"][0], Programme.MENACWY, Programme.TD_IPV
+    )
+
+
+@pytest.fixture
+def setup_session_for_doubles(setup_session_with_file_upload):
+    return setup_session_with_file_upload("doubles")
+
+
+def test_recording_doubles_vaccination(
+    doubles_consent_url,
+    setup_session_for_doubles,
+    consent_page,
+    sessions_page,
+    start_page,
+    schools,
+    children,
+):
+    child = children["doubles"][0]
+    schools = schools["doubles"]
+    menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
+
+    consent_page.go_to_url(doubles_consent_url)
+    start_page.start()
+
+    consent_page.fill_details(child, child.parents[0], schools)
+    consent_page.agree_to_doubles_vaccinations(Programme.MENACWY, Programme.TD_IPV)
+    consent_page.fill_address_details(*child.address)
+    consent_page.answer_health_questions(6, health_question=False)
+    consent_page.click_confirm()
+    consent_page.check_final_consent_message(
+        child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
+    )
+
+    consent_page.click_sessions()
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.click_set_session_in_progress_for_today()
+    sessions_page.register_child_as_attending(str(child))
+    sessions_page.record_vaccs_for_child(child, Programme.MENACWY, menquadfi_batch_name)
+    sessions_page.record_vaccs_for_child(child, Programme.TD_IPV, revaxis_batch_name)
+
+
+@pytest.fixture
+def flu_consent_url(get_online_consent_url_without_cleanup, schools):
+    yield from get_online_consent_url_without_cleanup(
+        schools[Programme.FLU][0], Programme.FLU
+    )
+
+
+@pytest.fixture
+def setup_session_for_flu(setup_session_with_file_upload):
+    return setup_session_with_file_upload(Programme.FLU)
+
+
+def test_recording_flu_vaccination(
+    flu_consent_url,
+    setup_session_for_flu,
+    consent_page,
+    sessions_page,
+    start_page,
+    schools,
+    children,
+):
+    child = children[Programme.FLU][0]
+    schools = schools[Programme.FLU]
+    fluenz_tetra_laiv_batch_name = setup_session_for_flu[0]
+
+    consent_page.go_to_url(flu_consent_url)
+    start_page.start()
+
+    consent_page.fill_details(child, child.parents[0], schools)
+    consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    consent_page.fill_address_details(*child.address)
+    consent_page.answer_health_questions(11, health_question=False)
+    consent_page.click_confirm()
+    consent_page.check_final_consent_message(
+        child,
+        programmes=[Programme.FLU],
+        health_question=False,
+        consent_option=ConsentOption.BOTH,
+    )
+
+    consent_page.click_sessions()
+
+    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.click_set_session_in_progress_for_today()
+    sessions_page.register_child_as_attending(str(child))
+    sessions_page.record_vaccs_for_child(
+        child,
+        Programme.FLU,
+        fluenz_tetra_laiv_batch_name,
+        ConsentOption.BOTH,
+    )
