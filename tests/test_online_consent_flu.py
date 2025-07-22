@@ -58,7 +58,11 @@ def test_refused(start_consent, consent_page, schools, children):
     )
 
 
-@pytest.mark.parametrize("injection", (False, True), ids=lambda v: f"injection: {v}")
+@pytest.mark.parametrize(
+    "consent_option",
+    (ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION, ConsentOption.BOTH),
+    ids=lambda v: f"consent_option: {v}",
+)
 @pytest.mark.parametrize(
     "health_question", (False, True), ids=lambda v: f"health_question: {v}"
 )
@@ -66,28 +70,30 @@ def test_given(
     start_consent,
     consent_page,
     schools,
-    injection,
+    consent_option,
     health_question,
     children,
 ):
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
+    number_of_health_questions = {
+        ConsentOption.BOTH: 11,
+        ConsentOption.NASAL_SPRAY: 9,
+        ConsentOption.INJECTION: 5,
+    }
 
     consent_page.fill_details(child, child.parents[0], schools, False)
-    consent_page.agree_to_flu_vaccination(injection=injection)
-    # If consenting to nasal spray, a question is asked about injection as an alternative
-    if not injection:
-        consent_page.answer_yes()
+    consent_page.agree_to_flu_vaccination(consent_option=consent_option)
     consent_page.fill_address_details(*child.address)
 
-    if injection:
-        consent_page.answer_health_questions(5, health_question=health_question)
-    else:
-        if health_question:
-            consent_page.answer_yes()
-        consent_page.answer_health_questions(
-            12 if health_question else 11, health_question=health_question
-        )
+    number_of_health_questions = number_of_health_questions[consent_option]
+    if consent_option is not ConsentOption.INJECTION and health_question:
+        consent_page.answer_yes()
+        number_of_health_questions += 1
+
+    consent_page.answer_health_questions(
+        number_of_health_questions, health_question=health_question
+    )
 
     consent_page.click_confirm()
 
@@ -95,7 +101,7 @@ def test_given(
         child,
         programmes=[Programme.FLU],
         health_question=health_question,
-        injection=injection,
+        consent_option=consent_option,
     )
 
 
@@ -135,13 +141,7 @@ def test_correct_method_shown(
     }
 
     consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_flu_vaccination(
-        injection=(consents[0] == ConsentOption.INJECTION)
-    )
-    if consents[0] == ConsentOption.BOTH:
-        consent_page.answer_yes()
-    elif consents[0] == ConsentOption.NASAL_SPRAY:
-        consent_page.answer_no()
+    consent_page.agree_to_flu_vaccination(consent_option=consents[0])
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
         number_of_health_questions[consents[0]], health_question=False
@@ -151,20 +151,14 @@ def test_correct_method_shown(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=(consents[0] == ConsentOption.INJECTION),
+        consent_option=consents[0],
     )
 
     consent_page.go_to_url(url)
     start_page.start()
 
     consent_page.fill_details(child, child.parents[1], schools)
-    consent_page.agree_to_flu_vaccination(
-        injection=(consents[1] == ConsentOption.INJECTION)
-    )
-    if consents[1] == ConsentOption.BOTH:
-        consent_page.answer_yes()
-    elif consents[1] == ConsentOption.NASAL_SPRAY:
-        consent_page.answer_no()
+    consent_page.agree_to_flu_vaccination(consent_option=consents[1])
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(
         number_of_health_questions[consents[1]], health_question=False
@@ -174,7 +168,7 @@ def test_correct_method_shown(
         child,
         programmes=[Programme.FLU],
         health_question=False,
-        injection=(consents[1] == ConsentOption.INJECTION),
+        consent_option=consents[1],
     )
 
     consent_page.click_sessions()

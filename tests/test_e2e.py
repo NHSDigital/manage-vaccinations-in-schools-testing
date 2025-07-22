@@ -158,11 +158,6 @@ def test_recording_flu_vaccination(
     start_page.start()
 
     consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_flu_vaccination(injection=False)
-    consent_page.answer_yes()
-    consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(11, health_question=False)
-    consent_page.fill_details(child, child.parents[0], schools)
     consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
     consent_page.fill_address_details(*child.address)
     consent_page.answer_health_questions(11, health_question=False)

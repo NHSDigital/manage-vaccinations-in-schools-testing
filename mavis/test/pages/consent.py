@@ -232,13 +232,17 @@ class ConsentPage:
             self.doubles_consent_tdipv_radio.check()
         self.click_continue()
 
-    @step("Agree to Flu vaccination (injection = {injection})")
-    def agree_to_flu_vaccination(self, injection: bool):
-        if injection:
+    @step("Agree to Flu vaccination (consent_option = {consent_option})")
+    def agree_to_flu_vaccination(self, consent_option: ConsentOption):
+        if consent_option is ConsentOption.INJECTION:
             self.flu_agree_injection_radio.check()
         else:
             self.flu_agree_nasal_radio.check()
         self.click_continue()
+        if consent_option is ConsentOption.BOTH:
+            self.answer_yes()
+        elif consent_option is ConsentOption.NASAL_SPRAY:
+            self.answer_no()
 
     @step("Agree to HPV vaccination")
     def agree_to_hpv_vaccination(self):
@@ -518,16 +522,20 @@ class ConsentPage:
         child: Child,
         programmes: list[Programme],
         health_question: bool,
-        injection: bool = False,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
     ):
-        def programme_display(programme, injection) -> str:
+        def programme_display(programme, consent_option) -> str:
             if programme == Programme.FLU:
-                return "injected flu" if injection else "nasal spray flu"
+                return (
+                    "injected flu"
+                    if consent_option is ConsentOption.INJECTION
+                    else "nasal spray flu"
+                )
             else:
                 return str(programme)
 
         programmes_str = " and ".join(
-            programme_display(programme, injection) for programme in programmes
+            programme_display(programme, consent_option) for programme in programmes
         )
 
         if programmes == [Programme.MENACWY] or programmes == [Programme.TD_IPV]:
