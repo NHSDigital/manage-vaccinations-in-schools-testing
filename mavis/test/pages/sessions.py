@@ -725,7 +725,6 @@ class SessionsPage:
         at_school: bool = True,
         notes: str = "",
     ):
-        self.page.pause()
         self.click_record_vaccinations()
         self.search_child(child)
         self.click_programme_tab(programme)
@@ -784,8 +783,9 @@ class SessionsPage:
         expect(self.consent_refused_checkbox).to_be_checked()
 
     def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
+        self.page.pause()
         patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h2:has-text("{str(child)}"))'
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{str(child)}"))'
         )
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
         expect(flu_consent_section).to_contain_text("Consent given")
