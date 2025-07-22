@@ -20,15 +20,16 @@ def setup_recording_hpv(
     sessions_page,
     programmes_enabled,
 ):
+    school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(
-        schools[0], programmes_enabled, for_today=True
+        school, programmes_enabled, for_today=True
     )
     import_records_page.navigate_to_class_list_import()
-    import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD_YEAR_9)
-    sessions_page.click_location(schools[0])
+    import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
+    sessions_page.click_location(school)
     sessions_page.click_consent_tab()
     yield batch_name
 
@@ -41,7 +42,7 @@ def record_hpv(
     consent_page,
     children,
 ):
-    child = children[0]
+    child = children[Programme.HPV][0]
     batch_name = setup_recording_hpv
 
     children_page.search_for_a_child_name(str(child))
