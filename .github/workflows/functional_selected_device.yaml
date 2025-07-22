@@ -87,6 +87,10 @@ jobs:
           SET_FEATURE_FLAGS: ${{ steps.set-variables.outputs.set_feature_flags }}
           ADDITIONAL_FEATURE_FLAGS: ${{ steps.set-variables.outputs.additional_feature_flags }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+          IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
+          IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
+          IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
+          IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
 
       - name: Generate Allure report
         if: always() && steps.set-variables.outputs.deploy_report == 'true'

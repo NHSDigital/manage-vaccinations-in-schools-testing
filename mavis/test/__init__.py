@@ -4,6 +4,7 @@ from .fixtures import (
     admin,
     archive_batch_page,
     archive_consent_response_page,
+    authenticate_api,
     base_url,
     basic_auth_credentials,
     basic_auth_token,
@@ -21,6 +22,7 @@ from .fixtures import (
     edit_batch_page,
     flipper_page,
     get_online_consent_url,
+    imms_base_url,
     get_online_consent_url_without_cleanup,
     import_records_page,
     log_in_as_admin,
@@ -100,4 +102,6 @@ __all__ = [
     "unmatched_consent_responses_page",
     "users",
     "vaccines_page",
+    "authenticate_api",
+    "imms_base_url",
 ]
