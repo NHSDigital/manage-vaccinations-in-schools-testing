@@ -783,7 +783,6 @@ class SessionsPage:
         expect(self.consent_refused_checkbox).to_be_checked()
 
     def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
-        self.page.pause()
         patient_card = self.page.locator(
             f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{str(child)}"))'
         )
