@@ -387,8 +387,8 @@ class SessionsPage:
         self.confirm_button.click()
 
     @step("Click on Record vaccinations")
-    def click_record_vaccinations(self):
-        self.record_vaccinations_link.click()
+    def click_record_vaccinations_tab(self):
+        self._click_tab("Record vaccinations")
 
     @step("Confirm pre-screening checks are true")
     def confirm_pre_screening_checks(
@@ -721,7 +721,9 @@ class SessionsPage:
 
     def search_child(self, child: Child) -> None:
         self.search_for(str(child))
-        self.page.get_by_role("link", name=str(child)).click()
+        child_locator = self.page.get_by_role("link", name=str(child))
+        reload_until_element_is_visible(self.page, child_locator)
+        child_locator.click()
 
     def record_vaccs_for_child(
         self,
@@ -732,7 +734,7 @@ class SessionsPage:
         at_school: bool = True,
         notes: str = "",
     ):
-        self.click_record_vaccinations()
+        self.click_record_vaccinations_tab()
         self.search_child(child)
         self.click_programme_tab(programme)
 
