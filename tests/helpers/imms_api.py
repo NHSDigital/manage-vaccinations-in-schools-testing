@@ -20,7 +20,7 @@ class imms_api_helper:
 
         _params = {
             "_include": "Immunization:patient",
-            "-immunization.target": "COVID19,FLU,RSV,HPV",
+            "-immunization.target": "HPV",
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
