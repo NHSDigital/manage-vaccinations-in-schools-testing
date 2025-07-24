@@ -21,7 +21,7 @@ def setup_mav_965(
     gardasil_9_batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     menquadfi_batch_name = add_vaccine_batch(Vaccine.MENQUADFI)
     revaxis_batch_name = add_vaccine_batch(Vaccine.REVAXIS)
-    fluenz_tetra_laiv_batch_name = add_vaccine_batch(Vaccine.FLUENZ_TETRA_LAIV)
+    fluenz_batch_name = add_vaccine_batch(Vaccine.FLUENZ)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(school, programmes_enabled, for_today=True)
@@ -35,7 +35,7 @@ def setup_mav_965(
         gardasil_9_batch_name,
         menquadfi_batch_name,
         revaxis_batch_name,
-        fluenz_tetra_laiv_batch_name,
+        fluenz_batch_name,
     )
 
 
@@ -71,7 +71,7 @@ def test_programmes_rav_pre_screening_questions(
         gardasil_9_batch_name,
         menquadfi_batch_name,
         revaxis_batch_name,
-        fluenz_tetra_laiv_batch_name,
+        fluenz_batch_name,
     ) = setup_mav_965
 
     dashboard_page.click_mavis()
@@ -126,7 +126,7 @@ def test_programmes_rav_pre_screening_questions(
     sessions_page.record_vaccs_for_child(
         child=child,
         programme=Programme.FLU,
-        batch_name=fluenz_tetra_laiv_batch_name,
+        batch_name=fluenz_batch_name,
         notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
         consent_option=ConsentOption.BOTH,
     )
