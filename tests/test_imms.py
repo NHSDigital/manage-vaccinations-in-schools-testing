@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.models import Programme, Vaccine, VaccinationSite
+from mavis.test.models import Programme, Vaccine, DeliverySite
 from mavis.test.data import ClassFileMapping
 from mavis.test.imms_api import ImmsApiHelper
 
@@ -51,7 +51,7 @@ def record_hpv(
         child=child,
         programme=Programme.HPV,
         batch_name=batch_name,
-        vaccination_site=VaccinationSite.LEFT_ARM_UPPER,
+        delivery_site=DeliverySite.LEFT_ARM_UPPER,
     )
     yield child, vaccination_time
 
@@ -63,16 +63,16 @@ def test_imms_api_retrieval_hpv(
     school = schools[Programme.HPV][0]
 
     imms_api_helper.check_hpv_record_in_imms_api(
-        child, school, VaccinationSite.LEFT_ARM_UPPER, vaccination_time
+        child, school, DeliverySite.LEFT_ARM_UPPER, vaccination_time
     )
 
     sessions_page.click_vaccination_details(school)
     programmes_page.click_edit_vaccination_record()
     programmes_page.click_change_site()
-    programmes_page.click_vaccination_site(VaccinationSite.RIGHT_ARM_UPPER)
+    programmes_page.click_delivery_site(DeliverySite.RIGHT_ARM_UPPER)
     programmes_page.click_continue()
     programmes_page.click_save_changes()
 
     imms_api_helper.check_hpv_record_in_imms_api(
-        child, school, VaccinationSite.RIGHT_ARM_UPPER, vaccination_time
+        child, school, DeliverySite.RIGHT_ARM_UPPER, vaccination_time
     )

@@ -11,7 +11,7 @@ from mavis.test.models import (
     Parent,
     Child,
     ConsentOption,
-    VaccinationSite,
+    DeliverySite,
     School,
 )
 from mavis.test.annotations import step
@@ -424,7 +424,7 @@ class SessionsPage:
             self.ready_for_nasal_spray_radio.check()
 
     @step("Select vaccination site {1}")
-    def select_vaccination_site(self, site: VaccinationSite):
+    def select_delivery_site(self, site: DeliverySite):
         self.page.get_by_role("radio", name=str(site)).check()
 
     @step("Click on Attending")
@@ -737,7 +737,7 @@ class SessionsPage:
         programme: Programme,
         batch_name: str,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        vaccination_site: VaccinationSite = VaccinationSite.LEFT_ARM_UPPER,
+        delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER,
         at_school: bool = True,
         notes: str = "",
     ) -> datetime:
@@ -752,7 +752,7 @@ class SessionsPage:
 
         self.select_ready_for_vaccination(consent_option)
         if consent_option == ConsentOption.INJECTION:
-            self.select_vaccination_site(vaccination_site)
+            self.select_delivery_site(delivery_site)
         self.click_continue_button()
 
         if len(notes) > 1000:

@@ -5,7 +5,7 @@ import dateutil.parser
 import time
 from typing import NamedTuple
 
-from mavis.test.models import ImmsEndpoints, Child, School, VaccinationSite
+from mavis.test.models import ImmsEndpoints, Child, School, DeliverySite
 
 
 class ImmsApiHelper:
@@ -22,7 +22,7 @@ class ImmsApiHelper:
         self,
         child: Child,
         school: School,
-        vaccination_site: VaccinationSite,
+        delivery_site: DeliverySite,
         vaccination_time: datetime,
     ):
         GARDASIL_9_VACCINE_CODE = "33493111000001108"
@@ -52,8 +52,8 @@ class ImmsApiHelper:
             f"Expected vaccine code {GARDASIL_9_VACCINE_CODE}, got {imms_vaccination_record.vaccine_code}"
         )
 
-        assert imms_vaccination_record.vaccination_site == vaccination_site, (
-            f"Expected vaccination site {vaccination_site}, got {imms_vaccination_record.vaccination_site}"
+        assert imms_vaccination_record.delivery_site == delivery_site, (
+            f"Expected vaccination site {delivery_site}, got {imms_vaccination_record.delivery_site}"
         )
 
         assert imms_vaccination_record.vaccination_location_urn == school.urn, (
@@ -76,7 +76,7 @@ class ImmsApiHelper:
 class ImmsApiVaccinationRecord(NamedTuple):
     patient_nhs_number: str
     vaccine_code: str
-    vaccination_site: VaccinationSite
+    delivery_site: DeliverySite
     vaccination_location_urn: str
     vaccination_time: datetime
 
@@ -97,7 +97,7 @@ class ImmsApiVaccinationRecord(NamedTuple):
         return cls(
             patient_nhs_number=immunization["patient"]["identifier"]["value"],
             vaccine_code=immunization["vaccineCode"]["coding"][0]["code"],
-            vaccination_site=VaccinationSite.from_code(
+            delivery_site=DeliverySite.from_code(
                 immunization["site"]["coding"][0]["code"]
             ),
             vaccination_location_urn=immunization["location"]["identifier"]["value"],
