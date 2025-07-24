@@ -158,21 +158,43 @@ class TestData:
                 static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
                 static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
                 static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
-                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_1>>"] = child.address[0]
-                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_2>>"] = child.address[1]
+                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_1>>"] = (
+                    child.address[0]
+                )
+                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_2>>"] = (
+                    child.address[1]
+                )
                 static_replacements[f"<<CHILD_{index}_TOWN>>"] = child.address[2]
                 static_replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
-                static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = child.date_of_birth.strftime("%Y%m%d")
-                static_replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(child.year_group)
-                static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[0].full_name
-                static_replacements[f"<<CHILD_{index}_PARENT_2_NAME>>"] = child.parents[1].full_name
-                static_replacements[f"<<CHILD_{index}_PARENT_1_EMAIL>>"] = child.parents[0].email_address
-                static_replacements[f"<<CHILD_{index}_PARENT_2_EMAIL>>"] = child.parents[1].email_address
-                static_replacements[f"<<CHILD_{index}_PARENT_1_RELATIONSHIP>>"] = child.parents[0].relationship
-                static_replacements[f"<<CHILD_{index}_PARENT_2_RELATIONSHIP>>"] = child.parents[1].relationship
+                static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
+                    child.date_of_birth.strftime("%Y%m%d")
+                )
+                static_replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(
+                    child.year_group
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
+                    0
+                ].full_name
+                static_replacements[f"<<CHILD_{index}_PARENT_2_NAME>>"] = child.parents[
+                    1
+                ].full_name
+                static_replacements[f"<<CHILD_{index}_PARENT_1_EMAIL>>"] = (
+                    child.parents[0].email_address
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_EMAIL>>"] = (
+                    child.parents[1].email_address
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_1_RELATIONSHIP>>"] = (
+                    child.parents[0].relationship
+                )
+                static_replacements[f"<<CHILD_{index}_PARENT_2_RELATIONSHIP>>"] = (
+                    child.parents[1].relationship
+                )
 
         for year_group in range(8, 12):
-            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(get_date_of_birth_for_year_group(year_group))
+            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
+                get_date_of_birth_for_year_group(year_group)
+            )
 
         dynamic_replacements = {
             "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
@@ -187,7 +209,9 @@ class TestData:
         if os.path.getsize(self.template_path / template_path) > 0:
             template_df = pd.read_csv(self.template_path / template_path, dtype=str)
             # template_df.replace(static_replacements, inplace=True)
-            template_df = self.replace_substrings_in_df(template_df, static_replacements)
+            template_df = self.replace_substrings_in_df(
+                template_df, static_replacements
+            )
             template_df = template_df.apply(
                 lambda col: col.apply(
                     lambda x: (
@@ -220,7 +244,9 @@ class TestData:
         return df
 
     def get_new_nhs_no(self, valid=True) -> str:
-        return nhs_number.generate(valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1)[0]
+        return nhs_number.generate(
+            valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
+        )[0]
 
     def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
         file_content = self.read_file(file_path)
@@ -246,11 +272,17 @@ class TestData:
     def read_scenario_list_from_file(self, input_file_path: str) -> Optional[str]:
         try:
             _df = pd.read_csv(input_file_path)
-            return ", ".join(_df["TEST_DESC_IGNORED"].tolist()) if "TEST_DESC_IGNORED" in _df.columns else None
+            return (
+                ", ".join(_df["TEST_DESC_IGNORED"].tolist())
+                if "TEST_DESC_IGNORED" in _df.columns
+                else None
+            )
         except pd.errors.EmptyDataError:
             return None
 
-    def create_child_list_from_file(self, file_path: Path, is_vaccinations: bool) -> list[str]:
+    def create_child_list_from_file(
+        self, file_path: Path, is_vaccinations: bool
+    ) -> list[str]:
         _file_df = pd.read_csv(file_path)
 
         if is_vaccinations:
@@ -269,5 +301,7 @@ class TestData:
 
     def increment_date_of_birth_for_records(self, file_path: Path):
         _file_df = pd.read_csv(file_path)
-        _file_df["CHILD_DATE_OF_BIRTH"] = pd.to_datetime(_file_df["CHILD_DATE_OF_BIRTH"]) + pd.Timedelta(days=1)
+        _file_df["CHILD_DATE_OF_BIRTH"] = pd.to_datetime(
+            _file_df["CHILD_DATE_OF_BIRTH"]
+        ) + pd.Timedelta(days=1)
         _file_df.to_csv(file_path, index=False)
