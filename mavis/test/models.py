@@ -130,6 +130,19 @@ class Vaccine(StrEnum):
     REVAXIS = "Revaxis"
 
 
+class VaccinationSite(StrEnum):
+    LEFT_ARM_UPPER = "Left arm (upper position)"
+    RIGHT_ARM_UPPER = "Right arm (upper position)"
+
+    @classmethod
+    def from_code(cls, code: str) -> "VaccinationSite":
+        sites = {
+            "368208006": VaccinationSite.LEFT_ARM_UPPER,
+            "368209003": VaccinationSite.RIGHT_ARM_UPPER,
+        }
+        return sites[code]
+
+
 class HealthQuestion(StrEnum):
     BLEEDING_DISORDER = "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
     SEVERE_ALLERGIES = "Does your child have any severe allergies?"

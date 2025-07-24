@@ -1,13 +1,13 @@
 import pytest
 
-from mavis.test.models import Programme, Vaccine
+from mavis.test.models import Programme, Vaccine, VaccinationSite
 from mavis.test.data import ClassFileMapping
-from tests.helpers import imms_api
+from mavis.test.imms_api import ImmsApiHelper
 
 
 @pytest.fixture(scope="session")
 def imms_api_helper(authenticate_api):
-    yield imms_api.imms_api_helper(authenticate_api)
+    yield ImmsApiHelper(authenticate_api)
 
 
 @pytest.fixture
@@ -47,15 +47,19 @@ def record_hpv(
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.register_child_as_attending(child)
-    sessions_page.record_vaccs_for_child(
+    vaccination_time = sessions_page.record_vaccs_for_child(
         child=child,
         programme=Programme.HPV,
         batch_name=batch_name,
+        vaccination_site=VaccinationSite.LEFT_ARM_UPPER,
     )
-    sessions_page.expect_main_to_contain_text("Vaccination outcome recorded for HPV")
-    yield child
+    yield child, vaccination_time
 
 
-def test_imms_api_retrieval_hpv(record_hpv, imms_api_helper):
-    child = record_hpv
-    imms_api_helper.check_hpv_record_in_imms_api(child)
+def test_imms_api_retrieval_hpv(record_hpv, schools, imms_api_helper):
+    child, vaccination_time = record_hpv
+    school = schools[Programme.HPV][0]
+
+    imms_api_helper.check_hpv_record_in_imms_api(
+        child, school, VaccinationSite.LEFT_ARM_UPPER, vaccination_time
+    )
