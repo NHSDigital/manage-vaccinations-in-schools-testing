@@ -152,7 +152,7 @@ def test_recording_flu_vaccination(
 ):
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
-    fluenz_tetra_laiv_batch_name = setup_session_for_flu[0]
+    fluenz_batch_name = setup_session_for_flu[0]
 
     consent_page.go_to_url(flu_consent_url)
     start_page.start()
@@ -177,6 +177,6 @@ def test_recording_flu_vaccination(
     sessions_page.record_vaccs_for_child(
         child,
         Programme.FLU,
-        fluenz_tetra_laiv_batch_name,
+        fluenz_batch_name,
         ConsentOption.BOTH,
     )

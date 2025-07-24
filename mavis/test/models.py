@@ -31,7 +31,7 @@ class Programme(StrEnum):
     def vaccines(self):
         match self:
             case self.FLU:
-                return [Vaccine.FLUENZ_TETRA_LAIV]
+                return [Vaccine.FLUENZ]
             case self.HPV:
                 return [Vaccine.GARDASIL_9]
             case self.MENACWY:
@@ -116,7 +116,7 @@ class Programme(StrEnum):
 
 class Vaccine(StrEnum):
     # Flu
-    FLUENZ_TETRA_LAIV = "Fluenz Tetra - LAIV"
+    FLUENZ = "Fluenz"
 
     # HPV
     GARDASIL_9 = "Gardasil 9"
