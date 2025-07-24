@@ -134,13 +134,13 @@ class VaccinationSite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
     RIGHT_ARM_UPPER = "Right arm (upper position)"
 
-    @property
-    def imms_api_display(self) -> str:
-        return (
-            "Left upper arm structure"
-            if self == VaccinationSite.LEFT_ARM_UPPER
-            else "Right upper arm structure"
-        )
+    @classmethod
+    def from_code(cls, code: str) -> "VaccinationSite":
+        sites = {
+            "368208006": VaccinationSite.LEFT_ARM_UPPER,
+            "368209003": VaccinationSite.RIGHT_ARM_UPPER,
+        }
+        return sites[code]
 
 
 class HealthQuestion(StrEnum):

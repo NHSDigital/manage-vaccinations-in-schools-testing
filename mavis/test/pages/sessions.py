@@ -731,7 +731,7 @@ class SessionsPage:
         vaccination_site: VaccinationSite = VaccinationSite.LEFT_ARM_UPPER,
         at_school: bool = True,
         notes: str = "",
-    ):
+    ) -> datetime:
         self.click_record_vaccinations_tab()
         self.search_child(child)
         self.click_programme_tab(programme)
@@ -766,6 +766,7 @@ class SessionsPage:
             expect(self.success_alert).to_contain_text(
                 f"Vaccination outcome recorded for {programme}"
             )
+        return datetime.now().astimezone()
 
     def verify_consent_filters(self, children):
         child = children[0]
