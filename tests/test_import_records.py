@@ -1,5 +1,6 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
 
@@ -303,4 +304,24 @@ def test_vaccs_hpv_space_normalization(
 def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records_page):
     import_records_page.upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_WHITESPACE,
+    )
+
+
+@issue("MAV-1547")
+@pytest.mark.vaccinations
+@pytest.mark.bug
+def test_vaccs_nivs_disallow_flu_for_previous_years(setup_vaccs, import_records_page):
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.MAV_1547, session_id=setup_vaccs
+    )
+
+
+@issue("MAV-1599")
+@pytest.mark.vaccinations
+@pytest.mark.bug
+def test_vaccs_systmone_disallow_flu_for_previous_years(
+    setup_vaccs_systmone, import_records_page
+):
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.MAV_1599, session_id=setup_vaccs_systmone
     )

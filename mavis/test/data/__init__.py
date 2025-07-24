@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, School, User, Programme
+from mavis.test.models import Child, Organisation, Programme, School, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -50,6 +50,8 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
     WHITESPACE = "whitespace"
     SYSTMONE_WHITESPACE = "systmone_whitespace"
+    MAV_1547 = "mav_1547"  # Disallow uploading of flu vaccinations from previous academic years (NIVS format)
+    MAV_1599 = "mav_1599"  # Disallow uploading of flu vaccinations from previous academic years (SystmOne format)
 
     @property
     def folder(self) -> Path:
@@ -213,9 +215,11 @@ class TestData:
             )
             template_df = template_df.apply(
                 lambda col: col.apply(
-                    lambda x: dynamic_replacements[x.strip()]()
-                    if isinstance(x, str) and x.strip() in dynamic_replacements
-                    else x
+                    lambda x: (
+                        dynamic_replacements[x.strip()]()
+                        if isinstance(x, str) and x.strip() in dynamic_replacements
+                        else x
+                    )
                 )
             )
             template_df.to_csv(

@@ -1,0 +1,4 @@
+TEST_DESC_IGNORED,Date of birth,NHS number,Vaccination area code,Vaccination batch number,Vaccination reason,Vaccination type,First name,Postcode,Sex,Surname,Event date,Event location type,Event time,Organisation ID,School,School code,Patient Count
+HPV_ShouldNotError,<<DOB_YEAR_10>>,<<RANDOM_NHS_NO>>,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,LE3 2DA,Female,<<RANDOM_LNAME>>,2020-05-31,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+Flu_ShouldNotError,<<DOB_YEAR_10>>,<<RANDOM_NHS_NO>>,,123013325,,Flu,<<RANDOM_FNAME>>,LE3 2DA,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+Flu_ShouldError,<<DOB_YEAR_10>>,<<RANDOM_NHS_NO>>,,123013325,,Flu,<<RANDOM_FNAME>>,LE3 2DA,Female,<<RANDOM_LNAME>>,2020-05-31,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
