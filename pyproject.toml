@@ -13,7 +13,7 @@ dependencies = [
     "openpyxl==3.1.5",
     "pandas==2.3.1",
     "pillow==11.3.0",
-    "playwright==1.53.0",
+    "playwright==1.54.0",
     "pyjwt==2.10.1",
     "pytest==8.4.1",
     "pytest-dotenv==0.5.2",
