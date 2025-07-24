@@ -44,9 +44,13 @@ def setup_vaccs(
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, programmes_enabled, for_today=True)
+        sessions_page.schedule_a_valid_session(
+            school, programmes_enabled, for_today=True
+        )
         import_records_page.navigate_to_class_list_import()
-        import_records_page.upload_and_verify_output(ClassFileMapping.RANDOM_CHILD_YEAR_9)
+        import_records_page.upload_and_verify_output(
+            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        )
         sessions_page.click_location(school)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
@@ -71,7 +75,9 @@ def setup_vaccs_systmone(
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, programmes_enabled, for_today=True)
+        sessions_page.schedule_a_valid_session(
+            school, programmes_enabled, for_today=True
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
@@ -110,8 +116,12 @@ def test_child_list_empty_file(setup_child_list, import_records_page):
 
 @pytest.mark.childlist
 @pytest.mark.bug
-def test_child_list_space_normalization(setup_child_list, import_records_page, children_page, dashboard_page):
-    input_file, _ = import_records_page.upload_and_verify_output(ChildFileMapping.WHITESPACE)
+def test_child_list_space_normalization(
+    setup_child_list, import_records_page, children_page, dashboard_page
+):
+    input_file, _ = import_records_page.upload_and_verify_output(
+        ChildFileMapping.WHITESPACE
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
@@ -121,14 +131,18 @@ def test_child_list_space_normalization(setup_child_list, import_records_page, c
 
 
 @pytest.mark.classlist
-def test_class_list_file_upload_positive(setup_class_list, schools, import_records_page):
+def test_class_list_file_upload_positive(
+    setup_class_list, schools, import_records_page
+):
     school = schools[Programme.HPV][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
 @pytest.mark.classlist
-def test_class_list_file_upload_negative(setup_class_list, schools, import_records_page):
+def test_class_list_file_upload_negative(
+    setup_class_list, schools, import_records_page
+):
     school = schools[Programme.HPV][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(ClassFileMapping.NEGATIVE)
@@ -164,10 +178,14 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
 
 @pytest.mark.classlist
 @pytest.mark.bug
-def test_class_list_space_normalization(setup_class_list, schools, import_records_page, children_page, dashboard_page):
+def test_class_list_space_normalization(
+    setup_class_list, schools, import_records_page, children_page, dashboard_page
+):
     school = schools[Programme.HPV][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
-    input_file, _ = import_records_page.upload_and_verify_output(ClassFileMapping.WHITESPACE)
+    input_file, _ = import_records_page.upload_and_verify_output(
+        ClassFileMapping.WHITESPACE
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
@@ -178,21 +196,31 @@ def test_class_list_space_normalization(setup_class_list, schools, import_record
 
 @pytest.mark.vaccinations
 def test_vaccs_positive_file_upload(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(file_mapping=VaccsFileMapping.POSITIVE, session_id=setup_vaccs)
+    import_records_page.upload_and_verify_output(
+        file_mapping=VaccsFileMapping.POSITIVE, session_id=setup_vaccs
+    )
 
 
 @pytest.mark.vaccinations
 def test_vaccs_negative_file_upload(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(file_mapping=VaccsFileMapping.NEGATIVE, session_id=setup_vaccs)
+    import_records_page.upload_and_verify_output(
+        file_mapping=VaccsFileMapping.NEGATIVE, session_id=setup_vaccs
+    )
 
 
 @pytest.mark.vaccinations
-def test_vaccs_duplicate_record_upload(setup_vaccs, dashboard_page, import_records_page):
-    import_records_page.upload_and_verify_output(VaccsFileMapping.DUP_1, session_id=setup_vaccs)
+def test_vaccs_duplicate_record_upload(
+    setup_vaccs, dashboard_page, import_records_page
+):
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.DUP_1, session_id=setup_vaccs
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_import_records()
     import_records_page.navigate_to_vaccination_records_import()
-    import_records_page.upload_and_verify_output(VaccsFileMapping.DUP_2, session_id=setup_vaccs)
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.DUP_2, session_id=setup_vaccs
+    )
 
 
 @pytest.mark.vaccinations
@@ -249,14 +277,22 @@ def test_vaccs_systmone_negative_file_upload(setup_vaccs_systmone, import_record
 
 
 @pytest.mark.vaccinations
-def test_vaccs_systmone_negative_historical_file_upload(setup_vaccs_systmone, import_records_page):
-    import_records_page.upload_and_verify_output(VaccsFileMapping.SYSTMONE_HIST_NEGATIVE)
+def test_vaccs_systmone_negative_historical_file_upload(
+    setup_vaccs_systmone, import_records_page
+):
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.SYSTMONE_HIST_NEGATIVE
+    )
 
 
 @pytest.mark.vaccinations
 @pytest.mark.bug
-def test_vaccs_hpv_space_normalization(setup_vaccs, import_records_page, children_page, dashboard_page):
-    input_file, _ = import_records_page.upload_and_verify_output(VaccsFileMapping.WHITESPACE, session_id=setup_vaccs)
+def test_vaccs_hpv_space_normalization(
+    setup_vaccs, import_records_page, children_page, dashboard_page
+):
+    input_file, _ = import_records_page.upload_and_verify_output(
+        VaccsFileMapping.WHITESPACE, session_id=setup_vaccs
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=True)
@@ -273,10 +309,16 @@ def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccs_nivs_disallow_flu_for_previous_years(setup_vaccs, import_records_page):
-    import_records_page.upload_and_verify_output(VaccsFileMapping.MAV_1547, session_id=setup_vaccs)
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.MAV_1547, session_id=setup_vaccs
+    )
 
 
 @pytest.mark.vaccinations
 @pytest.mark.bug
-def test_vaccs_systmone_disallow_flu_for_previous_years(setup_vaccs_systmone, import_records_page):
-    import_records_page.upload_and_verify_output(VaccsFileMapping.MAV_1599, session_id=setup_vaccs_systmone)
+def test_vaccs_systmone_disallow_flu_for_previous_years(
+    setup_vaccs_systmone, import_records_page
+):
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.MAV_1599, session_id=setup_vaccs_systmone
+    )
