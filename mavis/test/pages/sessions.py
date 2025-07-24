@@ -6,7 +6,14 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Programme, Parent, Child, ConsentOption, VaccinationSite
+from mavis.test.models import (
+    Programme,
+    Parent,
+    Child,
+    ConsentOption,
+    VaccinationSite,
+    School,
+)
 from mavis.test.annotations import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -172,6 +179,8 @@ class SessionsPage:
         self.set_session_in_progress_button = self.page.get_by_role(
             "button", name="Set session in progress for today"
         )
+        vaccinations_card = page.get_by_role("table", name="Vaccinations")
+        self.vaccinations_card_row = vaccinations_card.get_by_role("row")
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -797,3 +806,10 @@ class SessionsPage:
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
         expect(flu_consent_section).to_contain_text("Consent given")
         expect(flu_consent_section).to_contain_text(method)
+
+    @step("Click on {1} vaccination details")
+    def click_vaccination_details(self, school: School) -> None:
+        with self.page.expect_navigation():
+            self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
+                "link"
+            ).click()

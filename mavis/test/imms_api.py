@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 import requests
 import dateutil.parser
+import time
 from typing import NamedTuple
 
 from mavis.test.models import ImmsEndpoints, Child, School, VaccinationSite
@@ -32,11 +33,15 @@ class ImmsApiHelper:
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
+        # wait 5 seconds for the API to be updated with the latest information
+        time.sleep(5)
+
         response = requests.get(
             url=ImmsEndpoints.READ.to_url, headers=self.headers, params=_params
         )
         response.raise_for_status()
         imms_vaccination_record = ImmsApiVaccinationRecord.from_response(response)
+
         assert imms_vaccination_record is not None, "No immunization record found"
 
         assert imms_vaccination_record.patient_nhs_number == child.nhs_number, (
@@ -48,7 +53,7 @@ class ImmsApiHelper:
         )
 
         assert imms_vaccination_record.vaccination_site == vaccination_site, (
-            f"Expected vaccination site code {vaccination_site}, got {imms_vaccination_record.vaccination_site}"
+            f"Expected vaccination site {vaccination_site}, got {imms_vaccination_record.vaccination_site}"
         )
 
         assert imms_vaccination_record.vaccination_location_urn == school.urn, (

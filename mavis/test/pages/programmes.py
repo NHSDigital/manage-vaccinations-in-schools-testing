@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from io import StringIO
 
 from mavis.test.data import TestData
-from mavis.test.models import ReportFormat, Programme, Child
+from mavis.test.models import ReportFormat, Programme, Child, VaccinationSite
 from mavis.test.annotations import step
 from mavis.test.wrappers import get_current_datetime
 
@@ -38,6 +38,7 @@ class ProgrammesPage:
             format: page.get_by_role("radio", name=format) for format in ReportFormat
         }
         self.change_outcome_link = page.get_by_role("link", name="Change   outcome")
+        self.change_site_link = page.get_by_role("link", name="Change   site")
         self.they_refused_it_radio_button = page.get_by_role(
             "radio", name="They refused it"
         )
@@ -69,6 +70,14 @@ class ProgrammesPage:
     @step("Click on Edit vaccination record")
     def click_edit_vaccination_record(self):
         self.edit_vaccination_record_button.click()
+
+    @step("Click on Change site")
+    def click_change_site(self):
+        self.change_site_link.click()
+
+    @step("Click vaccination site {1}")
+    def click_vaccination_site(self, vaccination_site: VaccinationSite):
+        self.page.get_by_role("radio", name=str(vaccination_site)).click()
 
     @step("Click on Import child records")
     def click_import_child_records(self):
