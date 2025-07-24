@@ -1,5 +1,6 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
 
@@ -306,6 +307,7 @@ def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records
     )
 
 
+@issue("MAV-1547")
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccs_nivs_disallow_flu_for_previous_years(setup_vaccs, import_records_page):
@@ -314,6 +316,7 @@ def test_vaccs_nivs_disallow_flu_for_previous_years(setup_vaccs, import_records_
     )
 
 
+@issue("MAV-1599")
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccs_systmone_disallow_flu_for_previous_years(
