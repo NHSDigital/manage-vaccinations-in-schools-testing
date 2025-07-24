@@ -6,7 +6,7 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Programme, Parent, Child, ConsentOption
+from mavis.test.models import Programme, Parent, Child, ConsentOption, VaccinationSite
 from mavis.test.annotations import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -123,9 +123,6 @@ class SessionsPage:
         )
         self.ready_for_nasal_spray_radio = self.page.locator(
             "#vaccinate-form-vaccine-method-nasal-field"
-        )
-        self.left_arm_upper_radio = self.page.get_by_role(
-            "radio", name="Left arm (upper position)"
         )
         self.attending_button = self.page.get_by_role("button", name="Attending").first
         self.success_alert = self.page.get_by_role("alert", name="Success")
@@ -417,9 +414,9 @@ class SessionsPage:
         else:
             self.ready_for_nasal_spray_radio.check()
 
-    @step("Click on Left arm (upper position)")
-    def select_left_arm_upper_position(self):
-        self.left_arm_upper_radio.click()
+    @step("Select vaccination site {1}")
+    def select_vaccination_site(self, site: VaccinationSite):
+        self.page.get_by_role("radio", name=str(site)).check()
 
     @step("Click on Attending")
     def click_on_attending(self):
@@ -731,6 +728,7 @@ class SessionsPage:
         programme: Programme,
         batch_name: str,
         consent_option: ConsentOption = ConsentOption.INJECTION,
+        vaccination_site: VaccinationSite = VaccinationSite.LEFT_ARM_UPPER,
         at_school: bool = True,
         notes: str = "",
     ):
@@ -745,7 +743,7 @@ class SessionsPage:
 
         self.select_ready_for_vaccination(consent_option)
         if consent_option == ConsentOption.INJECTION:
-            self.select_left_arm_upper_position()
+            self.select_vaccination_site(vaccination_site)
         self.click_continue_button()
 
         if len(notes) > 1000:

@@ -130,6 +130,19 @@ class Vaccine(StrEnum):
     REVAXIS = "Revaxis"
 
 
+class VaccinationSite(StrEnum):
+    LEFT_ARM_UPPER = "Left arm (upper position)"
+    RIGHT_ARM_UPPER = "Right arm (upper position)"
+
+    @property
+    def imms_api_display(self) -> str:
+        return (
+            "Left upper arm structure"
+            if self == VaccinationSite.LEFT_ARM_UPPER
+            else "Right upper arm structure"
+        )
+
+
 class HealthQuestion(StrEnum):
     BLEEDING_DISORDER = "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
     SEVERE_ALLERGIES = "Does your child have any severe allergies?"
