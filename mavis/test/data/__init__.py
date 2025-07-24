@@ -50,8 +50,8 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
     WHITESPACE = "whitespace"
     SYSTMONE_WHITESPACE = "systmone_whitespace"
-    MAV_1547 = "mav_1547"
-    MAV_1599 = "mav_1599"
+    MAV_1547 = "mav_1547"  # Disallow uploading of flu vaccinations from previous academic years (NIVS format)
+    MAV_1599 = "mav_1599"  # Disallow uploading of flu vaccinations from previous academic years (SystmOne format)
 
     @property
     def folder(self) -> Path:
