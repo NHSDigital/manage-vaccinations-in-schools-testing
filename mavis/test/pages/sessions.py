@@ -6,7 +6,14 @@ from typing import List
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import Programme, Parent, Child, ConsentOption, VaccinationSite
+from mavis.test.models import (
+    Programme,
+    Parent,
+    Child,
+    ConsentOption,
+    DeliverySite,
+    School,
+)
 from mavis.test.annotations import step
 from mavis.test.wrappers import (
     generate_random_string,
@@ -172,6 +179,8 @@ class SessionsPage:
         self.set_session_in_progress_button = self.page.get_by_role(
             "button", name="Set session in progress for today"
         )
+        vaccinations_card = page.get_by_role("table", name="Vaccinations")
+        self.vaccinations_card_row = vaccinations_card.get_by_role("row")
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -415,7 +424,7 @@ class SessionsPage:
             self.ready_for_nasal_spray_radio.check()
 
     @step("Select vaccination site {1}")
-    def select_vaccination_site(self, site: VaccinationSite):
+    def select_delivery_site(self, site: DeliverySite):
         self.page.get_by_role("radio", name=str(site)).check()
 
     @step("Click on Attending")
@@ -728,7 +737,7 @@ class SessionsPage:
         programme: Programme,
         batch_name: str,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        vaccination_site: VaccinationSite = VaccinationSite.LEFT_ARM_UPPER,
+        delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER,
         at_school: bool = True,
         notes: str = "",
     ) -> datetime:
@@ -743,7 +752,7 @@ class SessionsPage:
 
         self.select_ready_for_vaccination(consent_option)
         if consent_option == ConsentOption.INJECTION:
-            self.select_vaccination_site(vaccination_site)
+            self.select_delivery_site(delivery_site)
         self.click_continue_button()
 
         if len(notes) > 1000:
@@ -797,3 +806,10 @@ class SessionsPage:
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
         expect(flu_consent_section).to_contain_text("Consent given")
         expect(flu_consent_section).to_contain_text(method)
+
+    @step("Click on {1} vaccination details")
+    def click_vaccination_details(self, school: School) -> None:
+        with self.page.expect_navigation():
+            self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
+                "link"
+            ).click()

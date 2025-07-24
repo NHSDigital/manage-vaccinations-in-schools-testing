@@ -130,15 +130,15 @@ class Vaccine(StrEnum):
     REVAXIS = "Revaxis"
 
 
-class VaccinationSite(StrEnum):
+class DeliverySite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
     RIGHT_ARM_UPPER = "Right arm (upper position)"
 
     @classmethod
-    def from_code(cls, code: str) -> "VaccinationSite":
+    def from_code(cls, code: str) -> "DeliverySite":
         sites = {
-            "368208006": VaccinationSite.LEFT_ARM_UPPER,
-            "368209003": VaccinationSite.RIGHT_ARM_UPPER,
+            "368208006": DeliverySite.LEFT_ARM_UPPER,
+            "368209003": DeliverySite.RIGHT_ARM_UPPER,
         }
         return sites[code]
 
