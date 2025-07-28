@@ -13,11 +13,11 @@ class ProgrammesPage:
         self.test_data = test_data
 
         self.page = page
-
-        self.programme_links = {
-            programme: page.get_by_role("link", name=programme)
-            for programme in Programme
-        }
+        self.current_year_programmes_card = (
+            page.get_by_role("heading")
+            .filter(has_text="2024 to 2025")
+            .locator("xpath=following-sibling::table[1]")
+        )
 
         programme_page_links = (
             page.get_by_role("main").get_by_role("listitem").get_by_role("link")
@@ -55,9 +55,8 @@ class ProgrammesPage:
         )
 
     @step("Click on {1}")
-    def click_programme(self, programme: Programme):
-        step(f"Click on {programme.value}")
-        self.programme_links[programme].click()
+    def click_programme_current_year(self, programme: Programme):
+        self.current_year_programmes_card.get_by_role("link", name=programme).click()
 
     @step("Click on Vaccinations")
     def click_vaccinations(self):
@@ -92,7 +91,7 @@ class ProgrammesPage:
         self.page.get_by_role("link", name=str(child)).click()
 
     def navigate_to_cohort_import(self, programme: Programme):
-        self.click_programme(programme)
+        self.click_programme_current_year(programme)
         self.click_cohorts()
         self.click_import_child_records()
 
@@ -130,7 +129,7 @@ class ProgrammesPage:
 
     @step("Verify report format")
     def verify_report_format(self, programme: Programme, report_format: ReportFormat):
-        self.click_programme(programme)
+        self.click_programme_current_year(programme)
         self.click_download_report()
         self.click_continue()
         self.click_report_format(report_format)
