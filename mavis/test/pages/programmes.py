@@ -15,7 +15,7 @@ class ProgrammesPage:
         self.page = page
         self.current_year_programmes_card = (
             page.get_by_role("heading")
-            .filter(has_text="2025 to 2026")
+            .filter(has_text="2024 to 2025")
             .locator("xpath=following-sibling::table[1]")
         )
 
