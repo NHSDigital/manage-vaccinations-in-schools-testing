@@ -2,7 +2,7 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from mavis.test.data import TestData
-from mavis.test.models import School, Child
+from mavis.test.models import School, Child, Programme
 from mavis.test.annotations import step
 from mavis.test.wrappers import reload_until_element_is_visible
 
@@ -83,6 +83,16 @@ class ChildrenPage:
     def click_record_for_child(self, child: Child) -> None:
         with self.page.expect_navigation():
             self.page.get_by_role("link", name=str(child)).click()
+
+    @step("Click on {2} session for programme")
+    def click_session_for_programme(self, location: str, programme: Programme) -> None:
+        locator = self.page.get_by_role("row", name=str(location)).filter(
+            has_text=str(programme)
+        )
+        locator.get_by_role("link").click()
+        expect(self.page.get_by_role("link", name=str(programme))).to_be_visible(
+            timeout=10000
+        )
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
