@@ -100,6 +100,7 @@ def test_invalid_consent(
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     consent_page.parent_verbal_refuse_consent(child.parents[1])
 
+    sessions_page.select_consent_refused()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.invalidate_parent_refusal(child.parents[1])
