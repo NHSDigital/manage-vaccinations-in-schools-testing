@@ -1,8 +1,8 @@
+import os
+import urllib.parse
 from datetime import date
 from enum import StrEnum
 from typing import NamedTuple
-import os
-import urllib.parse
 
 from faker import Faker
 
@@ -133,6 +133,8 @@ class Vaccine(StrEnum):
 class DeliverySite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
     RIGHT_ARM_UPPER = "Right arm (upper position)"
+    LEFT_ARM_LOWER = "Left arm (lower position)"
+    RIGHT_ARM_LOWER = "Right arm (lower position)"
 
     @classmethod
     def from_code(cls, code: str) -> "DeliverySite":
