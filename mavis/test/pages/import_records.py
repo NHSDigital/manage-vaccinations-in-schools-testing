@@ -141,7 +141,6 @@ class ImportRecordsPage:
             self.wait_for_processed()
 
         self.verify_upload_output(file_path=_output_file_path)
-        self.page.pause()
         return _input_file_path, _output_file_path
 
     def get_uploaded_child_names(

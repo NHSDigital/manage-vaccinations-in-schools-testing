@@ -25,7 +25,7 @@ def setup_session_with_file_upload(
             )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_location(school)
+            sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.navigate_to_class_list_import()
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()

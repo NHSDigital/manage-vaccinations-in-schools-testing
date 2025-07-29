@@ -76,7 +76,7 @@ def test_programmes_rav_pre_screening_questions(
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.click_location(school)
+    sessions_page.click_session_for_programme_group(school, "doubles")
     sessions_page.click_consent_tab()
     sessions_page.search_child(child)
     sessions_page.click_programme_tab(Programme.HPV)

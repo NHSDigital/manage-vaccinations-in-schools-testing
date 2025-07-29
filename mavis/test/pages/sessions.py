@@ -384,7 +384,7 @@ class SessionsPage:
 
     def navigate_to_todays_sessions(self, location: str, programme_group: str):
         self.click_today()
-        self.click_location(location, programme_group)
+        self.click_session_for_programme_group(location, programme_group)
 
     def navigate_to_gillick_competence(self, child: Child, programme: Programme):
         self.click_consent_tab()
@@ -585,9 +585,7 @@ class SessionsPage:
         for question in questions:
             self.page.get_by_role("group", name=question).get_by_label(response).check()
 
-    def __schedule_session(
-        self, on_date: str, expect_error: bool = False
-    ):
+    def __schedule_session(self, on_date: str, expect_error: bool = False):
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
@@ -597,7 +595,6 @@ class SessionsPage:
         self.click_continue_button()
         if expect_error:
             self.expect_main_to_contain_text("There is a problemEnter a date")
-
 
     def __edit_session(self, to_date: str):
         _day = to_date[-2:]
@@ -635,7 +632,7 @@ class SessionsPage:
 
     def navigate_to_scheduled_sessions(self, location: str, programme_group: str):
         self.click_scheduled()
-        self.click_location(location, programme_group)
+        self.click_session_for_programme_group(location, programme_group)
 
     def navigate_to_class_list_import(self, *year_groups: int):
         if not year_groups:
@@ -654,14 +651,14 @@ class SessionsPage:
         )
         _expected_message = f"Session dates{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
-        self.click_location(location, programme_group)
+        self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
     def edit_a_session_to_today(self, location: str, programme_group: str):
         _future_date = get_offset_date(offset_days=0)
         self.click_scheduled()
-        self.click_location(location, programme_group)
+        self.click_session_for_programme_group(location, programme_group)
         self.__edit_session(to_date=_future_date)
 
     def delete_all_sessions(self, school: School):
@@ -677,10 +674,8 @@ class SessionsPage:
     def create_invalid_session(self, location: str, programme_group: str):
         _invalid_date = "20251332"
         self.click_unscheduled()
-        self.click_location(location, programme_group)
-        self.__schedule_session(
-            on_date=_invalid_date, expect_error=True
-        )
+        self.click_session_for_programme_group(location, programme_group)
+        self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
         link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"

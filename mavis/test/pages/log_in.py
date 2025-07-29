@@ -36,5 +36,4 @@ class LogInPage:
 
     def log_in_and_select_organisation(self, user: User, organisation: Organisation):
         self.log_in(user)
-        self.page.pause()
         self.select_organisation(organisation)

@@ -26,7 +26,7 @@ def setup_recording_hpv(
     sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
     import_records_page.navigate_to_class_list_import()
     import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
-    sessions_page.click_location(school)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
     yield batch_name
 
