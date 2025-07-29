@@ -18,15 +18,16 @@ def setup_reports(log_in_as_nurse, dashboard_page):
 
 @pytest.fixture
 def setup_record_a_vaccine(
-    log_in_as_nurse, schools, dashboard_page, sessions_page, programmes_enabled
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
 ):
     school = schools[Programme.HPV][0]
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            school, programmes_enabled, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         yield
@@ -43,15 +44,12 @@ def setup_mavis_1729(
     dashboard_page,
     import_records_page,
     sessions_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            school, programmes_enabled, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
@@ -81,7 +79,6 @@ def setup_mav_854(
     dashboard_page,
     import_records_page,
     sessions_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
 
@@ -89,16 +86,13 @@ def setup_mav_854(
         batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            school, programmes_enabled, for_today=True
-        )
+        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
-        sessions_page.click_location(school)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            "Community clinics", programmes_enabled, for_today=True
+            "Community clinic", Programme.HPV, for_today=True
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -204,14 +198,14 @@ def test_rav_triage_consent_given(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.navigate_to_class_list_import()
 
     import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     consent_page.parent_phone_positive(child.parents[0])
@@ -219,7 +213,7 @@ def test_rav_triage_consent_given(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
 
     sessions_page.click_register_tab()
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
@@ -241,13 +235,13 @@ def test_rav_triage_consent_refused(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.navigate_to_class_list_import()
 
     import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
@@ -296,7 +290,7 @@ def test_rav_verify_excel_mav_854(
 
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
-    sessions_page.click_session("Community clinics", Programme.HPV)
+    children_page.click_session_for_programme("Community clinic", Programme.HPV)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.register_child_as_attending(child)
@@ -313,7 +307,7 @@ def test_rav_verify_excel_mav_854(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
-    sessions_page.click_location(school)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     assert sessions_page.get_session_id_from_offline_excel()
 
 

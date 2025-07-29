@@ -19,24 +19,23 @@ def setup_session_with_file_upload(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
 
     def _setup(class_list_file):
         try:
             sessions_page.schedule_a_valid_session(
-                school, programmes_enabled, for_today=True
+                school, Programme.HPV, for_today=True
             )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_location(school)
+            sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.navigate_to_class_list_import()
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_today()
-            sessions_page.click_location(school)
+            sessions_page.click_session_for_programme_group(school, Programme.HPV)
             yield
         finally:
             dashboard_page.click_mavis()
@@ -61,23 +60,25 @@ def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
 
 
-def test_lifecycle(
-    setup_tests, schools, dashboard_page, sessions_page, programmes_enabled
-):
+def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
     school = schools[Programme.HPV][0]
 
-    sessions_page.schedule_a_valid_session(school, programmes_enabled)
+    sessions_page.schedule_a_valid_session(school, Programme.HPV)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.edit_a_session_to_today(school)
+    sessions_page.edit_a_session_to_today(school, Programme.HPV)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.delete_all_sessions(school)
 
 
-def test_invalid(setup_tests, schools, sessions_page, programmes_enabled):
+def test_invalid(
+    setup_tests,
+    schools,
+    sessions_page,
+):
     school = schools[Programme.HPV][0]
-    sessions_page.create_invalid_session(school, programmes_enabled)
+    sessions_page.create_invalid_session(school, Programme.HPV)
 
 
 @pytest.mark.bug

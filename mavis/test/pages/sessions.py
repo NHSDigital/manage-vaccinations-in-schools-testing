@@ -239,6 +239,23 @@ class SessionsPage:
     def click_session_activity_and_notes(self):
         self._click_tab("Session activity and notes")
 
+    @step("Click on {2} session at {1}")
+    def click_session_for_programme_group(self, location: str, programme_group: str):
+        if programme_group == "doubles":
+            locator = (
+                self.page.get_by_role("row", name=str(location))
+                .filter(has_text="MenACWY")
+                .filter(has_text="Td/IPV")
+            )
+        else:
+            locator = self.page.get_by_role("row", name=str(location)).filter(
+                has_text=str(programme_group)
+            )
+        locator.get_by_role("link").click()
+        expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
+            timeout=10000
+        )
+
     @step("Click on location {1}")
     def click_location(self, location: str):
         self.page.get_by_role("link", name=str(location)).click()
@@ -365,9 +382,9 @@ class SessionsPage:
     def click_parent_radio_button(self, name: str) -> None:
         self.page.get_by_role("radio", name=name).check()
 
-    def navigate_to_todays_sessions(self, location: str):
+    def navigate_to_todays_sessions(self, location: str, programme_group: str):
         self.click_today()
-        self.click_location(location)
+        self.click_session_for_programme_group(location, programme_group)
 
     def navigate_to_gillick_competence(self, child: Child, programme: Programme):
         self.click_consent_tab()
@@ -568,37 +585,16 @@ class SessionsPage:
         for question in questions:
             self.page.get_by_role("group", name=question).get_by_label(response).check()
 
-    def __schedule_session(
-        self, on_date: str, programmes_list: list[str], expect_error: bool = False
-    ):
+    def __schedule_session(self, on_date: str, expect_error: bool = False):
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
         self.click_schedule_sessions()
-        # TODO: Do we need to uncheck programmes if not listed in env?
-        self.change_programmes_link.click()
-        if Programme.FLU.lower() in programmes_list:
-            self.flu_programme_checkbox.check()
-        if Programme.HPV.lower() in programmes_list:
-            self.hpv_programme_checkbox.check()
-        if Programme.MENACWY.lower() in programmes_list:
-            self.menacwy_programme_checkbox.check()
-        if Programme.TD_IPV.lower() in programmes_list:
-            self.td_ipv_programme_checkbox.check()
-        self.continue_button.click()
         self.click_add_session_dates()
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
         if expect_error:
             self.expect_main_to_contain_text("There is a problemEnter a date")
-
-    def __delete_sessions(self):
-        self.click_edit_session()
-        self.click_change_session_dates()
-        self.click_delete()
-        self.click_back()
-        self.click_continue_link()
-        self.expect_main_to_contain_text("No sessions scheduled")
 
     def __edit_session(self, to_date: str):
         _day = to_date[-2:]
@@ -634,9 +630,9 @@ class SessionsPage:
         self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
-    def navigate_to_scheduled_sessions(self, location: str):
+    def navigate_to_scheduled_sessions(self, location: str, programme_group: str):
         self.click_scheduled()
-        self.click_location(location)
+        self.click_session_for_programme_group(location, programme_group)
 
     def navigate_to_class_list_import(self, *year_groups: int):
         if not year_groups:
@@ -646,7 +642,7 @@ class SessionsPage:
         self.select_year_groups(*year_groups)
 
     def schedule_a_valid_session(
-        self, location: str, programmes_list: list[str], for_today: bool = False
+        self, location: str, programme_group: str, for_today: bool = False
     ):
         _future_date = (
             get_offset_date(offset_days=0)
@@ -655,28 +651,31 @@ class SessionsPage:
         )
         _expected_message = f"Session dates{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_unscheduled()
-        self.click_location(location)
-        self.__schedule_session(on_date=_future_date, programmes_list=programmes_list)
+        self.click_session_for_programme_group(location, programme_group)
+        self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
-    def edit_a_session_to_today(self, location: str):
+    def edit_a_session_to_today(self, location: str, programme_group: str):
         _future_date = get_offset_date(offset_days=0)
         self.click_scheduled()
-        self.click_location(location)
+        self.click_session_for_programme_group(location, programme_group)
         self.__edit_session(to_date=_future_date)
 
-    def delete_all_sessions(self, location: str):
+    def delete_all_sessions(self, school: School):
         self.click_scheduled()
-        self.click_location(location)
-        self.__delete_sessions()
+        for session in self.page.get_by_role("link", name=str(school)).all():
+            session.click()
+            self.click_edit_session()
+            self.click_change_session_dates()
+            self.click_delete()
+            self.click_back()
+            self.click_continue_link()
 
-    def create_invalid_session(self, location: str, programmes_list: list[str]):
+    def create_invalid_session(self, location: str, programme_group: str):
         _invalid_date = "20251332"
         self.click_unscheduled()
-        self.click_location(location)
-        self.__schedule_session(
-            on_date=_invalid_date, expect_error=True, programmes_list=programmes_list
-        )
+        self.click_session_for_programme_group(location, programme_group)
+        self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
         link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"

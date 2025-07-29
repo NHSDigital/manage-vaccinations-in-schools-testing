@@ -44,14 +44,13 @@ def get_online_consent_url(
     dashboard_page,
     log_in_page,
     sessions_page,
-    programmes_enabled,
 ):
     def wrapper(school, *programmes):
         try:
             log_in_page.navigate()
             log_in_page.log_in_and_select_organisation(nurse, organisation)
             dashboard_page.click_sessions()
-            sessions_page.schedule_a_valid_session(school, programmes_enabled)
+            sessions_page.schedule_a_valid_session(school, programmes[0].group)
             url = sessions_page.get_online_consent_url(*programmes)
             log_in_page.log_out()
             yield url
@@ -73,13 +72,12 @@ def get_online_consent_url_without_cleanup(
     dashboard_page,
     log_in_page,
     sessions_page,
-    programmes_enabled,
 ):
     def wrapper(school, *programmes):
         log_in_page.navigate()
         log_in_page.log_in_and_select_organisation(nurse, organisation)
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, programmes_enabled)
+        sessions_page.schedule_a_valid_session(school, programmes[0].group)
         url = sessions_page.get_online_consent_url(*programmes)
         log_in_page.log_out()
         yield url

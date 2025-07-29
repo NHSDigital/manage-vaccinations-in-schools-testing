@@ -34,7 +34,7 @@ def setup_session_with_file_upload(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_scheduled()
-    sessions_page.click_location(school)
+    sessions_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_page.navigate_to_class_list_import(child.year_group)
     import_records_page.upload_and_verify_output(
         CohortsFileMapping.FIXED_CHILD, programme_group=Programme.FLU.group
@@ -173,7 +173,7 @@ def test_correct_method_shown(
 
     consent_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(schools[0], Programme.FLU)
     sessions_page.click_consent_tab()
     sessions_page.select_consent_given()
     sessions_page.search_for(str(child))
