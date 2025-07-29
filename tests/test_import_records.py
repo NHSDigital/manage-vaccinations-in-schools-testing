@@ -17,12 +17,11 @@ def setup_class_list(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, programmes_enabled)
+        sessions_page.schedule_a_valid_session(school, Programme.HPV)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield
@@ -39,13 +38,12 @@ def setup_vaccs(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            school, programmes_enabled, for_today=True
+            school, Programme.HPV, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(
@@ -70,13 +68,12 @@ def setup_vaccs_systmone(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            school, programmes_enabled, for_today=True
+            school, Programme.HPV, for_today=True
         )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()

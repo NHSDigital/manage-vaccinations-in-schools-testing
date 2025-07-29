@@ -14,18 +14,17 @@ def setup_children_session(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     def _setup(class_list_file):
         school = schools[Programme.HPV][0]
         try:
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(
-                school, programmes_enabled, for_today=True
+                school, Programme.HPV, for_today=True
             )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_location(school)
+            sessions_page.click_location(school, Programme.HPV)
             sessions_page.navigate_to_class_list_import()
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
@@ -57,13 +56,12 @@ def setup_mav_853(
     import_records_page,
     programmes_page,
     sessions_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
-            school, programmes_enabled, for_today=True
+            school, Programme.HPV, for_today=True
         )
         import_records_page.navigate_to_class_list_import()
         import_records_page.upload_and_verify_output(

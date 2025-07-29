@@ -14,7 +14,6 @@ def setup_session_with_file_upload(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     school = schools[Programme.HPV][0]
 
@@ -22,7 +21,7 @@ def setup_session_with_file_upload(
         try:
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(
-                school, programmes_enabled, for_today=True
+                school, Programme.HPV, for_today=True
             )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
@@ -49,7 +48,7 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_todays_sessions(school)
+    sessions_page.navigate_to_todays_sessions(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.add_gillick_competence(
@@ -66,7 +65,7 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_todays_sessions(school)
+    sessions_page.navigate_to_todays_sessions(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.answer_gillick_competence_questions(is_competent=True)
@@ -91,7 +90,7 @@ def test_invalid_consent(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
@@ -124,7 +123,7 @@ def test_parent_provides_consent_twice(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
 
@@ -161,7 +160,7 @@ def test_conflicting_consent_with_gillick_consent(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school)
+    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)

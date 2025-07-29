@@ -77,7 +77,7 @@ def test_recording_hpv_vaccination(
 
     consent_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(schools[0], Programme.HPV)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccs_for_child(child, Programme.HPV, gardasil_9_batch_name)
@@ -122,7 +122,7 @@ def test_recording_doubles_vaccination(
 
     consent_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(schools[0], "doubles")
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccs_for_child(child, Programme.MENACWY, menquadfi_batch_name)
@@ -171,7 +171,7 @@ def test_recording_flu_vaccination(
 
     consent_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(schools[0], Programme.FLU)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccs_for_child(

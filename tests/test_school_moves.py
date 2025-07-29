@@ -15,7 +15,6 @@ def setup_confirm_and_ignore(
     dashboard_page,
     sessions_page,
     import_records_page,
-    programmes_enabled,
 ):
     schools = schools[Programme.HPV]
     # We need to make sure we're uploading the same class with the same NHS numbers.
@@ -32,10 +31,10 @@ def setup_confirm_and_ignore(
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], programmes_enabled)
+        sessions_page.schedule_a_valid_session(schools[0], Programme.HPV)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[1], programmes_enabled)
+        sessions_page.schedule_a_valid_session(schools[1], Programme.HPV)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()

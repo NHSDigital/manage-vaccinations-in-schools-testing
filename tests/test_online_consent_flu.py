@@ -173,7 +173,7 @@ def test_correct_method_shown(
 
     consent_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(schools[0])
+    sessions_page.navigate_to_scheduled_sessions(schools[0], Programme.FLU)
     sessions_page.click_consent_tab()
     sessions_page.select_consent_given()
     sessions_page.search_for(str(child))
