@@ -96,7 +96,7 @@ class ImportRecordsPage:
         year_groups: Optional[list[int]] = None,
     ):
         if year_groups is None:
-            year_groups = [8, 9, 10, 11]
+            year_groups = [9, 10]
 
         self.click_import_records()
         self.select_class_list_records()
@@ -105,7 +105,7 @@ class ImportRecordsPage:
         self.page.wait_for_load_state()
 
         self.fill_location(location)
-        self.page.get_by_role("option", name=str(location)).click()
+        self.page.get_by_role("option", name=str(location)).first.click()
 
         self.click_continue()
         self._select_year_groups(*year_groups)
