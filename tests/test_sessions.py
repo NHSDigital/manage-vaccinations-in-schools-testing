@@ -110,7 +110,7 @@ def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
     sessions_page.click_session_activity_and_notes()
     sessions_page.add_note(NOTE_1)
     sessions_page.add_note(NOTE_2)
-    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    sessions_page.click_location(school)
     sessions_page.click_consent_tab()
     sessions_page.search_for(str(child))
     sessions_page.check_note_appears_in_search(child, NOTE_2)

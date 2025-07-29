@@ -65,7 +65,7 @@ def setup_mav_853(
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
         )
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
+        sessions_page.click_location(school)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
