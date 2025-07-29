@@ -14,29 +14,24 @@ def setup_mav_965(
     dashboard_page,
     import_records_page,
     sessions_page,
-    programmes_enabled,
 ):
     school = schools["doubles"][0]
 
-    gardasil_9_batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
-    menquadfi_batch_name = add_vaccine_batch(Vaccine.MENQUADFI)
-    revaxis_batch_name = add_vaccine_batch(Vaccine.REVAXIS)
-    fluenz_batch_name = add_vaccine_batch(Vaccine.FLUENZ)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.schedule_a_valid_session(school, programmes_enabled, for_today=True)
+    batch_names = {
+        Programme.HPV: add_vaccine_batch(Vaccine.GARDASIL_9),
+        Programme.MENACWY: add_vaccine_batch(Vaccine.MENQUADFI),
+        Programme.TD_IPV: add_vaccine_batch(Vaccine.REVAXIS),
+        Programme.FLU: add_vaccine_batch(Vaccine.FLUENZ),
+    }
+    for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.schedule_a_valid_session(school, programme_group, for_today=True)
     import_records_page.navigate_to_class_list_import()
     import_records_page.upload_and_verify_output(
         ClassFileMapping.FIXED_CHILD_YEAR_10, programme_group="doubles"
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    return (
-        gardasil_9_batch_name,
-        menquadfi_batch_name,
-        revaxis_batch_name,
-        fluenz_batch_name,
-    )
+    return batch_names
 
 
 @issue("MAV-965")
@@ -67,66 +62,41 @@ def test_programmes_rav_pre_screening_questions(
 
     child = children["doubles"][0]
     school = schools["doubles"][0]
-    (
-        gardasil_9_batch_name,
-        menquadfi_batch_name,
-        revaxis_batch_name,
-        fluenz_batch_name,
-    ) = setup_mav_965
+    batch_names = setup_mav_965
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(school, "doubles")
-    sessions_page.click_consent_tab()
-    sessions_page.search_child(child)
-    sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.click_get_verbal_consent()
-    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
-    sessions_page.search_child(child)
-    sessions_page.click_programme_tab(Programme.MENACWY)
-    sessions_page.click_get_verbal_consent()
-    consent_page.parent_verbal_positive(
-        parent=child.parents[0], change_phone=False, programme=Programme.MENACWY
-    )
+    for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.click_session_for_programme_group(school, programme_group)
+        sessions_page.register_child_as_attending(str(child))
+        sessions_page.click_consent_tab()
+        sessions_page.search_child(child)
+        programmes = (
+            [Programme.MENACWY, Programme.TD_IPV]
+            if programme_group == "doubles"
+            else [programme_group]
+        )
+        for programme in programmes:
+            consent_option = (
+                ConsentOption.BOTH
+                if programme is Programme.FLU
+                else ConsentOption.INJECTION
+            )
 
-    sessions_page.search_child(child)
-    sessions_page.click_programme_tab(Programme.TD_IPV)
-    sessions_page.click_get_verbal_consent()
-    consent_page.parent_verbal_positive(
-        parent=child.parents[0], change_phone=False, programme=Programme.TD_IPV
-    )
-    sessions_page.search_child(child)
-    sessions_page.click_programme_tab(Programme.FLU)
-    sessions_page.click_get_verbal_consent()
-    consent_page.parent_verbal_positive(
-        parent=child.parents[0],
-        change_phone=False,
-        programme=Programme.FLU,
-        consent_option=ConsentOption.BOTH,
-    )
-    sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.HPV,
-        batch_name=gardasil_9_batch_name,
-        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
-    )
-    sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.MENACWY,
-        batch_name=menquadfi_batch_name,
-        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
-    )
-    sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.TD_IPV,
-        batch_name=revaxis_batch_name,
-        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
-    )
-    sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.FLU,
-        batch_name=fluenz_batch_name,
-        notes=generate_random_string(target_length=1001, spaces=True),  # MAV-955
-        consent_option=ConsentOption.BOTH,
-    )
+            sessions_page.click_programme_tab(programme)
+            sessions_page.click_get_verbal_consent()
+            consent_page.parent_verbal_positive(
+                parent=child.parents[0],
+                change_phone=False,
+                programme=programme,
+                consent_option=consent_option,
+            )
+            sessions_page.record_vaccs_for_child(
+                child=child,
+                programme=programme,
+                batch_name=batch_names[programme],
+                notes=generate_random_string(
+                    target_length=1001, spaces=True
+                ),  # MAV-955
+                consent_option=consent_option,
+            )
