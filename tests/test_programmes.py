@@ -262,12 +262,16 @@ def test_rav_triage_consent_refused(
 
 @pytest.mark.rav
 @pytest.mark.bug
-def test_rav_edit_dose_to_not_given(setup_mavis_1729, programmes_page, children):
+def test_rav_edit_dose_to_not_given(
+    setup_mavis_1729, programmes_page, children_page, children
+):
     child = children[Programme.HPV][0]
 
     programmes_page.click_programme_current_year(Programme.HPV)
-    programmes_page.click_vaccinations()
+    programmes_page.click_children()
+    programmes_page.search_for_child(child)
     programmes_page.click_child(child)
+    children_page.click_vaccination_details(Programme.HPV)
     programmes_page.click_edit_vaccination_record()
     programmes_page.click_change_outcome()
     programmes_page.click_they_refused_it()
