@@ -417,7 +417,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get school name">
             <stringProp name="TestPlan.comments">Temporarily remove the &apos;open&apos; filter &amp;status=open</stringProp>
-            <stringProp name="HTTPSampler.path">api/locations?type=school</stringProp>
+            <stringProp name="HTTPSampler.path">api/testing/locations?type=school</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>

@@ -55,7 +55,7 @@ def nurse():
 @pytest.fixture(scope="session")
 def schools(base_url) -> dict[str, list[School]]:
     def _get_schools_with_year_groups(year_groups: List[str]) -> list[School]:
-        url = urllib.parse.urljoin(base_url, "api/locations")
+        url = urllib.parse.urljoin(base_url, "api/testing/locations")
         params = {
             "type": "school",
             "status": "open",
@@ -172,20 +172,24 @@ def _check_response_status(response):
 
 @pytest.fixture(scope="session", autouse=True)
 def onboard_and_delete(base_url, onboarding, organisation):
-    url = urllib.parse.urljoin(base_url, "api/onboard")
+    url = urllib.parse.urljoin(base_url, "api/testing/onboard")
     response = requests.post(url, json=onboarding)
     _check_response_status(response)
 
     yield
 
-    url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
+    url = urllib.parse.urljoin(
+        base_url, f"api/testing/organisations/{organisation.ods_code}"
+    )
     response = requests.delete(url)
     _check_response_status(response)
 
 
 @pytest.fixture(scope="module", autouse=True)
 def reset_before_each_module(base_url, organisation):
-    url = urllib.parse.urljoin(base_url, f"api/organisations/{organisation.ods_code}")
+    url = urllib.parse.urljoin(
+        base_url, f"api/testing/organisations/{organisation.ods_code}"
+    )
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
 
