@@ -141,7 +141,7 @@ def test_class_list_file_upload_negative(
     school = schools["doubles"][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(
-        ClassFileMapping.POSITIVE, programme_group="doubles"
+        ClassFileMapping.NEGATIVE, programme_group="doubles"
     )
 
 
@@ -150,7 +150,7 @@ def test_class_list_file_structure(setup_class_list, schools, import_records_pag
     school = schools["doubles"][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(
-        ClassFileMapping.POSITIVE, programme_group="doubles"
+        ClassFileMapping.INVALID_STRUCTURE, programme_group="doubles"
     )
 
 
@@ -159,7 +159,7 @@ def test_class_list_no_record(setup_class_list, schools, import_records_page):
     school = schools["doubles"][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(
-        ClassFileMapping.POSITIVE, programme_group="doubles"
+        ClassFileMapping.HEADER_ONLY, programme_group="doubles"
     )
 
 
@@ -168,7 +168,7 @@ def test_class_list_empty_file(setup_class_list, schools, import_records_page):
     school = schools["doubles"][0]
     import_records_page.navigate_to_class_list_record_import(str(school))
     import_records_page.upload_and_verify_output(
-        ClassFileMapping.POSITIVE, programme_group="doubles"
+        ClassFileMapping.EMPTY_FILE, programme_group="doubles"
     )
 
 
@@ -177,7 +177,7 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
     school = schools["doubles"][0]
     import_records_page.navigate_to_class_list_record_import(str(school), [9])
     import_records_page.upload_and_verify_output(
-        ClassFileMapping.POSITIVE, programme_group="doubles"
+        ClassFileMapping.WRONG_YEAR_GROUP, programme_group="doubles"
     )
 
 
