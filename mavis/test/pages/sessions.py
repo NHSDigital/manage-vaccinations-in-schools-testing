@@ -636,7 +636,7 @@ class SessionsPage:
 
     def navigate_to_class_list_import(self, *year_groups: int):
         if not year_groups:
-            year_groups = (8, 9, 10, 11)
+            year_groups = (9, 10, 11)
 
         self.click_import_class_lists()
         self.select_year_groups(*year_groups)

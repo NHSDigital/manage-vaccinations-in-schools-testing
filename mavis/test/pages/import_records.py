@@ -112,7 +112,7 @@ class ImportRecordsPage:
 
     def navigate_to_class_list_import(self):
         self.click_import_class_lists()
-        self._select_year_groups(8, 9, 10, 11)
+        self._select_year_groups(9, 10, 11)
 
     def navigate_to_vaccination_records_import(self):
         self.click_import_records()
