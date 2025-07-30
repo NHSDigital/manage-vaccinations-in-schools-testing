@@ -257,6 +257,7 @@ def test_vaccs_historic_negative_file_upload(setup_vaccs, import_records_page):
     import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_NEGATIVE)
 
 
+@issue("MAV-855")
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccs_historic_no_urn_mav_855(
@@ -265,7 +266,7 @@ def test_vaccs_historic_no_urn_mav_855(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    import_records_page.upload_and_verify_output(VaccsFileMapping.MAV_855)
+    import_records_page.upload_and_verify_output(VaccsFileMapping.NO_CARE_SETTING)
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
@@ -320,7 +321,7 @@ def test_vaccs_systmone_space_normalization(setup_vaccs_systmone, import_records
 @pytest.mark.bug
 def test_vaccs_nivs_disallow_flu_for_previous_years(setup_vaccs, import_records_page):
     import_records_page.upload_and_verify_output(
-        VaccsFileMapping.MAV_1547, session_id=setup_vaccs
+        VaccsFileMapping.HIST_FLU_NIVS, session_id=setup_vaccs
     )
 
 
@@ -331,5 +332,5 @@ def test_vaccs_systmone_disallow_flu_for_previous_years(
     setup_vaccs_systmone, import_records_page
 ):
     import_records_page.upload_and_verify_output(
-        VaccsFileMapping.MAV_1599, session_id=setup_vaccs_systmone
+        VaccsFileMapping.HIST_FLU_SYSTMONE, session_id=setup_vaccs_systmone
     )

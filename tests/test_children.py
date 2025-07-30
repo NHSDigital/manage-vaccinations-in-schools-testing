@@ -1,8 +1,8 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
-from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.children
 
@@ -81,7 +81,7 @@ def setup_mav_853(
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
         import_records_page.upload_and_verify_output(
-            file_mapping=VaccsFileMapping.MAV_853,
+            file_mapping=VaccsFileMapping.NOT_GIVEN,
             session_id=session_id,
         )
         dashboard_page.click_mavis()
