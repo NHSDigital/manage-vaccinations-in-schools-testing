@@ -634,12 +634,8 @@ class SessionsPage:
         self.click_scheduled()
         self.click_session_for_programme_group(location, programme_group)
 
-    def navigate_to_class_list_import(self, *year_groups: int):
-        if not year_groups:
-            year_groups = (9, 10, 11)
-
-        self.click_import_class_lists()
-        self.select_year_groups(*year_groups)
+    def select_year_groups_for_programme(self, programme: Programme):
+        self.select_year_groups(*map(int, programme.year_groups))
 
     def schedule_a_valid_session(
         self, location: str, programme_group: str, for_today: bool = False

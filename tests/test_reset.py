@@ -14,8 +14,10 @@ def setup_mav_965(
     dashboard_page,
     import_records_page,
     sessions_page,
+    children,
 ):
     school = schools["doubles"][0]
+    child = children["doubles"][0]
 
     batch_names = {
         Programme.HPV: add_vaccine_batch(Vaccine.GARDASIL_9),
@@ -27,7 +29,8 @@ def setup_mav_965(
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, programme_group, for_today=True)
-    import_records_page.navigate_to_class_list_import()
+    sessions_page.click_import_class_lists()
+    sessions_page.select_year_groups(child.year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.FIXED_CHILD_YEAR_10, programme_group="doubles"
     )
