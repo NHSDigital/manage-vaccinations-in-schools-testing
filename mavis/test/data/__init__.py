@@ -93,8 +93,7 @@ class ClassFileMapping(FileMapping):
     WRONG_YEAR_GROUP = "wrong_year_group"
     RANDOM_CHILD_YEAR_9 = "random_child_year_9"
     FIXED_CHILD = "fixed_child"
-    FIXED_CHILD_YEAR_10 = "fixed_child_year_10"
-    TWO_FIXED_CHILDREN_YEAR_9 = "two_fixed_children"
+    TWO_FIXED_CHILDREN = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
 
     @property

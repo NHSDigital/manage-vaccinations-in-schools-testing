@@ -46,7 +46,7 @@ def setup_children_page(setup_children_session):
 
 @pytest.fixture
 def setup_change_nhsno(setup_children_session):
-    yield from setup_children_session(ClassFileMapping.FIXED_CHILD_YEAR_10)
+    yield from setup_children_session(ClassFileMapping.FIXED_CHILD)
 
 
 @pytest.fixture

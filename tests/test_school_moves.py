@@ -19,12 +19,12 @@ def setup_confirm_and_ignore(
     schools = schools[Programme.HPV]
     # We need to make sure we're uploading the same class with the same NHS numbers.
     input_file_path, output_file_path = test_data.get_file_paths(
-        ClassFileMapping.TWO_FIXED_CHILDREN_YEAR_9
+        ClassFileMapping.TWO_FIXED_CHILDREN
     )
 
     def upload_class_list():
         sessions_page.click_import_class_lists()
-        sessions_page.select_year_groups(9, 10, 11)
+        sessions_page.select_year_groups_for_programme(Programme.HPV)
         sessions_page.choose_file_child_records(input_file_path)
         sessions_page.click_continue_button()
         import_records_page.verify_upload_output(output_file_path)
