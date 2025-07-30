@@ -118,7 +118,7 @@ class SessionsPage:
         self.update_results_button = self.page.get_by_role(
             "button", name="Update results"
         )
-        self.year_8_checkbox = self.page.get_by_role("checkbox", name="Year 8")
+        self.year_10_checkbox = self.page.get_by_role("checkbox", name="Year 10")
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.search_textbox = self.page.get_by_role("textbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
@@ -687,12 +687,12 @@ class SessionsPage:
         search_summary = self.page.get_by_text("Showing 1 to")
 
         expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-        self.year_8_checkbox.check()
+        self.year_10_checkbox.check()
         self.click_on_update_results()
 
         expect(search_summary).to_have_text("Showing 1 to 1 of 1 children")
 
-        self.year_8_checkbox.uncheck()
+        self.year_10_checkbox.uncheck()
         self.click_on_update_results()
 
         expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
