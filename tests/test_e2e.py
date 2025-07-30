@@ -29,7 +29,8 @@ def setup_session_with_file_upload(
         dashboard_page.click_sessions()
         sessions_page.click_scheduled()
         sessions_page.click_session_for_programme_group(school, programme_group)
-        sessions_page.navigate_to_class_list_import(child.year_group)
+        sessions_page.click_import_class_lists()
+        sessions_page.select_year_groups(child.year_group)
         import_records_page.upload_and_verify_output(
             CohortsFileMapping.FIXED_CHILD, programme_group=programme_group
         )
