@@ -22,8 +22,8 @@ class ProgrammesPage:
         programme_page_links = (
             page.get_by_role("main").get_by_role("listitem").get_by_role("link")
         )
-        self.vaccination_link = programme_page_links.get_by_text("Vaccinations")
         self.cohorts_link = programme_page_links.get_by_text("Cohorts")
+        self.children_link = programme_page_links.get_by_text("Children")
 
         self.import_child_records_link = page.get_by_text("Import child records")
 
@@ -53,14 +53,16 @@ class ProgrammesPage:
         self.import_processing_started_alert = page.get_by_role(
             "alert", name="Import processing started"
         )
+        self.search_textbox = page.get_by_role("textbox", name="Search")
+        self.search_button = page.get_by_role("button", name="Search")
 
     @step("Click on {1}")
     def click_programme_current_year(self, programme: Programme):
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
 
-    @step("Click on Vaccinations")
-    def click_vaccinations(self):
-        self.vaccination_link.click()
+    @step("Click on Children")
+    def click_children(self):
+        self.children_link.click()
 
     @step("Click on Cohorts")
     def click_cohorts(self):
@@ -89,6 +91,11 @@ class ProgrammesPage:
     @step("Click on {1}")
     def click_child(self, child: Child):
         self.page.get_by_role("link", name=str(child)).click()
+
+    @step("Click on {1}")
+    def search_for_child(self, child: Child):
+        self.search_textbox.fill(str(child))
+        self.search_button.click()
 
     def navigate_to_cohort_import(self, programme: Programme):
         self.click_programme_current_year(programme)
