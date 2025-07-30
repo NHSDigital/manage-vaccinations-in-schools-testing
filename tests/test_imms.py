@@ -1,8 +1,8 @@
 import pytest
 
-from mavis.test.models import Programme, Vaccine, DeliverySite
 from mavis.test.data import ClassFileMapping
 from mavis.test.imms_api import ImmsApiHelper
+from mavis.test.models import DeliverySite, Programme, Vaccine
 
 
 @pytest.fixture(scope="session")
@@ -68,7 +68,7 @@ def test_imms_api_retrieval_hpv(
     sessions_page.click_vaccination_details(school)
     programmes_page.click_edit_vaccination_record()
     programmes_page.click_change_site()
-    programmes_page.click_delivery_site(DeliverySite.RIGHT_ARM_UPPER)
+    programmes_page.click_delivery_site(DeliverySite.RIGHT_ARM_LOWER)
     programmes_page.click_continue()
     programmes_page.click_save_changes()
 
