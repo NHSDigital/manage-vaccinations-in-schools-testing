@@ -434,7 +434,7 @@
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get school name">
             <stringProp name="TestPlan.comments">Temporarily remove the &apos;open&apos; filter &amp;status=open</stringProp>
-            <stringProp name="HTTPSampler.path">api/locations?is_attached_to_organisation=true</stringProp>
+            <stringProp name="HTTPSampler.path">api/testing/locations?is_attached_to_organisation=true</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -899,7 +899,7 @@ vars.put(&quot;SessionId&quot;,props.get(&quot;SessionId&quot;))</stringProp>
               </JSR223Sampler>
               <hashTree/>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get school name" enabled="true">
-                <stringProp name="HTTPSampler.path">api/locations?type=school&amp;status=open</stringProp>
+                <stringProp name="HTTPSampler.path">api/testing/locations?type=school&amp;status=open</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
