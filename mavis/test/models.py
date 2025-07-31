@@ -238,7 +238,7 @@ class School(NamedTuple):
         return self.urn
 
 
-class Team(NamedTuple):
+class Subteam(NamedTuple):
     key: str
     name: str
     email: str
@@ -258,7 +258,7 @@ class Organisation(NamedTuple):
     phone: str
 
     def __str__(self):
-        return f"{self.name} ({self.ods_code})"
+        return f"{self.name}"
 
     def to_onboarding(self):
         return {

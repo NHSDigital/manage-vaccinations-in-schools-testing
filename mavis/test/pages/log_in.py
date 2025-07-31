@@ -15,6 +15,7 @@ class LogInPage:
         self.error_message = page.get_by_text("Invalid Email or password.")
 
         self.log_out_button = page.get_by_role("button", name="Log out")
+        self.continue_button = page.get_by_role("button", name="Continue")
 
     @step("Go to log in page")
     def navigate(self):
@@ -28,7 +29,8 @@ class LogInPage:
 
     @step("Select organisation {1}")
     def select_organisation(self, organisation: Organisation):
-        self.page.get_by_role("button", name=str(organisation)).click()
+        self.page.get_by_role("radio", name=str(organisation)).check()
+        self.continue_button.click()
 
     @step("Log out")
     def log_out(self):
