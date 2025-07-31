@@ -241,7 +241,6 @@ class SessionsPage:
             timeout=10000
         )
 
-
     @step("Click on location radio {1}")
     def check_location_radio(self, location: str):
         self.page.get_by_role("radio", name=str(location)).check()
