@@ -241,12 +241,6 @@ class SessionsPage:
             timeout=10000
         )
 
-    @step("Click on location {1}")
-    def click_location(self, location: str):
-        self.page.get_by_role("link", name=str(location)).click()
-        expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
-            timeout=10000
-        )
 
     @step("Click on location radio {1}")
     def check_location_radio(self, location: str):
