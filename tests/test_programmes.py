@@ -200,7 +200,7 @@ def test_rav_triage_consent_given(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
     sessions_page.select_year_groups_for_programme(Programme.HPV)
 
@@ -208,7 +208,7 @@ def test_rav_triage_consent_given(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     consent_page.parent_phone_positive(child.parents[0])
@@ -216,7 +216,7 @@ def test_rav_triage_consent_given(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
-    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
 
     sessions_page.click_register_tab()
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
@@ -238,14 +238,14 @@ def test_rav_triage_consent_refused(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
     sessions_page.select_year_groups_for_programme(Programme.HPV)
 
     import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.navigate_to_scheduled_sessions(school, Programme.HPV)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
@@ -314,7 +314,6 @@ def test_rav_verify_excel_mav_854(
     sessions_page.expect_main_to_contain_text("Vaccination outcome recorded for HPV")
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.click_scheduled()
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     assert sessions_page.get_session_id_from_offline_excel()
 
