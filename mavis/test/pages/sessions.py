@@ -635,7 +635,6 @@ class SessionsPage:
             .filter(has_text="Sessions scheduled")
         )
         for session in sessions_with_dates.all():
-            self.page.pause()
             session.click()
             self.click_edit_session()
             self.click_change_session_dates()
