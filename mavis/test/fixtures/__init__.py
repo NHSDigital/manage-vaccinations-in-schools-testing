@@ -22,7 +22,7 @@ from .models import (
     reset_before_each_module,
     schools,
     superuser,
-    team,
+    subteam,
     users,
 )
 from .pages import (
@@ -99,7 +99,7 @@ __all__ = [
     "set_feature_flags",
     "start_page",
     "superuser",
-    "team",
+    "subteam",
     "test_data",
     "unmatched_consent_responses_page",
     "users",

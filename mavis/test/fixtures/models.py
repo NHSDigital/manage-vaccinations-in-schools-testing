@@ -20,7 +20,7 @@ from mavis.test.models import (
     Parent,
     Relationship,
     School,
-    Team,
+    Subteam,
     User,
     Programme,
 )
@@ -120,8 +120,8 @@ def superuser():
 
 
 @pytest.fixture(scope="session")
-def team():
-    return Team(
+def subteam():
+    return Subteam(
         key="team",
         name=f"{onboarding_faker.company()} est. {random.randint(1600, 2025)}",
         email=onboarding_faker.email(),
@@ -130,10 +130,10 @@ def team():
 
 
 @pytest.fixture(scope="session")
-def organisation(team) -> Organisation:
+def organisation(subteam) -> Organisation:
     ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     return Organisation(
-        name=team.name, ods_code=ods_code, email=team.email, phone=team.phone
+        name=subteam.name, ods_code=ods_code, email=subteam.email, phone=subteam.phone
     )
 
 
@@ -147,19 +147,19 @@ def users(admin, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.fixture(scope="session")
-def onboarding(clinics, schools, team, organisation, users, programmes_enabled):
+def onboarding(clinics, schools, subteam, organisation, users, programmes_enabled):
     return {
-        "clinics": {team.key: [it.to_onboarding() for it in clinics]},
+        "clinics": {subteam.key: [it.to_onboarding() for it in clinics]},
         "organisation": organisation.to_onboarding(),
         "programmes": programmes_enabled,
         "schools": {
-            team.key: [
+            subteam.key: [
                 school.to_onboarding()
                 for schools_list in schools.values()
                 for school in schools_list
             ]
         },
-        "teams": team.to_onboarding(),
+        "subteams": subteam.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
     }
 
