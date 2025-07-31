@@ -64,10 +64,6 @@ class ProgrammesPage:
     def click_children(self):
         self.children_link.click()
 
-    @step("Click on Cohorts")
-    def click_cohorts(self):
-        self.cohorts_link.click()
-
     @step("Click on Edit vaccination record")
     def click_edit_vaccination_record(self):
         self.edit_vaccination_record_button.click()
@@ -99,7 +95,7 @@ class ProgrammesPage:
 
     def navigate_to_cohort_import(self, programme: Programme):
         self.click_programme_current_year(programme)
-        self.click_cohorts()
+        self.click_children()
         self.click_import_child_records()
 
     @step("Click on Save changes")
