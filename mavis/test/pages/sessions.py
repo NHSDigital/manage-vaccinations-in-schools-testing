@@ -181,6 +181,7 @@ class SessionsPage:
         )
         vaccinations_card = page.get_by_role("table", name="Vaccinations")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
+        self.sessions_link = page.get_by_role("link", name="Sessions", exact=True).first
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -523,6 +524,10 @@ class SessionsPage:
             competence_details=competence_details,
         )
 
+    @step("Click Sessions")
+    def click_sessions(self) -> None:
+        self.sessions_link.click()
+
     @step("Edit Gillick competence details")
     def edit_gillick_competence(
         self, is_competent: bool, competence_details: str
@@ -630,9 +635,10 @@ class SessionsPage:
 
     def delete_all_sessions(self, school: School):
         sessions_with_dates = (
-            self.page.locator("nhsuk-card__content app-card__content")
+            self.page.locator("div.nhsuk-card__content.app-card__content")
             .filter(has_text=str(school))
             .filter(has_text="Sessions scheduled")
+            .filter(has_not_text="No sessions scheduled")
         )
         for session in sessions_with_dates.all():
             session.click()
@@ -641,6 +647,7 @@ class SessionsPage:
             self.click_delete()
             self.click_back()
             self.click_continue_link()
+            self.click_sessions()
 
     def create_invalid_session(self, location: str, programme_group: str):
         _invalid_date = "20251332"
