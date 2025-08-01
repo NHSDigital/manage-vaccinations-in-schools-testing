@@ -1,0 +1,124 @@
+name: Performance tests (large org)
+
+on:
+  push:
+    branches:
+      - performance-testing
+
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: "Optional (default 3600) Duration of test, in seconds. This will include ramp-up."
+        required: false
+        type: string
+        default: '3600'
+      threads:
+        description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
+        required: false
+        type: string
+        default: '70'
+      ramp_up:
+        description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
+        required: false
+        type: string
+        default: '900'
+      vaccination_loop:
+        description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
+        required: false
+        type: string
+        default: '20'
+      user:
+        description: "Optional (default Nurse perftest) user."
+        required: true
+        type: string
+        default: 'nurse.perftest@example.com'
+
+jobs:
+  nurse_journey_performance_test:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+
+    env:
+      jmeter_version: 5.6.3
+      cmdrunner_version: 2.3
+      jmeter_plugins_manager_version: 1.7.0
+      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv,jpgc-sts
+      large-org-home: performance-tests/large-org
+      # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install JMeter
+        run: |
+          curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
+          tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
+          mv apache-jmeter-${{ env.jmeter_version }} jmeter
+          curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
+          curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
+          java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+          chmod +x jmeter/bin/PluginsManagerCMD.sh
+          sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
+
+      - name: Install JMeter plugins
+        if: env.jmeter_plugins != ''
+        run: |
+          if [ -x "$(command -v parallel)" ]; then
+            echo "Using GNU parallel to install plugins"
+            parallel -d, -j 5 -n 1 jmeter/bin/PluginsManagerCMD.sh install {} ::: ${{ env.jmeter_plugins }}
+          else
+            echo "GNU parallel not found, installing plugins sequentially"
+            IFS=',' read -ra PLUGINS <<< "${{ env.jmeter_plugins }}"
+            for plugin in "${PLUGINS[@]}"; do
+              jmeter/bin/PluginsManagerCMD.sh install $plugin
+            done
+          fi
+
+      - name: Set timestamp
+        id: timestamp
+        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Run  JMeter test
+        run: |
+          gunzip ${{ env.large-org-home }}/consent.csv.gz
+          gunzip ${{ env.large-org-home }}/vaccination.csv.gz
+          mkdir -p large-org-output
+          large_org_output_dir=large-org-output
+          jmeter/bin/jmeter -n -t ${{ env.large-org-home }}/large-org-scenario.jmx \
+              -l $large_org_output_dir/samples.jtl \
+              -j $large_org_output_dir/jmeter.log \
+              -e -o $large_org_output_dir/report \
+              -JjmeterPlugin.sts.loadAndRunOnStartup=true \
+              -JjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }}
+              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+              -Jjmeter.reportgenerator.overall_granularity=10000 \
+              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JThreads=${{inputs.threads}} \
+              -JDuration=${{inputs.duration}} \
+              -JRampUp=${{inputs.ramp_up}} \
+              -JLoops=1
+              -JUser=${{inputs.user}} \
+              -JVaccinationLoop=${{inputs.vaccination_loop}} \
+
+      - name: Upload nurse journey JMeter output
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-large-org-output-${{ env.timestamp }}
+          path: large_org_output_dir
+          if-no-files-found: warn
+
+#GitHub pages temporarily disabled to save junk being published
+#      - name: Publish report to GH Pages
+#        uses: peaceiris/actions-gh-pages@v4
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_branch: gh-pages
+#          publish_dir: nurse-output/report
+#          destination_dir: JMeter/report-${{ env.timestamp }}
+#          keep_files: true
+#
+#      - name: Set Job Summary
+#        run: |
+#          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> $GITHUB_STEP_SUMMARY
