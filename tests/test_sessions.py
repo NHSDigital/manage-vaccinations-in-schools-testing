@@ -94,8 +94,17 @@ def test_verify_search(setup_mav_1018, sessions_page):
 
 @issue("MAV-1381")
 @pytest.mark.bug
-def test_verify_consent_filters(setup_fixed_child, sessions_page, children):
-    sessions_page.verify_consent_filters(children[Programme.HPV])
+def test_verify_consent_filters(
+    setup_fixed_child, sessions_page, consent_page, children
+):
+    child = children[Programme.HPV][0]
+    sessions_page.review_no_consent_response_link.click()
+    sessions_page.page.get_by_role("link", name=str(child)).click()
+    sessions_page.click_get_verbal_consent()
+    consent_page.parent_paper_refuse_consent(parent=child.parents[0])
+    sessions_page.click_overview_tab()
+    sessions_page.click_review_consent_refused()
+    sessions_page.expect_consent_refused_checkbox_to_be_checked()
 
 
 @issue("MAV-1265")
