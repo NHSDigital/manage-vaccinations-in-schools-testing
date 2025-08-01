@@ -117,7 +117,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Setup STS for test" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Setup STS for test">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -128,7 +128,7 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Reset STS data">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Reset STS data" enabled="true">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -148,7 +148,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login to session">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login to session" enabled="true">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -184,7 +184,7 @@
         </elementProp>
       </PostThreadGroup>
       <hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Save STS data" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Save STS data">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -717,7 +717,16 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
         </HTTPSamplerProxy>
-        <hashTree/>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">log.info(prev.getResponseDataAsString())</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
       </hashTree>
       <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Save STS data" enabled="false"/>
       <hashTree>
@@ -776,7 +785,16 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
         </HTTPSamplerProxy>
-        <hashTree/>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+            <collectionProp name="Asserion.test_strings"/>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">true</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
       </hashTree>
       <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Open a consent session for tomorrow" enabled="false"/>
       <hashTree>
@@ -1257,30 +1275,6 @@ vars.put(&quot;postbody&quot;,postbody);
         </objProp>
         <stringProp name="filename"></stringProp>
       </ResultCollector>
-      <hashTree/>
-      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server" enabled="false">
-        <stringProp name="HttpSimpleTableControlGui.port">9191</stringProp>
-        <boolProp name="HttpSimpleTableControlGui.timestamp">true</boolProp>
-        <stringProp name="HttpSimpleTableControlGui.dir">C:\apache-jmeter-5.6.3\bin</stringProp>
-      </org.jmeterplugins.protocol.http.control.HttpSimpleTableControl>
-      <hashTree/>
-      <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file">
-        <stringProp name="FileSaver.filename">large-org-output\fails</stringProp>
-        <boolProp name="FileSaver.errorsonly">true</boolProp>
-        <boolProp name="FileSaver.successonly">false</boolProp>
-        <boolProp name="FileSaver.skipsuffix">false</boolProp>
-        <boolProp name="FileSaver.skipautonumber">false</boolProp>
-        <stringProp name="FileSaver.variablename">something</stringProp>
-      </ResultSaver>
-      <hashTree/>
-      <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file">
-        <stringProp name="FileSaver.filename">large-org-output\passes</stringProp>
-        <boolProp name="FileSaver.errorsonly">false</boolProp>
-        <boolProp name="FileSaver.successonly">true</boolProp>
-        <boolProp name="FileSaver.skipsuffix">false</boolProp>
-        <boolProp name="FileSaver.skipautonumber">false</boolProp>
-        <stringProp name="FileSaver.variablename">something</stringProp>
-      </ResultSaver>
       <hashTree/>
     </hashTree>
   </hashTree>
