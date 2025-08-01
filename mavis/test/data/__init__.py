@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, School, User, Programme
+from mavis.test.models import Child, Organisation, Programme, School, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -43,13 +43,15 @@ class VaccsFileMapping(FileMapping):
     EMPTY_FILE = "empty"
     HPV_DOSE_TWO = "hpv_dose_two"
     HEADER_ONLY = "header_only"
-    MAV_853 = "mav_853"
-    MAV_855 = "mav_855"
+    NOT_GIVEN = "not_given"
+    NO_CARE_SETTING = "no_care_setting"
     SYSTMONE_POSITIVE = "systmone_positive"
     SYSTMONE_NEGATIVE = "systmone_negative"
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
     WHITESPACE = "whitespace"
     SYSTMONE_WHITESPACE = "systmone_whitespace"
+    HIST_FLU_NIVS = "hist_flu_nivs"
+    HIST_FLU_SYSTMONE = "hist_flu_systmone"
 
     @property
     def folder(self) -> Path:
@@ -212,9 +214,11 @@ class TestData:
             )
             template_df = template_df.apply(
                 lambda col: col.apply(
-                    lambda x: dynamic_replacements[x.strip()]()
-                    if isinstance(x, str) and x.strip() in dynamic_replacements
-                    else x
+                    lambda x: (
+                        dynamic_replacements[x.strip()]()
+                        if isinstance(x, str) and x.strip() in dynamic_replacements
+                        else x
+                    )
                 )
             )
             template_df.to_csv(
