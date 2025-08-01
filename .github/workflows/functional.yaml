@@ -10,8 +10,7 @@ jobs:
     permissions:
       contents: write
 
-    name: Test
-
+    name: Functional tests
     strategy:
       fail-fast: false
       matrix:
@@ -27,85 +26,29 @@ jobs:
       max-parallel: 2
 
     runs-on: ubuntu-latest
-
     env:
       TZ: "Europe/London"
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-
-      - name: Install Playwright
-        run: uv run playwright install --with-deps
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Run tests
-        run: uv run pytest --device "${{ matrix.device }}"
+        uses: ./.github/actions/run-functional-tests
+        with:
+          device: ${{ matrix.device }}
+          base_url: ${{ vars.BASE_URL }}
+          programmes_enabled: ${{ vars.PROGRAMMES_ENABLED }}
         env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          PROGRAMMES_ENABLED: ${{ vars.PROGRAMMES_ENABLED }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
           IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
           IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
           IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
 
-      - name: Generate Allure report
+      - name: Process reports
         if: always()
-        continue-on-error: true
-        run: |
-          npx allure-commandline generate allure-results -o allure-report
-
-      - name: Set GitHub Pages directory
-        if: always()
-        continue-on-error: true
-        id: set-pages-dir
-        run: |
-          sanitized_device=$(echo "${{ matrix.device }}" | tr -cd '[:alnum:]_-')
-          echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
-
-      - name: Checkout gh-pages branch
-        if: always()
-        continue-on-error: true
-        uses: actions/checkout@v4
+        uses: ./.github/actions/deploy-reports
         with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Replace existing report with new report
-        if: always()
-        continue-on-error: true
-        run: |
-          rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-          mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-          cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-
-      - name: Commit and force-push fresh gh-pages
-        if: always()
-        continue-on-error: true
-        run: |
-          cd gh-pages
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout --orphan temp-pages
-          git add --all
-          git commit -m "Deployment: $(date +%Y-%m-%d)"
-          git checkout gh-pages
-          git pull origin gh-pages --rebase
-          git reset --hard temp-pages
-          git push origin gh-pages --force
-          git branch -D temp-pages
+          device: ${{ matrix.device }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Set Job Summary
-        if: always()
-        continue-on-error: true
-        run: |
-          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY

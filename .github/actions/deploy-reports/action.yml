@@ -1,0 +1,54 @@
+name: "Generate and Deploy Report"
+description: "Generates Allure report and deploys to GitHub Pages"
+inputs:
+  device:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Generate Allure report
+      run: npx allure-commandline generate allure-results -o allure-report
+      shell: bash
+      continue-on-error: true
+
+    - name: Set GitHub Pages directory
+      id: set-pages-dir
+      run: |
+        sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
+        echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Checkout gh-pages branch
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Replace existing report
+      run: |
+        rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+        mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+        cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
+      shell: bash
+
+    - name: Commit and force-push
+      run: |
+        cd gh-pages
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout --orphan temp-pages
+        git add --all
+        git commit -m "Deployment: $(date +%Y-%m-%d)"
+        git checkout gh-pages
+        git pull origin gh-pages --rebase
+        git reset --hard temp-pages
+        git push origin gh-pages --force
+        git branch -D temp-pages
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+
+    - name: Set Job Summary
+      run: |
+        echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY
+      shell: bash
