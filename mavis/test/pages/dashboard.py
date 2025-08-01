@@ -64,3 +64,7 @@ class DashboardPage:
     @step("Click on Service Guidance")
     def click_service_guidance(self):
         self.service_guidance_link.click()
+
+    @step("Go to dashboard")
+    def navigate(self):
+        self.page.goto("/dashboard")

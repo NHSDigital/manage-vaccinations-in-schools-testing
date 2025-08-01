@@ -58,6 +58,7 @@ def test_recording_hpv_vaccination(
     start_page,
     schools,
     children,
+    dashboard_page,
 ):
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
@@ -75,7 +76,8 @@ def test_recording_hpv_vaccination(
         child, programmes=[Programme.HPV], health_question=False
     )
 
-    consent_page.click_sessions()
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
     sessions_page.click_set_session_in_progress_for_today()
@@ -103,6 +105,7 @@ def test_recording_doubles_vaccination(
     start_page,
     schools,
     children,
+    dashboard_page,
 ):
     child = children["doubles"][0]
     schools = schools["doubles"]
@@ -120,7 +123,8 @@ def test_recording_doubles_vaccination(
         child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
     )
 
-    consent_page.click_sessions()
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], "doubles")
     sessions_page.click_set_session_in_progress_for_today()
@@ -149,6 +153,7 @@ def test_recording_flu_vaccination(
     start_page,
     schools,
     children,
+    dashboard_page,
 ):
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
@@ -169,7 +174,8 @@ def test_recording_flu_vaccination(
         consent_option=ConsentOption.BOTH,
     )
 
-    consent_page.click_sessions()
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
     sessions_page.click_set_session_in_progress_for_today()

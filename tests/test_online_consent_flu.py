@@ -128,6 +128,7 @@ def test_correct_method_shown(
     consents,
     start_page,
     sessions_page,
+    dashboard_page,
 ):
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
@@ -169,7 +170,8 @@ def test_correct_method_shown(
         consent_option=consents[1],
     )
 
-    consent_page.click_sessions()
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
     sessions_page.click_consent_tab()
