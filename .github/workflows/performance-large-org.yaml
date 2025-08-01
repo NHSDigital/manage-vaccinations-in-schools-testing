@@ -90,7 +90,7 @@ jobs:
               -j $large_org_output_dir/jmeter.log \
               -e -o $large_org_output_dir/report \
               -JjmeterPlugin.sts.loadAndRunOnStartup=true \
-              -JjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }}
+              -JjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }} \
               -Jjmeter.reportgenerator.report_title="MAVIS test report" \
               -Jjmeter.reportgenerator.overall_granularity=10000 \
               -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
