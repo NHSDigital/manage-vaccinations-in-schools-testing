@@ -12,7 +12,7 @@ class LogInPage:
         self.password_input = page.get_by_role("textbox", name="Password")
         self.log_in_button = page.get_by_role("button", name="Log in")
 
-        self.error_message = page.get_by_text("Invalid Email or password.")
+        self.error_message = page.get_by_text("Invalid Email or password")
 
         self.log_out_button = page.get_by_role("button", name="Log out")
         self.continue_button = page.get_by_role("button", name="Continue")
