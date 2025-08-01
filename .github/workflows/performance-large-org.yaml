@@ -82,7 +82,7 @@ jobs:
       - name: Start STS Server
         run: |
           nohup jmeter/bin/simple-table-server.sh \
-              -DjmeterPlugin.sts.datasetDirectory=${{ env.GITHUB_WORKSPACE }}/${{ env.large-org-home }} \
+              -DjmeterPlugin.sts.datasetDirectory=$GITHUB_WORKSPACE/${{ env.large-org-home }} \
               -DjmeterPlugin.sts.daemon=true \
               -DjmeterPlugin.sts.port=9191 \
               &
