@@ -58,8 +58,8 @@ def record_hpv(
     yield child, vaccination_time
 
 
-def test_imms_api_retrieval_hpv(
-    record_hpv, schools, imms_api_helper, children_page, sessions_page, programmes_page
+def test_create_edit_delete(
+    record_hpv, schools, imms_api_helper, sessions_page, programmes_page
 ):
     child, vaccination_time = record_hpv
     school = schools[Programme.HPV][0]
@@ -78,3 +78,12 @@ def test_imms_api_retrieval_hpv(
     imms_api_helper.check_hpv_record_in_imms_api(
         child, school, DeliverySite.RIGHT_ARM_UPPER, vaccination_time
     )
+
+    sessions_page.click_vaccination_details(school)
+    programmes_page.click_edit_vaccination_record()
+    programmes_page.click_change_outcome()
+    programmes_page.click_they_refused_it()
+    programmes_page.click_continue()
+    programmes_page.click_save_changes()
+
+    imms_api_helper.check_hpv_record_is_not_in_imms_api(child)
