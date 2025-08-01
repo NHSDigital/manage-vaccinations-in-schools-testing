@@ -35,7 +35,6 @@ def setup_session_with_file_upload(
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_today()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             yield
         finally:
@@ -100,7 +99,9 @@ def test_verify_consent_filters(setup_fixed_child, sessions_page, children):
 
 
 @issue("MAV-1265")
-def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
+def test_recording_notes(
+    setup_fixed_child, dashboard_page, sessions_page, schools, children
+):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     NOTE_1 = "Note 1"
@@ -111,7 +112,9 @@ def test_recording_notes(setup_fixed_child, sessions_page, schools, children):
     sessions_page.click_session_activity_and_notes()
     sessions_page.add_note(NOTE_1)
     sessions_page.add_note(NOTE_2)
-    sessions_page.click_location(school)
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.search_for(str(child))
     sessions_page.check_note_appears_in_search(child, NOTE_2)

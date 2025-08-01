@@ -181,26 +181,12 @@ class SessionsPage:
         )
         vaccinations_card = page.get_by_role("table", name="Vaccinations")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
+        self.sessions_link = page.get_by_role("link", name="Sessions", exact=True).first
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
-        _formatted_date = _parsed_date.strftime("%A %d %B %Y").replace(" 0", " ")
+        _formatted_date = _parsed_date.strftime("%A, %d %B %Y").replace(" 0", " ")
         return _formatted_date
-
-    @step("Click on Today tab")
-    def click_today(self):
-        self.today_tab_link.click()
-        self.today_tab_link.get_by_role("strong").wait_for()
-
-    @step("Click on Scheduled tab")
-    def click_scheduled(self):
-        self.scheduled_tab_link.click()
-        self.scheduled_tab_link.get_by_role("strong").wait_for()
-
-    @step("Click on Unscheduled tab")
-    def click_unscheduled(self):
-        self.unscheduled_tab_link.click()
-        self.unscheduled_tab_link.get_by_role("strong").wait_for()
 
     @step("Select No response")
     def select_no_response(self):
@@ -241,24 +227,16 @@ class SessionsPage:
 
     @step("Click on {2} session at {1}")
     def click_session_for_programme_group(self, location: str, programme_group: str):
-        if programme_group == "doubles":
-            locator = (
-                self.page.get_by_role("row", name=str(location))
-                .filter(has_text="MenACWY")
-                .filter(has_text="Td/IPV")
-            )
-        else:
-            locator = self.page.get_by_role("row", name=str(location)).filter(
-                has_text=str(programme_group)
-            )
-        locator.get_by_role("link").click()
-        expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
-            timeout=10000
-        )
+        for programme in Programme:
+            if programme.group == programme_group:
+                self.page.get_by_role("checkbox", name=str(programme)).check()
+            else:
+                self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
-    @step("Click on location {1}")
-    def click_location(self, location: str):
+        self.search_textbox.fill(str(location))
+        self.search_button.click()
         self.page.get_by_role("link", name=str(location)).click()
+
         expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
             timeout=10000
         )
@@ -382,10 +360,6 @@ class SessionsPage:
     def click_parent_radio_button(self, name: str) -> None:
         self.page.get_by_role("radio", name=name).check()
 
-    def navigate_to_todays_sessions(self, location: str, programme_group: str):
-        self.click_today()
-        self.click_session_for_programme_group(location, programme_group)
-
     def navigate_to_gillick_competence(self, child: Child, programme: Programme):
         self.click_consent_tab()
         self.click_child(child)
@@ -395,9 +369,6 @@ class SessionsPage:
     def navigate_to_consent_response(self, child: Child, programme: Programme):
         self.click_child(child)
         self.click_programme_tab(programme)
-        self.click_get_verbal_consent()
-
-    def navigate_to_verbal_consent_response(self):
         self.click_get_verbal_consent()
 
     def navigate_to_update_triage_outcome(self, child: Child, programme: Programme):
@@ -546,6 +517,10 @@ class SessionsPage:
             competence_details=competence_details,
         )
 
+    @step("Click Sessions")
+    def click_sessions(self) -> None:
+        self.sessions_link.click()
+
     @step("Edit Gillick competence details")
     def edit_gillick_competence(
         self, is_competent: bool, competence_details: str
@@ -630,10 +605,6 @@ class SessionsPage:
         self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
-    def navigate_to_scheduled_sessions(self, location: str, programme_group: str):
-        self.click_scheduled()
-        self.click_session_for_programme_group(location, programme_group)
-
     def select_year_groups_for_programme(self, programme: Programme):
         self.select_year_groups(*map(int, programme.year_groups))
 
@@ -646,30 +617,33 @@ class SessionsPage:
             else get_offset_date(offset_days=10)
         )
         _expected_message = f"Session dates{self.__get_display_formatted_date(date_to_format=_future_date)}"
-        self.click_unscheduled()
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
         self.verify_scheduled_date(message=_expected_message)
 
     def edit_a_session_to_today(self, location: str, programme_group: str):
         _future_date = get_offset_date(offset_days=0)
-        self.click_scheduled()
         self.click_session_for_programme_group(location, programme_group)
         self.__edit_session(to_date=_future_date)
 
     def delete_all_sessions(self, school: School):
-        self.click_scheduled()
-        for session in self.page.get_by_role("link", name=str(school)).all():
+        sessions_with_dates = (
+            self.page.locator("div.nhsuk-card__content.app-card__content")
+            .filter(has_text=str(school))
+            .filter(has_text="Sessions scheduled")
+            .filter(has_not_text="No sessions scheduled")
+        )
+        for session in sessions_with_dates.all():
             session.click()
             self.click_edit_session()
             self.click_change_session_dates()
             self.click_delete()
             self.click_back()
             self.click_continue_link()
+            self.click_sessions()
 
     def create_invalid_session(self, location: str, programme_group: str):
         _invalid_date = "20251332"
-        self.click_unscheduled()
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
