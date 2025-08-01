@@ -98,9 +98,9 @@ jobs:
               -JThreads=${{inputs.threads}} \
               -JDuration=${{inputs.duration}} \
               -JRampUp=${{inputs.ramp_up}} \
-              -JLoops=1
+              -JLoops=1 \
               -JUser=${{inputs.user}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}} \
+              -JVaccinationLoop=${{inputs.vaccination_loop}}
 
       - name: Upload nurse journey JMeter output
         uses: actions/upload-artifact@v4
