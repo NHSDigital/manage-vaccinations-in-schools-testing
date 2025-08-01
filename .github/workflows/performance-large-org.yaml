@@ -34,7 +34,7 @@ on:
         default: 'nurse.perftest@example.com'
 
 jobs:
-  nurse_journey_performance_test:
+  large_org_performance_test:
     runs-on: ubuntu-latest
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -79,6 +79,14 @@ jobs:
         id: timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
+      - name: Start STS Server
+        run: |
+          nohup jmeter/bin/simple-table-server.sh \
+              -DjmeterPlugin.sts.datasetDirectory=$GITHUB_WORKSPACE/${{ env.large-org-home }} \
+              -DjmeterPlugin.sts.daemon=true \
+              -DjmeterPlugin.sts.port=9191 \
+              &
+
       - name: Run  JMeter test
         run: |
           gunzip ${{ env.large-org-home }}/consent.csv.gz
@@ -90,7 +98,7 @@ jobs:
               -j $large_org_output_dir/jmeter.log \
               -e -o $large_org_output_dir/report \
               -JjmeterPlugin.sts.loadAndRunOnStartup=true \
-              -JjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }}
+              -JjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }} \
               -Jjmeter.reportgenerator.report_title="MAVIS test report" \
               -Jjmeter.reportgenerator.overall_granularity=10000 \
               -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
@@ -98,16 +106,20 @@ jobs:
               -JThreads=${{inputs.threads}} \
               -JDuration=${{inputs.duration}} \
               -JRampUp=${{inputs.ramp_up}} \
-              -JLoops=1
+              -JLoops=1 \
               -JUser=${{inputs.user}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}} \
+              -JVaccinationLoop=${{inputs.vaccination_loop}}
+          gzip -c ${{ env.large-org-home }}/consent.csv > ${{ env.large-org-home }}/consent.csv.gz
+          gzip -c ${{ env.large-org-home }}/vaccination.csv  > ${{ env.large-org-home }}/vaccination.csv.gz       
 
-      - name: Upload nurse journey JMeter output
+      - name: Upload JMeter output
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-large-org-output-${{ env.timestamp }}
-          path: large_org_output_dir
+          path: large-org-output
           if-no-files-found: warn
+
+          
 
 #GitHub pages temporarily disabled to save junk being published
 #      - name: Publish report to GH Pages
