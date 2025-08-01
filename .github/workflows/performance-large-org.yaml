@@ -79,6 +79,13 @@ jobs:
         id: timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
+      - name: Start STS Server
+        run: |
+          jmeter/bin/simple-table-server.sh \
+              -DjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }} \
+              -DjmeterPlugin.sts.daemon=true \
+              -DjmeterPlugin.sts.port=9191
+              
       - name: Run  JMeter test
         run: |
           gunzip ${{ env.large-org-home }}/consent.csv.gz
@@ -102,7 +109,7 @@ jobs:
               -JUser=${{inputs.user}} \
               -JVaccinationLoop=${{inputs.vaccination_loop}}
 
-      - name: Upload nurse journey JMeter output
+      - name: Upload JMeter output
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-large-org-output-${{ env.timestamp }}
