@@ -633,6 +633,12 @@ class SessionsPage:
             .filter(has_text="Sessions scheduled")
             .filter(has_not_text="No sessions scheduled")
         )
+        for programme in Programme:
+            self.page.get_by_role("checkbox", name=str(programme)).uncheck()
+
+        self.search_textbox.clear()
+        self.search_button.click()
+
         for session in sessions_with_dates.all():
             session.click()
             self.click_edit_session()
