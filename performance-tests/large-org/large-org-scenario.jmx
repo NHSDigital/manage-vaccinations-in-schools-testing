@@ -44,7 +44,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -89,7 +89,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
         <stringProp name="HTTPSampler.domain">qa.mavistesting.com</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -128,7 +128,7 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Reset STS data" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Reset STS data">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -536,7 +536,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
       </hashTree>
       <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Reset STS data" enabled="false"/>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset consent list" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset consent list">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -550,7 +550,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset vaccination list" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset vaccination list">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -564,7 +564,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset school list" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset school list">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -578,7 +578,31 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load consent file" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get count before">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">9191</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.path">/sts/STATUS</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">log.info(&quot;count before load&quot;)
+log.info(prev.getResponseDataAsString())</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load consent file">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -592,7 +616,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load vaccination file" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load vaccination file">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -606,7 +630,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load school file" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load school file">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -652,13 +676,13 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="Add each school to STS" enabled="true">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="Add each school to STS">
           <stringProp name="ForeachController.inputVal">schoolName</stringProp>
           <stringProp name="ForeachController.returnVal">newRow</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
         </ForeachController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Add school ${newRow}" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Add school ${newRow}">
             <stringProp name="HTTPSampler.domain">localhost</stringProp>
             <stringProp name="HTTPSampler.port">9191</stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -694,7 +718,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Hide school adds" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Hide school adds" enabled="false">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
@@ -704,7 +728,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
             <hashTree/>
           </hashTree>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get count">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get count after">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -723,7 +747,8 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">log.info(prev.getResponseDataAsString())</stringProp>
+            <stringProp name="script">log.info(&quot;count after load&quot;)
+log.info(prev.getResponseDataAsString())</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
@@ -773,6 +798,7 @@ vars.put(&quot;CHILD_SCHOOL_URN&quot;,vars.get(&quot;cohort_data_g18&quot;))</st
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Stop the server">
+          <intProp name="HTTPSampler.response_timeout">1000</intProp>
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
