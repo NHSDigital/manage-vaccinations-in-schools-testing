@@ -81,6 +81,7 @@ jobs:
 
       - name: Start STS Server
         run: |
+          pwd
           nohup jmeter/bin/simple-table-server.sh \
               -DjmeterPlugin.sts.datasetDirectory=${{ env.large-org-home }} \
               -DjmeterPlugin.sts.daemon=true \
@@ -92,6 +93,7 @@ jobs:
           gunzip ${{ env.large-org-home }}/consent.csv.gz
           gunzip ${{ env.large-org-home }}/vaccination.csv.gz
           ls ${{ env.large-org-home }}
+          pwd
           mkdir -p large-org-output
           large_org_output_dir=large-org-output
           jmeter/bin/jmeter -n -t ${{ env.large-org-home }}/large-org-scenario.jmx \
