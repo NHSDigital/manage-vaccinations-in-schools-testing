@@ -30,16 +30,13 @@ jobs:
     permissions:
       contents: write
     
-    name: Test
-
+    name: Functional tests
     runs-on: ubuntu-latest
 
     env:
       TZ: "Europe/London"
 
     steps:
-      - uses: actions/checkout@v4
-      
       - name: Set variables
         id: set-variables
         run: |
@@ -68,80 +65,27 @@ jobs:
             echo "deploy_report=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-
-      - name: Install Playwright
-        run: uv run playwright install --with-deps
- 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - uses: actions/checkout@v4
 
       - name: Run tests
-        run: uv run pytest --device "${{ steps.set-variables.outputs.device }}"
+        uses: ./.github/actions/run-functional-tests
+        with:
+          device: ${{ steps.set-variables.outputs.device }}
+          base_url: ${{ steps.set-variables.outputs.environment }}
+          programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
+          set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
+          additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
         env:
-          BASE_URL: ${{ steps.set-variables.outputs.environment }}
-          PROGRAMMES_ENABLED: ${{ steps.set-variables.outputs.programmes }}
-          SET_FEATURE_FLAGS: ${{ steps.set-variables.outputs.set_feature_flags }}
-          ADDITIONAL_FEATURE_FLAGS: ${{ steps.set-variables.outputs.additional_feature_flags }}
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
           IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
           IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
           IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
 
-      - name: Generate Allure report
+      - name: Process reports
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
-        continue-on-error: true
-        run: |
-          npx allure-commandline generate allure-results -o allure-report
-
-      - name: Set GitHub Pages directory
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
-        continue-on-error: true
-        id: set-pages-dir
-        run: |
-          sanitized_device=$(echo "${{ steps.set-variables.outputs.device }}" | tr -cd '[:alnum:]_-')
-          echo "dir=${{ github.ref_name }}/$sanitized_device" >> $GITHUB_OUTPUT
-
-      - name: Checkout gh-pages branch
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
-        continue-on-error: true
-        uses: actions/checkout@v4
+        uses: ./.github/actions/deploy-reports
         with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Replace existing report with new report
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
-        continue-on-error: true
-        run: |
-          rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-          mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-          cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-
-      - name: Commit and force-push fresh gh-pages
-        if: always()
-        continue-on-error: true
-        run: |
-          cd gh-pages
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout --orphan temp-pages
-          git add --all
-          git commit -m "Deployment: $(date +%Y-%m-%d)"
-          git checkout gh-pages
-          git pull origin gh-pages --rebase
-          git reset --hard temp-pages
-          git push origin gh-pages --force
-          git branch -D temp-pages
+          device: ${{ steps.set-variables.outputs.device }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Set Job Summary
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
-        continue-on-error: true
-        run: |
-          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY

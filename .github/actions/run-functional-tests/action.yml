@@ -1,0 +1,41 @@
+name: "Run Tests"
+description: "Execute Functional tests"
+inputs:
+  device:
+    required: true
+  base_url:
+    required: true
+  programmes_enabled:
+    required: true
+  set_feature_flags:
+    default: "false"
+  additional_feature_flags:
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+
+    - name: Install Playwright
+      run: uv run playwright install --with-deps
+      shell: bash
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Run tests
+      run: uv run pytest --device "${{ inputs.device }}"
+      shell: bash
+      env:
+        BASE_URL: ${{ inputs.base_url }}
+        PROGRAMMES_ENABLED: ${{ inputs.programmes_enabled }}
+        SET_FEATURE_FLAGS: ${{ inputs.set_feature_flags }}
+        ADDITIONAL_FEATURE_FLAGS: ${{ inputs.additional_feature_flags }}
+        BASIC_AUTH_TOKEN: ${{ env.BASIC_AUTH_TOKEN }}
+        IMMS_BASE_URL: ${{ env.IMMS_BASE_URL }}
+        IMMS_API_KEY: ${{ env.IMMS_API_KEY }}
+        IMMS_API_KID: ${{ env.IMMS_API_KID }}
+        IMMS_API_PEM: ${{ env.IMMS_API_PEM }}
