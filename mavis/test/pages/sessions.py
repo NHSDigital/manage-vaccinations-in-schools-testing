@@ -188,6 +188,18 @@ class SessionsPage:
         _formatted_date = _parsed_date.strftime("%A, %d %B %Y").replace(" 0", " ")
         return _formatted_date
 
+    @step("Click on Overview tab")
+    def click_overview_tab(self):
+        self._click_tab("Overview")
+
+    @step("Click Review consent refused")
+    def click_review_consent_refused(self):
+        self.review_consent_refused_link.click()
+
+    @step("Expect Consent refused checkbox to be checked")
+    def expect_consent_refused_checkbox_to_be_checked(self):
+        expect(self.consent_refused_checkbox).to_be_checked()
+
     @step("Select No response")
     def select_no_response(self):
         self.no_response_checkbox.check()
@@ -751,28 +763,6 @@ class SessionsPage:
                 f"Vaccination outcome recorded for {programme}"
             )
         return datetime.now().astimezone()
-
-    def verify_consent_filters(self, children):
-        child = children[0]
-
-        self.review_no_consent_response_link.click()
-        self.page.get_by_role("link", name=str(child)).click()
-        self.click_get_verbal_consent()
-        self.click_parent_radio_button(child.parents[0].full_name)
-        self.click_continue_button()
-        self.click_continue_button()  # Parent details
-        self.in_person_radio.click()
-        self.click_continue_button()
-        self.no_they_no_not_agree_radio.click()
-        self.click_continue_button()
-        self.consent_refusal_reason_other_radio.click()
-        self.click_continue_button()
-        self.consent_refusal_details_textbox.fill("MAV-1381")
-        self.click_continue_button()
-        self.click_confirm_button()
-        self.overview_tab_link.click()
-        self.review_consent_refused_link.click()
-        expect(self.consent_refused_checkbox).to_be_checked()
 
     def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
         patient_card = self.page.locator(
