@@ -109,6 +109,8 @@ jobs:
               -JLoops=1 \
               -JUser=${{inputs.user}} \
               -JVaccinationLoop=${{inputs.vaccination_loop}}
+          gzip -c ${{ env.large-org-home }}/consent.csv > ${{ env.large-org-home }}/consent.csv.gz
+          gzip -c ${{ env.large-org-home }}/vaccination.csv  > ${{ env.large-org-home }}/vaccination.csv.gz       
 
       - name: Upload JMeter output
         uses: actions/upload-artifact@v4
@@ -116,6 +118,8 @@ jobs:
           name: jmeter-large-org-output-${{ env.timestamp }}
           path: large-org-output
           if-no-files-found: warn
+
+          
 
 #GitHub pages temporarily disabled to save junk being published
 #      - name: Publish report to GH Pages
