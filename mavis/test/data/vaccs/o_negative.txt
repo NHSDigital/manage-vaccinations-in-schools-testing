@@ -27,7 +27,7 @@ Row 28 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
 Row 29 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
 Row 30 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
 !Row 31 DATE_OF_VACCINATION: Enter a date for a current session
-Row 31 CLINIC_NAME: Enter a clinic name
+Row 31 CLINIC_NAME: is not recognised
 Row 32 TIME_OF_VACCINATION: Enter a time in the correct format.
 !Row 32 TIME_OF_VACCINATION: Enter a time in the correct format.TIME_OF_VACCINATION: Enter a time in the correct format.
 Row 33 REASON_NOT_VACCINATED: must be blank
