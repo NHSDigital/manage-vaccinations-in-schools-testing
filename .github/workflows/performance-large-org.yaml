@@ -34,7 +34,7 @@ on:
         default: 'nurse.perftest@example.com'
 
 jobs:
-  nurse_journey_performance_test:
+  large_org_performance_test:
     runs-on: ubuntu-latest
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
