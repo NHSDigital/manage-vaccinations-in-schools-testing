@@ -1,0 +1,163 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8798","test_class_list_file_upload_negative","tests","Sat Aug 02 04:52:53 BST 2025","passed","Sat Aug 02 04:53:02 BST 2025","","test_import_records","",""
+"","25974","test_given[health_question: False-change_school: True-programmes: [<Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 04:56:46 BST 2025","passed","Sat Aug 02 04:57:12 BST 2025","","test_online_consent_doubles","",""
+"","77111","test_correct_method_shown[consents: (<ConsentOption.BOTH: ''>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>)]","tests","Sat Aug 02 05:07:30 BST 2025","passed","Sat Aug 02 05:08:47 BST 2025","","test_online_consent_flu","",""
+"","17376","test_verify_careplus_report_for_doubles","tests","Sat Aug 02 04:58:07 BST 2025","passed","Sat Aug 02 04:58:24 BST 2025","","test_programmes","",""
+"","63488","test_rav_verify_excel_mav_854","tests","Sat Aug 02 04:56:26 BST 2025","passed","Sat Aug 02 04:57:30 BST 2025","","test_programmes","",""
+"","30789","test_lifecycle","tests","Sat Aug 02 05:00:14 BST 2025","passed","Sat Aug 02 05:00:44 BST 2025","","test_sessions","",""
+"","3241","test_batch_name_too_long[MenQuadfi]","tests","Sat Aug 02 04:53:39 BST 2025","passed","Sat Aug 02 04:53:43 BST 2025","","test_vaccines","",""
+"","6232","test_invalid","tests","Sat Aug 02 05:00:55 BST 2025","passed","Sat Aug 02 05:01:01 BST 2025","","test_sessions","",""
+"","2108","test_vaccs_nivs_disallow_flu_for_previous_years","tests","Sat Aug 02 05:10:12 BST 2025","passed","Sat Aug 02 05:10:14 BST 2025","","test_import_records","",""
+"","16817","test_vaccs_historic_no_urn_mav_855","tests","Sat Aug 02 05:04:53 BST 2025","passed","Sat Aug 02 05:05:10 BST 2025","","test_import_records","",""
+"","24718","test_given[health_question: False-change_school: False-programmes: [<Programme.MENACWY: 'MenACWY'>]]","tests","Sat Aug 02 04:52:24 BST 2025","passed","Sat Aug 02 04:52:49 BST 2025","","test_online_consent_doubles","",""
+"","3380","test_batch_name_too_long[Revaxis]","tests","Sat Aug 02 04:54:14 BST 2025","passed","Sat Aug 02 04:54:17 BST 2025","","test_vaccines","",""
+"","6809","test_confirm_and_ignore","tests","Sat Aug 02 05:12:04 BST 2025","passed","Sat Aug 02 05:12:10 BST 2025","","test_school_moves","",""
+"","4220","test_valid[role: admin]","tests","Sat Aug 02 04:59:45 BST 2025","passed","Sat Aug 02 04:59:49 BST 2025","","test_log_in","",""
+"","6973","test_verify_systmone_report_for_hpv","tests","Sat Aug 02 04:59:14 BST 2025","passed","Sat Aug 02 04:59:21 BST 2025","","test_programmes","",""
+"","4321","test_verify_search","tests","Sat Aug 02 05:02:27 BST 2025","passed","Sat Aug 02 05:02:32 BST 2025","","test_sessions","",""
+"","4665","test_valid[role: superuser]","tests","Sat Aug 02 04:59:59 BST 2025","passed","Sat Aug 02 05:00:04 BST 2025","","test_log_in","",""
+"","34807","test_rav_triage_consent_refused","tests","Sat Aug 02 04:53:45 BST 2025","passed","Sat Aug 02 04:54:20 BST 2025","","test_programmes","",""
+"","1687","test_cohorts_empty_file","tests","Sat Aug 02 04:51:20 BST 2025","passed","Sat Aug 02 04:51:21 BST 2025","","test_programmes","",""
+"","4271","test_cohort_upload_negative","tests","Sat Aug 02 04:50:34 BST 2025","passed","Sat Aug 02 04:50:38 BST 2025","","test_programmes","",""
+"","1968","test_cohorts_no_record","tests","Sat Aug 02 04:51:05 BST 2025","passed","Sat Aug 02 04:51:07 BST 2025","","test_programmes","",""
+"","5366","test_verify_attendance_filters","tests","Sat Aug 02 05:01:36 BST 2025","passed","Sat Aug 02 05:01:41 BST 2025","","test_sessions","",""
+"","4781","test_child_list_file_upload_positive","tests","Sat Aug 02 04:50:15 BST 2025","passed","Sat Aug 02 04:50:20 BST 2025","","test_import_records","",""
+"","74932","test_parent_provides_consent_twice","tests","Sat Aug 02 05:09:17 BST 2025","passed","Sat Aug 02 05:10:31 BST 2025","","test_verbal_consent","",""
+"","8086","test_class_list_empty_file","tests","Sat Aug 02 04:54:59 BST 2025","passed","Sat Aug 02 04:55:07 BST 2025","","test_import_records","",""
+"","3415","test_batch_name_too_long[Menveo]","tests","Sat Aug 02 04:53:51 BST 2025","passed","Sat Aug 02 04:53:54 BST 2025","","test_vaccines","",""
+"","31597","test_given[health_question: False-consent_option: Nasal spray]","tests","Sat Aug 02 04:55:43 BST 2025","passed","Sat Aug 02 04:56:15 BST 2025","","test_online_consent_flu","",""
+"","4075","test_archive","tests","Sat Aug 02 05:10:20 BST 2025","passed","Sat Aug 02 05:10:24 BST 2025","","test_consent_responses","",""
+"","16084","test_refused","tests","Sat Aug 02 05:04:46 BST 2025","passed","Sat Aug 02 05:05:02 BST 2025","","test_online_consent_hpv","",""
+"","3329","test_batch_name_too_long[Nimenrix]","tests","Sat Aug 02 04:54:02 BST 2025","passed","Sat Aug 02 04:54:06 BST 2025","","test_vaccines","",""
+"","25690","test_given[health_question: True-change_school: True]","tests","Sat Aug 02 05:08:47 BST 2025","passed","Sat Aug 02 05:09:13 BST 2025","","test_online_consent_hpv","",""
+"","82724","test_correct_method_shown[consents: (<ConsentOption.BOTH: ''>, <ConsentOption.BOTH: ''>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>)]","tests","Sat Aug 02 05:11:55 BST 2025","passed","Sat Aug 02 05:13:18 BST 2025","","test_online_consent_flu","",""
+"","16786","test_create_with_no_nhs_number","tests","Sat Aug 02 05:14:31 BST 2025","passed","Sat Aug 02 05:14:48 BST 2025","","test_consent_responses","",""
+"","28480","test_given[health_question: True-change_school: False-programmes: [<Programme.MENACWY: 'MenACWY'>, <Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 04:57:51 BST 2025","passed","Sat Aug 02 04:58:20 BST 2025","","test_online_consent_doubles","",""
+"","3283","test_batch_name_too_short[Gardasil 9]","tests","Sat Aug 02 04:52:18 BST 2025","passed","Sat Aug 02 04:52:21 BST 2025","","test_vaccines","",""
+"","31676","test_match","tests","Sat Aug 02 05:11:30 BST 2025","passed","Sat Aug 02 05:12:01 BST 2025","","test_consent_responses","",""
+"","1812","test_child_list_empty_file","tests","Sat Aug 02 04:51:07 BST 2025","passed","Sat Aug 02 04:51:09 BST 2025","","test_import_records","",""
+"","19961","test_verify_consent_filters","tests","Sat Aug 02 05:03:17 BST 2025","passed","Sat Aug 02 05:03:37 BST 2025","","test_sessions","",""
+"","23287","test_given[health_question: True-change_school: False]","tests","Sat Aug 02 05:07:47 BST 2025","passed","Sat Aug 02 05:08:10 BST 2025","","test_online_consent_hpv","",""
+"","7880","test_class_list_year_group","tests","Sat Aug 02 04:55:42 BST 2025","passed","Sat Aug 02 04:55:49 BST 2025","","test_import_records","",""
+"","10289","test_batch_add_change_archive[Nimenrix]","tests","Sat Aug 02 04:51:30 BST 2025","passed","Sat Aug 02 04:51:40 BST 2025","","test_vaccines","",""
+"","71344","test_correct_method_shown[consents: (<ConsentOption.BOTH: ''>, <ConsentOption.INJECTION: 'Injection'>, <ConsentOption.INJECTION: 'Injection'>)]","tests","Sat Aug 02 05:09:46 BST 2025","passed","Sat Aug 02 05:10:57 BST 2025","","test_online_consent_flu","",""
+"","17451","test_gillick_competence","tests","Sat Aug 02 05:05:33 BST 2025","passed","Sat Aug 02 05:05:51 BST 2025","","test_verbal_consent","",""
+"","7795","test_class_list_no_record","tests","Sat Aug 02 04:54:18 BST 2025","passed","Sat Aug 02 04:54:26 BST 2025","","test_import_records","",""
+"","7042","test_vaccs_historic_negative_file_upload","tests","Sat Aug 02 05:03:56 BST 2025","passed","Sat Aug 02 05:04:03 BST 2025","","test_import_records","",""
+"","1791","test_visible","tests","Sat Aug 02 05:16:08 BST 2025","passed","Sat Aug 02 05:16:10 BST 2025","","test_start","",""
+"","3082","test_batch_name_too_short[Fluenz]","tests","Sat Aug 02 04:52:07 BST 2025","passed","Sat Aug 02 04:52:10 BST 2025","","test_vaccines","",""
+"","16823","test_refused","tests","Sat Aug 02 04:50:26 BST 2025","passed","Sat Aug 02 04:50:43 BST 2025","","test_online_consent_doubles","",""
+"","5254","test_vaccs_historic_positive_file_upload","tests","Sat Aug 02 05:03:01 BST 2025","passed","Sat Aug 02 05:03:06 BST 2025","","test_import_records","",""
+"","55799","test_invalid_consent","tests","Sat Aug 02 05:07:37 BST 2025","passed","Sat Aug 02 05:08:32 BST 2025","","test_verbal_consent","",""
+"","47448","test_rav_triage_consent_given","tests","Sat Aug 02 04:52:24 BST 2025","passed","Sat Aug 02 04:53:12 BST 2025","","test_programmes","",""
+"","8510","test_class_list_file_structure","tests","Sat Aug 02 04:53:36 BST 2025","passed","Sat Aug 02 04:53:45 BST 2025","","test_import_records","",""
+"","2340","test_vaccs_systmone_disallow_flu_for_previous_years","tests","Sat Aug 02 05:10:51 BST 2025","passed","Sat Aug 02 05:10:54 BST 2025","","test_import_records","",""
+"","29005","test_given[health_question: True-change_school: False-programmes: [<Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 05:00:04 BST 2025","passed","Sat Aug 02 05:00:33 BST 2025","","test_online_consent_doubles","",""
+"","1428","test_invalid[password: invalid-username: invalid]","tests","Sat Aug 02 04:59:41 BST 2025","passed","Sat Aug 02 04:59:42 BST 2025","","test_log_in","",""
+"
+Steps to reproduce:
+Patient setup: in a school session today, marked as attending, session has HPV and doubles, patients is eligible for all vaccines (has consent, correct year group, no history)
+Complete pre-screening questions and vaccinate the patient for any one vaccine (eg. HPV)
+Testing has confirmed the following:
+Two vaccinations in same session
+- If HPV is followed by MenACWY then ""feeling well"" is pre-filled
+- If HPV is followed by Td/IPV  then both ""feeling well"" and ""not pregnant"" are pre-populated
+- If MenACWY followed by Td/IPV then ""feeling well"" is pre-filled
+- If MenCAWY followed by HPV then ""feeling well"" is pre-filled
+- If Td/IPV followed by MenACWY  then ""feeling well"" is pre-filled
+- If Td/IPV is followed by HPV  then both ""feeling well"" and ""not pregnant"" are pre-populated
+","188032","test_programmes_rav_pre_screening_questions","tests","Sat Aug 02 05:16:17 BST 2025","passed","Sat Aug 02 05:19:25 BST 2025","","test_reset","",""
+"","6631","test_vaccs_negative_file_upload","tests","Sat Aug 02 04:58:36 BST 2025","passed","Sat Aug 02 04:58:43 BST 2025","","test_import_records","",""
+"","35195","test_given[health_question: False-consent_option: ]","tests","Sat Aug 02 04:57:55 BST 2025","passed","Sat Aug 02 04:58:30 BST 2025","","test_online_consent_flu","",""
+"","6042","test_vaccs_systmone_negative_file_upload","tests","Sat Aug 02 05:06:30 BST 2025","passed","Sat Aug 02 05:06:36 BST 2025","","test_import_records","",""
+"","63081","test_recording_doubles_vaccination","tests","Sat Aug 02 05:16:02 BST 2025","passed","Sat Aug 02 05:17:05 BST 2025","","test_e2e","",""
+"","40933","test_given[health_question: True-consent_option: Nasal spray]","tests","Sat Aug 02 04:59:08 BST 2025","passed","Sat Aug 02 04:59:49 BST 2025","","test_online_consent_flu","",""
+"","2035","test_vaccs_no_record","tests","Sat Aug 02 05:01:18 BST 2025","passed","Sat Aug 02 05:01:20 BST 2025","","test_import_records","",""
+"","6275","test_vaccs_systmone_negative_historical_file_upload","tests","Sat Aug 02 05:07:14 BST 2025","passed","Sat Aug 02 05:07:21 BST 2025","","test_import_records","",""
+"","16291","test_rav_edit_dose_to_not_given","tests","Sat Aug 02 04:55:13 BST 2025","passed","Sat Aug 02 04:55:29 BST 2025","","test_programmes","",""
+"","2096","test_vaccs_empty_file","tests","Sat Aug 02 05:02:10 BST 2025","passed","Sat Aug 02 05:02:12 BST 2025","","test_import_records","",""
+"","2166","test_vaccs_file_structure","tests","Sat Aug 02 05:00:28 BST 2025","passed","Sat Aug 02 05:00:30 BST 2025","","test_import_records","",""
+"","5577","test_cohort_upload_positive","tests","Sat Aug 02 04:50:16 BST 2025","passed","Sat Aug 02 04:50:22 BST 2025","","test_programmes","",""
+"","11118","test_batch_add_change_archive[Menveo]","tests","Sat Aug 02 04:51:11 BST 2025","passed","Sat Aug 02 04:51:22 BST 2025","","test_vaccines","",""
+"","11178","test_batch_add_change_archive[Fluenz]","tests","Sat Aug 02 04:50:13 BST 2025","passed","Sat Aug 02 04:50:24 BST 2025","","test_vaccines","",""
+"","22765","test_given[health_question: False-change_school: True]","tests","Sat Aug 02 05:06:44 BST 2025","passed","Sat Aug 02 05:07:07 BST 2025","","test_online_consent_hpv","",""
+"","22780","test_given[health_question: False-change_school: False-programmes: [<Programme.MENACWY: 'MenACWY'>, <Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 04:51:22 BST 2025","passed","Sat Aug 02 04:51:45 BST 2025","","test_online_consent_doubles","",""
+"","25708","test_recording_notes","tests","Sat Aug 02 05:04:22 BST 2025","passed","Sat Aug 02 05:04:48 BST 2025","","test_sessions","",""
+"","101457","test_conflicting_consent_with_gillick_consent","tests","Sat Aug 02 05:11:15 BST 2025","passed","Sat Aug 02 05:12:56 BST 2025","","test_verbal_consent","",""
+"","11043","test_change_nhsno","tests","Sat Aug 02 05:15:49 BST 2025","passed","Sat Aug 02 05:16:00 BST 2025","","test_children","",""
+"","16373","test_create_with_nhs_number[children0]","tests","Sat Aug 02 05:13:09 BST 2025","passed","Sat Aug 02 05:13:25 BST 2025","","test_consent_responses","",""
+"","3221","test_child_list_file_upload_negative","tests","Sat Aug 02 04:50:30 BST 2025","passed","Sat Aug 02 04:50:33 BST 2025","","test_import_records","",""
+"
+Steps to reproduce:
+Find a patient in Year 8 and remove them from cohort using the button
+Upload a cohort list with their first name, surname, URN, date of birth and postcode
+
+Scenario 1
+    Duplicate review is not flagged
+
+    Expected result:
+    The child is added back into the cohort, and in all the relevant sessions
+    Actual Result:
+    Server error page and user cannot bring the child back into the cohort
+
+Scenario 2
+    The import screen flags for duplicate review, and user clicks ""Review"" next to the child's name
+
+    Expected result:
+    System allows you to review the new details against the previous record (before removing from cohort) and lets you choose which record to keep. Once review confirmed, the child is added back into the cohort, and in all the relevant sessions.
+    Actual Result:
+    Server error page and user cannot bring the child back into the cohort
+","31767","test_cohorts_readd_to_cohort","tests","Sat Aug 02 04:51:33 BST 2025","passed","Sat Aug 02 04:52:05 BST 2025","","test_programmes","",""
+"","26911","test_given[health_question: True-change_school: False-programmes: [<Programme.MENACWY: 'MenACWY'>]]","tests","Sat Aug 02 04:58:58 BST 2025","passed","Sat Aug 02 04:59:25 BST 2025","","test_online_consent_doubles","",""
+"","15747","test_refused","tests","Sat Aug 02 04:54:47 BST 2025","passed","Sat Aug 02 04:55:03 BST 2025","","test_online_consent_flu","",""
+"","34467","test_class_list_space_normalization","tests","Sat Aug 02 04:56:23 BST 2025","passed","Sat Aug 02 04:56:57 BST 2025","","test_import_records","",""
+"","30828","test_given[health_question: True-change_school: True-programmes: [<Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 05:03:33 BST 2025","passed","Sat Aug 02 05:04:03 BST 2025","","test_online_consent_doubles","",""
+"","1881","test_child_list_no_record","tests","Sat Aug 02 04:50:56 BST 2025","passed","Sat Aug 02 04:50:57 BST 2025","","test_import_records","",""
+"","75728","test_correct_method_shown[consents: (<ConsentOption.NASAL_SPRAY: 'Nasal spray'>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>)]","tests","Sat Aug 02 05:03:21 BST 2025","passed","Sat Aug 02 05:04:37 BST 2025","","test_online_consent_flu","",""
+"","11489","test_vaccs_duplicate_record_upload","tests","Sat Aug 02 04:59:29 BST 2025","passed","Sat Aug 02 04:59:40 BST 2025","","test_import_records","",""
+"","54802","test_recording_flu_vaccination","tests","Sat Aug 02 05:17:38 BST 2025","passed","Sat Aug 02 05:18:33 BST 2025","","test_e2e","",""
+"","22142","test_given[health_question: False-change_school: False]","tests","Sat Aug 02 05:05:42 BST 2025","passed","Sat Aug 02 05:06:04 BST 2025","","test_online_consent_hpv","",""
+"","26520","test_given[health_question: True-consent_option: Injection]","tests","Sat Aug 02 05:00:29 BST 2025","passed","Sat Aug 02 05:00:55 BST 2025","","test_online_consent_flu","",""
+"","4292","test_valid[role: nurse]","tests","Sat Aug 02 04:59:52 BST 2025","passed","Sat Aug 02 04:59:56 BST 2025","","test_log_in","",""
+"","1441","test_invalid[password: invalid-username: ]","tests","Sat Aug 02 04:59:36 BST 2025","passed","Sat Aug 02 04:59:38 BST 2025","","test_log_in","",""
+"","3664","test_batch_name_too_short[Revaxis]","tests","Sat Aug 02 04:53:05 BST 2025","passed","Sat Aug 02 04:53:08 BST 2025","","test_vaccines","",""
+"","3008","test_vaccs_systmone_space_normalization","tests","Sat Aug 02 05:09:20 BST 2025","passed","Sat Aug 02 05:09:23 BST 2025","","test_import_records","",""
+"","24574","test_given[health_question: False-change_school: False-programmes: [<Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 04:53:29 BST 2025","passed","Sat Aug 02 04:53:54 BST 2025","","test_online_consent_doubles","",""
+"","3405","test_batch_name_too_long[Fluenz]","tests","Sat Aug 02 04:53:17 BST 2025","passed","Sat Aug 02 04:53:20 BST 2025","","test_vaccines","",""
+"","26617","test_given[health_question: False-change_school: True-programmes: [<Programme.MENACWY: 'MenACWY'>, <Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 04:54:33 BST 2025","passed","Sat Aug 02 04:55:00 BST 2025","","test_online_consent_doubles","",""
+"","3372","test_batch_name_too_short[Nimenrix]","tests","Sat Aug 02 04:52:52 BST 2025","passed","Sat Aug 02 04:52:56 BST 2025","","test_vaccines","",""
+"","26465","test_given[health_question: False-change_school: True-programmes: [<Programme.MENACWY: 'MenACWY'>]]","tests","Sat Aug 02 04:55:40 BST 2025","passed","Sat Aug 02 04:56:07 BST 2025","","test_online_consent_doubles","",""
+"","33263","test_vaccs_hpv_space_normalization","tests","Sat Aug 02 05:08:08 BST 2025","passed","Sat Aug 02 05:08:42 BST 2025","","test_import_records","",""
+"","1026","test_invalid[password: -username: ]","tests","Sat Aug 02 04:59:28 BST 2025","passed","Sat Aug 02 04:59:29 BST 2025","","test_log_in","",""
+"","3222","test_batch_name_too_long[Gardasil 9]","tests","Sat Aug 02 04:53:28 BST 2025","passed","Sat Aug 02 04:53:31 BST 2025","","test_vaccines","",""
+"","11812","test_class_list_file_upload_positive","tests","Sat Aug 02 04:52:08 BST 2025","passed","Sat Aug 02 04:52:20 BST 2025","","test_import_records","",""
+"","2339","test_cohorts_file_structure","tests","Sat Aug 02 04:50:51 BST 2025","passed","Sat Aug 02 04:50:53 BST 2025","","test_programmes","",""
+"","39620","test_create_edit_delete","tests","Sat Aug 02 05:15:26 BST 2025","passed","Sat Aug 02 05:16:06 BST 2025","","test_imms","",""
+"","4623","test_vaccs_positive_file_upload","tests","Sat Aug 02 04:57:45 BST 2025","passed","Sat Aug 02 04:57:50 BST 2025","","test_import_records","",""
+"","57216","test_correct_method_shown[consents: (<ConsentOption.INJECTION: 'Injection'>, <ConsentOption.INJECTION: 'Injection'>, <ConsentOption.INJECTION: 'Injection'>)]","tests","Sat Aug 02 05:05:34 BST 2025","passed","Sat Aug 02 05:06:32 BST 2025","","test_online_consent_flu","",""
+"","0","test_verify_flu_not_available","tests","Sat Aug 02 04:54:26 BST 2025","passed","Sat Aug 02 04:54:26 BST 2025","","test_vaccines","",""
+"","11293","test_batch_add_change_archive[MenQuadfi]","tests","Sat Aug 02 04:50:51 BST 2025","passed","Sat Aug 02 04:51:03 BST 2025","","test_vaccines","",""
+"","53650","test_recording_hpv_vaccination","tests","Sat Aug 02 05:14:22 BST 2025","passed","Sat Aug 02 05:15:15 BST 2025","","test_e2e","",""
+"","11255","test_batch_add_change_archive[Revaxis]","tests","Sat Aug 02 04:51:47 BST 2025","passed","Sat Aug 02 04:51:58 BST 2025","","test_vaccines","",""
+"","30982","test_given[health_question: True-change_school: True-programmes: [<Programme.MENACWY: 'MenACWY'>, <Programme.TD_IPV: 'Td/IPV'>]]","tests","Sat Aug 02 05:01:12 BST 2025","passed","Sat Aug 02 05:01:43 BST 2025","","test_online_consent_doubles","",""
+"","19764","test_gillick_competence_notes","tests","Sat Aug 02 05:06:34 BST 2025","passed","Sat Aug 02 05:06:54 BST 2025","","test_verbal_consent","",""
+"","7575","test_verify_csv_report_for_hpv","tests","Sat Aug 02 04:58:33 BST 2025","passed","Sat Aug 02 04:58:41 BST 2025","","test_programmes","",""
+"","1822","test_child_list_file_structure","tests","Sat Aug 02 04:50:43 BST 2025","passed","Sat Aug 02 04:50:45 BST 2025","","test_import_records","",""
+"","22782","test_given[health_question: False-consent_option: Injection]","tests","Sat Aug 02 04:56:52 BST 2025","passed","Sat Aug 02 04:57:15 BST 2025","","test_online_consent_flu","",""
+"","11394","test_batch_add_change_archive[Gardasil 9]","tests","Sat Aug 02 04:50:32 BST 2025","passed","Sat Aug 02 04:50:43 BST 2025","","test_vaccines","",""
+"","28183","test_child_list_space_normalization","tests","Sat Aug 02 04:51:20 BST 2025","passed","Sat Aug 02 04:51:48 BST 2025","","test_import_records","",""
+"","30180","test_given[health_question: True-change_school: True-programmes: [<Programme.MENACWY: 'MenACWY'>]]","tests","Sat Aug 02 05:02:23 BST 2025","passed","Sat Aug 02 05:02:53 BST 2025","","test_online_consent_doubles","",""
+"","3458","test_batch_name_too_short[Menveo]","tests","Sat Aug 02 04:52:41 BST 2025","passed","Sat Aug 02 04:52:44 BST 2025","","test_vaccines","",""
+"","7269","test_verify_careplus_report_for_hpv","tests","Sat Aug 02 04:57:51 BST 2025","passed","Sat Aug 02 04:57:58 BST 2025","","test_programmes","",""
+"","47876","test_given[health_question: True-consent_option: ]","tests","Sat Aug 02 05:01:36 BST 2025","passed","Sat Aug 02 05:02:24 BST 2025","","test_online_consent_flu","",""
+"","17126","test_verify_csv_report_for_doubles","tests","Sat Aug 02 04:58:49 BST 2025","passed","Sat Aug 02 04:59:06 BST 2025","","test_programmes","",""
+"","5752","test_headers_and_filter","tests","Sat Aug 02 05:13:43 BST 2025","passed","Sat Aug 02 05:13:48 BST 2025","","test_children","",""
+"","3823","test_download","tests","Sat Aug 02 05:13:28 BST 2025","passed","Sat Aug 02 05:13:32 BST 2025","","test_school_moves","",""
+"","2461","test_vaccs_systmone_positive_file_upload","tests","Sat Aug 02 05:05:49 BST 2025","passed","Sat Aug 02 05:05:52 BST 2025","","test_import_records","",""
+"
+1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
+2. Navigate to the patient, either in a session or from the global children view
+3. Expected: patient details can be seen
+Actual: crash
+","12535","test_details_mav_853","tests","Sat Aug 02 05:14:52 BST 2025","passed","Sat Aug 02 05:15:05 BST 2025","","test_children","",""
+"","3378","test_batch_name_too_short[MenQuadfi]","tests","Sat Aug 02 04:52:30 BST 2025","passed","Sat Aug 02 04:52:33 BST 2025","","test_vaccines","",""
