@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, Programme, School, User
+from mavis.test.models import Child, Team, Programme, School, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -109,12 +109,12 @@ class TestData:
 
     def __init__(
         self,
-        organisation: Organisation,
+        team: Team,
         schools: dict[str, list[School]],
         nurse: User,
         children: dict[str, list[Child]],
     ):
-        self.organisation = organisation
+        self.team = team
         self.schools = schools
         self.nurse = nurse
         self.children = children
@@ -140,8 +140,8 @@ class TestData:
             "<<SESSION_ID>>": session_id,
         }
 
-        if self.organisation:
-            static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
+        if self.team:
+            static_replacements["<<ORG_CODE>>"] = self.team.ods_code
 
         if self.schools:
             schools = self.schools[programme_group]

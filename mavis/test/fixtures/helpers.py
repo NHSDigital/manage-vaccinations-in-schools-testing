@@ -40,7 +40,7 @@ def add_vaccine_batch(add_batch_page, dashboard_page, vaccines_page):
 def get_online_consent_url(
     set_feature_flags,
     nurse,
-    organisation,
+    team,
     dashboard_page,
     log_in_page,
     sessions_page,
@@ -48,7 +48,7 @@ def get_online_consent_url(
     def wrapper(school, *programmes):
         try:
             log_in_page.navigate()
-            log_in_page.log_in_and_select_organisation(nurse, organisation)
+            log_in_page.log_in_and_select_team(nurse, team)
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(school, programmes[0].group)
             url = sessions_page.get_online_consent_url(*programmes)
@@ -56,7 +56,7 @@ def get_online_consent_url(
             yield url
         finally:
             log_in_page.navigate()
-            log_in_page.log_in_and_select_organisation(nurse, organisation)
+            log_in_page.log_in_and_select_team(nurse, team)
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)
             log_in_page.log_out()
@@ -68,14 +68,14 @@ def get_online_consent_url(
 def get_online_consent_url_without_cleanup(
     set_feature_flags,
     nurse,
-    organisation,
+    team,
     dashboard_page,
     log_in_page,
     sessions_page,
 ):
     def wrapper(school, *programmes):
         log_in_page.navigate()
-        log_in_page.log_in_and_select_organisation(nurse, organisation)
+        log_in_page.log_in_and_select_team(nurse, team)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, programmes[0].group)
         url = sessions_page.get_online_consent_url(*programmes)
@@ -86,24 +86,24 @@ def get_online_consent_url_without_cleanup(
 
 
 @pytest.fixture
-def log_in_as_admin(set_feature_flags, admin, organisation, log_in_page):
+def log_in_as_admin(set_feature_flags, admin, team, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_organisation(admin, organisation)
+    log_in_page.log_in_and_select_team(admin, team)
     yield
     log_in_page.log_out()
 
 
 @pytest.fixture
-def log_in_as_nurse(set_feature_flags, nurse, organisation, log_in_page):
+def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_organisation(nurse, organisation)
+    log_in_page.log_in_and_select_team(nurse, team)
     yield
     log_in_page.log_out()
 
 
 @pytest.fixture
-def test_data(organisation, schools, nurse, children):
-    return TestData(organisation, schools, nurse, children)
+def test_data(team, schools, nurse, children):
+    return TestData(team, schools, nurse, children)
 
 
 @pytest.fixture

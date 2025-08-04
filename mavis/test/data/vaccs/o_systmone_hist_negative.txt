@@ -15,4 +15,4 @@ Row 16 Event date: Enter a date in the correct format
 Row 17 Event date: The vaccination date is in the future.
 Row 18 Event date: The vaccination date is before the date of birth.
 Row 19 Event time: Enter a time in the correct format.
-Row 20 School code: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support organisation.
+Row 20 School code: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support team.

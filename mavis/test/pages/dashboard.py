@@ -22,7 +22,7 @@ class DashboardPage:
         )
         self.school_moves_link = links.get_by_text("School Moves")
         self.import_records_link = links.get_by_text("Import Records")
-        self.your_organisation_link = links.get_by_text("Your Organisation")
+        self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
 
     @step("Click on Manage vaccinations in schools")
@@ -57,9 +57,9 @@ class DashboardPage:
     def click_import_records(self):
         self.import_records_link.click()
 
-    @step("Click on Your Organisation")
-    def click_your_organisation(self):
-        self.your_organisation_link.click()
+    @step("Click on Your Team")
+    def click_your_team(self):
+        self.your_team_link.click()
 
     @step("Click on Service Guidance")
     def click_service_guidance(self):
