@@ -399,6 +399,8 @@ class ConsentPage:
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
         self._handle_refusal_of_consent(ConsentRefusalReason.PERSONAL_CHOICE)
+        self.select_yes()
+        self.click_continue()
         self.click_confirm()
 
     def parent_written_positive(
