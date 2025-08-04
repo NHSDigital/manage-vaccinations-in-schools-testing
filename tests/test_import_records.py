@@ -102,6 +102,44 @@ def setup_vaccs_clinic(
 
 
 @pytest.fixture
+def setup_vaccs_clinic(
+    log_in_as_nurse,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+):
+    school = schools[Programme.HPV][0]
+    try:
+        dashboard_page.click_sessions()
+        sessions_page.schedule_a_valid_session(
+            "Community clinic", Programme.HPV, for_today=True
+        )
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
+        sessions_page.click_import_class_lists()
+        sessions_page.select_year_groups_for_programme(Programme.HPV)
+        import_records_page.upload_and_verify_output(
+            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        )
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.click_session_for_programme_group(
+            "Community clinic", Programme.HPV
+        )
+        session_id = sessions_page.get_session_id_from_offline_excel()
+        dashboard_page.click_mavis()
+        dashboard_page.click_import_records()
+        import_records_page.navigate_to_vaccination_records_import()
+        yield session_id
+    finally:
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.delete_all_sessions("Community clinic")
+
+
+@pytest.fixture
 def setup_vaccs_systmone(
     log_in_as_nurse,
     schools,
@@ -378,4 +416,7 @@ def test_vaccs_systmone_disallow_flu_for_previous_years(
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccs_community_clinic_name_case(setup_vaccs_clinic, import_records_page):
-    import_records_page.upload_and_verify_output(VaccsFileMapping.CLINIC_NAME_CASE)
+    import_records_page.upload_and_verify_output(
+        VaccsFileMapping.CLINIC_NAME_CASE,
+        session_id=setup_vaccs_clinic,
+    )
