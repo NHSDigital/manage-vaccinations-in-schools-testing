@@ -25,7 +25,9 @@ class ImportRecordsPage:
         self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
         self.invalid_tag = self.page.get_by_role("strong").get_by_text("Invalid")
-        self.import_records_link = self.page.get_by_role("link", name="Import records")
+        self.import_records_button = self.page.get_by_role(
+            "button", name="Import records"
+        )
         self.import_class_lists_link = self.page.get_by_role(
             "link", name="Import class lists"
         )
@@ -44,7 +46,7 @@ class ImportRecordsPage:
 
     @step("Click on Import Records")
     def click_import_records(self):
-        self.import_records_link.click()
+        self.import_records_button.click()
 
     @step("Click on Import class lists")
     def click_import_class_lists(self):

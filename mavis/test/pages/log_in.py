@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from mavis.test.models import Organisation, User
+from mavis.test.models import Team, User
 from mavis.test.annotations import step
 
 
@@ -27,15 +27,15 @@ class LogInPage:
         self.password_input.fill(user.password)
         self.log_in_button.click()
 
-    @step("Select organisation {1}")
-    def select_organisation(self, organisation: Organisation):
-        self.page.get_by_role("radio", name=str(organisation)).check()
+    @step("Select team {1}")
+    def select_team(self, team: Team):
+        self.page.get_by_role("radio", name=str(team)).check()
         self.continue_button.click()
 
     @step("Log out")
     def log_out(self):
         self.log_out_button.click()
 
-    def log_in_and_select_organisation(self, user: User, organisation: Organisation):
+    def log_in_and_select_team(self, user: User, team: Team):
         self.log_in(user)
-        self.select_organisation(organisation)
+        self.select_team(team)

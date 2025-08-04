@@ -30,11 +30,11 @@ def users(admin, nurse, superuser) -> dict[str, User]:
 @pytest.mark.parametrize(
     "role", ("admin", "nurse", "superuser"), ids=lambda v: f"role: {v}"
 )
-def test_valid(role, users, organisation, dashboard_page, log_in_page):
+def test_valid(role, users, team, dashboard_page, log_in_page):
     log_in_page.log_in(users[role])
     expect(log_in_page.log_out_button).to_be_visible()
 
-    log_in_page.select_organisation(organisation)
+    log_in_page.select_team(team)
     expect(dashboard_page.mavis_link).to_be_visible()
     expect(dashboard_page.programmes_link).to_be_visible()
     expect(dashboard_page.sessions_link).to_be_visible()
@@ -43,7 +43,7 @@ def test_valid(role, users, organisation, dashboard_page, log_in_page):
     expect(dashboard_page.unmatched_consent_responses_link).to_be_visible()
     expect(dashboard_page.school_moves_link).to_be_visible()
     expect(dashboard_page.import_records_link).to_be_visible()
-    expect(dashboard_page.your_organisation_link).to_be_visible()
+    expect(dashboard_page.your_team_link).to_be_visible()
     expect(dashboard_page.service_guidance_link).to_be_visible()
 
     log_in_page.log_out()
