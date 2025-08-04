@@ -16,13 +16,13 @@ from faker import Faker
 from mavis.test.models import (
     Child,
     Clinic,
-    Organisation,
     Parent,
+    Programme,
     Relationship,
     School,
     Subteam,
+    Team,
     User,
-    Programme,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
 
@@ -130,9 +130,9 @@ def subteam():
 
 
 @pytest.fixture(scope="session")
-def organisation(subteam) -> Organisation:
+def team(subteam) -> Team:
     ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    return Organisation(
+    return Team(
         name=subteam.name, ods_code=ods_code, email=subteam.email, phone=subteam.phone
     )
 
@@ -147,10 +147,10 @@ def users(admin, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.fixture(scope="session")
-def onboarding(clinics, schools, subteam, organisation, users, programmes_enabled):
+def onboarding(clinics, schools, subteam, team, users, programmes_enabled):
     return {
         "clinics": {subteam.key: [it.to_onboarding() for it in clinics]},
-        "organisation": organisation.to_onboarding(),
+        "team": team.to_onboarding(),
         "programmes": programmes_enabled,
         "schools": {
             subteam.key: [
@@ -171,25 +171,21 @@ def _check_response_status(response):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def onboard_and_delete(base_url, onboarding, organisation):
+def onboard_and_delete(base_url, onboarding, team):
     url = urllib.parse.urljoin(base_url, "api/testing/onboard")
     response = requests.post(url, json=onboarding)
     _check_response_status(response)
 
     yield
 
-    url = urllib.parse.urljoin(
-        base_url, f"api/testing/organisations/{organisation.ods_code}"
-    )
+    url = urllib.parse.urljoin(base_url, f"api/testing/organisations/{team.ods_code}")
     response = requests.delete(url)
     _check_response_status(response)
 
 
 @pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, organisation):
-    url = urllib.parse.urljoin(
-        base_url, f"api/testing/organisations/{organisation.ods_code}"
-    )
+def reset_before_each_module(base_url, team):
+    url = urllib.parse.urljoin(base_url, f"api/testing/organisations/{team.ods_code}")
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
 
