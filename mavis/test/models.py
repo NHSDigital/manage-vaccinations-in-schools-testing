@@ -251,7 +251,7 @@ class Subteam(NamedTuple):
         return {self.key: {"name": self.name, "email": self.email, "phone": self.phone}}
 
 
-class Organisation(NamedTuple):
+class Team(NamedTuple):
     name: str
     ods_code: str
     email: str

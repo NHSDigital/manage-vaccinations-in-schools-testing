@@ -1,5 +1,5 @@
-Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current organisation.
-Row 3 ORGANISATION_CODE: Enter an organisation code.
+Row 2 ORGANISATION_CODE: Enter an team code that matches the current team.
+Row 3 ORGANISATION_CODE: Enter an team code.
 Row 5 SCHOOL_NAME or School is required
 Row 6 NHS_NUMBER: should be a valid NHS number with 10 characters
 Row 7 NHS_NUMBER: should be a valid NHS number with 10 characters
