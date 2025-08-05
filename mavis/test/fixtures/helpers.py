@@ -1,7 +1,7 @@
+import os
 from datetime import date, timedelta
 
 import pytest
-import os
 
 from mavis.test.data import TestData
 from mavis.test.models import Vaccine
@@ -102,8 +102,8 @@ def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
 
 
 @pytest.fixture
-def test_data(team, schools, nurse, children):
-    return TestData(team, schools, nurse, children)
+def test_data(team, schools, nurse, children, clinics):
+    return TestData(team, schools, nurse, children, clinics)
 
 
 @pytest.fixture
