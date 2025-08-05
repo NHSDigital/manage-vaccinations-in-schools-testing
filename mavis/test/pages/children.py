@@ -85,7 +85,9 @@ class ChildrenPage:
             self.page.get_by_role("link", name=str(child)).click()
 
     @step("Click on {2} session for programme")
-    def click_session_for_programme(self, location: str, programme: Programme, check_date: bool = False) -> None:
+    def click_session_for_programme(
+        self, location: str, programme: Programme, check_date: bool = False
+    ) -> None:
         locator = self.page.get_by_role("row", name=str(location)).filter(
             has_text=str(programme)
         )
