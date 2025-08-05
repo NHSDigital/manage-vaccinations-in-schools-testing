@@ -114,13 +114,13 @@ class TestData:
         schools: dict[str, list[School]],
         nurse: User,
         children: dict[str, list[Child]],
-        clinics: Clinic,
+        clinics: list[Clinic],
     ):
         self.team = team
         self.schools = schools
         self.nurse = nurse
         self.children = children
-        self.clinic = clinics
+        self.clinics = clinics
 
         self.faker = Faker(locale="en_GB")
 
@@ -155,9 +155,11 @@ class TestData:
         if self.nurse:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
-        if self.clinic:
-            static_replacements["<<CLINIC_0_LOWER>>"] = self.clinic[0].name.lower()
-            static_replacements["<<CLINIC_0>>"] = self.clinic[0].name
+        if self.clinics:
+            clinics = self.clinics
+            for index, clinic in enumerate(clinics):
+                static_replacements[f"<<CLINIC_{index}_LOWER>>"] = clinic.name.lower()
+                static_replacements[f"<<CLINIC_{index}>>"] = clinic.name
 
         if self.children:
             children = self.children[programme_group]
