@@ -51,6 +51,7 @@ def setup_mavis_1729(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
+        sessions_page.click_add_to_current_year()
         sessions_page.select_year_groups_for_programme(Programme.HPV)
         import_records_page.upload_and_verify_output(
             ClassFileMapping.RANDOM_CHILD_YEAR_9
@@ -91,6 +92,7 @@ def setup_mav_854(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
+        sessions_page.click_add_to_current_year()
         sessions_page.select_year_groups_for_programme(Programme.HPV)
         import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
         dashboard_page.click_mavis()
@@ -204,6 +206,7 @@ def test_rav_triage_consent_given(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
+    sessions_page.click_add_to_current_year()
     sessions_page.select_year_groups_for_programme(Programme.HPV)
 
     import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
@@ -242,6 +245,7 @@ def test_rav_triage_consent_refused(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
+    sessions_page.click_add_to_current_year()
     sessions_page.select_year_groups_for_programme(Programme.HPV)
 
     import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)

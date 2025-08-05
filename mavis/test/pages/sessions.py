@@ -49,6 +49,7 @@ class SessionsPage:
         self.conflicting_consent_checkbox = self.page.get_by_role(
             "checkbox", name="Conflicting consent"
         )
+        self.current_year_radio = page.get_by_role("radio", name="2024 to 2025")
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
         self.import_class_lists_link = self.page.get_by_role(
@@ -617,8 +618,16 @@ class SessionsPage:
         self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
+    @step("Click on 2024 to 2025")
+    def click_add_to_current_year(self):
+        self.current_year_radio.check()
+        self.click_continue_button()
+
     def select_year_groups_for_programme(self, programme: Programme):
         self.select_year_groups(*map(int, programme.year_groups))
+
+    def select_current_year(self):
+        self.page.get_by_role("radio", name="2024 to 2025").check()
 
     def schedule_a_valid_session(
         self, location: str, programme_group: str, for_today: bool = False
