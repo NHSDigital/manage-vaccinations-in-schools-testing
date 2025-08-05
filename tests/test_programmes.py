@@ -304,7 +304,7 @@ def test_rav_verify_excel_mav_854(
 
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
-    children_page.click_session_for_programme("Community clinic", Programme.HPV)
+    children_page.click_session_for_programme("Community clinic", Programme.HPV, check_date=True)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.register_child_as_attending(child)

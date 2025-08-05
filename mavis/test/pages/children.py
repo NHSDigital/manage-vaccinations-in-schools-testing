@@ -1,6 +1,6 @@
 from pathlib import Path
 from playwright.sync_api import Page, expect
-
+from datetime import datetime
 from mavis.test.data import TestData
 from mavis.test.models import School, Child, Programme
 from mavis.test.annotations import step
@@ -85,10 +85,13 @@ class ChildrenPage:
             self.page.get_by_role("link", name=str(child)).click()
 
     @step("Click on {2} session for programme")
-    def click_session_for_programme(self, location: str, programme: Programme) -> None:
+    def click_session_for_programme(self, location: str, programme: Programme, check_date: bool = False) -> None:
         locator = self.page.get_by_role("row", name=str(location)).filter(
             has_text=str(programme)
         )
+        if check_date:
+            today_str = datetime.now().strftime("%-d %B %Y")
+            locator = locator.filter(has_text=today_str)
         locator.get_by_role("link").click()
         expect(self.page.get_by_role("link", name=str(programme))).to_be_visible(
             timeout=10000
