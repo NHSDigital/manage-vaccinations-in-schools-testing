@@ -156,8 +156,8 @@ class TestData:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
 
         if self.clinic:
-            static_replacements["<<CLINIC_LOWER>>"] = self.clinic[0].name.lower()
-            static_replacements["<<CLINIC>>"] = self.clinic[0].name
+            static_replacements["<<CLINIC_0_LOWER>>"] = self.clinic[0].name.lower()
+            static_replacements["<<CLINIC_0>>"] = self.clinic[0].name
 
         if self.children:
             children = self.children[programme_group]
