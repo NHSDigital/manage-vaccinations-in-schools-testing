@@ -22,6 +22,8 @@ class ImportRecordsPage:
         self.test_data = test_data
         self.page = page
 
+        self.current_year_radio = page.get_by_role("radio", name="2024 to 2025")
+
         self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
         self.invalid_tag = self.page.get_by_role("strong").get_by_text("Invalid")
@@ -103,6 +105,8 @@ class ImportRecordsPage:
         self.click_import_records()
         self.select_class_list_records()
         self.click_continue()
+        self.click_add_to_current_year()
+        self.click_continue()
 
         self.page.wait_for_load_state()
 
@@ -111,6 +115,10 @@ class ImportRecordsPage:
 
         self.click_continue()
         self._select_year_groups(*year_groups)
+
+    @step("Click on 2024 to 2025")
+    def click_add_to_current_year(self):
+        self.current_year_radio.check()
 
     def navigate_to_vaccination_records_import(self):
         self.click_import_records()

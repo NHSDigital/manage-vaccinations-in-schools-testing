@@ -18,6 +18,7 @@ class ProgrammesPage:
             .filter(has_text="2024 to 2025")
             .locator("xpath=following-sibling::table[1]")
         )
+        self.current_year_radio = page.get_by_role("radio", name="2024 to 2025")
 
         programme_page_links = (
             page.get_by_role("main").get_by_role("listitem").get_by_role("link")
@@ -97,6 +98,12 @@ class ProgrammesPage:
         self.click_programme_current_year(programme)
         self.click_children()
         self.click_import_child_records()
+        self.click_add_to_current_year()
+        self.click_continue()
+
+    @step("Click on 2024 to 2025")
+    def click_add_to_current_year(self):
+        self.current_year_radio.check()
 
     @step("Click on Save changes")
     def click_save_changes(self):
