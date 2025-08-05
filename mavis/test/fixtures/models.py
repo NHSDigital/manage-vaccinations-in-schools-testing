@@ -16,7 +16,6 @@ from faker import Faker
 from mavis.test.models import (
     Child,
     Clinic,
-    Team,
     Parent,
     Programme,
     Relationship,
