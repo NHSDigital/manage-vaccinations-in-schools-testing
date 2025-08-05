@@ -16,6 +16,7 @@ from faker import Faker
 from mavis.test.models import (
     Child,
     Clinic,
+    Team,
     Parent,
     Programme,
     Relationship,
@@ -178,14 +179,14 @@ def onboard_and_delete(base_url, onboarding, team):
 
     yield
 
-    url = urllib.parse.urljoin(base_url, f"api/testing/organisations/{team.ods_code}")
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.ods_code}")
     response = requests.delete(url)
     _check_response_status(response)
 
 
 @pytest.fixture(scope="module", autouse=True)
 def reset_before_each_module(base_url, team):
-    url = urllib.parse.urljoin(base_url, f"api/testing/organisations/{team.ods_code}")
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.ods_code}")
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
 
