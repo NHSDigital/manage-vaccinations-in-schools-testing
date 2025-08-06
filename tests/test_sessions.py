@@ -100,10 +100,11 @@ def test_verify_attendance_filters(setup_mavis_1822, sessions_page, year_groups)
     expect(search_summary).to_have_text("Showing 1 to 5 of 5 children")
 
     sessions_page.uncheck_year_checkbox(year_group)
-    sessions_page.check_box_for_year_other_than(year_group)
+    sessions_page.click_advanced_filters()
+    sessions_page.check_missing_nhs_no_checkbox()
     sessions_page.click_on_update_results()
 
-    expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
+    expect(search_summary).not_to_be_visible()
 
 
 @issue("MAV-1018")
