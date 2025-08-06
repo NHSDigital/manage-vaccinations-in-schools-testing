@@ -34,9 +34,9 @@ def setup_session_with_file_upload(
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.click_import_class_lists()
-            import_records_page.click_add_to_current_year()
-            import_records_page.select_year_groups(year_group)
-            import_records_page.upload_and_verify_output(class_list_file)
+            import_records_page.import_class_list_for_current_year(
+                class_list_file, year_group
+            )
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)

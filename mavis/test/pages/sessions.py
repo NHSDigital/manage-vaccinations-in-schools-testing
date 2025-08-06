@@ -631,7 +631,6 @@ class SessionsPage:
         self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
-
     def schedule_a_valid_session(
         self, location: str, programme_group: str, for_today: bool = False
     ):
@@ -696,7 +695,6 @@ class SessionsPage:
         self.click_on_update_results()
 
         expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-
 
     def register_child_as_attending(self, child: Child):
         self.click_register_tab()

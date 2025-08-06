@@ -30,9 +30,6 @@ class ImportRecordsPage:
         self.import_records_button = self.page.get_by_role(
             "button", name="Import records"
         )
-        self.import_class_lists_link = self.page.get_by_role(
-            "link", name="Import class lists"
-        )
         self.child_records_radio_button = self.page.get_by_role(
             "radio", name="Child records"
         )
@@ -49,10 +46,6 @@ class ImportRecordsPage:
     @step("Click on Import Records")
     def click_import_records(self):
         self.import_records_button.click()
-
-    @step("Click on Import class lists")
-    def click_import_class_lists(self):
-        self.import_class_lists_link.click()
 
     @step("Select Child Records")
     def select_child_records(self):
@@ -95,13 +88,8 @@ class ImportRecordsPage:
         self.select_child_records()
         self.click_continue()
         self.click_add_to_current_year()
-        self.click_continue()
 
-    def navigate_to_class_list_record_import(
-        self,
-        location: str,
-        *year_groups: int
-    ):
+    def navigate_to_class_list_record_import(self, location: str, *year_groups: int):
         self.click_import_records()
         self.select_class_list_records()
         self.click_continue()
@@ -189,3 +177,15 @@ class ImportRecordsPage:
             else:
                 self.page.get_by_label(text=f"Year {year_group}", exact=True).check()
         self.click_continue()
+
+    def import_class_list_for_current_year(
+        self,
+        class_list_file: FileMapping,
+        year_group: Optional[int] = None,
+        programme_group: str = Programme.HPV.group,
+    ):
+        self.click_add_to_current_year()
+        if year_group:
+            self.select_year_groups(year_group)
+
+        self.upload_and_verify_output(class_list_file, programme_group=programme_group)
