@@ -139,58 +139,33 @@ def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
 @issue("MAV-909")
 @pytest.mark.cohorts
 @pytest.mark.bug
-def test_cohorts_readd_to_cohort(
+def test_cohorts_archive_and_unarchive(
     setup_cohort_upload,
     programmes_page,
     dashboard_page,
     children_page,
     import_records_page,
-    test_data,
     children,
 ):
-    """
-    Steps to reproduce:
-    Find a patient in Year 8 and remove them from cohort using the button
-    Upload a cohort list with their first name, surname, URN, date of birth and postcode
-
-    Scenario 1
-        Duplicate review is not flagged
-
-        Expected result:
-        The child is added back into the cohort, and in all the relevant sessions
-        Actual Result:
-        Server error page and user cannot bring the child back into the cohort
-
-    Scenario 2
-        The import screen flags for duplicate review, and user clicks "Review" next to the child's name
-
-        Expected result:
-        System allows you to review the new details against the previous record (before removing from cohort) and lets you choose which record to keep. Once review confirmed, the child is added back into the cohort, and in all the relevant sessions.
-        Actual Result:
-        Server error page and user cannot bring the child back into the cohort
-    """
     child = children[Programme.HPV][0]
 
-    input_file_path, _ = import_records_page.upload_and_verify_output(
-        CohortsFileMapping.FIXED_CHILD
-    )
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.remove_child_from_cohort(child)
+    children_page.archive_child_record(child)
+
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
 
-    test_data.increment_date_of_birth_for_records(input_file_path)
-    import_records_page.set_input_file(input_file_path)
-    import_records_page.click_continue()
+    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
 
-    programmes_page.expect_text("1 duplicate record needs review")
-    programmes_page.click_review()
-    programmes_page.click_use_duplicate()
-    programmes_page.click_resolve_duplicate()
-    programmes_page.expect_text("Record updated")
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
+    children_page.search_for_a_child_name(str(child))
+    children_page.click_record_for_child(child)
+    children_page.check_child_is_unarchived()
 
 
 @pytest.mark.rav

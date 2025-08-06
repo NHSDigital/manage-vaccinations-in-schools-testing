@@ -35,8 +35,8 @@ class ChildrenPage:
         self.change_nhs_no_link = self.page.get_by_role(
             "link", name="Change   NHS number"
         )
-        self.remove_from_cohort_button = self.page.get_by_role(
-            "button", name="Remove from cohort"
+        self.archive_child_record_link = self.page.get_by_role(
+            "link", name="Archive child record"
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
 
@@ -47,6 +47,12 @@ class ChildrenPage:
 
         self.manually_matched_card = self.page.get_by_text(
             "Consent response manually matched with child record"
+        )
+        self.imported_in_error_radio = self.page.get_by_role(
+            "radio", name="It was imported in error"
+        )
+        self.archive_record_button = self.page.get_by_role(
+            "button", name="Archive record"
         )
 
     def verify_headers(self):
@@ -128,9 +134,9 @@ class ChildrenPage:
     def click_continue(self) -> None:
         self.continue_button.click()
 
-    @step("Click on Remove from cohort")
-    def click_remove_from_cohort(self) -> None:
-        self.remove_from_cohort_button.click()
+    @step("Click on Archive child record")
+    def click_archive_child_record(self) -> None:
+        self.archive_child_record_link.click()
 
     @step("Fill NHS number {2} for child {1}")
     def fill_nhs_no_for_child(self, child: Child, nhs_no: str) -> None:
@@ -165,8 +171,24 @@ class ChildrenPage:
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
 
-    def remove_child_from_cohort(self, child: Child):
+    def archive_child_record(self, child: Child):
         self.search_for_a_child_name(str(child))
         self.click_record_for_child(child)
-        self.click_remove_from_cohort()
-        self.expect_text_in_main(f"{str(child)} removed from cohort")
+        self.click_archive_child_record()
+        self.click_imported_in_error()
+        self.click_archive_record()
+        expect(self.page.get_by_role("alert")).to_contain_text(
+            "This record has been archived"
+        )
+        expect(self.page.get_by_text("Archive reason")).to_be_visible()
+
+    @step("Click on Imported in error")
+    def click_imported_in_error(self):
+        self.imported_in_error_radio.check()
+
+    @step("Click on Archive record")
+    def click_archive_record(self):
+        self.archive_record_button.click()
+
+    def check_child_is_unarchived(self):
+        expect(self.archive_child_record_link).to_be_visible()
