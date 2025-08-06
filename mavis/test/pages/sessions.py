@@ -393,6 +393,20 @@ class SessionsPage:
     def click_confirm_button(self):
         self.confirm_button.click()
 
+    @step("Check box for year {1}")
+    def check_year_checkbox(self, year: str):
+        self.page.get_by_role("checkbox", name=f"Year {year}").check()
+
+    @step("Uncheck box for year {1}")
+    def uncheck_year_checkbox(self, year: str):
+        self.page.get_by_role("checkbox", name=f"Year {year}").uncheck()
+
+    @step("Check box for year {1}")
+    def check_box_for_year_other_than(self, year: str):
+        self.page.get_by_role("checkbox", name="Year ").filter(
+            has_not_text=year
+        ).first.check()
+
     @step("Click on Record vaccinations")
     def click_record_vaccinations_tab(self):
         self._click_tab("Record vaccinations")
@@ -622,9 +636,6 @@ class SessionsPage:
     def click_add_to_current_year(self):
         self.current_year_radio.check()
         self.click_continue_button()
-
-    def select_year_groups_for_programme(self, programme: Programme):
-        self.select_year_groups(*map(int, programme.year_groups))
 
     def select_current_year(self):
         self.page.get_by_role("radio", name="2024 to 2025").check()

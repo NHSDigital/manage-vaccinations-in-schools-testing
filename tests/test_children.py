@@ -14,9 +14,12 @@ def setup_children_session(
     dashboard_page,
     sessions_page,
     import_records_page,
+    year_groups,
 ):
     def _setup(class_list_file):
         school = schools[Programme.HPV][0]
+        year_group = year_groups[Programme.HPV]
+
         try:
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(
@@ -27,7 +30,7 @@ def setup_children_session(
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.click_import_class_lists()
             sessions_page.click_add_to_current_year()
-            sessions_page.select_year_groups_for_programme(Programme.HPV)
+            sessions_page.select_year_groups(year_group)
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_children()
@@ -58,17 +61,18 @@ def setup_mav_853(
     import_records_page,
     programmes_page,
     sessions_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
+
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
         sessions_page.click_add_to_current_year()
-        sessions_page.select_year_groups_for_programme(Programme.HPV)
-        import_records_page.upload_and_verify_output(
-            ClassFileMapping.RANDOM_CHILD_YEAR_9
-        )
+        sessions_page.select_year_groups(year_group)
+        import_records_page.upload_and_verify_output(ClassFileMapping.RANDOM_CHILD)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(school, Programme.HPV)
