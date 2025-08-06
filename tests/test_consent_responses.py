@@ -73,6 +73,7 @@ def test_match(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
+    import_records_page.click_add_to_current_year()
     import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()

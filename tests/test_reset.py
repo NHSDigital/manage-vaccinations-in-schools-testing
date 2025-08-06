@@ -30,8 +30,8 @@ def setup_mav_965(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, programme_group, for_today=True)
     sessions_page.click_import_class_lists()
-    sessions_page.click_add_to_current_year()
-    sessions_page.select_year_groups(child.year_group)
+    import_records_page.click_add_to_current_year()
+    import_records_page.select_year_groups(child.year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.FIXED_CHILD, programme_group="doubles"
     )

@@ -49,7 +49,6 @@ class SessionsPage:
         self.conflicting_consent_checkbox = self.page.get_by_role(
             "checkbox", name="Conflicting consent"
         )
-        self.current_year_radio = page.get_by_role("radio", name="2024 to 2025")
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
         self.import_class_lists_link = self.page.get_by_role(
@@ -632,13 +631,6 @@ class SessionsPage:
         self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
-    @step("Click on 2024 to 2025")
-    def click_add_to_current_year(self):
-        self.current_year_radio.check()
-        self.click_continue_button()
-
-    def select_current_year(self):
-        self.page.get_by_role("radio", name="2024 to 2025").check()
 
     def schedule_a_valid_session(
         self, location: str, programme_group: str, for_today: bool = False
@@ -705,15 +697,6 @@ class SessionsPage:
 
         expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
 
-    def select_year_groups(self, *year_groups: int) -> None:
-        for year_group in year_groups:
-            if year_group == 0:
-                self.page.get_by_role("checkbox", name="Reception").check()
-            else:
-                self.page.get_by_role(
-                    "checkbox", name=f"Year {year_group}", exact=True
-                ).check()
-        self.click_continue_button()
 
     def register_child_as_attending(self, child: Child):
         self.click_register_tab()
