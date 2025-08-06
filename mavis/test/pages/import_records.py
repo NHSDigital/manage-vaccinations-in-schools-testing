@@ -67,7 +67,8 @@ class ImportRecordsPage:
         self.vaccination_records_radio_button.click()
 
     @step("Click Continue")
-    def click_continue(self, coverage=""):
+    def click_continue(self, coverage: Optional[str] = None):
+        # coverage is only used for reporting
         self.continue_button.click()
 
     @step("Set input file to {1}")
