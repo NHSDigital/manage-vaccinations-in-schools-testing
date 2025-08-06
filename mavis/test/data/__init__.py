@@ -64,7 +64,6 @@ class CohortsFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    FIXED_CHILD_YEAR_8 = "fixed_child_year_8"
     FIXED_CHILD = "fixed_child"
 
     @property
@@ -93,7 +92,7 @@ class ClassFileMapping(FileMapping):
     HEADER_ONLY = "header_only"
     WHITESPACE = "whitespace"
     WRONG_YEAR_GROUP = "wrong_year_group"
-    RANDOM_CHILD_YEAR_9 = "random_child_year_9"
+    RANDOM_CHILD = "random_child"
     FIXED_CHILD = "fixed_child"
     TWO_FIXED_CHILDREN = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
@@ -113,11 +112,13 @@ class TestData:
         schools: dict[str, list[School]],
         nurse: User,
         children: dict[str, list[Child]],
+        year_groups: dict[str, str],
     ):
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
         self.children = children
+        self.year_groups = year_groups
 
         self.faker = Faker(locale="en_GB")
 
@@ -139,6 +140,13 @@ class TestData:
             "<<HIST_VACCS_DATE>>": get_offset_date(offset_days=-(365 * 2)),
             "<<SESSION_ID>>": session_id,
         }
+
+        if self.year_groups:
+            year_group = self.year_groups[programme_group]
+            static_replacements["<<FIXED_YEAR_GROUP>>"] = year_group
+            static_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = str(
+                get_date_of_birth_for_year_group(int(year_group))
+            )
 
         if self.organisation:
             static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code

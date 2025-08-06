@@ -1,4 +1,5 @@
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.annotations import issue
@@ -19,8 +20,10 @@ def setup_session_with_file_upload(
     dashboard_page,
     sessions_page,
     import_records_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
 
     def _setup(class_list_file):
         try:
@@ -32,7 +35,7 @@ def setup_session_with_file_upload(
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.click_import_class_lists()
             sessions_page.click_add_to_current_year()
-            sessions_page.select_year_groups_for_programme(Programme.HPV)
+            sessions_page.select_year_groups(year_group)
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
@@ -53,7 +56,7 @@ def setup_mavis_1822(setup_session_with_file_upload):
 
 @pytest.fixture
 def setup_mav_1018(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFileMapping.RANDOM_CHILD_YEAR_9)
+    yield from setup_session_with_file_upload(ClassFileMapping.RANDOM_CHILD)
 
 
 @pytest.fixture
@@ -83,8 +86,24 @@ def test_invalid(
 
 
 @pytest.mark.bug
-def test_verify_attendance_filters(setup_mavis_1822, sessions_page):
-    sessions_page.verify_attendance_filters()
+def test_verify_attendance_filters(setup_mavis_1822, sessions_page, year_groups):
+    year_group = year_groups[Programme.HPV]
+
+    sessions_page.click_register_tab()
+
+    search_summary = sessions_page.page.get_by_text("Showing 1 to")
+
+    expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
+    sessions_page.check_year_checkbox(year_group)
+    sessions_page.click_on_update_results()
+
+    expect(search_summary).to_have_text("Showing 1 to 5 of 5 children")
+
+    sessions_page.uncheck_year_checkbox(year_group)
+    sessions_page.check_box_for_year_other_than(year_group)
+    sessions_page.click_on_update_results()
+
+    expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
 
 
 @issue("MAV-1018")

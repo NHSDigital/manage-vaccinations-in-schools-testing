@@ -14,8 +14,10 @@ def setup_session_with_file_upload(
     dashboard_page,
     sessions_page,
     import_records_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
 
     def _setup(class_list_file):
         try:
@@ -28,7 +30,7 @@ def setup_session_with_file_upload(
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.click_import_class_lists()
             sessions_page.click_add_to_current_year()
-            sessions_page.select_year_groups_for_programme(Programme.HPV)
+            sessions_page.select_year_groups(year_group)
             import_records_page.upload_and_verify_output(class_list_file)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
