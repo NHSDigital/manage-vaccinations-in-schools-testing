@@ -32,6 +32,7 @@ from .fixtures import (
     nurse,
     onboard_and_delete,
     onboarding,
+    organisation,
     programmes_enabled,
     programmes_page,
     reset_before_each_module,
@@ -48,6 +49,7 @@ from .fixtures import (
     unmatched_consent_responses_page,
     users,
     vaccines_page,
+    year_groups,
 )
 from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
 
@@ -83,6 +85,7 @@ __all__ = [
     "nurse",
     "onboard_and_delete",
     "onboarding",
+    "organisation",
     "programmes_page",
     "programmes_enabled",
     "pytest_runtest_logreport",
@@ -104,4 +107,5 @@ __all__ = [
     "vaccines_page",
     "authenticate_api",
     "imms_base_url",
+    "year_groups",
 ]
