@@ -26,8 +26,8 @@ def setup_confirm_and_ignore(
 
     def upload_class_list():
         sessions_page.click_import_class_lists()
-        sessions_page.click_add_to_current_year()
-        sessions_page.select_year_groups(year_group)
+        import_records_page.click_add_to_current_year()
+        import_records_page.select_year_groups(year_group)
         sessions_page.choose_file_child_records(input_file_path)
         sessions_page.click_continue_button()
         import_records_page.verify_upload_output(output_file_path)

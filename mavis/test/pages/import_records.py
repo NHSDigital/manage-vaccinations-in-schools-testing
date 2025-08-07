@@ -30,9 +30,6 @@ class ImportRecordsPage:
         self.import_records_button = self.page.get_by_role(
             "button", name="Import records"
         )
-        self.import_class_lists_link = self.page.get_by_role(
-            "link", name="Import class lists"
-        )
         self.child_records_radio_button = self.page.get_by_role(
             "radio", name="Child records"
         )
@@ -50,10 +47,6 @@ class ImportRecordsPage:
     def click_import_records(self):
         self.import_records_button.click()
 
-    @step("Click on Import class lists")
-    def click_import_class_lists(self):
-        self.import_class_lists_link.click()
-
     @step("Select Child Records")
     def select_child_records(self):
         self.child_records_radio_button.click()
@@ -67,7 +60,8 @@ class ImportRecordsPage:
         self.vaccination_records_radio_button.click()
 
     @step("Click Continue")
-    def click_continue(self, coverage=""):
+    def click_continue(self, coverage: Optional[str] = None):
+        # coverage is only used for reporting
         self.continue_button.click()
 
     @step("Set input file to {1}")
@@ -94,16 +88,8 @@ class ImportRecordsPage:
         self.select_child_records()
         self.click_continue()
         self.click_add_to_current_year()
-        self.click_continue()
 
-    def navigate_to_class_list_record_import(
-        self,
-        location: str,
-        year_groups: Optional[list[int]] = None,
-    ):
-        if year_groups is None:
-            year_groups = [9, 10]
-
+    def navigate_to_class_list_record_import(self, location: str, *year_groups: int):
         self.click_import_records()
         self.select_class_list_records()
         self.click_continue()
@@ -112,15 +98,15 @@ class ImportRecordsPage:
 
         self.fill_location(location)
         self.page.get_by_role("option", name=str(location)).first.click()
+        self.click_continue()
 
-        self.click_continue()
         self.click_add_to_current_year()
-        self.click_continue()
-        self._select_year_groups(*year_groups)
+        self.select_year_groups(*year_groups)
 
     @step("Click on 2024 to 2025")
     def click_add_to_current_year(self):
         self.current_year_radio.check()
+        self.click_continue()
 
     def navigate_to_vaccination_records_import(self):
         self.click_import_records()
@@ -184,10 +170,22 @@ class ImportRecordsPage:
                 else:
                     expect(self.page.get_by_role("main")).to_contain_text(_msg)
 
-    def _select_year_groups(self, *year_groups: int) -> None:
+    def select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
             if year_group == 0:
                 self.page.get_by_label("Reception").check()
             else:
                 self.page.get_by_label(text=f"Year {year_group}", exact=True).check()
         self.click_continue()
+
+    def import_class_list_for_current_year(
+        self,
+        class_list_file: FileMapping,
+        year_group: Optional[int] = None,
+        programme_group: str = Programme.HPV.group,
+    ):
+        self.click_add_to_current_year()
+        if year_group:
+            self.select_year_groups(year_group)
+
+        self.upload_and_verify_output(class_list_file, programme_group=programme_group)

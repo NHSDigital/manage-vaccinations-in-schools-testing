@@ -6,7 +6,9 @@ from mavis.test.annotations import issue
 
 
 @pytest.fixture
-def setup_cohort_upload(log_in_as_nurse, dashboard_page, programmes_page):
+def setup_cohort_upload(
+    log_in_as_nurse, dashboard_page, programmes_page, import_records_page
+):
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
 
@@ -53,9 +55,10 @@ def setup_mavis_1729(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
-        sessions_page.click_add_to_current_year()
-        sessions_page.select_year_groups(year_group)
-        import_records_page.upload_and_verify_output(ClassFileMapping.RANDOM_CHILD)
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.RANDOM_CHILD,
+            year_group,
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(school, Programme.HPV)
@@ -94,9 +97,9 @@ def setup_mav_854(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
-        sessions_page.click_add_to_current_year()
-        sessions_page.select_year_groups(year_group)
-        import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.FIXED_CHILD, year_group
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
@@ -113,27 +116,33 @@ def setup_mav_854(
 
 @pytest.mark.cohorts
 def test_cohort_upload_positive(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.POSITIVE)
+    import_records_page.import_class_list_for_current_year(CohortsFileMapping.POSITIVE)
 
 
 @pytest.mark.cohorts
 def test_cohort_upload_negative(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.NEGATIVE)
+    import_records_page.import_class_list_for_current_year(CohortsFileMapping.NEGATIVE)
 
 
 @pytest.mark.cohorts
 def test_cohorts_file_structure(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.INVALID_STRUCTURE)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.INVALID_STRUCTURE
+    )
 
 
 @pytest.mark.cohorts
 def test_cohorts_no_record(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.HEADER_ONLY)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.HEADER_ONLY
+    )
 
 
 @pytest.mark.cohorts
 def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.EMPTY_FILE)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.EMPTY_FILE
+    )
 
 
 @issue("MAV-909")
@@ -149,7 +158,9 @@ def test_cohorts_archive_and_unarchive(
 ):
     child = children[Programme.HPV][0]
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD
+    )
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -159,7 +170,9 @@ def test_cohorts_archive_and_unarchive(
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD
+    )
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -183,10 +196,10 @@ def test_rav_triage_consent_given(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
-    sessions_page.click_add_to_current_year()
-    sessions_page.select_year_groups(child.year_group)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD, child.year_group
+    )
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
@@ -222,10 +235,10 @@ def test_rav_triage_consent_refused(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
-    sessions_page.click_add_to_current_year()
-    sessions_page.select_year_groups(child.year_group)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD, child.year_group
+    )
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.HPV)

@@ -277,7 +277,7 @@ class TestData:
 
         return _input_file_path, _output_file_path
 
-    def read_scenario_list_from_file(self, input_file_path: str) -> Optional[str]:
+    def read_scenario_list_from_file(self, input_file_path: Path) -> Optional[str]:
         try:
             _df = pd.read_csv(input_file_path)
             return (

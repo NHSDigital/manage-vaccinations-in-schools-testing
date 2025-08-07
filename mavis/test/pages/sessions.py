@@ -49,7 +49,6 @@ class SessionsPage:
         self.conflicting_consent_checkbox = self.page.get_by_role(
             "checkbox", name="Conflicting consent"
         )
-        self.current_year_radio = page.get_by_role("radio", name="2024 to 2025")
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
         self.import_class_lists_link = self.page.get_by_role(
@@ -119,7 +118,6 @@ class SessionsPage:
         self.update_results_button = self.page.get_by_role(
             "button", name="Update results"
         )
-        self.year_10_checkbox = self.page.get_by_role("checkbox", name="Year 10")
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.search_textbox = self.page.get_by_role("textbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
@@ -183,6 +181,10 @@ class SessionsPage:
         vaccinations_card = page.get_by_role("table", name="Vaccinations")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.sessions_link = page.get_by_role("link", name="Sessions", exact=True).first
+        self.advanced_filters_link = page.get_by_text("Advanced filters")
+        self.missing_nhs_no_checkbox = self.page.get_by_role(
+            "checkbox", name="Children missing an NHS number"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -248,6 +250,7 @@ class SessionsPage:
 
         self.search_textbox.fill(str(location))
         self.search_button.click()
+
         self.page.get_by_role("link", name=str(location)).click()
 
         expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
@@ -395,17 +398,25 @@ class SessionsPage:
 
     @step("Check box for year {1}")
     def check_year_checkbox(self, year: str):
-        self.page.get_by_role("checkbox", name=f"Year {year}").check()
+        if year == "0":
+            self.page.get_by_role("checkbox", name="Reception").check()
+        else:
+            self.page.get_by_role("checkbox", name=f"Year {year}").check()
 
     @step("Uncheck box for year {1}")
     def uncheck_year_checkbox(self, year: str):
-        self.page.get_by_role("checkbox", name=f"Year {year}").uncheck()
+        if year == "0":
+            self.page.get_by_role("checkbox", name="Reception").uncheck()
+        else:
+            self.page.get_by_role("checkbox", name=f"Year {year}").uncheck()
 
-    @step("Check box for year {1}")
-    def check_box_for_year_other_than(self, year: str):
-        self.page.get_by_role("checkbox", name="Year ").filter(
-            has_not_text=year
-        ).first.check()
+    @step("Click Advanced filters")
+    def click_advanced_filters(self):
+        self.advanced_filters_link.click()
+
+    @step("Check Children missing an NHS number")
+    def check_missing_nhs_no_checkbox(self):
+        self.missing_nhs_no_checkbox.check()
 
     @step("Click on Record vaccinations")
     def click_record_vaccinations_tab(self):
@@ -632,14 +643,6 @@ class SessionsPage:
         self.expect_main_to_contain_text(message)
         self.click_continue_link()
 
-    @step("Click on 2024 to 2025")
-    def click_add_to_current_year(self):
-        self.current_year_radio.check()
-        self.click_continue_button()
-
-    def select_current_year(self):
-        self.page.get_by_role("radio", name="2024 to 2025").check()
-
     def schedule_a_valid_session(
         self, location: str, programme_group: str, for_today: bool = False
     ):
@@ -688,32 +691,6 @@ class SessionsPage:
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
         link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
-
-    def verify_attendance_filters(self):
-        self.click_register_tab()
-
-        search_summary = self.page.get_by_text("Showing 1 to")
-
-        expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-        self.year_10_checkbox.check()
-        self.click_on_update_results()
-
-        expect(search_summary).to_have_text("Showing 1 to 1 of 1 children")
-
-        self.year_10_checkbox.uncheck()
-        self.click_on_update_results()
-
-        expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-
-    def select_year_groups(self, *year_groups: int) -> None:
-        for year_group in year_groups:
-            if year_group == 0:
-                self.page.get_by_role("checkbox", name="Reception").check()
-            else:
-                self.page.get_by_role(
-                    "checkbox", name=f"Year {year_group}", exact=True
-                ).check()
-        self.click_continue_button()
 
     def register_child_as_attending(self, child: Child):
         self.click_register_tab()

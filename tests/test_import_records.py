@@ -48,9 +48,9 @@ def setup_vaccs(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
-        sessions_page.click_add_to_current_year()
-        sessions_page.select_year_groups(year_group)
-        import_records_page.upload_and_verify_output(ClassFileMapping.RANDOM_CHILD)
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.RANDOM_CHILD, year_group
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(school, Programme.HPV)
@@ -136,7 +136,7 @@ def test_class_list_file_upload_positive(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.POSITIVE, programme_group="doubles"
     )
@@ -149,7 +149,7 @@ def test_class_list_file_upload_negative(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.NEGATIVE, programme_group="doubles"
     )
@@ -162,7 +162,7 @@ def test_class_list_file_structure(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.INVALID_STRUCTURE, programme_group="doubles"
     )
@@ -175,7 +175,7 @@ def test_class_list_no_record(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.HEADER_ONLY, programme_group="doubles"
     )
@@ -188,7 +188,7 @@ def test_class_list_empty_file(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.EMPTY_FILE, programme_group="doubles"
     )
@@ -201,7 +201,7 @@ def test_class_list_year_group(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.WRONG_YEAR_GROUP, programme_group="doubles"
     )
@@ -220,7 +220,7 @@ def test_class_list_space_normalization(
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
 
-    import_records_page.navigate_to_class_list_record_import(str(school), [year_group])
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     input_file, _ = import_records_page.upload_and_verify_output(
         ClassFileMapping.WHITESPACE, programme_group="doubles"
     )
