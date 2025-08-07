@@ -1,8 +1,8 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme, ReportFormat, Vaccine
-from mavis.test.annotations import issue
 
 
 @pytest.fixture
@@ -146,6 +146,7 @@ def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
 
 
 @issue("MAV-909")
+@issue("MAV-1716")
 @pytest.mark.cohorts
 @pytest.mark.bug
 def test_cohorts_archive_and_unarchive(
