@@ -11,6 +11,8 @@ inputs:
     default: "false"
   additional_feature_flags:
     default: ""
+  partition:
+    default: 0
 runs:
   using: composite
   steps:
@@ -27,7 +29,7 @@ runs:
         node-version: '20'
 
     - name: Run tests
-      run: uv run pytest --reruns 2 --device "${{ inputs.device }}"
+      run: uv run pytest --reruns 2 --splits 4 --group ${{ inputs.partition }} --device "${{ inputs.device }}"
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}

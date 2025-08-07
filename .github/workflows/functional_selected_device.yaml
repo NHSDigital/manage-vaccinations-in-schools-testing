@@ -49,9 +49,14 @@ jobs:
   test:
     permissions:
       contents: write
-    
+
     name: Functional tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        partition: [1, 2, 3, 4]
+      fail-fast: false
+
 
     env:
       TZ: "Europe/London"
@@ -88,6 +93,16 @@ jobs:
 
       - uses: actions/checkout@v5
 
+      - name: Cache uv and Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/uv
+          key: playwright-uv-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            playwright-uv-${{ runner.os }}-
+
       - name: Run tests
         uses: ./.github/actions/run-functional-tests
         with:
@@ -96,6 +111,7 @@ jobs:
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          partition: ${{ matrix.partition }}
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
           IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
@@ -109,5 +125,6 @@ jobs:
         with:
           device: ${{ steps.set-variables.outputs.device }}
           environment: ${{ github.event.inputs.environment }}
+          partition: ${{ matrix.partition }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
