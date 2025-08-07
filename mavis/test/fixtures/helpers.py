@@ -102,8 +102,8 @@ def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
 
 
 @pytest.fixture
-def test_data(team, schools, nurse, children, clinics):
-    return TestData(team, schools, nurse, children, clinics)
+def test_data(team, organisation, schools, nurse, children,clinics, year_groups):
+    return TestData(team,organisation, schools, nurse, children, clinics, year_groups)
 
 
 @pytest.fixture

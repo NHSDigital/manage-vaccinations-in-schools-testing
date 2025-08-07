@@ -6,7 +6,9 @@ from mavis.test.annotations import issue
 
 
 @pytest.fixture
-def setup_cohort_upload(log_in_as_nurse, dashboard_page, programmes_page):
+def setup_cohort_upload(
+    log_in_as_nurse, dashboard_page, programmes_page, import_records_page
+):
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
 
@@ -44,16 +46,18 @@ def setup_mavis_1729(
     dashboard_page,
     import_records_page,
     sessions_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
 
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
-        sessions_page.select_year_groups_for_programme(Programme.HPV)
-        import_records_page.upload_and_verify_output(
-            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.RANDOM_CHILD,
+            year_group,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -82,8 +86,10 @@ def setup_mav_854(
     dashboard_page,
     import_records_page,
     sessions_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
 
     try:
         batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
@@ -91,8 +97,9 @@ def setup_mav_854(
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
-        sessions_page.select_year_groups_for_programme(Programme.HPV)
-        import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.FIXED_CHILD, year_group
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(
@@ -109,84 +116,69 @@ def setup_mav_854(
 
 @pytest.mark.cohorts
 def test_cohort_upload_positive(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.POSITIVE)
+    import_records_page.import_class_list_for_current_year(CohortsFileMapping.POSITIVE)
 
 
 @pytest.mark.cohorts
 def test_cohort_upload_negative(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.NEGATIVE)
+    import_records_page.import_class_list_for_current_year(CohortsFileMapping.NEGATIVE)
 
 
 @pytest.mark.cohorts
 def test_cohorts_file_structure(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.INVALID_STRUCTURE)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.INVALID_STRUCTURE
+    )
 
 
 @pytest.mark.cohorts
 def test_cohorts_no_record(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.HEADER_ONLY)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.HEADER_ONLY
+    )
 
 
 @pytest.mark.cohorts
 def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
-    import_records_page.upload_and_verify_output(CohortsFileMapping.EMPTY_FILE)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.EMPTY_FILE
+    )
 
 
 @issue("MAV-909")
 @pytest.mark.cohorts
 @pytest.mark.bug
-def test_cohorts_readd_to_cohort(
+def test_cohorts_archive_and_unarchive(
     setup_cohort_upload,
     programmes_page,
     dashboard_page,
     children_page,
     import_records_page,
-    test_data,
     children,
 ):
-    """
-    Steps to reproduce:
-    Find a patient in Year 8 and remove them from cohort using the button
-    Upload a cohort list with their first name, surname, URN, date of birth and postcode
-
-    Scenario 1
-        Duplicate review is not flagged
-
-        Expected result:
-        The child is added back into the cohort, and in all the relevant sessions
-        Actual Result:
-        Server error page and user cannot bring the child back into the cohort
-
-    Scenario 2
-        The import screen flags for duplicate review, and user clicks "Review" next to the child's name
-
-        Expected result:
-        System allows you to review the new details against the previous record (before removing from cohort) and lets you choose which record to keep. Once review confirmed, the child is added back into the cohort, and in all the relevant sessions.
-        Actual Result:
-        Server error page and user cannot bring the child back into the cohort
-    """
     child = children[Programme.HPV][0]
 
-    input_file_path, _ = import_records_page.upload_and_verify_output(
-        CohortsFileMapping.FIXED_CHILD_YEAR_8
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD
     )
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.remove_child_from_cohort(child)
+    children_page.archive_child_record(child)
+
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
 
-    test_data.increment_date_of_birth_for_records(input_file_path)
-    import_records_page.set_input_file(input_file_path)
-    import_records_page.click_continue()
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD
+    )
 
-    programmes_page.expect_text("1 duplicate record needs review")
-    programmes_page.click_review()
-    programmes_page.click_use_duplicate()
-    programmes_page.click_resolve_duplicate()
-    programmes_page.expect_text("Record updated")
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
+    children_page.search_for_a_child_name(str(child))
+    children_page.click_record_for_child(child)
+    children_page.check_child_is_unarchived()
 
 
 @pytest.mark.rav
@@ -204,9 +196,10 @@ def test_rav_triage_consent_given(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
-    sessions_page.select_year_groups_for_programme(Programme.HPV)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD, child.year_group
+    )
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
 
@@ -242,9 +235,10 @@ def test_rav_triage_consent_refused(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
-    sessions_page.select_year_groups_for_programme(Programme.HPV)
+    import_records_page.import_class_list_for_current_year(
+        CohortsFileMapping.FIXED_CHILD, child.year_group
+    )
 
-    import_records_page.upload_and_verify_output(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
@@ -300,7 +294,9 @@ def test_rav_verify_excel_mav_854(
 
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
-    children_page.click_session_for_programme("Community clinic", Programme.HPV)
+    children_page.click_session_for_programme(
+        "Community clinic", Programme.HPV, check_date=True
+    )
     sessions_page.click_get_verbal_consent()
     consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.register_child_as_attending(child)

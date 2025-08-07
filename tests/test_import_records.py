@@ -39,15 +39,17 @@ def setup_vaccs(
     dashboard_page,
     sessions_page,
     import_records_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
+
     try:
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
-        sessions_page.select_year_groups_for_programme(Programme.HPV)
-        import_records_page.upload_and_verify_output(
-            ClassFileMapping.RANDOM_CHILD_YEAR_9
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.RANDOM_CHILD, year_group
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -167,10 +169,12 @@ def test_child_list_space_normalization(
 
 @pytest.mark.classlist
 def test_class_list_file_upload_positive(
-    setup_class_list, schools, import_records_page
+    setup_class_list, schools, import_records_page, year_groups
 ):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school))
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.POSITIVE, programme_group="doubles"
     )
@@ -178,46 +182,64 @@ def test_class_list_file_upload_positive(
 
 @pytest.mark.classlist
 def test_class_list_file_upload_negative(
-    setup_class_list, schools, import_records_page
+    setup_class_list, schools, import_records_page, year_groups
 ):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school))
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.NEGATIVE, programme_group="doubles"
     )
 
 
 @pytest.mark.classlist
-def test_class_list_file_structure(setup_class_list, schools, import_records_page):
+def test_class_list_file_structure(
+    setup_class_list, schools, import_records_page, year_groups
+):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school))
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.INVALID_STRUCTURE, programme_group="doubles"
     )
 
 
 @pytest.mark.classlist
-def test_class_list_no_record(setup_class_list, schools, import_records_page):
+def test_class_list_no_record(
+    setup_class_list, schools, import_records_page, year_groups
+):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school))
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.HEADER_ONLY, programme_group="doubles"
     )
 
 
 @pytest.mark.classlist
-def test_class_list_empty_file(setup_class_list, schools, import_records_page):
+def test_class_list_empty_file(
+    setup_class_list, schools, import_records_page, year_groups
+):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school))
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.EMPTY_FILE, programme_group="doubles"
     )
 
 
 @pytest.mark.classlist
-def test_class_list_year_group(setup_class_list, schools, import_records_page):
+def test_class_list_year_group(
+    setup_class_list, schools, import_records_page, year_groups
+):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school), [9])
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     import_records_page.upload_and_verify_output(
         ClassFileMapping.WRONG_YEAR_GROUP, programme_group="doubles"
     )
@@ -226,10 +248,17 @@ def test_class_list_year_group(setup_class_list, schools, import_records_page):
 @pytest.mark.classlist
 @pytest.mark.bug
 def test_class_list_space_normalization(
-    setup_class_list, schools, import_records_page, children_page, dashboard_page
+    setup_class_list,
+    schools,
+    import_records_page,
+    children_page,
+    dashboard_page,
+    year_groups,
 ):
     school = schools["doubles"][0]
-    import_records_page.navigate_to_class_list_record_import(str(school))
+    year_group = year_groups["doubles"]
+
+    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
     input_file, _ = import_records_page.upload_and_verify_output(
         ClassFileMapping.WHITESPACE, programme_group="doubles"
     )
@@ -308,6 +337,8 @@ def test_vaccs_historic_no_urn_mav_855(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
+    children_page.click_advanced_filters()
+    children_page.check_children_aged_out_of_programmes()
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
     children_page.click_vaccination_details(school)

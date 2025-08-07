@@ -238,6 +238,15 @@ class School(NamedTuple):
         return self.urn
 
 
+class Organisation(NamedTuple):
+    ods_code: str
+
+    def to_onboarding(self):
+        return {
+            "ods_code": self.ods_code,
+        }
+
+
 class Subteam(NamedTuple):
     key: str
     name: str
@@ -253,7 +262,8 @@ class Subteam(NamedTuple):
 
 class Team(NamedTuple):
     name: str
-    ods_code: str
+    workgroup: str
+    careplus_venue_code: str
     email: str
     phone: str
 
@@ -263,10 +273,10 @@ class Team(NamedTuple):
     def to_onboarding(self):
         return {
             "name": self.name,
+            "workgroup": self.workgroup,
             "email": self.email,
             "phone": self.phone,
-            "ods_code": self.ods_code,
-            "careplus_venue_code": self.ods_code,
+            "careplus_venue_code": self.careplus_venue_code,
             "privacy_notice_url": "https://example.com/privacy",
             "privacy_policy_url": "https://example.com/privacy",
         }

@@ -17,6 +17,7 @@ from .models import (
     nurse,
     onboard_and_delete,
     onboarding,
+    organisation,
     programmes_enabled,
     reset_before_each_module,
     schools,
@@ -24,6 +25,7 @@ from .models import (
     subteam,
     team,
     users,
+    year_groups,
 )
 from .pages import (
     add_batch_page,
@@ -88,6 +90,7 @@ __all__ = [
     "nurse",
     "onboard_and_delete",
     "onboarding",
+    "organisation",
     "programmes_page",
     "programmes_enabled",
     "reset_before_each_module",
@@ -106,4 +109,5 @@ __all__ = [
     "vaccines_page",
     "authenticate_api",
     "imms_base_url",
+    "year_groups",
 ]

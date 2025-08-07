@@ -18,15 +18,19 @@ def setup_recording_hpv(
     dashboard_page,
     import_records_page,
     sessions_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
+
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
     sessions_page.click_import_class_lists()
-    sessions_page.select_year_groups_for_programme(Programme.HPV)
-    import_records_page.upload_and_verify_output(ClassFileMapping.FIXED_CHILD)
+    import_records_page.import_class_list_for_current_year(
+        ClassFileMapping.FIXED_CHILD, year_group
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.HPV)

@@ -23,6 +23,8 @@ from mavis.test.models import (
     Subteam,
     Team,
     User,
+    Programme,
+    Organisation,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
 
@@ -53,14 +55,21 @@ def nurse():
 
 
 @pytest.fixture(scope="session")
-def schools(base_url) -> dict[str, list[School]]:
-    def _get_schools_with_year_groups(year_groups: List[str]) -> list[School]:
+def year_groups():
+    return {
+        programme.group: random.choice(programme.year_groups) for programme in Programme
+    }
+
+
+@pytest.fixture(scope="session")
+def schools(base_url, year_groups) -> dict[str, list[School]]:
+    def _get_schools_with_year_group(year_group: str) -> list[School]:
         url = urllib.parse.urljoin(base_url, "api/testing/locations")
         params = {
             "type": "school",
             "status": "open",
             "is_attached_to_team": "false",
-            "year_groups[]": year_groups,
+            "year_groups[]": [year_group],
         }
 
         response = requests.get(url, params=params)
@@ -77,13 +86,13 @@ def schools(base_url) -> dict[str, list[School]]:
         ]
 
     return {
-        programme.group: _get_schools_with_year_groups(programme.year_groups)
+        programme.group: _get_schools_with_year_group(year_groups[programme.group])
         for programme in Programme
     }
 
 
 @pytest.fixture
-def children():
+def children(year_groups) -> dict[str, list[Child]]:
     def _generate_children(n: int, year_group: int) -> list[Child]:
         return [
             Child(
@@ -106,9 +115,7 @@ def children():
         ]
 
     return {
-        programme.group: _generate_children(
-            2, int(random.choice(programme.year_groups))
-        )
+        programme.group: _generate_children(2, int(year_groups[programme.group]))
         for programme in Programme
     }
 
@@ -117,6 +124,12 @@ def children():
 def superuser():
     email = onboarding_faker.email()
     return User(username=email, password=email, role="superuser")
+
+
+@pytest.fixture(scope="session")
+def organisation():
+    ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    return Organisation(ods_code=ods_code)
 
 
 @pytest.fixture(scope="session")
@@ -130,10 +143,13 @@ def subteam():
 
 
 @pytest.fixture(scope="session")
-def team(subteam) -> Team:
-    ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+def team(subteam, organisation) -> Team:
     return Team(
-        name=subteam.name, ods_code=ods_code, email=subteam.email, phone=subteam.phone
+        name=subteam.name,
+        workgroup=organisation.ods_code,
+        careplus_venue_code=organisation.ods_code,
+        email=subteam.email,
+        phone=subteam.phone,
     )
 
 
@@ -147,10 +163,13 @@ def users(admin, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.fixture(scope="session")
-def onboarding(clinics, schools, subteam, team, users, programmes_enabled):
+def onboarding(
+    clinics, schools, subteam, team, organisation, users, programmes_enabled
+):
     return {
         "clinics": {subteam.key: [it.to_onboarding() for it in clinics]},
         "team": team.to_onboarding(),
+        "organisation": organisation.to_onboarding(),
         "programmes": programmes_enabled,
         "schools": {
             subteam.key: [
@@ -171,21 +190,21 @@ def _check_response_status(response):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def onboard_and_delete(base_url, onboarding, team):
+def onboard_and_delete(base_url, onboarding, organisation):
     url = urllib.parse.urljoin(base_url, "api/testing/onboard")
     response = requests.post(url, json=onboarding)
     _check_response_status(response)
 
     yield
 
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.ods_code}")
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{organisation.ods_code}")
     response = requests.delete(url)
     _check_response_status(response)
 
 
 @pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, team):
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.ods_code}")
+def reset_before_each_module(base_url, organisation):
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{organisation.ods_code}")
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
 

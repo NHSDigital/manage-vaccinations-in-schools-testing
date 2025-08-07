@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Clinic, Programme, School, Team, User
+from mavis.test.models import Child, Clinic,Organisation, Programme, School, Team, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -65,7 +65,6 @@ class CohortsFileMapping(FileMapping):
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
-    FIXED_CHILD_YEAR_8 = "fixed_child_year_8"
     FIXED_CHILD = "fixed_child"
 
     @property
@@ -94,7 +93,7 @@ class ClassFileMapping(FileMapping):
     HEADER_ONLY = "header_only"
     WHITESPACE = "whitespace"
     WRONG_YEAR_GROUP = "wrong_year_group"
-    RANDOM_CHILD_YEAR_9 = "random_child_year_9"
+    RANDOM_CHILD = "random_child"
     FIXED_CHILD = "fixed_child"
     TWO_FIXED_CHILDREN = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
@@ -110,17 +109,19 @@ class TestData:
 
     def __init__(
         self,
-        team: Team,
+        organisation: Organisation,
         schools: dict[str, list[School]],
         nurse: User,
         children: dict[str, list[Child]],
         clinics: list[Clinic],
+        year_groups: dict[str, str],
     ):
-        self.team = team
+        self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
         self.children = children
         self.clinics = clinics
+        self.year_groups = year_groups
 
         self.faker = Faker(locale="en_GB")
 
@@ -143,8 +144,15 @@ class TestData:
             "<<SESSION_ID>>": session_id,
         }
 
-        if self.team:
-            static_replacements["<<ORG_CODE>>"] = self.team.ods_code
+        if self.year_groups:
+            year_group = self.year_groups[programme_group]
+            static_replacements["<<FIXED_YEAR_GROUP>>"] = year_group
+            static_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = str(
+                get_date_of_birth_for_year_group(int(year_group))
+            )
+
+        if self.organisation:
+            static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
 
         if self.schools:
             schools = self.schools[programme_group]
@@ -278,7 +286,7 @@ class TestData:
 
         return _input_file_path, _output_file_path
 
-    def read_scenario_list_from_file(self, input_file_path: str) -> Optional[str]:
+    def read_scenario_list_from_file(self, input_file_path: Path) -> Optional[str]:
         try:
             _df = pd.read_csv(input_file_path)
             return (
