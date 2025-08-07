@@ -1,4 +1,5 @@
 import re
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import List
@@ -112,7 +113,7 @@ class SessionsPage:
             "button", name="Mark as invalid"
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
-        self.get_verbal_consent_button = self.page.get_by_role(
+        self.record_a_new_consent_response_button = self.page.get_by_role(
             "button", name="Record a new consent response"
         )
         self.update_results_button = self.page.get_by_role(
@@ -373,8 +374,8 @@ class SessionsPage:
         self.notes_textbox.fill(notes)
 
     @step("Click on Record a new consent response")
-    def click_get_verbal_consent(self):
-        self.get_verbal_consent_button.click()
+    def click_record_a_new_consent_response(self):
+        self.record_a_new_consent_response_button.click()
 
     @step("Click {1} radio button")
     def click_parent_radio_button(self, name: str) -> None:
@@ -389,7 +390,7 @@ class SessionsPage:
     def navigate_to_consent_response(self, child: Child, programme: Programme):
         self.click_child(child)
         self.click_programme_tab(programme)
-        self.click_get_verbal_consent()
+        self.click_record_a_new_consent_response()
 
     def navigate_to_update_triage_outcome(self, child: Child, programme: Programme):
         self.click_child(child)

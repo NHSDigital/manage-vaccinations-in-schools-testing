@@ -139,7 +139,7 @@ def test_parent_provides_consent_twice(
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     consent_page.update_triage_outcome_positive()
 
-    sessions_page.click_get_verbal_consent()
+    sessions_page.click_record_a_new_consent_response()
     consent_page.parent_verbal_refuse_consent(child.parents[0])
     sessions_page.select_consent_refused()
 
@@ -187,7 +187,7 @@ def test_conflicting_consent_with_gillick_consent(
         is_competent=True, competence_details="Gillick competent"
     )
     sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
-    sessions_page.click_get_verbal_consent()
+    sessions_page.click_record_a_new_consent_response()
     consent_page.child_consent_verbal_positive()
     sessions_page.expect_main_to_contain_text(f"Consent recorded for {str(child)}")
     sessions_page.select_consent_given()
