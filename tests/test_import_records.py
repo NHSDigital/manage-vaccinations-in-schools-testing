@@ -299,6 +299,8 @@ def test_vaccs_historic_no_urn_mav_855(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
+    children_page.click_advanced_filters()
+    children_page.check_children_aged_out_of_programmes()
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
     children_page.click_vaccination_details(school)

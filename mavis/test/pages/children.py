@@ -54,6 +54,10 @@ class ChildrenPage:
         self.archive_record_button = self.page.get_by_role(
             "button", name="Archive record"
         )
+        self.advanced_filters_link = self.page.get_by_text("Advanced filters")
+        self.children_aged_out_of_programmes_checkbox = self.page.get_by_role(
+            "checkbox", name="Children aged out of programmes"
+        )
 
     def verify_headers(self):
         expect(self.children_heading).to_be_visible()
@@ -192,3 +196,11 @@ class ChildrenPage:
 
     def check_child_is_unarchived(self):
         expect(self.archive_child_record_link).to_be_visible()
+
+    @step("Click on Advanced filters")
+    def click_advanced_filters(self):
+        self.advanced_filters_link.click()
+
+    @step("Check Children aged out of programmes")
+    def check_children_aged_out_of_programmes(self):
+        self.children_aged_out_of_programmes_checkbox.check()
