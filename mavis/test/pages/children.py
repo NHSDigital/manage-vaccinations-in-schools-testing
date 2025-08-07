@@ -59,7 +59,6 @@ class ChildrenPage:
             "checkbox", name="Children aged out of programmes"
         )
 
-
     def verify_headers(self):
         expect(self.children_heading).to_be_visible()
         for header in self.children_table_headers:
