@@ -262,6 +262,7 @@ class Subteam(NamedTuple):
 
 class Team(NamedTuple):
     name: str
+    workgroup: str
     careplus_venue_code: str
     email: str
     phone: str
@@ -272,6 +273,7 @@ class Team(NamedTuple):
     def to_onboarding(self):
         return {
             "name": self.name,
+            "workgroup": self.workgroup,
             "email": self.email,
             "phone": self.phone,
             "careplus_venue_code": self.careplus_venue_code,
