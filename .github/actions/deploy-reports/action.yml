@@ -5,6 +5,8 @@ inputs:
     required: true
   environment:
     required: true
+  partition:
+    required: true
 runs:
   using: composite
   steps:
@@ -17,7 +19,7 @@ runs:
       id: set-pages-dir
       run: |
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
-        echo "dir=${{ github.ref_name }}/${{ inputs.environment }}/$sanitized_device" >> $GITHUB_OUTPUT
+        echo "dir=${{ github.ref_name }}/${{ inputs.environment }}/$sanitized_device/${{ inputs.partition }}" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Checkout gh-pages branch
