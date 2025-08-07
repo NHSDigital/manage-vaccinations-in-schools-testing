@@ -87,7 +87,7 @@ def test_programmes_rav_pre_screening_questions(
             )
 
             sessions_page.click_programme_tab(programme)
-            sessions_page.click_get_verbal_consent()
+            sessions_page.click_record_a_new_consent_response()
             consent_page.parent_verbal_positive(
                 parent=child.parents[0],
                 change_phone=False,

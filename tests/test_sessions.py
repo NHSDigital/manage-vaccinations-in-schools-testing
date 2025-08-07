@@ -121,7 +121,7 @@ def test_verify_consent_filters(
     child = children[Programme.HPV][0]
     sessions_page.review_no_consent_response_link.click()
     sessions_page.page.get_by_role("link", name=str(child)).click()
-    sessions_page.click_get_verbal_consent()
+    sessions_page.click_record_a_new_consent_response()
     consent_page.parent_paper_refuse_consent(parent=child.parents[0])
     sessions_page.click_overview_tab()
     sessions_page.click_review_consent_refused()
