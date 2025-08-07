@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Organisation, Programme, School, User
+from mavis.test.models import Child, Clinic, Organisation, Programme, School, Team, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -52,6 +52,7 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_WHITESPACE = "systmone_whitespace"
     HIST_FLU_NIVS = "hist_flu_nivs"
     HIST_FLU_SYSTMONE = "hist_flu_systmone"
+    CLINIC_NAME_CASE = "clinic_name_case"
 
     @property
     def folder(self) -> Path:
@@ -108,17 +109,21 @@ class TestData:
 
     def __init__(
         self,
+        team: Team,
         organisation: Organisation,
         schools: dict[str, list[School]],
         nurse: User,
         children: dict[str, list[Child]],
+        clinics: list[Clinic],
         year_groups: dict[str, str],
     ):
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
         self.children = children
+        self.clinics = clinics
         self.year_groups = year_groups
+        self.team = team
 
         self.faker = Faker(locale="en_GB")
 
@@ -159,6 +164,12 @@ class TestData:
 
         if self.nurse:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
+
+        if self.clinics:
+            clinics = self.clinics
+            for index, clinic in enumerate(clinics):
+                static_replacements[f"<<CLINIC_{index}_LOWER>>"] = clinic.name.lower()
+                static_replacements[f"<<CLINIC_{index}>>"] = clinic.name
 
         if self.children:
             children = self.children[programme_group]
