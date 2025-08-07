@@ -8,7 +8,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Clinic,Organisation, Programme, School, Team, User
+from mavis.test.models import Child, Clinic, Organisation, Programme, School, Team, User
 from mavis.test.wrappers import (
     get_current_datetime,
     get_current_time,
@@ -109,6 +109,7 @@ class TestData:
 
     def __init__(
         self,
+        team: Team,
         organisation: Organisation,
         schools: dict[str, list[School]],
         nurse: User,
@@ -122,6 +123,7 @@ class TestData:
         self.children = children
         self.clinics = clinics
         self.year_groups = year_groups
+        self.team = team
 
         self.faker = Faker(locale="en_GB")
 

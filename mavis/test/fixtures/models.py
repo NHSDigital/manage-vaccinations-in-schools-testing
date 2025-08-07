@@ -16,6 +16,7 @@ from faker import Faker
 from mavis.test.models import (
     Child,
     Clinic,
+    Organisation,
     Parent,
     Programme,
     Relationship,
@@ -23,8 +24,6 @@ from mavis.test.models import (
     Subteam,
     Team,
     User,
-    Programme,
-    Organisation,
 )
 from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
 
