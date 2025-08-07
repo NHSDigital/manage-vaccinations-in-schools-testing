@@ -375,6 +375,8 @@ class SessionsPage:
 
     @step("Click on Record a new consent response")
     def click_record_a_new_consent_response(self):
+        # temporary wait before clicking the button to prevent errors
+        time.sleep(3)
         self.record_a_new_consent_response_button.click()
 
     @step("Click {1} radio button")
