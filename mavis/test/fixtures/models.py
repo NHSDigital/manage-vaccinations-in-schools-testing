@@ -145,6 +145,7 @@ def subteam():
 def team(subteam, organisation) -> Team:
     return Team(
         name=subteam.name,
+        workgroup=organisation.ods_code,
         careplus_venue_code=organisation.ods_code,
         email=subteam.email,
         phone=subteam.phone,
