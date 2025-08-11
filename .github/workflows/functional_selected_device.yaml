@@ -12,7 +12,7 @@ on:
         required: false
         default: 'HPV,MENACWY,TD_IPV,FLU'
       environment:
-        description: 'Environment to run tests on (qa, test, training)'
+        description: 'Environment to run tests on (qa, training, sandbox-alpha, sandbox-beta)'
         required: false
         default: 'qa'
       set_feature_flags:
@@ -42,8 +42,9 @@ jobs:
         run: |
           declare -A env_map=(
             [qa]="https://qa.mavistesting.com"
-            [test]="https://test.mavistesting.com"
             [training]="https://training.manage-vaccinations-in-schools.nhs.uk"
+            [sandbox-alpha]="https://sandbox-alpha.mavistesting.com"
+            [sandbox-beta]="https://sandbox-beta.mavistesting.com"
           )
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
