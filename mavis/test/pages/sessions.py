@@ -159,7 +159,7 @@ class SessionsPage:
             "textbox", name="Pre-screening notes (optional)"
         )
         self.review_no_consent_response_link = self.page.get_by_role(
-            "link", name="child with no response"
+            "link", name="with no response"
         )
         self.in_person_radio = self.page.get_by_text("In person")
         self.no_they_no_not_agree_radio = self.page.get_by_text("No, they do not agree")

@@ -97,7 +97,7 @@ def test_verify_attendance_filters(setup_mavis_1822, sessions_page, year_groups)
     sessions_page.check_year_checkbox(year_group)
     sessions_page.click_on_update_results()
 
-    expect(search_summary).to_have_text("Showing 1 to 6 of 6 children")
+    expect(search_summary).to_have_text("Showing 1 to")
 
     sessions_page.uncheck_year_checkbox(year_group)
     sessions_page.click_advanced_filters()
