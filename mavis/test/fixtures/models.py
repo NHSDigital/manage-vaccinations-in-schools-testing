@@ -189,21 +189,21 @@ def _check_response_status(response):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def onboard_and_delete(base_url, onboarding, organisation):
+def onboard_and_delete(base_url, onboarding, team):
     url = urllib.parse.urljoin(base_url, "api/testing/onboard")
     response = requests.post(url, json=onboarding)
     _check_response_status(response)
 
     yield
 
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{organisation.ods_code}")
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
     response = requests.delete(url)
     _check_response_status(response)
 
 
 @pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, organisation):
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{organisation.ods_code}")
+def reset_before_each_module(base_url, team):
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
     response = requests.delete(url, params={"keep_itself": "true"})
     _check_response_status(response)
 
