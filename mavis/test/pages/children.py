@@ -58,6 +58,9 @@ class ChildrenPage:
         self.children_aged_out_of_programmes_checkbox = self.page.get_by_role(
             "checkbox", name="Children aged out of programmes"
         )
+        self.invite_to_community_clinic_button = self.page.get_by_role(
+            "button", name="Invite to community clinic"
+        )
 
     def verify_headers(self):
         expect(self.children_heading).to_be_visible()
@@ -145,6 +148,10 @@ class ChildrenPage:
     @step("Fill NHS number {2} for child {1}")
     def fill_nhs_no_for_child(self, child: Child, nhs_no: str) -> None:
         self.page.get_by_role("textbox", name=str(child)).fill(nhs_no)
+
+    @step("Click Invite to community clinic")
+    def click_invite_to_community_clinic(self) -> None:
+        self.invite_to_community_clinic_button.click()
 
     def expect_text_in_main(self, text: str) -> None:
         expect(self.page.get_by_role("main")).to_contain_text(text)
