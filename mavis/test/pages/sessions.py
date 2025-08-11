@@ -159,7 +159,7 @@ class SessionsPage:
             "textbox", name="Pre-screening notes (optional)"
         )
         self.review_no_consent_response_link = self.page.get_by_role(
-            "link", name="Review   no consent response"
+            "link", name="child with no response"
         )
         self.in_person_radio = self.page.get_by_text("In person")
         self.no_they_no_not_agree_radio = self.page.get_by_text("No, they do not agree")
@@ -182,8 +182,8 @@ class SessionsPage:
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.sessions_link = page.get_by_role("link", name="Sessions", exact=True).first
         self.advanced_filters_link = page.get_by_text("Advanced filters")
-        self.missing_nhs_no_checkbox = self.page.get_by_role(
-            "checkbox", name="Children missing an NHS number"
+        self.archived_records_checkbox = self.page.get_by_role(
+            "checkbox", name="Archived records"
         )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
@@ -329,6 +329,10 @@ class SessionsPage:
     def click_change_session_dates(self):
         self.change_session_dates_link.click()
 
+    @step("Review child with no response")
+    def review_child_with_no_response(self):
+        self.review_no_consent_response_link.click()
+
     @step("Click on session")
     def click_session(self, location: str, programme: Programme):
         row = self.page.locator("tr").filter(
@@ -414,9 +418,9 @@ class SessionsPage:
     def click_advanced_filters(self):
         self.advanced_filters_link.click()
 
-    @step("Check Children missing an NHS number")
-    def check_missing_nhs_no_checkbox(self):
-        self.missing_nhs_no_checkbox.check()
+    @step("Check Archived records")
+    def check_archived_records_checkbox(self):
+        self.archived_records_checkbox.check()
 
     @step("Click on Record vaccinations")
     def click_record_vaccinations_tab(self):

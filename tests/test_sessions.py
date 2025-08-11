@@ -97,11 +97,11 @@ def test_verify_attendance_filters(setup_mavis_1822, sessions_page, year_groups)
     sessions_page.check_year_checkbox(year_group)
     sessions_page.click_on_update_results()
 
-    expect(search_summary).to_have_text("Showing 1 to 5 of 5 children")
+    expect(search_summary).to_have_text("Showing 1 to 6 of 6 children")
 
     sessions_page.uncheck_year_checkbox(year_group)
     sessions_page.click_advanced_filters()
-    sessions_page.check_missing_nhs_no_checkbox()
+    sessions_page.check_archived_records_checkbox()
     sessions_page.click_on_update_results()
 
     expect(search_summary).not_to_be_visible()
@@ -119,8 +119,8 @@ def test_verify_consent_filters(
     setup_fixed_child, sessions_page, consent_page, children
 ):
     child = children[Programme.HPV][0]
-    sessions_page.review_no_consent_response_link.click()
-    sessions_page.page.get_by_role("link", name=str(child)).click()
+    sessions_page.review_child_with_no_response()
+    sessions_page.click_child(child)
     sessions_page.click_get_verbal_consent()
     consent_page.parent_paper_refuse_consent(parent=child.parents[0])
     sessions_page.click_overview_tab()
