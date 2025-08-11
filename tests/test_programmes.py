@@ -299,7 +299,7 @@ def test_rav_verify_excel_mav_854(
     children_page.click_session_for_programme(
         "Community clinic", Programme.HPV, check_date=True
     )
-    sessions_page.click_get_verbal_consent()
+    sessions_page.click_record_a_new_consent_response()
     consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.register_child_as_attending(child)
     sessions_page.record_vaccs_for_child(
