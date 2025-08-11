@@ -4,13 +4,13 @@ from typing import Optional
 
 from playwright.sync_api import Page, expect
 
-from mavis.test.data import FileMapping, TestData
 from mavis.test.annotations import step
+from mavis.test.data import FileMapping, TestData
+from mavis.test.models import Programme
 from mavis.test.wrappers import (
     format_datetime_for_upload_link,
     reload_until_element_is_visible,
 )
-from mavis.test.models import Programme
 
 
 class ImportRecordsPage:
@@ -105,8 +105,9 @@ class ImportRecordsPage:
 
     @step("Click on 2024 to 2025")
     def click_add_to_current_year(self):
-        self.current_year_radio.check()
-        self.click_continue()
+        if self.current_year_radio.is_visible():
+            self.current_year_radio.check()
+            self.click_continue()
 
     def navigate_to_vaccination_records_import(self):
         self.click_import_records()
