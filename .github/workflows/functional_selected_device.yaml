@@ -4,21 +4,41 @@ on:
   workflow_dispatch:
     inputs:
       device:
-        description: 'Device to test (exact name)'
-        required: false
+        description: 'Device to test'
+        required: true
         default: 'Desktop Chrome'
+        type: choice
+        options:
+          - Desktop Chrome
+          - Desktop Edge
+          - Desktop Firefox
+          - Desktop Safari
+          - Galaxy S9+
+          - Pixel 7
+          - iPad (gen 7) landscape
+          - iPhone 15
       programmes:
         description: 'Programmes to use (HPV, MENACWY, TD_IPV, FLU)'
-        required: false
+        required: true
         default: 'HPV,MENACWY,TD_IPV,FLU'
       environment:
-        description: 'Environment to run tests on (qa, training, sandbox-alpha, sandbox-beta)'
-        required: false
+        description: 'Environment to run tests on'
+        required: true
         default: 'qa'
+        type: choice
+        options:
+          - qa
+          - training
+          - sandbox-alpha
+          - sandbox-beta
       set_feature_flags:
-        description: 'Enable feature flags to be changed in the flipper page (true/false)'
-        required: false
+        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        required: true
         default: 'false'
+        type: choice
+        options:
+          - true
+          - false
       additional_feature_flags:
         description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
         required: false
