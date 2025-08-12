@@ -34,7 +34,6 @@ def test_valid(role, users, team, dashboard_page, log_in_page):
     log_in_page.log_in(users[role])
     expect(log_in_page.log_out_button).to_be_visible()
 
-    log_in_page.select_team(team)
     expect(dashboard_page.mavis_link).to_be_visible()
     expect(dashboard_page.programmes_link).to_be_visible()
     expect(dashboard_page.sessions_link).to_be_visible()

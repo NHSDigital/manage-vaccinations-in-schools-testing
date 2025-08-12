@@ -48,7 +48,7 @@ def get_online_consent_url(
     def wrapper(school, *programmes):
         try:
             log_in_page.navigate()
-            log_in_page.log_in_and_select_team(nurse, team)
+            log_in_page.log_in(nurse)
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(school, programmes[0].group)
             url = sessions_page.get_online_consent_url(*programmes)
@@ -56,7 +56,7 @@ def get_online_consent_url(
             yield url
         finally:
             log_in_page.navigate()
-            log_in_page.log_in_and_select_team(nurse, team)
+            log_in_page.log_in(nurse)
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)
             log_in_page.log_out()
@@ -68,14 +68,13 @@ def get_online_consent_url(
 def get_online_consent_url_without_cleanup(
     set_feature_flags,
     nurse,
-    team,
     dashboard_page,
     log_in_page,
     sessions_page,
 ):
     def wrapper(school, *programmes):
         log_in_page.navigate()
-        log_in_page.log_in_and_select_team(nurse, team)
+        log_in_page.log_in(nurse)
         dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, programmes[0].group)
         url = sessions_page.get_online_consent_url(*programmes)
@@ -86,17 +85,17 @@ def get_online_consent_url_without_cleanup(
 
 
 @pytest.fixture
-def log_in_as_admin(set_feature_flags, admin, team, log_in_page):
+def log_in_as_admin(set_feature_flags, admin, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_team(admin, team)
+    log_in_page.log_in(admin)
     yield
     log_in_page.log_out()
 
 
 @pytest.fixture
-def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
+def log_in_as_nurse(set_feature_flags, nurse, log_in_page):
     log_in_page.navigate()
-    log_in_page.log_in_and_select_team(nurse, team)
+    log_in_page.log_in(nurse)
     yield
     log_in_page.log_out()
 
