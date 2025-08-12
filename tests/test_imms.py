@@ -49,7 +49,7 @@ def record_hpv(
     child = children[Programme.HPV][0]
     batch_name = setup_recording_hpv
 
-    children_page.search_for_a_child_name(str(child))
+    children_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
     sessions_page.register_child_as_attending(child)
