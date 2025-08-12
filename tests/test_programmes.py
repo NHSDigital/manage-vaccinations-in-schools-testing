@@ -95,7 +95,7 @@ def setup_mav_854(
         batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
+        sessions_page.schedule_a_valid_session(school, Programme.HPV, yesterday=True)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list_for_current_year(
             ClassFileMapping.FIXED_CHILD, year_group
@@ -106,7 +106,6 @@ def setup_mav_854(
             "Community clinic", Programme.HPV, for_today=True
         )
         dashboard_page.click_mavis()
-        dashboard_page.click_children()
         yield batch_name
     finally:
         dashboard_page.click_mavis()
@@ -293,9 +292,19 @@ def test_rav_verify_excel_mav_854(
     school = schools[Programme.HPV][0]
     batch_name = setup_mav_854
 
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+
+    # temporary approach for rollover
+    # if the rollover period has passed, revert the commit this was added in
+    sessions_page.click_send_clinic_invitations_link()
+    sessions_page.click_send_clinic_invitations_button()
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
+
     children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
-    children_page.click_invite_to_community_clinic()
     children_page.click_session_for_programme(
         "Community clinic", Programme.HPV, check_date=True
     )
