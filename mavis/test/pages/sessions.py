@@ -186,6 +186,12 @@ class SessionsPage:
         self.archived_records_checkbox = self.page.get_by_role(
             "checkbox", name="Archived records"
         )
+        self.send_clinic_invitations_link = self.page.get_by_role(
+            "link", name="Send clinic invitations"
+        )
+        self.send_clinic_invitations_button = self.page.get_by_role(
+            "button", name="Send clinic invitations"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -372,6 +378,14 @@ class SessionsPage:
     @step("Fill notes")
     def fill_notes(self, notes: str):
         self.notes_textbox.fill(notes)
+
+    @step("Click Send clinic invitations")
+    def click_send_clinic_invitations_link(self):
+        self.send_clinic_invitations_link.click()
+
+    @step("Click Send clinic invitations")
+    def click_send_clinic_invitations_button(self):
+        self.send_clinic_invitations_button.click()
 
     @step("Click on Record a new consent response")
     def click_record_a_new_consent_response(self):
@@ -651,13 +665,21 @@ class SessionsPage:
         self.click_continue_link()
 
     def schedule_a_valid_session(
-        self, location: str, programme_group: str, for_today: bool = False
+        self,
+        location: str,
+        programme_group: str,
+        for_today: bool = False,
+        yesterday: bool = False,
     ):
-        _future_date = (
-            get_offset_date(offset_days=0)
-            if for_today
-            else get_offset_date(offset_days=10)
-        )
+        # scheduling a session for yesterday is a temporary measure for the rollover period
+        # this will be disallowed in the future
+        if yesterday:
+            offset_days = -1
+        elif for_today:
+            offset_days = 0
+        else:
+            offset_days = 10
+        _future_date = get_offset_date(offset_days=offset_days)
         _expected_message = f"Session dates{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
