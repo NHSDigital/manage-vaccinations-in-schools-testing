@@ -164,6 +164,8 @@ def test_cohorts_archive_and_unarchive(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
+    children_page.search_with_all_filters_for_child_name(str(child))
+    children_page.click_record_for_child(child)
     children_page.archive_child_record(child)
 
     dashboard_page.click_mavis()
@@ -176,7 +178,7 @@ def test_cohorts_archive_and_unarchive(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.search_for_a_child_name(str(child))
+    children_page.search_with_all_filters_for_child_name(str(child))
     children_page.click_record_for_child(child)
     children_page.check_child_is_unarchived()
 
@@ -303,7 +305,7 @@ def test_rav_verify_excel_mav_854(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
-    children_page.search_for_a_child_name(str(child))
+    children_page.search_with_all_filters_for_child_name(str(child))
     children_page.click_record_for_child(child)
     children_page.click_session_for_programme(
         "Community clinic", Programme.HPV, check_date=True

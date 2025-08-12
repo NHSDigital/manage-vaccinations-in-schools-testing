@@ -80,7 +80,7 @@ class ChildrenPage:
             file_path, is_vaccinations
         )
         for child_name in child_names:
-            self.search_for_a_child_name(child_name)
+            self.search_with_all_filters_for_child_name(child_name)
 
     @step("Search for child {1}")
     def search_for_a_child_name(self, child_name: str) -> None:
@@ -171,7 +171,7 @@ class ChildrenPage:
             self.page, self.manually_matched_card, seconds=30
         )
 
-    def search_with_all_filters(self, child_name: str):
+    def search_with_all_filters_for_child_name(self, child_name: str):
         filter_locators = [
             self.archived_records_checkbox,
             self.children_aged_out_of_programmes_checkbox,
@@ -196,7 +196,7 @@ class ChildrenPage:
         self, child: Child, location: str, use_all_filters: bool = False
     ):
         if use_all_filters:
-            self.search_with_all_filters(str(child))
+            self.search_with_all_filters_for_child_name(str(child))
         else:
             self.search_for_a_child_name(str(child))
 
@@ -209,8 +209,6 @@ class ChildrenPage:
         self.check_log_updates_with_match()
 
     def archive_child_record(self, child: Child):
-        self.search_for_a_child_name(str(child))
-        self.click_record_for_child(child)
         self.click_archive_child_record()
         self.click_imported_in_error()
         self.click_archive_record()

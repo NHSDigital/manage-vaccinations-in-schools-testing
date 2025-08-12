@@ -103,7 +103,7 @@ def test_headers_and_filter(setup_children_page, children_page, children):
     child = children[Programme.HPV][0]
 
     children_page.verify_headers()
-    children_page.search_for_a_child_name(str(child))
+    children_page.search_with_all_filters_for_child_name(str(child))
     children_page.assert_n_children_found(1)
 
 
@@ -119,7 +119,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    children_page.search_for_a_child_name(str(child))
+    children_page.search_with_all_filters_for_child_name(str(child))
     children_page.click_record_for_child(child)
     # Verify activity log
     children_page.click_activity_log()
@@ -134,7 +134,7 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
 def test_change_nhsno(setup_change_nhsno, children_page, children):
     child = children[Programme.HPV][0]
 
-    children_page.search_for_a_child_name(str(child))
+    children_page.search_with_all_filters_for_child_name(str(child))
     children_page.click_record_for_child(child)
     children_page.click_edit_child_record()
     children_page.click_change_nhs_no()
