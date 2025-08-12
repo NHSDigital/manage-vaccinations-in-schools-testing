@@ -82,10 +82,38 @@ class MatchConsentResponsePage:
         self.search_button = page.get_by_role("button", name="Search")
         self.link_button = page.get_by_role("button", name="Link response with record")
 
+        self.advanced_filters_link = self.page.get_by_text("Advanced filters")
+        self.archived_records_checkbox = self.page.get_by_role(
+            "checkbox", name="Archived records"
+        )
+        self.children_aged_out_of_programmes_checkbox = self.page.get_by_role(
+            "checkbox", name="Children aged out of programmes"
+        )
+        self.children_missing_an_nhs_number_checkbox = self.page.get_by_role(
+            "checkbox", name="Children missing an NHS number"
+        )
+
     @step("Match consent response with {1}")
     def match(self, child: Child):
+        filter_locators = [
+            self.archived_records_checkbox,
+            self.children_aged_out_of_programmes_checkbox,
+            self.children_missing_an_nhs_number_checkbox,
+        ]
+        child_locator = self.page.get_by_role("link", name=str(child))
+
         self.search_textbox.fill(str(child))
         self.search_button.click()
+
+        if not child_locator.is_visible():
+            self.advanced_filters_link.click()
+            for filter in filter_locators:
+                filter.check()
+                self.search_button.click()
+                self.page.wait_for_load_state()
+                if child_locator.is_visible():
+                    break
+                filter.uncheck()
 
         self.page.get_by_role("link", name=str(child)).click()
         self.link_button.click()
