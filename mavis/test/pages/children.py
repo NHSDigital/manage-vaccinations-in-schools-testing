@@ -55,8 +55,14 @@ class ChildrenPage:
             "button", name="Archive record"
         )
         self.advanced_filters_link = self.page.get_by_text("Advanced filters")
+        self.archived_records_checkbox = self.page.get_by_role(
+            "checkbox", name="Archived records"
+        )
         self.children_aged_out_of_programmes_checkbox = self.page.get_by_role(
             "checkbox", name="Children aged out of programmes"
+        )
+        self.children_missing_an_nhs_number_checkbox = self.page.get_by_role(
+            "checkbox", name="Children missing an NHS number"
         )
         self.invite_to_community_clinic_button = self.page.get_by_role(
             "button", name="Invite to community clinic"
@@ -165,14 +171,34 @@ class ChildrenPage:
             self.page, self.manually_matched_card, seconds=30
         )
 
-    def verify_activity_log_for_created_or_matched_child(
-        self, child: Child, location: str
-    ):
-        self.search_for_a_child_name(str(child))
+    def search_with_all_filters(self, child_name: str):
+        filter_locators = [
+            self.archived_records_checkbox,
+            self.children_aged_out_of_programmes_checkbox,
+            self.children_missing_an_nhs_number_checkbox,
+        ]
+        child_locator = self.page.get_by_role("link", name=child_name)
 
-        reload_until_element_is_visible(
-            self.page, self.page.get_by_role("link", name=str(child))
-        )
+        self.search_textbox.fill(child_name)
+        self.search_button.click()
+
+        if not child_locator.is_visible():
+            self.advanced_filters_link.click()
+            for filter in filter_locators:
+                filter.check()
+                self.search_button.click()
+                self.page.wait_for_load_state()
+                if child_locator.is_visible():
+                    break
+                filter.uncheck()
+
+    def verify_activity_log_for_created_or_matched_child(
+        self, child: Child, location: str, use_all_filters: bool = False
+    ):
+        if use_all_filters:
+            self.search_with_all_filters(str(child))
+        else:
+            self.search_for_a_child_name(str(child))
 
         self.click_record_for_child(child)
         self.click_activity_log()
