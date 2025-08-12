@@ -112,8 +112,8 @@ class ImmsApiHelper:
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
-        # wait 5 seconds for the API to be updated with the latest information
-        time.sleep(5)
+        # wait 15 seconds for the API to be updated with the latest information
+        time.sleep(15)
 
         response = requests.get(
             url=ImmsEndpoints.READ.to_url, headers=self.headers, params=_params
