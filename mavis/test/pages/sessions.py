@@ -192,6 +192,9 @@ class SessionsPage:
         self.send_clinic_invitations_button = self.page.get_by_role(
             "button", name="Send clinic invitations"
         )
+        self.current_academic_year_radio = self.page.get_by_role(
+            "radio", name="2024 to 2025"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -255,6 +258,7 @@ class SessionsPage:
             else:
                 self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
+        self.current_academic_year_radio.check()
         self.search_textbox.fill(str(location))
         self.search_button.click()
 
