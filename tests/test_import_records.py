@@ -27,6 +27,7 @@ def setup_class_list(
         dashboard_page.click_import_records()
         yield
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)
@@ -60,6 +61,7 @@ def setup_vaccs(
         import_records_page.navigate_to_vaccination_records_import()
         yield session_id
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)
@@ -100,6 +102,7 @@ def setup_vaccs_clinic(
         import_records_page.navigate_to_vaccination_records_import()
         yield session_id
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions("Community clinic")
@@ -122,6 +125,7 @@ def setup_vaccs_systmone(
         import_records_page.navigate_to_vaccination_records_import()
         yield
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)
