@@ -166,7 +166,7 @@ def test_cohorts_archive_and_unarchive(
     dashboard_page.click_children()
     children_page.search_with_all_filters_for_child_name(str(child))
     children_page.click_record_for_child(child)
-    children_page.archive_child_record(child)
+    children_page.archive_child_record()
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
