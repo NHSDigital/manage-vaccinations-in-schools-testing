@@ -186,7 +186,7 @@ class ImportRecordsPage:
         programme_group: str = Programme.HPV.group,
     ):
         self.click_add_to_current_year()
-        if year_group:
+        if year_group is not None:
             self.select_year_groups(year_group)
 
         self.upload_and_verify_output(class_list_file, programme_group=programme_group)

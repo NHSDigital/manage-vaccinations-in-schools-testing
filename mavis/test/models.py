@@ -104,14 +104,14 @@ class Programme(StrEnum):
         return checks
 
     @property
-    def year_groups(self) -> list[str]:
+    def year_groups(self) -> list[int]:
         match self:
             case self.FLU:
-                return ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
+                return list(range(0, 12))
             case self.HPV:
-                return ["8", "9", "10", "11"]
+                return list(range(8, 12))
             case self.MENACWY | self.TD_IPV:
-                return ["9", "10", "11"]
+                return list(range(9, 12))
 
 
 class Vaccine(StrEnum):
