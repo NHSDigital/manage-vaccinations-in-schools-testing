@@ -102,8 +102,8 @@ def setup_mav_853(
 def test_headers_and_filter(setup_children_page, children_page, children):
     child = children[Programme.HPV][0]
 
-    children_page.verify_headers()
     children_page.search_with_all_filters_for_child_name(str(child))
+    children_page.verify_headers()
     children_page.assert_n_children_found(1)
 
 
