@@ -206,12 +206,11 @@ class ChildrenPage:
                 filter.uncheck()
 
     def verify_activity_log_for_created_or_matched_child(
-        self, child: Child, location: str, use_all_filters: bool = False
+        self,
+        child: Child,
+        location: str,
     ):
-        if use_all_filters:
-            self.search_with_all_filters_for_child_name(str(child))
-        else:
-            self.search_for_a_child_name(str(child))
+        self.search_with_all_filters_for_child_name(str(child))
 
         self.click_record_for_child(child)
         self.click_activity_log()

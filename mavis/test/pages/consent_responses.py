@@ -104,10 +104,12 @@ class MatchConsentResponsePage:
 
         self.search_textbox.fill(str(child))
         self.search_button.click()
+        self.page.wait_for_load_state()
 
         if not child_locator.is_visible():
-            self.advanced_filters_link.click()
             for filter in filter_locators:
+                if not filter.is_visible():
+                    self.advanced_filters_link.click()
                 filter.check()
                 self.search_button.click()
                 self.page.wait_for_load_state()
