@@ -136,9 +136,7 @@ def test_create_with_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(
-        child, school, use_all_filters=True
-    )
+    children_page.verify_activity_log_for_created_or_matched_child(child, school)
 
 
 def test_create_with_no_nhs_number(

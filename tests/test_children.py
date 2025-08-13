@@ -153,7 +153,7 @@ def test_change_nhsno(setup_change_nhsno, children_page, children):
 def test_merge_does_not_crash(setup_child_merge, children_page, children):
     child1 = children[Programme.HPV][0]
     child2 = children[Programme.HPV][1]
-    children_page.search_for_a_child_name(str(child1))
+    children_page.search_with_all_filters_for_child_name(str(child1))
     children_page.click_record_for_child(child1)
     children_page.click_archive_child_record()
     children_page.click_its_a_duplicate(child2.nhs_number)
