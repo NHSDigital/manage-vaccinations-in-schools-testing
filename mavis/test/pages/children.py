@@ -181,10 +181,12 @@ class ChildrenPage:
 
         self.search_textbox.fill(child_name)
         self.search_button.click()
+        self.page.wait_for_load_state()
 
         if not child_locator.is_visible():
-            self.advanced_filters_link.click()
             for filter in filter_locators:
+                if not filter.is_visible():
+                    self.click_advanced_filters()
                 filter.check()
                 self.search_button.click()
                 self.page.wait_for_load_state()
