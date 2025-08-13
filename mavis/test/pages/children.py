@@ -208,7 +208,7 @@ class ChildrenPage:
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
 
-    def archive_child_record(self, child: Child):
+    def archive_child_record(self):
         self.click_archive_child_record()
         self.click_imported_in_error()
         self.click_archive_record()
