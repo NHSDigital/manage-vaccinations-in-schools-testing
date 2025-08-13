@@ -31,7 +31,7 @@ def users(admin, nurse, superuser) -> dict[str, User]:
     "role", ("admin", "nurse", "superuser"), ids=lambda v: f"role: {v}"
 )
 def test_valid(role, users, team, dashboard_page, log_in_page):
-    log_in_page.log_in(users[role])
+    log_in_page.log_in_and_choose_team_if_necessary(users[role], team)
     expect(log_in_page.log_out_button).to_be_visible()
 
     expect(dashboard_page.mavis_link).to_be_visible()
