@@ -62,13 +62,13 @@ def year_groups():
 
 @pytest.fixture(scope="session")
 def schools(base_url, year_groups) -> dict[str, list[School]]:
-    def _get_schools_with_year_group(year_group: str) -> list[School]:
+    def _get_schools_with_year_group(year_group: int) -> list[School]:
         url = urllib.parse.urljoin(base_url, "api/testing/locations")
         params = {
             "type": "school",
             "status": "open",
             "is_attached_to_team": "false",
-            "year_groups[]": [year_group],
+            "year_groups[]": [str(year_group)],
         }
 
         response = requests.get(url, params=params)
@@ -114,7 +114,7 @@ def children(year_groups) -> dict[str, list[Child]]:
         ]
 
     return {
-        programme.group: _generate_children(2, int(year_groups[programme.group]))
+        programme.group: _generate_children(2, year_groups[programme.group])
         for programme in Programme
     }
 

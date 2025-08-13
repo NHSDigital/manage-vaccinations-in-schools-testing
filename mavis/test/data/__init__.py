@@ -114,7 +114,7 @@ class TestData:
         nurse: User,
         children: dict[str, list[Child]],
         clinics: list[Clinic],
-        year_groups: dict[str, str],
+        year_groups: dict[str, int],
     ):
         self.organisation = organisation
         self.schools = schools
@@ -146,9 +146,9 @@ class TestData:
 
         if self.year_groups:
             year_group = self.year_groups[programme_group]
-            static_replacements["<<FIXED_YEAR_GROUP>>"] = year_group
+            static_replacements["<<FIXED_YEAR_GROUP>>"] = str(year_group)
             static_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = str(
-                get_date_of_birth_for_year_group(int(year_group))
+                get_date_of_birth_for_year_group(year_group)
             )
 
         if self.organisation:

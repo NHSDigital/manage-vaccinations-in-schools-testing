@@ -422,15 +422,15 @@ class SessionsPage:
         self.confirm_button.click()
 
     @step("Check box for year {1}")
-    def check_year_checkbox(self, year: str):
-        if year == "0":
+    def check_year_checkbox(self, year: int):
+        if year == 0:
             self.page.get_by_role("checkbox", name="Reception").check()
         else:
             self.page.get_by_role("checkbox", name=f"Year {year}").check()
 
     @step("Uncheck box for year {1}")
-    def uncheck_year_checkbox(self, year: str):
-        if year == "0":
+    def uncheck_year_checkbox(self, year: int):
+        if year == 0:
             self.page.get_by_role("checkbox", name="Reception").uncheck()
         else:
             self.page.get_by_role("checkbox", name=f"Year {year}").uncheck()
