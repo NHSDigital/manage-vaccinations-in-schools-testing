@@ -704,6 +704,7 @@ class SessionsPage:
         for programme in Programme:
             self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
+        self.current_academic_year_radio.check()
         self.search_textbox.clear()
         self.search_button.click()
 
