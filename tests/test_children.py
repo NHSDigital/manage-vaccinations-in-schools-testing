@@ -21,6 +21,7 @@ def setup_children_session(
         year_group = year_groups[Programme.HPV]
 
         try:
+            dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.schedule_a_valid_session(
                 school, Programme.HPV, for_today=True
@@ -51,6 +52,11 @@ def setup_children_page(setup_children_session):
 @pytest.fixture
 def setup_change_nhsno(setup_children_session):
     yield from setup_children_session(ClassFileMapping.FIXED_CHILD)
+
+
+@pytest.fixture
+def setup_child_merge(setup_children_session):
+    yield from setup_children_session(ClassFileMapping.TWO_FIXED_CHILDREN)
 
 
 @pytest.fixture
@@ -141,3 +147,15 @@ def test_change_nhsno(setup_change_nhsno, children_page, children):
     children_page.fill_nhs_no_for_child(child, "9123456789")
     children_page.click_continue()
     children_page.expect_text_in_main("Enter a valid NHS number")
+
+
+@pytest.mark.children
+def test_merge_does_not_crash(setup_child_merge, children_page, children):
+    child1 = children[Programme.HPV][0]
+    child2 = children[Programme.HPV][1]
+    children_page.search_for_a_child_name(str(child1))
+    children_page.click_record_for_child(child1)
+    children_page.click_archive_child_record()
+    children_page.click_its_a_duplicate(child2.nhs_number)
+    children_page.click_archive_record()
+    children_page.expect_text_in_alert("This record has been archived")

@@ -1,9 +1,11 @@
-from pathlib import Path
-from playwright.sync_api import Page, expect
 from datetime import datetime
-from mavis.test.data import TestData
-from mavis.test.models import School, Child, Programme
+from pathlib import Path
+
+from playwright.sync_api import Page, expect
+
 from mavis.test.annotations import step
+from mavis.test.data import TestData
+from mavis.test.models import Child, Programme, School
 from mavis.test.wrappers import reload_until_element_is_visible
 
 
@@ -50,6 +52,12 @@ class ChildrenPage:
         )
         self.imported_in_error_radio = self.page.get_by_role(
             "radio", name="It was imported in error"
+        )
+        self.its_a_duplicate_radio = self.page.get_by_role(
+            "radio", name="It’s a duplicate"
+        )
+        self.duplicate_of_nhs_number_text = self.page.get_by_role(
+            "textbox", name="Enter the NHS number for the"
         )
         self.archive_record_button = self.page.get_by_role(
             "button", name="Archive record"
@@ -165,6 +173,9 @@ class ChildrenPage:
     def expect_text_in_heading(self, text: str) -> None:
         expect(self.page.get_by_role("heading")).to_contain_text(text)
 
+    def expect_text_in_alert(self, text: str) -> None:
+        expect(self.page.get_by_role("alert")).to_contain_text(text)
+
     def check_log_updates_with_match(self):
         self.page.wait_for_load_state()
         reload_until_element_is_visible(
@@ -222,6 +233,11 @@ class ChildrenPage:
     @step("Click on Imported in error")
     def click_imported_in_error(self):
         self.imported_in_error_radio.check()
+
+    @step("Select It's a duplicate")
+    def click_its_a_duplicate(self, with_nhs_number: str):
+        self.its_a_duplicate_radio.check()
+        self.duplicate_of_nhs_number_text.fill(with_nhs_number)
 
     @step("Click on Archive record")
     def click_archive_record(self):
