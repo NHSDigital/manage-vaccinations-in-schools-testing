@@ -149,8 +149,6 @@ def test_change_nhsno(setup_change_nhsno, children_page, children):
     children_page.expect_text_in_main("Enter a valid NHS number")
 
 
-@issue("MAV-1718")
-@pytest.mark.bug
 @pytest.mark.children
 def test_merge_does_not_crash(setup_child_merge, children_page, children):
     child1 = children[Programme.HPV][0]
