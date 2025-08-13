@@ -48,7 +48,7 @@ jobs:
       # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install JMeter
         run: |

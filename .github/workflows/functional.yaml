@@ -30,7 +30,7 @@ jobs:
       TZ: "Europe/London"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Run tests
         uses: ./.github/actions/run-functional-tests
