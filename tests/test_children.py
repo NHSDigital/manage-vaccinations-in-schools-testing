@@ -37,6 +37,7 @@ def setup_children_session(
             dashboard_page.click_children()
             yield
         finally:
+            dashboard_page.navigate()
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)
@@ -100,6 +101,7 @@ def setup_mav_853(
         dashboard_page.click_children()
         yield
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)

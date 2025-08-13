@@ -34,6 +34,7 @@ def setup_record_a_vaccine(
         dashboard_page.click_sessions()
         yield
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)
@@ -73,6 +74,7 @@ def setup_mavis_1729(
         dashboard_page.click_programmes()
         yield
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)
@@ -108,6 +110,7 @@ def setup_mav_854(
         dashboard_page.click_mavis()
         yield batch_name
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(school)

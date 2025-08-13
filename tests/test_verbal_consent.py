@@ -36,6 +36,7 @@ def setup_session_with_file_upload(
             dashboard_page.click_sessions()
             yield
         finally:
+            dashboard_page.navigate()
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)

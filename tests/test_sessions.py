@@ -42,6 +42,7 @@ def setup_session_with_file_upload(
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             yield
         finally:
+            dashboard_page.navigate()
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)

@@ -50,6 +50,7 @@ def setup_confirm_and_ignore(
         dashboard_page.click_school_moves()
         yield
     finally:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions(schools[0])
