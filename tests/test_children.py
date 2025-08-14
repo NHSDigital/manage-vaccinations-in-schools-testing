@@ -131,11 +131,11 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
     children_page.click_record_for_child(child)
     # Verify activity log
     children_page.click_activity_log()
-    children_page.expect_text_in_main("Vaccinated with Gardasil 9")
+    children_page.expect_activity_log_header("Vaccinated with Gardasil 9")
     # Verify vaccination record
     children_page.click_child_record()
     children_page.click_vaccination_details(school)
-    children_page.expect_text_in_main("OutcomeVaccinated")
+    children_page.expect_vaccination_details("Outcome", "Vaccinated")
 
 
 @pytest.mark.bug
@@ -148,7 +148,7 @@ def test_change_nhsno(setup_change_nhsno, children_page, children):
     children_page.click_change_nhs_no()
     children_page.fill_nhs_no_for_child(child, "9123456789")
     children_page.click_continue()
-    children_page.expect_text_in_main("Enter a valid NHS number")
+    children_page.expect_text_in_alert("Enter a valid NHS number")
 
 
 @pytest.mark.children
