@@ -106,6 +106,7 @@ def setup_vaccs_clinic(
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.delete_all_sessions("Community clinic")
+        sessions_page.delete_all_sessions(school)
 
 
 @pytest.fixture
