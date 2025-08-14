@@ -148,13 +148,14 @@ class TestData:
             "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
             "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
             "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
+            "<<RANDOM_POSTCODE>>": lambda: self.faker.postcode(),
         }
 
         if self.year_groups:
-            year_group = self.year_groups[programme_group]
-            static_replacements["<<FIXED_YEAR_GROUP>>"] = str(year_group)
+            fixed_year_group = self.year_groups[programme_group]
+            static_replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
             dynamic_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = lambda: str(
-                get_date_of_birth_for_year_group(year_group)
+                get_date_of_birth_for_year_group(fixed_year_group)
             )
 
         if self.organisation:
