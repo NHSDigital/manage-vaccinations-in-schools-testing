@@ -143,11 +143,17 @@ class TestData:
             "<<HIST_VACCS_DATE>>": get_offset_date(offset_days=-(365 * 2)),
             "<<SESSION_ID>>": session_id,
         }
+        dynamic_replacements = {
+            "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
+            "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
+            "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
+            "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
+        }
 
         if self.year_groups:
             year_group = self.year_groups[programme_group]
             static_replacements["<<FIXED_YEAR_GROUP>>"] = str(year_group)
-            static_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = str(
+            dynamic_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = lambda: str(
                 get_date_of_birth_for_year_group(year_group)
             )
 
@@ -212,13 +218,6 @@ class TestData:
             static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
                 get_date_of_birth_for_year_group(year_group)
             )
-
-        dynamic_replacements = {
-            "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
-            "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
-            "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
-            "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
-        }
 
         output_filename = f"{file_name_prefix}{get_current_datetime()}.csv"
         output_path = self.working_path / output_filename
