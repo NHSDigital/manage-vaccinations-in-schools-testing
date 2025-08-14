@@ -27,7 +27,7 @@ def test_refused(consent_page, schools, children):
         details="Vaccine already received in previous school",
     )
     consent_page.click_confirm()
-    consent_page.expect_text_in_main(
+    consent_page.expect_confirmation_text(
         f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the HPV vaccination at school"
     )
 

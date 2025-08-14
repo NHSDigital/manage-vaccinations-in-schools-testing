@@ -251,7 +251,7 @@ def test_rav_triage_consent_refused(
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
     consent_page.parent_paper_refuse_consent(child.parents[0])
-    consent_page.expect_text_in_main(str(child))
+    consent_page.expect_text_in_alert(str(child))
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
