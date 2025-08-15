@@ -132,7 +132,6 @@ class SessionsPage:
             "#vaccinate-form-vaccine-method-nasal-field"
         )
         self.attending_button = self.page.get_by_role("button", name="Attending").first
-        self.success_alert = self.page.get_by_role("alert", name="Success")
         self.notes_length_error = (
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
@@ -531,7 +530,7 @@ class SessionsPage:
         with self.page.expect_navigation():
             self.click_save_note()
 
-        expect(self.success_alert).to_contain_text("Note added")
+        self.expect_alert_text("Note added")
         reload_until_element_is_visible(self.page, self.page.get_by_text(note))
 
         self.check_notes_appear_in_order([note])
@@ -562,9 +561,30 @@ class SessionsPage:
 
         return _file_path
 
-    @step("Expect text {1}")
-    def expect_main_to_contain_text(self, text: str):
-        expect(self.page.locator("main")).to_contain_text(text)
+    def expect_consent_refused_text(self, parent: Parent):
+        expect(
+            self.page.get_by_text(f"{parent.relationship} refused to give consent.")
+        ).to_be_visible()
+
+    def check_session_activity_entry(self, text: str):
+        expect(self.page.get_by_role("heading", name=text).first).to_be_visible()
+
+    def expect_conflicting_consent_text(self):
+        expect(
+            self.page.get_by_text(
+                "You can only vaccinate if all respondents give consent."
+            )
+        ).to_be_visible()
+
+    def expect_consent_status(self, programme: Programme, status: str):
+        expect(self.page.get_by_text(f"{programme}: {status}")).to_be_visible()
+
+    def expect_child_safe_to_vaccinate(self, child: Child):
+        expect(
+            self.page.get_by_text(
+                f"NURSE, Nurse decided that {str(child)} is safe to vaccinate."
+            )
+        ).to_be_visible()
 
     def get_session_id_from_offline_excel(self):
         file_path = self.download_offline_recording_excel()
@@ -572,12 +592,12 @@ class SessionsPage:
 
     @step("Add Gillick competence details")
     def add_gillick_competence(
-        self, is_competent: bool, competence_details: str
+        self,
+        is_competent: bool,
     ) -> None:
         self.__set_gillick_competence(
             is_add=True,
             is_competent=is_competent,
-            competence_details=competence_details,
         )
 
     @step("Click Sessions")
@@ -586,29 +606,35 @@ class SessionsPage:
 
     @step("Edit Gillick competence details")
     def edit_gillick_competence(
-        self, is_competent: bool, competence_details: str
+        self,
+        is_competent: bool,
     ) -> None:
         self.__set_gillick_competence(
             is_add=False,
             is_competent=is_competent,
-            competence_details=competence_details,
         )
 
     def __set_gillick_competence(
-        self, is_add: bool, is_competent: bool, competence_details: str
+        self,
+        is_add: bool,
+        is_competent: bool,
     ) -> None:
         self.answer_gillick_competence_questions(is_competent)
+        competence_assessment = (
+            f"Child assessed as {'' if is_competent else 'not '}Gillick competent"
+        )
 
-        self.assessment_notes_textbox.fill(competence_details)
+        self.assessment_notes_textbox.fill(competence_assessment)
         if is_add:
             self.click_complete_assessment()
         else:
             self.click_update_assessment()
-        if is_competent:
-            self.expect_main_to_contain_text("Child assessed as Gillick competent")
-        else:
-            self.expect_main_to_contain_text("Child assessed as not Gillick competent")
-        self.expect_main_to_contain_text(competence_details)
+
+        competence_result_locator = self.page.get_by_role(
+            "heading", name="Gillick assessment"
+        ).locator("xpath=following-sibling::*[1]")
+
+        expect(competence_result_locator).to_contain_text(competence_assessment)
 
     def answer_gillick_competence_questions(self, is_competent):
         questions = [
@@ -632,7 +658,7 @@ class SessionsPage:
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
         if expect_error:
-            self.expect_main_to_contain_text("There is a problemEnter a date")
+            self.expect_alert_text("There is a problemEnter a date")
 
     def __edit_session(self, to_date: str):
         _day = to_date[-2:]
@@ -650,23 +676,28 @@ class SessionsPage:
         ).not_to_be_visible()
 
     def verify_triage_updated_for_child(self):
-        expect(self.success_alert).to_contain_text("Triage outcome updated")
+        self.expect_alert_text("Triage outcome updated")
 
     def invalidate_parent_refusal(self, parent: Parent):
+        invalidation_notes = "Invalidation notes."
         self.page.get_by_role("link", name=parent.full_name).click()
         self.click_mark_as_invalid_link()
-        self.fill_notes("Invalidation notes.")
+        self.fill_notes(invalidation_notes)
         self.click_mark_as_invalid_button()
-        self.expect_main_to_contain_text("Consent refusedInvalid")
-        self.expect_main_to_contain_text("Invalidation notes.")
+        self.expect_details("Decision", "Consent refusedInvalid")
+        self.expect_details("Notes", invalidation_notes)
 
         self.click_back_to_child()
-        self.expect_main_to_contain_text("Consent refusedInvalid")
-        self.expect_main_to_contain_text("No requests have been sent.")
+        self.expect_details("Decision", "Consent refusedInvalid")
+        expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
 
-    def verify_scheduled_date(self, message: str):
-        self.expect_main_to_contain_text(message)
-        self.click_continue_link()
+    def expect_details(self, key: str, value: str) -> None:
+        detail_key = self.page.locator(
+            ".nhsuk-summary-list__key", has_text=re.compile(f"^{key}$")
+        ).first
+        detail_value = detail_key.locator("xpath=following-sibling::*[1]")
+
+        expect(detail_value).to_contain_text(value)
 
     def schedule_a_valid_session(
         self,
@@ -684,10 +715,13 @@ class SessionsPage:
         else:
             offset_days = 10
         _future_date = get_offset_date(offset_days=offset_days)
-        _expected_message = f"Session dates{self.__get_display_formatted_date(date_to_format=_future_date)}"
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
-        self.verify_scheduled_date(message=_expected_message)
+        self.expect_details(
+            "Session dates",
+            self.__get_display_formatted_date(date_to_format=_future_date),
+        )
+        self.click_continue_link()
 
     def edit_a_session_to_today(self, location: str, programme_group: str):
         _future_date = get_offset_date(offset_days=0)
@@ -741,7 +775,9 @@ class SessionsPage:
         """
         self.click_consent_tab()
         self.search_for("a very long string that won't match any names")
-        self.expect_main_to_contain_text("No children matching search criteria found")
+        expect(
+            self.page.get_by_text("No children matching search criteria found")
+        ).to_be_visible()
 
     def search_child(self, child: Child) -> None:
         self.search_for(str(child))
@@ -790,10 +826,11 @@ class SessionsPage:
                 self.vaccination_notes.fill("Confirmation notes")
                 self.click_confirm_button()
 
-            expect(self.success_alert).to_contain_text(
-                f"Vaccination outcome recorded for {programme}"
-            )
+            self.expect_alert_text(f"Vaccination outcome recorded for {programme}")
         return datetime.now().astimezone()
+
+    def expect_alert_text(self, text: str):
+        expect(self.page.get_by_role("alert")).to_contain_text(text)
 
     def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
         patient_card = self.page.locator(

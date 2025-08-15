@@ -56,13 +56,9 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
-    sessions_page.add_gillick_competence(
-        is_competent=True, competence_details="Gillick competent"
-    )
+    sessions_page.add_gillick_competence(is_competent=True)
     sessions_page.click_edit_gillick_competence()
-    sessions_page.edit_gillick_competence(
-        is_competent=False, competence_details="Not Gillick competent"
-    )
+    sessions_page.edit_gillick_competence(is_competent=False)
 
 
 @issue("MAV-955")
@@ -111,13 +107,13 @@ def test_invalid_consent(
     sessions_page.invalidate_parent_refusal(child.parents[1])
     sessions_page.click_session_activity_and_notes()
 
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry(
         f"Consent from {child.parents[1].full_name} invalidated"
     )
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry(
         f"Consent refused by {child.parents[1].name_and_relationship}"
     )
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry(
         f"Consent not_provided by {child.parents[0].name_and_relationship}"
     )
 
@@ -146,15 +142,13 @@ def test_parent_provides_consent_twice(
 
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.expect_main_to_contain_text(
-        f"{child.parents[0].relationship} refused to give consent."
-    )
+    sessions_page.expect_consent_refused_text(child.parents[0])
     sessions_page.click_session_activity_and_notes()
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry(
         f"Consent refused by {child.parents[0].name_and_relationship}"
     )
-    sessions_page.expect_main_to_contain_text("Triaged decision: Safe to vaccinate")
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry("Triaged decision: Safe to vaccinate")
+    sessions_page.check_session_activity_entry(
         f"Consent given by {child.parents[0].name_and_relationship}"
     )
 
@@ -179,27 +173,21 @@ def test_conflicting_consent_with_gillick_consent(
 
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.expect_main_to_contain_text("Conflicting consent")
-    sessions_page.expect_main_to_contain_text(
-        "You can only vaccinate if all respondents give consent."
-    )
+    sessions_page.expect_consent_status(Programme.HPV, "Conflicting consent")
+    sessions_page.expect_conflicting_consent_text()
     sessions_page.click_assess_gillick_competence()
-    sessions_page.add_gillick_competence(
-        is_competent=True, competence_details="Gillick competent"
-    )
-    sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
+    sessions_page.add_gillick_competence(is_competent=True)
+    sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
     sessions_page.click_record_a_new_consent_response()
     consent_page.child_consent_verbal_positive()
-    sessions_page.expect_main_to_contain_text(f"Consent recorded for {str(child)}")
+    sessions_page.expect_alert_text(f"Consent recorded for {str(child)}")
     sessions_page.select_consent_given()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.expect_main_to_contain_text("HPV: Safe to vaccinate")
-    sessions_page.expect_main_to_contain_text(
-        f"NURSE, Nurse decided that {str(child)} is safe to vaccinate."
-    )
-    sessions_page.expect_main_to_contain_text("Consent given")
+    sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
+    sessions_page.expect_child_safe_to_vaccinate(child)
+    sessions_page.expect_consent_status(Programme.HPV, "Consent given")
     sessions_page.click_session_activity_and_notes()
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry(
         f"Consent given by {str(child)} (Child (Gillick competent))"
     )
