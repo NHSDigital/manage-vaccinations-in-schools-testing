@@ -278,7 +278,7 @@ def test_rav_edit_dose_to_not_given(
     programmes_page.click_they_refused_it()
     programmes_page.click_continue()
     programmes_page.click_save_changes()
-    programmes_page.expect_to_not_see_text("Sorry, there’s a problem with the service")
+    programmes_page.expect_alert_text("Vaccination outcome recorded for HPV")
 
 
 @pytest.mark.rav

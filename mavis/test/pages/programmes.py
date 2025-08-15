@@ -122,6 +122,9 @@ class ProgrammesPage:
     def click_resolve_duplicate(self):
         self.resolve_duplicate_button.click()
 
+    def expect_alert_text(self, text: str):
+        expect(self.page.get_by_role("alert")).to_contain_text(text)
+
     @step("Click on Download vaccination report")
     def click_download_report(self):
         self.download_report_button.click()
@@ -170,9 +173,3 @@ class ProgrammesPage:
             assert False, (
                 f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
             )
-
-    def expect_text(self, text: str):
-        expect(self.page.get_by_role("main")).to_contain_text(text)
-
-    def expect_to_not_see_text(self, text: str):
-        expect(self.page.get_by_role("main")).not_to_contain_text(text)
