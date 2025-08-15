@@ -50,5 +50,6 @@ jobs:
         uses: ./.github/actions/deploy-reports
         with:
           device: ${{ matrix.device }}
+          environment: qa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

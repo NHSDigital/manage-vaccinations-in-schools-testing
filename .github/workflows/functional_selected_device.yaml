@@ -108,5 +108,6 @@ jobs:
         uses: ./.github/actions/deploy-reports
         with:
           device: ${{ steps.set-variables.outputs.device }}
+          environment: ${{ github.event.inputs.environment }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
