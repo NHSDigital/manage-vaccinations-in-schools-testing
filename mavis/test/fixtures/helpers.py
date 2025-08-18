@@ -74,13 +74,20 @@ def get_online_consent_url_without_cleanup(
     sessions_page,
 ):
     def wrapper(school, *programmes):
-        log_in_page.navigate()
-        log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-        dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, programmes[0].group)
-        url = sessions_page.get_online_consent_url(*programmes)
-        log_in_page.log_out()
-        yield url
+        try:
+            log_in_page.navigate()
+            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+            dashboard_page.click_sessions()
+            sessions_page.schedule_a_valid_session(school, programmes[0].group)
+            url = sessions_page.get_online_consent_url(*programmes)
+            log_in_page.log_out()
+            yield url
+        except Exception:
+            log_in_page.navigate()
+            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+            dashboard_page.click_sessions()
+            sessions_page.delete_all_sessions(school)
+            log_in_page.log_out()
 
     return wrapper
 
