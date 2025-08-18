@@ -18,23 +18,29 @@ def setup_mav_965(
 ):
     school = schools["doubles"][0]
     child = children["doubles"][0]
-
-    batch_names = {
-        Programme.HPV: add_vaccine_batch(Vaccine.GARDASIL_9),
-        Programme.MENACWY: add_vaccine_batch(Vaccine.MENQUADFI),
-        Programme.TD_IPV: add_vaccine_batch(Vaccine.REVAXIS),
-        Programme.FLU: add_vaccine_batch(Vaccine.FLUENZ),
-    }
-    for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
+    try:
+        batch_names = {
+            Programme.HPV: add_vaccine_batch(Vaccine.GARDASIL_9),
+            Programme.MENACWY: add_vaccine_batch(Vaccine.MENQUADFI),
+            Programme.TD_IPV: add_vaccine_batch(Vaccine.REVAXIS),
+            Programme.FLU: add_vaccine_batch(Vaccine.FLUENZ),
+        }
+        for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            sessions_page.schedule_a_valid_session(
+                school, programme_group, for_today=True
+            )
+        sessions_page.click_import_class_lists()
+        import_records_page.import_class_list_for_current_year(
+            ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"
+        )
+        yield batch_names
+    except Exception:
+        dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, programme_group, for_today=True)
-    sessions_page.click_import_class_lists()
-    import_records_page.import_class_list_for_current_year(
-        ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"
-    )
-
-    return batch_names
+        sessions_page.delete_all_sessions(school)
 
 
 @issue("MAV-965")

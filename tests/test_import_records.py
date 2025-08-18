@@ -81,11 +81,6 @@ def setup_vaccs_clinic(
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(
-            "Community clinic", Programme.HPV, for_today=True
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
         sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list_for_current_year(
@@ -93,9 +88,7 @@ def setup_vaccs_clinic(
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(
-            "Community clinic", Programme.HPV
-        )
+        sessions_page.click_session_for_programme_group(school, Programme.HPV)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
@@ -105,7 +98,6 @@ def setup_vaccs_clinic(
         dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions("Community clinic")
         sessions_page.delete_all_sessions(school)
 
 
