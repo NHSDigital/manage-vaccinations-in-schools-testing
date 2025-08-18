@@ -673,12 +673,12 @@ class SessionsPage:
         location: str,
         programme_group: str,
         for_today: bool = False,
-        yesterday: bool = False,
+        past: bool = False,
     ):
-        # scheduling a session for yesterday is a temporary measure for the rollover period
+        # scheduling a session in the past is a temporary measure for the rollover period
         # this will be disallowed in the future
-        if yesterday:
-            offset_days = -1
+        if past:
+            offset_days = -7
         elif for_today:
             offset_days = 0
         else:
