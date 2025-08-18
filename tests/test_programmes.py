@@ -251,12 +251,12 @@ def test_rav_triage_consent_refused(
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
     consent_page.parent_paper_refuse_consent(child.parents[0])
-    consent_page.expect_text_in_main(str(child))
+    consent_page.expect_text_in_alert(str(child))
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()
-    sessions_page.expect_main_to_contain_text(
+    sessions_page.check_session_activity_entry(
         f"Consent refused by {child.parents[0].name_and_relationship}"
     )
 
@@ -278,7 +278,7 @@ def test_rav_edit_dose_to_not_given(
     programmes_page.click_they_refused_it()
     programmes_page.click_continue()
     programmes_page.click_save_changes()
-    programmes_page.expect_to_not_see_text("Sorry, there’s a problem with the service")
+    programmes_page.expect_alert_text("Vaccination outcome recorded for HPV")
 
 
 @pytest.mark.rav
@@ -325,7 +325,7 @@ def test_rav_verify_excel_mav_854(
     sessions_page.check_location_radio(clinics[0])
     sessions_page.click_continue_button()
     sessions_page.click_confirm_button()
-    sessions_page.expect_main_to_contain_text("Vaccination outcome recorded for HPV")
+    sessions_page.expect_alert_text("Vaccination outcome recorded for HPV")
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.HPV)

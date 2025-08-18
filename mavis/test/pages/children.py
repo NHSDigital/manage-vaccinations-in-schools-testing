@@ -167,11 +167,11 @@ class ChildrenPage:
     def click_invite_to_community_clinic(self) -> None:
         self.invite_to_community_clinic_button.click()
 
-    def expect_text_in_main(self, text: str) -> None:
-        expect(self.page.get_by_role("main")).to_contain_text(text)
+    def expect_vaccination_details(self, key: str, value: str) -> None:
+        detail_key = self.page.locator(".nhsuk-summary-list__key", has_text=key)
+        detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
-    def expect_text_in_heading(self, text: str) -> None:
-        expect(self.page.get_by_role("heading")).to_contain_text(text)
+        expect(detail_value).to_contain_text(value)
 
     def expect_text_in_alert(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)
@@ -214,11 +214,17 @@ class ChildrenPage:
 
         self.click_record_for_child(child)
         self.click_activity_log()
-        self.expect_text_in_main("Consent given")
-        self.expect_text_in_main(f"Added to the session at {location}")
+        self.expect_activity_log_header("Consent given")
+        self.expect_activity_log_header(f"Added to the session at {location}", any=True)
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
+
+    def expect_activity_log_header(self, header: str, any: bool = False):
+        if any:
+            expect(self.page.get_by_role("heading", name=header).first).to_be_visible()
+        else:
+            expect(self.page.get_by_role("heading", name=header)).to_be_visible()
 
     def archive_child_record(self):
         self.click_archive_child_record()

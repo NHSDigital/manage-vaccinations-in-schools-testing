@@ -362,8 +362,12 @@ class ConsentPage:
 
         self.click_continue()
 
-    def expect_text_in_main(self, text: str) -> None:
-        expect(self.page.get_by_role("main")).to_contain_text(text)
+    def expect_text_in_alert(self, text: str) -> None:
+        expect(self.page.get_by_role("alert")).to_contain_text(text)
+
+    def expect_confirmation_text(self, text: str) -> None:
+        confirmation = self.page.locator(".nhsuk-panel.nhsuk-panel--confirmation")
+        expect(confirmation).to_contain_text(text)
 
     def change_parent_phone(self):
         self.fill_phone_number_and_receive_text_alerts("7700900000")
@@ -421,7 +425,7 @@ class ConsentPage:
     def update_triage_outcome_positive(self):
         self.click_safe_to_vaccinate()
         self.click_save_triage()
-        expect(self.page.get_by_role("main")).to_contain_text("Triage outcome updated")
+        self.expect_text_in_alert("Triage outcome updated")
 
     def parent_phone_positive(
         self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -555,4 +559,4 @@ class ConsentPage:
             body = f"{child.first_name} {child.last_name} is due to get the {programmes_str} vaccination{'s' if len(programmes) > 1 else ''} at school"
 
         final_message = "".join([title, body])
-        self.expect_text_in_main(final_message)
+        self.expect_confirmation_text(final_message)

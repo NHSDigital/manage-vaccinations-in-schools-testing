@@ -349,7 +349,7 @@ def test_vaccs_historic_no_urn_mav_855(
     children_page.search_with_all_filters_for_child_name(str(child))
     children_page.click_record_for_child(child)
     children_page.click_vaccination_details(school)
-    children_page.expect_text_in_main(str(school))
+    children_page.expect_vaccination_details("Location", str(school))
 
 
 @pytest.mark.vaccinations
