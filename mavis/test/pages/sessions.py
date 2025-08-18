@@ -202,7 +202,7 @@ class SessionsPage:
 
     @step("Click on Overview tab")
     def click_overview_tab(self):
-        self._click_tab("Overview")
+        self._select_tab("Overview")
 
     @step("Click Review consent refused")
     def click_review_consent_refused(self):
@@ -232,22 +232,24 @@ class SessionsPage:
         self.consent_refused_checkbox.check()
         self.update_results_button.click()
 
-    def _click_tab(self, name: str):
+    def _select_tab(self, name: str):
         link = self.page.get_by_role("navigation").get_by_role("link", name=name)
+        if link.get_by_role("strong").is_visible():
+            return
         link.click()
         link.get_by_role("strong").wait_for()
 
     @step("Click on {1} tab")
     def click_programme_tab(self, programme: Programme):
-        self._click_tab(str(programme))
+        self._select_tab(str(programme))
 
     @step("Click on Register tab")
     def click_register_tab(self):
-        self._click_tab("Register")
+        self._select_tab("Register")
 
     @step("Click on Session activity and notes tab")
     def click_session_activity_and_notes(self):
-        self._click_tab("Session activity and notes")
+        self._select_tab("Session activity and notes")
 
     @step("Click on {2} session at {1}")
     def click_session_for_programme_group(self, location: str, programme_group: str):
@@ -309,7 +311,7 @@ class SessionsPage:
 
     @step("Click on Consent tab")
     def click_consent_tab(self):
-        self._click_tab("Consent")
+        self._select_tab("Consent")
 
     @step("Click on Assess Gillick competence")
     def click_assess_gillick_competence(self):
@@ -444,7 +446,7 @@ class SessionsPage:
 
     @step("Click on Record vaccinations")
     def click_record_vaccinations_tab(self):
-        self._click_tab("Record vaccinations")
+        self._select_tab("Record vaccinations")
 
     @step("Confirm pre-screening checks are true")
     def confirm_pre_screening_checks(
