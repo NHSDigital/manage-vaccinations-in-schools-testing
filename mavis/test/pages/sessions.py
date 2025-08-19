@@ -748,7 +748,11 @@ class SessionsPage:
             session.click()
             self.click_edit_session()
             self.click_change_session_dates()
-            self.click_delete()
+
+            for button in self.delete_button.all():
+                button.click()
+                self.page.wait_for_load_state()
+
             self.click_back()
             self.click_continue_link()
             self.click_sessions()
