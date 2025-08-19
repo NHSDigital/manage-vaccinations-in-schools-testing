@@ -36,7 +36,7 @@ def setup_mav_965(
             ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"
         )
         yield batch_names
-    except Exception:
+    finally:
         dashboard_page.navigate()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
