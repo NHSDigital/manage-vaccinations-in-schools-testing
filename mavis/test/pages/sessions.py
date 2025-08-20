@@ -712,11 +712,13 @@ class SessionsPage:
         # this will be disallowed in the future
         if past:
             offset_days = -7
+            _future_date = get_offset_date(offset_days=offset_days)
         elif for_today:
             offset_days = 0
+            _future_date = get_offset_date(offset_days=offset_days)
         else:
-            offset_days = 10
-        _future_date = get_offset_date(offset_days=offset_days)
+            # temporary rollover measure to prevent scheduling sessions in the next academic year
+            _future_date = datetime(2025, 8, 31).strftime("%Y%m%d")
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
         self.expect_details(
