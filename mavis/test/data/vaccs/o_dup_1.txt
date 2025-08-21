@@ -1,2 +1,2 @@
-0 records were not imported because they already exist in Mavis
+Duplicates not imported None
 2 vaccination records
