@@ -52,7 +52,7 @@ def test_programmes_rav_pre_screening_questions(
     schools,
     dashboard_page,
     sessions_page,
-    consent_page,
+    verbal_consent_page,
     children,
 ):
     """
@@ -94,7 +94,7 @@ def test_programmes_rav_pre_screening_questions(
 
             sessions_page.click_programme_tab(programme)
             sessions_page.click_record_a_new_consent_response()
-            consent_page.parent_verbal_positive(
+            verbal_consent_page.parent_verbal_positive(
                 parent=child.parents[0],
                 change_phone=False,
                 programme=programme,

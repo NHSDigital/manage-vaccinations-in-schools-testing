@@ -86,7 +86,7 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 
 @pytest.mark.bug
 def test_invalid_consent(
-    setup_fixed_child, sessions_page, schools, consent_page, children
+    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
 ):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -95,11 +95,11 @@ def test_invalid_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_no_response(child.parents[0])
+    verbal_consent_page.parent_verbal_no_response(child.parents[0])
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_refuse_consent(child.parents[1])
+    verbal_consent_page.parent_verbal_refuse_consent(child.parents[1])
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
@@ -120,7 +120,7 @@ def test_invalid_consent(
 
 @pytest.mark.bug
 def test_parent_provides_consent_twice(
-    setup_fixed_child, sessions_page, schools, consent_page, children
+    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
 ):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -130,14 +130,14 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_written_positive(child.parents[0])
+    verbal_consent_page.parent_written_positive(child.parents[0])
     sessions_page.select_consent_given()
 
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
-    consent_page.update_triage_outcome_positive()
+    verbal_consent_page.update_triage_outcome_positive()
 
     sessions_page.click_record_a_new_consent_response()
-    consent_page.parent_verbal_refuse_consent(child.parents[0])
+    verbal_consent_page.parent_verbal_refuse_consent(child.parents[0])
     sessions_page.select_consent_refused()
 
     sessions_page.click_child(child)
@@ -155,7 +155,7 @@ def test_parent_provides_consent_twice(
 
 @pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
-    setup_fixed_child, sessions_page, schools, consent_page, children
+    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
 ):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -164,11 +164,13 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
+    verbal_consent_page.parent_verbal_positive(
+        parent=child.parents[0], change_phone=False
+    )
     sessions_page.select_consent_given()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_refuse_consent(child.parents[1])
+    verbal_consent_page.parent_verbal_refuse_consent(child.parents[1])
     sessions_page.select_conflicting_consent()
 
     sessions_page.click_child(child)
@@ -179,7 +181,7 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.add_gillick_competence(is_competent=True)
     sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
     sessions_page.click_record_a_new_consent_response()
-    consent_page.child_consent_verbal_positive()
+    verbal_consent_page.child_consent_verbal_positive()
     sessions_page.expect_alert_text(f"Consent recorded for {str(child)}")
     sessions_page.select_consent_given()
     sessions_page.click_child(child)

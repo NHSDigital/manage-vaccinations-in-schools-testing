@@ -1,9 +1,9 @@
 from .children import ChildrenPage
-from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .flipper import FlipperPage
 from .import_records import ImportRecordsPage
 from .log_in import LogInPage
+from .online_consent import OnlineConsentPage
 from .programmes import ProgrammesPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .sessions import SessionsPage
@@ -16,14 +16,13 @@ from .consent_responses import (
     UnmatchedConsentResponsesPage,
 )
 from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
-
+from .verbal_consent import VerbalConsentPage
 
 __all__ = [
     "AddBatchPage",
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
     "ChildrenPage",
-    "ConsentPage",
     "ConsentResponsePage",
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",
@@ -33,6 +32,7 @@ __all__ = [
     "ImportRecordsPage",
     "LogInPage",
     "MatchConsentResponsePage",
+    "OnlineConsentPage",
     "ProgrammesPage",
     "ReviewSchoolMovePage",
     "SchoolMovesPage",
@@ -40,4 +40,5 @@ __all__ = [
     "StartPage",
     "UnmatchedConsentResponsesPage",
     "VaccinesPage",
+    "VerbalConsentPage",
 ]
