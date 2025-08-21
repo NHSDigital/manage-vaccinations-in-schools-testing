@@ -3,6 +3,7 @@ from .dashboard import DashboardPage
 from .flipper import FlipperPage
 from .import_records import ImportRecordsPage
 from .log_in import LogInPage
+from .online_consent import OnlineConsentPage
 from .programmes import ProgrammesPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .sessions import SessionsPage
@@ -31,6 +32,7 @@ __all__ = [
     "ImportRecordsPage",
     "LogInPage",
     "MatchConsentResponsePage",
+    "OnlineConsentPage",
     "ProgrammesPage",
     "ReviewSchoolMovePage",
     "SchoolMovesPage",

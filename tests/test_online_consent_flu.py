@@ -41,18 +41,18 @@ def setup_session_with_file_upload(
     yield url
 
 
-def test_refused(start_consent, verbal_consent_page, schools, children):
+def test_refused(start_consent, online_consent_page, schools, children):
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
-    verbal_consent_page.fill_details(child, child.parents[0], schools)
-    verbal_consent_page.dont_agree_to_vaccination()
-    verbal_consent_page.select_consent_not_given_reason(
+    online_consent_page.fill_details(child, child.parents[0], schools)
+    online_consent_page.dont_agree_to_vaccination()
+    online_consent_page.select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
     )
-    verbal_consent_page.click_confirm()
-    verbal_consent_page.expect_confirmation_text(
+    online_consent_page.click_confirm()
+    online_consent_page.expect_confirmation_text(
         f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the flu vaccination at school"
     )
 
@@ -67,7 +67,7 @@ def test_refused(start_consent, verbal_consent_page, schools, children):
 )
 def test_given(
     start_consent,
-    verbal_consent_page,
+    online_consent_page,
     schools,
     consent_option,
     health_question,
@@ -81,22 +81,22 @@ def test_given(
         ConsentOption.INJECTION: 5,
     }
 
-    verbal_consent_page.fill_details(child, child.parents[0], schools, False)
-    verbal_consent_page.agree_to_flu_vaccination(consent_option=consent_option)
-    verbal_consent_page.fill_address_details(*child.address)
+    online_consent_page.fill_details(child, child.parents[0], schools, False)
+    online_consent_page.agree_to_flu_vaccination(consent_option=consent_option)
+    online_consent_page.fill_address_details(*child.address)
 
     number_of_health_questions = number_of_health_questions[consent_option]
     if consent_option is not ConsentOption.INJECTION and health_question:
-        verbal_consent_page.answer_yes()
+        online_consent_page.answer_yes()
         number_of_health_questions += 1
 
-    verbal_consent_page.answer_health_questions(
+    online_consent_page.answer_health_questions(
         number_of_health_questions, health_question=health_question
     )
 
-    verbal_consent_page.click_confirm()
+    online_consent_page.click_confirm()
 
-    verbal_consent_page.check_final_consent_message(
+    online_consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=health_question,
@@ -123,7 +123,7 @@ def test_given(
 def test_correct_method_shown(
     setup_session_with_file_upload,
     start_consent,
-    verbal_consent_page,
+    online_consent_page,
     schools,
     children,
     consents,
@@ -140,31 +140,31 @@ def test_correct_method_shown(
         ConsentOption.INJECTION: 5,
     }
 
-    verbal_consent_page.fill_details(child, child.parents[0], schools)
-    verbal_consent_page.agree_to_flu_vaccination(consent_option=consents[0])
-    verbal_consent_page.fill_address_details(*child.address)
-    verbal_consent_page.answer_health_questions(
+    online_consent_page.fill_details(child, child.parents[0], schools)
+    online_consent_page.agree_to_flu_vaccination(consent_option=consents[0])
+    online_consent_page.fill_address_details(*child.address)
+    online_consent_page.answer_health_questions(
         number_of_health_questions[consents[0]], health_question=False
     )
-    verbal_consent_page.click_confirm()
-    verbal_consent_page.check_final_consent_message(
+    online_consent_page.click_confirm()
+    online_consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=False,
         consent_option=consents[0],
     )
 
-    verbal_consent_page.go_to_url(url)
+    online_consent_page.go_to_url(url)
     start_page.start()
 
-    verbal_consent_page.fill_details(child, child.parents[1], schools)
-    verbal_consent_page.agree_to_flu_vaccination(consent_option=consents[1])
-    verbal_consent_page.fill_address_details(*child.address)
-    verbal_consent_page.answer_health_questions(
+    online_consent_page.fill_details(child, child.parents[1], schools)
+    online_consent_page.agree_to_flu_vaccination(consent_option=consents[1])
+    online_consent_page.fill_address_details(*child.address)
+    online_consent_page.answer_health_questions(
         number_of_health_questions[consents[1]], health_question=False
     )
-    verbal_consent_page.click_confirm()
-    verbal_consent_page.check_final_consent_message(
+    online_consent_page.click_confirm()
+    online_consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=False,

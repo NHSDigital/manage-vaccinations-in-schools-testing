@@ -14,6 +14,7 @@ from mavis.test.pages import (
     ImportRecordsPage,
     LogInPage,
     MatchConsentResponsePage,
+    OnlineConsentPage,
     ProgrammesPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
@@ -88,6 +89,11 @@ def log_in_page(page):
 @pytest.fixture
 def match_consent_response_page(page):
     return MatchConsentResponsePage(page)
+
+
+@pytest.fixture
+def online_consent_page(page):
+    return OnlineConsentPage(page)
 
 
 @pytest.fixture

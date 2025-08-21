@@ -18,7 +18,7 @@ def online_consent_url(get_online_consent_url, schools):
 def give_online_consent(
     page,
     start_page,
-    verbal_consent_page,
+    online_consent_page,
     online_consent_url,
     children,
     schools,
@@ -28,11 +28,11 @@ def give_online_consent(
 
     page.goto(online_consent_url)
     start_page.start()
-    verbal_consent_page.fill_details(child, child.parents[0], school)
-    verbal_consent_page.agree_to_hpv_vaccination()
-    verbal_consent_page.fill_address_details(*child.address)
-    verbal_consent_page.answer_health_questions(4, health_question=False)
-    verbal_consent_page.click_confirm()
+    online_consent_page.fill_details(child, child.parents[0], school)
+    online_consent_page.agree_to_hpv_vaccination()
+    online_consent_page.fill_address_details(*child.address)
+    online_consent_page.answer_health_questions(4, health_question=False)
+    online_consent_page.click_confirm()
 
 
 @pytest.fixture(autouse=True)
