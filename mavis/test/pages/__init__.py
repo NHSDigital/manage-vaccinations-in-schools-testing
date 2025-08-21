@@ -1,5 +1,4 @@
 from .children import ChildrenPage
-from .consent import ConsentPage
 from .dashboard import DashboardPage
 from .flipper import FlipperPage
 from .import_records import ImportRecordsPage
@@ -16,14 +15,13 @@ from .consent_responses import (
     UnmatchedConsentResponsesPage,
 )
 from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
-
+from .verbal_consent import VerbalConsentPage
 
 __all__ = [
     "AddBatchPage",
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
     "ChildrenPage",
-    "ConsentPage",
     "ConsentResponsePage",
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",
@@ -40,4 +38,5 @@ __all__ = [
     "StartPage",
     "UnmatchedConsentResponsesPage",
     "VaccinesPage",
+    "VerbalConsentPage",
 ]

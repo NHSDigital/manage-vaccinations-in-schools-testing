@@ -18,18 +18,18 @@ def start_consent(url, page, start_page):
     start_page.start()
 
 
-def test_refused(consent_page, schools, children):
+def test_refused(verbal_consent_page, schools, children):
     child = children["doubles"][0]
     schools = schools["doubles"]
 
-    consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.dont_agree_to_vaccination()
-    consent_page.select_consent_not_given_reason(
+    verbal_consent_page.fill_details(child, child.parents[0], schools)
+    verbal_consent_page.dont_agree_to_vaccination()
+    verbal_consent_page.select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
     )
-    consent_page.click_confirm()
-    consent_page.expect_confirmation_text(
+    verbal_consent_page.click_confirm()
+    verbal_consent_page.expect_confirmation_text(
         f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the MenACWY and Td/IPV vaccinations at school"
     )
 
@@ -46,7 +46,7 @@ def test_refused(consent_page, schools, children):
     "health_question", (False, True), ids=lambda v: f"health_question: {v}"
 )
 def test_given(
-    consent_page,
+    verbal_consent_page,
     schools,
     programmes,
     change_school,
@@ -56,27 +56,27 @@ def test_given(
     child = children["doubles"][0]
     schools = schools["doubles"]
 
-    consent_page.fill_details(child, child.parents[0], schools, change_school)
-    consent_page.agree_to_doubles_vaccinations(*programmes)
-    consent_page.fill_address_details(*child.address)
+    verbal_consent_page.fill_details(child, child.parents[0], schools, change_school)
+    verbal_consent_page.agree_to_doubles_vaccinations(*programmes)
+    verbal_consent_page.fill_address_details(*child.address)
 
     if programmes == [Programme.MENACWY, Programme.TD_IPV]:
         number_of_health_questions = 6
     else:
         number_of_health_questions = 5
 
-    consent_page.answer_health_questions(
+    verbal_consent_page.answer_health_questions(
         number_of_health_questions, health_question=health_question
     )
 
     if programmes != [Programme.MENACWY, Programme.TD_IPV]:
-        consent_page.select_consent_not_given_reason(
+        verbal_consent_page.select_consent_not_given_reason(
             ConsentRefusalReason.PERSONAL_CHOICE
         )
 
-    consent_page.click_confirm()
+    verbal_consent_page.click_confirm()
 
-    consent_page.check_final_consent_message(
+    verbal_consent_page.check_final_consent_message(
         child,
         programmes=programmes,
         health_question=health_question,

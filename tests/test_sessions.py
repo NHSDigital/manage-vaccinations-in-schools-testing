@@ -117,13 +117,13 @@ def test_verify_search(setup_mav_1018, sessions_page):
 @issue("MAV-1381")
 @pytest.mark.bug
 def test_verify_consent_filters(
-    setup_fixed_child, sessions_page, consent_page, children
+    setup_fixed_child, sessions_page, verbal_consent_page, children
 ):
     child = children[Programme.HPV][0]
     sessions_page.review_child_with_no_response()
     sessions_page.click_child(child)
     sessions_page.click_record_a_new_consent_response()
-    consent_page.parent_paper_refuse_consent(parent=child.parents[0])
+    verbal_consent_page.parent_paper_refuse_consent(parent=child.parents[0])
     sessions_page.click_overview_tab()
     sessions_page.click_review_consent_refused()
     sessions_page.expect_consent_refused_checkbox_to_be_checked()

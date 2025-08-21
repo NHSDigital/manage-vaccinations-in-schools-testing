@@ -49,7 +49,7 @@ def record_hpv(
     setup_recording_hpv,
     children_page,
     sessions_page,
-    consent_page,
+    verbal_consent_page,
     children,
 ):
     child = children[Programme.HPV][0]
@@ -57,7 +57,9 @@ def record_hpv(
 
     children_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
+    verbal_consent_page.parent_verbal_positive(
+        parent=child.parents[0], change_phone=False
+    )
     sessions_page.register_child_as_attending(child)
     vaccination_time = sessions_page.record_vaccs_for_child(
         child=child,

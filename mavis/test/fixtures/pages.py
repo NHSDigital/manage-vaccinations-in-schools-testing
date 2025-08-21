@@ -5,7 +5,6 @@ from mavis.test.pages import (
     ArchiveBatchPage,
     ArchiveConsentResponsePage,
     ChildrenPage,
-    ConsentPage,
     ConsentResponsePage,
     CreateNewRecordConsentResponsePage,
     DashboardPage,
@@ -22,6 +21,7 @@ from mavis.test.pages import (
     StartPage,
     UnmatchedConsentResponsesPage,
     VaccinesPage,
+    VerbalConsentPage,
 )
 
 
@@ -43,11 +43,6 @@ def archive_consent_response_page(page):
 @pytest.fixture
 def children_page(page, test_data):
     return ChildrenPage(page, test_data)
-
-
-@pytest.fixture
-def consent_page(page):
-    return ConsentPage(page)
 
 
 @pytest.fixture
@@ -134,3 +129,8 @@ def unmatched_consent_responses_page(page):
 @pytest.fixture
 def vaccines_page(page):
     return VaccinesPage(page)
+
+
+@pytest.fixture
+def verbal_consent_page(page):
+    return VerbalConsentPage(page)

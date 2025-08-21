@@ -50,7 +50,7 @@ def setup_session_for_hpv(setup_session_with_file_upload):
 def test_recording_hpv_vaccination(
     hpv_consent_url,
     setup_session_for_hpv,
-    consent_page,
+    verbal_consent_page,
     sessions_page,
     start_page,
     schools,
@@ -61,15 +61,15 @@ def test_recording_hpv_vaccination(
     schools = schools[Programme.HPV]
     gardasil_9_batch_name = setup_session_for_hpv[0]
 
-    consent_page.go_to_url(hpv_consent_url)
+    verbal_consent_page.go_to_url(hpv_consent_url)
     start_page.start()
 
-    consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_hpv_vaccination()
-    consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(4, health_question=False)
-    consent_page.click_confirm()
-    consent_page.check_final_consent_message(
+    verbal_consent_page.fill_details(child, child.parents[0], schools)
+    verbal_consent_page.agree_to_hpv_vaccination()
+    verbal_consent_page.fill_address_details(*child.address)
+    verbal_consent_page.answer_health_questions(4, health_question=False)
+    verbal_consent_page.click_confirm()
+    verbal_consent_page.check_final_consent_message(
         child, programmes=[Programme.HPV], health_question=False
     )
 
@@ -97,7 +97,7 @@ def setup_session_for_doubles(setup_session_with_file_upload):
 def test_recording_doubles_vaccination(
     doubles_consent_url,
     setup_session_for_doubles,
-    consent_page,
+    verbal_consent_page,
     sessions_page,
     start_page,
     schools,
@@ -108,15 +108,17 @@ def test_recording_doubles_vaccination(
     schools = schools["doubles"]
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
 
-    consent_page.go_to_url(doubles_consent_url)
+    verbal_consent_page.go_to_url(doubles_consent_url)
     start_page.start()
 
-    consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_doubles_vaccinations(Programme.MENACWY, Programme.TD_IPV)
-    consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(6, health_question=False)
-    consent_page.click_confirm()
-    consent_page.check_final_consent_message(
+    verbal_consent_page.fill_details(child, child.parents[0], schools)
+    verbal_consent_page.agree_to_doubles_vaccinations(
+        Programme.MENACWY, Programme.TD_IPV
+    )
+    verbal_consent_page.fill_address_details(*child.address)
+    verbal_consent_page.answer_health_questions(6, health_question=False)
+    verbal_consent_page.click_confirm()
+    verbal_consent_page.check_final_consent_message(
         child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
     )
 
@@ -143,7 +145,7 @@ def setup_session_for_flu(setup_session_with_file_upload):
 def test_recording_flu_vaccination(
     flu_consent_url,
     setup_session_for_flu,
-    consent_page,
+    verbal_consent_page,
     sessions_page,
     start_page,
     schools,
@@ -154,15 +156,15 @@ def test_recording_flu_vaccination(
     schools = schools[Programme.FLU]
     fluenz_batch_name = setup_session_for_flu[0]
 
-    consent_page.go_to_url(flu_consent_url)
+    verbal_consent_page.go_to_url(flu_consent_url)
     start_page.start()
 
-    consent_page.fill_details(child, child.parents[0], schools)
-    consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
-    consent_page.fill_address_details(*child.address)
-    consent_page.answer_health_questions(11, health_question=False)
-    consent_page.click_confirm()
-    consent_page.check_final_consent_message(
+    verbal_consent_page.fill_details(child, child.parents[0], schools)
+    verbal_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    verbal_consent_page.fill_address_details(*child.address)
+    verbal_consent_page.answer_health_questions(11, health_question=False)
+    verbal_consent_page.click_confirm()
+    verbal_consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         health_question=False,

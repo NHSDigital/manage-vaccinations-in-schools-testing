@@ -193,7 +193,7 @@ def test_rav_triage_consent_given(
     sessions_page,
     import_records_page,
     dashboard_page,
-    consent_page,
+    verbal_consent_page,
     children,
 ):
     child = children[Programme.HPV][0]
@@ -211,7 +211,7 @@ def test_rav_triage_consent_given(
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    consent_page.parent_phone_positive(child.parents[0])
+    verbal_consent_page.parent_phone_positive(child.parents[0])
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
@@ -232,7 +232,7 @@ def test_rav_triage_consent_refused(
     sessions_page,
     import_records_page,
     dashboard_page,
-    consent_page,
+    verbal_consent_page,
     children,
 ):
     child = children[Programme.HPV][0]
@@ -250,8 +250,8 @@ def test_rav_triage_consent_refused(
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
-    consent_page.parent_paper_refuse_consent(child.parents[0])
-    consent_page.expect_text_in_alert(str(child))
+    verbal_consent_page.parent_paper_refuse_consent(child.parents[0])
+    verbal_consent_page.expect_text_in_alert(str(child))
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
@@ -290,7 +290,7 @@ def test_rav_verify_excel_mav_854(
     children_page,
     sessions_page,
     dashboard_page,
-    consent_page,
+    verbal_consent_page,
     children,
 ):
     child = children[Programme.HPV][0]
@@ -314,7 +314,9 @@ def test_rav_verify_excel_mav_854(
         "Community clinic", Programme.HPV, check_date=True
     )
     sessions_page.click_record_a_new_consent_response()
-    consent_page.parent_verbal_positive(parent=child.parents[0], change_phone=False)
+    verbal_consent_page.parent_verbal_positive(
+        parent=child.parents[0], change_phone=False
+    )
     sessions_page.register_child_as_attending(child)
     sessions_page.record_vaccs_for_child(
         child=child,

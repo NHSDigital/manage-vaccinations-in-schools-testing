@@ -14,7 +14,7 @@ from mavis.test.models import (
 from mavis.test.annotations import step
 
 
-class ConsentPage:
+class VerbalConsentPage:
     def __init__(self, page: Page):
         self.page = page
 
