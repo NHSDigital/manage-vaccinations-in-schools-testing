@@ -194,6 +194,9 @@ class SessionsPage:
         self.current_academic_year_radio = self.page.get_by_role(
             "radio", name="2024 to 2025"
         )
+        self.add_another_date_button = self.page.get_by_role(
+            "button", name="Add another date"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -548,9 +551,11 @@ class SessionsPage:
 
     @step("Fill date fields")
     def fill_date_fields(self, day: str, month: str, year: str):
-        self.day_textbox.fill(day)
-        self.month_textbox.fill(month)
-        self.year_textbox.fill(year)
+        if not self.day_textbox.last.is_visible():
+            self.add_another_date_button.click()
+        self.day_textbox.last.fill(day)
+        self.month_textbox.last.fill(month)
+        self.year_textbox.last.fill(year)
 
     @step("Click on Record offline")
     def download_offline_recording_excel(self) -> Path:
@@ -655,8 +660,13 @@ class SessionsPage:
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
-        self.click_schedule_sessions()
-        self.click_add_session_dates()
+
+        if self.schedule_sessions_link.is_visible():
+            self.click_schedule_sessions()
+            self.click_add_session_dates()
+        else:
+            self.click_edit_session()
+            self.click_change_session_dates()
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
         if expect_error:
