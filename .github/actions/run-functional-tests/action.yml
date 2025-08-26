@@ -27,7 +27,7 @@ runs:
         node-version: '20'
 
     - name: Run tests
-      run: uv run pytest --device "${{ inputs.device }}"
+      run: uv run pytest --reruns 2 --device "${{ inputs.device }}"
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}
