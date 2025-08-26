@@ -28,9 +28,7 @@ def setup_mav_965(
         for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.schedule_a_valid_session(
-                school, programme_group, for_today=True
-            )
+            sessions_page.ensure_session_scheduled_for_today(school, programme_group)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list_for_current_year(
             ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"

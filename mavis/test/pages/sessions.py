@@ -701,6 +701,12 @@ class SessionsPage:
 
         expect(detail_value).to_contain_text(value)
 
+    def ensure_session_scheduled_for_today(self, location: str, programme_group: str):
+        self.click_session_for_programme_group(location, programme_group)
+        todays_date = datetime.now().strftime("%Y%m%d")
+        if not self.page.get_by_role("listitem", name=str(todays_date)).is_visible():
+            self.schedule_a_valid_session(location, programme_group, for_today=True)
+
     def schedule_a_valid_session(
         self,
         location: str,
