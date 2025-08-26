@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.wrappers import reload_until_element_is_visible
@@ -27,6 +27,10 @@ class UnmatchedConsentResponsesPage:
         row = self.rows.filter(has=self.page.get_by_text(str(child)))
         reload_until_element_is_visible(self.page, row)
         row.get_by_role("link").first.click()
+
+    def check_response_for_child_not_visible(self, child: Child):
+        row = self.rows.filter(has=self.page.get_by_text(str(child)))
+        expect(row).not_to_be_visible()
 
 
 class ConsentResponsePage:

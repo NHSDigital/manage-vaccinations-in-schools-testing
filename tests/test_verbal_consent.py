@@ -22,9 +22,7 @@ def setup_session_with_file_upload(
     def _setup(class_list_file):
         try:
             dashboard_page.click_sessions()
-            sessions_page.schedule_a_valid_session(
-                school, Programme.HPV, for_today=True
-            )
+            sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)

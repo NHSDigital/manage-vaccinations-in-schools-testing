@@ -27,7 +27,7 @@ def setup_recording_hpv(
         batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
+        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list_for_current_year(
             ClassFileMapping.FIXED_CHILD, year_group

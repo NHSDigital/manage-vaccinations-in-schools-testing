@@ -194,6 +194,9 @@ class SessionsPage:
         self.current_academic_year_radio = self.page.get_by_role(
             "radio", name="2024 to 2025"
         )
+        self.add_another_date_button = self.page.get_by_role(
+            "button", name="Add another date"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
@@ -548,9 +551,11 @@ class SessionsPage:
 
     @step("Fill date fields")
     def fill_date_fields(self, day: str, month: str, year: str):
-        self.day_textbox.fill(day)
-        self.month_textbox.fill(month)
-        self.year_textbox.fill(year)
+        if not self.day_textbox.last.is_visible():
+            self.add_another_date_button.click()
+        self.day_textbox.last.fill(day)
+        self.month_textbox.last.fill(month)
+        self.year_textbox.last.fill(year)
 
     @step("Click on Record offline")
     def download_offline_recording_excel(self) -> Path:
@@ -655,8 +660,13 @@ class SessionsPage:
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
-        self.click_schedule_sessions()
-        self.click_add_session_dates()
+
+        if self.schedule_sessions_link.is_visible():
+            self.click_schedule_sessions()
+            self.click_add_session_dates()
+        else:
+            self.click_edit_session()
+            self.click_change_session_dates()
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
         if expect_error:
@@ -701,10 +711,16 @@ class SessionsPage:
 
         expect(detail_value).to_contain_text(value)
 
+    def ensure_session_scheduled_for_today(self, location: str, programme_group: str):
+        self.click_session_for_programme_group(location, programme_group)
+        todays_date = datetime.now().strftime("%Y%m%d")
+        if not self.page.get_by_text(
+            self.__get_display_formatted_date(date_to_format=todays_date)
+        ).is_visible():
+            self.schedule_a_valid_session(for_today=True)
+
     def schedule_a_valid_session(
         self,
-        location: str,
-        programme_group: str,
         for_today: bool = False,
         past: bool = False,
     ):
@@ -719,7 +735,6 @@ class SessionsPage:
         else:
             # temporary rollover measure to prevent scheduling sessions in the next academic year
             _future_date = datetime(2025, 8, 31).strftime("%Y%m%d")
-        self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
         self.expect_details(
             "Session dates",

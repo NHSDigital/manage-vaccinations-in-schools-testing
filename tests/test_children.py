@@ -23,9 +23,7 @@ def setup_children_session(
         try:
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.schedule_a_valid_session(
-                school, Programme.HPV, for_today=True
-            )
+            sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
@@ -75,7 +73,7 @@ def setup_mav_853(
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(school, Programme.HPV, for_today=True)
+        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list_for_current_year(
             ClassFileMapping.RANDOM_CHILD, year_group

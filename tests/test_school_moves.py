@@ -37,10 +37,12 @@ def setup_confirm_and_ignore(
 
     try:
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[0], Programme.HPV)
+        sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
+        sessions_page.schedule_a_valid_session()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.schedule_a_valid_session(schools[1], Programme.HPV)
+        sessions_page.click_session_for_programme_group(schools[1], Programme.HPV)
+        sessions_page.schedule_a_valid_session()
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
