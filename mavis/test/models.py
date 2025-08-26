@@ -230,12 +230,20 @@ class Clinic(NamedTuple):
 class School(NamedTuple):
     name: str
     urn: str
+    site: str
 
     def __str__(self):
         return self.name
 
+    @property
+    def urn_and_site(self):
+        if self.site:
+            return self.urn + self.site
+        else:
+            return self.urn
+
     def to_onboarding(self):
-        return self.urn
+        return self.urn_and_site
 
 
 class Organisation(NamedTuple):

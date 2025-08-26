@@ -165,7 +165,7 @@ class TestData:
             schools = self.schools[programme_group]
             for index, school in enumerate(schools):
                 static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
-                static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn
+                static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn_and_site
 
         if self.nurse:
             static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
