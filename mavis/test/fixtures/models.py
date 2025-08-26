@@ -79,7 +79,9 @@ def schools(base_url, year_groups) -> dict[str, list[School]]:
 
         return [
             School(
-                name=normalize_whitespace(school_data["name"]), urn=school_data["urn"]
+                name=normalize_whitespace(school_data["name"]),
+                urn=school_data["urn"],
+                site=school_data["site"],
             )
             for school_data in schools_data
         ]
