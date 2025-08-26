@@ -704,13 +704,13 @@ class SessionsPage:
     def ensure_session_scheduled_for_today(self, location: str, programme_group: str):
         self.click_session_for_programme_group(location, programme_group)
         todays_date = datetime.now().strftime("%Y%m%d")
-        if not self.page.get_by_role("listitem", name=str(todays_date)).is_visible():
-            self.schedule_a_valid_session(location, programme_group, for_today=True)
+        if not self.page.get_by_text(
+            self.__get_display_formatted_date(date_to_format=todays_date)
+        ).is_visible():
+            self.schedule_a_valid_session(for_today=True)
 
     def schedule_a_valid_session(
         self,
-        location: str,
-        programme_group: str,
         for_today: bool = False,
         past: bool = False,
     ):
@@ -725,7 +725,6 @@ class SessionsPage:
         else:
             # temporary rollover measure to prevent scheduling sessions in the next academic year
             _future_date = datetime(2025, 8, 31).strftime("%Y%m%d")
-        self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_future_date)
         self.expect_details(
             "Session dates",

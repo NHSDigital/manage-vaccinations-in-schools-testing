@@ -66,7 +66,8 @@ def setup_fixed_child(setup_session_with_file_upload):
 def test_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
     school = schools[Programme.HPV][0]
 
-    sessions_page.schedule_a_valid_session(school, Programme.HPV)
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    sessions_page.schedule_a_valid_session()
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.edit_a_session_to_today(school, Programme.HPV)
