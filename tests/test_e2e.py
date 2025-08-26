@@ -64,6 +64,9 @@ def test_recording_hpv_vaccination(
     schools,
     children,
     dashboard_page,
+    log_in_page,
+    nurse,
+    team,
 ):
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
@@ -81,13 +84,17 @@ def test_recording_hpv_vaccination(
         child, programmes=[Programme.HPV], health_question=False
     )
 
-    dashboard_page.navigate()
+    log_in_page.navigate()
+    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
     dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccs_for_child(child, Programme.HPV, gardasil_9_batch_name)
+
+    dashboard_page.navigate()
+    log_in_page.log_out()
 
 
 @pytest.fixture
@@ -111,6 +118,9 @@ def test_recording_doubles_vaccination(
     schools,
     children,
     dashboard_page,
+    log_in_page,
+    nurse,
+    team,
 ):
     child = children["doubles"][0]
     schools = schools["doubles"]
@@ -130,7 +140,8 @@ def test_recording_doubles_vaccination(
         child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
     )
 
-    dashboard_page.navigate()
+    log_in_page.navigate()
+    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
     dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], "doubles")
@@ -138,6 +149,9 @@ def test_recording_doubles_vaccination(
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccs_for_child(child, Programme.MENACWY, menquadfi_batch_name)
     sessions_page.record_vaccs_for_child(child, Programme.TD_IPV, revaxis_batch_name)
+
+    dashboard_page.navigate()
+    log_in_page.log_out()
 
 
 @pytest.fixture
@@ -159,6 +173,9 @@ def test_recording_flu_vaccination(
     schools,
     children,
     dashboard_page,
+    log_in_page,
+    nurse,
+    team,
 ):
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
@@ -179,7 +196,8 @@ def test_recording_flu_vaccination(
         consent_option=ConsentOption.BOTH,
     )
 
-    dashboard_page.navigate()
+    log_in_page.navigate()
+    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
     dashboard_page.click_sessions()
 
     sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
@@ -191,3 +209,6 @@ def test_recording_flu_vaccination(
         fluenz_batch_name,
         ConsentOption.BOTH,
     )
+
+    dashboard_page.navigate()
+    log_in_page.log_out()
