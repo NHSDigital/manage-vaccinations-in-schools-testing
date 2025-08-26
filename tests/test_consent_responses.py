@@ -53,7 +53,7 @@ def test_archive(
     archive_consent_response_page.archive(notes="Some notes.")
 
     expect(unmatched_consent_responses_page.archived_alert).to_be_visible()
-    expect(unmatched_consent_responses_page.empty_paragraph).to_be_visible()
+    unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
 
 def test_match(
@@ -86,7 +86,7 @@ def test_match(
     match_consent_response_page.match(child)
 
     expect(unmatched_consent_responses_page.matched_alert).to_be_visible()
-    expect(unmatched_consent_responses_page.empty_paragraph).to_be_visible()
+    unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -132,7 +132,7 @@ def test_create_with_nhs_number(
     create_new_record_consent_response_page.create_new_record()
 
     expect(unmatched_consent_responses_page.created_alert).to_be_visible()
-    expect(unmatched_consent_responses_page.empty_paragraph).to_be_visible()
+    unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -156,7 +156,7 @@ def test_create_with_no_nhs_number(
     create_new_record_consent_response_page.create_new_record()
 
     expect(unmatched_consent_responses_page.created_alert).to_be_visible()
-    expect(unmatched_consent_responses_page.empty_paragraph).to_be_visible()
+    unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
