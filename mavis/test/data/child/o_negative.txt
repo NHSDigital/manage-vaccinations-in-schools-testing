@@ -9,3 +9,7 @@ Row 9 PARENT_1_EMAIL: should be a valid email address, like j.doe@example.com
 Row 10 PARENT_2_EMAIL: should be a valid email address, like j.doe@example.com
 Row 11 CHILD_YEAR_GROUP: is not part of this programme
 Row 12 CHILD_DATE_OF_BIRTH: should be formatted as YYYY-MM-DD
+Row 13 CHILD_FIRST_NAME: includes invalid character(s)
+Row 14 CHILD_LAST_NAME: includes invalid character(s)
+Row 15 PARENT_1_NAME: includes invalid character(s)
+Row 16 PARENT_2_NAME: includes invalid character(s)
