@@ -1,8 +1,8 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme
-from mavis.test.annotations import issue
 
 pytestmark = pytest.mark.consent
 
@@ -48,6 +48,16 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
+    """
+    Test: Add and edit Gillick competence assessment for a child.
+    Steps:
+    1. Open the session for the school and programme.
+    2. Navigate to Gillick competence assessment for the child.
+    3. Add a Gillick competence assessment as competent.
+    4. Edit the assessment to mark as not competent.
+    Verification:
+    - Gillick competence status is updated and reflected for the child.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -61,6 +71,18 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
 
 @issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
+    """
+    Test: Validate Gillick competence assessment notes length and update.
+    Steps:
+    1. Open the session for the school and programme.
+    2. Navigate to Gillick competence assessment for the child.
+    3. Attempt to complete assessment with notes over 1000 characters (should error).
+    4. Complete assessment with valid notes.
+    5. Edit assessment and again try to update with notes over 1000 characters (should error).
+    Verification:
+    - Error is shown for notes over 1000 characters.
+    - Assessment can be completed and updated with valid notes.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -86,6 +108,17 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 def test_invalid_consent(
     setup_fixed_child, sessions_page, schools, verbal_consent_page, children
 ):
+    """
+    Test: Record invalid and refused consents and verify activity log entries.
+    Steps:
+    1. Open the session and consent tab for the child.
+    2. Record a 'no response' verbal consent for parent 1.
+    3. Record a refusal verbal consent for parent 2.
+    4. Invalidate the refusal from parent 2.
+    5. Check the session activity log for correct entries.
+    Verification:
+    - Activity log contains entries for invalidated consent, refusal, and no response.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -120,6 +153,18 @@ def test_invalid_consent(
 def test_parent_provides_consent_twice(
     setup_fixed_child, sessions_page, schools, verbal_consent_page, children
 ):
+    """
+    Test: Record two consents from the same parent (positive then refusal) and verify activity log.
+    Steps:
+    1. Open the session and consent tab for the child.
+    2. Record a written positive consent for parent 1.
+    3. Record a triage outcome as safe to vaccinate.
+    4. Record a verbal refusal for the same parent.
+    5. Check the consent refused text and session activity log.
+    Verification:
+    - Consent refused text is shown for the parent.
+    - Activity log contains entries for refusal, triage, and initial consent.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -155,6 +200,19 @@ def test_parent_provides_consent_twice(
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child, sessions_page, schools, verbal_consent_page, children
 ):
+    """
+    Test: Record conflicting consents from parents, resolve with Gillick competence, and verify status.
+    Steps:
+    1. Open the session and consent tab for the child.
+    2. Record a verbal positive consent for parent 1.
+    3. Record a verbal refusal for parent 2, resulting in conflicting consent.
+    4. Assess Gillick competence as competent.
+    5. Record child verbal consent.
+    6. Verify consent status and activity log.
+    Verification:
+    - Consent status updates to 'Conflicting consent', then 'Safe to vaccinate', then 'Consent given'.
+    - Activity log contains entry for Gillick competent child consent.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 

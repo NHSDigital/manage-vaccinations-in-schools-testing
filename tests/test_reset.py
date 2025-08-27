@@ -1,9 +1,9 @@
 import pytest
 
-from mavis.test.data import ClassFileMapping
-from mavis.test.models import Programme, Vaccine, ConsentOption
-from mavis.test.wrappers import generate_random_string
 from mavis.test.annotations import issue
+from mavis.test.data import ClassFileMapping
+from mavis.test.models import ConsentOption, Programme, Vaccine
+from mavis.test.wrappers import generate_random_string
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def setup_mav_965(
 @issue("MAV-955")
 @pytest.mark.rav
 @pytest.mark.bug
-def test_programmes_rav_pre_screening_questions(
+def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     setup_mav_965,
     schools,
     dashboard_page,
@@ -54,19 +54,19 @@ def test_programmes_rav_pre_screening_questions(
     children,
 ):
     """
-    Steps to reproduce:
-    Patient setup: in a school session today, marked as attending, session has HPV and doubles, patients is eligible for all vaccines (has consent, correct year group, no history)
-    Complete pre-screening questions and vaccinate the patient for any one vaccine (eg. HPV)
-    Testing has confirmed the following:
-    Two vaccinations in same session
-    - If HPV is followed by MenACWY then "feeling well" is pre-filled
-    - If HPV is followed by Td/IPV  then both "feeling well" and "not pregnant" are pre-populated
-    - If MenACWY followed by Td/IPV then "feeling well" is pre-filled
-    - If MenCAWY followed by HPV then "feeling well" is pre-filled
-    - If Td/IPV followed by MenACWY  then "feeling well" is pre-filled
-    - If Td/IPV is followed by HPV  then both "feeling well" and "not pregnant" are pre-populated
+    Test: Verify pre-screening questions are pre-filled correctly when recording multiple vaccinations in the same session.
+    Steps:
+    1. Setup: Schedule sessions for HPV, doubles, and flu for the same school and import a fixed child class list.
+    2. For each programme group (HPV, doubles, flu):
+        a. Navigate to the session and register the child as attending.
+        b. Go to the consent tab and search for the child.
+        c. For each vaccine in the programme group:
+            i. Record verbal consent for the child.
+            ii. Record a vaccination for the child with a long notes field.
+    Verification:
+    - For each combination of vaccines, the correct pre-screening questions ("feeling well", "not pregnant") are pre-filled as described in the docstring.
+    - Long notes (over 1000 characters) are accepted (MAV-955).
     """
-
     child = children["doubles"][0]
     school = schools["doubles"][0]
     batch_names = setup_mav_965

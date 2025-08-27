@@ -76,6 +76,17 @@ def test_confirm_and_ignore(
     review_school_move_page,
     children,
 ):
+    """
+    Test: Confirm and ignore school moves for two children and verify the correct alerts.
+    Steps:
+    1. Setup: Schedule sessions for two schools, upload class lists for both, and trigger school moves.
+    2. Go to the school moves page and locate rows for both children.
+    3. For the first child, confirm the school move and verify the confirmation alert.
+    4. For the second child, ignore the school move and verify the ignored alert.
+    Verification:
+    - The correct confirmation and ignored alerts are shown for each child.
+    - The school moves table contains the expected text for both children.
+    """
     schools = schools[Programme.HPV]
     child_1, child_2 = children[Programme.HPV][0], children[Programme.HPV][1]
 
@@ -100,9 +111,19 @@ def test_confirm_and_ignore(
     )
 
 
-def test_download(
+def test_download_school_moves_csv(
     setup_confirm_and_ignore, school_moves_page, download_school_moves_page
 ):
+    """
+    Test: Download the school moves CSV and verify the headers.
+    Steps:
+    1. Setup: Ensure school moves exist by confirming/ignoring moves for two children.
+    2. Click the download button on the school moves page.
+    3. Enter a date range and confirm the download.
+    4. Read the downloaded CSV and extract the headers.
+    Verification:
+    - The CSV contains all expected headers for school moves.
+    """
     school_moves_page.click_download()
     download_school_moves_page.enter_date_range()
     school_moves_csv = download_school_moves_page.confirm()

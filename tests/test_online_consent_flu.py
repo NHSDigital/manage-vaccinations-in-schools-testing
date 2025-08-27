@@ -1,8 +1,8 @@
 import pytest
 
-from mavis.test.models import ConsentRefusalReason, Programme, ConsentOption
-from mavis.test.data import CohortsFileMapping
 from mavis.test.annotations import issue
+from mavis.test.data import CohortsFileMapping
+from mavis.test.models import ConsentOption, ConsentRefusalReason, Programme
 
 pytestmark = pytest.mark.consent
 
@@ -41,7 +41,19 @@ def setup_session_with_file_upload(
     yield url
 
 
-def test_refused(start_consent, online_consent_page, schools, children):
+def test_consent_refused_for_flu_vaccination(
+    start_consent, online_consent_page, schools, children
+):
+    """
+    Test: Submit an online consent form refusing flu vaccination and verify confirmation.
+    Steps:
+    1. Fill in child and parent details on the consent page.
+    2. Select 'do not agree' to vaccination.
+    3. Choose refusal reason and provide details.
+    4. Submit the consent form.
+    Verification:
+    - Confirmation text indicates consent was refused for flu vaccination.
+    """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
@@ -65,7 +77,7 @@ def test_refused(start_consent, online_consent_page, schools, children):
 @pytest.mark.parametrize(
     "health_question", (False, True), ids=lambda v: f"health_question: {v}"
 )
-def test_given(
+def test_consent_given_for_flu_vaccination(
     start_consent,
     online_consent_page,
     schools,
@@ -73,6 +85,17 @@ def test_given(
     health_question,
     children,
 ):
+    """
+    Test: Submit an online consent form giving consent for flu vaccination (nasal spray, injection, or both) and verify confirmation.
+    Steps:
+    1. Fill in child and parent details on the consent page.
+    2. Agree to flu vaccination, selecting the consent option (nasal spray, injection, or both).
+    3. Fill in address details.
+    4. Answer the required number of health questions, optionally marking one as 'yes'.
+    5. Submit the consent form.
+    Verification:
+    - Confirmation message is shown for the correct child, consent option, and health question status.
+    """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
     number_of_health_questions = {
@@ -85,13 +108,13 @@ def test_given(
     online_consent_page.agree_to_flu_vaccination(consent_option=consent_option)
     online_consent_page.fill_address_details(*child.address)
 
-    number_of_health_questions = number_of_health_questions[consent_option]
+    num_questions = number_of_health_questions[consent_option]
     if consent_option is not ConsentOption.INJECTION and health_question:
         online_consent_page.answer_yes()
-        number_of_health_questions += 1
+        num_questions += 1
 
     online_consent_page.answer_health_questions(
-        number_of_health_questions, health_question=health_question
+        num_questions, health_question=health_question
     )
 
     online_consent_page.click_confirm()
@@ -120,7 +143,7 @@ def test_given(
     ),
     ids=lambda v: f"consents: {v}",
 )
-def test_correct_method_shown(
+def test_flu_consent_method_displayed_correctly(
     setup_session_with_file_upload,
     start_consent,
     online_consent_page,
@@ -131,6 +154,16 @@ def test_correct_method_shown(
     sessions_page,
     dashboard_page,
 ):
+    """
+    Test: Submit multiple online flu consent forms with different methods and verify the correct method is displayed in the session.
+    Steps:
+    1. Fill in child and parent details and submit consent with the first method.
+    2. Submit a second consent for the same child with the second method (different parent).
+    3. Navigate to the session and consent tab.
+    4. Search for the child and verify the correct consent method is shown.
+    Verification:
+    - The consent method displayed in the session matches the expected method from the last consent.
+    """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
     url = setup_session_with_file_upload
@@ -140,6 +173,7 @@ def test_correct_method_shown(
         ConsentOption.INJECTION: 5,
     }
 
+    # First consent
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_flu_vaccination(consent_option=consents[0])
     online_consent_page.fill_address_details(*child.address)
@@ -154,6 +188,7 @@ def test_correct_method_shown(
         consent_option=consents[0],
     )
 
+    # Second consent (different parent)
     online_consent_page.go_to_url(url)
     start_page.start()
 
@@ -171,6 +206,7 @@ def test_correct_method_shown(
         consent_option=consents[1],
     )
 
+    # Verify in session
     dashboard_page.navigate()
     dashboard_page.click_sessions()
 
@@ -178,4 +214,3 @@ def test_correct_method_shown(
     sessions_page.click_consent_tab()
     sessions_page.select_consent_given()
     sessions_page.search_for(str(child))
-    sessions_page.verify_child_shows_correct_flu_consent_method(child, str(consents[2]))

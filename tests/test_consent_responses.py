@@ -3,8 +3,9 @@ import random
 import pytest
 from playwright.sync_api import expect
 
-from mavis.test.data import pds as pds_test_data, CohortsFileMapping
-from mavis.test.models import Programme, Child, Parent, Relationship
+from mavis.test.data import CohortsFileMapping
+from mavis.test.data import pds as pds_test_data
+from mavis.test.models import Child, Parent, Programme, Relationship
 
 pytestmark = pytest.mark.consent_responses
 
@@ -40,12 +41,21 @@ def go_to_unmatched_consent_responses(log_in_as_nurse, dashboard_page):
     dashboard_page.click_unmatched_consent_responses()
 
 
-def test_archive(
+def test_archive_unmatched_consent_response_removes_from_list(
     archive_consent_response_page,
     children,
     consent_response_page,
     unmatched_consent_responses_page,
 ):
+    """
+    Test: Archive an unmatched consent response and verify it is removed from the list.
+    Steps:
+    1. Select a child from the unmatched consent responses.
+    2. Click the archive button and provide notes.
+    Verification:
+    - Archived alert is visible.
+    - The consent response for the child is no longer visible in the unmatched list.
+    """
     child = children[Programme.HPV][0]
     unmatched_consent_responses_page.click_child(child)
 
@@ -56,7 +66,7 @@ def test_archive(
     unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
 
-def test_match(
+def test_match_unmatched_consent_response_and_verify_activity_log(
     children,
     children_page,
     consent_response_page,
@@ -67,6 +77,19 @@ def test_match(
     unmatched_consent_responses_page,
     import_records_page,
 ):
+    """
+    Test: Match an unmatched consent response to a child and verify activity log.
+    Steps:
+    1. Import a fixed child class list for the current year.
+    2. Navigate to unmatched consent responses and select a child.
+    3. Click match and complete the matching process.
+    4. Verify the child is removed from unmatched responses.
+    5. Go to children page and verify activity log for the matched child.
+    Verification:
+    - Matched alert is visible.
+    - Consent response for the child is no longer visible in unmatched list.
+    - Activity log for the child shows the match event.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -114,7 +137,7 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
         }
     ],
 )
-def test_create_with_nhs_number(
+def test_create_child_record_from_consent_with_nhs_number(
     children,
     children_page,
     consent_response_page,
@@ -123,6 +146,18 @@ def test_create_with_nhs_number(
     schools,
     unmatched_consent_responses_page,
 ):
+    """
+    Test: Create a new child record from an unmatched consent response with NHS number.
+    Steps:
+    1. Select a child from unmatched consent responses.
+    2. Click to create a new record and complete the process.
+    3. Verify the child is removed from unmatched responses.
+    4. Go to children page and verify activity log for the created child.
+    Verification:
+    - Created alert is visible.
+    - Consent response for the child is no longer visible in unmatched list.
+    - Activity log for the child shows the creation event.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -139,7 +174,7 @@ def test_create_with_nhs_number(
     children_page.verify_activity_log_for_created_or_matched_child(child, school)
 
 
-def test_create_with_no_nhs_number(
+def test_create_child_record_from_consent_without_nhs_number(
     children,
     children_page,
     consent_response_page,
@@ -148,6 +183,18 @@ def test_create_with_no_nhs_number(
     schools,
     unmatched_consent_responses_page,
 ):
+    """
+    Test: Create a new child record from an unmatched consent response without NHS number.
+    Steps:
+    1. Select a child from unmatched consent responses.
+    2. Click to create a new record and complete the process.
+    3. Verify the child is removed from unmatched responses.
+    4. Go to children page and verify activity log for the created child.
+    Verification:
+    - Created alert is visible.
+    - Consent response for the child is no longer visible in unmatched list.
+    - Activity log for the child shows the creation event.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     unmatched_consent_responses_page.click_child(child)

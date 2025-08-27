@@ -70,16 +70,29 @@ def record_hpv(
     yield child, vaccination_time
 
 
-def test_create_edit_delete(
+def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     record_hpv, schools, imms_api_helper, sessions_page, programmes_page
 ):
+    """
+    Test: Create, edit, and delete an HPV vaccination record and verify changes in the IMMS API.
+    Steps:
+    1. Setup: Schedule HPV session, import class list, add vaccine batch, and register child with verbal consent.
+    2. Create: Record HPV vaccination for the child (LEFT_ARM_UPPER).
+    3. Verify: Check the vaccination record exists in the IMMS API.
+    4. Edit: Change the delivery site to RIGHT_ARM_LOWER and save.
+    5. Verify: Check the updated vaccination record in the IMMS API.
+    6. Edit: Change the outcome to "They refused it" and save.
+    7. Verify: Check the vaccination record is removed from the IMMS API.
+    """
     child, vaccination_time = record_hpv
     school = schools[Programme.HPV][0]
 
+    # Step 3: Verify creation in IMMS API
     imms_api_helper.check_hpv_record_in_imms_api(
         child, school, DeliverySite.LEFT_ARM_UPPER, vaccination_time
     )
 
+    # Step 4: Edit delivery site
     sessions_page.click_vaccination_details(school)
     programmes_page.click_edit_vaccination_record()
     programmes_page.click_change_site()
@@ -87,10 +100,12 @@ def test_create_edit_delete(
     programmes_page.click_continue()
     programmes_page.click_save_changes()
 
+    # Step 5: Verify update in IMMS API
     imms_api_helper.check_hpv_record_in_imms_api(
         child, school, DeliverySite.RIGHT_ARM_UPPER, vaccination_time
     )
 
+    # Step 6: Edit outcome to refused
     sessions_page.click_vaccination_details(school)
     programmes_page.click_edit_vaccination_record()
     programmes_page.click_change_outcome()
@@ -98,4 +113,5 @@ def test_create_edit_delete(
     programmes_page.click_continue()
     programmes_page.click_save_changes()
 
+    # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_hpv_record_is_not_in_imms_api(child)
