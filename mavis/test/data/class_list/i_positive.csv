@@ -4,4 +4,7 @@ YearGroupOverride,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<DOB_Y
 SameYearGroup,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,8T5,<<RANDOM_POSTCODE>>,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
 EmptyPostCode,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,8T5,,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
 EmptyYearGroup,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,8T5,,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,
+UnicodeApostrophe1,Tʼest1,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,8T5,,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
+UnicodeApostrophe2,T`est2,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,8T5,,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
+UnicodeApostrophe3,T’est3,<<RANDOM_LNAME>>,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,8T5,,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
 RowDeprecated,ABBY,RESTON,PrefFirst1,PrefLast1,<<FIXED_YEAR_GROUP_DOB>>,,Female,3 CUCKOO HOLT,GATEFORD,NOTTS,8T5,S81 8TN,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
