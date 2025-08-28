@@ -24,9 +24,6 @@ def setup_children_session(
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
-            sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.click_import_class_lists()
             import_records_page.import_class_list_for_current_year(
                 class_list_file, year_group
@@ -44,12 +41,7 @@ def setup_children_session(
 
 
 @pytest.fixture
-def setup_children_page(setup_children_session):
-    yield from setup_children_session(ClassFileMapping.FIXED_CHILD)
-
-
-@pytest.fixture
-def setup_change_nhsno(setup_children_session):
+def setup_fixed_child(setup_children_session):
     yield from setup_children_session(ClassFileMapping.FIXED_CHILD)
 
 
@@ -106,7 +98,7 @@ def setup_mav_853(
 
 
 def test_children_page_headers_and_filtering(
-    setup_children_page, children_page, children
+    setup_fixed_child, children_page, children
 ):
     """
     Test: Verify children page headers and filtering by child name.
@@ -157,7 +149,7 @@ def test_patient_details_load_with_missing_vaccine_info(
 
 @pytest.mark.bug
 def test_invalid_nhs_number_change_is_rejected(
-    setup_change_nhsno, children_page, children
+    setup_fixed_child, children_page, children
 ):
     """
     Test: Changing a child's NHS number to an invalid value should fail.
