@@ -78,6 +78,7 @@ class ProgrammesPage:
 
     @step("Click on Import child records")
     def click_import_child_records(self):
+        self.page.wait_for_load_state("domcontentloaded")
         self.import_child_records_link.click()
 
     @step("Click on Continue")
