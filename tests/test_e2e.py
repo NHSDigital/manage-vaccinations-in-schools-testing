@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import Programme, ConsentOption
+from mavis.test.models import ConsentOption, Programme
 
 pytestmark = pytest.mark.e2e
 
@@ -55,7 +55,7 @@ def setup_session_for_hpv(setup_session_with_file_upload):
     return setup_session_with_file_upload(Programme.HPV)
 
 
-def test_recording_hpv_vaccination(
+def test_recording_hpv_vaccination_e2e(
     hpv_consent_url,
     setup_session_for_hpv,
     online_consent_page,
@@ -68,6 +68,18 @@ def test_recording_hpv_vaccination(
     nurse,
     team,
 ):
+    """
+    Test: End-to-end test for recording an HPV vaccination for a child.
+    Steps:
+    1. Setup: Log in as nurse, create session, import class list, and get batch name.
+    2. Go to online consent URL and fill in child and parent details.
+    3. Agree to HPV vaccination, fill address, answer health questions, and confirm.
+    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    5. Record HPV vaccination for the child.
+    Verification:
+    - Final consent message is shown after online consent.
+    - Vaccination is recorded for the child in the session.
+    """
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
     gardasil_9_batch_name = setup_session_for_hpv[0]
@@ -109,7 +121,7 @@ def setup_session_for_doubles(setup_session_with_file_upload):
     return setup_session_with_file_upload("doubles")
 
 
-def test_recording_doubles_vaccination(
+def test_recording_doubles_vaccination_e2e(
     doubles_consent_url,
     setup_session_for_doubles,
     online_consent_page,
@@ -122,6 +134,18 @@ def test_recording_doubles_vaccination(
     nurse,
     team,
 ):
+    """
+    Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations for a child.
+    Steps:
+    1. Setup: Log in as nurse, create session, import class list, and get batch names.
+    2. Go to online consent URL and fill in child and parent details.
+    3. Agree to both MenACWY and Td/IPV vaccinations, fill address, answer health questions, and confirm.
+    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    5. Record MenACWY and Td/IPV vaccinations for the child.
+    Verification:
+    - Final consent message is shown after online consent.
+    - Both vaccinations are recorded for the child in the session.
+    """
     child = children["doubles"][0]
     schools = schools["doubles"]
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
@@ -164,7 +188,7 @@ def setup_session_for_flu(setup_session_with_file_upload):
     return setup_session_with_file_upload(Programme.FLU)
 
 
-def test_recording_flu_vaccination(
+def test_recording_flu_vaccination_e2e(
     flu_consent_url,
     setup_session_for_flu,
     online_consent_page,
@@ -177,6 +201,18 @@ def test_recording_flu_vaccination(
     nurse,
     team,
 ):
+    """
+    Test: End-to-end test for recording a flu vaccination for a child.
+    Steps:
+    1. Setup: Log in as nurse, create session, import class list, and get batch name.
+    2. Go to online consent URL and fill in child and parent details.
+    3. Agree to flu vaccination, fill address, answer health questions, and confirm.
+    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    5. Record flu vaccination for the child.
+    Verification:
+    - Final consent message is shown after online consent.
+    - Vaccination is recorded for the child in the session.
+    """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
     fluenz_batch_name = setup_session_for_flu[0]

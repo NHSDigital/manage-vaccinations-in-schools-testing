@@ -118,31 +118,71 @@ def setup_mav_854(
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_positive(setup_cohort_upload, import_records_page):
+def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_page):
+    """
+    Test: Upload a valid cohort (class list) file and verify successful import.
+    Steps:
+    1. Navigate to cohort import page.
+    2. Upload a valid cohort file.
+    Verification:
+    - Import completes successfully with expected records.
+    """
     import_records_page.import_class_list_for_current_year(CohortsFileMapping.POSITIVE)
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_negative(setup_cohort_upload, import_records_page):
+def test_cohort_upload_with_invalid_file(setup_cohort_upload, import_records_page):
+    """
+    Test: Upload an invalid cohort (class list) file and verify error handling.
+    Steps:
+    1. Navigate to cohort import page.
+    2. Upload a cohort file with invalid data.
+    Verification:
+    - Import fails and error is shown.
+    """
     import_records_page.import_class_list_for_current_year(CohortsFileMapping.NEGATIVE)
 
 
 @pytest.mark.cohorts
-def test_cohorts_file_structure(setup_cohort_upload, import_records_page):
+def test_cohort_upload_with_invalid_structure(setup_cohort_upload, import_records_page):
+    """
+    Test: Upload a cohort file with invalid structure and verify error handling.
+    Steps:
+    1. Navigate to cohort import page.
+    2. Upload a file with incorrect structure.
+    Verification:
+    - Import fails and structural error is shown.
+    """
     import_records_page.import_class_list_for_current_year(
         CohortsFileMapping.INVALID_STRUCTURE
     )
 
 
 @pytest.mark.cohorts
-def test_cohorts_no_record(setup_cohort_upload, import_records_page):
+def test_cohort_upload_with_header_only_file(setup_cohort_upload, import_records_page):
+    """
+    Test: Upload a cohort file with only headers and verify no records are imported.
+    Steps:
+    1. Navigate to cohort import page.
+    2. Upload a header-only file.
+    Verification:
+    - No records are imported and appropriate message is shown.
+    """
     import_records_page.import_class_list_for_current_year(
         CohortsFileMapping.HEADER_ONLY
     )
 
 
 @pytest.mark.cohorts
-def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
+def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_page):
+    """
+    Test: Upload an empty cohort file and verify error handling.
+    Steps:
+    1. Navigate to cohort import page.
+    2. Upload an empty file.
+    Verification:
+    - Import fails and error is shown.
+    """
     import_records_page.import_class_list_for_current_year(
         CohortsFileMapping.EMPTY_FILE
     )
@@ -152,7 +192,7 @@ def test_cohorts_empty_file(setup_cohort_upload, import_records_page):
 @issue("MAV-1716")
 @pytest.mark.cohorts
 @pytest.mark.bug
-def test_cohorts_archive_and_unarchive(
+def test_archive_and_unarchive_child_via_cohort_upload(
     setup_cohort_upload,
     programmes_page,
     dashboard_page,
@@ -160,6 +200,16 @@ def test_cohorts_archive_and_unarchive(
     import_records_page,
     children,
 ):
+    """
+    Test: Archive a child via cohort upload and then unarchive by re-uploading.
+    Steps:
+    1. Import a fixed child cohort file.
+    2. Archive the child from the children page.
+    3. Re-import the same cohort file.
+    4. Verify the child is unarchived.
+    Verification:
+    - Child is archived after first import and unarchived after second import.
+    """
     child = children[Programme.HPV][0]
 
     import_records_page.import_class_list_for_current_year(
@@ -188,7 +238,7 @@ def test_cohorts_archive_and_unarchive(
 
 
 @pytest.mark.rav
-def test_rav_triage_consent_given(
+def test_triage_consent_given_and_triage_outcome(
     setup_record_a_vaccine,
     schools,
     sessions_page,
@@ -197,6 +247,15 @@ def test_rav_triage_consent_given(
     verbal_consent_page,
     children,
 ):
+    """
+    Test: Record verbal consent and triage outcome for a child in a session.
+    Steps:
+    1. Schedule session and import class list.
+    2. Record verbal consent for the child.
+    3. Update triage outcome to 'safe to vaccinate'.
+    Verification:
+    - Triage outcome is updated and reflected for the child.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -227,7 +286,7 @@ def test_rav_triage_consent_given(
 
 
 @pytest.mark.rav
-def test_rav_triage_consent_refused(
+def test_triage_consent_refused_and_activity_log(
     setup_record_a_vaccine,
     schools,
     sessions_page,
@@ -236,6 +295,15 @@ def test_rav_triage_consent_refused(
     verbal_consent_page,
     children,
 ):
+    """
+    Test: Record verbal refusal of consent and verify activity log entry.
+    Steps:
+    1. Schedule session and import class list.
+    2. Record verbal refusal for the child.
+    3. Select 'consent refused' in session and check activity log.
+    Verification:
+    - Activity log contains entry for consent refusal by the parent.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
@@ -264,9 +332,18 @@ def test_rav_triage_consent_refused(
 
 @pytest.mark.rav
 @pytest.mark.bug
-def test_rav_edit_dose_to_not_given(
+def test_edit_vaccination_dose_to_not_given(
     setup_mavis_1729, programmes_page, children_page, children
 ):
+    """
+    Test: Edit a vaccination dose to 'not given' and verify outcome.
+    Steps:
+    1. Navigate to the child in the programme.
+    2. Edit the vaccination record and change outcome to 'they refused it'.
+    3. Save changes.
+    Verification:
+    - Alert confirms vaccination outcome recorded as refused.
+    """
     child = children[Programme.HPV][0]
 
     programmes_page.click_programme_current_year(Programme.HPV)
@@ -284,7 +361,7 @@ def test_rav_edit_dose_to_not_given(
 
 @pytest.mark.rav
 @pytest.mark.bug
-def test_rav_verify_excel_mav_854(
+def test_verify_excel_export_and_clinic_invitation(
     setup_mav_854,
     schools,
     clinics,
@@ -294,6 +371,16 @@ def test_rav_verify_excel_mav_854(
     verbal_consent_page,
     children,
 ):
+    """
+    Test: Export session data to Excel and send clinic invitations, then verify vaccination record.
+    Steps:
+    1. Schedule session, import class list, and send clinic invitations.
+    2. Record verbal consent and register child as attending.
+    3. Record vaccination for the child at the clinic.
+    4. Verify vaccination outcome and Excel export.
+    Verification:
+    - Vaccination outcome is recorded and session Excel export is available.
+    """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     batch_name = setup_mav_854
@@ -337,6 +424,14 @@ def test_rav_verify_excel_mav_854(
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
+    """
+    Test: Generate and verify CarePlus report for HPV programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate CarePlus report for HPV.
+    Verification:
+    - Report is generated in CarePlus format for HPV.
+    """
     programmes_page.verify_report_format(
         programme=Programme.HPV, report_format=ReportFormat.CAREPLUS
     )
@@ -346,6 +441,15 @@ def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
 def test_verify_careplus_report_for_doubles(
     setup_reports, dashboard_page, programmes_page
 ):
+    """
+    Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate CarePlus report for MenACWY.
+    3. Generate CarePlus report for Td/IPV.
+    Verification:
+    - Reports are generated in CarePlus format for both MenACWY and Td/IPV.
+    """
     programmes_page.verify_report_format(
         programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS
     )
@@ -358,6 +462,14 @@ def test_verify_careplus_report_for_doubles(
 
 @pytest.mark.reports
 def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
+    """
+    Test: Generate and verify CSV report for HPV programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate CSV report for HPV.
+    Verification:
+    - Report is generated in CSV format for HPV.
+    """
     programmes_page.verify_report_format(
         programme=Programme.HPV, report_format=ReportFormat.CSV
     )
@@ -365,6 +477,15 @@ def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
 
 @pytest.mark.reports
 def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes_page):
+    """
+    Test: Generate and verify CSV report for MenACWY and Td/IPV programmes.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate CSV report for MenACWY.
+    3. Generate CSV report for Td/IPV.
+    Verification:
+    - Reports are generated in CSV format for both MenACWY and Td/IPV.
+    """
     programmes_page.verify_report_format(
         programme=Programme.MENACWY, report_format=ReportFormat.CSV
     )
@@ -377,6 +498,14 @@ def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
+    """
+    Test: Generate and verify SystmOne report for HPV programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate SystmOne report for HPV.
+    Verification:
+    - Report is generated in SystmOne format for HPV.
+    """
     programmes_page.verify_report_format(
         programme=Programme.HPV, report_format=ReportFormat.SYSTMONE
     )

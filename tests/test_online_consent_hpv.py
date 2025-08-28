@@ -16,7 +16,17 @@ def start_consent(url, page, start_page):
     start_page.start()
 
 
-def test_refused(online_consent_page, schools, children):
+def test_consent_refused_for_hpv_vaccination(online_consent_page, schools, children):
+    """
+    Test: Submit an online consent form refusing HPV vaccination and verify confirmation.
+    Steps:
+    1. Fill in child and parent details on the consent page.
+    2. Select 'do not agree' to vaccination.
+    3. Choose refusal reason and provide details.
+    4. Submit the consent form.
+    Verification:
+    - Confirmation text indicates consent was refused for HPV vaccination.
+    """
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
 
@@ -38,13 +48,24 @@ def test_refused(online_consent_page, schools, children):
 @pytest.mark.parametrize(
     "health_question", (False, True), ids=lambda v: f"health_question: {v}"
 )
-def test_given(
+def test_consent_given_for_hpv_vaccination(
     online_consent_page,
     schools,
     change_school,
     health_question,
     children,
 ):
+    """
+    Test: Submit an online consent form giving consent for HPV vaccination and verify confirmation.
+    Steps:
+    1. Fill in child and parent details on the consent page, optionally changing school.
+    2. Agree to HPV vaccination.
+    3. Fill in address details.
+    4. Answer the required number of health questions, optionally marking one as 'yes'.
+    5. Submit the consent form.
+    Verification:
+    - Confirmation message is shown for the correct child, vaccine, and health question status.
+    """
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
 

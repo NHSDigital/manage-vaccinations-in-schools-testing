@@ -105,7 +105,18 @@ def setup_mav_853(
         sessions_page.delete_all_sessions(school)
 
 
-def test_headers_and_filter(setup_children_page, children_page, children):
+def test_children_page_headers_and_filtering(
+    setup_children_page, children_page, children
+):
+    """
+    Test: Verify children page headers and filtering by child name.
+    Steps:
+    1. Setup: Import a fixed child class list and navigate to the children page.
+    2. Search for a child using all filters by name.
+    3. Verify the table headers are correct.
+    Verification:
+    - Assert that exactly one child is found in the results.
+    """
     child = children[Programme.HPV][0]
 
     children_page.search_with_all_filters_for_child_name(str(child))
@@ -115,12 +126,20 @@ def test_headers_and_filter(setup_children_page, children_page, children):
 
 @issue("MAV-853")
 @pytest.mark.bug
-def test_details_mav_853(setup_mav_853, children_page, schools, children):
+def test_patient_details_load_with_missing_vaccine_info(
+    setup_mav_853, children_page, schools, children
+):
     """
-    1. Upload vaccination records for a patient that doesn't contain vaccine information (VACCINE_GIVEN column)
-    2. Navigate to the patient, either in a session or from the global children view
-    3. Expected: patient details can be seen
-    Actual: crash
+    Test: Ensure patient details page loads for a child with missing vaccine info (MAV-853).
+    Steps:
+    1. Setup: Import class list, schedule session, import cohort, and upload vaccination records with missing vaccine info.
+    2. Search for the child by name.
+    3. Click to view the child's record.
+    4. Open the activity log.
+    5. View vaccination details for the child.
+    Verification:
+    - Activity log header shows "Vaccinated with Gardasil 9".
+    - Vaccination details show "Outcome" as "Vaccinated".
     """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -137,7 +156,20 @@ def test_details_mav_853(setup_mav_853, children_page, schools, children):
 
 
 @pytest.mark.bug
-def test_change_nhsno(setup_change_nhsno, children_page, children):
+def test_invalid_nhs_number_change_is_rejected(
+    setup_change_nhsno, children_page, children
+):
+    """
+    Test: Changing a child's NHS number to an invalid value should fail.
+    Steps:
+    1. Setup: Import a fixed child class list and navigate to the children page.
+    2. Search for the child by name.
+    3. Open the child's record and edit it.
+    4. Attempt to change the NHS number to an invalid value ("9123456789").
+    5. Continue to submit the change.
+    Verification:
+    - An alert appears with the message "Enter a valid NHS number".
+    """
     child = children[Programme.HPV][0]
 
     children_page.search_with_all_filters_for_child_name(str(child))
@@ -149,8 +181,21 @@ def test_change_nhsno(setup_change_nhsno, children_page, children):
     children_page.expect_text_in_alert("Enter a valid NHS number")
 
 
+@issue("MAV-1839")
 @pytest.mark.children
-def test_merge_does_not_crash(setup_child_merge, children_page, children):
+def test_merge_child_records_does_not_crash(setup_child_merge, children_page, children):
+    """
+    Test: Merging two child records does not cause a crash (MAV-1839).
+    Steps:
+    1. Setup: Import a class list with two fixed children and navigate to the children page.
+    2. Search for the first child by name.
+    3. Open the first child's record and start the archive (merge) process.
+    4. Select the second child as the duplicate.
+    5. Complete the archive/merge.
+    Verification:
+    - An alert appears with the message "This record has been archived"
+    """
+
     child1 = children[Programme.HPV][0]
     child2 = children[Programme.HPV][1]
     children_page.search_with_all_filters_for_child_name(str(child1))
