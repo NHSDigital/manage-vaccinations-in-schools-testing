@@ -8,19 +8,23 @@ pytestmark = pytest.mark.e2e
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    log_in_as_nurse,
     add_vaccine_batch,
     schools,
     dashboard_page,
     sessions_page,
     import_records_page,
     children,
+    log_in_page,
+    nurse,
+    team,
 ):
     def _setup(programme_group):
         school = schools[programme_group][0]
         child = children[programme_group][0]
 
         try:
+            log_in_page.navigate()
+            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             batch_names = [
                 add_vaccine_batch(prog.vaccines[0])
                 for prog in Programme
@@ -36,6 +40,7 @@ def setup_session_with_file_upload(
             return batch_names
         finally:
             dashboard_page.navigate()
+            log_in_page.log_out()
 
     return _setup
 
@@ -78,6 +83,7 @@ def test_recording_hpv_vaccination_e2e(
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
     gardasil_9_batch_name = setup_session_for_hpv[0]
+    number_of_health_questions = len(Programme.health_questions(Programme.HPV))
 
     online_consent_page.go_to_url(hpv_consent_url)
     start_page.start()
@@ -85,7 +91,9 @@ def test_recording_hpv_vaccination_e2e(
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(4, health_question=False)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=False
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child, programmes=[Programme.HPV], health_question=False
@@ -144,6 +152,11 @@ def test_recording_doubles_vaccination_e2e(
     child = children["doubles"][0]
     schools = schools["doubles"]
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
+    number_of_health_questions = (
+        online_consent_page.get_number_of_health_questions_for_programmes(
+            [Programme.MENACWY, Programme.TD_IPV]
+        )
+    )
 
     online_consent_page.go_to_url(doubles_consent_url)
     start_page.start()
@@ -153,7 +166,9 @@ def test_recording_doubles_vaccination_e2e(
         Programme.MENACWY, Programme.TD_IPV
     )
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(6, health_question=False)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=False
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
@@ -218,7 +233,10 @@ def test_recording_flu_vaccination_e2e(
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(11, health_question=False)
+    online_consent_page.answer_health_questions(
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
+        health_question=False,
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child,

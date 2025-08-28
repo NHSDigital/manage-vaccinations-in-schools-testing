@@ -234,6 +234,17 @@ class OnlineConsentPage:
     def click_consent_refusal_reason(self, reason: ConsentRefusalReason) -> None:
         self.consent_refusal_radios[reason].check()
 
+    def get_number_of_health_questions_for_programmes(
+        self, programmes: list[Programme]
+    ) -> int:
+        return len(
+            {
+                question
+                for programme in programmes
+                for question in Programme.health_questions(programme)
+            }
+        )
+
     def answer_yes(self, details: Optional[str] = None):
         self.select_yes()
         if details:
@@ -284,6 +295,16 @@ class OnlineConsentPage:
                 self.answer_yes("More details")
             else:
                 self.answer_no()
+
+    def get_number_of_health_questions_for_flu(
+        self, consent_option: ConsentOption
+    ) -> int:
+        number_of_health_questions = len(
+            Programme.health_questions(Programme.FLU, consent_option)
+        )
+        if consent_option is not ConsentOption.INJECTION:
+            number_of_health_questions -= 1
+        return number_of_health_questions
 
     def check_final_consent_message(
         self,
