@@ -84,10 +84,9 @@ def test_consent_given_for_doubles_vaccination(
     online_consent_page.agree_to_doubles_vaccinations(*programmes)
     online_consent_page.fill_address_details(*child.address)
 
-    if programmes == [Programme.MENACWY, Programme.TD_IPV]:
-        number_of_health_questions = 6
-    else:
-        number_of_health_questions = 5
+    number_of_health_questions = (
+        online_consent_page.get_number_of_health_questions_for_programmes(programmes)
+    )
 
     online_consent_page.answer_health_questions(
         number_of_health_questions, health_question=health_question
