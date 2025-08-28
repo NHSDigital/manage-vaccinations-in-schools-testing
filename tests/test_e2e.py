@@ -8,23 +8,19 @@ pytestmark = pytest.mark.e2e
 
 @pytest.fixture
 def setup_session_with_file_upload(
+    log_in_as_nurse,
     add_vaccine_batch,
     schools,
     dashboard_page,
     sessions_page,
     import_records_page,
     children,
-    log_in_page,
-    nurse,
-    team,
 ):
     def _setup(programme_group):
         school = schools[programme_group][0]
         child = children[programme_group][0]
 
         try:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             batch_names = [
                 add_vaccine_batch(prog.vaccines[0])
                 for prog in Programme
@@ -40,7 +36,6 @@ def setup_session_with_file_upload(
             return batch_names
         finally:
             dashboard_page.navigate()
-            log_in_page.log_out()
 
     return _setup
 
