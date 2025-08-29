@@ -96,9 +96,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
-    import_records_page.import_class_list_for_current_year(
-        CohortsFileMapping.FIXED_CHILD
-    )
+    import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()

@@ -30,7 +30,7 @@ def setup_mav_965(
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, programme_group)
         sessions_page.click_import_class_lists()
-        import_records_page.import_class_list_for_current_year(
+        import_records_page.import_class_list(
             ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"
         )
         yield batch_names
