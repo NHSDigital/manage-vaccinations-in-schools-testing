@@ -1,8 +1,8 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.wrappers import reload_until_element_is_visible
 from mavis.test.models import Child
+from mavis.test.wrappers import reload_until_element_is_visible
 
 
 class UnmatchedConsentResponsesPage:
@@ -23,10 +23,12 @@ class UnmatchedConsentResponsesPage:
         )
 
     @step("Click on consent response for {1}")
-    def click_child(self, child: Child):
-        row = self.rows.filter(has=self.page.get_by_text(str(child)))
-        reload_until_element_is_visible(self.page, row)
-        row.get_by_role("link").first.click()
+    def click_parent_on_consent_record_for_child(self, child: Child):
+        parent_name = [p.full_name for p in child.parents if p.relationship == "Dad"][0]
+        reload_until_element_is_visible(
+            self.page, self.page.get_by_role("link", name=str(parent_name))
+        )
+        self.page.get_by_role("link", name=str(parent_name)).click()
 
     def check_response_for_child_not_visible(self, child: Child):
         row = self.rows.filter(has=self.page.get_by_text(str(child)))
