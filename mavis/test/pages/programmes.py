@@ -15,7 +15,7 @@ class ProgrammesPage:
         self.page = page
         self.current_year_programmes_card = (
             page.get_by_role("heading")
-            .filter(has_text="2024 to 2025")
+            .filter(has_text="2025 to 2026")
             .locator("xpath=following-sibling::table[1]")
         )
 
@@ -57,7 +57,7 @@ class ProgrammesPage:
         self.search_button = page.get_by_role("button", name="Search")
 
     @step("Click on {1}")
-    def click_programme_current_year(self, programme: Programme):
+    def click_programme_for_current_year(self, programme: Programme):
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
 
     @step("Click on Children")
@@ -95,7 +95,7 @@ class ProgrammesPage:
         self.search_button.click()
 
     def navigate_to_cohort_import(self, programme: Programme):
-        self.click_programme_current_year(programme)
+        self.click_programme_for_current_year(programme)
         self.click_children()
         self.click_import_child_records()
 
@@ -136,7 +136,7 @@ class ProgrammesPage:
 
     @step("Verify report format")
     def verify_report_format(self, programme: Programme, report_format: ReportFormat):
-        self.click_programme_current_year(programme)
+        self.click_programme_for_current_year(programme)
         self.click_download_report()
         self.click_continue()
         self.click_report_format(report_format)

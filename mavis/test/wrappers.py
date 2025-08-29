@@ -60,7 +60,11 @@ def get_offset_date(offset_days: int) -> str:
 
 
 def get_date_of_birth_for_year_group(year_group: int) -> date:
-    academic_year = date.today().year - year_group - 6
+    today = date.today()
+    academic_year = today.year - year_group - 6
+
+    if today >= date(today.year, 9, 1):
+        academic_year += 1
 
     start_date = date(academic_year, 9, 1)
     end_date = date(academic_year + 1, 8, 31)

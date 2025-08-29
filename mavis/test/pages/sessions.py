@@ -103,8 +103,7 @@ class SessionsPage:
             "link", name="Change session dates"
         )
         self.delete_button = self.page.get_by_role("button", name="Delete")
-        self.back_link = self.page.get_by_role("link", name="Back", exact=True)
-        self.back_to_child_link = self.page.get_by_role("link", name="Back  to ")
+        self.back_link = self.page.get_by_role("link", name="Back", exact=True).first
         self.continue_link = self.page.get_by_role("link", name="Continue")
         self.mark_as_invalid_link = self.page.get_by_role(
             "link", name="Mark as invalid"
@@ -349,10 +348,6 @@ class SessionsPage:
     def click_back(self):
         self.back_link.click()
 
-    @step("Click Back")
-    def click_back_to_child(self):
-        self.back_to_child_link.click()
-
     @step("Click Continue")
     def click_continue_link(self):
         self.continue_link.click()
@@ -471,6 +466,10 @@ class SessionsPage:
     @step("Click on Complete your assessment")
     def click_complete_assessment(self):
         self.complete_assessment_button.click()
+
+    @step("Fill in nurse details")
+    def fill_in_nurse_details(self, nurse_name: str):
+        self.nurse_textbox.fill(nurse_name)
 
     @step("Click on Update your assessment")
     def click_update_assessment(self):
@@ -681,7 +680,7 @@ class SessionsPage:
         self.expect_details("Decision", "Consent refusedInvalid")
         self.expect_details("Notes", invalidation_notes)
 
-        self.click_back_to_child()
+        self.click_back()
         self.expect_details("Decision", "Consent refusedInvalid")
         expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
 
