@@ -83,6 +83,7 @@ def test_recording_hpv_vaccination_e2e(
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
     gardasil_9_batch_name = setup_session_for_hpv[0]
+    number_of_health_questions = len(Programme.health_questions(Programme.HPV))
 
     online_consent_page.go_to_url(hpv_consent_url)
     start_page.start()
@@ -90,7 +91,9 @@ def test_recording_hpv_vaccination_e2e(
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(4, health_question=False)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=False
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child, programmes=[Programme.HPV], health_question=False
@@ -149,6 +152,11 @@ def test_recording_doubles_vaccination_e2e(
     child = children["doubles"][0]
     schools = schools["doubles"]
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
+    number_of_health_questions = (
+        online_consent_page.get_number_of_health_questions_for_programmes(
+            [Programme.MENACWY, Programme.TD_IPV]
+        )
+    )
 
     online_consent_page.go_to_url(doubles_consent_url)
     start_page.start()
@@ -158,7 +166,9 @@ def test_recording_doubles_vaccination_e2e(
         Programme.MENACWY, Programme.TD_IPV
     )
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(6, health_question=False)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=False
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
@@ -223,7 +233,10 @@ def test_recording_flu_vaccination_e2e(
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(11, health_question=False)
+    online_consent_page.answer_health_questions(
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
+        health_question=False,
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child,

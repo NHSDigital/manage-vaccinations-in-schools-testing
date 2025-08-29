@@ -68,11 +68,14 @@ def test_consent_given_for_hpv_vaccination(
     """
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
+    number_of_health_questions = len(Programme.health_questions(Programme.HPV))
 
     online_consent_page.fill_details(child, child.parents[0], schools, change_school)
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(4, health_question=health_question)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=health_question
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child, programmes=[Programme.HPV], health_question=health_question

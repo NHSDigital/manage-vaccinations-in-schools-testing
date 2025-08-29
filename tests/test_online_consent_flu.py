@@ -167,18 +167,14 @@ def test_flu_consent_method_displayed_correctly(
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
     url = setup_session_with_file_upload
-    number_of_health_questions = {
-        ConsentOption.BOTH: 11,
-        ConsentOption.NASAL_SPRAY: 9,
-        ConsentOption.INJECTION: 5,
-    }
 
     # First consent
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_flu_vaccination(consent_option=consents[0])
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        number_of_health_questions[consents[0]], health_question=False
+        online_consent_page.get_number_of_health_questions_for_flu(consents[0]),
+        health_question=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
@@ -196,7 +192,8 @@ def test_flu_consent_method_displayed_correctly(
     online_consent_page.agree_to_flu_vaccination(consent_option=consents[1])
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        number_of_health_questions[consents[1]], health_question=False
+        online_consent_page.get_number_of_health_questions_for_flu(consents[1]),
+        health_question=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
