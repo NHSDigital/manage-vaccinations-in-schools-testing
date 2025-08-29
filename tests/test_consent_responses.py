@@ -57,7 +57,7 @@ def test_archive_unmatched_consent_response_removes_from_list(
     - The consent response for the child is no longer visible in the unmatched list.
     """
     child = children[Programme.HPV][0]
-    unmatched_consent_responses_page.click_child(child)
+    unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
     consent_response_page.click_archive()
     archive_consent_response_page.archive(notes="Some notes.")
@@ -101,7 +101,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page.click_mavis()
     dashboard_page.click_unmatched_consent_responses()
 
-    unmatched_consent_responses_page.click_child(child)
+    unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
     consent_response_page.click_match()
     match_consent_response_page.match(child)
@@ -159,7 +159,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    unmatched_consent_responses_page.click_child(child)
+    unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
     consent_response_page.click_create_new_record()
     create_new_record_consent_response_page.create_new_record()
@@ -195,7 +195,7 @@ def test_create_child_record_from_consent_without_nhs_number(
     """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
-    unmatched_consent_responses_page.click_child(child)
+    unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
     consent_response_page.click_create_new_record()
     create_new_record_consent_response_page.create_new_record()
