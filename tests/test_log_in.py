@@ -27,16 +27,16 @@ def test_login_with_invalid_credentials(username, password, log_in_page):
 
 
 @pytest.fixture(scope="session")
-def users(admin, nurse, superuser) -> dict[str, User]:
+def users(medical_secretary, nurse, superuser) -> dict[str, User]:
     return {
-        "admin": admin,
+        "medical_secretary": medical_secretary,
         "nurse": nurse,
         "superuser": superuser,
     }
 
 
 @pytest.mark.parametrize(
-    "role", ("admin", "nurse", "superuser"), ids=lambda v: f"role: {v}"
+    "role", ("medical_secretary", "nurse", "superuser"), ids=lambda v: f"role: {v}"
 )
 def test_login_with_valid_credentials(role, users, team, dashboard_page, log_in_page):
     """
