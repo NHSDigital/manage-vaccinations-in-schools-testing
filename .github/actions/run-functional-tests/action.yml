@@ -17,7 +17,16 @@ runs:
     - name: Install uv
       uses: astral-sh/setup-uv@v6
 
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      id: playwright-cache
+      with:
+        path: /home/runner/.cache/ms-playwright
+        key: playwright-${{ runner.os }}
+        restore-keys: playwright-${{ runner.os }}
+
     - name: Install Playwright
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: uv run playwright install --with-deps
       shell: bash
 
