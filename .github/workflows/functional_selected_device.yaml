@@ -88,6 +88,13 @@ jobs:
 
       - uses: actions/checkout@v5
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: /home/runner/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+
       - name: Run tests
         uses: ./.github/actions/run-functional-tests
         with:
@@ -96,6 +103,7 @@ jobs:
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
           IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
