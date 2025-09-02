@@ -22,8 +22,6 @@ class ImportRecordsPage:
         self.test_data = test_data
         self.page = page
 
-        self.current_year_radio = page.get_by_role("radio", name="2024 to 2025")
-
         self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
         self.invalid_tag = self.page.get_by_role("strong").get_by_text("Invalid")
@@ -87,7 +85,6 @@ class ImportRecordsPage:
         self.click_import_records()
         self.select_child_records()
         self.click_continue()
-        self.click_add_to_current_year()
 
     def navigate_to_class_list_record_import(self, location: str, *year_groups: int):
         self.click_import_records()
@@ -100,14 +97,7 @@ class ImportRecordsPage:
         self.page.get_by_role("option", name=str(location)).first.click()
         self.click_continue()
 
-        self.click_add_to_current_year()
         self.select_year_groups(*year_groups)
-
-    @step("Click on 2024 to 2025")
-    def click_add_to_current_year(self):
-        if self.current_year_radio.is_visible():
-            self.current_year_radio.check()
-            self.click_continue()
 
     def navigate_to_vaccination_records_import(self):
         self.click_import_records()
@@ -179,13 +169,12 @@ class ImportRecordsPage:
                 self.page.get_by_label(text=f"Year {year_group}", exact=True).check()
         self.click_continue()
 
-    def import_class_list_for_current_year(
+    def import_class_list(
         self,
         class_list_file: FileMapping,
         year_group: Optional[int] = None,
         programme_group: str = Programme.HPV.group,
     ):
-        self.click_add_to_current_year()
         if year_group is not None:
             self.select_year_groups(year_group)
 

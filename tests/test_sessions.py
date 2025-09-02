@@ -29,9 +29,7 @@ def setup_session_with_file_upload(
         try:
             sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list_for_current_year(
-                class_list_file, year_group
-            )
+            import_records_page.import_class_list(class_list_file, year_group)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)

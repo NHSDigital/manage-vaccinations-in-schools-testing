@@ -35,7 +35,7 @@ def setup_session_with_file_upload(
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_page.click_import_class_lists()
-    import_records_page.import_class_list_for_current_year(
+    import_records_page.import_class_list(
         CohortsFileMapping.FIXED_CHILD, year_group, Programme.FLU.group
     )
     yield url

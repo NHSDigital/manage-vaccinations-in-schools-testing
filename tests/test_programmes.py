@@ -56,7 +56,7 @@ def setup_mavis_1729(
         dashboard_page.click_sessions()
         sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
         sessions_page.click_import_class_lists()
-        import_records_page.import_class_list_for_current_year(
+        import_records_page.import_class_list(
             ClassFileMapping.RANDOM_CHILD,
             year_group,
         )
@@ -98,17 +98,16 @@ def setup_mav_854(
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(school, Programme.HPV)
-        sessions_page.schedule_a_valid_session(past=True)
+        sessions_page.schedule_a_valid_session(for_today=True)
         sessions_page.click_import_class_lists()
-        import_records_page.import_class_list_for_current_year(
-            ClassFileMapping.FIXED_CHILD, year_group
-        )
+        import_records_page.import_class_list(ClassFileMapping.FIXED_CHILD, year_group)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.ensure_session_scheduled_for_today(
             "Community clinic", Programme.HPV
         )
         dashboard_page.click_mavis()
+        dashboard_page.click_children()
         yield batch_name
     finally:
         dashboard_page.navigate()
@@ -127,7 +126,7 @@ def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_page)
     Verification:
     - Import completes successfully with expected records.
     """
-    import_records_page.import_class_list_for_current_year(CohortsFileMapping.POSITIVE)
+    import_records_page.import_class_list(CohortsFileMapping.POSITIVE)
 
 
 @pytest.mark.cohorts
@@ -140,7 +139,7 @@ def test_cohort_upload_with_invalid_file(setup_cohort_upload, import_records_pag
     Verification:
     - Import fails and error is shown.
     """
-    import_records_page.import_class_list_for_current_year(CohortsFileMapping.NEGATIVE)
+    import_records_page.import_class_list(CohortsFileMapping.NEGATIVE)
 
 
 @pytest.mark.cohorts
@@ -153,9 +152,7 @@ def test_cohort_upload_with_invalid_structure(setup_cohort_upload, import_record
     Verification:
     - Import fails and structural error is shown.
     """
-    import_records_page.import_class_list_for_current_year(
-        CohortsFileMapping.INVALID_STRUCTURE
-    )
+    import_records_page.import_class_list(CohortsFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.cohorts
@@ -168,9 +165,7 @@ def test_cohort_upload_with_header_only_file(setup_cohort_upload, import_records
     Verification:
     - No records are imported and appropriate message is shown.
     """
-    import_records_page.import_class_list_for_current_year(
-        CohortsFileMapping.HEADER_ONLY
-    )
+    import_records_page.import_class_list(CohortsFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.cohorts
@@ -183,9 +178,7 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_page)
     Verification:
     - Import fails and error is shown.
     """
-    import_records_page.import_class_list_for_current_year(
-        CohortsFileMapping.EMPTY_FILE
-    )
+    import_records_page.import_class_list(CohortsFileMapping.EMPTY_FILE)
 
 
 @issue("MAV-909")
@@ -212,9 +205,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     """
     child = children[Programme.HPV][0]
 
-    import_records_page.import_class_list_for_current_year(
-        CohortsFileMapping.FIXED_CHILD
-    )
+    import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -226,9 +217,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
 
-    import_records_page.import_class_list_for_current_year(
-        CohortsFileMapping.FIXED_CHILD
-    )
+    import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -261,7 +250,7 @@ def test_triage_consent_given_and_triage_outcome(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
-    import_records_page.import_class_list_for_current_year(
+    import_records_page.import_class_list(
         CohortsFileMapping.FIXED_CHILD, child.year_group
     )
 
@@ -309,7 +298,7 @@ def test_triage_consent_refused_and_activity_log(
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
-    import_records_page.import_class_list_for_current_year(
+    import_records_page.import_class_list(
         CohortsFileMapping.FIXED_CHILD, child.year_group
     )
 
@@ -346,7 +335,7 @@ def test_edit_vaccination_dose_to_not_given(
     """
     child = children[Programme.HPV][0]
 
-    programmes_page.click_programme_current_year(Programme.HPV)
+    programmes_page.click_programme_for_current_year(Programme.HPV)
     programmes_page.click_children()
     programmes_page.search_for_child(child)
     programmes_page.click_child(child)
@@ -385,19 +374,9 @@ def test_verify_excel_export_and_clinic_invitation(
     school = schools[Programme.HPV][0]
     batch_name = setup_mav_854
 
-    dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(school, Programme.HPV)
-
-    # temporary approach for rollover
-    # if the rollover period has passed, revert the commit this was added in
-    sessions_page.click_send_clinic_invitations_link()
-    sessions_page.click_send_clinic_invitations_button()
-
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
-
-    children_page.search_with_all_filters_for_child_name(str(child))
+    children_page.search_for_a_child_name(str(child))
     children_page.click_record_for_child(child)
+    children_page.click_invite_to_community_clinic()
     children_page.click_session_for_programme(
         "Community clinic", Programme.HPV, check_date=True
     )

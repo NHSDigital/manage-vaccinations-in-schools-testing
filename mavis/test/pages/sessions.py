@@ -103,8 +103,7 @@ class SessionsPage:
             "link", name="Change session dates"
         )
         self.delete_button = self.page.get_by_role("button", name="Delete")
-        self.back_link = self.page.get_by_role("link", name="Back", exact=True)
-        self.back_to_child_link = self.page.get_by_role("link", name="Back  to ")
+        self.back_link = self.page.get_by_role("link", name="Back", exact=True).first
         self.continue_link = self.page.get_by_role("link", name="Continue")
         self.mark_as_invalid_link = self.page.get_by_role(
             "link", name="Mark as invalid"
@@ -185,15 +184,6 @@ class SessionsPage:
         self.archived_records_checkbox = self.page.get_by_role(
             "checkbox", name="Archived records"
         )
-        self.send_clinic_invitations_link = self.page.get_by_role(
-            "link", name="Send clinic invitations"
-        )
-        self.send_clinic_invitations_button = self.page.get_by_role(
-            "button", name="Send clinic invitations"
-        )
-        self.current_academic_year_radio = self.page.get_by_role(
-            "radio", name="2024 to 2025"
-        )
         self.add_another_date_button = self.page.get_by_role(
             "button", name="Add another date"
         )
@@ -262,7 +252,6 @@ class SessionsPage:
             else:
                 self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
-        self.current_academic_year_radio.check()
         self.search_textbox.fill(str(location))
         self.search_button.click()
 
@@ -359,10 +348,6 @@ class SessionsPage:
     def click_back(self):
         self.back_link.click()
 
-    @step("Click Back")
-    def click_back_to_child(self):
-        self.back_to_child_link.click()
-
     @step("Click Continue")
     def click_continue_link(self):
         self.continue_link.click()
@@ -386,14 +371,6 @@ class SessionsPage:
     @step("Fill notes")
     def fill_notes(self, notes: str):
         self.notes_textbox.fill(notes)
-
-    @step("Click Send clinic invitations")
-    def click_send_clinic_invitations_link(self):
-        self.send_clinic_invitations_link.click()
-
-    @step("Click Send clinic invitations")
-    def click_send_clinic_invitations_button(self):
-        self.send_clinic_invitations_button.click()
 
     @step("Click on Record a new consent response")
     def click_record_a_new_consent_response(self):
@@ -489,6 +466,10 @@ class SessionsPage:
     @step("Click on Complete your assessment")
     def click_complete_assessment(self):
         self.complete_assessment_button.click()
+
+    @step("Fill in nurse details")
+    def fill_in_nurse_details(self, nurse_name: str):
+        self.nurse_textbox.fill(nurse_name)
 
     @step("Click on Update your assessment")
     def click_update_assessment(self):
@@ -699,7 +680,7 @@ class SessionsPage:
         self.expect_details("Decision", "Consent refusedInvalid")
         self.expect_details("Notes", invalidation_notes)
 
-        self.click_back_to_child()
+        self.click_back()
         self.expect_details("Decision", "Consent refusedInvalid")
         expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
 
@@ -722,19 +703,12 @@ class SessionsPage:
     def schedule_a_valid_session(
         self,
         for_today: bool = False,
-        past: bool = False,
     ):
-        # scheduling a session in the past is a temporary measure for the rollover period
-        # this will be disallowed in the future
-        if past:
-            offset_days = -7
-            _future_date = get_offset_date(offset_days=offset_days)
-        elif for_today:
+        if for_today:
             offset_days = 0
-            _future_date = get_offset_date(offset_days=offset_days)
         else:
-            # temporary rollover measure to prevent scheduling sessions in the next academic year
-            _future_date = datetime(2025, 8, 31).strftime("%Y%m%d")
+            offset_days = 7
+        _future_date = get_offset_date(offset_days=offset_days)
         self.__schedule_session(on_date=_future_date)
         self.expect_details(
             "Session dates",
@@ -757,7 +731,6 @@ class SessionsPage:
         for programme in Programme:
             self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
-        self.current_academic_year_radio.check()
         self.search_textbox.clear()
         self.search_button.click()
 
