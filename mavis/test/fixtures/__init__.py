@@ -2,13 +2,13 @@ from .helpers import (
     add_vaccine_batch,
     date_of_birth_for_year,
     get_online_consent_url,
-    log_in_as_admin,
+    log_in_as_medical_secretary,
     log_in_as_nurse,
     set_feature_flags,
     test_data,
 )
 from .models import (
-    admin,
+    medical_secretary,
     authenticate_api,
     children,
     clinics,
@@ -61,7 +61,7 @@ from .playwright import (
 __all__ = [
     "add_vaccine_batch",
     "add_batch_page",
-    "admin",
+    "medical_secretary",
     "archive_batch_page",
     "archive_consent_response_page",
     "base_url",
@@ -82,7 +82,7 @@ __all__ = [
     "flipper_page",
     "get_online_consent_url",
     "import_records_page",
-    "log_in_as_admin",
+    "log_in_as_medical_secretary",
     "log_in_as_nurse",
     "log_in_page",
     "match_consent_response_page",

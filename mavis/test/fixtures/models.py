@@ -35,9 +35,9 @@ onboarding_faker.unique.clear()
 
 
 @pytest.fixture(scope="session")
-def admin():
+def medical_secretary():
     email = onboarding_faker.email()
-    return User(username=email, password=email, role="admin")
+    return User(username=email, password=email, role="medical_secretary")
 
 
 @pytest.fixture(scope="session")
@@ -155,9 +155,9 @@ def team(subteam, organisation) -> Team:
 
 
 @pytest.fixture(scope="session")
-def users(admin, nurse, superuser) -> dict[str, User]:
+def users(medical_secretary, nurse, superuser) -> dict[str, User]:
     return {
-        "admin": admin,
+        "medical_secretary": medical_secretary,
         "nurse": nurse,
         "superuser": superuser,
     }

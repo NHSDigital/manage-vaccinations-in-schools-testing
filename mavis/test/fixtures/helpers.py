@@ -66,9 +66,11 @@ def get_online_consent_url(
 
 
 @pytest.fixture
-def log_in_as_admin(set_feature_flags, admin, team, log_in_page):
+def log_in_as_medical_secretary(
+    set_feature_flags, medical_secretary, team, log_in_page
+):
     log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(admin, team)
+    log_in_page.log_in_and_choose_team_if_necessary(medical_secretary, team)
     yield
     log_in_page.log_out()
 
