@@ -73,7 +73,6 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page,
     match_consent_response_page,
     programmes_page,
-    schools,
     unmatched_consent_responses_page,
     import_records_page,
 ):
@@ -91,7 +90,6 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     - Activity log for the child shows the match event.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
@@ -111,7 +109,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(child, school)
+    children_page.verify_activity_log_for_created_or_matched_child(child)
 
 
 patient = random.choice(pds_test_data.child_patients_without_date_of_death)
@@ -141,7 +139,6 @@ def test_create_child_record_from_consent_with_nhs_number(
     consent_response_page,
     create_new_record_consent_response_page,
     dashboard_page,
-    schools,
     unmatched_consent_responses_page,
 ):
     """
@@ -157,7 +154,6 @@ def test_create_child_record_from_consent_with_nhs_number(
     - Activity log for the child shows the creation event.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
     unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
@@ -169,7 +165,7 @@ def test_create_child_record_from_consent_with_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(child, school)
+    children_page.verify_activity_log_for_created_or_matched_child(child)
 
 
 def test_create_child_record_from_consent_without_nhs_number(
@@ -178,7 +174,6 @@ def test_create_child_record_from_consent_without_nhs_number(
     consent_response_page,
     create_new_record_consent_response_page,
     dashboard_page,
-    schools,
     unmatched_consent_responses_page,
 ):
     """
@@ -194,7 +189,6 @@ def test_create_child_record_from_consent_without_nhs_number(
     - Activity log for the child shows the creation event.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
     unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
     consent_response_page.click_create_new_record()
@@ -205,4 +199,4 @@ def test_create_child_record_from_consent_without_nhs_number(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_activity_log_for_created_or_matched_child(child, school)
+    children_page.verify_activity_log_for_created_or_matched_child(child)

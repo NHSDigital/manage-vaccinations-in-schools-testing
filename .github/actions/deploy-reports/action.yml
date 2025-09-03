@@ -8,6 +8,12 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
     - name: Generate Allure report
       run: npx allure-commandline generate allure-results -o allure-report
       shell: bash

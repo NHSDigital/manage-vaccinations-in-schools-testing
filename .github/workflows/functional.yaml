@@ -32,12 +32,20 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: /home/runner/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+
       - name: Run tests
         uses: ./.github/actions/run-functional-tests
         with:
           device: ${{ matrix.device }}
           base_url: ${{ vars.BASE_URL }}
           programmes_enabled: ${{ vars.PROGRAMMES_ENABLED }}
+          playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
           IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}

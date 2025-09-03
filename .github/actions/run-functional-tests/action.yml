@@ -11,6 +11,9 @@ inputs:
     default: "false"
   additional_feature_flags:
     default: ""
+  playwright_cache_hit:
+    required: true
+
 runs:
   using: composite
   steps:
@@ -18,13 +21,9 @@ runs:
       uses: astral-sh/setup-uv@v6
 
     - name: Install Playwright
+      if: inputs.playwright_cache_hit != 'true'
       run: uv run playwright install --with-deps
       shell: bash
-
-    - name: Install Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
 
     - name: Run tests
       run: uv run pytest --reruns 2 --device "${{ inputs.device }}"
