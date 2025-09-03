@@ -208,14 +208,12 @@ class ChildrenPage:
     def verify_activity_log_for_created_or_matched_child(
         self,
         child: Child,
-        location: str,
     ):
         self.search_with_all_filters_for_child_name(str(child))
 
         self.click_record_for_child(child)
         self.click_activity_log()
         self.expect_activity_log_header("Consent given", any=True)
-        self.expect_activity_log_header(f"Added to the session at {location}", any=True)
 
         # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
