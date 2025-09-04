@@ -25,20 +25,15 @@ def step(title: str, attach_screenshot: bool = True):
                     return_value = func(self, *args, **kwargs)
                 except Exception:
                     if attach_screenshot:
-                        try:
-                            screenshot_bytes = self.page.screenshot(full_page=True)
-                            reduced_bytes = _reduce_colors(screenshot_bytes)
-                            allure.attach(
-                                reduced_bytes,
-                                name="Screenshot on failure",
-                                attachment_type=allure.attachment_type.PNG,
-                            )
-                        except Exception as screenshot_error:
-                            allure.attach(
-                                str(screenshot_error),
-                                name="Screenshot error",
-                                attachment_type=allure.attachment_type.TEXT,
-                            )
+                        screenshot_bytes = self.page.screenshot(
+                            full_page=True, scale="css"
+                        )
+                        reduced_bytes = _reduce_colors(screenshot_bytes)
+                        allure.attach(
+                            reduced_bytes,
+                            name="Screenshot on failure",
+                            attachment_type=allure.attachment_type.PNG,
+                        )
                     raise
 
                 coverage = kwargs.get("coverage")
@@ -50,7 +45,7 @@ def step(title: str, attach_screenshot: bool = True):
                     )
 
                 if attach_screenshot:
-                    screenshot_bytes = self.page.screenshot(full_page=True)
+                    screenshot_bytes = self.page.screenshot(full_page=True, scale="css")
                     reduced_bytes = _reduce_colors(screenshot_bytes)
                     allure.attach(
                         reduced_bytes,
