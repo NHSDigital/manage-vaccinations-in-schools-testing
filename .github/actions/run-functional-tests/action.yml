@@ -20,9 +20,14 @@ runs:
     - name: Install uv
       uses: astral-sh/setup-uv@v6
 
-    - name: Install Playwright
+    - name: Install Playwright if not cached
       if: inputs.playwright_cache_hit != 'true'
-      run: uv run playwright install --with-deps
+      run: uv run playwright install
+      shell: bash
+
+    - name: Install Playwright dependencies if using webkit
+      if: inputs.device == 'Desktop Safari' || inputs.device == 'iPad (gen 7) landscape' || inputs.device == 'iPhone 15'
+      run: uv run playwright install-deps webkit
       shell: bash
 
     - name: Run tests
