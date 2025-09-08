@@ -1,8 +1,8 @@
-from functools import wraps
-
 import os
-import allure
+from functools import wraps
 from io import BytesIO
+
+import allure
 from PIL import Image
 from PIL.Image import Palette
 

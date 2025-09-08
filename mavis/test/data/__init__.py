@@ -2,7 +2,6 @@ import csv
 import os
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 import nhs_number
 import pandas as pd
@@ -134,7 +133,7 @@ class TestData:
         self,
         template_path: Path,
         file_name_prefix: str,
-        session_id: Optional[str] = None,
+        session_id: str | None = None,
         programme_group: str = Programme.HPV.group,
     ) -> Path:
         static_replacements = {
@@ -265,14 +264,14 @@ class TestData:
             valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
         )[0]
 
-    def get_expected_errors(self, file_path: Path) -> Optional[list[str]]:
+    def get_expected_errors(self, file_path: Path) -> list[str] | None:
         file_content = self.read_file(file_path)
         return file_content.splitlines() if file_content else None
 
     def get_file_paths(
         self,
         file_mapping: FileMapping,
-        session_id: Optional[str] = None,
+        session_id: str | None = None,
         programme_group: str = Programme.HPV.group,
     ) -> tuple[Path, Path]:
         _input_file_path = self.create_file_from_template(
@@ -286,7 +285,7 @@ class TestData:
 
         return _input_file_path, _output_file_path
 
-    def read_scenario_list_from_file(self, input_file_path: Path) -> Optional[str]:
+    def read_scenario_list_from_file(self, input_file_path: Path) -> str | None:
         try:
             _df = pd.read_csv(input_file_path)
             return (

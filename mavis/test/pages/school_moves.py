@@ -1,8 +1,8 @@
 from datetime import date
-from typing import Optional
+from io import StringIO
+
 import pandas as pd
 from pandas import DataFrame
-from io import StringIO
 
 from mavis.test.annotations import step
 
@@ -55,7 +55,7 @@ class DownloadSchoolMovesPage:
         self.confirm_button = page.get_by_role("button", name="Download CSV")
 
     def enter_date_range(
-        self, from_date: Optional[date] = None, to_date: Optional[date] = None
+        self, from_date: date | None = None, to_date: date | None = None
     ):
         if from_date:
             self.from_day.fill(str(from_date.day))

@@ -5,7 +5,6 @@ import random
 import time
 import urllib.parse
 import uuid
-from typing import List
 
 import jwt
 import nhs_number
@@ -41,7 +40,7 @@ def medical_secretary():
 
 
 @pytest.fixture(scope="session")
-def clinics() -> List[Clinic]:
+def clinics() -> list[Clinic]:
     return [
         Clinic(name=onboarding_faker.company()),
     ]
@@ -217,7 +216,7 @@ def programmes_enabled() -> list[str]:
 
 def _read_imms_api_credentials() -> dict[str, str]:
     return {
-        "pem": base64.b64decode(os.environ["IMMS_API_PEM"]),
+        "pem": str(base64.b64decode(os.environ["IMMS_API_PEM"])),
         "key": os.environ["IMMS_API_KEY"],
         "kid": os.environ["IMMS_API_KID"],
         "url": os.environ["IMMS_BASE_URL"],

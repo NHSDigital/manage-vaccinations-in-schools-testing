@@ -1,13 +1,13 @@
 from playwright.sync_api import Page, expect
 
+from mavis.test.annotations import step
 from mavis.test.models import (
     ConsentMethod,
-    ConsentRefusalReason,
-    Programme,
-    Parent,
     ConsentOption,
+    ConsentRefusalReason,
+    Parent,
+    Programme,
 )
-from mavis.test.annotations import step
 
 
 class VerbalConsentPage:
@@ -199,7 +199,7 @@ class VerbalConsentPage:
         self.click_confirm()
 
     def parent_written_positive(
-        self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION
+        self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)

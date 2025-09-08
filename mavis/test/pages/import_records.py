@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 from playwright.sync_api import Page, expect
 
@@ -58,7 +57,7 @@ class ImportRecordsPage:
         self.vaccination_records_radio_button.click()
 
     @step("Click Continue")
-    def click_continue(self, coverage: Optional[str] = None):
+    def click_continue(self, coverage: str | None = None):
         # coverage is only used for reporting
         self.continue_button.click()
 
@@ -107,7 +106,7 @@ class ImportRecordsPage:
     def upload_and_verify_output(
         self,
         file_mapping: FileMapping,
-        session_id: Optional[str] = None,
+        session_id: str | None = None,
         programme_group: str = Programme.HPV.group,
     ) -> tuple[Path, Path]:
         _input_file_path, _output_file_path = self.test_data.get_file_paths(
@@ -172,7 +171,7 @@ class ImportRecordsPage:
     def import_class_list(
         self,
         class_list_file: FileMapping,
-        year_group: Optional[int] = None,
+        year_group: int | None = None,
         programme_group: str = Programme.HPV.group,
     ):
         if year_group is not None:

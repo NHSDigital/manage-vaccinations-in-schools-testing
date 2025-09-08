@@ -2,20 +2,19 @@ import re
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 from playwright.sync_api import Page, expect
 
+from mavis.test.annotations import step
 from mavis.test.data import TestData
 from mavis.test.models import (
-    Programme,
-    Parent,
     Child,
     ConsentOption,
     DeliverySite,
+    Parent,
+    Programme,
     School,
 )
-from mavis.test.annotations import step
 from mavis.test.wrappers import (
     generate_random_string,
     get_current_datetime,
@@ -483,10 +482,6 @@ class SessionsPage:
     def click_complete_assessment(self):
         self.complete_assessment_button.click()
 
-    @step("Fill in nurse details")
-    def fill_in_nurse_details(self, nurse_name: str):
-        self.nurse_textbox.fill(nurse_name)
-
     @step("Click on Update your assessment")
     def click_update_assessment(self):
         self.update_assessment_button.click()
@@ -516,7 +511,7 @@ class SessionsPage:
         self.save_note_button.click()
 
     @step("Check that notes appear in order")
-    def check_notes_appear_in_order(self, notes: List[str]):
+    def check_notes_appear_in_order(self, notes: list[str]):
         for i, note in enumerate(notes):
             expect(self.page.get_by_role("blockquote").nth(i)).to_have_text(note)
 
@@ -720,10 +715,7 @@ class SessionsPage:
         self,
         for_today: bool = False,
     ):
-        if for_today:
-            offset_days = 0
-        else:
-            offset_days = 7
+        offset_days = 0 if for_today else 7
         _future_date = get_offset_date(offset_days=offset_days)
         self.__schedule_session(on_date=_future_date)
         self.expect_details(

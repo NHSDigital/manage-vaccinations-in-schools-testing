@@ -1,10 +1,11 @@
-import pandas as pd
-from playwright.sync_api import Page, expect
 from io import StringIO
 
-from mavis.test.data import TestData
-from mavis.test.models import ReportFormat, Programme, Child, DeliverySite
+import pandas as pd
+from playwright.sync_api import Page, expect
+
 from mavis.test.annotations import step
+from mavis.test.data import TestData
+from mavis.test.models import Child, DeliverySite, Programme, ReportFormat
 from mavis.test.wrappers import get_current_datetime
 
 
@@ -171,6 +172,6 @@ class ProgrammesPage:
             h for h in actual_headers.split(",") if h not in expected_headers.split(",")
         ]
         if len(_e_not_a) > 0 or len(_a_not_e) > 0:
-            assert False, (
+            raise AssertionError(
                 f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
             )
