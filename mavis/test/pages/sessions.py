@@ -47,6 +47,12 @@ class SessionsPage:
         self.consent_given_checkbox = self.page.get_by_role(
             "checkbox", name="Consent given"
         )
+        self.consent_given_for_injected_vaccine_checkbox = self.page.get_by_role(
+            "checkbox", name="Consent given for injected vaccine"
+        )
+        self.consent_given_for_nasal_spray_checkbox = self.page.get_by_role(
+            "checkbox", name="Consent given for nasal spray"
+        )
         self.conflicting_consent_checkbox = self.page.get_by_role(
             "checkbox", name="Conflicting consent"
         )
@@ -213,6 +219,16 @@ class SessionsPage:
     @step("Select Consent given")
     def select_consent_given(self):
         self.consent_given_checkbox.check()
+        self.update_results_button.click()
+
+    @step("Select Consent given for injected vaccine")
+    def select_consent_given_for_injected_vaccine(self):
+        self.consent_given_for_injected_vaccine_checkbox.check()
+        self.update_results_button.click()
+
+    @step("Select Consent given for nasal spray")
+    def select_consent_given_for_nasal_spray(self):
+        self.consent_given_for_nasal_spray_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Conflicting consent")
@@ -828,13 +844,18 @@ class SessionsPage:
     def expect_alert_text(self, text: str):
         expect(self.page.get_by_role("alert")).to_contain_text(text)
 
-    def verify_child_shows_correct_flu_consent_method(self, child: Child, method: str):
+    def verify_child_shows_correct_flu_consent_method(
+        self, child: Child, option: ConsentOption
+    ):
         patient_card = self.page.locator(
             f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{str(child)}"))'
         )
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
         expect(flu_consent_section).to_contain_text("Consent given")
-        expect(flu_consent_section).to_contain_text(method)
+        if option is ConsentOption.INJECTION:
+            expect(flu_consent_section).to_contain_text("injected")
+        else:
+            expect(flu_consent_section).to_contain_text("nasal spray")
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
