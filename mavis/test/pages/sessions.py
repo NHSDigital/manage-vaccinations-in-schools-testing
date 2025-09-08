@@ -935,7 +935,7 @@ class SessionsPage:
             "group",
             name=(
                 "Can healthcare assistants administer the flu nasal spray vaccine"
-                 " using a patient specific direction (PSD)?"
+                " using a patient specific direction (PSD)?"
             ),
         ).get_by_label(answer).check()
 
