@@ -216,7 +216,7 @@ def programmes_enabled() -> list[str]:
 
 def _read_imms_api_credentials() -> dict[str, str]:
     return {
-        "pem": str(base64.b64decode(os.environ["IMMS_API_PEM"])),
+        "pem": os.environ["IMMS_API_PEM"],
         "key": os.environ["IMMS_API_KEY"],
         "kid": os.environ["IMMS_API_KID"],
         "url": os.environ["IMMS_BASE_URL"],
@@ -226,7 +226,7 @@ def _read_imms_api_credentials() -> dict[str, str]:
 def _get_jwt_payload(api_auth: dict[str, str]) -> str:
     _kid = api_auth["kid"]
     _api_key = api_auth["key"]
-    _pem = api_auth["pem"]
+    _decoded_pem = base64.b64decode(api_auth["pem"])
     _auth_endpoint = urllib.parse.urljoin(api_auth["url"], "oauth2-mock/token")
     headers = {
         "alg": "RS512",
@@ -240,7 +240,9 @@ def _get_jwt_payload(api_auth: dict[str, str]) -> str:
         "aud": _auth_endpoint,
         "exp": int(time.time()) + 300,  # 5mins in the future
     }
-    return jwt.encode(payload=claims, key=_pem, algorithm="RS512", headers=headers)
+    return jwt.encode(
+        payload=claims, key=_decoded_pem, algorithm="RS512", headers=headers
+    )
 
 
 @pytest.fixture(scope="session", autouse=False)
