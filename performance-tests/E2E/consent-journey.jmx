@@ -136,7 +136,7 @@
           </elementProp>
           <elementProp name="Loops" elementType="Argument">
             <stringProp name="Argument.name">Loops</stringProp>
-            <stringProp name="Argument.value">${__P(Loops, 88)}</stringProp>
+            <stringProp name="Argument.value">${__P(Loops, 100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="BaseDirectory" elementType="Argument">
@@ -326,93 +326,6 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Select team" enabled="false">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-        </TransactionController>
-        <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Team" enabled="true">
-            <stringProp name="HTTPSampler.path">users/teams</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <stringProp name="HTTPSampler.method">POST</stringProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments">
-                <elementProp name="select_team_form[team_id]" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">select_team_form[team_id]</stringProp>
-                  <stringProp name="Argument.value">${organisationId}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                </elementProp>
-                <elementProp name="authenticity_token" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">authenticity_token</stringProp>
-                  <stringProp name="Argument.value">${Authenticity_Token}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                </elementProp>
-              </collectionProp>
-            </elementProp>
-          </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
-              <collectionProp name="HeaderManager.headers">
-                <elementProp name="Content-Type" elementType="Header">
-                  <stringProp name="Header.name">Content-Type</stringProp>
-                  <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-                </elementProp>
-              </collectionProp>
-            </HeaderManager>
-            <hashTree/>
-          </hashTree>
-        </hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate Slug from UrnMapping" enabled="false">
-          <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="filename"></stringProp>
-          <stringProp name="parameters"></stringProp>
-          <stringProp name="script">import java.util.HashMap;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.format.*;
-
-BufferedReader reader;
-HashMap&lt;String, String&gt; cohortCodes = new HashMap&lt;String,String&gt;();
-
-//Opens file to populate HashMap of URNs and Slug
-try {
-	reader = new BufferedReader(new FileReader(vars.get(&quot;BaseDirectory&quot;) + vars.get(&quot;UrnMapping&quot;)));
-     String line = reader.readLine();
-
-     line = reader.readLine();
-
-     while (line != null)
-     {
-		String[] lineSplit = line.split(&quot;,&quot;);
-
-		cohortCodes.put(lineSplit[1],lineSplit[0])
-
-          line = reader.readLine();
-     }
-
-	reader.close();
-}
-catch (IOException e)
-{
-	e.printStackTrace();
-}
-
-//Uses HashMap above to cross reference URN code in feeder file to use a specific slug in URL
-vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&quot;)));
-</stringProp>
-          <stringProp name="scriptLanguage">groovy</stringProp>
-          <stringProp name="TestPlan.comments">Should no longer be used as the new org process will make it impossible to predict slugs</stringProp>
-        </JSR223Sampler>
-        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Calculate slug from API" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
@@ -461,7 +374,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Search for school session" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Search for school session">
             <stringProp name="HTTPSampler.path">sessions?q=${schoolName}&amp;%5Bprogrammes%5D%5B%5D=&amp;status=&amp;type=</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -480,7 +393,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">SessionID</stringProp>
               <stringProp name="RegexExtractor.regex">sessions\/(.*?)&quot;[\s\S]{1,400}nhsuk-tag nhsuk-tag--white&quot;&gt;(.*?)&lt;</stringProp>
@@ -490,7 +403,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
               <stringProp name="RegexExtractor.match_number">-1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all vaccines" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all vaccines">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">SessionVaccine</stringProp>
               <stringProp name="RegexExtractor.regex">sessions\/(.*?)&quot;[\s\S]{1,400}nhsuk-tag nhsuk-tag--white&quot;&gt;(.*?)&lt;</stringProp>
@@ -501,7 +414,7 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate slug" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate slug">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -509,16 +422,17 @@ vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL
             <stringProp name="script">//Move individual session ID&apos;s into correctly named variables
 vaccineCount=vars.get(&quot;SessionID_matchNr&quot;).toInteger()
 
-
 for(loop=1;loop&lt;=vaccineCount;loop++){
 	if(vars.get(&quot;SessionID_&quot; + loop)!=&quot;SessionIDNotFound&quot;){
-		vars.put(&quot;ConsentSession_&quot; + vars.get(&quot;SessionVaccine_&quot; + loop),vars.get(&quot;SessionID_&quot; + loop))
-		props.put(&quot;ConsentSession_&quot; + vars.get(&quot;SessionVaccine_&quot; + loop),vars.get(&quot;SessionID_&quot; + loop))
+		//Replace Td/IPV with MenACWY to cope with doubles in any order
+		if(vars.get(&quot;SessionVaccine_&quot; + loop)==&quot;Td/IPV&quot;){
+			vars.put(&quot;SessionVaccine_&quot; + loop,&quot;MenACWY&quot;)
+		}
+		vars.put(&quot;VaccineSession_&quot; + vars.get(&quot;SessionVaccine_&quot; + loop),vars.get(&quot;SessionID_&quot; + loop))
+		props.put(&quot;VaccineSession_&quot; + vars.get(&quot;SessionVaccine_&quot; + loop),vars.get(&quot;SessionID_&quot; + loop))
 		log.info(vars.get(&quot;SessionID_&quot; + loop))
 	}
 }
-
-
 </stringProp>
           </JSR223Sampler>
           <hashTree/>
@@ -529,11 +443,11 @@ for(loop=1;loop&lt;=vaccineCount;loop++){
           </DebugSampler>
           <hashTree/>
         </hashTree>
-        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="vaccineLoop" enabled="true">
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="vaccineLoop">
           <stringProp name="LoopController.loops">3</stringProp>
         </LoopController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate sessionID" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate sessionID">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1017,7 +931,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </hashTree>
           </hashTree>
         </hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate SchoolYear" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate SchoolYear">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
@@ -1034,6 +948,7 @@ BufferedReader reader;
 HashMap&lt;String, String&gt; cohortCodes = new HashMap&lt;String,String&gt;();
 
 //Opens file to populate HashMap of URNs and Slug
+/*
 try {
 	reader = new BufferedReader(new FileReader(vars.get(&quot;BaseDirectory&quot;) + vars.get(&quot;UrnMapping&quot;)));
      String line = reader.readLine();
@@ -1055,6 +970,7 @@ catch (IOException e)
 {
 	e.printStackTrace();
 }
+*/
 
 //Uses HashMap above to cross reference URN code in feeder file to use a specific slug in URL
 //vars.put(&quot;ConsentSession&quot;, cohortCodes.get(vars.get(&quot;CHILD_SCHOOL_URN&quot;)));
@@ -1090,7 +1006,7 @@ props.put(&quot;Vaccinations&quot;,vars.get(&quot;Vaccinations&quot;))
           <stringProp name="scriptLanguage">groovy</stringProp>
         </JSR223Sampler>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -1099,7 +1015,7 @@ props.put(&quot;Vaccinations&quot;,vars.get(&quot;Vaccinations&quot;))
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Submit consents" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Submit consents">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="-111960216">Mavis_Parental</stringProp>
@@ -1108,7 +1024,7 @@ props.put(&quot;Vaccinations&quot;,vars.get(&quot;Vaccinations&quot;))
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="false">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -1231,7 +1147,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
           <boolProp name="displaySystemProperties">false</boolProp>
         </DebugSampler>
         <hashTree/>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Submit consents">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Submit consents" enabled="true">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="-111960216">Mavis_Parental</stringProp>
