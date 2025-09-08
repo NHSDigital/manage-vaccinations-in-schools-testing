@@ -110,6 +110,11 @@ def medical_secretary(onboarding) -> User:
 
 
 @pytest.fixture(scope="session")
+def prescriber(onboarding) -> User:
+    return onboarding.users["prescriber"]
+
+
+@pytest.fixture(scope="session")
 def clinics(onboarding) -> list[Clinic]:
     return onboarding.clinics
 

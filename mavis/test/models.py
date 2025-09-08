@@ -554,7 +554,13 @@ class Onboarding:
         team = Team.generate(subteam, organisation)
         users = {
             role: User.generate(role)
-            for role in ("nurse", "medical_secretary", "superuser")
+            for role in (
+                "nurse",
+                "medical_secretary",
+                "superuser",
+                "prescriber",
+                "medical_secretary",
+            )
         }
         clinics = [Clinic.generate()]
         schools = School.get_from_testing_api(base_url, year_groups)

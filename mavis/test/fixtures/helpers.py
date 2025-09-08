@@ -86,5 +86,13 @@ def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
 
 
 @pytest.fixture
+def log_in_as_prescriber(set_feature_flags, prescriber, team, log_in_page):
+    log_in_page.navigate()
+    log_in_page.log_in_and_choose_team_if_necessary(prescriber, team)
+    yield
+    log_in_page.log_out()
+
+
+@pytest.fixture
 def test_data(organisation, schools, nurse, children, clinics, year_groups):
     return TestData(organisation, schools, nurse, children, clinics, year_groups)
