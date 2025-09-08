@@ -59,6 +59,12 @@ def prescriber():
 
 
 @pytest.fixture(scope="session")
+def healthcare_assistant():
+    email = onboarding_faker.email()
+    return User(username=email, password=email, role="healthcare_assistant")
+
+
+@pytest.fixture(scope="session")
 def year_groups():
     return {
         programme.group: random.choice(programme.year_groups) for programme in Programme
@@ -160,12 +166,15 @@ def team(subteam, organisation) -> Team:
 
 
 @pytest.fixture(scope="session")
-def users(medical_secretary, nurse, superuser, prescriber) -> dict[str, User]:
+def users(
+    medical_secretary, nurse, superuser, prescriber, healthcare_assistant
+) -> dict[str, User]:
     return {
         "medical_secretary": medical_secretary,
         "nurse": nurse,
         "superuser": superuser,
         "prescriber": prescriber,
+        "healthcare_assistant": healthcare_assistant,
     }
 
 
