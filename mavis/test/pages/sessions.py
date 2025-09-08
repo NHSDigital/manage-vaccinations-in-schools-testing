@@ -234,6 +234,9 @@ class SessionsPage:
             "button",
             name="Add another date",
         )
+        self.change_psd_link = self.page.get_by_role(
+            "link", name="Change   use patient specific direction"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -244,6 +247,10 @@ class SessionsPage:
     @step("Click on Overview tab")
     def click_overview_tab(self) -> None:
         self._select_tab("Overview")
+
+    @step("Click on PSDs tab")
+    def click_psds_tab(self) -> None:
+        self._select_tab("PSDs")
 
     @step("Click Review consent refused")
     def click_review_consent_refused(self) -> None:
@@ -917,3 +924,23 @@ class SessionsPage:
 
     def expect_text_to_not_be_visible(self, text: str) -> None:
         expect(self.page.get_by_text(text)).not_to_be_visible()
+
+    @step("Click on Change patient specific direction")
+    def click_change_psd(self) -> None:
+        self.change_psd_link.click()
+
+    @step("Answer whether PSD should be enabled with {1}")
+    def answer_whether_psd_should_be_enabled(self, answer: str) -> None:
+        self.page.get_by_role(
+            "group",
+            name=(
+                "Can healthcare assistants administer the flu nasal spray vaccine"
+                 " using a patient specific direction (PSD)?"
+            ),
+        ).get_by_label(answer).check()
+
+    def check_child_has_psd(self, child: Child) -> None:
+        patient_card = self.page.locator(
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
+        )
+        expect(patient_card).to_contain_text("PSD added")
