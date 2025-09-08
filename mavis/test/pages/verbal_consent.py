@@ -1,4 +1,5 @@
 from playwright.sync_api import Page, expect
+from typing import Optional
 
 from mavis.test.annotations import step
 from mavis.test.models import (
@@ -124,6 +125,7 @@ class VerbalConsentPage:
         self,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,
+        psd_option: Optional[bool] = None,
     ):
         if programme is Programme.FLU:
             if consent_option is ConsentOption.INJECTION:
@@ -132,6 +134,12 @@ class VerbalConsentPage:
                 self.yes_safe_to_vaccinate_with_nasal_spray_radio.check()
         else:
             self.yes_safe_to_vaccinate_radio.check()
+
+        if psd_option is not None:
+            if psd_option:
+                self.select_yes()
+            else:
+                self.select_no()
 
     @step("Click on Save triage")
     def click_save_triage(self):
@@ -172,11 +180,12 @@ class VerbalConsentPage:
         change_phone: bool = True,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,
+        psd_option: Optional[bool] = None,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
         self._process_consent_confirmation(
-            programme=programme, consent_option=consent_option
+            programme=programme, consent_option=consent_option, psd_option=psd_option
         )
         if change_phone:
             self.click_add_phone_number()
@@ -202,10 +211,13 @@ class VerbalConsentPage:
         self,
         parent: Parent,
         consent_option: ConsentOption = ConsentOption.INJECTION,
+        psd_option: Optional[bool] = None,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
-        self._process_consent_confirmation(consent_option=consent_option)
+        self._process_consent_confirmation(
+            consent_option=consent_option, psd_option=psd_option
+        )
         self.click_add_phone_number()
         self.fill_phone_number_and_receive_text_alerts("7700900000")
         self.click_continue()
@@ -221,11 +233,16 @@ class VerbalConsentPage:
         self.expect_text_in_alert("Triage outcome updated")
 
     def parent_phone_positive(
-        self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION
+        self,
+        parent: Parent,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+        psd_option: Optional[bool] = None,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PHONE)
-        self._process_consent_confirmation(consent_option=consent_option)
+        self._process_consent_confirmation(
+            consent_option=consent_option, psd_option=psd_option
+        )
         self.click_confirm()
 
     def parent_paper_refuse_consent(self, parent: Parent):
@@ -237,12 +254,14 @@ class VerbalConsentPage:
         self.click_confirm()
 
     def child_consent_verbal_positive(
-        self, consent_option: ConsentOption = ConsentOption.INJECTION
+        self,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+        psd_option: Optional[bool] = None,
     ):
         self.child_gillick_competent_radio.check()
         self.click_continue()
         self._process_consent_confirmation(
-            child_consent=True, consent_option=consent_option
+            child_consent=True, consent_option=consent_option, psd_option=psd_option
         )
         self.click_confirm()
 
@@ -266,6 +285,7 @@ class VerbalConsentPage:
         programme=Programme.HPV,
         child_consent: bool = False,
         consent_option: ConsentOption = ConsentOption.INJECTION,
+        psd_option: Optional[bool] = None,
     ):
         if programme is Programme.FLU:
             if consent_option is ConsentOption.INJECTION:
@@ -286,5 +306,7 @@ class VerbalConsentPage:
             programme=programme, consent_option=consent_option
         )
         self.click_continue()
-        self.click_safe_to_vaccinate(programme=programme, consent_option=consent_option)
+        self.click_safe_to_vaccinate(
+            programme=programme, consent_option=consent_option, psd_option=psd_option
+        )
         self.click_continue()
