@@ -119,7 +119,7 @@ $ npx allure-commandline generate --clean --single-file -o allure-results
 $ npx allure-commandline open
 ```
 
-### Linting and Formatting
+### Linting and formatting
 
 Ruff is used as a linting and formatting tool in this repo:
 
