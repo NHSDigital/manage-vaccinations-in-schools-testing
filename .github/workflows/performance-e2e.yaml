@@ -74,7 +74,7 @@ jobs:
         env:
           cache-name: cache-jmeter
         with:
-          path: ~/jmeter
+          path: jmeter
           key: jmeter
 
 #Having run each step separately, it's only the curl request that takes time. So including the unzip and move means I can cache the 'jmeter' folder entirely
