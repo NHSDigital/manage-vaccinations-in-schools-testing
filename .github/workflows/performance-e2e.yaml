@@ -69,7 +69,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install JMeter (Get zip file)
-        run: curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
+        run: curl -O https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
 
       - name: Install JMeter (unzip and move)
         run: |
