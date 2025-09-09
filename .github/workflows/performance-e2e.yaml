@@ -68,16 +68,40 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install JMeter
+      - name: Install JMeter (Get zip file)
+        run: curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
+
+      - name: Install JMeter (unzip and move)
         run: |
-          curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
           tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
           mv apache-jmeter-${{ env.jmeter_version }} jmeter
+          
+      - name: Install JMeter (get cmdrunner)
+        run: |
           curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
+
+
+      - name: Install JMeter (Get plugins manager)
+        run: |
           curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
+
+      - name: Install JMeter (Install plugins manager)
+        run: |
           java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
           chmod +x jmeter/bin/PluginsManagerCMD.sh
           sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
+
+
+#      - name: Install JMeter
+#        run: |
+#          curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
+#          tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
+#          mv apache-jmeter-${{ env.jmeter_version }} jmeter
+#          curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
+#          curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
+#          java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+#          chmod +x jmeter/bin/PluginsManagerCMD.sh
+#          sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
 
       - name: Install JMeter plugins
         if: env.jmeter_plugins != ''
