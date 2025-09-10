@@ -1,7 +1,7 @@
-from datetime import date, datetime
 import csv
+from datetime import date, datetime
 from pathlib import Path
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 
 class Patient(NamedTuple):
@@ -13,7 +13,7 @@ class Patient(NamedTuple):
     address_line_2: str
     address_town: str
     address_postcode: str
-    date_of_death: Optional[date] = None
+    date_of_death: date | None = None
 
     @classmethod
     def from_csv_row(cls, row):

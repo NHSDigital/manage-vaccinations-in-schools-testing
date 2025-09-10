@@ -1,16 +1,16 @@
 from datetime import date
-from playwright.sync_api import Page, expect
-from typing import Optional
 
+from playwright.sync_api import Page, expect
+
+from mavis.test.annotations import step
 from mavis.test.models import (
-    ConsentRefusalReason,
-    Programme,
-    School,
-    Parent,
     Child,
     ConsentOption,
+    ConsentRefusalReason,
+    Parent,
+    Programme,
+    School,
 )
-from mavis.test.annotations import step
 
 
 class OnlineConsentPage:
@@ -107,8 +107,8 @@ class OnlineConsentPage:
         self,
         first_name: str,
         last_name: str,
-        known_as_first: Optional[str] = None,
-        known_as_last: Optional[str] = None,
+        known_as_first: str | None = None,
+        known_as_last: str | None = None,
     ) -> None:
         self.first_name_textbox.fill(first_name)
         self.last_name_textbox.fill(last_name)
@@ -161,7 +161,7 @@ class OnlineConsentPage:
     def fill_parent_details(
         self,
         parent: Parent,
-        phone: Optional[str] = None,
+        phone: str | None = None,
     ) -> None:
         self.fill_parent_name(parent.full_name)
         self.click_radio_button(parent.relationship)
@@ -245,7 +245,7 @@ class OnlineConsentPage:
             }
         )
 
-    def answer_yes(self, details: Optional[str] = None):
+    def answer_yes(self, details: str | None = None):
         self.select_yes()
         if details:
             self.give_details(details)
@@ -256,7 +256,7 @@ class OnlineConsentPage:
         self.click_continue()
 
     def select_consent_not_given_reason(
-        self, reason: ConsentRefusalReason, details: Optional[str] = None
+        self, reason: ConsentRefusalReason, details: str | None = None
     ) -> None:
         self.click_consent_refusal_reason(reason)
         if reason.requires_details:

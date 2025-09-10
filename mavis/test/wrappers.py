@@ -1,9 +1,9 @@
+import re
+import time
 from datetime import date, datetime, timedelta
 
 from faker import Faker
-import re
-import time
-from playwright.sync_api import Page, Locator, expect
+from playwright.sync_api import Locator, Page, expect
 
 faker = Faker()
 

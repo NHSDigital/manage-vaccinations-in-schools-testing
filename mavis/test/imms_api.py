@@ -1,11 +1,12 @@
+import time
 import uuid
 from datetime import datetime
-import requests
-import dateutil.parser
-import time
 from typing import NamedTuple
 
-from mavis.test.models import ImmsEndpoints, Child, School, DeliverySite
+import dateutil.parser
+import requests
+
+from mavis.test.models import Child, DeliverySite, ImmsEndpoints, School
 
 
 class ImmsApiVaccinationRecord(NamedTuple):

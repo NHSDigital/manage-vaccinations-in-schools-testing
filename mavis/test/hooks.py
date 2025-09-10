@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pytest
 
-
 path = Path("logs") / "report.log"
 
 
