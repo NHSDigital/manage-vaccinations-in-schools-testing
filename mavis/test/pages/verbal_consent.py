@@ -199,7 +199,9 @@ class VerbalConsentPage:
         self.click_confirm()
 
     def parent_written_positive(
-        self, parent: Parent, consent_option: ConsentOption = ConsentOption.INJECTION,
+        self,
+        parent: Parent,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
