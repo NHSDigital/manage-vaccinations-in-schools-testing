@@ -1,7 +1,7 @@
 import pytest
 
-from mavis.test.models import Programme, ConsentOption, Vaccine
 from mavis.test.data import ClassFileMapping
+from mavis.test.models import ConsentOption, Programme, Vaccine
 
 
 @pytest.fixture

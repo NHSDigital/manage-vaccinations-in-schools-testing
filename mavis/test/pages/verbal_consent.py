@@ -1,5 +1,4 @@
 from playwright.sync_api import Page, expect
-from typing import Optional
 
 from mavis.test.annotations import step
 from mavis.test.models import (
@@ -125,7 +124,7 @@ class VerbalConsentPage:
         self,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        psd_option: Optional[bool] = None,
+        psd_option: bool | None = None,
     ):
         if programme is Programme.FLU:
             if consent_option is ConsentOption.INJECTION:
@@ -180,7 +179,7 @@ class VerbalConsentPage:
         change_phone: bool = True,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        psd_option: Optional[bool] = None,
+        psd_option: bool | None = None,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
@@ -211,7 +210,7 @@ class VerbalConsentPage:
         self,
         parent: Parent,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        psd_option: Optional[bool] = None,
+        psd_option: bool | None = None,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
@@ -236,7 +235,7 @@ class VerbalConsentPage:
         self,
         parent: Parent,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        psd_option: Optional[bool] = None,
+        psd_option: bool | None = None,
     ):
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PHONE)
@@ -256,7 +255,7 @@ class VerbalConsentPage:
     def child_consent_verbal_positive(
         self,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        psd_option: Optional[bool] = None,
+        psd_option: bool | None = None,
     ):
         self.child_gillick_competent_radio.check()
         self.click_continue()
@@ -285,7 +284,7 @@ class VerbalConsentPage:
         programme=Programme.HPV,
         child_consent: bool = False,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-        psd_option: Optional[bool] = None,
+        psd_option: bool | None = None,
     ):
         if programme is Programme.FLU:
             if consent_option is ConsentOption.INJECTION:
