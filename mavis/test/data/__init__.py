@@ -1,5 +1,4 @@
 import csv
-import os
 from enum import Enum
 from pathlib import Path
 
@@ -8,11 +7,11 @@ import pandas as pd
 from faker import Faker
 
 from mavis.test.models import Child, Clinic, Organisation, Programme, School, User
-from mavis.test.wrappers import (
-    get_current_datetime,
-    get_current_time,
+from mavis.test.utils import (
+    get_current_datetime_compact,
+    get_current_time_hms_format,
     get_date_of_birth_for_year_group,
-    get_offset_date,
+    get_offset_date_compact_format,
     normalize_whitespace,
 )
 
@@ -28,7 +27,7 @@ class FileMapping(Enum):
 
     @property
     def folder(self) -> Path:
-        return Path("")
+        return Path()
 
 
 class VaccsFileMapping(FileMapping):
@@ -114,7 +113,7 @@ class TestData:
         children: dict[str, list[Child]],
         clinics: list[Clinic],
         year_groups: dict[str, int],
-    ):
+    ) -> None:
         self.organisation = organisation
         self.schools = schools
         self.nurse = nurse
@@ -126,7 +125,7 @@ class TestData:
 
         self.working_path.mkdir(parents=True, exist_ok=True)
 
-    def read_file(self, filename):
+    def read_file(self, filename: Path) -> str:
         return (self.template_path / filename).read_text(encoding="utf-8")
 
     def create_file_from_template(
@@ -137,9 +136,11 @@ class TestData:
         programme_group: str = Programme.HPV.group,
     ) -> Path:
         static_replacements = {
-            "<<VACCS_DATE>>": get_current_datetime()[:8],
-            "<<VACCS_TIME>>": get_current_time(),
-            "<<HIST_VACCS_DATE>>": get_offset_date(offset_days=-(365 * 2)),
+            "<<VACCS_DATE>>": get_current_datetime_compact()[:8],
+            "<<VACCS_TIME>>": get_current_time_hms_format(),
+            "<<HIST_VACCS_DATE>>": get_offset_date_compact_format(
+                offset_days=-(365 * 2)
+            ),
             "<<SESSION_ID>>": session_id,
         }
         dynamic_replacements = {
@@ -154,7 +155,7 @@ class TestData:
             fixed_year_group = self.year_groups[programme_group]
             static_replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
             dynamic_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = lambda: str(
-                get_date_of_birth_for_year_group(fixed_year_group)
+                get_date_of_birth_for_year_group(fixed_year_group),
             )
 
         if self.organisation:
@@ -193,7 +194,7 @@ class TestData:
                     child.date_of_birth.strftime("%Y%m%d")
                 )
                 static_replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(
-                    child.year_group
+                    child.year_group,
                 )
                 static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
                     0
@@ -216,17 +217,17 @@ class TestData:
 
         for year_group in range(8, 12):
             static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
-                get_date_of_birth_for_year_group(year_group)
+                get_date_of_birth_for_year_group(year_group),
             )
 
-        output_filename = f"{file_name_prefix}{get_current_datetime()}.csv"
+        output_filename = f"{file_name_prefix}{get_current_datetime_compact()}.csv"
         output_path = self.working_path / output_filename
 
-        if os.path.getsize(self.template_path / template_path) > 0:
+        if (self.template_path / template_path).stat().st_size > 0:
             template_df = pd.read_csv(self.template_path / template_path, dtype=str)
-            # template_df.replace(static_replacements, inplace=True)
             template_df = self.replace_substrings_in_df(
-                template_df, static_replacements
+                template_df,
+                static_replacements,
             )
             template_df = template_df.apply(
                 lambda col: col.apply(
@@ -234,8 +235,8 @@ class TestData:
                         dynamic_replacements[x.strip()]()
                         if isinstance(x, str) and x.strip() in dynamic_replacements
                         else x
-                    )
-                )
+                    ),
+                ),
             )
             template_df.to_csv(
                 path_or_buf=output_path,
@@ -244,11 +245,13 @@ class TestData:
                 index=False,
             )
         else:
-            open(output_path, "w").close()
+            output_path.touch()
         return output_path
 
-    def replace_substrings_in_df(self, df, replacements):
-        def replace_substrings(cell):
+    def replace_substrings_in_df(
+        self, df: pd.DataFrame, replacements: dict[str, str]
+    ) -> pd.DataFrame:
+        def replace_substrings(cell: object) -> object:
             if isinstance(cell, str):
                 for old, new in replacements.items():
                     if old and new:
@@ -259,10 +262,16 @@ class TestData:
             df[col] = df[col].map(replace_substrings)
         return df
 
-    def get_new_nhs_no(self, valid=True) -> str:
-        return nhs_number.generate(
-            valid=valid, for_region=nhs_number.REGION_SYNTHETIC, quantity=1
-        )[0]
+    def get_new_nhs_no(self, *, valid: bool = True) -> str:
+        nhs_numbers = nhs_number.generate(
+            valid=valid,
+            for_region=nhs_number.REGION_SYNTHETIC,
+            quantity=1,
+        )
+        if not nhs_numbers:
+            exception_message = "Failed to generate NHS number."
+            raise ValueError(exception_message)
+        return nhs_numbers[0]
 
     def get_expected_errors(self, file_path: Path) -> list[str] | None:
         file_content = self.read_file(file_path)
@@ -297,7 +306,10 @@ class TestData:
             return None
 
     def create_child_list_from_file(
-        self, file_path: Path, is_vaccinations: bool
+        self,
+        file_path: Path,
+        *,
+        is_vaccinations: bool,
     ) -> list[str]:
         _file_df = pd.read_csv(file_path)
 
@@ -306,18 +318,17 @@ class TestData:
         else:
             _cols = ["CHILD_LAST_NAME", "CHILD_FIRST_NAME"]
 
-        col0 = _file_df[_cols[0]].apply(normalize_whitespace)
-        col1 = _file_df[_cols[1]].apply(normalize_whitespace)
-        _names_list = (col0 + ", " + col1).tolist()
-        return _names_list
+        last_name_list = _file_df[_cols[0]].apply(normalize_whitespace)
+        first_name_list = _file_df[_cols[1]].apply(normalize_whitespace)
+        return (last_name_list + ", " + first_name_list).tolist()
 
     def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations", dtype=str)
         return data_frame["SESSION_ID"].iloc[0]
 
-    def increment_date_of_birth_for_records(self, file_path: Path):
+    def increment_date_of_birth_for_records(self, file_path: Path) -> None:
         _file_df = pd.read_csv(file_path)
         _file_df["CHILD_DATE_OF_BIRTH"] = pd.to_datetime(
-            _file_df["CHILD_DATE_OF_BIRTH"]
+            _file_df["CHILD_DATE_OF_BIRTH"],
         ) + pd.Timedelta(days=1)
         _file_df.to_csv(file_path, index=False)

@@ -3,7 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import ConsentOption, Programme, Vaccine
-from mavis.test.wrappers import generate_random_string
+from mavis.test.utils import generate_random_string
 
 
 @pytest.fixture
@@ -31,7 +31,9 @@ def setup_mav_965(
             sessions_page.ensure_session_scheduled_for_today(school, programme_group)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list(
-            ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"
+            ClassFileMapping.FIXED_CHILD,
+            child.year_group,
+            "doubles",
         )
         yield batch_names
     finally:
@@ -53,8 +55,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     verbal_consent_page,
     children,
 ):
-    """
-    Test: Verify pre-screening questions are pre-filled correctly when recording multiple vaccinations in the same session.
+    """Test: Verify pre-screening questions are pre-filled correctly when recording multiple vaccinations in the same session.
     Steps:
     1. Setup: Schedule sessions for HPV, doubles, and flu for the same school and import a fixed child class list.
     2. For each programme group (HPV, doubles, flu):
@@ -94,7 +95,6 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             sessions_page.click_record_a_new_consent_response()
             verbal_consent_page.parent_verbal_positive(
                 parent=child.parents[0],
-                change_phone=False,
                 programme=programme,
                 consent_option=consent_option,
             )
@@ -103,7 +103,8 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
                 programme=programme,
                 batch_name=batch_names[programme],
                 notes=generate_random_string(
-                    target_length=1001, spaces=True
+                    target_length=1001,
+                    generate_spaced_words=True,
                 ),  # MAV-955
                 consent_option=consent_option,
             )

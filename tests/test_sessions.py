@@ -59,8 +59,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_session_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
-    """
-    Test: Create, edit, and delete a session for a school and verify lifecycle actions.
+    """Test: Create, edit, and delete a session for a school and verify lifecycle actions.
     Steps:
     1. Navigate to sessions page.
     2. Create a new session for the school and programme.
@@ -82,8 +81,7 @@ def test_session_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
 
 
 def test_create_invalid_session(setup_tests, schools, sessions_page):
-    """
-    Test: Attempt to create an invalid session and verify error handling.
+    """Test: Attempt to create an invalid session and verify error handling.
     Steps:
     1. Navigate to sessions page.
     2. Attempt to create a session with invalid data for the school and programme.
@@ -96,8 +94,7 @@ def test_create_invalid_session(setup_tests, schools, sessions_page):
 
 @pytest.mark.bug
 def test_attendance_filters_functionality(setup_mavis_1822, sessions_page, year_groups):
-    """
-    Test: Verify attendance filters on the register tab work as expected.
+    """Test: Verify attendance filters on the register tab work as expected.
     Steps:
     1. Open the register tab in a session.
     2. Check and uncheck year group checkboxes and update results.
@@ -125,8 +122,7 @@ def test_attendance_filters_functionality(setup_mavis_1822, sessions_page, year_
 @issue("MAV-1018")
 @pytest.mark.bug
 def test_session_search_functionality(setup_mav_1018, sessions_page):
-    """
-    Test: Verify the search functionality within a session.
+    """Test: Verify the search functionality within a session.
     Steps:
     1. Open a session with a random child.
     2. Use the search feature to look for children.
@@ -139,10 +135,12 @@ def test_session_search_functionality(setup_mav_1018, sessions_page):
 @issue("MAV-1381")
 @pytest.mark.bug
 def test_consent_filters_and_refusal_checkbox(
-    setup_fixed_child, sessions_page, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    verbal_consent_page,
+    children,
 ):
-    """
-    Test: Record a paper refusal and verify the consent refused checkbox is checked.
+    """Test: Record a paper refusal and verify the consent refused checkbox is checked.
     Steps:
     1. Open a session with a fixed child.
     2. Review a child with no response and record a paper refusal.
@@ -162,10 +160,13 @@ def test_consent_filters_and_refusal_checkbox(
 
 @issue("MAV-1265")
 def test_session_activity_notes_order(
-    setup_fixed_child, dashboard_page, sessions_page, schools, children
+    setup_fixed_child,
+    dashboard_page,
+    sessions_page,
+    schools,
+    children,
 ):
-    """
-    Test: Add multiple notes to a session and verify their order in the activity log.
+    """Test: Add multiple notes to a session and verify their order in the activity log.
     Steps:
     1. Open a session with a fixed child.
     2. Add two notes in sequence.
@@ -176,20 +177,20 @@ def test_session_activity_notes_order(
     """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
-    NOTE_1 = "Note 1"
-    NOTE_2 = "Note 2"
+    note_1 = "Note 1"
+    note_2 = "Note 2"
 
     sessions_page.click_consent_tab()
     sessions_page.search_child(child)
     sessions_page.click_session_activity_and_notes()
-    sessions_page.add_note(NOTE_1)
-    sessions_page.add_note(NOTE_2)
+    sessions_page.add_note(note_1)
+    sessions_page.add_note(note_2)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
     sessions_page.search_for(str(child))
-    sessions_page.check_note_appears_in_search(child, NOTE_2)
+    sessions_page.check_note_appears_in_search(child, note_2)
     sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()
-    sessions_page.check_notes_appear_in_order([NOTE_2, NOTE_1])
+    sessions_page.check_notes_appear_in_order([note_2, note_1])

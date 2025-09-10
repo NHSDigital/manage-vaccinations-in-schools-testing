@@ -1,4 +1,3 @@
-from datetime import datetime
 from pathlib import Path
 
 from playwright.sync_api import Page, expect
@@ -6,16 +5,18 @@ from playwright.sync_api import Page, expect
 from mavis.test.annotations import step
 from mavis.test.data import TestData
 from mavis.test.models import Child, Programme, School
-from mavis.test.wrappers import reload_until_element_is_visible
+from mavis.test.utils import get_current_datetime, reload_until_element_is_visible
 
 
 class ChildrenPage:
-    def __init__(self, page: Page, test_data: TestData):
+    def __init__(self, page: Page, test_data: TestData) -> None:
         self.page = page
         self.test_data = test_data
 
         self.children_heading = self.page.get_by_role(
-            "heading", name="Children", exact=True
+            "heading",
+            name="Children",
+            exact=True,
         )
         self.children_table_headers = [
             self.page.get_by_role("columnheader", name=header)
@@ -32,60 +33,75 @@ class ChildrenPage:
         self.activity_log_link = self.page.get_by_role("link", name="Activity log")
         self.child_record_link = self.page.get_by_role("link", name="Child record")
         self.edit_child_record_button = self.page.get_by_role(
-            "link", name="Edit child record"
+            "link",
+            name="Edit child record",
         )
         self.change_nhs_no_link = self.page.get_by_role(
-            "link", name="Change   NHS number"
+            "link",
+            name="Change   NHS number",
         )
         self.archive_child_record_link = self.page.get_by_role(
-            "link", name="Archive child record"
+            "link",
+            name="Archive child record",
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
 
         vaccinations_card = page.locator("section").filter(
-            has=page.get_by_role("heading", name="Vaccinations")
+            has=page.get_by_role("heading", name="Vaccinations"),
         )
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
 
         self.manually_matched_card = self.page.get_by_text(
-            "Consent response manually matched with child record"
+            "Consent response manually matched with child record",
         )
         self.imported_in_error_radio = self.page.get_by_role(
-            "radio", name="It was imported in error"
+            "radio",
+            name="It was imported in error",
         )
         self.its_a_duplicate_radio = self.page.get_by_role(
-            "radio", name="It’s a duplicate"
+            "radio",
+            name="It’s a duplicate",
         )
         self.duplicate_of_nhs_number_text = self.page.get_by_role(
-            "textbox", name="Enter the NHS number for the"
+            "textbox",
+            name="Enter the NHS number for the",
         )
         self.archive_record_button = self.page.get_by_role(
-            "button", name="Archive record"
+            "button",
+            name="Archive record",
         )
         self.advanced_filters_link = self.page.get_by_text("Advanced filters")
         self.archived_records_checkbox = self.page.get_by_role(
-            "checkbox", name="Archived records"
+            "checkbox",
+            name="Archived records",
         )
         self.children_aged_out_of_programmes_checkbox = self.page.get_by_role(
-            "checkbox", name="Children aged out of programmes"
+            "checkbox",
+            name="Children aged out of programmes",
         )
         self.children_missing_an_nhs_number_checkbox = self.page.get_by_role(
-            "checkbox", name="Children missing an NHS number"
+            "checkbox",
+            name="Children missing an NHS number",
         )
         self.invite_to_community_clinic_button = self.page.get_by_role(
-            "button", name="Invite to community clinic"
+            "button",
+            name="Invite to community clinic",
         )
 
-    def verify_headers(self):
+    def verify_headers(self) -> None:
         expect(self.children_heading).to_be_visible()
         for header in self.children_table_headers:
             expect(header).to_be_visible()
 
     def verify_list_has_been_uploaded(
-        self, file_path: Path, is_vaccinations: bool
+        self,
+        file_path: Path,
+        *,
+        is_vaccinations: bool,
     ) -> None:
         child_names = self.test_data.create_child_list_from_file(
-            file_path, is_vaccinations
+            file_path,
+            is_vaccinations=is_vaccinations,
         )
         for child_name in child_names:
             self.search_with_all_filters_for_child_name(child_name)
@@ -98,12 +114,13 @@ class ChildrenPage:
             self.search_button.click()
 
         reload_until_element_is_visible(
-            self.page, self.page.get_by_role("link", name=child_name)
+            self.page,
+            self.page.get_by_role("link", name=child_name),
         )
 
     def assert_n_children_found(self, n: int) -> None:
         expect(
-            self.page.get_by_role("heading", name=f"{n} child{'ren' if n > 1 else ''}")
+            self.page.get_by_role("heading", name=f"{n} child{'ren' if n > 1 else ''}"),
         ).to_be_visible()
 
     @step("Click on record for child {1}")
@@ -113,24 +130,30 @@ class ChildrenPage:
 
     @step("Click on {2} session for programme")
     def click_session_for_programme(
-        self, location: str, programme: Programme, check_date: bool = False
+        self,
+        location: str,
+        programme: Programme,
+        *,
+        check_date: bool = False,
     ) -> None:
         locator = self.page.get_by_role("row", name=str(location)).filter(
-            has_text=str(programme)
+            has_text=str(programme),
         )
         if check_date:
-            today_str = datetime.now().strftime("%-d %B %Y")
+            today_str = get_current_datetime().strftime("%-d %B %Y")
             locator = locator.filter(has_text=today_str)
         locator.get_by_role("link").click()
+
+        ten_seconds_ms = 10000
         expect(self.page.get_by_role("link", name=str(programme))).to_be_visible(
-            timeout=10000
+            timeout=ten_seconds_ms,
         )
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
         with self.page.expect_navigation():
             self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
-                "link"
+                "link",
             ).click()
 
     @step("Click on Child record")
@@ -176,13 +199,15 @@ class ChildrenPage:
     def expect_text_in_alert(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)
 
-    def check_log_updates_with_match(self):
+    def check_log_updates_with_match(self) -> None:
         self.page.wait_for_load_state()
         reload_until_element_is_visible(
-            self.page, self.manually_matched_card, seconds=30
+            self.page,
+            self.manually_matched_card,
+            seconds=30,
         )
 
-    def search_with_all_filters_for_child_name(self, child_name: str):
+    def search_with_all_filters_for_child_name(self, child_name: str) -> None:
         filter_locators = [
             self.archived_records_checkbox,
             self.children_aged_out_of_programmes_checkbox,
@@ -195,64 +220,63 @@ class ChildrenPage:
         self.page.wait_for_load_state()
 
         if not child_locator.is_visible():
-            for filter in filter_locators:
-                if not filter.is_visible():
+            for filter_locator in filter_locators:
+                if not filter_locator.is_visible():
                     self.click_advanced_filters()
-                filter.check()
+                filter_locator.check()
                 self.search_button.click()
                 self.page.wait_for_load_state()
                 if child_locator.is_visible():
                     break
-                filter.uncheck()
+                filter_locator.uncheck()
 
     def verify_activity_log_for_created_or_matched_child(
         self,
         child: Child,
-    ):
+    ) -> None:
         self.search_with_all_filters_for_child_name(str(child))
 
         self.click_record_for_child(child)
         self.click_activity_log()
-        self.expect_activity_log_header("Consent given", any=True)
+        self.expect_activity_log_header("Consent given")
 
-        # FIXME: Update this text when MAVIS-1896/MAV-253 is closed
         self.check_log_updates_with_match()
 
-    def expect_activity_log_header(self, header: str, any: bool = False):
-        if any:
-            expect(self.page.get_by_role("heading", name=header).first).to_be_visible()
-        else:
+    def expect_activity_log_header(self, header: str, *, unique: bool = False) -> None:
+        if unique:
             expect(self.page.get_by_role("heading", name=header)).to_be_visible()
+        else:
+            expect(self.page.get_by_role("heading", name=header).first).to_be_visible()
 
-    def archive_child_record(self):
+    def archive_child_record(self) -> None:
         self.click_archive_child_record()
         self.click_imported_in_error()
         self.click_archive_record()
         expect(self.page.get_by_role("alert")).to_contain_text(
-            "This record has been archived"
+            "This record has been archived",
         )
         expect(self.page.get_by_text("Archive reason")).to_be_visible()
 
     @step("Click on Imported in error")
-    def click_imported_in_error(self):
+    def click_imported_in_error(self) -> None:
         self.imported_in_error_radio.check()
 
     @step("Select It's a duplicate")
-    def click_its_a_duplicate(self, with_nhs_number: str):
+    def click_its_a_duplicate(self, with_nhs_number: str) -> None:
         self.its_a_duplicate_radio.check()
         self.duplicate_of_nhs_number_text.fill(with_nhs_number)
 
     @step("Click on Archive record")
-    def click_archive_record(self):
+    def click_archive_record(self) -> None:
         self.archive_record_button.click()
 
-    def check_child_is_unarchived(self):
+    def check_child_is_unarchived(self) -> None:
         expect(self.archive_child_record_link).to_be_visible()
 
     @step("Click on Advanced filters")
-    def click_advanced_filters(self):
+    def click_advanced_filters(self) -> None:
         self.advanced_filters_link.click()
 
     @step("Check Children aged out of programmes")
-    def check_children_aged_out_of_programmes(self):
+    def check_children_aged_out_of_programmes(self) -> None:
         self.children_aged_out_of_programmes_checkbox.check()

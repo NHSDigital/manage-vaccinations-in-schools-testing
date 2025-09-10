@@ -15,134 +15,14 @@ class ConsentOption(StrEnum):
     BOTH = ""
 
 
-class Programme(StrEnum):
-    FLU = "flu"
-    HPV = "HPV"
-    MENACWY = "MenACWY"
-    TD_IPV = "Td/IPV"
-
-    @property
-    def group(self):
-        if self in {Programme.MENACWY, Programme.TD_IPV}:
-            return "doubles"
-        return self.value
-
-    @property
-    def vaccines(self):
-        match self:
-            case self.FLU:
-                return [Vaccine.FLUENZ]
-            case self.HPV:
-                return [Vaccine.GARDASIL_9]
-            case self.MENACWY:
-                return [Vaccine.MENQUADFI, Vaccine.MENVEO, Vaccine.NIMENRIX]
-            case self.TD_IPV:
-                return [Vaccine.REVAXIS]
-
-    def health_questions(self, consent_option: ConsentOption = ConsentOption.INJECTION):
-        includes_nasal = consent_option is not ConsentOption.INJECTION
-        includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
-
-        flu_questions = [
-            HealthQuestion.ASTHMA_STEROIDS if includes_nasal else None,
-            HealthQuestion.ASTHMA_INTENSIVE_CARE if includes_nasal else None,
-            HealthQuestion.IMMUNE_SYSTEM if includes_nasal else None,
-            HealthQuestion.HOUSEHOLD_IMMUNE_SYSTEM if includes_nasal else None,
-            HealthQuestion.BLEEDING_DISORDER_FLU if includes_injection else None,
-            HealthQuestion.EGG_ALLERGY if includes_nasal else None,
-            HealthQuestion.SEVERE_ALLERGIC_REACTION_NASAL if includes_nasal else None,
-            HealthQuestion.SEVERE_ALLERGIC_REACTION_INJECTED
-            if includes_injection
-            else None,
-            HealthQuestion.MEDICAL_CONDITIONS_FLU,
-            HealthQuestion.ASPIRIN if includes_nasal else None,
-            HealthQuestion.FLU_PREVIOUSLY,
-            HealthQuestion.EXTRA_SUPPORT,
-        ]
-        flu_questions = [q for q in flu_questions if q is not None]
-
-        common_doubles_questions = [
-            HealthQuestion.BLEEDING_DISORDER,
-            HealthQuestion.SEVERE_ALLERGIES,
-            HealthQuestion.REACTION,
-            HealthQuestion.EXTRA_SUPPORT,
-        ]
-        programme_specific_questions = {
-            Programme.MENACWY: common_doubles_questions
-            + [HealthQuestion.PAST_MENACWY_VACCINE],
-            Programme.TD_IPV: common_doubles_questions
-            + [HealthQuestion.PAST_TDIPV_VACCINE],
-            Programme.HPV: [
-                HealthQuestion.SEVERE_ALLERGIES,
-                HealthQuestion.MEDICAL_CONDITIONS,
-                HealthQuestion.REACTION,
-                HealthQuestion.EXTRA_SUPPORT,
-            ],
-            Programme.FLU: flu_questions,
-        }
-        return programme_specific_questions[self]
-
-    def pre_screening_checks(
-        self, consent_option: ConsentOption = ConsentOption.INJECTION
-    ):
-        checks = [
-            PreScreeningCheck.NOT_ACUTELY_UNWELL,
-            PreScreeningCheck.NO_RELEVANT_ALLERGIES,
-            PreScreeningCheck.NOT_ALREADY_HAD,
-            PreScreeningCheck.KNOW_VACCINATION,
-        ]
-
-        if self.group == "doubles":
-            checks.append(PreScreeningCheck.NO_RELEVANT_MEDICATION)
-
-        if self is self.TD_IPV:
-            checks.append(PreScreeningCheck.NOT_PREGNANT)
-
-        if self is self.FLU and consent_option is ConsentOption.NASAL_SPRAY:
-            checks.append(PreScreeningCheck.NO_ASTHMA_FLARE_UP)
-
-        return checks
-
-    @property
-    def year_groups(self) -> list[int]:
-        match self:
-            case self.FLU:
-                return list(range(0, 12))
-            case self.HPV:
-                return list(range(8, 12))
-            case self.MENACWY | self.TD_IPV:
-                return list(range(9, 12))
-
-
-class Vaccine(StrEnum):
-    # Flu
-    FLUENZ = "Fluenz"
-
-    # HPV
-    GARDASIL_9 = "Gardasil 9"
-
-    # MenACWY
-    MENQUADFI = "MenQuadfi"
-    MENVEO = "Menveo"
-    NIMENRIX = "Nimenrix"
-
-    # Td/IPV
-    REVAXIS = "Revaxis"
-
-
-class DeliverySite(StrEnum):
-    LEFT_ARM_UPPER = "Left arm (upper position)"
-    RIGHT_ARM_UPPER = "Right arm (upper position)"
-    LEFT_ARM_LOWER = "Left arm (lower position)"
-    RIGHT_ARM_LOWER = "Right arm (lower position)"
-
-    @classmethod
-    def from_code(cls, code: str) -> "DeliverySite":
-        sites = {
-            "368208006": DeliverySite.LEFT_ARM_UPPER,
-            "368209003": DeliverySite.RIGHT_ARM_UPPER,
-        }
-        return sites[code]
+class PreScreeningCheck(StrEnum):
+    KNOW_VACCINATION = "knows what the vaccination is for, and is happy to have it"
+    NOT_ACUTELY_UNWELL = "is not acutely unwell"
+    NOT_ALREADY_HAD = "has not already had this vaccination"
+    NOT_PREGNANT = "is not pregnant"
+    NO_RELEVANT_ALLERGIES = "has no allergies which would prevent vaccination"
+    NO_RELEVANT_MEDICATION = "is not taking any medication which prevents vaccination"
+    NO_ASTHMA_FLARE_UP = "if they have asthma, has not had a flare-up of symptoms in the past 72 hours, including wheezing or needing to use a reliever inhaler more than usual"
 
 
 class HealthQuestion(StrEnum):
@@ -174,14 +54,141 @@ class HealthQuestion(StrEnum):
     FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
 
 
-class PreScreeningCheck(StrEnum):
-    KNOW_VACCINATION = "knows what the vaccination is for, and is happy to have it"
-    NOT_ACUTELY_UNWELL = "is not acutely unwell"
-    NOT_ALREADY_HAD = "has not already had this vaccination"
-    NOT_PREGNANT = "is not pregnant"
-    NO_RELEVANT_ALLERGIES = "has no allergies which would prevent vaccination"
-    NO_RELEVANT_MEDICATION = "is not taking any medication which prevents vaccination"
-    NO_ASTHMA_FLARE_UP = "if they have asthma, has not had a flare-up of symptoms in the past 72 hours, including wheezing or needing to use a reliever inhaler more than usual"
+class Vaccine(StrEnum):
+    # Flu
+    FLUENZ = "Fluenz"
+
+    # HPV
+    GARDASIL_9 = "Gardasil 9"
+
+    # MenACWY
+    MENQUADFI = "MenQuadfi"
+    MENVEO = "Menveo"
+    NIMENRIX = "Nimenrix"
+
+    # Td/IPV
+    REVAXIS = "Revaxis"
+
+
+class Programme(StrEnum):
+    FLU = "flu"
+    HPV = "HPV"
+    MENACWY = "MenACWY"
+    TD_IPV = "Td/IPV"
+
+    @property
+    def group(self) -> str:
+        if self in {Programme.MENACWY, Programme.TD_IPV}:
+            return "doubles"
+        return self.value
+
+    @property
+    def vaccines(self) -> list[Vaccine]:
+        match self:
+            case self.FLU:
+                return [Vaccine.FLUENZ]
+            case self.HPV:
+                return [Vaccine.GARDASIL_9]
+            case self.MENACWY:
+                return [Vaccine.MENQUADFI, Vaccine.MENVEO, Vaccine.NIMENRIX]
+            case self.TD_IPV:
+                return [Vaccine.REVAXIS]
+
+    def health_questions(
+        self, consent_option: ConsentOption = ConsentOption.INJECTION
+    ) -> list[HealthQuestion]:
+        includes_nasal = consent_option is not ConsentOption.INJECTION
+        includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
+
+        flu_questions = [
+            HealthQuestion.ASTHMA_STEROIDS if includes_nasal else None,
+            HealthQuestion.ASTHMA_INTENSIVE_CARE if includes_nasal else None,
+            HealthQuestion.IMMUNE_SYSTEM if includes_nasal else None,
+            HealthQuestion.HOUSEHOLD_IMMUNE_SYSTEM if includes_nasal else None,
+            HealthQuestion.BLEEDING_DISORDER_FLU if includes_injection else None,
+            HealthQuestion.EGG_ALLERGY if includes_nasal else None,
+            HealthQuestion.SEVERE_ALLERGIC_REACTION_NASAL if includes_nasal else None,
+            HealthQuestion.SEVERE_ALLERGIC_REACTION_INJECTED
+            if includes_injection
+            else None,
+            HealthQuestion.MEDICAL_CONDITIONS_FLU,
+            HealthQuestion.ASPIRIN if includes_nasal else None,
+            HealthQuestion.FLU_PREVIOUSLY,
+            HealthQuestion.EXTRA_SUPPORT,
+        ]
+        flu_questions = [q for q in flu_questions if q is not None]
+
+        common_doubles_questions = [
+            HealthQuestion.BLEEDING_DISORDER,
+            HealthQuestion.SEVERE_ALLERGIES,
+            HealthQuestion.REACTION,
+            HealthQuestion.EXTRA_SUPPORT,
+        ]
+        programme_specific_questions = {
+            Programme.MENACWY: [
+                *common_doubles_questions,
+                HealthQuestion.PAST_MENACWY_VACCINE,
+            ],
+            Programme.TD_IPV: [
+                *common_doubles_questions,
+                HealthQuestion.PAST_TDIPV_VACCINE,
+            ],
+            Programme.HPV: [
+                HealthQuestion.SEVERE_ALLERGIES,
+                HealthQuestion.MEDICAL_CONDITIONS,
+                HealthQuestion.REACTION,
+                HealthQuestion.EXTRA_SUPPORT,
+            ],
+            Programme.FLU: flu_questions,
+        }
+        return programme_specific_questions[self]
+
+    def pre_screening_checks(
+        self,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+    ) -> list[PreScreeningCheck]:
+        checks = [
+            PreScreeningCheck.NOT_ACUTELY_UNWELL,
+            PreScreeningCheck.NO_RELEVANT_ALLERGIES,
+            PreScreeningCheck.NOT_ALREADY_HAD,
+            PreScreeningCheck.KNOW_VACCINATION,
+        ]
+
+        if self.group == "doubles":
+            checks.append(PreScreeningCheck.NO_RELEVANT_MEDICATION)
+
+        if self is self.TD_IPV:
+            checks.append(PreScreeningCheck.NOT_PREGNANT)
+
+        if self is self.FLU and consent_option is ConsentOption.NASAL_SPRAY:
+            checks.append(PreScreeningCheck.NO_ASTHMA_FLARE_UP)
+
+        return checks
+
+    @property
+    def year_groups(self) -> list[int]:
+        match self:
+            case self.FLU:
+                return list(range(12))
+            case self.HPV:
+                return list(range(8, 12))
+            case self.MENACWY | self.TD_IPV:
+                return list(range(9, 12))
+
+
+class DeliverySite(StrEnum):
+    LEFT_ARM_UPPER = "Left arm (upper position)"
+    RIGHT_ARM_UPPER = "Right arm (upper position)"
+    LEFT_ARM_LOWER = "Left arm (lower position)"
+    RIGHT_ARM_LOWER = "Right arm (lower position)"
+
+    @classmethod
+    def from_code(cls, code: str) -> "DeliverySite":
+        sites = {
+            "368208006": DeliverySite.LEFT_ARM_UPPER,
+            "368209003": DeliverySite.RIGHT_ARM_UPPER,
+        }
+        return sites[code]
 
 
 class ConsentRefusalReason(StrEnum):
@@ -220,10 +227,10 @@ class ReportFormat(StrEnum):
 class Clinic(NamedTuple):
     name: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def to_onboarding(self):
+    def to_onboarding(self) -> dict:
         return {"name": self.name}
 
 
@@ -232,24 +239,23 @@ class School(NamedTuple):
     urn: str
     site: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @property
-    def urn_and_site(self):
+    def urn_and_site(self) -> str:
         if self.site:
             return self.urn + self.site
-        else:
-            return self.urn
+        return self.urn
 
-    def to_onboarding(self):
+    def to_onboarding(self) -> str:
         return self.urn_and_site
 
 
 class Organisation(NamedTuple):
     ods_code: str
 
-    def to_onboarding(self):
+    def to_onboarding(self) -> dict:
         return {
             "ods_code": self.ods_code,
         }
@@ -261,10 +267,10 @@ class Subteam(NamedTuple):
     email: str
     phone: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def to_onboarding(self):
+    def to_onboarding(self) -> dict:
         return {self.key: {"name": self.name, "email": self.email, "phone": self.phone}}
 
 
@@ -275,10 +281,10 @@ class Team(NamedTuple):
     email: str
     phone: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}"
 
-    def to_onboarding(self):
+    def to_onboarding(self) -> dict:
         return {
             "name": self.name,
             "workgroup": self.workgroup,
@@ -295,10 +301,10 @@ class User(NamedTuple):
     password: str
     role: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.username
 
-    def to_onboarding(self):
+    def to_onboarding(self) -> dict:
         return {
             "email": self.username,
             "password": self.password,
@@ -351,7 +357,7 @@ class Child(NamedTuple):
     year_group: int
     parents: tuple[Parent, Parent]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.last_name}, {self.first_name}"
 
     @property
@@ -370,5 +376,6 @@ class ImmsEndpoints(StrEnum):
     @property
     def to_url(self) -> str:
         return urllib.parse.urljoin(
-            os.getenv("IMMS_BASE_URL", "PROVIDEURL"), self.value
+            os.getenv("IMMS_BASE_URL", "PROVIDEURL"),
+            self.value,
         )

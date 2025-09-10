@@ -5,7 +5,7 @@ from mavis.test.models import Team, User
 
 
 class LogInPage:
-    def __init__(self, page: Page):
+    def __init__(self, page: Page) -> None:
         self.page = page
 
         self.username_input = page.get_by_role("textbox", name="Email address")
@@ -20,22 +20,22 @@ class LogInPage:
         self.start_page_link = page.get_by_role("link", name="Start now")
 
     @step("Go to log in page")
-    def navigate(self):
+    def navigate(self) -> None:
         self.page.goto("/users/sign-in")
 
     @step("Log in as {1}")
-    def log_in(self, user: User):
+    def log_in(self, user: User) -> None:
         self.username_input.fill(user.username)
         self.password_input.fill(user.password)
         self.log_in_button.click()
 
     @step("Log out")
-    def log_out(self):
+    def log_out(self) -> None:
         self.log_out_button.click()
         expect(self.start_page_link).to_be_visible()
 
     @step("Log in as {1} and choose team {2}")
-    def log_in_and_choose_team_if_necessary(self, user: User, team: Team):
+    def log_in_and_choose_team_if_necessary(self, user: User, team: Team) -> None:
         self.log_in(user)
         if self.select_a_team_heading.is_visible():
             self.page.get_by_role("radio", name=team.name).check()

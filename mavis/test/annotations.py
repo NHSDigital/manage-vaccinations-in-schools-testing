@@ -16,7 +16,7 @@ def _reduce_colors(image_bytes: bytes) -> bytes:
         return output_io.getvalue()
 
 
-def step(title: str, attach_screenshot: bool = True):
+def step(title: str, *, attach_screenshot: bool = True):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -26,7 +26,8 @@ def step(title: str, attach_screenshot: bool = True):
                 except Exception:
                     if attach_screenshot:
                         screenshot_bytes = self.page.screenshot(
-                            full_page=True, scale="css"
+                            full_page=True,
+                            scale="css",
                         )
                         reduced_bytes = _reduce_colors(screenshot_bytes)
                         allure.attach(

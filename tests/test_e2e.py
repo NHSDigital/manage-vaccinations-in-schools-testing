@@ -35,7 +35,9 @@ def setup_session_with_file_upload(
             sessions_page.click_session_for_programme_group(school, programme_group)
             sessions_page.click_import_class_lists()
             import_records_page.import_class_list(
-                ClassFileMapping.FIXED_CHILD, child.year_group, programme_group
+                ClassFileMapping.FIXED_CHILD,
+                child.year_group,
+                programme_group,
             )
             return batch_names
         finally:
@@ -68,8 +70,7 @@ def test_recording_hpv_vaccination_e2e(
     nurse,
     team,
 ):
-    """
-    Test: End-to-end test for recording an HPV vaccination for a child.
+    """Test: End-to-end test for recording an HPV vaccination for a child.
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
     2. Go to online consent URL and fill in child and parent details.
@@ -92,11 +93,14 @@ def test_recording_hpv_vaccination_e2e(
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        number_of_health_questions, health_question=False
+        number_of_health_questions,
+        yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
-        child, programmes=[Programme.HPV], health_question=False
+        child,
+        programmes=[Programme.HPV],
+        yes_to_health_questions=False,
     )
 
     log_in_page.navigate()
@@ -115,7 +119,9 @@ def test_recording_hpv_vaccination_e2e(
 @pytest.fixture
 def doubles_consent_url(get_online_consent_url, schools):
     yield from get_online_consent_url(
-        schools["doubles"][0], Programme.MENACWY, Programme.TD_IPV
+        schools["doubles"][0],
+        Programme.MENACWY,
+        Programme.TD_IPV,
     )
 
 
@@ -137,8 +143,7 @@ def test_recording_doubles_vaccination_e2e(
     nurse,
     team,
 ):
-    """
-    Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations for a child.
+    """Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations for a child.
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch names.
     2. Go to online consent URL and fill in child and parent details.
@@ -154,7 +159,7 @@ def test_recording_doubles_vaccination_e2e(
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
     number_of_health_questions = (
         online_consent_page.get_number_of_health_questions_for_programmes(
-            [Programme.MENACWY, Programme.TD_IPV]
+            [Programme.MENACWY, Programme.TD_IPV],
         )
     )
 
@@ -163,15 +168,19 @@ def test_recording_doubles_vaccination_e2e(
 
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_doubles_vaccinations(
-        Programme.MENACWY, Programme.TD_IPV
+        Programme.MENACWY,
+        Programme.TD_IPV,
     )
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        number_of_health_questions, health_question=False
+        number_of_health_questions,
+        yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
-        child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
+        child,
+        programmes=[Programme.MENACWY, Programme.TD_IPV],
+        yes_to_health_questions=False,
     )
 
     log_in_page.navigate()
@@ -211,8 +220,7 @@ def test_recording_flu_vaccination_e2e(
     nurse,
     team,
 ):
-    """
-    Test: End-to-end test for recording a flu vaccination for a child.
+    """Test: End-to-end test for recording a flu vaccination for a child.
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
     2. Go to online consent URL and fill in child and parent details.
@@ -235,13 +243,13 @@ def test_recording_flu_vaccination_e2e(
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
         online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
-        health_question=False,
+        yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
-        health_question=False,
+        yes_to_health_questions=False,
         consent_option=ConsentOption.BOTH,
     )
 

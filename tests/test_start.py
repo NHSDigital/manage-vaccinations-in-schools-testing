@@ -5,8 +5,7 @@ pytestmark = pytest.mark.smoke
 
 
 def test_start_page_elements_visible(start_page):
-    """
-    Test: Verify that the start page heading and start link are visible.
+    """Test: Verify that the start page heading and start link are visible.
     Steps:
     1. Navigate to the start page.
     2. Check that the heading is visible.

@@ -14,7 +14,7 @@ from mavis.test.models import (
 
 
 class OnlineConsentPage:
-    def __init__(self, page: Page):
+    def __init__(self, page: Page) -> None:
         self.page = page
 
         self.first_name_textbox = self.page.get_by_role("textbox", name="First name")
@@ -22,10 +22,12 @@ class OnlineConsentPage:
         self.yes_radio = self.page.get_by_role("radio", name="Yes", exact=True)
         self.no_radio = self.page.get_by_role("radio", name="No", exact=True)
         self.preferred_first_name_textbox = self.page.get_by_role(
-            "textbox", name="Preferred first name (optional)"
+            "textbox",
+            name="Preferred first name (optional)",
         )
         self.preferred_last_name_textbox = self.page.get_by_role(
-            "textbox", name="Preferred last name (optional)"
+            "textbox",
+            name="Preferred last name (optional)",
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.dob_day_textbox = self.page.get_by_role("textbox", name="Day")
@@ -33,34 +35,43 @@ class OnlineConsentPage:
         self.dob_year_textbox = self.page.get_by_role("textbox", name="Year")
         self.displayed_school_name = self.page.get_by_test_id("school-name")
         self.confirm_school_radio = self.page.get_by_role(
-            "radio", name="Yes, they go to this school"
+            "radio",
+            name="Yes, they go to this school",
         )
         self.select_different_school_radio = self.page.get_by_role(
-            "radio", name="No, they go to a different school"
+            "radio",
+            name="No, they go to a different school",
         )
         self.school_name_combobox = self.page.get_by_role("combobox")
         self.full_name_textbox = self.page.get_by_role("textbox", name="Full name")
         self.email_address_textbox = self.page.get_by_role(
-            "textbox", name="Email address"
+            "textbox",
+            name="Email address",
         )
         self.phone_textbox = self.page.get_by_role("textbox", name="Phone number")
         self.text_alerts_checkbox = self.page.get_by_role(
-            "checkbox", name="Get updates by text message"
+            "checkbox",
+            name="Get updates by text message",
         )
         self.address_line_1_textbox = self.page.get_by_role(
-            "textbox", name="Address line 1"
+            "textbox",
+            name="Address line 1",
         )
         self.address_line_2_textbox = self.page.get_by_role(
-            "textbox", name="Address line 2 (optional)"
+            "textbox",
+            name="Address line 2 (optional)",
         )
         self.address_city_textbox = self.page.get_by_role(
-            "textbox", name="Town or city"
+            "textbox",
+            name="Town or city",
         )
         self.address_postcode_textbox = self.page.get_by_role(
-            "textbox", name="Postcode"
+            "textbox",
+            name="Postcode",
         )
         self.give_details_textbox = self.page.get_by_role(
-            "textbox", name="Give details"
+            "textbox",
+            name="Give details",
         )
         self.consent_refusal_radios = {
             reason: self.page.get_by_role("radio", name=reason)
@@ -69,28 +80,34 @@ class OnlineConsentPage:
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
 
         self.doubles_consent_both_radio = self.page.get_by_role(
-            "radio", name="Yes, I agree to them having"
+            "radio",
+            name="Yes, I agree to them having",
         )
         self.doubles_consent_one_radio = self.page.get_by_role(
-            "radio", name="I agree to them having one of"
+            "radio",
+            name="I agree to them having one of",
         )
         self.doubles_consent_menacwy_radio = self.page.get_by_role(
-            "radio", name="MenACWY"
+            "radio",
+            name="MenACWY",
         )
         self.doubles_consent_tdipv_radio = self.page.get_by_role("radio", name="Td/IPV")
         self.flu_agree_injection_radio = self.page.get_by_role(
-            "radio", name="Yes, I agree to the alternative flu injection"
+            "radio",
+            name="Yes, I agree to the alternative flu injection",
         )
         self.flu_agree_nasal_radio = self.page.get_by_role(
-            "radio", name="Yes, I agree to them having the nasal spray vaccine"
+            "radio",
+            name="Yes, I agree to them having the nasal spray vaccine",
         )
         self.hpv_consent_agree_radio = self.page.get_by_role(
-            "radio", name="Yes, I agree"
+            "radio",
+            name="Yes, I agree",
         )
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
 
     @step("Click Continue")
-    def click_continue(self):
+    def click_continue(self) -> None:
         self.continue_button.click()
 
     @step("Click Confirm")
@@ -151,7 +168,7 @@ class OnlineConsentPage:
         self.page.get_by_role("radio", name=name).check()
 
     @step("Fill email address")
-    def fill_email_address(self, email):
+    def fill_email_address(self, email: str) -> None:
         self.email_address_textbox.fill(email)
 
     @step("Fill parent name")
@@ -175,7 +192,7 @@ class OnlineConsentPage:
         self.click_continue()
 
     @step("Agree to doubles vaccinations: {1}")
-    def agree_to_doubles_vaccinations(self, *programmes: Programme):
+    def agree_to_doubles_vaccinations(self, *programmes: Programme) -> None:
         if Programme.MENACWY in programmes and Programme.TD_IPV in programmes:
             self.doubles_consent_both_radio.check()
         elif Programme.MENACWY in programmes:
@@ -187,7 +204,7 @@ class OnlineConsentPage:
         self.click_continue()
 
     @step("Agree to Flu vaccination (consent_option = {consent_option})")
-    def agree_to_flu_vaccination(self, consent_option: ConsentOption):
+    def agree_to_flu_vaccination(self, consent_option: ConsentOption) -> None:
         if consent_option is ConsentOption.INJECTION:
             self.flu_agree_injection_radio.check()
         else:
@@ -199,18 +216,22 @@ class OnlineConsentPage:
             self.answer_no()
 
     @step("Agree to HPV vaccination")
-    def agree_to_hpv_vaccination(self):
+    def agree_to_hpv_vaccination(self) -> None:
         self.hpv_consent_agree_radio.check()
         self.click_continue()
 
     @step("Don't agree to vaccination")
-    def dont_agree_to_vaccination(self):
+    def dont_agree_to_vaccination(self) -> None:
         self.no_consent_radio.check()
         self.click_continue()
 
     @step("Fill address details")
     def fill_address_details(
-        self, line1: str, line2: str, city: str, postcode: str
+        self,
+        line1: str,
+        line2: str,
+        city: str,
+        postcode: str,
     ) -> None:
         self.address_line_1_textbox.fill(line1)
         self.address_line_2_textbox.fill(line2)
@@ -235,28 +256,31 @@ class OnlineConsentPage:
         self.consent_refusal_radios[reason].check()
 
     def get_number_of_health_questions_for_programmes(
-        self, programmes: list[Programme]
+        self,
+        programmes: list[Programme],
     ) -> int:
         return len(
             {
                 question
                 for programme in programmes
                 for question in Programme.health_questions(programme)
-            }
+            },
         )
 
-    def answer_yes(self, details: str | None = None):
+    def answer_yes(self, details: str | None = None) -> None:
         self.select_yes()
         if details:
             self.give_details(details)
         self.click_continue()
 
-    def answer_no(self):
+    def answer_no(self) -> None:
         self.select_no()
         self.click_continue()
 
     def select_consent_not_given_reason(
-        self, reason: ConsentRefusalReason, details: str | None = None
+        self,
+        reason: ConsentRefusalReason,
+        details: str | None = None,
     ) -> None:
         self.click_consent_refusal_reason(reason)
         if reason.requires_details:
@@ -269,7 +293,7 @@ class OnlineConsentPage:
         confirmation = self.page.locator(".nhsuk-panel.nhsuk-panel--confirmation")
         expect(confirmation).to_contain_text(text)
 
-    def go_to_url(self, url: str):
+    def go_to_url(self, url: str) -> None:
         self.page.goto(url)
 
     def fill_details(
@@ -277,8 +301,9 @@ class OnlineConsentPage:
         child: Child,
         parent: Parent,
         schools: list[School],
+        *,
         change_school: bool = False,
-    ):
+    ) -> None:
         self.fill_child_name_details(*child.name)
         self.fill_child_date_of_birth(child.date_of_birth)
 
@@ -289,18 +314,21 @@ class OnlineConsentPage:
 
         self.fill_parent_details(parent)
 
-    def answer_health_questions(self, number_of_questions: int, health_question: bool):
+    def answer_health_questions(
+        self, number_of_questions: int, *, yes_to_health_questions: bool
+    ) -> None:
         for _ in range(number_of_questions):
-            if health_question:
+            if yes_to_health_questions:
                 self.answer_yes("More details")
             else:
                 self.answer_no()
 
     def get_number_of_health_questions_for_flu(
-        self, consent_option: ConsentOption
+        self,
+        consent_option: ConsentOption,
     ) -> int:
         number_of_health_questions = len(
-            Programme.health_questions(Programme.FLU, consent_option)
+            Programme.health_questions(Programme.FLU, consent_option),
         )
         if consent_option is not ConsentOption.INJECTION:
             number_of_health_questions -= 1
@@ -310,29 +338,31 @@ class OnlineConsentPage:
         self,
         child: Child,
         programmes: list[Programme],
-        health_question: bool,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-    ):
-        def programme_display(programme, consent_option) -> str:
+        *,
+        yes_to_health_questions: bool,
+    ) -> None:
+        def programme_display(
+            programme: Programme, consent_option: ConsentOption
+        ) -> str:
             if programme == Programme.FLU:
                 return (
                     "injected flu"
                     if consent_option is ConsentOption.INJECTION
                     else "nasal spray flu"
                 )
-            else:
-                return str(programme)
+            return str(programme)
 
         programmes_str = " and ".join(
             programme_display(programme, consent_option) for programme in programmes
         )
 
-        if programmes == [Programme.MENACWY] or programmes == [Programme.TD_IPV]:
+        if programmes in ([Programme.MENACWY], [Programme.TD_IPV]):
             title = f"Consent for the {programmes_str} vaccination confirmed"
         else:
             title = "Consent confirmed"
 
-        if health_question:
+        if yes_to_health_questions:
             body = (
                 f" As you answered ‘yes’ to some of the health questions, "
                 f"we need to check the {programmes_str} vaccination{'s are' if len(programmes) > 1 else ' is'} suitable for "
@@ -341,5 +371,5 @@ class OnlineConsentPage:
         else:
             body = f"{child.first_name} {child.last_name} is due to get the {programmes_str} vaccination{'s' if len(programmes) > 1 else ''} at school"
 
-        final_message = "".join([title, body])
+        final_message = f"{title}{body}"
         self.expect_confirmation_text(final_message)

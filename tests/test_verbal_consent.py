@@ -46,8 +46,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
-    """
-    Test: Add and edit Gillick competence assessment for a child.
+    """Test: Add and edit Gillick competence assessment for a child.
     Steps:
     1. Open the session for the school and programme.
     2. Navigate to Gillick competence assessment for the child.
@@ -69,8 +68,7 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
 
 @issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
-    """
-    Test: Validate Gillick competence assessment notes length and update.
+    """Test: Validate Gillick competence assessment notes length and update.
     Steps:
     1. Open the session for the school and programme.
     2. Navigate to Gillick competence assessment for the child.
@@ -104,10 +102,13 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 
 @pytest.mark.bug
 def test_invalid_consent(
-    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
 ):
-    """
-    Test: Record invalid and refused consents and verify activity log entries.
+    """Test: Record invalid and refused consents and verify activity log entries.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a 'no response' verbal consent for parent 1.
@@ -137,22 +138,25 @@ def test_invalid_consent(
     sessions_page.click_session_activity_and_notes()
 
     sessions_page.check_session_activity_entry(
-        f"Consent from {child.parents[1].full_name} invalidated"
+        f"Consent from {child.parents[1].full_name} invalidated",
     )
     sessions_page.check_session_activity_entry(
-        f"Consent refused by {child.parents[1].name_and_relationship}"
+        f"Consent refused by {child.parents[1].name_and_relationship}",
     )
     sessions_page.check_session_activity_entry(
-        f"Consent not_provided by {child.parents[0].name_and_relationship}"
+        f"Consent not_provided by {child.parents[0].name_and_relationship}",
     )
 
 
 @pytest.mark.bug
 def test_parent_provides_consent_twice(
-    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
 ):
-    """
-    Test: Record two consents from the same parent (positive then refusal) and verify activity log.
+    """Test: Record two consents from the same parent (positive then refusal) and verify activity log.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a written positive consent for parent 1.
@@ -186,20 +190,23 @@ def test_parent_provides_consent_twice(
     sessions_page.expect_consent_refused_text(child.parents[0])
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_session_activity_entry(
-        f"Consent refused by {child.parents[0].name_and_relationship}"
+        f"Consent refused by {child.parents[0].name_and_relationship}",
     )
     sessions_page.check_session_activity_entry("Triaged decision: Safe to vaccinate")
     sessions_page.check_session_activity_entry(
-        f"Consent given by {child.parents[0].name_and_relationship}"
+        f"Consent given by {child.parents[0].name_and_relationship}",
     )
 
 
 @pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
-    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
 ):
-    """
-    Test: Record conflicting consents from parents, resolve with Gillick competence, and verify status.
+    """Test: Record conflicting consents from parents, resolve with Gillick competence, and verify status.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a verbal positive consent for parent 1.
@@ -219,7 +226,8 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0], change_phone=False
+        parent=child.parents[0],
+        change_phone=False,
     )
     sessions_page.select_consent_given()
 
@@ -236,7 +244,7 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
     sessions_page.click_record_a_new_consent_response()
     verbal_consent_page.child_consent_verbal_positive()
-    sessions_page.expect_alert_text(f"Consent recorded for {str(child)}")
+    sessions_page.expect_alert_text(f"Consent recorded for {child!s}")
     sessions_page.select_consent_given()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
@@ -245,5 +253,5 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_consent_status(Programme.HPV, "Consent given")
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_session_activity_entry(
-        f"Consent given by {str(child)} (Child (Gillick competent))"
+        f"Consent given by {child!s} (Child (Gillick competent))",
     )

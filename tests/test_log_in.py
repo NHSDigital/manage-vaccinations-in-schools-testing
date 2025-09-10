@@ -11,11 +11,10 @@ def go_to_log_in_page(start_page):
     start_page.navigate_and_start()
 
 
-@pytest.mark.parametrize("username", ("", "invalid"), ids=lambda v: f"username: {v}")
-@pytest.mark.parametrize("password", ("", "invalid"), ids=lambda v: f"password: {v}")
+@pytest.mark.parametrize("username", ["", "invalid"], ids=lambda v: f"username: {v}")
+@pytest.mark.parametrize("password", ["", "invalid"], ids=lambda v: f"password: {v}")
 def test_login_with_invalid_credentials(username, password, log_in_page):
-    """
-    Test: Attempt to log in with invalid or empty credentials and verify error message.
+    """Test: Attempt to log in with invalid or empty credentials and verify error message.
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Attempt to log in with the given username and password.
@@ -36,11 +35,12 @@ def users(medical_secretary, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.mark.parametrize(
-    "role", ("medical_secretary", "nurse", "superuser"), ids=lambda v: f"role: {v}"
+    "role",
+    ["medical_secretary", "nurse", "superuser"],
+    ids=lambda v: f"role: {v}",
 )
 def test_login_with_valid_credentials(role, users, team, dashboard_page, log_in_page):
-    """
-    Test: Log in with valid credentials for each user role and verify dashboard links.
+    """Test: Log in with valid credentials for each user role and verify dashboard links.
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
