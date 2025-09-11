@@ -80,7 +80,8 @@ class DownloadSchoolMovesPage:
             None,
         )
 
-        # Playwrights webkit browser always opens CSVs in the browser, unlike Chromium and Firefox
+        # Playwright's webkit browser always opens CSVs in the browser
+        # unlike Chromium and Firefox
         if browser_type_name == "webkit":
             self.confirm_button.click()
             csv_content = self.page.locator("pre").inner_text()

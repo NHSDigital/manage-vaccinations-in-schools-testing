@@ -162,7 +162,8 @@ class ProgrammesPage:
             None,
         )
 
-        # Playwrights webkit browser always opens CSVs in the browser, unlike Chromium and Firefox
+        # Playwright's webkit browser always opens CSVs in the browser
+        # unlike Chromium and Firefox
         if browser_type_name == "webkit":
             self.click_continue()
             csv_content = self.page.locator("pre").inner_text()
@@ -183,5 +184,8 @@ class ProgrammesPage:
             h for h in actual_headers.split(",") if h not in expected_headers.split(",")
         ]
         if len(_e_not_a) > 0 or len(_a_not_e) > 0:
-            error_message = f"The following expected field(s) were not found in the report: {_e_not_a}.  Report contains extra field(s), which were not expected: {_a_not_e}."
+            error_message = (
+                f"Report is missing expected field(s): {_e_not_a}. "
+                f"Report contains unexpected field(s): {_a_not_e}."
+            )
             raise AssertionError(error_message)

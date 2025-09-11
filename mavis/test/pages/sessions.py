@@ -823,7 +823,8 @@ class SessionsPage:
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
-        link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"
+        programme_names = [str(programme) for programme in programmes]
+        link_text = f"View the {' and '.join(programme_names)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
 
     def register_child_as_attending(self, child: Child) -> None:
@@ -832,12 +833,6 @@ class SessionsPage:
         self.click_on_attending()
 
     def verify_search(self) -> None:
-        """1. Find a session with patients
-        2. Go to any of the tabs at the top that allow users to search by name
-        3. Enter a search query that will result in no matches (for example "a very long string that won't match any names")
-        Expected: The user sees a page saying "No children matching search criteria found".
-        Actual: The user sees a page saying "An error has occurred."
-        """
         self.click_consent_tab()
         self.search_for("a very long string that won't match any names")
         expect(

@@ -59,7 +59,6 @@ select = ["ALL"]
 ignore = [
   "COM812",   # should be disabled when using ruff formatter
   "D",        # docstrings should not be necessary
-  "E501",     # temp ignore line length rule
   "RUF001",   # mavis uses the ambiguous ’ character
   "S311",     # no cryptography warnings needed
 ]
