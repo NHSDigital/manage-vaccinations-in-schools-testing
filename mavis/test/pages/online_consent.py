@@ -365,11 +365,16 @@ class OnlineConsentPage:
         if yes_to_health_questions:
             body = (
                 f" As you answered ‘yes’ to some of the health questions, "
-                f"we need to check the {programmes_str} vaccination{'s are' if len(programmes) > 1 else ' is'} suitable for "
-                f"{child.first_name} {child.last_name}. We’ll review your answers and get in touch again soon."
+                f"we need to check the {programmes_str}"
+                f" vaccination{'s are' if len(programmes) > 1 else ' is'} suitable for "
+                f"{child.first_name} {child.last_name}. We’ll review your answers and"
+                " get in touch again soon."
             )
         else:
-            body = f"{child.first_name} {child.last_name} is due to get the {programmes_str} vaccination{'s' if len(programmes) > 1 else ''} at school"
-
+            body = (
+                f"{child.first_name} {child.last_name} is due to get the "
+                f"{programmes_str} vaccination{'s' if len(programmes) > 1 else ''}"
+                " at school"
+            )
         final_message = f"{title}{body}"
         self.expect_confirmation_text(final_message)

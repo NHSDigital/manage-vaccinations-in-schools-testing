@@ -27,80 +27,42 @@ def format_datetime_for_upload_link(now: datetime) -> str:
 
 
 def get_current_datetime() -> datetime:
-    """Get the current date and time.
-
-    Returns:
-        datetime: Current date and time.
-
-    """
     return datetime.now(tz=ZoneInfo("Europe/London"))
 
 
 def get_current_datetime_compact() -> str:
-    """Get the current date and time in a compact format.
-
-    Returns:
-        str: Current date and time in "YYYYMMDDHHMMSS" format.
-
-    """
     return get_current_datetime().strftime("%Y%m%d%H%M%S")
 
 
 def get_current_time_hms_format() -> str:
-    """Get the current time in a HH:MM:SS format.
-
-    Returns:
-        str: Current date and time in "HH:MM:SS" format.
-
-    """
     return get_current_datetime().strftime("%H:%M:%S")
 
 
 def get_todays_date() -> date:
-    """Get today's date using UK timezone.
-
-    Returns:
-        date: date object representing today's date in UK timezone.
-
-    """
     return get_current_datetime().date()
 
 
 def get_offset_date(offset_days: int, *, skip_weekends: bool = False) -> date:
-    """Get a date offset by a specified number of days. Skips weekend dates by default.
-
-    Args:
-        offset_days (int): Number of days to offset (positive or negative).
-
-    Returns:
-        str: Offset date in "YYYYMMDD" format.
-
-    """
     _offset_date = get_todays_date() + timedelta(days=offset_days)
+
     if skip_weekends:
         day_of_week_saturday = 5
         while _offset_date.weekday() >= day_of_week_saturday:
             _offset_date = _offset_date + timedelta(days=1)
+
     return _offset_date
 
 
 def get_offset_date_compact_format(
     offset_days: int, *, skip_weekends: bool = False
 ) -> str:
-    """Get a date offset by a specified number of days. Skips weekend dates by default.
-
-    Args:
-        offset_days (int): Number of days to offset (positive or negative).
-
-    Returns:
-        str: Offset date in "YYYYMMDD" format.
-
-    """
     _offset_date = get_todays_date() + timedelta(days=offset_days)
+
     if skip_weekends:
         day_of_week_saturday = 5
         while _offset_date.weekday() >= day_of_week_saturday:
             _offset_date = _offset_date + timedelta(days=1)
+
     return _offset_date.strftime("%Y%m%d")
 
 
@@ -137,14 +99,12 @@ def generate_random_string(
 
 
 def normalize_whitespace(string: str) -> str:
-    """Normalize whitespace in a string:
-    - Remove zero-width joiners
-    - Replace non-breaking spaces with regular spaces
-    - Collapse consecutive whitespace to a single space
-    - Strip leading/trailing whitespace
-    """
-    string = string.replace("\u200d", "")
-    string = string.replace("\u00a0", " ")
+    zwj = "\u200d"
+    string = string.replace(zwj, "")
+
+    nbsp = "\u00a0"
+    string = string.replace(nbsp, " ")
+
     return re.sub(r"\s+", " ", string).strip()
 
 

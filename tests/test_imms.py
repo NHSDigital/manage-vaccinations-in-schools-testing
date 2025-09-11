@@ -74,9 +74,12 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     sessions_page,
     programmes_page,
 ):
-    """Test: Create, edit, and delete an HPV vaccination record and verify changes in the IMMS API.
+    """
+    Test: Create, edit, and delete an HPV vaccination record and verify changes in
+       the IMMS API.
     Steps:
-    1. Setup: Schedule HPV session, import class list, add vaccine batch, and register child with verbal consent.
+    1. Setup: Schedule HPV session, import class list, add vaccine batch, and
+       register child with verbal consent.
     2. Create: Record HPV vaccination for the child (LEFT_ARM_UPPER).
     3. Verify: Check the vaccination record exists in the IMMS API.
     4. Edit: Change the delivery site to RIGHT_ARM_LOWER and save.

@@ -67,20 +67,24 @@ class ImmsApiHelper:
         assert imms_vaccination_record is not None, "No immunization record found"
 
         assert imms_vaccination_record.patient_nhs_number == child.nhs_number, (
-            f"Expected NHS number {child.nhs_number}, got {imms_vaccination_record.patient_nhs_number}"
+            f"Expected NHS number {child.nhs_number}, "
+            f"got {imms_vaccination_record.patient_nhs_number}"
         )
 
         gardasil_9_vaccine_code = "33493111000001108"
         assert imms_vaccination_record.vaccine_code == gardasil_9_vaccine_code, (
-            f"Expected vaccine code {gardasil_9_vaccine_code}, got {imms_vaccination_record.vaccine_code}"
+            f"Expected vaccine code {gardasil_9_vaccine_code}, "
+            f"got {imms_vaccination_record.vaccine_code}"
         )
 
         assert imms_vaccination_record.delivery_site == delivery_site, (
-            f"Expected vaccination site {delivery_site}, got {imms_vaccination_record.delivery_site}"
+            f"Expected vaccination site {delivery_site}, "
+            f"got {imms_vaccination_record.delivery_site}"
         )
 
         assert imms_vaccination_record.vaccination_location_urn == school.urn, (
-            f"Expected vaccination location urn {school.urn}, got {imms_vaccination_record.vaccination_location_urn}"
+            f"Expected vaccination location urn {school.urn}, "
+            f"got {imms_vaccination_record.vaccination_location_urn}"
         )
 
         tolerance_seconds = 10
@@ -92,7 +96,8 @@ class ImmsApiHelper:
             )
             < tolerance_seconds
         ), (
-            f"Expected vaccination time within {tolerance_seconds} seconds of {vaccination_time}, got {imms_vaccination_record.vaccination_time}"
+            f"Expected vaccination time within {tolerance_seconds} seconds of"
+            f" {vaccination_time}, got {imms_vaccination_record.vaccination_time}"
         )
 
     def check_hpv_record_is_not_in_imms_api(
@@ -102,7 +107,8 @@ class ImmsApiHelper:
         imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
 
         assert imms_vaccination_record is None, (
-            f"Expected no immunization record for {child.nhs_number}, but found {imms_vaccination_record}"
+            f"Expected no immunization record for {child.nhs_number}, "
+            f"got {imms_vaccination_record}"
         )
 
     def _get_hpv_imms_api_record_for_child(

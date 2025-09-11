@@ -96,7 +96,8 @@ def test_children_page_headers_and_filtering(
     children_page,
     children,
 ):
-    """Test: Verify children page headers and filtering by child name.
+    """
+    Test: Verify children page headers and filtering by child name.
     Steps:
     1. Setup: Import a fixed child class list and navigate to the children page.
     2. Search for a child using all filters by name.
@@ -119,9 +120,12 @@ def test_patient_details_load_with_missing_vaccine_info(
     schools,
     children,
 ):
-    """Test: Ensure patient details page loads for a child with missing vaccine info (MAV-853).
+    """
+    Test: Ensure patient details page loads for a child with missing vaccine info
+       (MAV-853).
     Steps:
-    1. Setup: Import class list, schedule session, import cohort, and upload vaccination records with missing vaccine info.
+    1. Setup: Import class list, schedule session, import cohort, and upload vaccination
+       records with missing vaccine info.
     2. Search for the child by name.
     3. Click to view the child's record.
     4. Open the activity log.
@@ -150,7 +154,8 @@ def test_invalid_nhs_number_change_is_rejected(
     children_page,
     children,
 ):
-    """Test: Changing a child's NHS number to an invalid value should fail.
+    """
+    Test: Changing a child's NHS number to an invalid value should fail.
     Steps:
     1. Setup: Import a fixed child class list and navigate to the children page.
     2. Search for the child by name.
@@ -174,9 +179,11 @@ def test_invalid_nhs_number_change_is_rejected(
 @issue("MAV-1839")
 @pytest.mark.children
 def test_merge_child_records_does_not_crash(setup_child_merge, children_page, children):
-    """Test: Merging two child records does not cause a crash (MAV-1839).
+    """
+    Test: Merging two child records does not cause a crash (MAV-1839).
     Steps:
-    1. Setup: Import a class list with two fixed children and navigate to the children page.
+    1. Setup: Import a class list with two fixed children and navigate to the
+       children page.
     2. Search for the first child by name.
     3. Open the first child's record and start the archive (merge) process.
     4. Select the second child as the duplicate.

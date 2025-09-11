@@ -47,7 +47,8 @@ def test_archive_unmatched_consent_response_removes_from_list(
     consent_response_page,
     unmatched_consent_responses_page,
 ):
-    """Test: Archive an unmatched consent response and verify it is removed from the list.
+    """
+    Test: Archive an unmatched consent response and verify it is removed from the list.
     Steps:
     1. Select a child from the unmatched consent responses.
     2. Click the archive button and provide notes.
@@ -75,7 +76,8 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     unmatched_consent_responses_page,
     import_records_page,
 ):
-    """Test: Match an unmatched consent response to a child and verify activity log.
+    """
+    Test: Match an unmatched consent response to a child and verify activity log.
     Steps:
     1. Import a fixed child class list for the current year.
     2. Navigate to unmatched consent responses and select a child.
@@ -139,7 +141,8 @@ def test_create_child_record_from_consent_with_nhs_number(
     dashboard_page,
     unmatched_consent_responses_page,
 ):
-    """Test: Create a new child record from an unmatched consent response with NHS number.
+    """
+    Test: Create a new child record from an unmatched consent response with NHS number.
     Steps:
     1. Select a child from unmatched consent responses.
     2. Click to create a new record and complete the process.
@@ -173,7 +176,9 @@ def test_create_child_record_from_consent_without_nhs_number(
     dashboard_page,
     unmatched_consent_responses_page,
 ):
-    """Test: Create a new child record from an unmatched consent response without NHS number.
+    """
+    Test: Create a new child record from an unmatched consent response
+       without NHS number.
     Steps:
     1. Select a child from unmatched consent responses.
     2. Click to create a new record and complete the process.

@@ -70,12 +70,14 @@ def test_recording_hpv_vaccination_e2e(
     nurse,
     team,
 ):
-    """Test: End-to-end test for recording an HPV vaccination for a child.
+    """
+    Test: End-to-end test for recording an HPV vaccination for a child.
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
     2. Go to online consent URL and fill in child and parent details.
     3. Agree to HPV vaccination, fill address, answer health questions, and confirm.
-    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    4. Log in as nurse, navigate to session, set session in progress,
+       register child as attending.
     5. Record HPV vaccination for the child.
     Verification:
     - Final consent message is shown after online consent.
@@ -145,12 +147,15 @@ def test_recording_doubles_vaccination_e2e(
     nurse,
     team,
 ):
-    """Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations for a child.
+    """
+    Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch names.
     2. Go to online consent URL and fill in child and parent details.
-    3. Agree to both MenACWY and Td/IPV vaccinations, fill address, answer health questions, and confirm.
-    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    3. Agree to both MenACWY and Td/IPV vaccinations, fill address,
+       answer health questions
+    4. Log in as nurse, navigate to session, set session in progress,
+       register child as attending.
     5. Record MenACWY and Td/IPV vaccinations for the child.
     Verification:
     - Final consent message is shown after online consent.
@@ -226,12 +231,14 @@ def test_recording_flu_vaccination_e2e(
     nurse,
     team,
 ):
-    """Test: End-to-end test for recording a flu vaccination for a child.
+    """
+    Test: End-to-end test for recording a flu vaccination for a child.
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
     2. Go to online consent URL and fill in child and parent details.
     3. Agree to flu vaccination, fill address, answer health questions, and confirm.
-    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    4. Log in as nurse, navigate to session, set session in progress,
+       register child as attending.
     5. Record flu vaccination for the child.
     Verification:
     - Final consent message is shown after online consent.

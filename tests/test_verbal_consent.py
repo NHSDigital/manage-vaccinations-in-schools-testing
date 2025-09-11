@@ -47,7 +47,8 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
-    """Test: Add and edit Gillick competence assessment for a child.
+    """
+    Test: Add and edit Gillick competence assessment for a child.
     Steps:
     1. Open the session for the school and programme.
     2. Navigate to Gillick competence assessment for the child.
@@ -69,13 +70,15 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
 
 @issue("MAV-955")
 def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
-    """Test: Validate Gillick competence assessment notes length and update.
+    """
+    Test: Validate Gillick competence assessment notes length and update.
     Steps:
     1. Open the session for the school and programme.
     2. Navigate to Gillick competence assessment for the child.
     3. Attempt to complete assessment with notes over 1000 characters (should error).
     4. Complete assessment with valid notes.
-    5. Edit assessment and again try to update with notes over 1000 characters (should error).
+    5. Edit assessment and again try to update with notes over 1000
+       characters (should error).
     Verification:
     - Error is shown for notes over 1000 characters.
     - Assessment can be completed and updated with valid notes.
@@ -113,7 +116,8 @@ def test_invalid_consent(
     verbal_consent_page,
     children,
 ):
-    """Test: Record invalid and refused consents and verify activity log entries.
+    """
+    Test: Record invalid and refused consents and verify activity log entries.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a 'no response' verbal consent for parent 1.
@@ -161,7 +165,9 @@ def test_parent_provides_consent_twice(
     verbal_consent_page,
     children,
 ):
-    """Test: Record two consents from the same parent (positive then refusal) and verify activity log.
+    """
+    Test: Record two consents from the same parent (positive then refusal)
+       and verify activity log.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a written positive consent for parent 1.
@@ -211,7 +217,9 @@ def test_conflicting_consent_with_gillick_consent(
     verbal_consent_page,
     children,
 ):
-    """Test: Record conflicting consents from parents, resolve with Gillick competence, and verify status.
+    """
+    Test: Record conflicting consents from parents, resolve with Gillick competence,
+       and verify status.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a verbal positive consent for parent 1.
@@ -220,7 +228,8 @@ def test_conflicting_consent_with_gillick_consent(
     5. Record child verbal consent.
     6. Verify consent status and activity log.
     Verification:
-    - Consent status updates to 'Conflicting consent', then 'Safe to vaccinate', then 'Consent given'.
+    - Consent status updates to 'Conflicting consent', then 'Safe to vaccinate',
+      then 'Consent given'.
     - Activity log contains entry for Gillick competent child consent.
     """
     child = children[Programme.HPV][0]

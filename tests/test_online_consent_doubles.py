@@ -25,7 +25,9 @@ def test_consent_refused_for_doubles_vaccination(
     schools,
     children,
 ):
-    """Test: Submit an online consent form refusing doubles vaccination and verify confirmation.
+    """
+    Test: Submit an online consent form refusing doubles vaccination and
+       verify confirmation.
     Steps:
     1. Fill in child and parent details on the consent page.
     2. Select 'do not agree' to vaccination.
@@ -45,7 +47,9 @@ def test_consent_refused_for_doubles_vaccination(
     )
     online_consent_page.click_confirm()
     online_consent_page.expect_confirmation_text(
-        f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the MenACWY and Td/IPV vaccinations at school",
+        f"Consent refusedYou’ve told us that you do not want"
+        f" {child.first_name} {child.last_name} to get the MenACWY and Td/IPV"
+        " vaccinations at school",
     )
 
 
@@ -72,7 +76,9 @@ def test_consent_given_for_doubles_vaccination(
     yes_to_health_questions,
     children,
 ):
-    """Test: Submit an online consent form giving consent for one or both doubles vaccinations and verify confirmation.
+    """
+    Test: Submit an online consent form giving consent for one or both
+       doubles vaccinations and verify confirmation.
     Steps:
     1. Fill in child and parent details on the consent page, optionally changing school.
     2. Agree to one or both doubles vaccinations as specified by parameter.
@@ -81,7 +87,8 @@ def test_consent_given_for_doubles_vaccination(
     5. If not both vaccines, select a reason for not giving consent to the other.
     6. Submit the consent form.
     Verification:
-    - Confirmation message is shown for the correct child, vaccines, and health question status.
+    - Confirmation message is shown for the correct child, vaccines,
+       and health question status.
     """
     child = children["doubles"][0]
     schools = schools["doubles"]

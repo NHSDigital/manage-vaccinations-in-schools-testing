@@ -21,7 +21,8 @@ def test_batch_add_change_archive(
     edit_batch_page,
     vaccines_page,
 ):
-    """Test: Add, edit, and archive a vaccine batch and verify success alerts.
+    """
+    Test: Add, edit, and archive a vaccine batch and verify success alerts.
     Steps:
     1. Click to add a new batch for the given vaccine.
     2. Fill in batch name and expiry date, then confirm.
@@ -51,7 +52,8 @@ def test_batch_add_change_archive(
 @issue("MAV-955")
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_name_too_short(vaccine, add_batch_page, vaccines_page):
-    """Test: Attempt to add a batch with a name that is too short and verify error message.
+    """
+    Test: Attempt to add a batch with a name that is too short and verify error message.
     Steps:
     1. Click to add a new batch for the given vaccine.
     2. Enter a batch name with only one character.
@@ -73,7 +75,8 @@ def test_batch_name_too_short(vaccine, add_batch_page, vaccines_page):
 @issue("MAV-955")
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_name_too_long(vaccine, add_batch_page, vaccines_page):
-    """Test: Attempt to add a batch with a name that is too long and verify error message.
+    """
+    Test: Attempt to add a batch with a name that is too long and verify error message.
     Steps:
     1. Click to add a new batch for the given vaccine.
     2. Enter a batch name with more than 100 characters.
@@ -93,12 +96,15 @@ def test_batch_name_too_long(vaccine, add_batch_page, vaccines_page):
 
 
 def test_verify_flu_not_available(onboarding, vaccines_page):
-    """Test: Verify that the flu vaccine is not available for selection if not enabled in onboarding.
+    """
+    Test: Verify that the flu vaccine is not available for selection if not enabled
+       in onboarding.
     Steps:
     1. Retrieve the list of enabled programmes from onboarding.
     2. Check the vaccines page for flu vaccine availability.
     Verification:
-    - Flu vaccine is not available for selection if not present in the enabled programmes.
+    - Flu vaccine is not available for selection if not present in the
+      enabled programmes.
     """
     programmes = onboarding.get("programmes")
     vaccines_page.verify_flu_not_available(programmes)

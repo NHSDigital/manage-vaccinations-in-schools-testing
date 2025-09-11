@@ -121,12 +121,13 @@ def setup_vaccs_systmone(
         sessions_page.delete_all_sessions(school)
 
 
-########################################### CHILD LIST ###########################################
+################################# CHILD LIST #################################
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_valid_data(setup_child_list, import_records_page):
-    """Test: Upload a valid child list file and verify successful import.
+    """
+    Test: Upload a valid child list file and verify successful import.
     Steps:
     1. Navigate to child record import page.
     2. Upload a valid child list file.
@@ -138,7 +139,8 @@ def test_child_list_file_upload_valid_data(setup_child_list, import_records_page
 
 @pytest.mark.childlist
 def test_child_list_file_upload_invalid_data(setup_child_list, import_records_page):
-    """Test: Upload an invalid child list file and verify error handling.
+    """
+    Test: Upload an invalid child list file and verify error handling.
     Steps:
     1. Navigate to child record import page.
     2. Upload a child list file with invalid data.
@@ -153,7 +155,8 @@ def test_child_list_file_upload_invalid_structure(
     setup_child_list,
     import_records_page,
 ):
-    """Test: Upload a child list file with invalid structure and verify error handling.
+    """
+    Test: Upload a child list file with invalid structure and verify error handling.
     Steps:
     1. Navigate to child record import page.
     2. Upload a file with incorrect structure.
@@ -165,7 +168,8 @@ def test_child_list_file_upload_invalid_structure(
 
 @pytest.mark.childlist
 def test_child_list_file_upload_header_only(setup_child_list, import_records_page):
-    """Test: Upload a child list file with only headers and verify no records are imported.
+    """
+    Test: Upload a child list file with only headers and verify no records are imported.
     Steps:
     1. Navigate to child record import page.
     2. Upload a header-only file.
@@ -177,7 +181,8 @@ def test_child_list_file_upload_header_only(setup_child_list, import_records_pag
 
 @pytest.mark.childlist
 def test_child_list_file_upload_empty_file(setup_child_list, import_records_page):
-    """Test: Upload an empty child list file and verify error handling.
+    """
+    Test: Upload an empty child list file and verify error handling.
     Steps:
     1. Navigate to child record import page.
     2. Upload an empty file.
@@ -195,7 +200,8 @@ def test_child_list_file_upload_whitespace_normalization(
     children_page,
     dashboard_page,
 ):
-    """Test: Upload a child list file with extra whitespace and verify normalization.
+    """
+    Test: Upload a child list file with extra whitespace and verify normalization.
     Steps:
     1. Upload a file with whitespace issues.
     2. Navigate to children page.
@@ -211,7 +217,7 @@ def test_child_list_file_upload_whitespace_normalization(
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
 
 
-########################################### CLASS LIST ###########################################
+######################### CLASS LIST ###########################
 
 
 @pytest.mark.classlist
@@ -221,7 +227,8 @@ def test_class_list_file_upload_valid_data(
     import_records_page,
     year_groups,
 ):
-    """Test: Upload a valid class list file and verify successful import.
+    """
+    Test: Upload a valid class list file and verify successful import.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
     2. Upload a valid class list file.
@@ -245,7 +252,8 @@ def test_class_list_file_upload_invalid_data(
     import_records_page,
     year_groups,
 ):
-    """Test: Upload an invalid class list file and verify error handling.
+    """
+    Test: Upload an invalid class list file and verify error handling.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
     2. Upload a class list file with invalid data.
@@ -269,7 +277,8 @@ def test_class_list_file_upload_invalid_structure(
     import_records_page,
     year_groups,
 ):
-    """Test: Upload a class list file with invalid structure and verify error handling.
+    """
+    Test: Upload a class list file with invalid structure and verify error handling.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
     2. Upload a file with incorrect structure.
@@ -293,7 +302,9 @@ def test_class_list_file_upload_header_only(
     import_records_page,
     year_groups,
 ):
-    """Test: Upload a class list file with only headers and verify no records are imported.
+    """
+    Test: Upload a class list file with only headers and verify no
+       records are imported.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
     2. Upload a header-only file.
@@ -317,7 +328,8 @@ def test_class_list_file_upload_empty_file(
     import_records_page,
     year_groups,
 ):
-    """Test: Upload an empty class list file and verify error handling.
+    """
+    Test: Upload an empty class list file and verify error handling.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
     2. Upload an empty file.
@@ -341,7 +353,8 @@ def test_class_list_file_upload_wrong_year_group(
     import_records_page,
     year_groups,
 ):
-    """Test: Upload a class list file with the wrong year group and verify error handling.
+    """
+    Test: Upload a class list file with the wrong year group and verify error handling.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
     2. Upload a file with an incorrect year group.
@@ -368,7 +381,8 @@ def test_class_list_file_upload_whitespace_normalization(
     dashboard_page,
     year_groups,
 ):
-    """Test: Upload a class list file with extra whitespace and verify normalization.
+    """
+    Test: Upload a class list file with extra whitespace and verify normalization.
     Steps:
     1. Upload a file with whitespace issues.
     2. Navigate to children page.
@@ -389,12 +403,13 @@ def test_class_list_file_upload_whitespace_normalization(
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
 
 
-########################################### VACCINATIONS ###########################################
+############################ VACCINATIONS ##############################
 
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
-    """Test: Upload a valid vaccination records file and verify successful import.
+    """
+    Test: Upload a valid vaccination records file and verify successful import.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a valid vaccination file.
@@ -409,7 +424,8 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_invalid_data(setup_vaccs, import_records_page):
-    """Test: Upload an invalid vaccination records file and verify error handling.
+    """
+    Test: Upload an invalid vaccination records file and verify error handling.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a vaccination file with invalid data.
@@ -428,7 +444,8 @@ def test_vaccination_file_upload_duplicate_records(
     dashboard_page,
     import_records_page,
 ):
-    """Test: Upload duplicate vaccination records and verify duplicate handling.
+    """
+    Test: Upload duplicate vaccination records and verify duplicate handling.
     Steps:
     1. Upload a vaccination file with duplicate records.
     2. Upload a second file with more duplicates.
@@ -450,7 +467,9 @@ def test_vaccination_file_upload_duplicate_records(
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_invalid_structure(setup_vaccs, import_records_page):
-    """Test: Upload a vaccination records file with invalid structure and verify error handling.
+    """
+    Test: Upload a vaccination records file with invalid structure and
+       verify error handling.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a file with incorrect structure.
@@ -462,7 +481,9 @@ def test_vaccination_file_upload_invalid_structure(setup_vaccs, import_records_p
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_header_only(setup_vaccs, import_records_page):
-    """Test: Upload a vaccination records file with only headers and verify no records are imported.
+    """
+    Test: Upload a vaccination records file with only headers and verify no records are
+       imported.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a header-only file.
@@ -474,7 +495,8 @@ def test_vaccination_file_upload_header_only(setup_vaccs, import_records_page):
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_page):
-    """Test: Upload an empty vaccination records file and verify error handling.
+    """
+    Test: Upload an empty vaccination records file and verify error handling.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload an empty file.
@@ -486,7 +508,8 @@ def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_page):
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_historic_valid_data(setup_vaccs, import_records_page):
-    """Test: Upload a historic vaccination records file with valid data and verify import.
+    """
+    Test: Upload a historic vaccination records file with valid data and verify import.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a historic file with valid data.
@@ -501,7 +524,9 @@ def test_vaccination_file_upload_historic_invalid_data(
     setup_vaccs,
     import_records_page,
 ):
-    """Test: Upload a historic vaccination records file with invalid data and verify error handling.
+    """
+    Test: Upload a historic vaccination records file with invalid data and
+       verify error handling.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a historic file with invalid data.
@@ -522,7 +547,9 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     children_page,
     children,
 ):
-    """Test: Upload a vaccination file with no URN/care setting and verify location is set to school (MAV-855).
+    """
+    Test: Upload a vaccination file with no URN/care setting and verify location is
+       set to school (MAV-855).
     Steps:
     1. Upload a vaccination file missing care setting.
     2. Navigate to children page and search for the child.
@@ -550,7 +577,8 @@ def test_vaccination_file_upload_systmone_valid_data(
     setup_vaccs_systmone,
     import_records_page,
 ):
-    """Test: Upload a SystmOne vaccination records file with valid data and verify import.
+    """
+    Test: Upload a SystmOne vaccination records file with valid data and verify import.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a SystmOne file with valid data.
@@ -565,7 +593,9 @@ def test_vaccination_file_upload_systmone_invalid_data(
     setup_vaccs_systmone,
     import_records_page,
 ):
-    """Test: Upload a SystmOne vaccination records file with invalid data and verify error handling.
+    """
+    Test: Upload a SystmOne vaccination records file with invalid data and
+       verify error handling.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a SystmOne file with invalid data.
@@ -580,7 +610,9 @@ def test_vaccination_file_upload_systmone_historic_invalid_data(
     setup_vaccs_systmone,
     import_records_page,
 ):
-    """Test: Upload a SystmOne historic vaccination records file with invalid data and verify error handling.
+    """
+    Test: Upload a SystmOne historic vaccination records file with invalid data and
+       verify error handling.
     Steps:
     1. Navigate to vaccination records import page.
     2. Upload a SystmOne historic file with invalid data.
@@ -600,7 +632,9 @@ def test_vaccination_file_upload_whitespace_normalization(
     children_page,
     dashboard_page,
 ):
-    """Test: Upload a vaccination records file with extra whitespace and verify normalization.
+    """
+    Test: Upload a vaccination records file with extra whitespace and
+       verify normalization.
     Steps:
     1. Upload a file with whitespace issues.
     2. Navigate to children page.
@@ -623,7 +657,9 @@ def test_vaccination_file_upload_systmone_whitespace_normalization(
     setup_vaccs_systmone,
     import_records_page,
 ):
-    """Test: Upload a SystmOne vaccination records file with extra whitespace and verify normalization.
+    """
+    Test: Upload a SystmOne vaccination records file with extra whitespace and
+       verify normalization.
     Steps:
     1. Upload a SystmOne file with whitespace issues.
     Verification:
@@ -641,7 +677,9 @@ def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
     setup_vaccs,
     import_records_page,
 ):
-    """Test: Upload a NIVS historic flu vaccination file for previous years and verify it is disallowed.
+    """
+    Test: Upload a NIVS historic flu vaccination file for previous years and verify
+       it is disallowed.
     Steps:
     1. Upload a historic flu file for previous years.
     Verification:
@@ -660,7 +698,9 @@ def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
     setup_vaccs_systmone,
     import_records_page,
 ):
-    """Test: Upload a SystmOne historic flu vaccination file for previous years and verify it is disallowed.
+    """
+    Test: Upload a SystmOne historic flu vaccination file for previous years and verify
+       it is disallowed.
     Steps:
     1. Upload a SystmOne historic flu file for previous years.
     Verification:
@@ -679,11 +719,14 @@ def test_vaccination_file_upload_community_clinic_name_case(
     setup_vaccs_clinic,
     import_records_page,
 ):
-    """Test: Upload a vaccination file with community clinic name case variations and verify correct handling.
+    """
+    Test: Upload a vaccination file with community clinic name case variations and
+       verify correct handling.
     Steps:
     1. Upload a file with clinic name case variations.
     Verification:
-    - Output indicates clinic names are handled case-insensitively and imported correctly.
+    - Output indicates clinic names are handled case-insensitively and
+       imported correctly.
     """
     import_records_page.upload_and_verify_output(
         VaccsFileMapping.CLINIC_NAME_CASE,

@@ -23,34 +23,67 @@ class PreScreeningCheck(StrEnum):
     NOT_PREGNANT = "is not pregnant"
     NO_RELEVANT_ALLERGIES = "has no allergies which would prevent vaccination"
     NO_RELEVANT_MEDICATION = "is not taking any medication which prevents vaccination"
-    NO_ASTHMA_FLARE_UP = "if they have asthma, has not had a flare-up of symptoms in the past 72 hours, including wheezing or needing to use a reliever inhaler more than usual"
+    NO_ASTHMA_FLARE_UP = (
+        "if they have asthma, has not had a flare-up of symptoms in the past 72 hours,"
+        " including wheezing or needing to use a reliever inhaler more than usual"
+    )
 
 
 class HealthQuestion(StrEnum):
-    BLEEDING_DISORDER = "Does your child have a bleeding disorder or another medical condition they receive treatment for?"
+    BLEEDING_DISORDER = (
+        "Does your child have a bleeding disorder or another medical condition they"
+        " receive treatment for?"
+    )
     SEVERE_ALLERGIES = "Does your child have any severe allergies?"
     MEDICAL_CONDITIONS = (
         "Does your child have any medical conditions for which they receive treatment?"
     )
-    REACTION = "Has your child ever had a severe reaction to any medicines, including vaccines?"
+    REACTION = (
+        "Has your child ever had a severe reaction to any medicines,"
+        " including vaccines?"
+    )
     EXTRA_SUPPORT = "Does your child need extra support during vaccination sessions?"
     PAST_MENACWY_VACCINE = (
         "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
     )
-    PAST_TDIPV_VACCINE = "Has your child had a tetanus, diphtheria and polio vaccination in the last 5 years?"
+    PAST_TDIPV_VACCINE = (
+        "Has your child had a tetanus, diphtheria and polio vaccination in the"
+        " last 5 years?"
+    )
 
     # flu
     ASTHMA_STEROIDS = "Does your child take oral steroids for their asthma?"
     ASTHMA_INTENSIVE_CARE = (
         "Has your child ever been admitted to intensive care because of their asthma?"
     )
-    IMMUNE_SYSTEM = "Does your child have a disease or treatment that severely affects their immune system?"
-    HOUSEHOLD_IMMUNE_SYSTEM = "Is your child in regular close contact with anyone currently having treatment that severely affects their immune system?"
-    BLEEDING_DISORDER_FLU = "Does your child have a bleeding disorder or are they taking anticoagulant therapy?"
-    EGG_ALLERGY = "Has your child ever been admitted to intensive care due to a severe allergic reaction (anaphylaxis) to egg?"
-    SEVERE_ALLERGIC_REACTION_NASAL = "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose of the nasal flu vaccine, or any ingredient of the vaccine?"
-    SEVERE_ALLERGIC_REACTION_INJECTED = "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose of the injected flu vaccine, or any ingredient of the vaccine?"
-    MEDICAL_CONDITIONS_FLU = "Does your child have any other medical conditions the immunisation team should be aware of?"
+    IMMUNE_SYSTEM = (
+        "Does your child have a disease or treatment that severely affects"
+        " their immune system?"
+    )
+    HOUSEHOLD_IMMUNE_SYSTEM = (
+        "Is your child in regular close contact with anyone currently having treatment"
+        " that severely affects their immune system?"
+    )
+    BLEEDING_DISORDER_FLU = (
+        "Does your child have a bleeding disorder or are they taking"
+        " anticoagulant therapy?"
+    )
+    EGG_ALLERGY = (
+        "Has your child ever been admitted to intensive care due to a"
+        " severe allergic reaction (anaphylaxis) to egg?"
+    )
+    SEVERE_ALLERGIC_REACTION_NASAL = (
+        "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
+        " of the nasal flu vaccine, or any ingredient of the vaccine?"
+    )
+    SEVERE_ALLERGIC_REACTION_INJECTED = (
+        "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
+        " of the injected flu vaccine, or any ingredient of the vaccine?"
+    )
+    MEDICAL_CONDITIONS_FLU = (
+        "Does your child have any other medical conditions the immunisation team"
+        " should be aware of?"
+    )
     ASPIRIN = "Does your child take regular aspirin?"
     FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
 
@@ -218,9 +251,43 @@ class ReportFormat(StrEnum):
     @property
     def headers(self) -> str:
         report_headers = {
-            ReportFormat.CAREPLUS: "NHS Number,Surname,Forename,Date of Birth,Address Line 1,Person Giving Consent,Ethnicity,Date Attended,Time Attended,Venue Type,Venue Code,Staff Type,Staff Code,Attended,Reason Not Attended,Suspension End Date,Vaccine 1,Vaccine Code 1,Dose 1,Reason Not Given 1,Site 1,Manufacturer 1,Batch No 1,Vaccine 2,Vaccine Code 2,Dose 2,Reason Not Given 2,Site 2,Manufacturer 2,Batch No 2,Vaccine 3,Vaccine Code 3,Dose 3,Reason Not Given 3,Site 3,Manufacturer 3,Batch No 3,Vaccine 4,Vaccine Code 4,Dose 4,Reason Not Given 4,Site 4,Manufacturer 4,Batch No 4,Vaccine 5,Vaccine Code 5,Dose 5,Reason Not Given 5,Site 5,Manufacturer 5,Batch No 5",
-            ReportFormat.CSV: "ORGANISATION_CODE,SCHOOL_URN,SCHOOL_NAME,CARE_SETTING,CLINIC_NAME,PERSON_FORENAME,PERSON_SURNAME,PERSON_DATE_OF_BIRTH,PERSON_DATE_OF_DEATH,YEAR_GROUP,PERSON_GENDER_CODE,PERSON_ADDRESS_LINE_1,PERSON_POSTCODE,NHS_NUMBER,NHS_NUMBER_STATUS_CODE,GP_ORGANISATION_CODE,GP_NAME,CONSENT_STATUS,CONSENT_DETAILS,HEALTH_QUESTION_ANSWERS,TRIAGE_STATUS,TRIAGED_BY,TRIAGE_DATE,TRIAGE_NOTES,GILLICK_STATUS,GILLICK_ASSESSMENT_DATE,GILLICK_ASSESSED_BY,GILLICK_ASSESSMENT_NOTES,GILLICK_NOTIFY_PARENTS,VACCINATED,DATE_OF_VACCINATION,TIME_OF_VACCINATION,PROGRAMME_NAME,VACCINE_GIVEN,PROTOCOL,PERFORMING_PROFESSIONAL_EMAIL,PERFORMING_PROFESSIONAL_FORENAME,PERFORMING_PROFESSIONAL_SURNAME,SUPPLIER_EMAIL,SUPPLIER_FORENAME,SUPPLIER_SURNAME,BATCH_NUMBER,BATCH_EXPIRY_DATE,ANATOMICAL_SITE,ROUTE_OF_VACCINATION,DOSE_SEQUENCE,DOSE_VOLUME,REASON_NOT_VACCINATED,LOCAL_PATIENT_ID,SNOMED_PROCEDURE_CODE,REASON_FOR_INCLUSION,RECORD_CREATED,RECORD_UPDATED",
-            ReportFormat.SYSTMONE: "Practice code,NHS number,Surname,Middle name,Forename,Gender,Date of Birth,House name,House number and road,Town,Postcode,Vaccination,Part,Admin date,Batch number,Expiry date,Dose,Reason,Site,Method,Notes",
+            ReportFormat.CAREPLUS: (
+                "NHS Number,Surname,Forename,Date of Birth,Address Line 1,"
+                "Person Giving Consent,Ethnicity,Date Attended,Time Attended,"
+                "Venue Type,Venue Code,Staff Type,Staff Code,Attended,"
+                "Reason Not Attended,Suspension End Date,Vaccine 1,Vaccine Code 1,"
+                "Dose 1,Reason Not Given 1,Site 1,Manufacturer 1,Batch No 1,Vaccine 2,"
+                "Vaccine Code 2,Dose 2,Reason Not Given 2,Site 2,Manufacturer 2,"
+                "Batch No 2,Vaccine 3,Vaccine Code 3,Dose 3,Reason Not Given 3,Site 3,"
+                "Manufacturer 3,Batch No 3,Vaccine 4,Vaccine Code 4,Dose 4,"
+                "Reason Not Given 4,Site 4,Manufacturer 4,Batch No 4,Vaccine 5,"
+                "Vaccine Code 5,Dose 5,Reason Not Given 5,Site 5,Manufacturer 5,"
+                "Batch No 5"
+            ),
+            ReportFormat.CSV: (
+                "ORGANISATION_CODE,SCHOOL_URN,SCHOOL_NAME,CARE_SETTING,CLINIC_NAME,"
+                "PERSON_FORENAME,PERSON_SURNAME,PERSON_DATE_OF_BIRTH,"
+                "PERSON_DATE_OF_DEATH,YEAR_GROUP,PERSON_GENDER_CODE,"
+                "PERSON_ADDRESS_LINE_1,PERSON_POSTCODE,NHS_NUMBER,"
+                "NHS_NUMBER_STATUS_CODE,GP_ORGANISATION_CODE,GP_NAME,CONSENT_STATUS,"
+                "CONSENT_DETAILS,HEALTH_QUESTION_ANSWERS,TRIAGE_STATUS,TRIAGED_BY,"
+                "TRIAGE_DATE,TRIAGE_NOTES,GILLICK_STATUS,GILLICK_ASSESSMENT_DATE,"
+                "GILLICK_ASSESSED_BY,GILLICK_ASSESSMENT_NOTES,GILLICK_NOTIFY_PARENTS,"
+                "VACCINATED,DATE_OF_VACCINATION,TIME_OF_VACCINATION,PROGRAMME_NAME,"
+                "VACCINE_GIVEN,PROTOCOL,PERFORMING_PROFESSIONAL_EMAIL,"
+                "PERFORMING_PROFESSIONAL_FORENAME,PERFORMING_PROFESSIONAL_SURNAME,"
+                "SUPPLIER_EMAIL,SUPPLIER_FORENAME,SUPPLIER_SURNAME,BATCH_NUMBER,"
+                "BATCH_EXPIRY_DATE,ANATOMICAL_SITE,ROUTE_OF_VACCINATION,DOSE_SEQUENCE,"
+                "DOSE_VOLUME,REASON_NOT_VACCINATED,LOCAL_PATIENT_ID,"
+                "SNOMED_PROCEDURE_CODE,REASON_FOR_INCLUSION,RECORD_CREATED,"
+                "RECORD_UPDATED"
+            ),
+            ReportFormat.SYSTMONE: (
+                "Practice code,NHS number,Surname,Middle name,Forename,Gender,"
+                "Date of Birth,House name,House number and road,Town,Postcode,"
+                "Vaccination,Part,Admin date,Batch number,Expiry date,Dose,Reason,Site,"
+                "Method,Notes"
+            ),
         }
         return report_headers[self]
 

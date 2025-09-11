@@ -260,7 +260,7 @@ def authenticate_api():
     _endpoint = urllib.parse.urljoin(_api_auth["url"], "oauth2-mock/token")
     _payload = {
         "grant_type": "client_credentials",
-        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",  # noqa: E501
         "client_assertion": _get_jwt_payload(api_auth=_api_auth),
     }
     _headers = {"Content-Type": "application/x-www-form-urlencoded"}

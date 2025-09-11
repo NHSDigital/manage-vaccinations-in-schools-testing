@@ -123,7 +123,8 @@ def setup_mav_854(
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_page):
-    """Test: Upload a valid cohort (class list) file and verify successful import.
+    """
+    Test: Upload a valid cohort (class list) file and verify successful import.
     Steps:
     1. Navigate to cohort import page.
     2. Upload a valid cohort file.
@@ -135,7 +136,8 @@ def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_page)
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_invalid_file(setup_cohort_upload, import_records_page):
-    """Test: Upload an invalid cohort (class list) file and verify error handling.
+    """
+    Test: Upload an invalid cohort (class list) file and verify error handling.
     Steps:
     1. Navigate to cohort import page.
     2. Upload a cohort file with invalid data.
@@ -147,7 +149,8 @@ def test_cohort_upload_with_invalid_file(setup_cohort_upload, import_records_pag
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_invalid_structure(setup_cohort_upload, import_records_page):
-    """Test: Upload a cohort file with invalid structure and verify error handling.
+    """
+    Test: Upload a cohort file with invalid structure and verify error handling.
     Steps:
     1. Navigate to cohort import page.
     2. Upload a file with incorrect structure.
@@ -159,7 +162,8 @@ def test_cohort_upload_with_invalid_structure(setup_cohort_upload, import_record
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_header_only_file(setup_cohort_upload, import_records_page):
-    """Test: Upload a cohort file with only headers and verify no records are imported.
+    """
+    Test: Upload a cohort file with only headers and verify no records are imported.
     Steps:
     1. Navigate to cohort import page.
     2. Upload a header-only file.
@@ -171,7 +175,8 @@ def test_cohort_upload_with_header_only_file(setup_cohort_upload, import_records
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_page):
-    """Test: Upload an empty cohort file and verify error handling.
+    """
+    Test: Upload an empty cohort file and verify error handling.
     Steps:
     1. Navigate to cohort import page.
     2. Upload an empty file.
@@ -193,7 +198,8 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     import_records_page,
     children,
 ):
-    """Test: Archive a child via cohort upload and then unarchive by re-uploading.
+    """
+    Test: Archive a child via cohort upload and then unarchive by re-uploading.
     Steps:
     1. Import a fixed child cohort file.
     2. Archive the child from the children page.
@@ -235,7 +241,8 @@ def test_triage_consent_given_and_triage_outcome(
     verbal_consent_page,
     children,
 ):
-    """Test: Record verbal consent and triage outcome for a child in a session.
+    """
+    Test: Record verbal consent and triage outcome for a child in a session.
     Steps:
     1. Schedule session and import class list.
     2. Record verbal consent for the child.
@@ -283,7 +290,8 @@ def test_triage_consent_refused_and_activity_log(
     verbal_consent_page,
     children,
 ):
-    """Test: Record verbal refusal of consent and verify activity log entry.
+    """
+    Test: Record verbal refusal of consent and verify activity log entry.
     Steps:
     1. Schedule session and import class list.
     2. Record verbal refusal for the child.
@@ -326,7 +334,8 @@ def test_edit_vaccination_dose_to_not_given(
     children_page,
     children,
 ):
-    """Test: Edit a vaccination dose to 'not given' and verify outcome.
+    """
+    Test: Edit a vaccination dose to 'not given' and verify outcome.
     Steps:
     1. Navigate to the child in the programme.
     2. Edit the vaccination record and change outcome to 'they refused it'.
@@ -361,7 +370,9 @@ def test_verify_excel_export_and_clinic_invitation(
     verbal_consent_page,
     children,
 ):
-    """Test: Export session data to Excel and send clinic invitations, then verify vaccination record.
+    """
+    Test: Export session data to Excel and send clinic invitations,
+       then verify vaccination record.
     Steps:
     1. Schedule session, import class list, and send clinic invitations.
     2. Record verbal consent and register child as attending.
@@ -403,7 +414,8 @@ def test_verify_excel_export_and_clinic_invitation(
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
-    """Test: Generate and verify CarePlus report for HPV programme.
+    """
+    Test: Generate and verify CarePlus report for HPV programme.
     Steps:
     1. Navigate to reports page.
     2. Generate CarePlus report for HPV.
@@ -422,7 +434,8 @@ def test_verify_careplus_report_for_doubles(
     dashboard_page,
     programmes_page,
 ):
-    """Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
+    """
+    Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
     Steps:
     1. Navigate to reports page.
     2. Generate CarePlus report for MenACWY.
@@ -444,7 +457,8 @@ def test_verify_careplus_report_for_doubles(
 
 @pytest.mark.reports
 def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
-    """Test: Generate and verify CSV report for HPV programme.
+    """
+    Test: Generate and verify CSV report for HPV programme.
     Steps:
     1. Navigate to reports page.
     2. Generate CSV report for HPV.
@@ -459,7 +473,8 @@ def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
 
 @pytest.mark.reports
 def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes_page):
-    """Test: Generate and verify CSV report for MenACWY and Td/IPV programmes.
+    """
+    Test: Generate and verify CSV report for MenACWY and Td/IPV programmes.
     Steps:
     1. Navigate to reports page.
     2. Generate CSV report for MenACWY.
@@ -481,7 +496,8 @@ def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
-    """Test: Generate and verify SystmOne report for HPV programme.
+    """
+    Test: Generate and verify SystmOne report for HPV programme.
     Steps:
     1. Navigate to reports page.
     2. Generate SystmOne report for HPV.

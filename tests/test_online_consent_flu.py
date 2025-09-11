@@ -49,7 +49,9 @@ def test_consent_refused_for_flu_vaccination(
     schools,
     children,
 ):
-    """Test: Submit an online consent form refusing flu vaccination and verify confirmation.
+    """
+    Test: Submit an online consent form refusing flu vaccination and
+       verify confirmation.
     Steps:
     1. Fill in child and parent details on the consent page.
     2. Select 'do not agree' to vaccination.
@@ -69,7 +71,8 @@ def test_consent_refused_for_flu_vaccination(
     )
     online_consent_page.click_confirm()
     online_consent_page.expect_confirmation_text(
-        f"Consent refusedYou’ve told us that you do not want {child.first_name} {child.last_name} to get the flu vaccination at school",
+        f"Consent refusedYou’ve told us that you do not want"
+        f" {child.first_name} {child.last_name} to get the flu vaccination at school",
     )
 
 
@@ -91,15 +94,19 @@ def test_consent_given_for_flu_vaccination(
     yes_to_health_questions,
     children,
 ):
-    """Test: Submit an online consent form giving consent for flu vaccination (nasal spray, injection, or both) and verify confirmation.
+    """
+    Test: Submit an online consent form giving consent for flu vaccination
+       (nasal spray, injection, or both) and verify confirmation.
     Steps:
     1. Fill in child and parent details on the consent page.
-    2. Agree to flu vaccination, selecting the consent option (nasal spray, injection, or both).
+    2. Agree to flu vaccination, selecting the consent option
+       (nasal spray, injection, or both).
     3. Fill in address details.
     4. Answer the required number of health questions, optionally marking one as 'yes'.
     5. Submit the consent form.
     Verification:
-    - Confirmation message is shown for the correct child, consent option, and health question status.
+    - Confirmation message is shown for the correct child, consent option,
+      and health question status.
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
@@ -160,14 +167,18 @@ def test_flu_consent_method_displayed_correctly(
     sessions_page,
     dashboard_page,
 ):
-    """Test: Submit multiple online flu consent forms with different methods and verify the correct method is displayed in the session.
+    """
+    Test: Submit multiple online flu consent forms with different methods and
+       verify the correct method is displayed in the session.
     Steps:
     1. Fill in child and parent details and submit consent with the first method.
-    2. Submit a second consent for the same child with the second method (different parent).
+    2. Submit a second consent for the same child with the
+       second method (different parent).
     3. Navigate to the session and consent tab.
     4. Search for the child and verify the correct consent method is shown.
     Verification:
-    - The consent method displayed in the session matches the expected method from the last consent.
+    - The consent method displayed in the session matches the expected method
+      from the last consent.
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]

@@ -78,9 +78,12 @@ def test_confirm_and_ignore(
     review_school_move_page,
     children,
 ):
-    """Test: Confirm and ignore school moves for two children and verify the correct alerts.
+    """
+    Test: Confirm and ignore school moves for two children and
+       verify the correct alerts.
     Steps:
-    1. Setup: Schedule sessions for two schools, upload class lists for both, and trigger school moves.
+    1. Setup: Schedule sessions for two schools, upload class lists for both,
+       and trigger school moves.
     2. Go to the school moves page and locate rows for both children.
     3. For the first child, confirm the school move and verify the confirmation alert.
     4. For the second child, ignore the school move and verify the ignored alert.
@@ -117,7 +120,8 @@ def test_download_school_moves_csv(
     school_moves_page,
     download_school_moves_page,
 ):
-    """Test: Download the school moves CSV and verify the headers.
+    """
+    Test: Download the school moves CSV and verify the headers.
     Steps:
     1. Setup: Ensure school moves exist by confirming/ignoring moves for two children.
     2. Click the download button on the school moves page.

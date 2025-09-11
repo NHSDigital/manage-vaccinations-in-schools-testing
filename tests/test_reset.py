@@ -55,9 +55,12 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     verbal_consent_page,
     children,
 ):
-    """Test: Verify pre-screening questions are pre-filled correctly when recording multiple vaccinations in the same session.
+    """
+    Test: Verify pre-screening questions are pre-filled correctly when recording
+       multiple vaccinations in the same session.
     Steps:
-    1. Setup: Schedule sessions for HPV, doubles, and flu for the same school and import a fixed child class list.
+    1. Setup: Schedule sessions for HPV, doubles, and flu for the same school and
+       import a fixed child class list.
     2. For each programme group (HPV, doubles, flu):
         a. Navigate to the session and register the child as attending.
         b. Go to the consent tab and search for the child.
@@ -65,7 +68,8 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             i. Record verbal consent for the child.
             ii. Record a vaccination for the child with a long notes field.
     Verification:
-    - For each combination of vaccines, the correct pre-screening questions ("feeling well", "not pregnant") are pre-filled as described in the docstring.
+    - For each combination of vaccines, the correct pre-screening questions
+      ("feeling well", "not pregnant") are pre-filled as described in the docstring.
     - Long notes (over 1000 characters) are accepted (MAV-955).
     """
     child = children["doubles"][0]
