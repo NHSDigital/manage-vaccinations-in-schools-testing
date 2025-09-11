@@ -1,13 +1,10 @@
 # Testing for Manage vaccinations in schools
 
-This repository contains an automated testing framework for the [Manage vaccinations in schools][mavis] service,
-including both functional and performance tests.
+This repository contains automated functional and performance tests for the [Manage vaccinations in schools][mavis] application.
 
 [mavis]: https://github.com/nhsuk/manage-vaccinations-in-schools/
 
-[![Functional tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional.yaml)
-
-[![Performance tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance.yaml)
+[![Functional tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional_selected_device.yaml/badge.svg?branch=main)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional_selected_device.yaml?branch=main)
 
 [![Performance (end to end) tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml)
 
@@ -18,13 +15,17 @@ The functional tests are written using [Playwright] with [Pytest].
 [Playwright]: https://playwright.dev/python/
 [Pytest]: https://docs.pytest.org/en/stable/
 
-### Installing
+### Installation
 
-To execute the tests from your system, please follow the steps below:
+To execute the tests from your system, follow the steps below:
 
-1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods). `uv` will attempt to detect and use a compatible Python installation. Otherwise, it will install a compatible version to use at runtime.
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods). `uv` will attempt to detect and use a compatible Python installation. Otherwise, it will install a compatible version to use at runtime. Verify the installation with:
 
-1. Create a .env file.  Speak to a team member to get the contents of the .env file.
+   ```shell
+   $ uv sync
+   ```
+
+1. Create a .env file. Speak to a team member to get the contents of the .env file.
 
    ```shell
    $ cp .env.generic .env
@@ -36,7 +37,7 @@ To execute the tests from your system, please follow the steps below:
    $ uv run pytest -m smoke
    ```
 
-### Running
+### Execution with `uv`
 
 There are two ways to run commands with `uv`
 
@@ -54,34 +55,21 @@ There are two ways to run commands with `uv`
     $ pytest
     ```
 
+### CLI arguments
+
+Playwright offers many [CLI arguments] which can be used when running tests. Some useful ones are highlighted here:
+
+[CLI arguments]: https://playwright.dev/python/docs/test-runners#cli-arguments
+
 #### Browsers and devices
 
-By default, the tests will run using the `Desktop Chrome` device, however it's
-possible to run the tests in devices. Some examples are listed below.
-
-##### iPhone 15
+Playwright can emulate running tests on various [devices]. By default, the tests use `Desktop Chrome`. This can be changed by using the `--device` CLI argument like so:
 
 ```shell
 $ pytest --device "iPhone 15"
 ```
 
-##### Firefox
-
-```shell
-$ pytest --device "Desktop Firefox"
-```
-
-##### Google Pixel 7
-
-```shell
-$ pytest --device "Pixel 7"
-```
-
-##### Microsoft Edge
-
-```shell
-$ pytest --device "Desktop Edge"
-```
+[devices]: https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
 
 #### Headless mode
 
@@ -90,16 +78,6 @@ run the tests in headed mode, use the following command:
 
 ```shell
 $ pytest --headed
-```
-
-#### Screenshots
-
-To take screenshots while the tests are running there is a `--screenshot`
-command line option. The screenshots will be saved in a `test-results`
-directory.
-
-```shell
-$ pytest --screenshot on
 ```
 
 #### Slow motion
@@ -132,7 +110,7 @@ $ playwright show-trace test-results/.../trace.zip
 
 ### Reporting
 
-While the tests are running results are stored in `allure-results` which can
+While the tests are running, results are stored in `allure-results` which can
 then be used to generate a report. Using the `--single-file` flag generates an html which can be easily shared and can be opened in any browser. This requires a Java installation.
 
 ```shell
@@ -141,13 +119,13 @@ $ npx allure-commandline generate --clean --single-file -o allure-results
 $ npx allure-commandline open
 ```
 
-### Linting
+### Linting and formatting
 
-Ruff is used as a linting tool in this repo:
+Ruff is used as a linting and formatting tool in this repo:
 
 ```shell
 $ ruff format
-$ ruff check
+$ ruff check --fix
 ```
 
 ### More information

@@ -1,10 +1,12 @@
 import os
-from playwright.sync_api import Page
+
+from playwright.sync_api import Dialog, ElementHandle, Page
+
 from mavis.test.annotations import step
 
 
 class FlipperPage:
-    def __init__(self, page: Page):
+    def __init__(self, page: Page) -> None:
         self.page = page
 
         self.additional_flags = {
@@ -19,12 +21,12 @@ class FlipperPage:
         self.fully_enable_button = self.page.get_by_role("button", name="Fully enable")
         self.disable_button = self.page.get_by_role("button", name="Disable")
 
-    def navigate(self):
+    def navigate(self) -> None:
         self.page.goto("/flipper/features")
 
-    def set_feature_flags(self, check_only: bool = False):
+    def set_feature_flags(self, *, check_only: bool = False) -> None:
         feature_locators = self.page.query_selector_all(
-            ".list-group-item.list-group-item-action"
+            ".list-group-item.list-group-item-action",
         )
 
         for feature_locator in feature_locators:
@@ -40,24 +42,27 @@ class FlipperPage:
                     self._check_feature_flag_enabled(feature_locator, feature_name)
                 else:
                     self._ensure_feature_flag_enabled(feature_locator, feature_name)
+            elif check_only:
+                self._check_feature_flag_disabled(feature_locator, feature_name)
             else:
-                if check_only:
-                    self._check_feature_flag_disabled(feature_locator, feature_name)
-                else:
-                    self._ensure_feature_flag_disabled(feature_locator, feature_name)
+                self._ensure_feature_flag_disabled(feature_locator, feature_name)
 
     @step("Ensure feature flag {2} is enabled")
-    def _ensure_feature_flag_enabled(self, feature_locator, feature_name):
+    def _ensure_feature_flag_enabled(
+        self, feature_locator: ElementHandle, _feature_name: str
+    ) -> None:
         if feature_locator.query_selector('[aria-label="Off"]'):
             feature_locator.click()
             self.fully_enable_button.click()
             self.features_tab.click()
 
     @step("Ensure feature flag {2} is disabled")
-    def _ensure_feature_flag_disabled(self, feature_locator, feature_name):
+    def _ensure_feature_flag_disabled(
+        self, feature_locator: ElementHandle, feature_name: str
+    ) -> None:
         if feature_locator.query_selector('[aria-label="On"]'):
 
-            def dialog_handler(dialog):
+            def dialog_handler(dialog: Dialog) -> None:
                 dialog.accept(feature_name)
 
             self.page.on("dialog", dialog_handler)
@@ -67,9 +72,17 @@ class FlipperPage:
             self.features_tab.click()
 
     @step("Check feature flag {2} is still enabled")
-    def _check_feature_flag_enabled(self, feature_locator, feature_name):
-        assert feature_locator.query_selector('[aria-label="On"]').is_visible()
+    def _check_feature_flag_enabled(
+        self, feature_locator: ElementHandle, _feature_name: str
+    ) -> None:
+        on_element = feature_locator.query_selector('[aria-label="On"]')
+        assert on_element is not None
+        assert on_element.is_visible()
 
     @step("Check feature flag {2} is still disabled")
-    def _check_feature_flag_disabled(self, feature_locator, feature_name):
-        assert feature_locator.query_selector('[aria-label="Off"]').is_visible()
+    def _check_feature_flag_disabled(
+        self, feature_locator: ElementHandle, _feature_name: str
+    ) -> None:
+        off_element = feature_locator.query_selector('[aria-label="Off"]')
+        assert off_element is not None
+        assert off_element.is_visible()

@@ -17,12 +17,12 @@ dependencies = [
     "pyjwt==2.10.1",
     "pytest==8.4.1",
     "pytest-dotenv==0.5.2",
-    "pytest-playwright==0.7.0",
+    "pytest-playwright==0.7.1",
     "pytest-rerunfailures==16.0.1",
     "pytest-xdist==3.8.0",
     "requests==2.32.5",
     "requests-oauthlib==2.0.0",
-    "ruff==0.12.11",
+    "ruff==0.13.0",
 ]
 
 [tool.pytest.ini_options]
@@ -53,3 +53,42 @@ markers = [
 
 [tool.ruff]
 output-format = "github"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812",   # should be disabled when using ruff formatter
+  "D",        # docstrings should not be necessary
+  "RUF001",   # mavis uses the ambiguous ’ character
+  "S311",     # no cryptography warnings needed
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = [
+  "ANN",      # tests/fixtures don't need type annotations
+  "ARG",      # fixtures are unused arguments
+  "S101",     # assertions should be used in tests
+  "PLR0913",  # fixtures cause many parameters to be given to tests
+]
+"mavis/test/fixtures/*.py" = [
+  "ANN",      # fixtures don't need type annotations
+  "ARG",      # fixtures are unused arguments
+  "PLR0913",  # fixtures take many parameters
+]
+"mavis/test/pages/*.py" = [
+  "PLR0915",  # page object model causes many statements in __init__
+  "S101",     # assertions should be used in test functions
+]
+"mavis/test/hooks.py" = [
+  "ANN",      # hooks don't need type annotations
+  "ARG",      # fixtures are unused arguments
+]
+"mavis/test/annotations.py" = [
+  "ANN",      # annotations don't need type annotations
+]
+"mavis/test/imms_api.py" = [
+  "S101",     # assertions are used here, though perhaps this file could be moved
+]
+"utils/*" = [
+  "ALL",      # small utilities can be safely ignored
+]

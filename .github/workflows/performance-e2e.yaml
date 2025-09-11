@@ -67,8 +67,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      
+      - name: Cache jmeter
+        id: cache-jmeter
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-jmeter
+        with:
+          path: jmeter
+          key: jmeter
+
+#Having run each step separately, it's only the curl request that takes time. So including the unzip and move means I can cache the 'jmeter' folder entirely
 
       - name: Install JMeter
+        if: ${{ steps.cache-jmeter.outputs.cache-hit != 'true'}}
         run: |
           curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
           tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
@@ -78,6 +90,7 @@ jobs:
           java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
           chmod +x jmeter/bin/PluginsManagerCMD.sh
           sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
+
 
       - name: Install JMeter plugins
         if: env.jmeter_plugins != ''

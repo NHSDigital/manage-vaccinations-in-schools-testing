@@ -2,12 +2,15 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
-from mavis.test.models import Programme, ReportFormat, Vaccine
+from mavis.test.models import Programme, ReportFormat, VaccinationRecord, Vaccine
 
 
 @pytest.fixture
 def setup_cohort_upload(
-    log_in_as_nurse, dashboard_page, programmes_page, import_records_page
+    log_in_as_nurse,
+    dashboard_page,
+    programmes_page,
+    import_records_page,
 ):
     dashboard_page.click_programmes()
     programmes_page.navigate_to_cohort_import(Programme.HPV)
@@ -68,7 +71,8 @@ def setup_mavis_1729(
         dashboard_page.click_import_records()
         import_records_page.navigate_to_vaccination_records_import()
         import_records_page.upload_and_verify_output(
-            file_mapping=VaccsFileMapping.HPV_DOSE_TWO, session_id=session_id
+            file_mapping=VaccsFileMapping.HPV_DOSE_TWO,
+            session_id=session_id,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
@@ -104,7 +108,8 @@ def setup_mav_854(
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.ensure_session_scheduled_for_today(
-            "Community clinic", Programme.HPV
+            "Community clinic",
+            Programme.HPV,
         )
         dashboard_page.click_mavis()
         dashboard_page.click_children()
@@ -251,7 +256,8 @@ def test_triage_consent_given_and_triage_outcome(
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
     import_records_page.import_class_list(
-        CohortsFileMapping.FIXED_CHILD, child.year_group
+        CohortsFileMapping.FIXED_CHILD,
+        child.year_group,
     )
 
     dashboard_page.click_mavis()
@@ -299,7 +305,8 @@ def test_triage_consent_refused_and_activity_log(
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_import_class_lists()
     import_records_page.import_class_list(
-        CohortsFileMapping.FIXED_CHILD, child.year_group
+        CohortsFileMapping.FIXED_CHILD,
+        child.year_group,
     )
 
     dashboard_page.click_mavis()
@@ -315,14 +322,17 @@ def test_triage_consent_refused_and_activity_log(
     sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_session_activity_entry(
-        f"Consent refused by {child.parents[0].name_and_relationship}"
+        f"Consent refused by {child.parents[0].name_and_relationship}",
     )
 
 
 @pytest.mark.rav
 @pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given(
-    setup_mavis_1729, programmes_page, children_page, children
+    setup_mavis_1729,
+    programmes_page,
+    children_page,
+    children,
 ):
     """
     Test: Edit a vaccination dose to 'not given' and verify outcome.
@@ -361,7 +371,8 @@ def test_verify_excel_export_and_clinic_invitation(
     children,
 ):
     """
-    Test: Export session data to Excel and send clinic invitations, then verify vaccination record.
+    Test: Export session data to Excel and send clinic invitations,
+       then verify vaccination record.
     Steps:
     1. Schedule session, import class list, and send clinic invitations.
     2. Record verbal consent and register child as attending.
@@ -378,17 +389,17 @@ def test_verify_excel_export_and_clinic_invitation(
     children_page.click_record_for_child(child)
     children_page.click_invite_to_community_clinic()
     children_page.click_session_for_programme(
-        "Community clinic", Programme.HPV, check_date=True
+        "Community clinic",
+        Programme.HPV,
+        check_date=True,
     )
     sessions_page.click_record_a_new_consent_response()
     verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0], change_phone=False
+        parent=child.parents[0],
     )
     sessions_page.register_child_as_attending(child)
-    sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.HPV,
-        batch_name=batch_name,
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.HPV, batch_name),
         at_school=False,
     )
     sessions_page.check_location_radio(clinics[0])
@@ -412,13 +423,16 @@ def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
     - Report is generated in CarePlus format for HPV.
     """
     programmes_page.verify_report_format(
-        programme=Programme.HPV, report_format=ReportFormat.CAREPLUS
+        programme=Programme.HPV,
+        report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_doubles(
-    setup_reports, dashboard_page, programmes_page
+    setup_reports,
+    dashboard_page,
+    programmes_page,
 ):
     """
     Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
@@ -430,12 +444,14 @@ def test_verify_careplus_report_for_doubles(
     - Reports are generated in CarePlus format for both MenACWY and Td/IPV.
     """
     programmes_page.verify_report_format(
-        programme=Programme.MENACWY, report_format=ReportFormat.CAREPLUS
+        programme=Programme.MENACWY,
+        report_format=ReportFormat.CAREPLUS,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.verify_report_format(
-        programme=Programme.TD_IPV, report_format=ReportFormat.CAREPLUS
+        programme=Programme.TD_IPV,
+        report_format=ReportFormat.CAREPLUS,
     )
 
 
@@ -450,7 +466,8 @@ def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
     - Report is generated in CSV format for HPV.
     """
     programmes_page.verify_report_format(
-        programme=Programme.HPV, report_format=ReportFormat.CSV
+        programme=Programme.HPV,
+        report_format=ReportFormat.CSV,
     )
 
 
@@ -466,12 +483,14 @@ def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes
     - Reports are generated in CSV format for both MenACWY and Td/IPV.
     """
     programmes_page.verify_report_format(
-        programme=Programme.MENACWY, report_format=ReportFormat.CSV
+        programme=Programme.MENACWY,
+        report_format=ReportFormat.CSV,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_page.verify_report_format(
-        programme=Programme.TD_IPV, report_format=ReportFormat.CSV
+        programme=Programme.TD_IPV,
+        report_format=ReportFormat.CSV,
     )
 
 
@@ -486,5 +505,6 @@ def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
     - Report is generated in SystmOne format for HPV.
     """
     programmes_page.verify_report_format(
-        programme=Programme.HPV, report_format=ReportFormat.SYSTMONE
+        programme=Programme.HPV,
+        report_format=ReportFormat.SYSTMONE,
     )

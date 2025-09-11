@@ -25,14 +25,14 @@ def give_online_consent(
     schools,
 ):
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
+    schools = schools[Programme.HPV]
 
     page.goto(online_consent_url)
     start_page.start()
-    online_consent_page.fill_details(child, child.parents[0], school)
+    online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(4, health_question=False)
+    online_consent_page.answer_health_questions(4, yes_to_health_questions=False)
     online_consent_page.click_confirm()
 
 
@@ -128,9 +128,9 @@ patient = random.choice(pds_test_data.child_patients_without_date_of_death)
                     patient.date_of_birth,
                     9,
                     (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
-                )
-            ]
-        }
+                ),
+            ],
+        },
     ],
 )
 def test_create_child_record_from_consent_with_nhs_number(
@@ -177,7 +177,8 @@ def test_create_child_record_from_consent_without_nhs_number(
     unmatched_consent_responses_page,
 ):
     """
-    Test: Create a new child record from an unmatched consent response without NHS number.
+    Test: Create a new child record from an unmatched consent response
+       without NHS number.
     Steps:
     1. Select a child from unmatched consent responses.
     2. Click to create a new record and complete the process.

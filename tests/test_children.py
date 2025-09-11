@@ -92,7 +92,9 @@ def setup_mav_853(
 
 
 def test_children_page_headers_and_filtering(
-    setup_fixed_child, children_page, children
+    setup_fixed_child,
+    children_page,
+    children,
 ):
     """
     Test: Verify children page headers and filtering by child name.
@@ -113,12 +115,17 @@ def test_children_page_headers_and_filtering(
 @issue("MAV-853")
 @pytest.mark.bug
 def test_patient_details_load_with_missing_vaccine_info(
-    setup_mav_853, children_page, schools, children
+    setup_mav_853,
+    children_page,
+    schools,
+    children,
 ):
     """
-    Test: Ensure patient details page loads for a child with missing vaccine info (MAV-853).
+    Test: Ensure patient details page loads for a child with missing vaccine info
+       (MAV-853).
     Steps:
-    1. Setup: Import class list, schedule session, import cohort, and upload vaccination records with missing vaccine info.
+    1. Setup: Import class list, schedule session, import cohort, and upload vaccination
+       records with missing vaccine info.
     2. Search for the child by name.
     3. Click to view the child's record.
     4. Open the activity log.
@@ -134,7 +141,7 @@ def test_patient_details_load_with_missing_vaccine_info(
     children_page.click_record_for_child(child)
     # Verify activity log
     children_page.click_activity_log()
-    children_page.expect_activity_log_header("Vaccinated with Gardasil 9")
+    children_page.expect_activity_log_header("Vaccinated with Gardasil 9", unique=True)
     # Verify vaccination record
     children_page.click_child_record()
     children_page.click_vaccination_details(school)
@@ -143,7 +150,9 @@ def test_patient_details_load_with_missing_vaccine_info(
 
 @pytest.mark.bug
 def test_invalid_nhs_number_change_is_rejected(
-    setup_fixed_child, children_page, children
+    setup_fixed_child,
+    children_page,
+    children,
 ):
     """
     Test: Changing a child's NHS number to an invalid value should fail.
@@ -173,7 +182,8 @@ def test_merge_child_records_does_not_crash(setup_child_merge, children_page, ch
     """
     Test: Merging two child records does not cause a crash (MAV-1839).
     Steps:
-    1. Setup: Import a class list with two fixed children and navigate to the children page.
+    1. Setup: Import a class list with two fixed children and navigate to the
+       children page.
     2. Search for the first child by name.
     3. Open the first child's record and start the archive (merge) process.
     4. Select the second child as the duplicate.
@@ -181,7 +191,6 @@ def test_merge_child_records_does_not_crash(setup_child_merge, children_page, ch
     Verification:
     - An alert appears with the message "This record has been archived"
     """
-
     child1 = children[Programme.HPV][0]
     child2 = children[Programme.HPV][1]
     children_page.search_with_all_filters_for_child_name(str(child1))

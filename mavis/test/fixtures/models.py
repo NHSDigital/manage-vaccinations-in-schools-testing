@@ -5,7 +5,6 @@ import random
 import time
 import urllib.parse
 import uuid
-from typing import List
 
 import jwt
 import nhs_number
@@ -25,7 +24,7 @@ from mavis.test.models import (
     Team,
     User,
 )
-from mavis.test.wrappers import get_date_of_birth_for_year_group, normalize_whitespace
+from mavis.test.utils import get_date_of_birth_for_year_group, normalize_whitespace
 
 logger = logging.getLogger(__name__)
 
@@ -35,26 +34,26 @@ onboarding_faker.unique.clear()
 
 
 @pytest.fixture(scope="session")
-def medical_secretary():
+def medical_secretary() -> User:
     email = onboarding_faker.email()
     return User(username=email, password=email, role="medical_secretary")
 
 
 @pytest.fixture(scope="session")
-def clinics() -> List[Clinic]:
+def clinics() -> list[Clinic]:
     return [
         Clinic(name=onboarding_faker.company()),
     ]
 
 
 @pytest.fixture(scope="session")
-def nurse():
+def nurse() -> User:
     email = onboarding_faker.email()
     return User(username=email, password=email, role="nurse")
 
 
 @pytest.fixture(scope="session")
-def year_groups():
+def year_groups() -> dict[str, int]:
     return {
         programme.group: random.choice(programme.year_groups) for programme in Programme
     }
@@ -71,7 +70,7 @@ def schools(base_url, year_groups) -> dict[str, list[School]]:
             "year_groups[]": [str(year_group)],
         }
 
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
 
         data = response.json()
@@ -122,19 +121,19 @@ def children(year_groups) -> dict[str, list[Child]]:
 
 
 @pytest.fixture(scope="session")
-def superuser():
+def superuser() -> User:
     email = onboarding_faker.email()
     return User(username=email, password=email, role="superuser")
 
 
 @pytest.fixture(scope="session")
-def organisation():
+def organisation() -> Organisation:
     ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     return Organisation(ods_code=ods_code)
 
 
 @pytest.fixture(scope="session")
-def subteam():
+def subteam() -> Subteam:
     return Subteam(
         key="team",
         name=f"{onboarding_faker.company()} est. {random.randint(1600, 2025)}",
@@ -165,8 +164,14 @@ def users(medical_secretary, nurse, superuser) -> dict[str, User]:
 
 @pytest.fixture(scope="session")
 def onboarding(
-    clinics, schools, subteam, team, organisation, users, programmes_enabled
-):
+    clinics,
+    schools,
+    subteam,
+    team,
+    organisation,
+    users,
+    programmes_enabled,
+) -> dict[str, object]:
     return {
         "clinics": {subteam.key: [it.to_onboarding() for it in clinics]},
         "team": team.to_onboarding(),
@@ -177,14 +182,14 @@ def onboarding(
                 school.to_onboarding()
                 for schools_list in schools.values()
                 for school in schools_list
-            ]
+            ],
         },
         "subteams": subteam.to_onboarding(),
         "users": [it.to_onboarding() for it in users.values()],
     }
 
 
-def _check_response_status(response):
+def _check_response_status(response) -> None:
     if not response.ok:
         logger.warning(response.content)
     response.raise_for_status()
@@ -193,20 +198,20 @@ def _check_response_status(response):
 @pytest.fixture(scope="session", autouse=True)
 def onboard_and_delete(base_url, onboarding, team):
     url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    response = requests.post(url, json=onboarding)
+    response = requests.post(url, json=onboarding, timeout=30)
     _check_response_status(response)
 
     yield
 
     url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url)
+    response = requests.delete(url, timeout=30)
     _check_response_status(response)
 
 
 @pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, team):
+def reset_before_each_module(base_url, team) -> None:
     url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, params={"keep_itself": "true"})
+    response = requests.delete(url, params={"keep_itself": "true"}, timeout=30)
     _check_response_status(response)
 
 
@@ -217,7 +222,7 @@ def programmes_enabled() -> list[str]:
 
 def _read_imms_api_credentials() -> dict[str, str]:
     return {
-        "pem": base64.b64decode(os.environ["IMMS_API_PEM"]),
+        "pem": os.environ["IMMS_API_PEM"],
         "key": os.environ["IMMS_API_KEY"],
         "kid": os.environ["IMMS_API_KID"],
         "url": os.environ["IMMS_BASE_URL"],
@@ -227,7 +232,7 @@ def _read_imms_api_credentials() -> dict[str, str]:
 def _get_jwt_payload(api_auth: dict[str, str]) -> str:
     _kid = api_auth["kid"]
     _api_key = api_auth["key"]
-    _pem = api_auth["pem"]
+    _decoded_pem = base64.b64decode(api_auth["pem"])
     _auth_endpoint = urllib.parse.urljoin(api_auth["url"], "oauth2-mock/token")
     headers = {
         "alg": "RS512",
@@ -241,7 +246,12 @@ def _get_jwt_payload(api_auth: dict[str, str]) -> str:
         "aud": _auth_endpoint,
         "exp": int(time.time()) + 300,  # 5mins in the future
     }
-    return jwt.encode(payload=claims, key=_pem, algorithm="RS512", headers=headers)
+    return jwt.encode(
+        payload=claims,
+        key=_decoded_pem,
+        algorithm="RS512",
+        headers=headers,
+    )
 
 
 @pytest.fixture(scope="session", autouse=False)
@@ -250,17 +260,17 @@ def authenticate_api():
     _endpoint = urllib.parse.urljoin(_api_auth["url"], "oauth2-mock/token")
     _payload = {
         "grant_type": "client_credentials",
-        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",  # noqa: E501
         "client_assertion": _get_jwt_payload(api_auth=_api_auth),
     }
     _headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-    response = requests.post(url=_endpoint, headers=_headers, data=_payload)
+    response = requests.post(url=_endpoint, headers=_headers, data=_payload, timeout=30)
 
     _check_response_status(response=response)
-    yield response.json()["access_token"]
+    return response.json()["access_token"]
 
 
 @pytest.fixture(scope="session")
 def imms_base_url():
-    yield os.environ["IMMS_AUTH_URL"]
+    return os.environ["IMMS_AUTH_URL"]
