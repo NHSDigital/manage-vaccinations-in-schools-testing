@@ -3,6 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme
+from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT
 
 pytestmark = pytest.mark.consent
 
@@ -86,7 +87,9 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.answer_gillick_competence_questions(is_competent=True)
-    sessions_page.fill_assessment_notes_with_string_of_length(1001)
+    sessions_page.fill_assessment_notes_with_string_of_length(
+        MAVIS_NOTE_LENGTH_LIMIT + 1
+    )
     sessions_page.click_complete_assessment()
     sessions_page.check_notes_length_error_appears()
 
@@ -95,7 +98,9 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 
     sessions_page.click_edit_gillick_competence()
     sessions_page.answer_gillick_competence_questions(is_competent=True)
-    sessions_page.fill_assessment_notes_with_string_of_length(1001)
+    sessions_page.fill_assessment_notes_with_string_of_length(
+        MAVIS_NOTE_LENGTH_LIMIT + 1
+    )
     sessions_page.click_update_assessment()
     sessions_page.check_notes_length_error_appears()
 

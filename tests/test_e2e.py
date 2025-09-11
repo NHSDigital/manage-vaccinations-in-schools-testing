@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord
 
 pytestmark = pytest.mark.e2e
 
@@ -110,7 +110,9 @@ def test_recording_hpv_vaccination_e2e(
     sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(child, Programme.HPV, gardasil_9_batch_name)
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.HPV, gardasil_9_batch_name)
+    )
 
     dashboard_page.navigate()
     log_in_page.log_out()
@@ -190,8 +192,12 @@ def test_recording_doubles_vaccination_e2e(
     sessions_page.click_session_for_programme_group(schools[0], "doubles")
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(child, Programme.MENACWY, menquadfi_batch_name)
-    sessions_page.record_vaccs_for_child(child, Programme.TD_IPV, revaxis_batch_name)
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.MENACWY, menquadfi_batch_name)
+    )
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.TD_IPV, revaxis_batch_name)
+    )
 
     dashboard_page.navigate()
     log_in_page.log_out()
@@ -260,11 +266,8 @@ def test_recording_flu_vaccination_e2e(
     sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(
-        child,
-        Programme.FLU,
-        fluenz_batch_name,
-        ConsentOption.BOTH,
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.BOTH)
     )
 
     dashboard_page.navigate()

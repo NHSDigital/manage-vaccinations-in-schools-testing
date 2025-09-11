@@ -2,8 +2,8 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme, Vaccine
-from mavis.test.utils import generate_random_string
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, generate_random_string
 
 
 @pytest.fixture
@@ -98,13 +98,12 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
                 programme=programme,
                 consent_option=consent_option,
             )
-            sessions_page.record_vaccs_for_child(
-                child=child,
-                programme=programme,
-                batch_name=batch_names[programme],
+            sessions_page.record_vaccination_for_child(
+                VaccinationRecord(
+                    child, programme, batch_names[programme], consent_option
+                ),
                 notes=generate_random_string(
-                    target_length=1001,
+                    target_length=MAVIS_NOTE_LENGTH_LIMIT + 1,
                     generate_spaced_words=True,
-                ),  # MAV-955
-                consent_option=consent_option,
+                ),
             )

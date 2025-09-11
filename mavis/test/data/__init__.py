@@ -106,7 +106,7 @@ class TestData:
     template_path = Path(__file__).parent
     working_path = Path("working")
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         organisation: Organisation,
         schools: dict[str, list[School]],

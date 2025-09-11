@@ -4,6 +4,7 @@ from datetime import date
 from enum import StrEnum
 from typing import NamedTuple
 
+from attr import dataclass
 from faker import Faker
 
 faker = Faker("en_GB")
@@ -379,3 +380,12 @@ class ImmsEndpoints(StrEnum):
             os.getenv("IMMS_BASE_URL", "PROVIDEURL"),
             self.value,
         )
+
+
+@dataclass
+class VaccinationRecord:
+    child: Child
+    programme: Programme
+    batch_name: str
+    consent_option: ConsentOption = ConsentOption.INJECTION
+    delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER

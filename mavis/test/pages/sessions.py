@@ -15,10 +15,12 @@ from mavis.test.models import (
     Parent,
     Programme,
     School,
+    VaccinationRecord,
 )
 from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
     generate_random_string,
+    get_current_datetime,
     get_current_datetime_compact,
     get_offset_date_compact_format,
     get_todays_date,
@@ -848,29 +850,27 @@ class SessionsPage:
         reload_until_element_is_visible(self.page, child_locator)
         child_locator.click()
 
-    def record_vaccs_for_child(
+    def record_vaccination_for_child(
         self,
-        child: Child,
-        programme: Programme,
-        batch_name: str,
-        consent_option: ConsentOption = ConsentOption.INJECTION,
-        delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER,
+        vaccination_record: VaccinationRecord,
         notes: str = "",
         *,
         at_school: bool = True,
     ) -> datetime:
         self.click_record_vaccinations_tab()
-        self.search_child(child)
-        self.click_programme_tab(programme)
+        self.search_child(vaccination_record.child)
+        self.click_programme_tab(vaccination_record.programme)
 
-        self.confirm_pre_screening_checks(programme, consent_option)
+        self.confirm_pre_screening_checks(
+            vaccination_record.programme, vaccination_record.consent_option
+        )
         self.pre_screening_notes.fill(notes)
 
-        self.select_identity_confirmed_by_child(child)
+        self.select_identity_confirmed_by_child(vaccination_record.child)
 
-        self.select_ready_for_vaccination(consent_option)
-        if consent_option == ConsentOption.INJECTION:
-            self.select_delivery_site(delivery_site)
+        self.select_ready_for_vaccination(vaccination_record.consent_option)
+        if vaccination_record.consent_option is ConsentOption.INJECTION:
+            self.select_delivery_site(vaccination_record.delivery_site)
         self.click_continue_button()
 
         if len(notes) > MAVIS_NOTE_LENGTH_LIMIT:
@@ -878,7 +878,7 @@ class SessionsPage:
             self.pre_screening_notes.fill("Prescreening notes")
             self.click_continue_button()
 
-        self.page.get_by_role("radio", name=batch_name).check()
+        self.page.get_by_role("radio", name=vaccination_record.batch_name).check()
         self.click_continue_button()
 
         if at_school:  # only skips MAV-854
@@ -890,8 +890,10 @@ class SessionsPage:
                 self.vaccination_notes.fill("Confirmation notes")
                 self.click_confirm_button()
 
-            self.expect_alert_text(f"Vaccination outcome recorded for {programme}")
-        return datetime.now().astimezone()
+            self.expect_alert_text(
+                f"Vaccination outcome recorded for {vaccination_record.programme}"
+            )
+        return get_current_datetime()
 
     def expect_alert_text(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)

@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.imms_api import ImmsApiHelper
-from mavis.test.models import DeliverySite, Programme, Vaccine
+from mavis.test.models import DeliverySite, Programme, VaccinationRecord, Vaccine
 
 
 @pytest.fixture(scope="session")
@@ -59,11 +59,10 @@ def record_hpv(
         parent=child.parents[0],
     )
     sessions_page.register_child_as_attending(child)
-    vaccination_time = sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.HPV,
-        batch_name=batch_name,
-        delivery_site=DeliverySite.LEFT_ARM_UPPER,
+    vaccination_time = sessions_page.record_vaccination_for_child(
+        VaccinationRecord(
+            child, Programme.HPV, batch_name, delivery_site=DeliverySite.LEFT_ARM_UPPER
+        )
     )
     return child, vaccination_time
 

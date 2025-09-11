@@ -62,7 +62,6 @@ ignore = [
   "E501",     # temp ignore line length rule
   "RUF001",   # mavis uses the ambiguous ’ character
   "S311",     # no cryptography warnings needed
-  "PLR0913",  # temp - to be removed in a later PR
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -70,11 +69,12 @@ ignore = [
   "ANN",      # tests/fixtures don't need type annotations
   "ARG",      # fixtures are unused arguments
   "S101",     # assertions should be used in tests
-  "PLR0913",  # fixtures causes many parameters to be given to tests
+  "PLR0913",  # fixtures cause many parameters to be given to tests
 ]
 "mavis/test/fixtures/*.py" = [
   "ANN",      # fixtures don't need type annotations
   "ARG",      # fixtures are unused arguments
+  "PLR0913",  # fixtures take many parameters
 ]
 "mavis/test/pages/*.py" = [
   "PLR0915",  # page object model causes many statements in __init__

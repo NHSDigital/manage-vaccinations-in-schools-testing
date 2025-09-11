@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
-from mavis.test.models import Programme, ReportFormat, Vaccine
+from mavis.test.models import Programme, ReportFormat, VaccinationRecord, Vaccine
 
 
 @pytest.fixture
@@ -387,10 +387,8 @@ def test_verify_excel_export_and_clinic_invitation(
         parent=child.parents[0],
     )
     sessions_page.register_child_as_attending(child)
-    sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.HPV,
-        batch_name=batch_name,
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.HPV, batch_name),
         at_school=False,
     )
     sessions_page.check_location_radio(clinics[0])
