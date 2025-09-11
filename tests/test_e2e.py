@@ -26,12 +26,18 @@ def setup_session_with_file_upload(
         try:
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            batch_names = [add_vaccine_batch(prog.vaccines[0]) for prog in Programme if prog.group == programme_group]
+            batch_names = [
+                add_vaccine_batch(prog.vaccines[0])
+                for prog in Programme
+                if prog.group == programme_group
+            ]
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, programme_group)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(ClassFileMapping.FIXED_CHILD, child.year_group, programme_group)
+            import_records_page.import_class_list(
+                ClassFileMapping.FIXED_CHILD, child.year_group, programme_group
+            )
             return batch_names
         finally:
             dashboard_page.navigate()
@@ -86,9 +92,13 @@ def test_recording_hpv_vaccination_e2e(
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(number_of_health_questions, health_question=False)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=False
+    )
     online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(child, programmes=[Programme.HPV], health_question=False)
+    online_consent_page.check_final_consent_message(
+        child, programmes=[Programme.HPV], health_question=False
+    )
 
     log_in_page.navigate()
     log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
@@ -105,7 +115,9 @@ def test_recording_hpv_vaccination_e2e(
 
 @pytest.fixture
 def doubles_consent_url(get_online_consent_url, schools):
-    yield from get_online_consent_url(schools["doubles"][0], Programme.MENACWY, Programme.TD_IPV)
+    yield from get_online_consent_url(
+        schools["doubles"][0], Programme.MENACWY, Programme.TD_IPV
+    )
 
 
 @pytest.fixture
@@ -141,17 +153,23 @@ def test_recording_doubles_vaccination_e2e(
     child = children["doubles"][0]
     schools = schools["doubles"]
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
-    number_of_health_questions = online_consent_page.get_number_of_health_questions_for_programmes(
-        [Programme.MENACWY, Programme.TD_IPV]
+    number_of_health_questions = (
+        online_consent_page.get_number_of_health_questions_for_programmes(
+            [Programme.MENACWY, Programme.TD_IPV]
+        )
     )
 
     online_consent_page.go_to_url(doubles_consent_url)
     start_page.start()
 
     online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_doubles_vaccinations(Programme.MENACWY, Programme.TD_IPV)
+    online_consent_page.agree_to_doubles_vaccinations(
+        Programme.MENACWY, Programme.TD_IPV
+    )
     online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(number_of_health_questions, health_question=False)
+    online_consent_page.answer_health_questions(
+        number_of_health_questions, health_question=False
+    )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
