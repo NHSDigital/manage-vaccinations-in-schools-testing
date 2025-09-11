@@ -1,4 +1,5 @@
 import csv
+from collections.abc import Callable
 from enum import Enum
 from pathlib import Path
 
@@ -135,90 +136,11 @@ class TestData:
         session_id: str | None = None,
         programme_group: str = Programme.HPV.group,
     ) -> Path:
-        static_replacements = {
-            "<<VACCS_DATE>>": get_current_datetime_compact()[:8],
-            "<<VACCS_TIME>>": get_current_time_hms_format(),
-            "<<HIST_VACCS_DATE>>": get_offset_date_compact_format(
-                offset_days=-(365 * 2)
-            ),
-            "<<SESSION_ID>>": session_id,
-        }
-        dynamic_replacements = {
-            "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
-            "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
-            "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
-            "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
-            "<<RANDOM_POSTCODE>>": lambda: self.faker.postcode(),
-        }
+        file_replacements = self.create_file_replacements_dict(
+            programme_group=programme_group, session_id=session_id
+        )
 
-        if self.year_groups:
-            fixed_year_group = self.year_groups[programme_group]
-            static_replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
-            dynamic_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = lambda: str(
-                get_date_of_birth_for_year_group(fixed_year_group),
-            )
-
-        if self.organisation:
-            static_replacements["<<ORG_CODE>>"] = self.organisation.ods_code
-
-        if self.schools:
-            schools = self.schools[programme_group]
-            for index, school in enumerate(schools):
-                static_replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
-                static_replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn_and_site
-
-        if self.nurse:
-            static_replacements["<<NURSE_EMAIL>>"] = self.nurse.username
-
-        if self.clinics:
-            clinics = self.clinics
-            for index, clinic in enumerate(clinics):
-                static_replacements[f"<<CLINIC_{index}_LOWER>>"] = clinic.name.lower()
-                static_replacements[f"<<CLINIC_{index}>>"] = clinic.name
-
-        if self.children:
-            children = self.children[programme_group]
-            for index, child in enumerate(children):
-                static_replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
-                static_replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
-                static_replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
-                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_1>>"] = (
-                    child.address[0]
-                )
-                static_replacements[f"<<CHILD_{index}_ADDRESS_LINE_2>>"] = (
-                    child.address[1]
-                )
-                static_replacements[f"<<CHILD_{index}_TOWN>>"] = child.address[2]
-                static_replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
-                static_replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
-                    child.date_of_birth.strftime("%Y%m%d")
-                )
-                static_replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(
-                    child.year_group,
-                )
-                static_replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
-                    0
-                ].full_name
-                static_replacements[f"<<CHILD_{index}_PARENT_2_NAME>>"] = child.parents[
-                    1
-                ].full_name
-                static_replacements[f"<<CHILD_{index}_PARENT_1_EMAIL>>"] = (
-                    child.parents[0].email_address
-                )
-                static_replacements[f"<<CHILD_{index}_PARENT_2_EMAIL>>"] = (
-                    child.parents[1].email_address
-                )
-                static_replacements[f"<<CHILD_{index}_PARENT_1_RELATIONSHIP>>"] = (
-                    child.parents[0].relationship
-                )
-                static_replacements[f"<<CHILD_{index}_PARENT_2_RELATIONSHIP>>"] = (
-                    child.parents[1].relationship
-                )
-
-        for year_group in range(8, 12):
-            static_replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
-                get_date_of_birth_for_year_group(year_group),
-            )
+        line_replacements = self.create_line_replacements_dict(programme_group)
 
         output_filename = f"{file_name_prefix}{get_current_datetime_compact()}.csv"
         output_path = self.working_path / output_filename
@@ -227,13 +149,13 @@ class TestData:
             template_df = pd.read_csv(self.template_path / template_path, dtype=str)
             template_df = self.replace_substrings_in_df(
                 template_df,
-                static_replacements,
+                file_replacements,
             )
             template_df = template_df.apply(
                 lambda col: col.apply(
                     lambda x: (
-                        dynamic_replacements[x.strip()]()
-                        if isinstance(x, str) and x.strip() in dynamic_replacements
+                        line_replacements[x.strip()]()
+                        if isinstance(x, str) and x.strip() in line_replacements
                         else x
                     ),
                 ),
@@ -247,6 +169,121 @@ class TestData:
         else:
             output_path.touch()
         return output_path
+
+    def create_file_replacements_dict(
+        self, programme_group: str, session_id: str | None
+    ) -> dict[str, str]:
+        file_replacements = self._vaccs_file_replacements(session_id)
+        file_replacements.update(self._organisation_replacements())
+        file_replacements.update(self._school_replacements(programme_group))
+        file_replacements.update(self._nurse_replacements())
+        file_replacements.update(self._clinic_replacements())
+        file_replacements.update(self._children_replacements(programme_group))
+        file_replacements.update(self._year_group_replacements(programme_group))
+        return file_replacements
+
+    def _vaccs_file_replacements(self, session_id: str | None) -> dict[str, str]:
+        return {
+            "<<VACCS_DATE>>": get_current_datetime_compact()[:8],
+            "<<VACCS_TIME>>": get_current_time_hms_format(),
+            "<<HIST_VACCS_DATE>>": get_offset_date_compact_format(
+                offset_days=-(365 * 2)
+            ),
+            "<<SESSION_ID>>": session_id if session_id else "",
+        }
+
+    def _organisation_replacements(self) -> dict[str, str]:
+        if self.organisation:
+            return {"<<ORG_CODE>>": self.organisation.ods_code}
+        return {}
+
+    def _school_replacements(self, programme_group: str) -> dict[str, str]:
+        replacements = {}
+        if self.schools:
+            schools = self.schools[programme_group]
+            for index, school in enumerate(schools):
+                replacements[f"<<SCHOOL_{index}_NAME>>"] = school.name
+                replacements[f"<<SCHOOL_{index}_URN>>"] = school.urn_and_site
+        return replacements
+
+    def _nurse_replacements(self) -> dict[str, str]:
+        if self.nurse:
+            return {"<<NURSE_EMAIL>>": self.nurse.username}
+        return {}
+
+    def _clinic_replacements(self) -> dict[str, str]:
+        replacements = {}
+        if self.clinics:
+            for index, clinic in enumerate(self.clinics):
+                replacements[f"<<CLINIC_{index}_LOWER>>"] = clinic.name.lower()
+                replacements[f"<<CLINIC_{index}>>"] = clinic.name
+        return replacements
+
+    def _children_replacements(self, programme_group: str) -> dict[str, str]:
+        replacements = {}
+        if self.children:
+            children = self.children[programme_group]
+            for index, child in enumerate(children):
+                replacements[f"<<CHILD_{index}_FIRST_NAME>>"] = child.first_name
+                replacements[f"<<CHILD_{index}_LAST_NAME>>"] = child.last_name
+                replacements[f"<<CHILD_{index}_NHS_NO>>"] = child.nhs_number
+                replacements[f"<<CHILD_{index}_ADDRESS_LINE_1>>"] = child.address[0]
+                replacements[f"<<CHILD_{index}_ADDRESS_LINE_2>>"] = child.address[1]
+                replacements[f"<<CHILD_{index}_TOWN>>"] = child.address[2]
+                replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
+                replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
+                    child.date_of_birth.strftime("%Y%m%d")
+                )
+                replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(child.year_group)
+                replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
+                    0
+                ].full_name
+                replacements[f"<<CHILD_{index}_PARENT_2_NAME>>"] = child.parents[
+                    1
+                ].full_name
+                replacements[f"<<CHILD_{index}_PARENT_1_EMAIL>>"] = child.parents[
+                    0
+                ].email_address
+                replacements[f"<<CHILD_{index}_PARENT_2_EMAIL>>"] = child.parents[
+                    1
+                ].email_address
+                replacements[f"<<CHILD_{index}_PARENT_1_RELATIONSHIP>>"] = (
+                    child.parents[0].relationship
+                )
+                replacements[f"<<CHILD_{index}_PARENT_2_RELATIONSHIP>>"] = (
+                    child.parents[1].relationship
+                )
+        return replacements
+
+    def _year_group_replacements(self, programme_group: str) -> dict[str, str]:
+        replacements = {}
+        for year_group in range(8, 12):
+            replacements[f"<<DOB_YEAR_{year_group}>>"] = str(
+                get_date_of_birth_for_year_group(year_group)
+            )
+        if self.year_groups:
+            fixed_year_group = self.year_groups[programme_group]
+            replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
+        return replacements
+
+    def create_line_replacements_dict(
+        self, programme_group: str
+    ) -> dict[str, Callable[[], str]]:
+        line_replacements = {
+            "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
+            "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
+            "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
+            "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
+            "<<RANDOM_POSTCODE>>": lambda: self.faker.postcode(),
+        }
+
+        if self.year_groups:
+            fixed_year_group = self.year_groups[programme_group]
+            line_replacements["<<FIXED_YEAR_GROUP_DOB>>"] = lambda: str(
+                get_date_of_birth_for_year_group(fixed_year_group),
+            )
+
+        return line_replacements
 
     def replace_substrings_in_df(
         self, df: pd.DataFrame, replacements: dict[str, str]

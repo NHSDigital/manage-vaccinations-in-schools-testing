@@ -63,7 +63,6 @@ ignore = [
   "RUF001",   # mavis uses the ambiguous ’ character
   "S311",     # no cryptography warnings needed
   "PLR0913",  # temp - to be removed in a later PR
-  "C901",     # temp - to be removed in a later PR
 ]
 
 [tool.ruff.lint.per-file-ignores]
