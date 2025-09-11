@@ -914,3 +914,6 @@ class SessionsPage:
             self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
                 "link",
             ).click()
+
+    def expect_text_to_not_be_visible(self, text: str) -> None:
+        expect(self.page.get_by_text(text)).not_to_be_visible()

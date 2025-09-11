@@ -80,7 +80,8 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(school, programme_group)
-        sessions_page.register_child_as_attending(str(child))
+        if programme_group is Programme.HPV:
+            sessions_page.register_child_as_attending(str(child))
         sessions_page.click_consent_tab()
         sessions_page.search_child(child)
         programmes = (
