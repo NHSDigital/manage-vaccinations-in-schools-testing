@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord
 
 pytestmark = pytest.mark.e2e
 
@@ -35,7 +35,9 @@ def setup_session_with_file_upload(
             sessions_page.click_session_for_programme_group(school, programme_group)
             sessions_page.click_import_class_lists()
             import_records_page.import_class_list(
-                ClassFileMapping.FIXED_CHILD, child.year_group, programme_group
+                ClassFileMapping.FIXED_CHILD,
+                child.year_group,
+                programme_group,
             )
             return batch_names
         finally:
@@ -74,7 +76,8 @@ def test_recording_hpv_vaccination_e2e(
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
     2. Go to online consent URL and fill in child and parent details.
     3. Agree to HPV vaccination, fill address, answer health questions, and confirm.
-    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    4. Log in as nurse, navigate to session, set session in progress,
+       register child as attending.
     5. Record HPV vaccination for the child.
     Verification:
     - Final consent message is shown after online consent.
@@ -92,11 +95,14 @@ def test_recording_hpv_vaccination_e2e(
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        number_of_health_questions, health_question=False
+        number_of_health_questions,
+        yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
-        child, programmes=[Programme.HPV], health_question=False
+        child,
+        programmes=[Programme.HPV],
+        yes_to_health_questions=False,
     )
 
     log_in_page.navigate()
@@ -106,7 +112,9 @@ def test_recording_hpv_vaccination_e2e(
     sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(child, Programme.HPV, gardasil_9_batch_name)
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.HPV, gardasil_9_batch_name)
+    )
 
     dashboard_page.navigate()
     log_in_page.log_out()
@@ -115,7 +123,9 @@ def test_recording_hpv_vaccination_e2e(
 @pytest.fixture
 def doubles_consent_url(get_online_consent_url, schools):
     yield from get_online_consent_url(
-        schools["doubles"][0], Programme.MENACWY, Programme.TD_IPV
+        schools["doubles"][0],
+        Programme.MENACWY,
+        Programme.TD_IPV,
     )
 
 
@@ -138,12 +148,14 @@ def test_recording_doubles_vaccination_e2e(
     team,
 ):
     """
-    Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations for a child.
+    Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch names.
     2. Go to online consent URL and fill in child and parent details.
-    3. Agree to both MenACWY and Td/IPV vaccinations, fill address, answer health questions, and confirm.
-    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    3. Agree to both MenACWY and Td/IPV vaccinations, fill address,
+       answer health questions
+    4. Log in as nurse, navigate to session, set session in progress,
+       register child as attending.
     5. Record MenACWY and Td/IPV vaccinations for the child.
     Verification:
     - Final consent message is shown after online consent.
@@ -154,7 +166,7 @@ def test_recording_doubles_vaccination_e2e(
     menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
     number_of_health_questions = (
         online_consent_page.get_number_of_health_questions_for_programmes(
-            [Programme.MENACWY, Programme.TD_IPV]
+            [Programme.MENACWY, Programme.TD_IPV],
         )
     )
 
@@ -163,15 +175,19 @@ def test_recording_doubles_vaccination_e2e(
 
     online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_doubles_vaccinations(
-        Programme.MENACWY, Programme.TD_IPV
+        Programme.MENACWY,
+        Programme.TD_IPV,
     )
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        number_of_health_questions, health_question=False
+        number_of_health_questions,
+        yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
-        child, programmes=[Programme.MENACWY, Programme.TD_IPV], health_question=False
+        child,
+        programmes=[Programme.MENACWY, Programme.TD_IPV],
+        yes_to_health_questions=False,
     )
 
     log_in_page.navigate()
@@ -181,8 +197,12 @@ def test_recording_doubles_vaccination_e2e(
     sessions_page.click_session_for_programme_group(schools[0], "doubles")
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(child, Programme.MENACWY, menquadfi_batch_name)
-    sessions_page.record_vaccs_for_child(child, Programme.TD_IPV, revaxis_batch_name)
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.MENACWY, menquadfi_batch_name)
+    )
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.TD_IPV, revaxis_batch_name)
+    )
 
     dashboard_page.navigate()
     log_in_page.log_out()
@@ -217,7 +237,8 @@ def test_recording_flu_vaccination_e2e(
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
     2. Go to online consent URL and fill in child and parent details.
     3. Agree to flu vaccination, fill address, answer health questions, and confirm.
-    4. Log in as nurse, navigate to session, set session in progress, register child as attending.
+    4. Log in as nurse, navigate to session, set session in progress,
+       register child as attending.
     5. Record flu vaccination for the child.
     Verification:
     - Final consent message is shown after online consent.
@@ -235,13 +256,13 @@ def test_recording_flu_vaccination_e2e(
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
         online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
-        health_question=False,
+        yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
     online_consent_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
-        health_question=False,
+        yes_to_health_questions=False,
         consent_option=ConsentOption.BOTH,
     )
 
@@ -252,11 +273,8 @@ def test_recording_flu_vaccination_e2e(
     sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccs_for_child(
-        child,
-        Programme.FLU,
-        fluenz_batch_name,
-        ConsentOption.BOTH,
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.BOTH)
     )
 
     dashboard_page.navigate()

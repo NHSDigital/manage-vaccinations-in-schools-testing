@@ -3,6 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme
+from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT
 
 pytestmark = pytest.mark.consent
 
@@ -76,7 +77,8 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
     2. Navigate to Gillick competence assessment for the child.
     3. Attempt to complete assessment with notes over 1000 characters (should error).
     4. Complete assessment with valid notes.
-    5. Edit assessment and again try to update with notes over 1000 characters (should error).
+    5. Edit assessment and again try to update with notes over 1000
+       characters (should error).
     Verification:
     - Error is shown for notes over 1000 characters.
     - Assessment can be completed and updated with valid notes.
@@ -88,7 +90,9 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
     sessions_page.answer_gillick_competence_questions(is_competent=True)
-    sessions_page.fill_assessment_notes_with_string_of_length(1001)
+    sessions_page.fill_assessment_notes_with_string_of_length(
+        MAVIS_NOTE_LENGTH_LIMIT + 1
+    )
     sessions_page.click_complete_assessment()
     sessions_page.check_notes_length_error_appears()
 
@@ -97,14 +101,20 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
 
     sessions_page.click_edit_gillick_competence()
     sessions_page.answer_gillick_competence_questions(is_competent=True)
-    sessions_page.fill_assessment_notes_with_string_of_length(1001)
+    sessions_page.fill_assessment_notes_with_string_of_length(
+        MAVIS_NOTE_LENGTH_LIMIT + 1
+    )
     sessions_page.click_update_assessment()
     sessions_page.check_notes_length_error_appears()
 
 
 @pytest.mark.bug
 def test_invalid_consent(
-    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
 ):
     """
     Test: Record invalid and refused consents and verify activity log entries.
@@ -137,22 +147,27 @@ def test_invalid_consent(
     sessions_page.click_session_activity_and_notes()
 
     sessions_page.check_session_activity_entry(
-        f"Consent from {child.parents[1].full_name} invalidated"
+        f"Consent from {child.parents[1].full_name} invalidated",
     )
     sessions_page.check_session_activity_entry(
-        f"Consent refused by {child.parents[1].name_and_relationship}"
+        f"Consent refused by {child.parents[1].name_and_relationship}",
     )
     sessions_page.check_session_activity_entry(
-        f"Consent not_provided by {child.parents[0].name_and_relationship}"
+        f"Consent not_provided by {child.parents[0].name_and_relationship}",
     )
 
 
 @pytest.mark.bug
 def test_parent_provides_consent_twice(
-    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
 ):
     """
-    Test: Record two consents from the same parent (positive then refusal) and verify activity log.
+    Test: Record two consents from the same parent (positive then refusal)
+       and verify activity log.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a written positive consent for parent 1.
@@ -186,20 +201,25 @@ def test_parent_provides_consent_twice(
     sessions_page.expect_consent_refused_text(child.parents[0])
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_session_activity_entry(
-        f"Consent refused by {child.parents[0].name_and_relationship}"
+        f"Consent refused by {child.parents[0].name_and_relationship}",
     )
     sessions_page.check_session_activity_entry("Triaged decision: Safe to vaccinate")
     sessions_page.check_session_activity_entry(
-        f"Consent given by {child.parents[0].name_and_relationship}"
+        f"Consent given by {child.parents[0].name_and_relationship}",
     )
 
 
 @pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
-    setup_fixed_child, sessions_page, schools, verbal_consent_page, children
+    setup_fixed_child,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
 ):
     """
-    Test: Record conflicting consents from parents, resolve with Gillick competence, and verify status.
+    Test: Record conflicting consents from parents, resolve with Gillick competence,
+       and verify status.
     Steps:
     1. Open the session and consent tab for the child.
     2. Record a verbal positive consent for parent 1.
@@ -208,7 +228,8 @@ def test_conflicting_consent_with_gillick_consent(
     5. Record child verbal consent.
     6. Verify consent status and activity log.
     Verification:
-    - Consent status updates to 'Conflicting consent', then 'Safe to vaccinate', then 'Consent given'.
+    - Consent status updates to 'Conflicting consent', then 'Safe to vaccinate',
+      then 'Consent given'.
     - Activity log contains entry for Gillick competent child consent.
     """
     child = children[Programme.HPV][0]
@@ -219,7 +240,8 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0], change_phone=False
+        parent=child.parents[0],
+        change_phone=False,
     )
     sessions_page.select_consent_given()
 
@@ -236,7 +258,7 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
     sessions_page.click_record_a_new_consent_response()
     verbal_consent_page.child_consent_verbal_positive()
-    sessions_page.expect_alert_text(f"Consent recorded for {str(child)}")
+    sessions_page.expect_alert_text(f"Consent recorded for {child!s}")
     sessions_page.select_consent_given()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
@@ -245,5 +267,5 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_consent_status(Programme.HPV, "Consent given")
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_session_activity_entry(
-        f"Consent given by {str(child)} (Child (Gillick competent))"
+        f"Consent given by {child!s} (Child (Gillick competent))",
     )

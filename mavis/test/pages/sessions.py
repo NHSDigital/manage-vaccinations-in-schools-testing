@@ -2,6 +2,7 @@ import re
 import time
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from playwright.sync_api import Page, expect
 
@@ -14,11 +15,15 @@ from mavis.test.models import (
     Parent,
     Programme,
     School,
+    VaccinationRecord,
 )
-from mavis.test.wrappers import (
+from mavis.test.utils import (
+    MAVIS_NOTE_LENGTH_LIMIT,
     generate_random_string,
     get_current_datetime,
-    get_offset_date,
+    get_current_datetime_compact,
+    get_offset_date_compact_format,
+    get_todays_date,
     reload_until_element_is_visible,
 )
 
@@ -26,78 +31,98 @@ from mavis.test.wrappers import (
 class SessionsPage:
     def __init__(
         self,
-        test_data: TestData,
         page: Page,
-    ):
+        test_data: TestData,
+    ) -> None:
         self.test_data = test_data
         self.page = page
 
         self.today_tab_link = self.page.get_by_role("link", name="Today")
         self.scheduled_tab_link = self.page.get_by_role(
-            "link", name="Scheduled", exact=True
+            "link",
+            name="Scheduled",
+            exact=True,
         )
         self.unscheduled_tab_link = self.page.get_by_role("link", name="Unscheduled")
         self.no_response_checkbox = self.page.get_by_role(
-            "checkbox", name="No response"
+            "checkbox",
+            name="No response",
         )
         self.update_results_button = self.page.get_by_role(
-            "button", name="Update results"
+            "button",
+            name="Update results",
         )
         self.consent_given_checkbox = self.page.get_by_role(
-            "checkbox", name="Consent given"
+            "checkbox",
+            name="Consent given",
         )
         self.consent_given_for_injected_vaccine_checkbox = self.page.get_by_role(
-            "checkbox", name="Consent given for injected vaccine"
+            "checkbox",
+            name="Consent given for injected vaccine",
         )
         self.consent_given_for_nasal_spray_checkbox = self.page.get_by_role(
-            "checkbox", name="Consent given for nasal spray"
+            "checkbox",
+            name="Consent given for nasal spray",
         )
         self.conflicting_consent_checkbox = self.page.get_by_role(
-            "checkbox", name="Conflicting consent"
+            "checkbox",
+            name="Conflicting consent",
         )
 
         self.programme_tab_link = self.page.get_by_role("link", name="Programme")
         self.import_class_lists_link = self.page.get_by_role(
-            "link", name="Import class lists"
+            "link",
+            name="Import class lists",
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.file_input = self.page.locator('input[type="file"]')
         self.filter_name_textbox = self.page.get_by_role("textbox", name="Name")
 
         self.update_triage_outcome_link = self.page.get_by_role(
-            "link", name="Update triage outcome"
+            "link",
+            name="Update triage outcome",
         )
         self.safe_to_vaccinate_radio = self.page.get_by_role(
-            "radio", name="Yes, it’s safe to vaccinate"
+            "radio",
+            name="Yes, it’s safe to vaccinate",
         )
         self.save_triage_button = self.page.get_by_role("button", name="Save triage")
         self.assess_gillick_competence_link = self.page.get_by_role(
-            "link", name="Assess Gillick competence"
+            "link",
+            name="Assess Gillick competence",
         )
         self.edit_gillick_competence_link = self.page.get_by_role(
-            "link", name="Edit Gillick competence"
+            "link",
+            name="Edit Gillick competence",
         )
         self.could_not_vaccinate_link = self.page.get_by_role(
-            "link", name="Could not vaccinate"
+            "link",
+            name="Could not vaccinate",
         )
         self.consent_refused_checkbox = self.page.get_by_role(
-            "checkbox", name="Consent refused"
+            "checkbox",
+            name="Consent refused",
         )
         self.record_offline_link = self.page.get_by_role("link", name="Record offline")
         self.assessment_notes_textbox = self.page.get_by_role(
-            "textbox", name="Assessment notes (optional)"
+            "textbox",
+            name="Assessment notes (optional)",
         )
         self.complete_assessment_button = self.page.get_by_role(
-            "button", name="Complete your assessment"
+            "button",
+            name="Complete your assessment",
         )
         self.update_assessment_button = self.page.get_by_role(
-            "button", name="Update your assessment"
+            "button",
+            name="Update your assessment",
         )
         self.schedule_sessions_link = self.page.get_by_role(
-            "link", name="Schedule sessions"
+            "link",
+            name="Schedule sessions",
         )
         self.add_session_dates_link = self.page.get_by_role(
-            "link", name="Add session dates"
+            "link",
+            name="Add session dates",
         )
         self.day_textbox = self.page.get_by_role("textbox", name="Day")
         self.month_textbox = self.page.get_by_role("textbox", name="Month")
@@ -105,74 +130,88 @@ class SessionsPage:
         self.edit_session_link = self.page.get_by_role("link", name="Edit session")
         self.close_session_link = self.page.get_by_role("link", name="Close session")
         self.change_session_dates_link = self.page.get_by_role(
-            "link", name="Change session dates"
+            "link",
+            name="Change session dates",
         )
         self.delete_button = self.page.get_by_role("button", name="Delete")
         self.back_link = self.page.get_by_role("link", name="Back", exact=True).first
         self.continue_link = self.page.get_by_role("link", name="Continue")
         self.mark_as_invalid_link = self.page.get_by_role(
-            "link", name="Mark as invalid"
+            "link",
+            name="Mark as invalid",
         )
         self.mark_as_invalid_button = self.page.get_by_role(
-            "button", name="Mark as invalid"
+            "button",
+            name="Mark as invalid",
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
         self.record_a_new_consent_response_button = self.page.get_by_role(
-            "button", name="Record a new consent response"
+            "button",
+            name="Record a new consent response",
         )
         self.update_results_button = self.page.get_by_role(
-            "button", name="Update results"
+            "button",
+            name="Update results",
         )
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.search_textbox = self.page.get_by_role("textbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
         self.record_vaccinations_link = self.page.get_by_role(
-            "link", name="Record vaccinations"
+            "link",
+            name="Record vaccinations",
         )
         self.ready_for_injection_radio = self.page.locator(
-            "#vaccinate-form-vaccine-method-injection-field"
+            "#vaccinate-form-vaccine-method-injection-field",
         )
         self.ready_for_nasal_spray_radio = self.page.locator(
-            "#vaccinate-form-vaccine-method-nasal-field"
+            "#vaccinate-form-vaccine-method-nasal-field",
         )
         self.attending_button = self.page.get_by_role("button", name="Attending").first
         self.notes_length_error = (
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
         self.vaccination_notes = self.page.get_by_role(
-            "textbox", name="Notes (optional)"
+            "textbox",
+            name="Notes (optional)",
         )
 
         pre_screening = self.page.locator("section").filter(
-            has=page.get_by_role("heading", name="Pre-screening checks")
+            has=page.get_by_role("heading", name="Pre-screening checks"),
         )
         self.change_programmes_link = self.page.get_by_role(
-            "link", name="Change   programmes"
+            "link",
+            name="Change   programmes",
         )
         self.flu_programme_checkbox = self.page.get_by_role("checkbox", name="Flu")
         self.hpv_programme_checkbox = self.page.get_by_role("checkbox", name="HPV")
         self.menacwy_programme_checkbox = self.page.get_by_role(
-            "checkbox", name="MenACWY"
+            "checkbox",
+            name="MenACWY",
         )
         self.td_ipv_programme_checkbox = self.page.get_by_role(
-            "checkbox", name="Td/IPV"
+            "checkbox",
+            name="Td/IPV",
         )
         self.pre_screening_listitem = pre_screening.get_by_role("listitem")
         self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
         self.pre_screening_notes = pre_screening.get_by_role(
-            "textbox", name="Pre-screening notes (optional)"
+            "textbox",
+            name="Pre-screening notes (optional)",
         )
         self.review_no_consent_response_link = self.page.get_by_role(
-            "link", name="with no response"
+            "link",
+            name="with no response",
         )
         self.in_person_radio = self.page.get_by_text("In person")
         self.no_they_no_not_agree_radio = self.page.get_by_text("No, they do not agree")
         self.consent_refusal_reason_other_radio = self.page.get_by_text("Other")
         self.consent_refusal_details_textbox = self.page.get_by_role(
-            "textbox", name="Give details"
+            "textbox",
+            name="Give details",
         )
         self.review_consent_refused_link = self.page.get_by_role(
-            "link", name="Review   consent refused"
+            "link",
+            name="Review   consent refused",
         )
         self.overview_tab_link = self.page.get_by_role("link", name="Overview")
 
@@ -180,67 +219,71 @@ class SessionsPage:
         self.add_a_note_span = self.page.get_by_text("Add a note")
         self.save_note_button = self.page.get_by_role("button", name="Save note")
         self.set_session_in_progress_button = self.page.get_by_role(
-            "button", name="Set session in progress for today"
+            "button",
+            name="Set session in progress for today",
         )
         vaccinations_card = page.get_by_role("table", name="Vaccinations")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.sessions_link = page.get_by_role("link", name="Sessions", exact=True).first
         self.advanced_filters_link = page.get_by_text("Advanced filters")
         self.archived_records_checkbox = self.page.get_by_role(
-            "checkbox", name="Archived records"
+            "checkbox",
+            name="Archived records",
         )
         self.add_another_date_button = self.page.get_by_role(
-            "button", name="Add another date"
+            "button",
+            name="Add another date",
         )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
-        _parsed_date = datetime.strptime(date_to_format, "%Y%m%d")
-        _formatted_date = _parsed_date.strftime("%A, %d %B %Y").replace(" 0", " ")
-        return _formatted_date
+        _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
+            tzinfo=ZoneInfo("Europe/London")
+        )
+        return _parsed_date.strftime("%A, %d %B %Y").replace(" 0", " ")
 
     @step("Click on Overview tab")
-    def click_overview_tab(self):
+    def click_overview_tab(self) -> None:
         self._select_tab("Overview")
 
     @step("Click Review consent refused")
-    def click_review_consent_refused(self):
+    def click_review_consent_refused(self) -> None:
         self.review_consent_refused_link.click()
 
     @step("Expect Consent refused checkbox to be checked")
-    def expect_consent_refused_checkbox_to_be_checked(self):
+    def expect_consent_refused_checkbox_to_be_checked(self) -> None:
         expect(self.consent_refused_checkbox).to_be_checked()
 
     @step("Select No response")
-    def select_no_response(self):
+    def select_no_response(self) -> None:
         self.no_response_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Consent given")
-    def select_consent_given(self):
+    def select_consent_given(self) -> None:
         self.consent_given_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Consent given for injected vaccine")
-    def select_consent_given_for_injected_vaccine(self):
+    def select_consent_given_for_injected_vaccine(self) -> None:
         self.consent_given_for_injected_vaccine_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Consent given for nasal spray")
-    def select_consent_given_for_nasal_spray(self):
+    def select_consent_given_for_nasal_spray(self) -> None:
         self.consent_given_for_nasal_spray_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Conflicting consent")
-    def select_conflicting_consent(self):
+    def select_conflicting_consent(self) -> None:
         self.conflicting_consent_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Consent refused")
-    def select_consent_refused(self):
+    def select_consent_refused(self) -> None:
         self.consent_refused_checkbox.check()
         self.update_results_button.click()
 
-    def _select_tab(self, name: str):
+    def _select_tab(self, name: str) -> None:
         link = self.page.get_by_role("navigation").get_by_role("link", name=name)
         if link.get_by_role("strong").is_visible():
             return
@@ -248,19 +291,21 @@ class SessionsPage:
         link.get_by_role("strong").wait_for()
 
     @step("Click on {1} tab")
-    def click_programme_tab(self, programme: Programme):
+    def click_programme_tab(self, programme: Programme) -> None:
         self._select_tab(str(programme))
 
     @step("Click on Register tab")
-    def click_register_tab(self):
+    def click_register_tab(self) -> None:
         self._select_tab("Register")
 
     @step("Click on Session activity and notes tab")
-    def click_session_activity_and_notes(self):
+    def click_session_activity_and_notes(self) -> None:
         self._select_tab("Session activity and notes")
 
     @step("Click on {2} session at {1}")
-    def click_session_for_programme_group(self, location: str, programme_group: str):
+    def click_session_for_programme_group(
+        self, location: str, programme_group: str
+    ) -> None:
         for programme in Programme:
             if programme.group == programme_group:
                 self.page.get_by_role("checkbox", name=str(programme)).check()
@@ -272,123 +317,125 @@ class SessionsPage:
 
         self.page.get_by_role("link", name=str(location)).click()
 
+        ten_seconds_ms = 10000
+
         expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
-            timeout=10000
+            timeout=ten_seconds_ms,
         )
 
     @step("Click on location radio {1}")
-    def check_location_radio(self, location: str):
+    def check_location_radio(self, location: str) -> None:
         self.page.get_by_role("radio", name=str(location)).check()
 
     @step("Click on Import class lists")
-    def click_import_class_lists(self):
+    def click_import_class_lists(self) -> None:
         self.import_class_lists_link.click()
 
     @step("Click on Continue")
-    def click_continue_button(self):
+    def click_continue_button(self) -> None:
         self.continue_button.click()
 
     @step("Upload file {1}")
-    def choose_file_child_records(self, file_path: str):
+    def choose_file_child_records(self, file_path: str) -> None:
         self.file_input.set_input_files(file_path)
 
     @step("Click on child {1}")
-    def click_child(self, child: Child):
+    def click_child(self, child: Child) -> None:
         with self.page.expect_navigation():
             self.page.get_by_role("heading", name=str(child)).get_by_role(
-                "link"
+                "link",
             ).first.click()
 
     @step("Search and click on {1}")
-    def search_and_click_child(self, child: Child):
+    def search_and_click_child(self, child: Child) -> None:
         self.filter_name_textbox.fill(str(child))
         self.click_child(child)
 
     @step("Click on Update triage outcome")
-    def click_update_triage_outcome(self):
+    def click_update_triage_outcome(self) -> None:
         self.update_triage_outcome_link.click()
 
     @step("Click on Yes, it’s safe to vaccinate")
-    def select_yes_safe_to_vaccinate(self):
+    def select_yes_safe_to_vaccinate(self) -> None:
         self.safe_to_vaccinate_radio.click()
 
     @step("Click on Save triage")
-    def click_save_triage(self):
+    def click_save_triage(self) -> None:
         self.save_triage_button.click()
 
     @step("Click on Consent tab")
-    def click_consent_tab(self):
+    def click_consent_tab(self) -> None:
         self._select_tab("Consent")
 
     @step("Click on Assess Gillick competence")
-    def click_assess_gillick_competence(self):
+    def click_assess_gillick_competence(self) -> None:
         self.assess_gillick_competence_link.click()
 
     @step("Click on Edit Gillick competence")
-    def click_edit_gillick_competence(self):
+    def click_edit_gillick_competence(self) -> None:
         self.edit_gillick_competence_link.click()
 
     @step("Click on Could not vaccinate")
-    def click_could_not_vaccinate(self):
+    def click_could_not_vaccinate(self) -> None:
         self.could_not_vaccinate_link.click()
 
     @step("Click on Schedule sessions")
-    def click_schedule_sessions(self):
+    def click_schedule_sessions(self) -> None:
         self.schedule_sessions_link.click()
 
     @step("Click on Add session dates")
-    def click_add_session_dates(self):
+    def click_add_session_dates(self) -> None:
         self.add_session_dates_link.click()
 
     @step("Click on Edit session")
-    def click_edit_session(self):
+    def click_edit_session(self) -> None:
         self.edit_session_link.click()
 
     @step("Click on Change session dates")
-    def click_change_session_dates(self):
+    def click_change_session_dates(self) -> None:
         self.change_session_dates_link.click()
 
     @step("Review child with no response")
-    def review_child_with_no_response(self):
+    def review_child_with_no_response(self) -> None:
         self.review_no_consent_response_link.click()
 
     @step("Click on session")
-    def click_session(self, location: str, programme: Programme):
+    def click_session(self, location: str, programme: Programme) -> None:
         row = self.page.locator("tr").filter(
-            has=self.page.locator("strong", has_text=str(programme))
+            has=self.page.locator("strong", has_text=str(programme)),
         )
         row.locator("a", has_text=location).click()
 
     @step("Click Back")
-    def click_back(self):
+    def click_back(self) -> None:
         self.back_link.click()
 
     @step("Click Continue")
-    def click_continue_link(self):
+    def click_continue_link(self) -> None:
         self.continue_link.click()
 
     @step("Click on Delete")
-    def click_delete(self):
+    def click_delete(self) -> None:
         self.delete_button.click()
 
     @step("Click on Mark as invalid")
-    def click_mark_as_invalid_link(self):
+    def click_mark_as_invalid_link(self) -> None:
         self.mark_as_invalid_link.click()
 
     @step("Click on Mark as invalid")
-    def click_mark_as_invalid_button(self):
+    def click_mark_as_invalid_button(self) -> None:
         self.mark_as_invalid_button.click()
 
     @step("Click on Update results")
-    def click_on_update_results(self):
+    def click_on_update_results(self) -> None:
         self.update_results_button.click()
 
     @step("Fill notes")
-    def fill_notes(self, notes: str):
+    def fill_notes(self, notes: str) -> None:
         self.notes_textbox.fill(notes)
 
     @step("Click on Record a new consent response")
-    def click_record_a_new_consent_response(self):
+    def click_record_a_new_consent_response(self) -> None:
         # temporary wait before clicking the button to prevent errors
         time.sleep(3)
         self.record_a_new_consent_response_button.click()
@@ -397,50 +444,54 @@ class SessionsPage:
     def click_parent_radio_button(self, name: str) -> None:
         self.page.get_by_role("radio", name=name).check()
 
-    def navigate_to_gillick_competence(self, child: Child, programme: Programme):
+    def navigate_to_gillick_competence(
+        self, child: Child, programme: Programme
+    ) -> None:
         self.click_consent_tab()
         self.click_child(child)
         self.click_programme_tab(programme)
         self.click_assess_gillick_competence()
 
-    def navigate_to_consent_response(self, child: Child, programme: Programme):
+    def navigate_to_consent_response(self, child: Child, programme: Programme) -> None:
         self.click_child(child)
         self.click_programme_tab(programme)
         self.click_record_a_new_consent_response()
 
-    def navigate_to_update_triage_outcome(self, child: Child, programme: Programme):
+    def navigate_to_update_triage_outcome(
+        self, child: Child, programme: Programme
+    ) -> None:
         self.click_child(child)
         self.click_programme_tab(programme)
         self.click_update_triage_outcome()
 
     @step("Click on Confirm")
-    def click_confirm_button(self):
+    def click_confirm_button(self) -> None:
         self.confirm_button.click()
 
     @step("Check box for year {1}")
-    def check_year_checkbox(self, year: int):
+    def check_year_checkbox(self, year: int) -> None:
         if year == 0:
             self.page.get_by_role("checkbox", name="Reception").check()
         else:
             self.page.get_by_role("checkbox", name=f"Year {year}").check()
 
     @step("Uncheck box for year {1}")
-    def uncheck_year_checkbox(self, year: int):
+    def uncheck_year_checkbox(self, year: int) -> None:
         if year == 0:
             self.page.get_by_role("checkbox", name="Reception").uncheck()
         else:
             self.page.get_by_role("checkbox", name=f"Year {year}").uncheck()
 
     @step("Click Advanced filters")
-    def click_advanced_filters(self):
+    def click_advanced_filters(self) -> None:
         self.advanced_filters_link.click()
 
     @step("Check Archived records")
-    def check_archived_records_checkbox(self):
+    def check_archived_records_checkbox(self) -> None:
         self.archived_records_checkbox.check()
 
     @step("Click on Record vaccinations")
-    def click_record_vaccinations_tab(self):
+    def click_record_vaccinations_tab(self) -> None:
         self._select_tab("Record vaccinations")
 
     @step("Confirm pre-screening checks are true")
@@ -448,80 +499,81 @@ class SessionsPage:
         self,
         programme: Programme,
         consent_option: ConsentOption = ConsentOption.INJECTION,
-    ):
+    ) -> None:
         for check in programme.pre_screening_checks(consent_option):
             locator = self.pre_screening_listitem.get_by_text(check)
-            # TODO: Can we highlight in the report that we're checking this?
             expect(locator).to_be_visible()
         self.pre_screening_checkbox.check()
 
     @step("Click on Yes")
-    def select_identity_confirmed_by_child(self, child: Child):
+    def select_identity_confirmed_by_child(self, child: Child) -> None:
         self.page.get_by_role(
-            "group", name=f"Has {child.first_name} confirmed their identity?"
+            "group",
+            name=f"Has {child.first_name} confirmed their identity?",
         ).get_by_label("Yes").check()
 
     @step("Click on Yes")
     def select_ready_for_vaccination(
-        self, consent_option: ConsentOption = ConsentOption.INJECTION
-    ):
+        self,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+    ) -> None:
         if consent_option is ConsentOption.INJECTION:
             self.ready_for_injection_radio.check()
         else:
             self.ready_for_nasal_spray_radio.check()
 
     @step("Select vaccination site {1}")
-    def select_delivery_site(self, site: DeliverySite):
+    def select_delivery_site(self, site: DeliverySite) -> None:
         self.page.get_by_role("radio", name=str(site)).check()
 
     @step("Click on Attending")
-    def click_on_attending(self):
+    def click_on_attending(self) -> None:
         self.attending_button.click()
 
     @step("Click on Complete your assessment")
-    def click_complete_assessment(self):
+    def click_complete_assessment(self) -> None:
         self.complete_assessment_button.click()
 
     @step("Click on Update your assessment")
-    def click_update_assessment(self):
+    def click_update_assessment(self) -> None:
         self.update_assessment_button.click()
 
     @step("Check notes length error appears")
-    def check_notes_length_error_appears(self):
+    def check_notes_length_error_appears(self) -> None:
         expect(self.notes_length_error).to_be_visible()
 
     @step("Fill assessment notes with {1}")
-    def fill_assessment_notes(self, notes: str):
+    def fill_assessment_notes(self, notes: str) -> None:
         self.assessment_notes_textbox.fill(notes)
 
-    def fill_assessment_notes_with_string_of_length(self, length: int):
-        notes = generate_random_string(target_length=length, spaces=True)
+    def fill_assessment_notes_with_string_of_length(self, length: int) -> None:
+        notes = generate_random_string(target_length=length, generate_spaced_words=True)
         self.fill_assessment_notes(notes)
 
     @step("Click on Add a note")
-    def click_add_a_note(self):
+    def click_add_a_note(self) -> None:
         self.add_a_note_span.click()
 
     @step("Fill note textbox with {1}")
-    def fill_note_textbox(self, note: str):
+    def fill_note_textbox(self, note: str) -> None:
         self.note_textbox.fill(note)
 
     @step("Click on Save note")
-    def click_save_note(self):
+    def click_save_note(self) -> None:
         self.save_note_button.click()
 
     @step("Check that notes appear in order")
-    def check_notes_appear_in_order(self, notes: list[str]):
+    def check_notes_appear_in_order(self, notes: list[str]) -> None:
         for i, note in enumerate(notes):
             expect(self.page.get_by_role("blockquote").nth(i)).to_have_text(note)
 
     @step("Check note {2} appears in search for {1}")
-    def check_note_appears_in_search(self, child: Child, note: str):
+    def check_note_appears_in_search(self, child: Child, note: str) -> None:
         heading = self.page.get_by_role("heading", name=str(child))
         next_element = heading.locator("xpath=following-sibling::*[1]")
         expect(next_element.get_by_role("blockquote")).to_have_text(note)
 
-    def add_note(self, note: str):
+    def add_note(self, note: str) -> None:
         self.click_add_a_note()
         self.fill_note_textbox(note)
         with self.page.expect_navigation():
@@ -533,16 +585,16 @@ class SessionsPage:
         self.check_notes_appear_in_order([note])
 
     @step("Click on Set session in progress for today")
-    def click_set_session_in_progress_for_today(self):
+    def click_set_session_in_progress_for_today(self) -> None:
         self.set_session_in_progress_button.click()
 
     @step("Search for {1}")
-    def search_for(self, name: str):
+    def search_for(self, name: str) -> None:
         self.search_textbox.fill(name)
         self.search_button.click()
 
     @step("Fill date fields")
-    def fill_date_fields(self, day: str, month: str, year: str):
+    def fill_date_fields(self, day: str, month: str, year: str) -> None:
         if not self.day_textbox.last.is_visible():
             self.add_another_date_button.click()
         self.day_textbox.last.fill(day)
@@ -551,7 +603,7 @@ class SessionsPage:
 
     @step("Click on Record offline")
     def download_offline_recording_excel(self) -> Path:
-        _file_path = Path(f"working/excel_{get_current_datetime()}.xlsx")
+        _file_path = Path(f"working/excel_{get_current_datetime_compact()}.xlsx")
 
         with self.page.expect_download() as download_info:
             self.record_offline_link.click()
@@ -560,42 +612,43 @@ class SessionsPage:
 
         return _file_path
 
-    def expect_consent_refused_text(self, parent: Parent):
+    def expect_consent_refused_text(self, parent: Parent) -> None:
         expect(
-            self.page.get_by_text(f"{parent.relationship} refused to give consent.")
+            self.page.get_by_text(f"{parent.relationship} refused to give consent."),
         ).to_be_visible()
 
-    def check_session_activity_entry(self, text: str):
+    def check_session_activity_entry(self, text: str) -> None:
         expect(self.page.get_by_role("heading", name=text).first).to_be_visible()
 
-    def expect_conflicting_consent_text(self):
+    def expect_conflicting_consent_text(self) -> None:
         expect(
             self.page.get_by_text(
-                "You can only vaccinate if all respondents give consent."
-            )
+                "You can only vaccinate if all respondents give consent.",
+            ),
         ).to_be_visible()
 
-    def expect_consent_status(self, programme: Programme, status: str):
+    def expect_consent_status(self, programme: Programme, status: str) -> None:
         expect(self.page.get_by_text(f"{programme}: {status}")).to_be_visible()
 
-    def expect_child_safe_to_vaccinate(self, child: Child):
+    def expect_child_safe_to_vaccinate(self, child: Child) -> None:
         expect(
             self.page.get_by_text(
-                f"NURSE, Nurse decided that {str(child)} is safe to vaccinate."
-            )
+                f"NURSE, Nurse decided that {child!s} is safe to vaccinate.",
+            ),
         ).to_be_visible()
 
-    def get_session_id_from_offline_excel(self):
+    def get_session_id_from_offline_excel(self) -> str:
         file_path = self.download_offline_recording_excel()
         return self.test_data.get_session_id(file_path)
 
     @step("Add Gillick competence details")
     def add_gillick_competence(
         self,
+        *,
         is_competent: bool,
     ) -> None:
         self.__set_gillick_competence(
-            is_add=True,
+            new_assessment=True,
             is_competent=is_competent,
         )
 
@@ -606,36 +659,39 @@ class SessionsPage:
     @step("Edit Gillick competence details")
     def edit_gillick_competence(
         self,
+        *,
         is_competent: bool,
     ) -> None:
         self.__set_gillick_competence(
-            is_add=False,
+            new_assessment=False,
             is_competent=is_competent,
         )
 
     def __set_gillick_competence(
         self,
-        is_add: bool,
+        *,
+        new_assessment: bool,
         is_competent: bool,
     ) -> None:
-        self.answer_gillick_competence_questions(is_competent)
+        self.answer_gillick_competence_questions(is_competent=is_competent)
         competence_assessment = (
             f"Child assessed as {'' if is_competent else 'not '}Gillick competent"
         )
 
         self.assessment_notes_textbox.fill(competence_assessment)
-        if is_add:
+        if new_assessment:
             self.click_complete_assessment()
         else:
             self.click_update_assessment()
 
         competence_result_locator = self.page.get_by_role(
-            "heading", name="Gillick assessment"
+            "heading",
+            name="Gillick assessment",
         ).locator("xpath=following-sibling::*[1]")
 
         expect(competence_result_locator).to_contain_text(competence_assessment)
 
-    def answer_gillick_competence_questions(self, is_competent):
+    def answer_gillick_competence_questions(self, *, is_competent: bool) -> None:
         questions = [
             "The child knows which vaccination they will have",
             "The child knows which disease the vaccination protects against",
@@ -648,7 +704,7 @@ class SessionsPage:
         for question in questions:
             self.page.get_by_role("group", name=question).get_by_label(response).check()
 
-    def __schedule_session(self, on_date: str, expect_error: bool = False):
+    def __schedule_session(self, on_date: str, *, expect_error: bool = False) -> None:
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
@@ -664,7 +720,7 @@ class SessionsPage:
         if expect_error:
             self.expect_alert_text("There is a problemEnter a date")
 
-    def __edit_session(self, to_date: str):
+    def __edit_session(self, to_date: str) -> None:
         _day = to_date[-2:]
         _month = to_date[4:6]
         _year = to_date[:4]
@@ -676,13 +732,13 @@ class SessionsPage:
         expect(
             self.page.locator("div")
             .filter(has_text=re.compile(r"^Session datesNot provided$"))
-            .get_by_role("definition")
+            .get_by_role("definition"),
         ).not_to_be_visible()
 
-    def verify_triage_updated_for_child(self):
+    def verify_triage_updated_for_child(self) -> None:
         self.expect_alert_text("Triage outcome updated")
 
-    def invalidate_parent_refusal(self, parent: Parent):
+    def invalidate_parent_refusal(self, parent: Parent) -> None:
         invalidation_notes = "Invalidation notes."
         self.page.get_by_role("link", name=parent.full_name).click()
         self.click_mark_as_invalid_link()
@@ -697,26 +753,32 @@ class SessionsPage:
 
     def expect_details(self, key: str, value: str) -> None:
         detail_key = self.page.locator(
-            ".nhsuk-summary-list__key", has_text=re.compile(f"^{key}$")
+            ".nhsuk-summary-list__key",
+            has_text=re.compile(f"^{key}$"),
         ).first
         detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
         expect(detail_value).to_contain_text(value)
 
-    def ensure_session_scheduled_for_today(self, location: str, programme_group: str):
+    def ensure_session_scheduled_for_today(
+        self, location: str, programme_group: str
+    ) -> None:
         self.click_session_for_programme_group(location, programme_group)
-        todays_date = datetime.now().strftime("%Y%m%d")
+        todays_date = get_todays_date().strftime("%Y%m%d")
         if not self.page.get_by_text(
-            self.__get_display_formatted_date(date_to_format=todays_date)
+            self.__get_display_formatted_date(date_to_format=todays_date),
         ).is_visible():
             self.schedule_a_valid_session(for_today=True)
 
     def schedule_a_valid_session(
         self,
+        *,
         for_today: bool = False,
-    ):
+    ) -> None:
         offset_days = 0 if for_today else 7
-        _future_date = get_offset_date(offset_days=offset_days)
+        _future_date = get_offset_date_compact_format(
+            offset_days=offset_days, skip_weekends=True
+        )
         self.__schedule_session(on_date=_future_date)
         self.expect_details(
             "Session dates",
@@ -724,12 +786,12 @@ class SessionsPage:
         )
         self.click_continue_link()
 
-    def edit_a_session_to_today(self, location: str, programme_group: str):
-        _future_date = get_offset_date(offset_days=0)
+    def edit_a_session_to_today(self, location: str, programme_group: str) -> None:
+        _future_date = get_offset_date_compact_format(offset_days=0, skip_weekends=True)
         self.click_session_for_programme_group(location, programme_group)
         self.__edit_session(to_date=_future_date)
 
-    def delete_all_sessions(self, school: School):
+    def delete_all_sessions(self, school: School) -> None:
         sessions_with_dates = (
             self.page.locator("div.nhsuk-card__content.app-card__content")
             .filter(has_text=str(school))
@@ -755,32 +817,26 @@ class SessionsPage:
             self.click_continue_link()
             self.click_sessions()
 
-    def create_invalid_session(self, location: str, programme_group: str):
+    def create_invalid_session(self, location: str, programme_group: str) -> None:
         _invalid_date = "20251332"
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
-        link_text = f"View the {' and '.join(str(programme) for programme in programmes)} online consent form"
+        programme_names = [str(programme) for programme in programmes]
+        link_text = f"View the {' and '.join(programme_names)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
 
-    def register_child_as_attending(self, child: Child):
+    def register_child_as_attending(self, child: Child) -> None:
         self.click_register_tab()
         self.search_for(str(child))
         self.click_on_attending()
 
-    def verify_search(self):
-        """
-        1. Find a session with patients
-        2. Go to any of the tabs at the top that allow users to search by name
-        3. Enter a search query that will result in no matches (for example "a very long string that won't match any names")
-        Expected: The user sees a page saying "No children matching search criteria found".
-        Actual: The user sees a page saying "An error has occurred."
-        """
+    def verify_search(self) -> None:
         self.click_consent_tab()
         self.search_for("a very long string that won't match any names")
         expect(
-            self.page.get_by_text("No children matching search criteria found")
+            self.page.get_by_text("No children matching search criteria found"),
         ).to_be_visible()
 
     def search_child(self, child: Child) -> None:
@@ -789,58 +845,61 @@ class SessionsPage:
         reload_until_element_is_visible(self.page, child_locator)
         child_locator.click()
 
-    def record_vaccs_for_child(
+    def record_vaccination_for_child(
         self,
-        child: Child,
-        programme: Programme,
-        batch_name: str,
-        consent_option: ConsentOption = ConsentOption.INJECTION,
-        delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER,
-        at_school: bool = True,
+        vaccination_record: VaccinationRecord,
         notes: str = "",
+        *,
+        at_school: bool = True,
     ) -> datetime:
         self.click_record_vaccinations_tab()
-        self.search_child(child)
-        self.click_programme_tab(programme)
+        self.search_child(vaccination_record.child)
+        self.click_programme_tab(vaccination_record.programme)
 
-        self.confirm_pre_screening_checks(programme, consent_option)
+        self.confirm_pre_screening_checks(
+            vaccination_record.programme, vaccination_record.consent_option
+        )
         self.pre_screening_notes.fill(notes)
 
-        self.select_identity_confirmed_by_child(child)
+        self.select_identity_confirmed_by_child(vaccination_record.child)
 
-        self.select_ready_for_vaccination(consent_option)
-        if consent_option == ConsentOption.INJECTION:
-            self.select_delivery_site(delivery_site)
+        self.select_ready_for_vaccination(vaccination_record.consent_option)
+        if vaccination_record.consent_option is ConsentOption.INJECTION:
+            self.select_delivery_site(vaccination_record.delivery_site)
         self.click_continue_button()
 
-        if len(notes) > 1000:
+        if len(notes) > MAVIS_NOTE_LENGTH_LIMIT:
             expect(self.notes_length_error).to_be_visible()
             self.pre_screening_notes.fill("Prescreening notes")
             self.click_continue_button()
 
-        self.page.get_by_role("radio", name=batch_name).check()
+        self.page.get_by_role("radio", name=vaccination_record.batch_name).check()
         self.click_continue_button()
 
         if at_school:  # only skips MAV-854
             self.vaccination_notes.fill(notes)
             self.click_confirm_button()
 
-            if len(notes) > 1000:
+            if len(notes) > MAVIS_NOTE_LENGTH_LIMIT:
                 expect(self.notes_length_error).to_be_visible()
                 self.vaccination_notes.fill("Confirmation notes")
                 self.click_confirm_button()
 
-            self.expect_alert_text(f"Vaccination outcome recorded for {programme}")
-        return datetime.now().astimezone()
+            self.expect_alert_text(
+                f"Vaccination outcome recorded for {vaccination_record.programme}"
+            )
+        return get_current_datetime()
 
-    def expect_alert_text(self, text: str):
+    def expect_alert_text(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)
 
     def verify_child_shows_correct_flu_consent_method(
-        self, child: Child, option: ConsentOption
-    ):
+        self,
+        child: Child,
+        option: ConsentOption,
+    ) -> None:
         patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{str(child)}"))'
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
         )
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
         expect(flu_consent_section).to_contain_text("Consent given")
@@ -853,5 +912,5 @@ class SessionsPage:
     def click_vaccination_details(self, school: School) -> None:
         with self.page.expect_navigation():
             self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
-                "link"
+                "link",
             ).click()

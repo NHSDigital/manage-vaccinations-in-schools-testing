@@ -11,8 +11,8 @@ def go_to_log_in_page(start_page):
     start_page.navigate_and_start()
 
 
-@pytest.mark.parametrize("username", ("", "invalid"), ids=lambda v: f"username: {v}")
-@pytest.mark.parametrize("password", ("", "invalid"), ids=lambda v: f"password: {v}")
+@pytest.mark.parametrize("username", ["", "invalid"], ids=lambda v: f"username: {v}")
+@pytest.mark.parametrize("password", ["", "invalid"], ids=lambda v: f"password: {v}")
 def test_login_with_invalid_credentials(username, password, log_in_page):
     """
     Test: Attempt to log in with invalid or empty credentials and verify error message.
@@ -36,7 +36,9 @@ def users(medical_secretary, nurse, superuser) -> dict[str, User]:
 
 
 @pytest.mark.parametrize(
-    "role", ("medical_secretary", "nurse", "superuser"), ids=lambda v: f"role: {v}"
+    "role",
+    ["medical_secretary", "nurse", "superuser"],
+    ids=lambda v: f"role: {v}",
 )
 def test_login_with_valid_credentials(role, users, team, dashboard_page, log_in_page):
     """

@@ -24,7 +24,7 @@ def setup_confirm_and_ignore(
     children = children[Programme.HPV]
     # We need to make sure we're uploading the same class with the same NHS numbers.
     input_file_path, output_file_path = test_data.get_file_paths(
-        ClassFileMapping.TWO_FIXED_CHILDREN
+        ClassFileMapping.TWO_FIXED_CHILDREN,
     )
 
     def upload_class_list():
@@ -52,7 +52,7 @@ def setup_confirm_and_ignore(
         children_page.click_record_for_child(children[0])
         children_page.click_activity_log()
         children_page.expect_activity_log_header(
-            f"Added to the session at {schools[0]}", any=True
+            f"Added to the session at {schools[0]}"
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
@@ -79,9 +79,11 @@ def test_confirm_and_ignore(
     children,
 ):
     """
-    Test: Confirm and ignore school moves for two children and verify the correct alerts.
+    Test: Confirm and ignore school moves for two children and
+       verify the correct alerts.
     Steps:
-    1. Setup: Schedule sessions for two schools, upload class lists for both, and trigger school moves.
+    1. Setup: Schedule sessions for two schools, upload class lists for both,
+       and trigger school moves.
     2. Go to the school moves page and locate rows for both children.
     3. For the first child, confirm the school move and verify the confirmation alert.
     4. For the second child, ignore the school move and verify the ignored alert.
@@ -102,19 +104,21 @@ def test_confirm_and_ignore(
     review_school_move_page.confirm()
 
     expect(school_moves_page.confirmed_alert).to_contain_text(
-        f"{str(child_1)}’s school record updated"
+        f"{child_1!s}’s school record updated",
     )
 
     school_moves_page.click_child(*child_2.name)
     review_school_move_page.ignore()
 
     expect(school_moves_page.ignored_alert).to_contain_text(
-        f"{str(child_2)}’s school move ignored"
+        f"{child_2!s}’s school move ignored",
     )
 
 
 def test_download_school_moves_csv(
-    setup_confirm_and_ignore, school_moves_page, download_school_moves_page
+    setup_confirm_and_ignore,
+    school_moves_page,
+    download_school_moves_page,
 ):
     """
     Test: Download the school moves CSV and verify the headers.
@@ -152,5 +156,4 @@ def test_download_school_moves_csv(
         "DES_NUMBER",
     }
 
-    # TODO: Check more than just the headers.
     assert actual_headers == expected_headers

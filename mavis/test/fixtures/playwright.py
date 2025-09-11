@@ -31,7 +31,9 @@ def browser_type(playwright: Playwright, device: str | None) -> BrowserType:
 
 @pytest.fixture(scope="session")
 def browser_context_args(
-    browser_context_args, basic_auth_credentials, basic_auth_token
+    browser_context_args,
+    basic_auth_credentials,
+    basic_auth_token,
 ) -> dict:
     if basic_auth_token:
         return {

@@ -1,11 +1,10 @@
 import os
-from datetime import date, timedelta
 
 import pytest
 
 from mavis.test.data import TestData
 from mavis.test.models import Vaccine
-from mavis.test.wrappers import get_date_of_birth_for_year_group
+from mavis.test.utils import get_offset_date
 
 
 @pytest.fixture
@@ -24,12 +23,12 @@ def set_feature_flags(flipper_page):
 
 
 @pytest.fixture
-def add_vaccine_batch(add_batch_page, dashboard_page, vaccines_page):
+def add_vaccine_batch(add_batch_page, vaccines_page):
     def wrapper(vaccine: Vaccine, batch_name: str = "ABC123"):
         vaccines_page.navigate()
         vaccines_page.click_add_batch(vaccine)
         add_batch_page.fill_name(batch_name)
-        add_batch_page.fill_expiry_date(date.today() + timedelta(days=1))
+        add_batch_page.fill_expiry_date(get_offset_date(1))
         add_batch_page.confirm()
         return batch_name
 
@@ -67,7 +66,10 @@ def get_online_consent_url(
 
 @pytest.fixture
 def log_in_as_medical_secretary(
-    set_feature_flags, medical_secretary, team, log_in_page
+    set_feature_flags,
+    medical_secretary,
+    team,
+    log_in_page,
 ):
     log_in_page.navigate()
     log_in_page.log_in_and_choose_team_if_necessary(medical_secretary, team)
@@ -86,11 +88,3 @@ def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
 @pytest.fixture
 def test_data(organisation, schools, nurse, children, clinics, year_groups):
     return TestData(organisation, schools, nurse, children, clinics, year_groups)
-
-
-@pytest.fixture
-def date_of_birth_for_year():
-    def _get(year_group: int) -> date:
-        return get_date_of_birth_for_year_group(year_group)
-
-    return _get

@@ -2,8 +2,8 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme, Vaccine
-from mavis.test.wrappers import generate_random_string
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, generate_random_string
 
 
 @pytest.fixture
@@ -31,7 +31,9 @@ def setup_mav_965(
             sessions_page.ensure_session_scheduled_for_today(school, programme_group)
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list(
-            ClassFileMapping.FIXED_CHILD, child.year_group, "doubles"
+            ClassFileMapping.FIXED_CHILD,
+            child.year_group,
+            "doubles",
         )
         yield batch_names
     finally:
@@ -54,9 +56,11 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     children,
 ):
     """
-    Test: Verify pre-screening questions are pre-filled correctly when recording multiple vaccinations in the same session.
+    Test: Verify pre-screening questions are pre-filled correctly when recording
+       multiple vaccinations in the same session.
     Steps:
-    1. Setup: Schedule sessions for HPV, doubles, and flu for the same school and import a fixed child class list.
+    1. Setup: Schedule sessions for HPV, doubles, and flu for the same school and
+       import a fixed child class list.
     2. For each programme group (HPV, doubles, flu):
         a. Navigate to the session and register the child as attending.
         b. Go to the consent tab and search for the child.
@@ -64,7 +68,8 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             i. Record verbal consent for the child.
             ii. Record a vaccination for the child with a long notes field.
     Verification:
-    - For each combination of vaccines, the correct pre-screening questions ("feeling well", "not pregnant") are pre-filled as described in the docstring.
+    - For each combination of vaccines, the correct pre-screening questions
+      ("feeling well", "not pregnant") are pre-filled as described in the docstring.
     - Long notes (over 1000 characters) are accepted (MAV-955).
     """
     child = children["doubles"][0]
@@ -94,16 +99,15 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             sessions_page.click_record_a_new_consent_response()
             verbal_consent_page.parent_verbal_positive(
                 parent=child.parents[0],
-                change_phone=False,
                 programme=programme,
                 consent_option=consent_option,
             )
-            sessions_page.record_vaccs_for_child(
-                child=child,
-                programme=programme,
-                batch_name=batch_names[programme],
+            sessions_page.record_vaccination_for_child(
+                VaccinationRecord(
+                    child, programme, batch_names[programme], consent_option
+                ),
                 notes=generate_random_string(
-                    target_length=1001, spaces=True
-                ),  # MAV-955
-                consent_option=consent_option,
+                    target_length=MAVIS_NOTE_LENGTH_LIMIT + 1,
+                    generate_spaced_words=True,
+                ),
             )

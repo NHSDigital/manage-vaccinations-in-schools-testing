@@ -2,12 +2,12 @@ import pytest
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.imms_api import ImmsApiHelper
-from mavis.test.models import DeliverySite, Programme, Vaccine
+from mavis.test.models import DeliverySite, Programme, VaccinationRecord, Vaccine
 
 
 @pytest.fixture(scope="session")
 def imms_api_helper(authenticate_api):
-    yield ImmsApiHelper(authenticate_api)
+    return ImmsApiHelper(authenticate_api)
 
 
 @pytest.fixture
@@ -56,25 +56,30 @@ def record_hpv(
     children_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0], change_phone=False
+        parent=child.parents[0],
     )
     sessions_page.register_child_as_attending(child)
-    vaccination_time = sessions_page.record_vaccs_for_child(
-        child=child,
-        programme=Programme.HPV,
-        batch_name=batch_name,
-        delivery_site=DeliverySite.LEFT_ARM_UPPER,
+    vaccination_time = sessions_page.record_vaccination_for_child(
+        VaccinationRecord(
+            child, Programme.HPV, batch_name, delivery_site=DeliverySite.LEFT_ARM_UPPER
+        )
     )
-    yield child, vaccination_time
+    return child, vaccination_time
 
 
 def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
-    record_hpv, schools, imms_api_helper, sessions_page, programmes_page
+    record_hpv,
+    schools,
+    imms_api_helper,
+    sessions_page,
+    programmes_page,
 ):
     """
-    Test: Create, edit, and delete an HPV vaccination record and verify changes in the IMMS API.
+    Test: Create, edit, and delete an HPV vaccination record and verify changes in
+       the IMMS API.
     Steps:
-    1. Setup: Schedule HPV session, import class list, add vaccine batch, and register child with verbal consent.
+    1. Setup: Schedule HPV session, import class list, add vaccine batch, and
+       register child with verbal consent.
     2. Create: Record HPV vaccination for the child (LEFT_ARM_UPPER).
     3. Verify: Check the vaccination record exists in the IMMS API.
     4. Edit: Change the delivery site to RIGHT_ARM_LOWER and save.
@@ -87,7 +92,10 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
 
     # Step 3: Verify creation in IMMS API
     imms_api_helper.check_hpv_record_in_imms_api(
-        child, school, DeliverySite.LEFT_ARM_UPPER, vaccination_time
+        child,
+        school,
+        DeliverySite.LEFT_ARM_UPPER,
+        vaccination_time,
     )
 
     # Step 4: Edit delivery site
@@ -100,7 +108,10 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
 
     # Step 5: Verify update in IMMS API
     imms_api_helper.check_hpv_record_in_imms_api(
-        child, school, DeliverySite.RIGHT_ARM_UPPER, vaccination_time
+        child,
+        school,
+        DeliverySite.RIGHT_ARM_UPPER,
+        vaccination_time,
     )
 
     # Step 6: Edit outcome to refused
