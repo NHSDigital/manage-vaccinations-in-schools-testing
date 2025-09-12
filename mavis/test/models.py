@@ -1,11 +1,15 @@
 import os
+import random
 import urllib.parse
 from datetime import date
 from enum import StrEnum
 from typing import NamedTuple
 
+import requests
 from attr import dataclass
 from faker import Faker
+
+from mavis.test.utils import normalize_whitespace
 
 faker = Faker("en_GB")
 
@@ -301,6 +305,12 @@ class Clinic(NamedTuple):
     def to_onboarding(self) -> dict:
         return {"name": self.name}
 
+    @classmethod
+    def generate(cls) -> "Clinic":
+        return cls(
+            name=faker.company(),
+        )
+
 
 class School(NamedTuple):
     name: str
@@ -319,6 +329,39 @@ class School(NamedTuple):
     def to_onboarding(self) -> str:
         return self.urn_and_site
 
+    @classmethod
+    def get_from_testing_api(
+        cls, base_url: str, year_groups: dict[str, int]
+    ) -> "dict[str, list[School]]":
+        def _get_schools_with_year_group(year_group: int) -> list[School]:
+            url = urllib.parse.urljoin(base_url, "api/testing/locations")
+            params = {
+                "type": "school",
+                "status": "open",
+                "is_attached_to_team": "false",
+                "year_groups[]": [str(year_group)],
+            }
+
+            response = requests.get(url, params=params, timeout=30)
+            response.raise_for_status()
+
+            data = response.json()
+            schools_data = random.choices(data, k=2)
+
+            return [
+                School(
+                    name=normalize_whitespace(school_data["name"]),
+                    urn=school_data["urn"],
+                    site=school_data["site"],
+                )
+                for school_data in schools_data
+            ]
+
+        return {
+            programme.group: _get_schools_with_year_group(year_groups[programme.group])
+            for programme in Programme
+        }
+
 
 class Organisation(NamedTuple):
     ods_code: str
@@ -327,6 +370,12 @@ class Organisation(NamedTuple):
         return {
             "ods_code": self.ods_code,
         }
+
+    @classmethod
+    def generate(cls) -> "Organisation":
+        return cls(
+            ods_code=faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+        )
 
 
 class Subteam(NamedTuple):
@@ -340,6 +389,15 @@ class Subteam(NamedTuple):
 
     def to_onboarding(self) -> dict:
         return {self.key: {"name": self.name, "email": self.email, "phone": self.phone}}
+
+    @classmethod
+    def generate(cls) -> "Subteam":
+        return cls(
+            key="team",
+            name=f"{faker.company()} est. {random.randint(1600, 2025)}",
+            email=faker.email(),
+            phone=faker.cellphone_number(),
+        )
 
 
 class Team(NamedTuple):
@@ -363,6 +421,16 @@ class Team(NamedTuple):
             "privacy_policy_url": "https://example.com/privacy",
         }
 
+    @classmethod
+    def generate(cls, subteam: Subteam, organisation: Organisation) -> "Team":
+        return cls(
+            name=subteam.name,
+            workgroup=organisation.ods_code,
+            careplus_venue_code=organisation.ods_code,
+            email=subteam.email,
+            phone=subteam.phone,
+        )
+
 
 class User(NamedTuple):
     username: str
@@ -380,6 +448,15 @@ class User(NamedTuple):
             "family_name": self.role,
             "fallback_role": self.role,
         }
+
+    @classmethod
+    def generate(cls, role: str) -> "User":
+        email = faker.email()
+        return cls(
+            username=email,
+            password=email,
+            role=role,
+        )
 
 
 class Relationship(StrEnum):
@@ -456,3 +533,55 @@ class VaccinationRecord:
     batch_name: str
     consent_option: ConsentOption = ConsentOption.INJECTION
     delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER
+
+
+@dataclass
+class Onboarding:
+    organisation: Organisation
+    team: Team
+    subteam: Subteam
+    users: dict[str, User]
+    clinics: list[Clinic]
+    schools: dict[str, list[School]]
+    programmes: str
+
+    @classmethod
+    def get_onboarding_data_for_tests(
+        cls, base_url: str, year_groups: dict[str, int], programmes: str
+    ) -> "Onboarding":
+        subteam = Subteam.generate()
+        organisation = Organisation.generate()
+        team = Team.generate(subteam, organisation)
+        users = {
+            role: User.generate(role)
+            for role in ("nurse", "medical_secretary", "superuser")
+        }
+        clinics = [Clinic.generate()]
+        schools = School.get_from_testing_api(base_url, year_groups)
+
+        return cls(
+            organisation=organisation,
+            team=team,
+            subteam=subteam,
+            users=users,
+            clinics=clinics,
+            schools=schools,
+            programmes=programmes,
+        )
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "clinics": {self.subteam.key: [it.to_onboarding() for it in self.clinics]},
+            "team": self.team.to_onboarding(),
+            "organisation": self.organisation.to_onboarding(),
+            "programmes": self.programmes,
+            "schools": {
+                self.subteam.key: [
+                    school.to_onboarding()
+                    for schools_list in self.schools.values()
+                    for school in schools_list
+                ],
+            },
+            "subteams": self.subteam.to_onboarding(),
+            "users": [it.to_onboarding() for it in self.users.values()],
+        }

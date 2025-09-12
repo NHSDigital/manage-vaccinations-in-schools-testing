@@ -106,5 +106,5 @@ def test_verify_flu_not_available(onboarding, vaccines_page):
     - Flu vaccine is not available for selection if not present in the
       enabled programmes.
     """
-    programmes = onboarding.get("programmes")
+    programmes = onboarding.programmes
     vaccines_page.verify_flu_not_available(programmes)
