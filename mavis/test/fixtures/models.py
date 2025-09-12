@@ -15,6 +15,7 @@ from faker import Faker
 from mavis.test.models import (
     Child,
     Clinic,
+    Onboarding,
     Organisation,
     Parent,
     Programme,
@@ -24,32 +25,13 @@ from mavis.test.models import (
     Team,
     User,
 )
-from mavis.test.utils import get_date_of_birth_for_year_group, normalize_whitespace
+from mavis.test.utils import get_date_of_birth_for_year_group
 
 logger = logging.getLogger(__name__)
 
 onboarding_faker = Faker(locale="en_GB")
 onboarding_faker.seed_instance(seed=time.time())
 onboarding_faker.unique.clear()
-
-
-@pytest.fixture(scope="session")
-def medical_secretary() -> User:
-    email = onboarding_faker.email()
-    return User(username=email, password=email, role="medical_secretary")
-
-
-@pytest.fixture(scope="session")
-def clinics() -> list[Clinic]:
-    return [
-        Clinic(name=onboarding_faker.company()),
-    ]
-
-
-@pytest.fixture(scope="session")
-def nurse() -> User:
-    email = onboarding_faker.email()
-    return User(username=email, password=email, role="nurse")
 
 
 @pytest.fixture(scope="session")
@@ -60,35 +42,106 @@ def year_groups() -> dict[str, int]:
 
 
 @pytest.fixture(scope="session")
-def schools(base_url, year_groups) -> dict[str, list[School]]:
-    def _get_schools_with_year_group(year_group: int) -> list[School]:
-        url = urllib.parse.urljoin(base_url, "api/testing/locations")
-        params = {
-            "type": "school",
-            "status": "open",
-            "is_attached_to_team": "false",
-            "year_groups[]": [str(year_group)],
-        }
+def programmes_enabled() -> list[str]:
+    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")
 
-        response = requests.get(url, params=params, timeout=30)
-        response.raise_for_status()
 
-        data = response.json()
-        schools_data = random.choices(data, k=2)
+@pytest.fixture(scope="session")
+def onboarding(
+    base_url,
+    year_groups,
+    programmes_enabled,
+) -> Onboarding:
+    onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
+    max_attempts = 3
+    onboarding_data = None
 
-        return [
-            School(
-                name=normalize_whitespace(school_data["name"]),
-                urn=school_data["urn"],
-                site=school_data["site"],
-            )
-            for school_data in schools_data
-        ]
+    for attempt in range(1, max_attempts + 1):
+        onboarding_data = Onboarding.get_onboarding_data_for_tests(
+            base_url=base_url,
+            year_groups=year_groups,
+            programmes=programmes_enabled,
+        )
+        response = requests.post(
+            onboarding_url, json=onboarding_data.to_dict(), timeout=30
+        )
+        if response.ok:
+            break
+        logger.warning(
+            "Onboarding request failed (attempt %s): %s", attempt, response.content
+        )
+        if attempt < max_attempts:
+            time.sleep(1)
+        else:
+            response.raise_for_status()
 
-    return {
-        programme.group: _get_schools_with_year_group(year_groups[programme.group])
-        for programme in Programme
-    }
+    if not onboarding_data:
+        msg = "Failed to create onboarding data for tests"
+        raise RuntimeError(msg)
+
+    return onboarding_data
+
+
+def _check_response_status(response) -> None:
+    if not response.ok:
+        logger.warning(response.content)
+    response.raise_for_status()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def delete_team_after_tests(base_url, team):
+    yield
+
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
+    response = requests.delete(url, timeout=30)
+    _check_response_status(response)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def reset_before_each_module(base_url, team) -> None:
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
+    response = requests.delete(url, params={"keep_itself": "true"}, timeout=30)
+    _check_response_status(response)
+
+
+@pytest.fixture(scope="session")
+def medical_secretary(onboarding) -> User:
+    return onboarding.users["medical_secretary"]
+
+
+@pytest.fixture(scope="session")
+def clinics(onboarding) -> list[Clinic]:
+    return onboarding.clinics
+
+
+@pytest.fixture(scope="session")
+def nurse(onboarding) -> User:
+    return onboarding.users["nurse"]
+
+
+@pytest.fixture(scope="session")
+def schools(onboarding) -> dict[str, list[School]]:
+    return onboarding.schools
+
+
+@pytest.fixture(scope="session")
+def superuser(onboarding) -> User:
+    return onboarding.users["superuser"]
+
+
+@pytest.fixture(scope="session")
+def organisation(onboarding) -> Organisation:
+    return onboarding.organisation
+
+
+@pytest.fixture(scope="session")
+def subteam(onboarding) -> Subteam:
+    return onboarding.subteam
+
+
+@pytest.fixture(scope="session")
+def team(onboarding) -> Team:
+    return onboarding.team
 
 
 @pytest.fixture
@@ -118,106 +171,6 @@ def children(year_groups) -> dict[str, list[Child]]:
         programme.group: _generate_children(2, year_groups[programme.group])
         for programme in Programme
     }
-
-
-@pytest.fixture(scope="session")
-def superuser() -> User:
-    email = onboarding_faker.email()
-    return User(username=email, password=email, role="superuser")
-
-
-@pytest.fixture(scope="session")
-def organisation() -> Organisation:
-    ods_code = onboarding_faker.bothify("?###?", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    return Organisation(ods_code=ods_code)
-
-
-@pytest.fixture(scope="session")
-def subteam() -> Subteam:
-    return Subteam(
-        key="team",
-        name=f"{onboarding_faker.company()} est. {random.randint(1600, 2025)}",
-        email=onboarding_faker.email(),
-        phone=onboarding_faker.cellphone_number(),
-    )
-
-
-@pytest.fixture(scope="session")
-def team(subteam, organisation) -> Team:
-    return Team(
-        name=subteam.name,
-        workgroup=organisation.ods_code,
-        careplus_venue_code=organisation.ods_code,
-        email=subteam.email,
-        phone=subteam.phone,
-    )
-
-
-@pytest.fixture(scope="session")
-def users(medical_secretary, nurse, superuser) -> dict[str, User]:
-    return {
-        "medical_secretary": medical_secretary,
-        "nurse": nurse,
-        "superuser": superuser,
-    }
-
-
-@pytest.fixture(scope="session")
-def onboarding(
-    clinics,
-    schools,
-    subteam,
-    team,
-    organisation,
-    users,
-    programmes_enabled,
-) -> dict[str, object]:
-    return {
-        "clinics": {subteam.key: [it.to_onboarding() for it in clinics]},
-        "team": team.to_onboarding(),
-        "organisation": organisation.to_onboarding(),
-        "programmes": programmes_enabled,
-        "schools": {
-            subteam.key: [
-                school.to_onboarding()
-                for schools_list in schools.values()
-                for school in schools_list
-            ],
-        },
-        "subteams": subteam.to_onboarding(),
-        "users": [it.to_onboarding() for it in users.values()],
-    }
-
-
-def _check_response_status(response) -> None:
-    if not response.ok:
-        logger.warning(response.content)
-    response.raise_for_status()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def onboard_and_delete(base_url, onboarding, team):
-    url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    response = requests.post(url, json=onboarding, timeout=30)
-    _check_response_status(response)
-
-    yield
-
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, timeout=30)
-    _check_response_status(response)
-
-
-@pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, team) -> None:
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, params={"keep_itself": "true"}, timeout=30)
-    _check_response_status(response)
-
-
-@pytest.fixture(scope="session")
-def programmes_enabled() -> list[str]:
-    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")
 
 
 def _read_imms_api_credentials() -> dict[str, str]:
