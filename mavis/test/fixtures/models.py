@@ -52,15 +52,32 @@ def onboarding(
     year_groups,
     programmes_enabled,
 ) -> Onboarding:
-    onboarding_data = Onboarding.get_onboarding_data_for_tests(
-        base_url=base_url,
-        year_groups=year_groups,
-        programmes=programmes_enabled,
-    )
-
     onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    response = requests.post(onboarding_url, json=onboarding_data.to_dict(), timeout=30)
-    _check_response_status(response)
+    max_attempts = 3
+    onboarding_data = None
+
+    for attempt in range(1, max_attempts + 1):
+        onboarding_data = Onboarding.get_onboarding_data_for_tests(
+            base_url=base_url,
+            year_groups=year_groups,
+            programmes=programmes_enabled,
+        )
+        response = requests.post(
+            onboarding_url, json=onboarding_data.to_dict(), timeout=30
+        )
+        if response.ok:
+            break
+        logger.warning(
+            "Onboarding request failed (attempt %s): %s", attempt, response.content
+        )
+        if attempt < max_attempts:
+            time.sleep(1)
+        else:
+            response.raise_for_status()
+
+    if not onboarding_data:
+        msg = "Failed to create onboarding data for tests"
+        raise RuntimeError(msg)
 
     return onboarding_data
 
