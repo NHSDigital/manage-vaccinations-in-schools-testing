@@ -3,7 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import Programme
+from mavis.test.models import Programme, VaccinationRecord, Vaccine
 
 pytestmark = pytest.mark.sessions
 
@@ -44,12 +44,12 @@ def setup_session_with_file_upload(
 
 
 @pytest.fixture
-def setup_mavis_1822(setup_session_with_file_upload):
+def setup_positive_upload(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.POSITIVE)
 
 
 @pytest.fixture
-def setup_mav_1018(setup_session_with_file_upload):
+def setup_random_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.RANDOM_CHILD)
 
 
@@ -95,7 +95,9 @@ def test_create_invalid_session(setup_tests, schools, sessions_page):
 
 
 @pytest.mark.bug
-def test_attendance_filters_functionality(setup_mavis_1822, sessions_page, year_groups):
+def test_attendance_filters_functionality(
+    setup_positive_upload, sessions_page, year_groups
+):
     """
     Test: Verify attendance filters on the register tab work as expected.
     Steps:
@@ -124,7 +126,7 @@ def test_attendance_filters_functionality(setup_mavis_1822, sessions_page, year_
 
 @issue("MAV-1018")
 @pytest.mark.bug
-def test_session_search_functionality(setup_mav_1018, sessions_page):
+def test_session_search_functionality(setup_random_child, sessions_page):
     """
     Test: Verify the search functionality within a session.
     Steps:
@@ -200,3 +202,136 @@ def test_session_activity_notes_order(
     sessions_page.click_child(child)
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_notes_appear_in_order([note_2, note_1])
+
+
+@pytest.mark.rav
+def test_triage_consent_given_and_triage_outcome(
+    setup_fixed_child,
+    schools,
+    sessions_page,
+    dashboard_page,
+    verbal_consent_page,
+    children,
+):
+    """
+    Test: Record verbal consent and triage outcome for a child in a session.
+    Steps:
+    1. Schedule session and import class list.
+    2. Record verbal consent for the child.
+    3. Update triage outcome to 'safe to vaccinate'.
+    Verification:
+    - Triage outcome is updated and reflected for the child.
+    """
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+
+    sessions_page.click_consent_tab()
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    verbal_consent_page.parent_phone_positive(child.parents[0])
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+
+    sessions_page.click_register_tab()
+    sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
+    sessions_page.select_yes_safe_to_vaccinate()
+    sessions_page.click_save_triage()
+    sessions_page.verify_triage_updated_for_child()
+
+
+@pytest.mark.rav
+def test_triage_consent_refused_and_activity_log(
+    setup_fixed_child,
+    sessions_page,
+    verbal_consent_page,
+    children,
+):
+    """
+    Test: Record verbal refusal of consent and verify activity log entry.
+    Steps:
+    1. Schedule session and import class list.
+    2. Record verbal refusal for the child.
+    3. Select 'consent refused' in session and check activity log.
+    Verification:
+    - Activity log contains entry for consent refusal by the parent.
+    """
+    child = children[Programme.HPV][0]
+
+    sessions_page.click_consent_tab()
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+
+    verbal_consent_page.parent_paper_refuse_consent(child.parents[0])
+    verbal_consent_page.expect_text_in_alert(str(child))
+
+    sessions_page.select_consent_refused()
+    sessions_page.click_child(child)
+    sessions_page.click_session_activity_and_notes()
+    sessions_page.check_session_activity_entry(
+        f"Consent refused by {child.parents[0].name_and_relationship}",
+    )
+
+
+@pytest.mark.rav
+@pytest.mark.bug
+def test_verify_excel_export_and_clinic_invitation(
+    setup_fixed_child,
+    add_vaccine_batch,
+    schools,
+    clinics,
+    children_page,
+    sessions_page,
+    dashboard_page,
+    verbal_consent_page,
+    children,
+):
+    """
+    Test: Export session data to Excel and send clinic invitations,
+       then verify vaccination record.
+    Steps:
+    1. Schedule session, import class list, and send clinic invitations.
+    2. Record verbal consent and register child as attending.
+    3. Record vaccination for the child at the clinic.
+    4. Verify vaccination outcome and Excel export.
+    Verification:
+    - Vaccination outcome is recorded and session Excel export is available.
+    """
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+    batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_page.ensure_session_scheduled_for_today(
+        "Community clinic",
+        Programme.HPV,
+    )
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
+    children_page.search_for_a_child_name(str(child))
+    children_page.click_record_for_child(child)
+    children_page.click_invite_to_community_clinic()
+    children_page.click_session_for_programme(
+        "Community clinic",
+        Programme.HPV,
+        check_date=True,
+    )
+    sessions_page.click_record_a_new_consent_response()
+    verbal_consent_page.parent_verbal_positive(
+        parent=child.parents[0],
+    )
+    sessions_page.register_child_as_attending(child)
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.HPV, batch_name),
+        at_school=False,
+    )
+    sessions_page.check_location_radio(clinics[0])
+    sessions_page.click_continue_button()
+    sessions_page.click_confirm_button()
+    sessions_page.expect_alert_text("Vaccination outcome recorded for HPV")
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    assert sessions_page.get_session_id_from_offline_excel()
