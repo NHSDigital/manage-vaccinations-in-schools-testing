@@ -299,3 +299,19 @@ def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
         programme=Programme.HPV,
         report_format=ReportFormat.SYSTMONE,
     )
+
+
+@pytest.mark.reports
+def test_verify_systmone_report_for_menacwy(setup_reports, programmes_page):
+    """
+    Test: Generate and verify SystmOne report for MenACWY programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate SystmOne report for MenACWY.
+    Verification:
+    - Report is generated in SystmOne format for MenACWY.
+    """
+    programmes_page.verify_report_format(
+        programme=Programme.MENACWY,
+        report_format=ReportFormat.SYSTMONE,
+    )
