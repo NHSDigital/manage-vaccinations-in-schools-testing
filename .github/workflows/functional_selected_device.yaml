@@ -31,6 +31,14 @@ on:
           - training
           - sandbox-alpha
           - sandbox-beta
+      enable_screenshots:
+        description: 'Enable screenshots to be taken for each step (increases test time and storage used)'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
       set_feature_flags:
         description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
         required: true
@@ -73,6 +81,7 @@ jobs:
             echo "set_feature_flags=false" >> $GITHUB_OUTPUT
             echo "additional_feature_flags=" >> $GITHUB_OUTPUT
             echo "deploy_report=false" >> $GITHUB_OUTPUT
+            echo "enable_screenshots=false" >> $GITHUB_OUTPUT
           else
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
 
@@ -84,6 +93,7 @@ jobs:
             echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
             echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
+            echo "enable_screenshots=${{ github.event.inputs.enable_screenshots }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v5
@@ -101,6 +111,7 @@ jobs:
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
+          enable_screenshots: ${{ steps.set-variables.outputs.enable_screenshots }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
