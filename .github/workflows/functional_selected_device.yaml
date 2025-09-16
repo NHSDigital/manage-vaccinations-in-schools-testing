@@ -31,10 +31,10 @@ on:
           - training
           - sandbox-alpha
           - sandbox-beta
-      enable_screenshots:
-        description: 'Enable screenshots to be taken for each step (increases test time and storage used)'
+      screenshot_all_steps:
+        description: 'Take screenshots for all steps (in addition to failures)'
         required: true
-        default: 'true'
+        default: 'false'
         type: choice
         options:
           - true
@@ -81,7 +81,7 @@ jobs:
             echo "set_feature_flags=false" >> $GITHUB_OUTPUT
             echo "additional_feature_flags=" >> $GITHUB_OUTPUT
             echo "deploy_report=false" >> $GITHUB_OUTPUT
-            echo "enable_screenshots=false" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
           else
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
 
@@ -93,7 +93,7 @@ jobs:
             echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
             echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
-            echo "enable_screenshots=${{ github.event.inputs.enable_screenshots }}" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v5
@@ -111,7 +111,7 @@ jobs:
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
-          enable_screenshots: ${{ steps.set-variables.outputs.enable_screenshots }}
+          screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}

@@ -16,15 +16,14 @@ def _reduce_colors(image_bytes: bytes) -> bytes:
         return output_io.getvalue()
 
 
-def _add_screenshot_if_enabled(page, name: str) -> None:
-    if os.getenv("ENABLE_SCREENSHOTS", "true").lower() == "true":
-        screenshot_bytes = page.screenshot(full_page=True, scale="css")
-        reduced_bytes = _reduce_colors(screenshot_bytes)
-        allure.attach(
-            reduced_bytes,
-            name=name,
-            attachment_type=allure.attachment_type.PNG,
-        )
+def _add_screenshot(page, name: str) -> None:
+    screenshot_bytes = page.screenshot(full_page=True, scale="css")
+    reduced_bytes = _reduce_colors(screenshot_bytes)
+    allure.attach(
+        reduced_bytes,
+        name=name,
+        attachment_type=allure.attachment_type.PNG,
+    )
 
 
 def step(title: str):
@@ -35,7 +34,7 @@ def step(title: str):
                 try:
                     return_value = func(self, *args, **kwargs)
                 except Exception:
-                    _add_screenshot_if_enabled(self.page, name="Screenshot on failure")
+                    _add_screenshot(self.page, name="Screenshot on failure")
                     raise
 
                 coverage = kwargs.get("coverage")
@@ -46,7 +45,8 @@ def step(title: str):
                         attachment_type=allure.attachment_type.TEXT,
                     )
 
-                _add_screenshot_if_enabled(self.page, name="Screenshot")
+                if os.getenv("SCREENSHOT_ALL_STEPS", "false").lower() == "true":
+                    _add_screenshot(self.page, name="Screenshot")
 
                 return return_value
 
