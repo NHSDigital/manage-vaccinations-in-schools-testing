@@ -16,7 +16,18 @@ def _reduce_colors(image_bytes: bytes) -> bytes:
         return output_io.getvalue()
 
 
-def step(title: str, *, attach_screenshot: bool = True):
+def _add_screenshot_if_enabled(page, name: str) -> None:
+    if os.getenv("ENABLE_SCREENSHOTS", "true").lower() == "true":
+        screenshot_bytes = page.screenshot(full_page=True, scale="css")
+        reduced_bytes = _reduce_colors(screenshot_bytes)
+        allure.attach(
+            reduced_bytes,
+            name=name,
+            attachment_type=allure.attachment_type.PNG,
+        )
+
+
+def step(title: str):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -24,17 +35,7 @@ def step(title: str, *, attach_screenshot: bool = True):
                 try:
                     return_value = func(self, *args, **kwargs)
                 except Exception:
-                    if attach_screenshot:
-                        screenshot_bytes = self.page.screenshot(
-                            full_page=True,
-                            scale="css",
-                        )
-                        reduced_bytes = _reduce_colors(screenshot_bytes)
-                        allure.attach(
-                            reduced_bytes,
-                            name="Screenshot on failure",
-                            attachment_type=allure.attachment_type.PNG,
-                        )
+                    _add_screenshot_if_enabled(self.page, name="Screenshot on failure")
                     raise
 
                 coverage = kwargs.get("coverage")
@@ -45,14 +46,7 @@ def step(title: str, *, attach_screenshot: bool = True):
                         attachment_type=allure.attachment_type.TEXT,
                     )
 
-                if attach_screenshot:
-                    screenshot_bytes = self.page.screenshot(full_page=True, scale="css")
-                    reduced_bytes = _reduce_colors(screenshot_bytes)
-                    allure.attach(
-                        reduced_bytes,
-                        name="Screenshot",
-                        attachment_type=allure.attachment_type.PNG,
-                    )
+                _add_screenshot_if_enabled(self.page, name="Screenshot")
 
                 return return_value
 
