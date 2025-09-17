@@ -58,7 +58,7 @@ def PARENT_2_RELATIONSHIP = []
 def CHILD_SCHOOL_URN =[]
 
 def startDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2010-09-01&apos;)
-def endDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2014-08-31&apos;)
+def endDate = Date.parse(&apos;yyyy-MM-dd&apos;,&apos;2012-08-31&apos;)
 def newNHSNumbers = []
 
 try {
