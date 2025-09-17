@@ -7,7 +7,7 @@ from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, generate_random_string
 
 
 @pytest.fixture
-def setup_mav_965(
+def setup_all_programmes(
     log_in_as_nurse,
     add_vaccine_batch,
     schools,
@@ -48,7 +48,7 @@ def setup_mav_965(
 @pytest.mark.rav
 @pytest.mark.bug
 def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
-    setup_mav_965,
+    setup_all_programmes,
     schools,
     dashboard_page,
     sessions_page,
@@ -74,7 +74,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     """
     child = children["doubles"][0]
     school = schools["doubles"][0]
-    batch_names = setup_mav_965
+    batch_names = setup_all_programmes
 
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
         dashboard_page.click_mavis()
