@@ -2008,7 +2008,7 @@ vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,relationship)</stringProp>
                 <hashTree/>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
-                    <stringProp name="1625768713">&lt;p class=&quot;govuk-notification-banner__heading&quot;&gt;Consent recorded for</stringProp>
+                    <stringProp name="1625768713">&lt;p class=&quot;nhsuk-notification-banner__heading&quot;&gt;Consent recorded for</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.custom_message"></stringProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
