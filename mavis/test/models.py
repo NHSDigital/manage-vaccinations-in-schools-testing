@@ -559,7 +559,7 @@ class Onboarding:
                 "medical_secretary",
                 "superuser",
                 "prescriber",
-                "medical_secretary",
+                "healthcare_assistant",
             )
         }
         clinics = [Clinic.generate()]

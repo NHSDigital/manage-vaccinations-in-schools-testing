@@ -510,6 +510,7 @@ class SessionsPage:
         for check in programme.pre_screening_checks(consent_option):
             locator = self.pre_screening_listitem.get_by_text(check)
             expect(locator).to_be_visible()
+        self.page.wait_for_load_state()
         self.pre_screening_checkbox.check()
 
     @step("Click on Yes")
@@ -858,8 +859,11 @@ class SessionsPage:
         notes: str = "",
         *,
         at_school: bool = True,
+        psd_option: bool = False,
     ) -> datetime:
-        self.click_record_vaccinations_tab()
+        # temporarily do not go to record vaccinations tab for psds
+        if not psd_option:
+            self.click_record_vaccinations_tab()
         self.search_child(vaccination_record.child)
         self.click_programme_tab(vaccination_record.programme)
 

@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme, Vaccine
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
 
 
 @pytest.fixture
@@ -94,10 +94,7 @@ def test_delivering_vaccination_after_psd(
     dashboard_page.click_sessions()
     sessions_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_page.register_child_as_attending(str(child))
-    sessions_page.page.pause()
-    sessions_page.record_vaccs_for_child(
-        child,
-        Programme.FLU,
-        fluenz_batch_name,
-        ConsentOption.BOTH,
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.BOTH),
+        psd_option=True,
     )
