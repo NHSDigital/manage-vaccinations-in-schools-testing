@@ -37,13 +37,6 @@ class SessionsPage:
         self.test_data = test_data
         self.page = page
 
-        self.today_tab_link = self.page.get_by_role("link", name="Today")
-        self.scheduled_tab_link = self.page.get_by_role(
-            "link",
-            name="Scheduled",
-            exact=True,
-        )
-        self.unscheduled_tab_link = self.page.get_by_role("link", name="Unscheduled")
         self.no_response_checkbox = self.page.get_by_role(
             "checkbox",
             name="No response",
@@ -69,7 +62,6 @@ class SessionsPage:
             name="Conflicting consent",
         )
 
-        self.programme_tab_link = self.page.get_by_role("link", name="Programme")
         self.import_class_lists_link = self.page.get_by_role(
             "link",
             name="Import class lists",
@@ -149,10 +141,6 @@ class SessionsPage:
             "button",
             name="Record a new consent response",
         )
-        self.update_results_button = self.page.get_by_role(
-            "button",
-            name="Update results",
-        )
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.search_textbox = self.page.get_by_role("textbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
@@ -178,20 +166,7 @@ class SessionsPage:
         pre_screening = self.page.locator("section").filter(
             has=page.get_by_role("heading", name="Pre-screening checks"),
         )
-        self.change_programmes_link = self.page.get_by_role(
-            "link",
-            name="Change   programmes",
-        )
-        self.flu_programme_checkbox = self.page.get_by_role("checkbox", name="Flu")
-        self.hpv_programme_checkbox = self.page.get_by_role("checkbox", name="HPV")
-        self.menacwy_programme_checkbox = self.page.get_by_role(
-            "checkbox",
-            name="MenACWY",
-        )
-        self.td_ipv_programme_checkbox = self.page.get_by_role(
-            "checkbox",
-            name="Td/IPV",
-        )
+
         self.pre_screening_listitem = pre_screening.get_by_role("listitem")
         self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
         self.pre_screening_notes = pre_screening.get_by_role(
@@ -202,8 +177,6 @@ class SessionsPage:
             "link",
             name="with no response",
         )
-        self.in_person_radio = self.page.get_by_text("In person")
-        self.no_they_no_not_agree_radio = self.page.get_by_text("No, they do not agree")
         self.consent_refusal_reason_other_radio = self.page.get_by_text("Other")
         self.consent_refusal_details_textbox = self.page.get_by_role(
             "textbox",
@@ -213,7 +186,6 @@ class SessionsPage:
             "link",
             name="Review   consent refused",
         )
-        self.overview_tab_link = self.page.get_by_role("link", name="Overview")
 
         self.note_textbox = self.page.get_by_role("textbox", name="Note")
         self.add_a_note_span = self.page.get_by_text("Add a note")
