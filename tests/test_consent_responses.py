@@ -1,13 +1,15 @@
-import random
-
 import pytest
 from playwright.sync_api import expect
 
-from mavis.test.data import CohortsFileMapping
-from mavis.test.data import pds as pds_test_data
-from mavis.test.models import Child, Parent, Programme, Relationship
+from mavis.test.data import CohortsFileMapping, pds
+from mavis.test.models import Programme
 
 pytestmark = pytest.mark.consent_responses
+
+
+@pytest.fixture
+def pds_child():
+    return pds.get_random_child_patient_without_date_of_death()
 
 
 @pytest.fixture
@@ -15,7 +17,7 @@ def online_consent_url(get_online_consent_url, schools):
     yield from get_online_consent_url(schools[Programme.HPV.group][0], Programme.HPV)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def give_online_consent(
     page,
     start_page,
@@ -36,12 +38,35 @@ def give_online_consent(
     online_consent_page.click_confirm()
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
+def give_online_consent_pds_child(
+    page,
+    start_page,
+    online_consent_page,
+    online_consent_url,
+    pds_child,
+    schools,
+):
+    child = pds_child
+    schools = schools[Programme.HPV]
+
+    page.goto(online_consent_url)
+    start_page.start()
+    online_consent_page.fill_details(child, child.parents[0], schools)
+    online_consent_page.agree_to_hpv_vaccination()
+    online_consent_page.fill_address_details(*child.address)
+    online_consent_page.answer_health_questions(4, yes_to_health_questions=False)
+    online_consent_page.click_confirm()
+
+
+@pytest.fixture
 def go_to_unmatched_consent_responses(log_in_as_nurse, dashboard_page):
     dashboard_page.click_unmatched_consent_responses()
 
 
 def test_archive_unmatched_consent_response_removes_from_list(
+    give_online_consent,
+    go_to_unmatched_consent_responses,
     archive_consent_response_page,
     children,
     consent_response_page,
@@ -67,6 +92,8 @@ def test_archive_unmatched_consent_response_removes_from_list(
 
 
 def test_match_unmatched_consent_response_and_verify_activity_log(
+    give_online_consent,
+    go_to_unmatched_consent_responses,
     children,
     children_page,
     consent_response_page,
@@ -112,29 +139,10 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     children_page.verify_activity_log_for_created_or_matched_child(child)
 
 
-patient = random.choice(pds_test_data.child_patients_without_date_of_death)
-
-
-@pytest.mark.parametrize(
-    "children",
-    [
-        {
-            Programme.HPV: [
-                Child(
-                    patient.given_name,
-                    patient.family_name,
-                    patient.nhs_number,
-                    patient.address,
-                    patient.date_of_birth,
-                    9,
-                    (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
-                ),
-            ],
-        },
-    ],
-)
 def test_create_child_record_from_consent_with_nhs_number(
-    children,
+    give_online_consent_pds_child,
+    go_to_unmatched_consent_responses,
+    pds_child,
     children_page,
     consent_response_page,
     create_new_record_consent_response_page,
@@ -153,7 +161,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     - Consent response for the child is no longer visible in unmatched list.
     - Activity log for the child shows the creation event.
     """
-    child = children[Programme.HPV][0]
+    child = pds_child
 
     unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
@@ -169,6 +177,8 @@ def test_create_child_record_from_consent_with_nhs_number(
 
 
 def test_create_child_record_from_consent_without_nhs_number(
+    give_online_consent,
+    go_to_unmatched_consent_responses,
     children,
     children_page,
     consent_response_page,

@@ -105,8 +105,18 @@ def reset_before_each_module(base_url, team) -> None:
 
 
 @pytest.fixture(scope="session")
+def healthcare_assistant(onboarding) -> User:
+    return onboarding.users["healthcare_assistant"]
+
+
+@pytest.fixture(scope="session")
 def medical_secretary(onboarding) -> User:
     return onboarding.users["medical_secretary"]
+
+
+@pytest.fixture(scope="session")
+def prescriber(onboarding) -> User:
+    return onboarding.users["prescriber"]
 
 
 @pytest.fixture(scope="session")

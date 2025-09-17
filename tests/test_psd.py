@@ -1,0 +1,100 @@
+import pytest
+
+from mavis.test.data import ClassFileMapping
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+
+
+@pytest.fixture
+def setup_session_with_file_upload(
+    log_in_as_prescriber,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    year_groups,
+    add_vaccine_batch,
+):
+    school = schools[Programme.FLU][0]
+    year_group = year_groups[Programme.FLU]
+    try:
+        batch_name = add_vaccine_batch(Vaccine.FLUENZ)
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.click_session_for_programme_group(school, Programme.FLU)
+        sessions_page.click_import_class_lists()
+        import_records_page.import_class_list(
+            ClassFileMapping.FIXED_CHILD, year_group, Programme.FLU.group
+        )
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        yield batch_name
+    finally:
+        dashboard_page.navigate()
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.delete_all_sessions(school)
+
+
+def test_delivering_vaccination_after_psd(
+    setup_session_with_file_upload,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
+    log_in_page,
+    healthcare_assistant,
+    team,
+    dashboard_page,
+):
+    """
+    Test: A PSD can be created for a child and the vaccination can be
+       administered by a healthcare assistant.
+    Steps:
+    1. Import child records and set up a session with PSD enabled.
+    2. Record verbal consent with PSD option for the child.
+    3. Verify the PSD is created.
+    4. Log in as a healthcare assistant and administer the vaccination.
+    Verification:
+    - The PSD is correctly created and the vaccination is recorded without errors.
+    """
+    child = children[Programme.FLU][0]
+    school = schools[Programme.FLU][0]
+    fluenz_batch_name = setup_session_with_file_upload
+
+    sessions_page.click_session_for_programme_group(school, Programme.FLU)
+    sessions_page.click_edit_session()
+    sessions_page.click_change_psd()
+    sessions_page.answer_whether_psd_should_be_enabled("Yes")
+    sessions_page.click_continue_button()
+    sessions_page.click_continue_link()
+
+    sessions_page.click_consent_tab()
+    sessions_page.search_child(child)
+    sessions_page.click_programme_tab(Programme.FLU)
+    sessions_page.click_record_a_new_consent_response()
+    verbal_consent_page.parent_verbal_positive(
+        parent=child.parents[0],
+        change_phone=False,
+        programme=Programme.FLU,
+        consent_option=ConsentOption.BOTH,
+        psd_option=True,
+    )
+    sessions_page.click_psds_tab()
+    sessions_page.search_for(str(child))
+    sessions_page.check_child_has_psd(child)
+
+    log_in_page.log_out()
+    log_in_page.navigate()
+    log_in_page.log_in_and_choose_team_if_necessary(healthcare_assistant, team)
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(school, Programme.FLU)
+    sessions_page.register_child_as_attending(str(child))
+    sessions_page.record_vaccination_for_child(
+        VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.BOTH),
+        psd_option=True,
+    )

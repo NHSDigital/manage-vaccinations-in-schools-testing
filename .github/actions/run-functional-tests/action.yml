@@ -7,6 +7,8 @@ inputs:
     required: true
   programmes_enabled:
     required: true
+  screenshot_all_steps:
+    required: true
   set_feature_flags:
     default: "false"
   additional_feature_flags:
@@ -36,6 +38,7 @@ runs:
       env:
         BASE_URL: ${{ inputs.base_url }}
         PROGRAMMES_ENABLED: ${{ inputs.programmes_enabled }}
+        SCREENSHOT_ALL_STEPS: ${{ inputs.screenshot_all_steps }}
         SET_FEATURE_FLAGS: ${{ inputs.set_feature_flags }}
         ADDITIONAL_FEATURE_FLAGS: ${{ inputs.additional_feature_flags }}
         BASIC_AUTH_TOKEN: ${{ env.BASIC_AUTH_TOKEN }}

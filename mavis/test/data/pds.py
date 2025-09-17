@@ -1,4 +1,5 @@
 import csv
+import random
 from datetime import date, datetime
 from pathlib import Path
 from typing import NamedTuple
@@ -6,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
 
+from mavis.test.models import Child, Parent, Relationship
 from mavis.test.utils import get_todays_date
 
 
@@ -65,14 +67,28 @@ with (Path(__file__).parent / "pds.csv").open(newline="") as file:
     reader = csv.DictReader(file)
     patients = [Patient.from_csv_row(row) for row in reader]
 
-patients_without_date_of_death = [
-    patient for patient in patients if not patient.date_of_death
-]
 
-cutoff_date = get_todays_date() - relativedelta(years=22)
+def get_random_child_patient_without_date_of_death() -> Child:
+    patients_without_date_of_death = [
+        patient for patient in patients if not patient.date_of_death
+    ]
 
-child_patients_without_date_of_death = [
-    patient
-    for patient in patients_without_date_of_death
-    if patient.date_of_birth >= cutoff_date
-]
+    cutoff_date = get_todays_date() - relativedelta(years=22)
+
+    child_patients_without_date_of_death = [
+        patient
+        for patient in patients_without_date_of_death
+        if patient.date_of_birth >= cutoff_date
+    ]
+
+    child = random.choice(child_patients_without_date_of_death)
+
+    return Child(
+        child.given_name,
+        child.family_name,
+        child.nhs_number,
+        child.address,
+        child.date_of_birth,
+        9,
+        (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
+    )
