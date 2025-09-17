@@ -196,6 +196,8 @@ class ChildrenPage:
 
         expect(detail_value).to_contain_text(value)
 
+    # def check_vaccination_details(self, vaccination_record: VaccinationRecord) -> None:
+
     def expect_text_in_alert(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)
 

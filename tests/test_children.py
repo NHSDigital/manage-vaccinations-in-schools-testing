@@ -145,6 +145,8 @@ def test_patient_details_load_with_missing_vaccine_info(
     # Verify vaccination record
     children_page.click_child_record()
     children_page.click_vaccination_details(school)
+    print(children_page.page.locator("body").aria_snapshot())
+    children_page.page.pause()
     children_page.expect_vaccination_details("Outcome", "Vaccinated")
 
 
