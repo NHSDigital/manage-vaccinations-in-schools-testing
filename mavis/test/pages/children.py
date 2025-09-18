@@ -151,6 +151,7 @@ class ChildrenPage:
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
+        self.page.wait_for_load_state()
         with self.page.expect_navigation():
             self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
                 "link",
