@@ -15,6 +15,7 @@ from .programmes import ProgrammesPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .sessions import SessionsPage
 from .start import StartPage
+from .team import TeamPage
 from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
 from .verbal_consent import VerbalConsentPage
 
@@ -38,6 +39,7 @@ __all__ = [
     "SchoolMovesPage",
     "SessionsPage",
     "StartPage",
+    "TeamPage",
     "UnmatchedConsentResponsesPage",
     "VaccinesPage",
     "VerbalConsentPage",
