@@ -46,7 +46,9 @@ def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(CohortsFileMapping.FIXED_CHILD)
 
 
-def test_gillick_competence(setup_fixed_child, schools, sessions_page, children):
+def test_gillick_competence(
+    setup_fixed_child, schools, sessions_page, verbal_consent_page, children
+):
     """
     Test: Add and edit Gillick competence assessment for a child.
     Steps:
@@ -63,13 +65,15 @@ def test_gillick_competence(setup_fixed_child, schools, sessions_page, children)
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
-    sessions_page.add_gillick_competence(is_competent=True)
+    verbal_consent_page.add_gillick_competence(is_competent=True)
     sessions_page.click_edit_gillick_competence()
-    sessions_page.edit_gillick_competence(is_competent=False)
+    verbal_consent_page.edit_gillick_competence(is_competent=False)
 
 
 @issue("MAV-955")
-def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, children):
+def test_gillick_competence_notes(
+    setup_fixed_child, schools, sessions_page, verbal_consent_page, children
+):
     """
     Test: Validate Gillick competence assessment notes length and update.
     Steps:
@@ -89,23 +93,23 @@ def test_gillick_competence_notes(setup_fixed_child, schools, sessions_page, chi
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
-    sessions_page.answer_gillick_competence_questions(is_competent=True)
-    sessions_page.fill_assessment_notes_with_string_of_length(
+    verbal_consent_page.answer_gillick_competence_questions(is_competent=True)
+    verbal_consent_page.fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    sessions_page.click_complete_assessment()
-    sessions_page.check_notes_length_error_appears()
+    verbal_consent_page.click_complete_assessment()
+    verbal_consent_page.check_notes_length_error_appears()
 
-    sessions_page.fill_assessment_notes("Gillick competent")
-    sessions_page.click_complete_assessment()
+    verbal_consent_page.fill_assessment_notes("Gillick competent")
+    verbal_consent_page.click_complete_assessment()
 
     sessions_page.click_edit_gillick_competence()
-    sessions_page.answer_gillick_competence_questions(is_competent=True)
-    sessions_page.fill_assessment_notes_with_string_of_length(
+    verbal_consent_page.answer_gillick_competence_questions(is_competent=True)
+    verbal_consent_page.fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    sessions_page.click_update_assessment()
-    sessions_page.check_notes_length_error_appears()
+    verbal_consent_page.click_update_assessment()
+    verbal_consent_page.check_notes_length_error_appears()
 
 
 @pytest.mark.bug
@@ -254,7 +258,7 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_consent_status(Programme.HPV, "Conflicting consent")
     sessions_page.expect_conflicting_consent_text()
     sessions_page.click_assess_gillick_competence()
-    sessions_page.add_gillick_competence(is_competent=True)
+    verbal_consent_page.add_gillick_competence(is_competent=True)
     sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
     sessions_page.click_record_a_new_consent_response()
     verbal_consent_page.child_consent_verbal_positive()
