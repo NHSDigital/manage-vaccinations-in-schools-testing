@@ -22,6 +22,7 @@ from mavis.test.pages import (
     SchoolMovesPage,
     SessionsPage,
     StartPage,
+    TeamPage,
     UnmatchedConsentResponsesPage,
     VaccinesPage,
     VerbalConsentPage,
@@ -123,6 +124,11 @@ def sessions_page(page: Page, test_data: TestData) -> SessionsPage:
 @pytest.fixture
 def start_page(page: Page) -> StartPage:
     return StartPage(page)
+
+
+@pytest.fixture
+def team_page(page: Page) -> TeamPage:
+    return TeamPage(page)
 
 
 @pytest.fixture

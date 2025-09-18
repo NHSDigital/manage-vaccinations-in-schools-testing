@@ -62,10 +62,6 @@ class DashboardPage:
     def click_your_team(self) -> None:
         self.your_team_link.click()
 
-    @step("Click on Service Guidance")
-    def click_service_guidance(self) -> None:
-        self.service_guidance_link.click()
-
     @step("Go to dashboard")
     def navigate(self) -> None:
         self.page.goto("/dashboard")

@@ -27,29 +27,38 @@ def test_login_with_invalid_credentials(username, password, log_in_page):
 
 
 @pytest.fixture(scope="session")
-def users(medical_secretary, nurse, superuser) -> dict[str, User]:
+def users(
+    medical_secretary, nurse, superuser, healthcare_assistant, prescriber
+) -> dict[str, User]:
     return {
         "medical_secretary": medical_secretary,
         "nurse": nurse,
         "superuser": superuser,
+        "healthcare_assistant": healthcare_assistant,
+        "prescriber": prescriber,
     }
 
 
 @pytest.mark.parametrize(
     "role",
-    ["medical_secretary", "nurse", "superuser"],
+    ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
     ids=lambda v: f"role: {v}",
 )
-def test_login_with_valid_credentials(role, users, team, dashboard_page, log_in_page):
+def test_login_with_valid_credentials(
+    role, users, team, dashboard_page, log_in_page, team_page
+):
     """
-    Test: Log in with valid credentials for each user role and verify dashboard links.
+    Test: Log in with valid credentials for each user role and verify dashboard links
+       and team information.
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
     3. Verify that all expected dashboard links are visible.
-    4. Log out.
+    4. Verify that team information is visible in Team page.
+    5. Log out.
     Verification:
     - Log out button and all dashboard navigation links are visible after login.
+    - Team name and email are visible in the Team page.
     """
     log_in_page.log_in_and_choose_team_if_necessary(users[role], team)
     expect(log_in_page.log_out_button).to_be_visible()
@@ -64,5 +73,9 @@ def test_login_with_valid_credentials(role, users, team, dashboard_page, log_in_
     expect(dashboard_page.import_records_link).to_be_visible()
     expect(dashboard_page.your_team_link).to_be_visible()
     expect(dashboard_page.service_guidance_link).to_be_visible()
+
+    dashboard_page.click_your_team()
+    team_page.check_team_name_is_visible(team)
+    team_page.check_team_email_is_visible(team)
 
     log_in_page.log_out()
