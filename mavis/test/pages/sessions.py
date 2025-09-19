@@ -200,10 +200,6 @@ class SessionsPage:
             "link",
             name="Send reminders",
         )
-        self.download_consent_form_hpv_link = self.page.get_by_role(
-            "link",
-            name="Download the HPV consent form (PDF)",
-        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -567,14 +563,14 @@ class SessionsPage:
 
         return _file_path
 
-    @step("Click on Download the consent form (PDF)")
+    @step("Click on Download the {1} consent form (PDF)")
     def download_consent_form(self, programme: Programme) -> Path:
         _file_path = Path(f"working/consent_{get_current_datetime_compact()}.pdf")
 
         with self.page.expect_download() as download_info:
-            match programme:
-                case Programme.HPV:
-                    self.download_consent_form_hpv_link.click()
+            self.page.get_by_role(
+                "link", name=f"Download the {programme} consent form (PDF)"
+            ).click()
         download = download_info.value
         download.save_as(_file_path)
 
@@ -853,7 +849,6 @@ class SessionsPage:
     @step("Click on Send reminders")
     def click_send_reminders(self, school: School) -> None:
         self.send_reminders_link.click()
-        self.expect_text_to_not_be_visible("Sorry, there is a problem with the service")
         expect(
             self.page.get_by_role("heading", name="Manage consent reminders")
         ).to_be_visible()
