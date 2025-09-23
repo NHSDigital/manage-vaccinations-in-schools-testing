@@ -14,32 +14,59 @@ def setup_session_with_file_upload(
     year_groups,
     add_vaccine_batch,
 ):
-    school = schools[Programme.FLU][0]
-    year_group = year_groups[Programme.FLU]
-    try:
-        batch_name = add_vaccine_batch(Vaccine.FLUENZ)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.FLU)
-        sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(
-            ClassFileMapping.FIXED_CHILD, year_group, Programme.FLU.group
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        yield batch_name
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
+    def _factory(
+        class_file_mapping: ClassFileMapping, *, schedule_session_for_today: bool = True
+    ) -> str:
+        school = schools[Programme.FLU][0]
+        year_group = year_groups[Programme.FLU]
+        try:
+            batch_name = add_vaccine_batch(Vaccine.FLUENZ)
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            if schedule_session_for_today:
+                sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            sessions_page.click_session_for_programme_group(school, Programme.FLU)
+            sessions_page.click_import_class_lists()
+            import_records_page.import_class_list(
+                class_file_mapping, year_group, Programme.FLU.group
+            )
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            return batch_name
+        finally:
+            dashboard_page.navigate()
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            sessions_page.delete_all_sessions(school)
+
+    return _factory
+
+
+@pytest.fixture
+def setup_session_with_one_child(
+    setup_session_with_file_upload,
+):
+    return setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
+
+
+@pytest.fixture
+def setup_session_with_two_children(
+    setup_session_with_file_upload,
+):
+    return setup_session_with_file_upload(
+        ClassFileMapping.TWO_FIXED_CHILDREN, schedule_session_for_today=False
+    )
+
+
+@pytest.fixture
+def flu_consent_url(get_online_consent_url, schools):
+    yield from get_online_consent_url(schools[Programme.FLU][0], Programme.FLU)
 
 
 def test_delivering_vaccination_after_psd(
-    setup_session_with_file_upload,
+    setup_session_with_one_child,
     sessions_page,
     schools,
     verbal_consent_page,
@@ -62,7 +89,7 @@ def test_delivering_vaccination_after_psd(
     """
     child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
-    fluenz_batch_name = setup_session_with_file_upload
+    fluenz_batch_name = setup_session_with_one_child
 
     sessions_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_page.click_edit_session()
@@ -98,3 +125,65 @@ def test_delivering_vaccination_after_psd(
         VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.BOTH),
         psd_option=True,
     )
+
+
+def test_bulk_adding_psd(
+    flu_consent_url,
+    setup_session_with_two_children,
+    sessions_page,
+    schools,
+    children,
+    dashboard_page,
+    online_consent_page,
+    start_page,
+):
+    """
+    Test: PSDS can be bulk added for children in a session.
+    Steps:
+    1. Import two children into a session.
+    2. Record online consent for the two children.
+    3. Add PSDs in the session to all eligible children.
+    Verification:
+    - The PSDs appear for each child.
+    """
+    school = schools[Programme.FLU][0]
+
+    for child in children[Programme.FLU]:
+        online_consent_page.go_to_url(flu_consent_url)
+        start_page.start()
+
+        online_consent_page.fill_details(
+            child, child.parents[0], schools[Programme.FLU]
+        )
+        online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+        online_consent_page.fill_address_details(*child.address)
+        online_consent_page.answer_health_questions(
+            online_consent_page.get_number_of_health_questions_for_flu(
+                ConsentOption.BOTH
+            ),
+            yes_to_health_questions=False,
+        )
+        online_consent_page.click_confirm()
+        online_consent_page.check_final_consent_message(
+            child,
+            programmes=[Programme.FLU],
+            yes_to_health_questions=False,
+            consent_option=ConsentOption.BOTH,
+        )
+
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
+
+    sessions_page.click_session_for_programme_group(school, Programme.FLU)
+    sessions_page.click_edit_session()
+    sessions_page.click_change_psd()
+    sessions_page.answer_whether_psd_should_be_enabled("Yes")
+    sessions_page.click_continue_button()
+    sessions_page.click_continue_link()
+    sessions_page.click_psds_tab()
+    sessions_page.click_add_new_psds()
+    sessions_page.click_yes_add_psds()
+
+    for child in children[Programme.FLU]:
+        sessions_page.search_for(str(child))
+        sessions_page.check_child_has_psd(child)
