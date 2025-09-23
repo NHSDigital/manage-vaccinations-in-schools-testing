@@ -2,7 +2,8 @@ name: Run full OWASP ZAP scan against QA
 
 on:
   workflow_dispatch:
-  push:
+  schedule:
+    - cron: '0 6 * * 1'
 
 jobs:
   zap_scan:
