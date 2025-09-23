@@ -200,6 +200,14 @@ class SessionsPage:
             "link",
             name="Send reminders",
         )
+        self.add_new_psds_link = self.page.get_by_role(
+            "link",
+            name="Add new PSDs",
+        )
+        self.yes_add_psds_button = self.page.get_by_role(
+            "button",
+            name="Yes, add PSDs",
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -785,6 +793,11 @@ class SessionsPage:
         self.click_continue_button()
 
         if at_school:  # only skips MAV-854
+            if psd_option:
+                self.expect_details("Protocol", "Patient Specific Direction")
+            else:
+                self.expect_details("Protocol", "Patient Group Direction (PGD)")
+
             self.vaccination_notes.fill(notes)
             self.click_confirm_button()
 
@@ -855,3 +868,11 @@ class SessionsPage:
         self.page.get_by_role(
             "link", name=school.name
         ).click()  # Update when MAV-2048 is done
+
+    @step("Click Add new PSDs")
+    def click_add_new_psds(self) -> None:
+        self.add_new_psds_link.click()
+
+    @step("Click Yes, add PSDs")
+    def click_yes_add_psds(self) -> None:
+        self.yes_add_psds_button.click()
