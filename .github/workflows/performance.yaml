@@ -15,7 +15,7 @@ on:
         - nurse-journey
       URN:
         description: "Required: what URN to run the test against."
-        required: true
+        required: false
         type: string
       duration:
         description: "Optional (default 3600) Duration of selected test in seconds. This will include ramp-up."
@@ -48,7 +48,7 @@ jobs:
       jmeter_version: 5.6.3
       cmdrunner_version: 2.3
       jmeter_plugins_manager_version: 1.7.0
-      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv,jmeter-plugins-table-server
+      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv,jpgc-sts
       # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
 
     steps:
@@ -105,7 +105,6 @@ jobs:
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Run Consent Journey to test STS
-        if: inputs.runDataPrep == true
         run: |
           mkdir -p consent-output
           consent_output_dir=consent-output
@@ -118,7 +117,6 @@ jobs:
               -JInputFile="cohortnew.csv"
 
       - name: Upload consent journey JMeter output
-        if: inputs.runDataPrep == true
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
