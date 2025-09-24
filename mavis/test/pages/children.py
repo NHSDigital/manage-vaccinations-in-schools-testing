@@ -1,4 +1,4 @@
-import re
+import time
 from pathlib import Path
 
 from playwright.sync_api import Page, expect
@@ -163,12 +163,11 @@ class ChildrenPage:
         )
 
         self.page.wait_for_load_state()
-        expect(vaccination_details_locator).to_have_attribute(
-            "href", re.compile(r"^/vaccination-records/")
-        )
-        self.page.wait_for_selector(
-            'div.nhsuk-card__content:has(h3.nhsuk-card__heading.nhsuk-heading-m:has-text("Vaccinations"))'
-        )
+
+        # clicking this link too quickly with non-chromium browsers
+        # can cause the page to refresh instead of navigating to
+        # the vaccination details page
+        time.sleep(1)
 
         with self.page.expect_navigation(url="**/vaccination-records/**"):
             vaccination_details_locator.click()
