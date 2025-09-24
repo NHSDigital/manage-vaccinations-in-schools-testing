@@ -108,7 +108,7 @@ jobs:
         run: |
           mkdir -p consent-output
           consent_output_dir=consent-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/E2E/consent-journey-new-data-source.jmx \
+          jmeter/bin/jmeter -n -t performance-tests/STS/consent-journey-new-data-source.jmx \
               -l $consent_output_dir/samples.jtl \
               -j $consent_output_dir/jmeter.log \
               -e -o $consent_output_dir/consent-report \
