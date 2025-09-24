@@ -119,6 +119,8 @@ def test_download_school_moves_csv(
     setup_confirm_and_ignore,
     school_moves_page,
     download_school_moves_page,
+    schools,
+    children,
 ):
     """
     Test: Download the school moves CSV and verify the headers.
@@ -126,34 +128,16 @@ def test_download_school_moves_csv(
     1. Setup: Ensure school moves exist by confirming/ignoring moves for two children.
     2. Click the download button on the school moves page.
     3. Enter a date range and confirm the download.
-    4. Read the downloaded CSV and extract the headers.
+    4. Read the downloaded CSV.
     Verification:
     - The CSV contains all expected headers for school moves.
+    - The CSV contains correct data for the two children involved in the school moves.
     """
+    school = schools[Programme.HPV][0]
+    children = children[Programme.HPV]
     school_moves_page.click_download()
     download_school_moves_page.enter_date_range()
-    school_moves_csv = download_school_moves_page.confirm()
-
-    actual_headers = set(school_moves_csv.columns)
-    expected_headers = {
-        "NHS_REF",
-        "SURNAME",
-        "FORENAME",
-        "GENDER",
-        "DOB",
-        "ADDRESS1",
-        "ADDRESS2",
-        "ADDRESS3",
-        "TOWN",
-        "POSTCODE",
-        "COUNTY",
-        "ETHNIC_OR",
-        "ETHNIC_DESCRIPTION",
-        "NATIONAL_URN_NO",
-        "BASE_NAME",
-        "STARTDATE",
-        "STUD_ID",
-        "DES_NUMBER",
-    }
-
-    assert actual_headers == expected_headers
+    school_moves_csv = download_school_moves_page.confirm_and_get_school_moves_csv()
+    download_school_moves_page.verify_school_moves_csv_contents(
+        school_moves_csv, children, school
+    )
