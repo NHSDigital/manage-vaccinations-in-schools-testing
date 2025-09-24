@@ -38,14 +38,8 @@ on:
         required: false
         type: string
 
-
-# env:
-#   JMETER_PLUGIN_INSTALL_LIST: "jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv"
-
-# Added run-name information so it's easier to see what was run
-run-name: Test ${{inputs.testToRun}} run with ${{inputs.threads}} threads for ${{inputs.duration}} seconds and ${{inputs.ramp_up}} ramp up
 jobs:
-  performance_test:
+  STS_based_test:
     runs-on: ubuntu-latest
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -54,13 +48,27 @@ jobs:
       jmeter_version: 5.6.3
       cmdrunner_version: 2.3
       jmeter_plugins_manager_version: 1.7.0
-      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv
+      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv,jmeter-plugins-table-server
       # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
 
     steps:
       - uses: actions/checkout@v5
+      
+      - name: Cache jmeter
+        id: cache-jmeter
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-jmeter
+        with:
+          path: jmeter
+          key: jmeter
+
+#Having run each step separately, it's only the curl request that takes time. So including the unzip and move means I can cache the 'jmeter' folder entirely
+#STS also requires some files in the jmeter folder, but I don't want those cached so the 'touch' commands are being included in the plugins step
+#Finally move some of the report generator options into the jmeter folder to simplify the jmeter command in each execution step
 
       - name: Install JMeter
+        if: ${{ steps.cache-jmeter.outputs.cache-hit != 'true'}}
         run: |
           curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
           tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
@@ -70,7 +78,11 @@ jobs:
           java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
           chmod +x jmeter/bin/PluginsManagerCMD.sh
           sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
+          sed -i '$ajmeterPlugin.sts.loadAndRunOnStartup=true \njmeterPlugin.sts.port=9191 \njmeterPlugin.sts.daemon=false \njsr223.init.file=simple-table-server.groovy' jmeter/bin/user.properties
+          sed -i '$ajmeter.reportgenerator.report_title="MAVIS test report" \njmeter.reportgenerator.overall_granularity=10000 \njmeter.reportgenerator.sample_filter="^.*[^0-9]$"' jmeter/bin/user.properties'
+          sed -i '$ajmeterPlugin.sts.loadAndRunOnStartup=true \njmeterPlugin.sts.port=9191 \njmeterPlugin.sts.daemon=false \njsr223.init.file=simple-table-server.groovy' jmeter/bin/user.properties
 
+  
       - name: Install JMeter plugins
         if: env.jmeter_plugins != ''
         run: |
@@ -84,89 +96,30 @@ jobs:
               jmeter/bin/PluginsManagerCMD.sh install $plugin
             done
           fi
+          touch jmeter/consents.txt
+          touch jmeter/vaccinations.txt
 
       - name: Set timestamp
         id: timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-      - name: Create new cohort file
-        run: |
-          mkdir -p generate-cohort-output
-          generate_cohort_output_dir=generate-cohort-output
-          jmeter/bin/jmeter -n -t performance-tests/E2E/generate-cohort.jmx \
-              -l $generate_cohort_output_dir/samples.jtl \
-              -j $generate_cohort_output_dir/jmeter.log \
-              -e -o $generate_cohort_output_dir/upload-report \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JURN=${{inputs.URN}} \
-              -JRowCount=${{inputs.row_count}}
-
-      - name: Run file import for new file
-        run: |
-          mkdir -p import-output
-          import_output_dir=import-output
-          jmeter/bin/jmeter -n -t performance-tests/E2E/upload-cohort-data.jmx \
-              -l $import_output_dir/samples.jtl \
-              -j $import_output_dir/jmeter.log \
-              -e -o $import_output_dir/upload-report \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile="cohortnew.csv"
-
-      - name: Run Standalone Consent Journey
-        if: inputs.testToRun == 'consent-journey'
+      - name: Run Consent Journey to test STS
+        if: inputs.runDataPrep == true
         run: |
           mkdir -p consent-output
           consent_output_dir=consent-output
-          jmeter/bin/jmeter -n -t performance-tests/E2E/consent-journey.jmx \
+          jmeter/bin/jmeter -n -t performance-tests/STS/E2E/consent-journey-new-data-source.jmx \
               -l $consent_output_dir/samples.jtl \
               -j $consent_output_dir/jmeter.log \
               -e -o $consent_output_dir/consent-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JDuration=${{inputs.duration}} \
-              -JThreads=${{inputs.threads}} \
-              -JRampUp=${{inputs.ramp_up}} \
-              -JInputFile="cohortnew.csv"
-
-      - name: Run Consent Journey for data prep only
-        if: inputs.testToRun == 'nurse-journey'
-        run: |
-          mkdir -p consent-output
-          consent_output_dir=consent-output
-          jmeter/bin/jmeter -n -t performance-tests/E2E/consent-journey.jmx \
-              -l $consent_output_dir/samples.jtl \
-              -j $consent_output_dir/jmeter.log \
-              -e -o $consent_output_dir/consent-report \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JInputFile="cohortnew.csv"
-
-      - name: Run nurse journey JMeter test
-        if: inputs.testToRun == 'nurse-journey'
-        run: |
-          mkdir -p nurse-output
-          nurse_output_dir=nurse-output
-          jmeter/bin/jmeter -n -t performance-tests/E2E/nurse-journey.jmx \
-              -l $nurse_output_dir/samples.jtl \
-              -j $nurse_output_dir/jmeter.log \
-              -e -o $nurse_output_dir/report \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JDuration=${{inputs.duration}} \
-              -JThreads=${{inputs.threads}} \
-              -JRampUp=${{inputs.ramp_up}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}} \
+              -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
 
       - name: Upload consent journey JMeter output
-        if: inputs.testToRun == 'consent-journey'
+        if: inputs.runDataPrep == true
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
-          if-no-files-found: warn
-
-      - name: Upload nurse journey JMeter output
-        if: inputs.testToRun == 'nurse-journey'
-        uses: actions/upload-artifact@v4
-        with:
-          name: jmeter-nurse-journey-output-${{ env.timestamp }}
-          path: nurse-output
           if-no-files-found: warn
