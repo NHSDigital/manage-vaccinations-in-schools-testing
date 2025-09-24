@@ -123,3 +123,10 @@ jobs:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
           if-no-files-found: warn
+
+      - name: Upload jmeter
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-${{ env.timestamp }}
+          path: jmeter
+          if-no-files-found: warn          
