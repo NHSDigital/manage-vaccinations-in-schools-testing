@@ -1,9 +1,10 @@
 from .helpers import (
     add_vaccine_batch,
-    get_online_consent_url,
     log_in_as_medical_secretary,
     log_in_as_nurse,
     log_in_as_prescriber,
+    schedule_all_sessions_and_get_consent_url,
+    schedule_session_and_get_consent_url,
     set_feature_flags,
     test_data,
 )
@@ -81,7 +82,6 @@ __all__ = [
     "download_school_moves_page",
     "edit_batch_page",
     "flipper_page",
-    "get_online_consent_url",
     "healthcare_assistant",
     "imms_base_url",
     "import_records_page",
@@ -100,6 +100,8 @@ __all__ = [
     "programmes_page",
     "reset_before_each_module",
     "review_school_move_page",
+    "schedule_all_sessions_and_get_consent_url",
+    "schedule_session_and_get_consent_url",
     "school_moves_page",
     "schools",
     "sessions_page",

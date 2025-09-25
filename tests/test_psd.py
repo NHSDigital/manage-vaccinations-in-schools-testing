@@ -61,8 +61,10 @@ def setup_session_with_two_children(
 
 
 @pytest.fixture
-def flu_consent_url(get_online_consent_url, schools):
-    yield from get_online_consent_url(schools[Programme.FLU][0], Programme.FLU)
+def flu_consent_url(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
+        schools[Programme.FLU][0], Programme.FLU
+    )
 
 
 def test_delivering_vaccination_after_psd(

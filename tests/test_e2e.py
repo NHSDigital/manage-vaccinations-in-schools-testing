@@ -49,8 +49,10 @@ def setup_session_with_file_upload(
 
 
 @pytest.fixture
-def hpv_consent_url(get_online_consent_url, schools):
-    yield from get_online_consent_url(schools[Programme.HPV][0], Programme.HPV)
+def hpv_consent_url(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
+        schools[Programme.HPV][0], Programme.HPV
+    )
 
 
 @pytest.fixture
@@ -122,8 +124,8 @@ def test_recording_hpv_vaccination_e2e(
 
 
 @pytest.fixture
-def doubles_consent_url(get_online_consent_url, schools):
-    yield from get_online_consent_url(
+def doubles_consent_url(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
         schools["doubles"][0],
         Programme.MENACWY,
         Programme.TD_IPV,
@@ -210,8 +212,10 @@ def test_recording_doubles_vaccination_e2e(
 
 
 @pytest.fixture
-def flu_consent_url(get_online_consent_url, schools):
-    yield from get_online_consent_url(schools[Programme.FLU][0], Programme.FLU)
+def flu_consent_url(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
+        schools[Programme.FLU][0], Programme.FLU
+    )
 
 
 @pytest.fixture

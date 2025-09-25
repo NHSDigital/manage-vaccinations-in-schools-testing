@@ -6,17 +6,40 @@ pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
-def url(get_online_consent_url, schools):
-    yield from get_online_consent_url(schools[Programme.HPV.group][0], Programme.HPV)
+def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
+        schools[Programme.HPV.group][0],
+        Programme.HPV,
+    )
 
 
-@pytest.fixture(autouse=True)
-def start_consent(url, page, start_page):
-    page.goto(url)
+@pytest.fixture
+def url_with_all_sessions_scheduled(schedule_all_sessions_and_get_consent_url, schools):
+    yield from schedule_all_sessions_and_get_consent_url(
+        schools[Programme.HPV.group],
+        Programme.HPV,
+    )
+
+
+@pytest.fixture
+def start_consent_with_one_session_scheduled(
+    url_with_session_scheduled, page, start_page
+):
+    page.goto(url_with_session_scheduled)
     start_page.start()
 
 
-def test_consent_refused_for_hpv_vaccination(online_consent_page, schools, children):
+@pytest.fixture
+def start_consent_with_all_sessions_scheduled(
+    url_with_all_sessions_scheduled, page, start_page
+):
+    page.goto(url_with_all_sessions_scheduled)
+    start_page.start()
+
+
+def test_consent_refused_for_hpv_vaccination(
+    start_consent_with_one_session_scheduled, online_consent_page, schools, children
+):
     """
     Test: Submit an online consent form refusing HPV vaccination and
        verify confirmation.
@@ -55,6 +78,7 @@ def test_consent_refused_for_hpv_vaccination(online_consent_page, schools, child
     ids=lambda v: f"yes_to_health_questions: {v}",
 )
 def test_consent_given_for_hpv_vaccination(
+    start_consent_with_all_sessions_scheduled,
     online_consent_page,
     schools,
     change_school,
