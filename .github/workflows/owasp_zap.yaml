@@ -1,0 +1,21 @@
+name: Run full OWASP ZAP scan against QA
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan Mavis on QA with the OWASP ZAP full scan
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: 'https://qa.mavistesting.com/'
+        env:
+          ZAP_AUTH_HEADER_VALUE: 'Basic ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}'

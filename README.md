@@ -1,12 +1,14 @@
 # Testing for Manage vaccinations in schools
 
-This repository contains automated functional and performance tests for the [Manage vaccinations in schools][mavis] application.
+This repository contains automated functional, performance and security tests for the [Manage vaccinations in schools][mavis] application.
 
 [mavis]: https://github.com/nhsuk/manage-vaccinations-in-schools/
 
 [![Functional tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional_selected_device.yaml/badge.svg?branch=main)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional_selected_device.yaml?branch=main)
 
 [![Performance (end to end) tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml)
+
+[![Run full OWASP ZAP scan against QA](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp_zap.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp_zap.yaml)
 
 ## Functional tests
 
