@@ -126,7 +126,6 @@ jobs:
           jmeter/bin/jmeter -n -t performance-tests/STS/generate-cohort.jmx \
               -l $generate_cohort_output_dir/samples.jtl \
               -j $generate_cohort_output_dir/jmeter.log \
-              -e -o $generate_cohort_output_dir/upload-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JURN=${{inputs.URN}} \
               -JRowCount=${{inputs.row_count}}
@@ -139,7 +138,6 @@ jobs:
           jmeter/bin/jmeter -n -t performance-tests/STS/upload-cohort-data.jmx \
               -l $import_output_dir/samples.jtl \
               -j $import_output_dir/jmeter.log \
-              -e -o $import_output_dir/upload-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
