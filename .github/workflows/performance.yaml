@@ -155,8 +155,13 @@ jobs:
               -Jjmeter.reportgenerator.overall_granularity=10000 \
               -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JLoops=-1 \
+              -JThreads=1 \
+              -JVaccinationLoop=1 \
+              -JRampUp=1 \
+              -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
-              -JInputFile="cohortnew.csv"
+              -JURN=${{inputs.URN}}
 
       - name: Upload consent journey JMeter output
         uses: actions/upload-artifact@v4
@@ -181,7 +186,7 @@ jobs:
               -JLoops=-1 \
               -JThreads=${{inputs.threads}} \
               -JVaccinationLoop=${{inputs.vaccination_loop}} \
-              -JRampUo=${{inputs.ramp_up}} \
+              -JRampUp=${{inputs.ramp_up}} \
               -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
               -JURN=${{inputs.URN}}
