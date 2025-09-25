@@ -116,9 +116,28 @@ jobs:
               -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
 
+      - name: Run nurse Journey to test STS
+        run: |
+          mkdir -p nurse-output
+          nurse_output_dir=nurse-output
+          jmeter/bin/jmeter -n -t performance-tests/STS/nurse-journey-new-data-source.jmx \
+              -l $nurse_output_dir/samples.jtl \
+              -j $nurse_output_dir/jmeter.log \
+              -e -o $nurse_output_dir/nurse-report \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JUser=${{inputs.user}} \
+              -JInputFile="cohortnew.csv"
+
       - name: Upload consent journey JMeter output
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
+          if-no-files-found: warn
+
+      - name: Upload nurse journey JMeter output
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-nurse-journey-output-${{ env.timestamp }}
+          path: nurse-output
           if-no-files-found: warn
