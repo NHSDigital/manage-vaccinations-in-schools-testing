@@ -3,6 +3,10 @@ name: Functional tests
 on:
   workflow_dispatch:
     inputs:
+      tests:
+        description: 'Tests to run (leave blank to run all tests!)'
+        required: false
+        default: ''
       device:
         description: 'Device to test'
         required: true
@@ -75,6 +79,7 @@ jobs:
             [sandbox-beta]="https://sandbox-beta.mavistesting.com"
           )
           if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "tests=" >> $GITHUB_OUTPUT
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
             echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
             echo "programmes=HPV,MENACWY,TD_IPV,FLU" >> $GITHUB_OUTPUT
@@ -83,6 +88,7 @@ jobs:
             echo "deploy_report=false" >> $GITHUB_OUTPUT
             echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
           else
+            echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
 
             input_env="${{ github.event.inputs.environment }}"
@@ -108,6 +114,7 @@ jobs:
       - name: Run tests
         uses: ./.github/actions/run-functional-tests
         with:
+          tests: ${{ steps.set-variables.outputs.tests }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
