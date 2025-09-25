@@ -87,11 +87,11 @@ class DownloadSchoolMovesPage:
             self.confirm_button.click()
             csv_content = self.page.locator("pre").inner_text()
             self.page.go_back()
-            return pd.read_csv(StringIO(csv_content))
+            return pd.read_csv(StringIO(csv_content), dtype={"NHS_REF": str})
 
         with self.page.expect_download() as download_info:
             self.confirm_button.click()
-        return pd.read_csv(download_info.value.path())
+        return pd.read_csv(download_info.value.path(), dtype={"NHS_REF": str})
 
     def verify_school_moves_csv_contents(
         self, school_moves_csv: DataFrame, children: list[Child], school: School
@@ -104,9 +104,7 @@ class DownloadSchoolMovesPage:
             raise AssertionError(msg)
 
         for child in children:
-            row = school_moves_csv.loc[
-                school_moves_csv["NHS_REF"].astype(str) == str(child.nhs_number)
-            ]
+            row = school_moves_csv.loc[school_moves_csv["NHS_REF"] == child.nhs_number]
             if row.empty:
                 msg = f"No row found for child NHS number: {child.nhs_number}"
                 raise AssertionError(msg)
