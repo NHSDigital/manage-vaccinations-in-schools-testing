@@ -1,6 +1,8 @@
 name: "Run Tests"
 description: "Execute Functional tests"
 inputs:
+  tests:
+    default: ''
   device:
     required: true
   base_url:
@@ -10,9 +12,9 @@ inputs:
   screenshot_all_steps:
     required: true
   set_feature_flags:
-    default: "false"
+    default: 'false'
   additional_feature_flags:
-    default: ""
+    default: ''
   playwright_cache_hit:
     required: true
 
@@ -33,7 +35,7 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: uv run pytest --reruns 2 --device "${{ inputs.device }}"
+      run: uv run pytest --reruns 2 --device "${{ inputs.device }}" ${{ inputs.tests }}
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}
