@@ -35,10 +35,6 @@ on:
           - training
           - sandbox-alpha
           - sandbox-beta
-      tests:
-        description: 'Tests to run (leave blank to run all tests!)'
-        required: false
-        default: ''
       screenshot_all_steps:
         description: 'Take screenshots for all steps (in addition to failures)'
         required: true
@@ -91,7 +87,6 @@ jobs:
             echo "additional_feature_flags=" >> $GITHUB_OUTPUT
             echo "deploy_report=false" >> $GITHUB_OUTPUT
             echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
-            echo "tests=" >> $GITHUB_OUTPUT
           else
             echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
@@ -105,7 +100,6 @@ jobs:
             echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
             echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
-            echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v5
@@ -124,7 +118,6 @@ jobs:
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
-          tests: ${{ steps.set-variables.outputs.tests }}
           screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}

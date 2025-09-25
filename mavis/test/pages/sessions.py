@@ -766,9 +766,7 @@ class SessionsPage:
         at_school: bool = True,
         psd_option: bool = False,
     ) -> datetime:
-        # temporarily do not go to record vaccinations tab for psds
-        if not psd_option:
-            self.click_record_vaccinations_tab()
+        self.click_record_vaccinations_tab()
         self.search_child(vaccination_record.child)
         self.click_programme_tab(vaccination_record.programme)
 

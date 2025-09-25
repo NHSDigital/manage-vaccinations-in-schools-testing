@@ -9,8 +9,6 @@ inputs:
     required: true
   programmes_enabled:
     required: true
-  tests:
-    default: ''
   screenshot_all_steps:
     required: true
   set_feature_flags:
