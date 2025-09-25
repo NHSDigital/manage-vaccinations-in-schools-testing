@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 from playwright.sync_api import Page, expect
@@ -87,6 +88,10 @@ class ChildrenPage:
             "button",
             name="Invite to community clinic",
         )
+        self.vaccination_details_heading = self.page.get_by_role(
+            "heading",
+            name="Vaccination details",
+        )
 
     def verify_headers(self) -> None:
         expect(self.children_heading).to_be_visible()
@@ -151,16 +156,27 @@ class ChildrenPage:
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
+        vaccination_details_locator = self.vaccinations_card_row.filter(
+            has_text=str(school)
+        ).get_by_role(
+            "link",
+        )
+
         self.page.wait_for_load_state()
-        with self.page.expect_navigation():
-            self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
-                "link",
-            ).click()
+
+        # clicking this link too quickly with non-chromium browsers
+        # can cause the page to refresh instead of navigating to
+        # the vaccination details page
+        time.sleep(1)
+
+        with self.page.expect_navigation(url="**/vaccination-records/**"):
+            vaccination_details_locator.click()
 
     @step("Click on Child record")
     def click_child_record(self) -> None:
         self.child_record_link.click()
         self.child_record_link.get_by_role("strong").wait_for()
+        self.page.wait_for_load_state()
 
     @step("Click on Change NHS number")
     def click_change_nhs_no(self) -> None:
@@ -195,7 +211,12 @@ class ChildrenPage:
         detail_key = self.page.locator(".nhsuk-summary-list__key", has_text=key)
         detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
+        self.check_vaccination_details_heading_appears()
         expect(detail_value).to_contain_text(value)
+
+    @step("Check Vaccination details heading appears")
+    def check_vaccination_details_heading_appears(self) -> None:
+        expect(self.vaccination_details_heading).to_be_visible()
 
     def expect_text_in_alert(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)

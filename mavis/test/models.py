@@ -296,6 +296,28 @@ class ReportFormat(StrEnum):
         return report_headers[self]
 
 
+SCHOOL_MOVE_HEADERS = {
+    "NHS_REF",
+    "SURNAME",
+    "FORENAME",
+    "GENDER",
+    "DOB",
+    "ADDRESS1",
+    "ADDRESS2",
+    "ADDRESS3",
+    "TOWN",
+    "POSTCODE",
+    "COUNTY",
+    "ETHNIC_OR",
+    "ETHNIC_DESCRIPTION",
+    "NATIONAL_URN_NO",
+    "BASE_NAME",
+    "STARTDATE",
+    "STUD_ID",
+    "DES_NUMBER",
+}
+
+
 class Clinic(NamedTuple):
     name: str
 

@@ -25,7 +25,7 @@ from mavis.test.models import (
     Team,
     User,
 )
-from mavis.test.utils import get_date_of_birth_for_year_group
+from mavis.test.utils import get_date_of_birth_for_year_group, normalize_postcode
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +168,7 @@ def children(year_groups) -> dict[str, list[Child]]:
                     onboarding_faker.secondary_address(),
                     onboarding_faker.street_name(),
                     onboarding_faker.city(),
-                    onboarding_faker.postcode(),
+                    normalize_postcode(onboarding_faker.postcode()),
                 ),
                 date_of_birth=get_date_of_birth_for_year_group(year_group),
                 year_group=year_group,

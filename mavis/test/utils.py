@@ -108,6 +108,39 @@ def normalize_whitespace(string: str) -> str:
     return re.sub(r"\s+", " ", string).strip()
 
 
+POSTCODE_PATTERN = re.compile(
+    r"""
+    \A
+    ([A-PR-UWYZ01][A-HJ-Z0]?)           # area
+    ([0-9IO][0-9A-HJKMNPR-YIO]?)        # district
+    \s*([0-9IO])                        # sector
+    ([ABD-HJLNPQ-Z]{2})                 # unit
+    \Z
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+
+
+def normalize_postcode(postcode: str) -> str:
+    match = POSTCODE_PATTERN.match(postcode.replace(" ", ""))
+    if not match:
+        msg = f"Invalid postcode format: {postcode}"
+        raise ValueError(msg)
+
+    area = match.group(1)
+    district = match.group(2)
+    sector = match.group(3)
+    unit = match.group(4)
+
+    # Replace 0/1 with O/I in area
+    area = area.replace("0", "O").replace("1", "I")
+
+    # Replace O/I with 0/1 in district
+    district = district.replace("O", "0").replace("I", "1")
+
+    return f"{area}{district} {sector}{unit}"
+
+
 def reload_until_element_is_visible(
     page: Page, tag: Locator, seconds: int = DEFAULT_TIMEOUT_SECONDS
 ) -> None:

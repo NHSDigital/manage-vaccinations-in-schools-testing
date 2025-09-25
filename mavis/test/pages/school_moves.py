@@ -2,10 +2,11 @@ from datetime import date
 from io import StringIO
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from playwright.sync_api import Locator, Page
 
 from mavis.test.annotations import step
+from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
 
 
 def get_child_full_name(first_name: str, last_name: str) -> str:
@@ -72,7 +73,7 @@ class DownloadSchoolMovesPage:
 
         self.continue_button.click()
 
-    def confirm(self) -> DataFrame:
+    def confirm_and_get_school_moves_csv(self) -> DataFrame:
         browser = getattr(self.page.context, "browser", None)
         browser_type_name = getattr(
             getattr(browser, "browser_type", None),
@@ -87,9 +88,51 @@ class DownloadSchoolMovesPage:
             csv_content = self.page.locator("pre").inner_text()
             self.page.go_back()
             return pd.read_csv(StringIO(csv_content))
+
         with self.page.expect_download() as download_info:
             self.confirm_button.click()
         return pd.read_csv(download_info.value.path())
+
+    def verify_school_moves_csv_contents(
+        self, school_moves_csv: DataFrame, children: list[Child], school: School
+    ) -> None:
+        actual_headers = set(school_moves_csv.columns)
+        expected_headers = SCHOOL_MOVE_HEADERS
+
+        if actual_headers != expected_headers:
+            msg = f"Expected CSV headers: {expected_headers}, Actual: {actual_headers}"
+            raise AssertionError(msg)
+
+        for child in children:
+            row = school_moves_csv.loc[
+                school_moves_csv["NHS_REF"].astype(str) == str(child.nhs_number)
+            ]
+            if row.empty:
+                msg = f"No row found for child NHS number: {child.nhs_number}"
+                raise AssertionError(msg)
+
+            row_data = row.iloc[0]
+
+            self._verify_row_for_child(row_data, child, school)
+
+    def _verify_row_for_child(
+        self, row_data: Series, child: Child, school: School
+    ) -> None:
+        fields_to_check = [
+            ("FORENAME", child.first_name),
+            ("SURNAME", child.last_name),
+            ("DOB", child.date_of_birth.strftime("%Y-%m-%d")),
+            ("ADDRESS1", child.address[0]),
+            ("ADDRESS2", child.address[1]),
+            ("TOWN", child.address[2]),
+            ("POSTCODE", child.address[3]),
+            ("NATIONAL_URN_NO", school.urn),
+            ("BASE_NAME", school.name),
+        ]
+
+        for col, expected in fields_to_check:
+            actual = str(row_data[col])
+            assert actual == expected, f"{col}: expected '{expected}', got '{actual}'"
 
 
 class ReviewSchoolMovePage:
