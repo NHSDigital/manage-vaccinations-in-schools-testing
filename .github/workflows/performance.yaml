@@ -7,39 +7,53 @@ on:
 
   workflow_dispatch:
     inputs:
-      testToRun:
-        description: "Test to run"
-        type: choice
-        options:
-        - consent-journey
-        - nurse-journey
+      runDataPrep:
+        description: "Run data prep"
+        required: true
+        type: boolean
+        default: true
+      runNurse:
+        description: "Run the nurse journey"
+        required: true
+        type: boolean
+        default: true
       URN:
         description: "Required: what URN to run the test against."
-        required: false
+        required: true
         type: string
       duration:
-        description: "Optional (default 3600) Duration of selected test in seconds. This will include ramp-up."
+        description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
-        type: number
+        type: string
+        default: '3600'
       threads:
-        description: "Optional (default 70) Threads to run."
+        description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
         required: false
-        type: number
+        type: string
+        default: '70'
       ramp_up:
         description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
         required: false
-        type: number
+        type: string
+        default: '900'
       vaccination_loop:
-        description: "Optional (default 20) Vaccination loop (nurse journey only). The number of vaccinations each nurse will perform before logging and back in again."
+        description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
         required: false
-        type: number
+        type: string
+        default: '20'
       row_count:
         description: "Optional (default 1000) number of rows in the cohort file."
         required: false
         type: string
+        default: '1000'
+      user:
+        description: "Optional (default Nurse Jackie) user."
+        required: true
+        type: string
+        default: 'nurse.jackie@example.org'
 
 jobs:
-  STS_based_test:
+  nurse_journey_performance_test:
     runs-on: ubuntu-latest
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -104,26 +118,44 @@ jobs:
         id: timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-      - name: Run Consent Journey to test STS
+      - name: Create new cohort file
+        if: inputs.runDataPrep == true
         run: |
-          mkdir -p consent-output
-          consent_output_dir=consent-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/consent-journey-new-data-source.jmx \
-              -l $consent_output_dir/samples.jtl \
-              -j $consent_output_dir/jmeter.log \
-              -e -o $consent_output_dir/consent-report \
+          mkdir -p generate-cohort-output
+          generate_cohort_output_dir=generate-cohort-output
+          jmeter/bin/jmeter -n -t performance-tests/STS/generate-cohort.jmx \
+              -l $generate_cohort_output_dir/samples.jtl \
+              -j $generate_cohort_output_dir/jmeter.log \
+              -e -o $generate_cohort_output_dir/upload-report \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JURN=${{inputs.URN}} \
+              -JRowCount=${{inputs.row_count}}
+
+      - name: Run file import for new file
+        if: inputs.runDataPrep == true
+        run: |
+          mkdir -p import-output
+          import_output_dir=import-output
+          jmeter/bin/jmeter -n -t performance-tests/STS/upload-cohort-data.jmx \
+              -l $import_output_dir/samples.jtl \
+              -j $import_output_dir/jmeter.log \
+              -e -o $import_output_dir/upload-report \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
 
-      - name: Run nurse Journey to test STS
+      - name: Run Consent Journey
+        if: inputs.runDataPrep == true
         run: |
-          mkdir -p nurse-output
-          nurse_output_dir=nurse-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/nurse-journey-new-data-source.jmx \
-              -l $nurse_output_dir/samples.jtl \
-              -j $nurse_output_dir/jmeter.log \
-              -e -o $nurse_output_dir/nurse-report \
+          mkdir -p consent-output
+          consent_output_dir=consent-output
+          jmeter/bin/jmeter -n -t performance-tests/STS/consent-journey.jmx \
+              -l $consent_output_dir/samples.jtl \
+              -j $consent_output_dir/jmeter.log \
+              -e -o $consent_output_dir/consent-report \
+              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+              -Jjmeter.reportgenerator.overall_granularity=10000 \
+              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JUser=${{inputs.user}} \
               -JInputFile="cohortnew.csv"
@@ -134,6 +166,27 @@ jobs:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
           if-no-files-found: warn
+
+      - name: Run nurse Journey
+        if: inputs.runNurse == true
+        run: |
+          mkdir -p nurse-output
+          nurse_output_dir=nurse-output
+          jmeter/bin/jmeter -n -t performance-tests/STS/nurse-journey.jmx \
+              -l $nurse_output_dir/samples.jtl \
+              -j $nurse_output_dir/jmeter.log \
+              -e -o $nurse_output_dir/report \
+              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+              -Jjmeter.reportgenerator.overall_granularity=10000 \
+              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
+              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
+              -JLoops=-1 \
+              -JThreads=${{inputs.threads}} \
+              -JVaccinationLoop=${{inputs.vaccination_loop}} \
+              -JRampUo=${{inputs.ramp_up}} \
+              -JDuration=${{inputs.duration}} \
+              -JUser=${{inputs.user}} \
+              -JURN=${{inputs.URN}}
 
       - name: Upload nurse journey JMeter output
         uses: actions/upload-artifact@v4
