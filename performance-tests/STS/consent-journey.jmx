@@ -130,7 +130,7 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Prep">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Prep" enabled="true">
           <stringProp name="TestPlan.comments">Login, get all sessions for a particular URN, set them all in progress</stringProp>
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
@@ -396,11 +396,11 @@ log.info(&quot;session ID is &quot; + vars.get(&quot;SessionId&quot;))</stringPr
             </JSR223PreProcessor>
             <hashTree/>
           </hashTree>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="sessionLoop">
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="sessionLoop" enabled="true">
             <stringProp name="LoopController.loops">3</stringProp>
           </LoopController>
           <hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate sessionID Groovy">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate sessionID Groovy" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -758,7 +758,7 @@ vars.put(&quot;postbody&quot;,postbody);
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress">
+            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress" enabled="true">
               <boolProp name="TransactionController.includeTimers">false</boolProp>
             </TransactionController>
             <hashTree>
@@ -884,11 +884,11 @@ vars.put(&quot;postbody&quot;,postbody);
             </hashTree>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Get offline file">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Get offline file" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset consent list">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset consent list" enabled="true">
             <stringProp name="HTTPSampler.domain">localhost</stringProp>
             <stringProp name="HTTPSampler.port">9191</stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -902,7 +902,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load consent file">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load consent file" enabled="true">
             <stringProp name="HTTPSampler.domain">localhost</stringProp>
             <stringProp name="HTTPSampler.port">9191</stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -916,7 +916,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -944,7 +944,7 @@ switch(Threadnum%3){
 log.info(&quot;For thread &quot; + Threadnum.toString() + &quot; session ID is &quot; + vars.get(&quot;SessionId&quot;));</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session" enabled="true">
             <stringProp name="HTTPSampler.path">sessions/${SessionId}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -955,7 +955,7 @@ log.info(&quot;For thread &quot; + Threadnum.toString() + &quot; session ID is &
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get offline file">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get offline file" enabled="true">
             <stringProp name="HTTPSampler.path">sessions/${SessionId}.xlsx</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -966,7 +966,7 @@ log.info(&quot;For thread &quot; + Threadnum.toString() + &quot; session ID is &
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -1028,7 +1028,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset consent list">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Reset consent list" enabled="true">
             <stringProp name="HTTPSampler.domain">localhost</stringProp>
             <stringProp name="HTTPSampler.port">9191</stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -1042,13 +1042,13 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller">
+          <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
             <stringProp name="ForeachController.inputVal">consent</stringProp>
             <stringProp name="ForeachController.returnVal">currentConsent</stringProp>
             <boolProp name="ForeachController.useSeparator">true</boolProp>
           </ForeachController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load STS">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load STS" enabled="true">
               <stringProp name="HTTPSampler.domain">localhost</stringProp>
               <stringProp name="HTTPSampler.port">9191</stringProp>
               <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -1116,7 +1116,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -1129,7 +1129,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Next Patient from STS" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Next Patient from STS">
           <stringProp name="TestPlan.comments">While there is only one patient list for consents, I&apos;m applying consent for all programmes and ignoring the programme value in the STS file</stringProp>
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
@@ -1224,14 +1224,40 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Result">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">Result</stringProp>
+            <stringProp name="RegexExtractor.regex">&lt;html&gt;&lt;title&gt;(.*?)&lt;/title&gt; </stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default">NoOutcome</stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+          </RegexExtractor>
+          <hashTree/>
         </hashTree>
-        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Samplerx" enabled="true">
-          <boolProp name="displayJMeterProperties">true</boolProp>
-          <boolProp name="displayJMeterVariables">true</boolProp>
-          <boolProp name="displaySystemProperties">false</boolProp>
-        </DebugSampler>
-        <hashTree/>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Submit consents" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="End user if no more patients">
+          <stringProp name="IfController.condition">${__jexl3(&quot;${Result}&quot; == &quot;KO&quot;)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Stop on no data">
+            <intProp name="ActionProcessor.action">0</intProp>
+            <intProp name="ActionProcessor.target">0</intProp>
+            <stringProp name="ActionProcessor.duration">0</stringProp>
+          </TestAction>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Search failed" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">log.error(&quot;Fuzzy search failed&quot;)</stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+            </JSR223PreProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Submit consents">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -1240,7 +1266,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server">
+      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server" enabled="true">
         <stringProp name="HttpSimpleTableControlGui.port">9191</stringProp>
         <boolProp name="HttpSimpleTableControlGui.timestamp">true</boolProp>
         <stringProp name="HttpSimpleTableControlGui.dir">C:\apache-jmeter-5.6.3\bin</stringProp>
