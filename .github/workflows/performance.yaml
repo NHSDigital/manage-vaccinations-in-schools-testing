@@ -156,9 +156,8 @@ jobs:
               -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JLoops=-1 \
-              -JThreads=1 \
-              -JVaccinationLoop=1 \
-              -JRampUp=1 \
+              -JThreads=5 \
+              -JRampUp=60 \
               -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
               -JURN=${{inputs.URN}}
@@ -197,3 +196,17 @@ jobs:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
           path: nurse-output
           if-no-files-found: warn
+
+      - name: Publish report to GH Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: nurse-output/report
+          destination_dir: JMeter/report-${{ env.timestamp }}
+          keep_files: true
+
+      - name: Set Job Summary
+        run: |
+          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> $GITHUB_STEP_SUMMARY
+          
