@@ -3,7 +3,7 @@ import os
 import pytest
 
 from mavis.test.data import TestData
-from mavis.test.models import Vaccine
+from mavis.test.models import Programme, School, Vaccine
 from mavis.test.utils import get_offset_date
 
 
@@ -36,7 +36,7 @@ def add_vaccine_batch(add_batch_page, vaccines_page):
 
 
 @pytest.fixture
-def get_online_consent_url(
+def schedule_session_and_get_consent_url(
     set_feature_flags,
     nurse,
     team,
@@ -44,7 +44,7 @@ def get_online_consent_url(
     log_in_page,
     sessions_page,
 ):
-    def wrapper(school, *programmes):
+    def wrapper(school: School, *programmes: Programme):
         try:
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
@@ -59,6 +59,51 @@ def get_online_consent_url(
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             dashboard_page.click_sessions()
             sessions_page.delete_all_sessions(school)
+            log_in_page.log_out()
+
+    return wrapper
+
+
+@pytest.fixture
+def schedule_all_sessions_and_get_consent_url(
+    set_feature_flags,
+    nurse,
+    team,
+    dashboard_page,
+    log_in_page,
+    sessions_page,
+):
+    def wrapper(schools: list[School], *programmes: Programme):
+        try:
+            url = None
+
+            log_in_page.navigate()
+            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+
+            for idx, school in enumerate(schools):
+                dashboard_page.navigate()
+                dashboard_page.click_sessions()
+                sessions_page.click_session_for_programme_group(
+                    school, programmes[0].group
+                )
+                sessions_page.schedule_a_valid_session()
+                if idx == 0:
+                    url = sessions_page.get_online_consent_url(*programmes)
+
+            log_in_page.log_out()
+
+            if url is None:
+                msg = "No schools provided"
+                raise ValueError(msg)
+
+            yield url
+        finally:
+            log_in_page.navigate()
+            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+            for school in schools:
+                dashboard_page.navigate()
+                dashboard_page.click_sessions()
+                sessions_page.delete_all_sessions(school)
             log_in_page.log_out()
 
     return wrapper

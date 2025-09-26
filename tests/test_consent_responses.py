@@ -13,8 +13,10 @@ def pds_child():
 
 
 @pytest.fixture
-def online_consent_url(get_online_consent_url, schools):
-    yield from get_online_consent_url(schools[Programme.HPV.group][0], Programme.HPV)
+def online_consent_url(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
+        schools[Programme.HPV.group][0], Programme.HPV
+    )
 
 
 @pytest.fixture
