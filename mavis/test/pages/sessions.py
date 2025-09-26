@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import pandas as pd
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
@@ -570,6 +571,22 @@ class SessionsPage:
         download.save_as(_file_path)
 
         return _file_path
+
+    @step("Download the offline recording excel and verify consent message pattern")
+    def verify_consent_message_in_excel(self) -> None:
+        _file_path = self.download_offline_recording_excel()
+        _data_frame = pd.read_excel(_file_path, sheet_name="Vaccinations", dtype=str)
+        _consent_details_pattern = (
+            r"On \d{4}-\d{2}-\d{2} at \d{2}:\d{2} (GIVEN|REFUSED) by "
+            r"[A-Z][a-z]+(?: [A-Z][a-z]+)*"
+        )
+        invalid_found = _data_frame["CONSENT_DETAILS"].apply(
+            lambda x: pd.notna(x) and len(re.findall(_consent_details_pattern, x)) == 0
+        )
+        # Raise error if any invalid entry is found
+        if invalid_found.any():
+            msg = "CONSENT_DETAILS has entries in an invalid format."
+            raise ValueError(msg)
 
     @step("Click on Download the {1} consent form (PDF)")
     def download_consent_form(self, programme: Programme) -> Path:
