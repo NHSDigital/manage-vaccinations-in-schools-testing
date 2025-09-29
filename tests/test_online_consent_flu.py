@@ -162,6 +162,7 @@ def test_consent_given_for_flu_vaccination(
 
 
 @issue("MAV-1234")
+@issue("MAV-2025")
 @pytest.mark.parametrize(
     "consents",
     [
@@ -251,3 +252,9 @@ def test_flu_consent_method_displayed_correctly(
 
     sessions_page.search_for(str(child))
     sessions_page.verify_child_shows_correct_flu_consent_method(child, consents[2])
+
+    # Verify in session download
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
+    sessions_page.verify_consent_message_in_excel()
