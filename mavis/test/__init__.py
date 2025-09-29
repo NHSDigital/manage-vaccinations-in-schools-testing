@@ -1,4 +1,5 @@
 from .fixtures import (
+    accessibility_helper,
     add_batch_page,
     add_vaccine_batch,
     archive_batch_page,
@@ -57,6 +58,7 @@ from .fixtures import (
 from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
 
 __all__ = [
+    "accessibility_helper",
     "add_batch_page",
     "add_vaccine_batch",
     "archive_batch_page",

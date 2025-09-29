@@ -79,3 +79,16 @@ def test_login_with_valid_credentials(
     team_page.check_team_email_is_visible(team)
 
     log_in_page.log_out()
+
+
+@pytest.mark.accessibility
+def test_accessibility(accessibility_helper):
+    """
+    Test: Verify that the log in page passes accessibility checks.
+    Steps:
+    1. Navigate to the log in page.
+    2. Run accessibility checks.
+    Verification:
+    - No accessibility issues are found on the log in page.
+    """
+    accessibility_helper.check_accessibility()

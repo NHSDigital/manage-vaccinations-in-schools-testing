@@ -1,7 +1,9 @@
 import os
 
 import pytest
+from playwright.sync_api import Page
 
+from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.data import TestData
 from mavis.test.models import Programme, School, Vaccine
 from mavis.test.utils import get_offset_date
@@ -141,3 +143,8 @@ def log_in_as_prescriber(set_feature_flags, prescriber, team, log_in_page):
 @pytest.fixture
 def test_data(organisation, schools, nurse, children, clinics, year_groups):
     return TestData(organisation, schools, nurse, children, clinics, year_groups)
+
+
+@pytest.fixture
+def accessibility_helper(page: Page) -> AccessibilityHelper:
+    return AccessibilityHelper(page)

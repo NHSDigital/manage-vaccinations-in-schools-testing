@@ -1,4 +1,5 @@
 from .helpers import (
+    accessibility_helper,
     add_vaccine_batch,
     log_in_as_medical_secretary,
     log_in_as_nurse,
@@ -62,6 +63,7 @@ from .playwright import (
 )
 
 __all__ = [
+    "accessibility_helper",
     "add_batch_page",
     "add_vaccine_batch",
     "archive_batch_page",
