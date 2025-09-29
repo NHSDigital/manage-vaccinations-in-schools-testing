@@ -78,7 +78,7 @@ def test_consent_refused_for_hpv_vaccination(
     ids=lambda v: f"yes_to_health_questions: {v}",
 )
 def test_consent_given_for_hpv_vaccination(
-    start_consent_with_all_sessions_scheduled,
+    start_consent_with_one_session_scheduled,
     online_consent_page,
     schools,
     change_school,
