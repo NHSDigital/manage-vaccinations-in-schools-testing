@@ -199,3 +199,30 @@ def test_merge_child_records_does_not_crash(setup_child_merge, children_page, ch
     children_page.click_its_a_duplicate(child2.nhs_number)
     children_page.click_archive_record()
     children_page.expect_text_in_alert("This record has been archived")
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    setup_fixed_child,
+    children_page,
+    accessibility_helper,
+    children,
+):
+    """
+    Test: Verify that the children page passes accessibility checks.
+    Steps:
+    1. Navigate to the children page.
+    2. Run accessibility checks using the accessibility helper.
+    Verification:
+    - No accessibility violations are found on the children page.
+    """
+    children_page.click_advanced_filters()
+    accessibility_helper.check_accessibility()
+
+    child = children[Programme.HPV][0]
+    children_page.search_with_all_filters_for_child_name(str(child))
+    children_page.click_record_for_child(child)
+    accessibility_helper.check_accessibility()
+
+    children_page.click_activity_log()
+    accessibility_helper.check_accessibility()
