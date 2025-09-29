@@ -100,3 +100,32 @@ def test_child_list_file_upload_whitespace_normalization(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    log_in_as_nurse,
+    accessibility_helper,
+    dashboard_page,
+    import_records_page,
+):
+    """
+    Test: Verify that the import records page passes accessibility checks.
+    Steps:
+    1. Navigate to child record import page.
+    2. Run accessibility checks.
+    Verification:
+    - No accessibility violations are found on the import records page.
+    """
+    dashboard_page.click_import_records()
+    accessibility_helper.check_accessibility()
+
+    import_records_page.click_import_records()
+    accessibility_helper.check_accessibility()
+
+    import_records_page.select_child_records()
+    import_records_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    import_records_page.upload_and_verify_output(ChildFileMapping.POSITIVE)
+    accessibility_helper.check_accessibility()
