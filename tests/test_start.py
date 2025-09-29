@@ -44,3 +44,17 @@ def test_service_guidance_link(start_page):
     """
     start_page.navigate()
     start_page.check_service_guidance_tab_opens()
+
+
+@pytest.mark.accessibility
+def test_accessibility(start_page, accessibility_helper):
+    """
+    Test: Verify that the start page passes accessibility checks.
+    Steps:
+    1. Navigate to the start page.
+    2. Run accessibility checks using the accessibility helper.
+    Verification:
+    - No accessibility violations are found on the start page.
+    """
+    start_page.navigate()
+    accessibility_helper.check_accessibility()

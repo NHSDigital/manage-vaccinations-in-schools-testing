@@ -108,3 +108,41 @@ def test_verify_flu_not_available(onboarding, vaccines_page):
     """
     programmes = onboarding.programmes
     vaccines_page.verify_flu_not_available(programmes)
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    vaccines_page,
+    add_batch_page,
+    edit_batch_page,
+    archive_batch_page,
+    accessibility_helper,
+):
+    """
+    Test: Verify that the vaccines page passes accessibility checks.
+    Steps:
+    1. Navigate to the vaccines page.
+    2. Run accessibility checks using the accessibility helper.
+    Verification:
+    - No accessibility violations are found on the vaccines page.
+    """
+
+    batch_name = "ACCESS123"
+
+    vaccines_page.click_add_batch(Vaccine.GARDASIL_9)
+    accessibility_helper.check_accessibility()
+
+    add_batch_page.fill_name(batch_name)
+    add_batch_page.fill_expiry_date(get_offset_date(1))
+    add_batch_page.confirm()
+    accessibility_helper.check_accessibility()
+
+    vaccines_page.click_change_batch(Vaccine.GARDASIL_9, batch_name)
+    accessibility_helper.check_accessibility()
+
+    edit_batch_page.fill_expiry_date(get_offset_date(2))
+    edit_batch_page.confirm()
+    vaccines_page.click_archive_batch(Vaccine.GARDASIL_9, batch_name)
+
+    accessibility_helper.check_accessibility()
+    archive_batch_page.confirm()

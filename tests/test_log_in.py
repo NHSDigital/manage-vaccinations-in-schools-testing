@@ -79,3 +79,25 @@ def test_login_with_valid_credentials(
     team_page.check_team_email_is_visible(team)
 
     log_in_page.log_out()
+
+
+@pytest.mark.accessibility
+def test_accessibility(accessibility_helper, dashboard_page, log_in_page, users, team):
+    """
+    Test: Verify that the log in, team and dashboard page pass accessibility checks.
+    Steps:
+    1. Navigate to the log in page.
+    2. Run accessibility checks.
+    3. Log in as a nurse and choose team if necessary.
+    4. Run accessibility checks on the dashboard page.
+    5. Navigate to the team page and run accessibility checks.
+    Verification:
+    - No accessibility issues are found on these pages.
+    """
+    accessibility_helper.check_accessibility()
+
+    log_in_page.log_in_and_choose_team_if_necessary(users["nurse"], team)
+    accessibility_helper.check_accessibility()
+
+    dashboard_page.click_your_team()
+    accessibility_helper.check_accessibility()
