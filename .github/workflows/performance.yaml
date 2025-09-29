@@ -7,8 +7,13 @@ on:
 
   workflow_dispatch:
     inputs:
-      runDataPrep:
-        description: "Run data prep"
+      runImport:
+        description: "Create and import a cohort (not needed if there are already enough patients)"
+        required: true
+        type: boolean
+        default: true
+      runConsent:
+        description: "Run consent journey"
         required: true
         type: boolean
         default: true
@@ -91,8 +96,6 @@ jobs:
           curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
           java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
           chmod +x jmeter/bin/PluginsManagerCMD.sh
-
-
   
       - name: Install JMeter plugins
         if: env.jmeter_plugins != ''
@@ -119,7 +122,7 @@ jobs:
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Create new cohort file
-        if: inputs.runDataPrep == true
+        if: inputs.runImport == true
         run: |
           mkdir -p generate-cohort-output
           generate_cohort_output_dir=generate-cohort-output
@@ -131,7 +134,7 @@ jobs:
               -JRowCount=${{inputs.row_count}}
 
       - name: Run file import for new file
-        if: inputs.runDataPrep == true
+        if: inputs.runImport == true
         run: |
           mkdir -p import-output
           import_output_dir=import-output
@@ -143,7 +146,7 @@ jobs:
               -JInputFile="cohortnew.csv"
 
       - name: Run Consent Journey
-        if: inputs.runDataPrep == true
+        if: inputs.runConsent == true
         run: |
           mkdir -p consent-output
           consent_output_dir=consent-output
