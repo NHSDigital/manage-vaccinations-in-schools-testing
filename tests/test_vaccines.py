@@ -126,20 +126,20 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the vaccines page.
     """
-    accessibility_helper.check_accessibility()
 
-    batch_name = "ABC123"
+    batch_name = "ACCESS123"
 
     vaccines_page.click_add_batch(Vaccine.GARDASIL_9)
-    vaccines_page.page.pause()
     accessibility_helper.check_accessibility()
 
     add_batch_page.fill_name(batch_name)
     add_batch_page.fill_expiry_date(get_offset_date(1))
     add_batch_page.confirm()
-    vaccines_page.click_change_batch(Vaccine.GARDASIL_9, batch_name)
-
     accessibility_helper.check_accessibility()
+
+    vaccines_page.click_change_batch(Vaccine.GARDASIL_9, batch_name)
+    accessibility_helper.check_accessibility()
+
     edit_batch_page.fill_expiry_date(get_offset_date(2))
     edit_batch_page.confirm()
     vaccines_page.click_archive_batch(Vaccine.GARDASIL_9, batch_name)
