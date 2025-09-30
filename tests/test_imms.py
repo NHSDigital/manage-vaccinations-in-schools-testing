@@ -2,7 +2,13 @@ import pytest
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.imms_api import ImmsApiHelper
-from mavis.test.models import DeliverySite, Programme, VaccinationRecord, Vaccine
+from mavis.test.models import (
+    ConsentMethod,
+    DeliverySite,
+    Programme,
+    VaccinationRecord,
+    Vaccine,
+)
 
 
 @pytest.fixture(scope="session")
@@ -55,9 +61,9 @@ def record_hpv(
 
     children_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0],
-    )
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_positive_consent()
     sessions_page.register_child_as_attending(child)
     vaccination_time = sessions_page.record_vaccination_for_child(
         VaccinationRecord(

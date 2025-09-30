@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
-from mavis.test.models import Programme
+from mavis.test.models import ConsentMethod, Programme
 from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT
 
 pytestmark = pytest.mark.consent
@@ -138,11 +138,17 @@ def test_invalid_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_no_response(child.parents[0])
+
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_no_response()
+
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_refuse_consent(child.parents[1])
+    verbal_consent_page.select_parent(child.parents[1])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_refuse_consent()
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
@@ -190,9 +196,9 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_written_positive(
-        child.parents[0], yes_to_health_questions=True
-    )
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    verbal_consent_page.record_parent_positive_consent(yes_to_health_questions=True)
     sessions_page.select_consent_given()
 
     sessions_page.page.pause()
@@ -200,7 +206,11 @@ def test_parent_provides_consent_twice(
     verbal_consent_page.update_triage_outcome_positive()
 
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.parent_verbal_refuse_consent(child.parents[0])
+
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_refuse_consent()
+
     sessions_page.select_consent_refused()
 
     sessions_page.click_child(child)
@@ -246,14 +256,18 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0],
-        change_phone=False,
-    )
-    sessions_page.select_consent_given()
 
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_positive_consent()
+
+    sessions_page.select_consent_given()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_refuse_consent(child.parents[1])
+
+    verbal_consent_page.select_parent(child.parents[1])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_refuse_consent()
+
     sessions_page.select_conflicting_consent()
 
     sessions_page.click_child(child)
@@ -263,8 +277,11 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_assess_gillick_competence()
     verbal_consent_page.add_gillick_competence(is_competent=True)
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.child_consent_verbal_positive()
-    sessions_page.expect_alert_text(f"Consent recorded for {child!s}")
+
+    verbal_consent_page.select_gillick_competent_child()
+    verbal_consent_page.record_child_positive_consent()
+    verbal_consent_page.expect_text_in_alert(f"Consent recorded for {child!s}")
+
     sessions_page.select_consent_given()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
