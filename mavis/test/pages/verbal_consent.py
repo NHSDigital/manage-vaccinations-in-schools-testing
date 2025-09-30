@@ -112,17 +112,21 @@ class VerbalConsentPage:
     def click_radio_button(self, name: str) -> None:
         self.page.get_by_role("radio", name=name).check()
 
-    def set_all_health_questions_to_no(
+    def answer_all_health_questions(
         self,
         programme: Programme,
         consent_option: ConsentOption = ConsentOption.INJECTION,
+        answer: str = "No",
     ) -> None:
         for locator_text in programme.health_questions(consent_option):
-            self.select_no_for_health_question(locator_text)
+            self.select_answer_for_health_question(locator_text, answer)
 
-    @step("Select No for health question {1}")
-    def select_no_for_health_question(self, question: str) -> None:
-        self.page.get_by_role("group", name=question).get_by_label("No").check()
+    @step("Select {2} for health question {1}")
+    def select_answer_for_health_question(self, question: str, answer: str) -> None:
+        question_locator = self.page.get_by_role("group", name=question)
+        question_locator.get_by_label(answer).check()
+        if answer == "Yes":
+            question_locator.get_by_role("textbox").fill("Some details")
 
     @step("Select Yes")
     def select_yes(self) -> None:
@@ -203,7 +207,7 @@ class VerbalConsentPage:
         self.mobile_only_text_checkbox.check()
         self.click_continue()
 
-    def parent_verbal_positive(
+    def parent_verbal_positive(  # noqa: PLR0913
         self,
         parent: Parent,
         programme: Programme = Programme.HPV,
@@ -211,11 +215,15 @@ class VerbalConsentPage:
         *,
         change_phone: bool = False,
         psd_option: bool | None = None,
+        yes_to_health_questions: bool = False,
     ) -> None:
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.IN_PERSON)
         self._process_consent_confirmation(
-            programme=programme, consent_option=consent_option, psd_option=psd_option
+            programme=programme,
+            consent_option=consent_option,
+            psd_option=psd_option,
+            yes_to_health_questions=yes_to_health_questions,
         )
         if change_phone:
             self.click_add_phone_number()
@@ -243,19 +251,15 @@ class VerbalConsentPage:
         consent_option: ConsentOption = ConsentOption.INJECTION,
         *,
         psd_option: bool | None = None,
+        yes_to_health_questions: bool = False,
     ) -> None:
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PAPER)
         self._process_consent_confirmation(
-            consent_option=consent_option, psd_option=psd_option
+            consent_option=consent_option,
+            psd_option=psd_option,
+            yes_to_health_questions=yes_to_health_questions,
         )
-        self.click_add_phone_number()
-        self.fill_phone_number_and_receive_text_alerts("7700900000")
-        self.click_continue()
-        self.click_continue()
-        self.click_continue()
-        self.click_continue()
-        self.click_continue()
         self.click_confirm()
 
     def update_triage_outcome_positive(self) -> None:
@@ -269,11 +273,14 @@ class VerbalConsentPage:
         consent_option: ConsentOption = ConsentOption.INJECTION,
         *,
         psd_option: bool | None = None,
+        yes_to_health_questions: bool = False,
     ) -> None:
         self._select_parent(parent_locator=parent.name_and_relationship)
         self._select_consent_method(ConsentMethod.PHONE)
         self._process_consent_confirmation(
-            consent_option=consent_option, psd_option=psd_option
+            consent_option=consent_option,
+            psd_option=psd_option,
+            yes_to_health_questions=yes_to_health_questions,
         )
         self.click_confirm()
 
@@ -290,11 +297,15 @@ class VerbalConsentPage:
         consent_option: ConsentOption = ConsentOption.INJECTION,
         *,
         psd_option: bool | None = None,
+        yes_to_health_questions: bool = False,
     ) -> None:
         self.child_gillick_competent_radio.check()
         self.click_continue()
         self._process_consent_confirmation(
-            child_consent=True, consent_option=consent_option, psd_option=psd_option
+            child_consent=True,
+            consent_option=consent_option,
+            psd_option=psd_option,
+            yes_to_health_questions=yes_to_health_questions,
         )
         self.click_confirm()
 
@@ -320,6 +331,7 @@ class VerbalConsentPage:
         *,
         child_consent: bool = False,
         psd_option: bool | None = None,
+        yes_to_health_questions: bool = False,
     ) -> None:
         if programme is Programme.FLU:
             if consent_option is ConsentOption.INJECTION:
@@ -336,15 +348,21 @@ class VerbalConsentPage:
         if child_consent:
             self.select_yes()
             self.click_continue()
-        self.set_all_health_questions_to_no(
-            programme=programme,
-            consent_option=consent_option,
+
+        answer = "Yes" if yes_to_health_questions else "No"
+        self.answer_all_health_questions(
+            programme=programme, consent_option=consent_option, answer=answer
         )
+
         self.click_continue()
-        self.click_safe_to_vaccinate(
-            programme=programme, consent_option=consent_option, psd_option=psd_option
-        )
-        self.click_continue()
+
+        if yes_to_health_questions:
+            self.click_safe_to_vaccinate(
+                programme=programme,
+                consent_option=consent_option,
+                psd_option=psd_option,
+            )
+            self.click_continue()
 
     @step("Add Gillick competence details")
     def add_gillick_competence(

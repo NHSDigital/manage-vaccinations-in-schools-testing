@@ -227,7 +227,9 @@ def test_triage_consent_given_and_triage_outcome(
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_phone_positive(child.parents[0])
+    verbal_consent_page.parent_phone_positive(
+        child.parents[0], yes_to_health_questions=True
+    )
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
@@ -242,7 +244,7 @@ def test_triage_consent_given_and_triage_outcome(
 
 
 @pytest.mark.rav
-def test_triage_consent_refused_and_activity_log(
+def test_consent_refused_and_activity_log(
     setup_fixed_child,
     sessions_page,
     verbal_consent_page,

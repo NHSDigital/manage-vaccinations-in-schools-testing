@@ -190,9 +190,12 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_written_positive(child.parents[0])
+    verbal_consent_page.parent_written_positive(
+        child.parents[0], yes_to_health_questions=True
+    )
     sessions_page.select_consent_given()
 
+    sessions_page.page.pause()
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     verbal_consent_page.update_triage_outcome_positive()
 
@@ -259,15 +262,12 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_conflicting_consent_text()
     sessions_page.click_assess_gillick_competence()
     verbal_consent_page.add_gillick_competence(is_competent=True)
-    sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
     sessions_page.click_record_a_new_consent_response()
     verbal_consent_page.child_consent_verbal_positive()
     sessions_page.expect_alert_text(f"Consent recorded for {child!s}")
     sessions_page.select_consent_given()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
-    sessions_page.expect_consent_status(Programme.HPV, "Safe to vaccinate")
-    sessions_page.expect_child_safe_to_vaccinate(child)
     sessions_page.expect_consent_status(Programme.HPV, "Consent given")
     sessions_page.click_session_activity_and_notes()
     sessions_page.check_session_activity_entry(

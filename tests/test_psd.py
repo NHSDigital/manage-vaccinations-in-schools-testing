@@ -110,6 +110,7 @@ def test_delivering_vaccination_after_psd(
         programme=Programme.FLU,
         consent_option=ConsentOption.BOTH,
         psd_option=True,
+        yes_to_health_questions=True,
     )
     sessions_page.click_psds_tab()
     sessions_page.search_for(str(child))
