@@ -190,9 +190,12 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_written_positive(child.parents[0])
+    verbal_consent_page.parent_written_positive(
+        child.parents[0], yes_to_health_questions=True
+    )
     sessions_page.select_consent_given()
 
+    sessions_page.page.pause()
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     verbal_consent_page.update_triage_outcome_positive()
 
