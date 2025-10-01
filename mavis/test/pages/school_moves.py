@@ -7,6 +7,7 @@ from playwright.sync_api import Locator, Page
 
 from mavis.test.annotations import step
 from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
+from mavis.test.utils import reload_until_element_is_visible
 
 
 def get_child_full_name(first_name: str, last_name: str) -> str:
@@ -28,6 +29,7 @@ class SchoolMovesPage:
     @step("Click on school move for {1} {2}")
     def click_child(self, first_name: str, last_name: str) -> None:
         row = self.get_row_for_child(first_name, last_name)
+        reload_until_element_is_visible(self.page, row)
         row.get_by_role("link", name="Review").click()
 
     @step("Click on Download records")

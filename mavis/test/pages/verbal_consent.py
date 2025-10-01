@@ -148,6 +148,7 @@ class VerbalConsentPage:
 
         if psd_option is not None:
             if psd_option:
+                self.page.pause()
                 self.select_yes()
             else:
                 self.select_no()
