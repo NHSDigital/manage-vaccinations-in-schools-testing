@@ -151,17 +151,23 @@ class OnlineConsentPage:
         name = str(school)
 
         if name == self.displayed_school_name.inner_text().strip():
-            self.confirm_school_radio.click()
+            self.confirm_school_radio.check()
         else:
-            self.select_different_school_radio.click()
-            self.click_continue()
+            self.click_no_they_go_to_a_different_school()
 
-            self.page.wait_for_load_state()
-
-            self.school_name_combobox.fill(name)
-            self.page.get_by_role("option", name=name).click()
-
+            self.fill_school_name(name)
         self.click_continue()
+
+    @step("Click No, they go to a different school")
+    def click_no_they_go_to_a_different_school(self) -> None:
+        self.select_different_school_radio.check()
+        self.click_continue()
+        self.page.wait_for_load_state()
+
+    @step("Fill school name")
+    def fill_school_name(self, school_name: str) -> None:
+        self.school_name_combobox.fill(school_name)
+        self.page.get_by_role("option", name=school_name).click()
 
     @step("Click on {1} radio button")
     def click_radio_button(self, name: str) -> None:
