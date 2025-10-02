@@ -111,6 +111,10 @@ class MatchConsentResponsePage:
 
     @step("Match consent response with {1}")
     def match(self, child: Child) -> None:
+        self.search_for_child_with_all_filters(child)
+        self.click_link_response_with_record()
+
+    def search_for_child_with_all_filters(self, child: Child) -> None:
         filter_locators = [
             self.archived_records_checkbox,
             self.children_aged_out_of_programmes_checkbox,
@@ -134,4 +138,7 @@ class MatchConsentResponsePage:
                 filter_locator.uncheck()
 
         self.page.get_by_role("link", name=str(child)).click()
+
+    @step("Click Link response with record")
+    def click_link_response_with_record(self) -> None:
         self.link_button.click()
