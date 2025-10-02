@@ -263,7 +263,7 @@ class SessionsPage:
         self.update_results_button.click()
 
     def _select_tab(self, name: str) -> None:
-        link = self.page.get_by_role("navigation").get_by_role("link", name=name)
+        link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
         if link.get_by_role("strong").is_visible():
             return
         link.click()
@@ -345,6 +345,14 @@ class SessionsPage:
     @step("Click on Consent tab")
     def click_consent_tab(self) -> None:
         self._select_tab("Consent")
+
+    @step("Click on Children tab")
+    def click_children_tab(self) -> None:
+        self._select_tab("Children")
+
+    @step("Click on Triage tab")
+    def click_triage_tab(self) -> None:
+        self._select_tab("Triage")
 
     @step("Click on Assess Gillick competence")
     def click_assess_gillick_competence(self) -> None:
