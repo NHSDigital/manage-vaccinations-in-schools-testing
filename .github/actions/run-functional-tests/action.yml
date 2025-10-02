@@ -1,8 +1,10 @@
 name: "Run Tests"
-description: "Execute Functional tests"
+description: "Execute tests"
 inputs:
   tests:
     default: ''
+  accessibility_tests:
+    default: 'false'
   device:
     required: true
   base_url:
@@ -34,8 +36,18 @@ runs:
       run: uv run playwright install-deps webkit
       shell: bash
 
+    - name: Choose test suite to run
+      id: marker
+      run: |
+        if [ "${{ inputs.accessibility_tests }}" = "true" ]; then
+          echo "marker=accessibility" >> $GITHUB_OUTPUT
+        else
+          echo "marker=not accessibility" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
     - name: Run tests
-      run: uv run pytest --reruns 2 --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: uv run pytest --reruns 2 -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}
