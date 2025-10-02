@@ -63,6 +63,7 @@ class ProgrammesPage:
         )
         self.search_textbox = page.get_by_role("textbox", name="Search")
         self.search_button = page.get_by_role("button", name="Search")
+        self.sessions_link = page.get_by_role("link", name="Sessions")
 
     @step("Click on {1}")
     def click_programme_for_current_year(self, programme: Programme) -> None:
@@ -71,6 +72,12 @@ class ProgrammesPage:
     @step("Click on Children")
     def click_children(self) -> None:
         self.children_link.click()
+        self.children_link.get_by_role("strong").wait_for()
+
+    @step("Click on Sessions")
+    def click_sessions(self) -> None:
+        self.sessions_link.click()
+        self.sessions_link.get_by_role("strong").wait_for()
 
     @step("Click on Edit vaccination record")
     def click_edit_vaccination_record(self) -> None:
