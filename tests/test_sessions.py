@@ -366,3 +366,58 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
 
     sessions_page.click_send_reminders(school)
     sessions_page.download_consent_form(Programme.HPV)
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    setup_fixed_child,
+    dashboard_page,
+    accessibility_helper,
+    sessions_page,
+    schools,
+    children,
+):
+    """
+    Test: Validate accessibility of the sessions page.
+    Steps:
+    1. Navigate to sessions page.
+    2. Run accessibility checks on the page.
+    Verification:
+    - No accessibility violations found.
+    """
+    school = schools[Programme.HPV][0]
+    child = children[Programme.HPV][0]
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_edit_session()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_change_session_dates()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_back()
+    sessions_page.click_continue_link()
+
+    sessions_page.click_children_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_consent_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_triage_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_register_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_child(child)
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_session_activity_and_notes()
+    accessibility_helper.check_accessibility()
