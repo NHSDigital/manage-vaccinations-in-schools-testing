@@ -1,7 +1,13 @@
 import pytest
 
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+from mavis.test.models import (
+    ConsentMethod,
+    ConsentOption,
+    Programme,
+    VaccinationRecord,
+    Vaccine,
+)
 
 
 @pytest.fixture
@@ -104,9 +110,9 @@ def test_delivering_vaccination_after_psd(
     sessions_page.search_child(child)
     sessions_page.click_programme_tab(Programme.FLU)
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0],
-        change_phone=False,
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_positive_consent(
         programme=Programme.FLU,
         consent_option=ConsentOption.BOTH,
         psd_option=True,
