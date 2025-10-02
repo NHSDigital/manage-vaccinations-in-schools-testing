@@ -213,6 +213,7 @@ def test_accessibility(
     accessibility_helper.check_accessibility()
 
     online_consent_page.fill_parent_details(child.parents[0])
+
     accessibility_helper.check_accessibility()
 
     online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
@@ -221,9 +222,13 @@ def test_accessibility(
     online_consent_page.fill_address_details(*child.address)
     accessibility_helper.check_accessibility()
 
+    online_consent_page.answer_yes()
+    accessibility_helper.check_accessibility()
+
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
-        yes_to_health_questions=False,
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH)
+        + 1,
+        yes_to_health_questions=True,
     )
     accessibility_helper.check_accessibility()
 

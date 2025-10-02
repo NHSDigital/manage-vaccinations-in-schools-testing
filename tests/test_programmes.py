@@ -191,7 +191,7 @@ def test_edit_vaccination_dose_to_not_given(
     child = children[Programme.HPV][0]
 
     programmes_page.click_programme_for_current_year(Programme.HPV)
-    programmes_page.click_children()
+    programmes_page.click_children_tab()
     programmes_page.search_for_child(child)
     programmes_page.click_child(child)
     children_page.click_vaccination_details(Programme.HPV)
@@ -343,8 +343,8 @@ def test_accessibility(
     dashboard_page.click_programmes()
     programmes_page.click_programme_for_current_year(Programme.FLU)
 
-    programmes_page.click_sessions()
+    programmes_page.click_sessions_tab()
     accessibility_helper.check_accessibility()
 
-    programmes_page.click_children()
+    programmes_page.click_children_tab()
     accessibility_helper.check_accessibility()
