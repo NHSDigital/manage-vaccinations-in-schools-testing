@@ -20,12 +20,6 @@ class ProgrammesPage:
             .locator("xpath=following-sibling::table[1]")
         )
 
-        programme_page_links = (
-            page.get_by_role("main").get_by_role("listitem").get_by_role("link")
-        )
-        self.cohorts_link = programme_page_links.get_by_text("Cohorts")
-        self.children_link = programme_page_links.get_by_text("Children")
-
         self.import_child_records_link = page.get_by_text("Import child records")
 
         self.continue_button = page.get_by_role("button", name="Continue")
@@ -63,21 +57,26 @@ class ProgrammesPage:
         )
         self.search_textbox = page.get_by_role("textbox", name="Search")
         self.search_button = page.get_by_role("button", name="Search")
-        self.sessions_link = page.get_by_role("link", name="Sessions")
+        self.programmes_sessions_tab = page.get_by_label("Secondary menu").get_by_role(
+            "link", name="Sessions"
+        )
+        self.programmes_children_tab = page.get_by_label("Secondary menu").get_by_role(
+            "link", name="Children"
+        )
 
     @step("Click on {1}")
     def click_programme_for_current_year(self, programme: Programme) -> None:
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
 
     @step("Click on Children")
-    def click_children(self) -> None:
-        self.children_link.click()
-        self.children_link.get_by_role("strong").wait_for()
+    def click_children_tab(self) -> None:
+        self.programmes_children_tab.click()
+        self.programmes_children_tab.get_by_role("strong").wait_for()
 
     @step("Click on Sessions")
-    def click_sessions(self) -> None:
-        self.sessions_link.click()
-        self.sessions_link.get_by_role("strong").wait_for()
+    def click_sessions_tab(self) -> None:
+        self.programmes_sessions_tab.click()
+        self.programmes_sessions_tab.get_by_role("strong").wait_for()
 
     @step("Click on Edit vaccination record")
     def click_edit_vaccination_record(self) -> None:
@@ -111,7 +110,7 @@ class ProgrammesPage:
 
     def navigate_to_cohort_import(self, programme: Programme) -> None:
         self.click_programme_for_current_year(programme)
-        self.click_children()
+        self.click_children_tab()
         self.click_import_child_records()
 
     @step("Click on Save changes")

@@ -209,6 +209,10 @@ class SessionsPage:
             "button",
             name="Yes, add PSDs",
         )
+        self.record_vaccinations_breadcrumb = self.page.get_by_role(
+            "link",
+            name="Record vaccinations",
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -548,7 +552,6 @@ class SessionsPage:
             self.click_save_note()
 
         self.expect_alert_text("Note added")
-        self.page.reload()
         reload_until_element_is_visible(self.page, self.page.get_by_text(note))
 
     @step("Click on Set session in progress for today")
@@ -822,8 +825,7 @@ class SessionsPage:
             self.pre_screening_notes.fill("Prescreening notes")
             self.click_continue_button()
 
-        self.page.get_by_role("radio", name=vaccination_record.batch_name).check()
-        self.click_continue_button()
+        self.choose_batch(vaccination_record.batch_name)
 
         if at_school:  # only skips MAV-854
             if psd_option:
@@ -843,6 +845,11 @@ class SessionsPage:
                 f"Vaccination outcome recorded for {vaccination_record.programme}"
             )
         return get_current_datetime()
+
+    @step("Choose batch {1}")
+    def choose_batch(self, batch_name: str) -> None:
+        self.page.get_by_role("radio", name=batch_name).check()
+        self.click_continue_button()
 
     def expect_alert_text(self, text: str) -> None:
         expect(self.page.get_by_role("alert")).to_contain_text(text)
@@ -909,3 +916,7 @@ class SessionsPage:
     @step("Click Yes, add PSDs")
     def click_yes_add_psds(self) -> None:
         self.yes_add_psds_button.click()
+
+    @step("Go back to Record Vaccinations")
+    def click_back_to_record_vaccinations(self) -> None:
+        self.record_vaccinations_breadcrumb.click()

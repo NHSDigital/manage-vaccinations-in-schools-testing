@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
-from mavis.test.models import ConsentMethod, Programme
+from mavis.test.models import ConsentMethod, DeliverySite, Programme, Vaccine
 from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT
 
 pytestmark = pytest.mark.consent
@@ -289,3 +289,75 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
     )
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    setup_fixed_child,
+    add_vaccine_batch,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
+    accessibility_helper,
+    dashboard_page,
+):
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+    batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
+
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    sessions_page.click_consent_tab()
+    sessions_page.select_no_response()
+
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.click_radio_button(child.parents[0].name_and_relationship)
+    verbal_consent_page.click_continue()
+
+    accessibility_helper.check_accessibility()
+    verbal_consent_page.click_continue()
+
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.click_yes_they_agree()
+    verbal_consent_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.answer_all_health_questions(
+        programme=Programme.HPV,
+    )
+    verbal_consent_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.click_confirm()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.register_child_as_attending(child)
+    sessions_page.click_record_vaccinations_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_child(child)
+    accessibility_helper.check_accessibility()
+
+    sessions_page.confirm_pre_screening_checks(Programme.HPV)
+    sessions_page.select_identity_confirmed_by_child(child)
+    sessions_page.select_ready_for_vaccination()
+    sessions_page.select_delivery_site(DeliverySite.LEFT_ARM_UPPER)
+    sessions_page.click_continue_button()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.choose_batch(batch_name)
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_confirm_button()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_vaccination_details(school)
+    accessibility_helper.check_accessibility()
