@@ -7,6 +7,7 @@ from playwright.sync_api import Locator, Page
 
 from mavis.test.annotations import step
 from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
+from mavis.test.utils import reload_until_element_is_visible
 
 
 def get_child_full_name(first_name: str, last_name: str) -> str:
@@ -28,6 +29,7 @@ class SchoolMovesPage:
     @step("Click on school move for {1} {2}")
     def click_child(self, first_name: str, last_name: str) -> None:
         row = self.get_row_for_child(first_name, last_name)
+        reload_until_element_is_visible(self.page, row)
         row.get_by_role("link", name="Review").click()
 
     @step("Click on Download records")
@@ -54,7 +56,7 @@ class DownloadSchoolMovesPage:
         self.to_year = to_group.get_by_role("textbox", name="Year")
 
         self.continue_button = page.get_by_role("button", name="Continue")
-        self.confirm_button = page.get_by_role("button", name="Download CSV")
+        self.download_csv_button = page.get_by_role("button", name="Download CSV")
 
     def enter_date_range(
         self,
@@ -71,7 +73,7 @@ class DownloadSchoolMovesPage:
             self.to_month.fill(str(to_date.month))
             self.to_year.fill(str(to_date.year))
 
-        self.continue_button.click()
+        self.click_continue()
 
     def confirm_and_get_school_moves_csv(self) -> DataFrame:
         browser = getattr(self.page.context, "browser", None)
@@ -84,13 +86,13 @@ class DownloadSchoolMovesPage:
         # Playwright's webkit browser always opens CSVs in the browser
         # unlike Chromium and Firefox
         if browser_type_name == "webkit":
-            self.confirm_button.click()
+            self.click_download_csv()
             csv_content = self.page.locator("pre").inner_text()
             self.page.go_back()
             return pd.read_csv(StringIO(csv_content), dtype={"NHS_REF": str})
 
         with self.page.expect_download() as download_info:
-            self.confirm_button.click()
+            self.click_download_csv()
         return pd.read_csv(download_info.value.path(), dtype={"NHS_REF": str})
 
     def verify_school_moves_csv_contents(
@@ -131,6 +133,14 @@ class DownloadSchoolMovesPage:
         for col, expected in fields_to_check:
             actual = str(row_data[col])
             assert actual == expected, f"{col}: expected '{expected}', got '{actual}'"
+
+    @step("Click Download CSV")
+    def click_download_csv(self) -> None:
+        self.download_csv_button.click()
+
+    @step("Click Continue")
+    def click_continue(self) -> None:
+        self.continue_button.click()
 
 
 class ReviewSchoolMovePage:

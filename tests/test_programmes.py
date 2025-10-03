@@ -191,7 +191,7 @@ def test_edit_vaccination_dose_to_not_given(
     child = children[Programme.HPV][0]
 
     programmes_page.click_programme_for_current_year(Programme.HPV)
-    programmes_page.click_children()
+    programmes_page.click_children_tab()
     programmes_page.search_for_child(child)
     programmes_page.click_child(child)
     children_page.click_vaccination_details(Programme.HPV)
@@ -315,3 +315,36 @@ def test_verify_systmone_report_for_menacwy(setup_reports, programmes_page):
         programme=Programme.MENACWY,
         report_format=ReportFormat.SYSTMONE,
     )
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    setup_reports, dashboard_page, accessibility_helper, programmes_page
+):
+    """
+    Test: Check accessibility of the programmes page.
+    Steps:
+    1. Navigate to programmes page.
+    Verification:
+    - Page passes accessibility checks.
+    """
+    accessibility_helper.check_accessibility()
+
+    programmes_page.click_programme_for_current_year(Programme.FLU)
+    accessibility_helper.check_accessibility()
+
+    programmes_page.click_download_report()
+    accessibility_helper.check_accessibility()
+
+    programmes_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_programmes()
+    programmes_page.click_programme_for_current_year(Programme.FLU)
+
+    programmes_page.click_sessions_tab()
+    accessibility_helper.check_accessibility()
+
+    programmes_page.click_children_tab()
+    accessibility_helper.check_accessibility()
