@@ -27,7 +27,7 @@ def setup_session_with_file_upload(
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             batch_names = [
-                add_vaccine_batch(vaccine)
+                add_vaccine_batch(vaccine, vaccine.replace(" ", "") + "123")
                 for vaccine in Vaccine
                 if vaccine.programme.group == programme_group
             ]
@@ -166,7 +166,9 @@ def test_recording_doubles_vaccination_e2e(
     """
     child = children["doubles"][0]
     schools = schools["doubles"]
-    menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
+    menquadfi_batch_name = setup_session_for_doubles[0]
+    revaxis_batch_name = setup_session_for_doubles[-1]
+
     number_of_health_questions = (
         online_consent_page.get_number_of_health_questions_for_programmes(
             [Programme.MENACWY, Programme.TD_IPV],
