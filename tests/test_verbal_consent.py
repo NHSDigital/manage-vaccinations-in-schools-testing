@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
-from mavis.test.models import Programme
+from mavis.test.models import ConsentMethod, DeliverySite, Programme, Vaccine
 from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT
 
 pytestmark = pytest.mark.consent
@@ -138,11 +138,17 @@ def test_invalid_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_no_response(child.parents[0])
+
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_no_response()
+
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_refuse_consent(child.parents[1])
+    verbal_consent_page.select_parent(child.parents[1])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_refuse_consent()
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
@@ -190,17 +196,20 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_written_positive(
-        child.parents[0], yes_to_health_questions=True
-    )
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    verbal_consent_page.record_parent_positive_consent(yes_to_health_questions=True)
     sessions_page.select_consent_given()
 
-    sessions_page.page.pause()
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     verbal_consent_page.update_triage_outcome_positive()
 
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.parent_verbal_refuse_consent(child.parents[0])
+
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_refuse_consent()
+
     sessions_page.select_consent_refused()
 
     sessions_page.click_child(child)
@@ -246,14 +255,18 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_consent_tab()
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0],
-        change_phone=False,
-    )
-    sessions_page.select_consent_given()
 
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_positive_consent()
+
+    sessions_page.select_consent_given()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_verbal_refuse_consent(child.parents[1])
+
+    verbal_consent_page.select_parent(child.parents[1])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_refuse_consent()
+
     sessions_page.select_conflicting_consent()
 
     sessions_page.click_child(child)
@@ -263,8 +276,11 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.click_assess_gillick_competence()
     verbal_consent_page.add_gillick_competence(is_competent=True)
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.child_consent_verbal_positive()
-    sessions_page.expect_alert_text(f"Consent recorded for {child!s}")
+
+    verbal_consent_page.select_gillick_competent_child()
+    verbal_consent_page.record_child_positive_consent()
+    verbal_consent_page.expect_text_in_alert(f"Consent recorded for {child!s}")
+
     sessions_page.select_consent_given()
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
@@ -273,3 +289,75 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
     )
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    setup_fixed_child,
+    add_vaccine_batch,
+    sessions_page,
+    schools,
+    verbal_consent_page,
+    children,
+    accessibility_helper,
+    dashboard_page,
+):
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+    batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
+
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    sessions_page.click_consent_tab()
+    sessions_page.select_no_response()
+
+    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.click_radio_button(child.parents[0].name_and_relationship)
+    verbal_consent_page.click_continue()
+
+    accessibility_helper.check_accessibility()
+    verbal_consent_page.click_continue()
+
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.click_yes_they_agree()
+    verbal_consent_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.answer_all_health_questions(
+        programme=Programme.HPV,
+    )
+    verbal_consent_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    verbal_consent_page.click_confirm()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.register_child_as_attending(child)
+    sessions_page.click_record_vaccinations_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_child(child)
+    accessibility_helper.check_accessibility()
+
+    sessions_page.confirm_pre_screening_checks(Programme.HPV)
+    sessions_page.select_identity_confirmed_by_child(child)
+    sessions_page.select_ready_for_vaccination()
+    sessions_page.select_delivery_site(DeliverySite.LEFT_ARM_UPPER)
+    sessions_page.click_continue_button()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.choose_batch(batch_name)
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_confirm_button()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_vaccination_details(school)
+    accessibility_helper.check_accessibility()

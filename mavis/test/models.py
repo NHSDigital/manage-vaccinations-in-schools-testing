@@ -92,22 +92,6 @@ class HealthQuestion(StrEnum):
     FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
 
 
-class Vaccine(StrEnum):
-    # Flu
-    FLUENZ = "Fluenz"
-
-    # HPV
-    GARDASIL_9 = "Gardasil 9"
-
-    # MenACWY
-    MENQUADFI = "MenQuadfi"
-    MENVEO = "Menveo"
-    NIMENRIX = "Nimenrix"
-
-    # Td/IPV
-    REVAXIS = "Revaxis"
-
-
 class Programme(StrEnum):
     FLU = "flu"
     HPV = "HPV"
@@ -119,18 +103,6 @@ class Programme(StrEnum):
         if self in {Programme.MENACWY, Programme.TD_IPV}:
             return "doubles"
         return self.value
-
-    @property
-    def vaccines(self) -> list[Vaccine]:
-        match self:
-            case self.FLU:
-                return [Vaccine.FLUENZ]
-            case self.HPV:
-                return [Vaccine.GARDASIL_9]
-            case self.MENACWY:
-                return [Vaccine.MENQUADFI, Vaccine.MENVEO, Vaccine.NIMENRIX]
-            case self.TD_IPV:
-                return [Vaccine.REVAXIS]
 
     def health_questions(
         self, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -214,17 +186,60 @@ class Programme(StrEnum):
                 return list(range(9, 12))
 
 
+class Vaccine(StrEnum):
+    # Flu
+    FLUENZ = "Fluenz"
+    SEQUIRUS = "Cell-based Trivalent Influenza Vaccine Seqirus"
+
+    # HPV
+    GARDASIL_9 = "Gardasil 9"
+
+    # MenACWY
+    MENQUADFI = "MenQuadfi"
+    MENVEO = "Menveo"
+    NIMENRIX = "Nimenrix"
+
+    # Td/IPV
+    REVAXIS = "Revaxis"
+
+    @property
+    def imms_api_code(self) -> str:
+        if self is self.SEQUIRUS:
+            return "43207411000001105"
+        if self is self.FLUENZ:
+            return "43208811000001106"
+        if self is self.GARDASIL_9:
+            return "33493111000001108"
+        msg = f"Vaccine '{self.value}' is not supported by IMMS API"
+        raise ValueError(msg)
+
+    @property
+    def programme(self) -> Programme:
+        programme_mapping = {
+            Vaccine.FLUENZ: Programme.FLU,
+            Vaccine.SEQUIRUS: Programme.FLU,
+            Vaccine.GARDASIL_9: Programme.HPV,
+            Vaccine.MENQUADFI: Programme.MENACWY,
+            Vaccine.MENVEO: Programme.MENACWY,
+            Vaccine.NIMENRIX: Programme.MENACWY,
+            Vaccine.REVAXIS: Programme.TD_IPV,
+        }
+        return programme_mapping[self]
+
+
 class DeliverySite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
     RIGHT_ARM_UPPER = "Right arm (upper position)"
     LEFT_ARM_LOWER = "Left arm (lower position)"
     RIGHT_ARM_LOWER = "Right arm (lower position)"
+    NOSE = "Nose"
 
     @classmethod
-    def from_code(cls, code: str) -> "DeliverySite":
+    def from_imms_api_code(cls, code: str) -> "DeliverySite":
         sites = {
             "368208006": DeliverySite.LEFT_ARM_UPPER,
             "368209003": DeliverySite.RIGHT_ARM_UPPER,
+            "279549004": DeliverySite.NOSE,
         }
         return sites[code]
 
