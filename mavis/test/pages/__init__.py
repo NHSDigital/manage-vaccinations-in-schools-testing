@@ -7,6 +7,7 @@ from .consent_responses import (
     UnmatchedConsentResponsesPage,
 )
 from .dashboard import DashboardPage
+from .errorpages import BadRequestPage, InternalServerErrorPage
 from .flipper import FlipperPage
 from .import_records import ImportRecordsPage
 from .log_in import LogInPage
@@ -23,6 +24,7 @@ __all__ = [
     "AddBatchPage",
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
+    "BadRequestPage",
     "ChildrenPage",
     "ConsentResponsePage",
     "CreateNewRecordConsentResponsePage",
@@ -31,6 +33,7 @@ __all__ = [
     "EditBatchPage",
     "FlipperPage",
     "ImportRecordsPage",
+    "InternalServerErrorPage",
     "LogInPage",
     "MatchConsentResponsePage",
     "OnlineConsentPage",

@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.models import User
 
 pytestmark = pytest.mark.log_in
@@ -101,3 +102,24 @@ def test_accessibility(accessibility_helper, dashboard_page, log_in_page, users,
 
     dashboard_page.click_your_team()
     accessibility_helper.check_accessibility()
+
+
+@issue("MAV-1592")
+def test_unprocessable_vaccination_record_shows_bad_request_page(
+    log_in_page, team, users, bad_request_page, page
+):
+    """
+    Test: Unprocessable vaccination record leads to 400 page
+    Steps:
+    1. Navigate to the log in page (autouse fixture).
+    2. Log in as a nurse and choose team if necessary.
+    3. Navigate to `[mavis-url]/draft-vaccination-record/confirm`
+    Verification:
+    - User is redirected to a 400 [Error: page not available] page
+      instead of a 500 page.
+    """
+    log_in_page.log_in_and_choose_team_if_necessary(users["nurse"], team)
+    page.goto(f"{page.url.replace('dashboard', '')}draft-vaccination-record/confirm")
+
+    # Verify that the user is redirected to a 400 Bad Request page
+    expect(bad_request_page.page_heading).to_be_visible()

@@ -6,6 +6,7 @@ from mavis.test.pages import (
     AddBatchPage,
     ArchiveBatchPage,
     ArchiveConsentResponsePage,
+    BadRequestPage,
     ChildrenPage,
     ConsentResponsePage,
     CreateNewRecordConsentResponsePage,
@@ -14,6 +15,7 @@ from mavis.test.pages import (
     EditBatchPage,
     FlipperPage,
     ImportRecordsPage,
+    InternalServerErrorPage,
     LogInPage,
     MatchConsentResponsePage,
     OnlineConsentPage,
@@ -144,3 +146,13 @@ def vaccines_page(page: Page) -> VaccinesPage:
 @pytest.fixture
 def verbal_consent_page(page: Page) -> VerbalConsentPage:
     return VerbalConsentPage(page)
+
+
+@pytest.fixture
+def bad_request_page(page: Page) -> BadRequestPage:
+    return BadRequestPage(page)
+
+
+@pytest.fixture
+def internal_server_error_page(page: Page) -> InternalServerErrorPage:
+    return InternalServerErrorPage(page)
