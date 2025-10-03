@@ -1,3 +1,4 @@
+import random
 import re
 import time
 from datetime import date, datetime, timedelta
@@ -77,6 +78,14 @@ def get_date_of_birth_for_year_group(year_group: int) -> date:
     end_date = date(academic_year + 1, 8, 31)
 
     return faker.date_between(start_date, end_date)
+
+
+def random_datetime_earlier_today(input_time: datetime) -> datetime:
+    midnight = input_time.replace(hour=0, minute=0, second=0, microsecond=0)
+    delta_minutes = int((input_time - midnight).total_seconds() // 60)
+    random_offset = random.randint(0, delta_minutes)
+    random_dt = input_time - timedelta(minutes=random_offset)
+    return random_dt.replace(second=0, microsecond=0)
 
 
 def generate_random_string(

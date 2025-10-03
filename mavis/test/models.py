@@ -206,6 +206,8 @@ class Vaccine(StrEnum):
     def imms_api_code(self) -> str:
         if self is self.SEQUIRUS:
             return "43207411000001105"
+        if self is self.FLUENZ:
+            return "43208811000001106"
         if self is self.GARDASIL_9:
             return "33493111000001108"
         msg = f"Vaccine '{self.value}' is not supported by IMMS API"
