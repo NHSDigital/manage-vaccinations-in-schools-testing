@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme, VaccinationRecord
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
 
 pytestmark = pytest.mark.e2e
 
@@ -27,9 +27,9 @@ def setup_session_with_file_upload(
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             batch_names = [
-                add_vaccine_batch(prog.vaccines[0])
-                for prog in Programme
-                if prog.group == programme_group
+                add_vaccine_batch(vaccine)
+                for vaccine in Vaccine
+                if vaccine.programme.group == programme_group
             ]
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()

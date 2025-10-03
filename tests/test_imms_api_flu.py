@@ -17,7 +17,7 @@ def imms_api_helper(authenticate_api):
 
 
 @pytest.fixture
-def setup_recording_hpv(
+def setup_recording_flu(
     log_in_as_nurse,
     add_vaccine_batch,
     schools,
@@ -26,19 +26,21 @@ def setup_recording_hpv(
     sessions_page,
     year_groups,
 ):
-    school = schools[Programme.HPV][0]
-    year_group = year_groups[Programme.HPV]
+    school = schools[Programme.FLU][0]
+    year_group = year_groups[Programme.FLU]
 
     try:
-        batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
+        batch_name = add_vaccine_batch(Vaccine.SEQUIRUS)
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
+        sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
         sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(ClassFileMapping.FIXED_CHILD, year_group)
+        import_records_page.import_class_list(
+            ClassFileMapping.FIXED_CHILD, year_group, Programme.FLU.group
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
+        sessions_page.click_session_for_programme_group(school, Programme.FLU)
         sessions_page.click_consent_tab()
         yield batch_name
     finally:
@@ -49,32 +51,32 @@ def setup_recording_hpv(
 
 
 @pytest.fixture
-def record_hpv(
-    setup_recording_hpv,
+def record_flu(
+    setup_recording_flu,
     children_page,
     sessions_page,
     verbal_consent_page,
     children,
 ):
-    child = children[Programme.HPV][0]
-    batch_name = setup_recording_hpv
+    child = children[Programme.FLU][0]
+    batch_name = setup_recording_flu
 
     children_page.search_with_all_filters_for_child_name(str(child))
-    sessions_page.navigate_to_consent_response(child, Programme.HPV)
+    sessions_page.navigate_to_consent_response(child, Programme.FLU)
     verbal_consent_page.select_parent(child.parents[0])
     verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_positive_consent()
+    verbal_consent_page.record_parent_positive_consent(Programme.FLU)
     sessions_page.register_child_as_attending(child)
     vaccination_time = sessions_page.record_vaccination_for_child(
         VaccinationRecord(
-            child, Programme.HPV, batch_name, delivery_site=DeliverySite.LEFT_ARM_UPPER
+            child, Programme.FLU, batch_name, delivery_site=DeliverySite.LEFT_ARM_UPPER
         )
     )
     return child, vaccination_time
 
 
-def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
-    record_hpv,
+def test_create_edit_delete_flu_vaccination_and_verify_imms_api(
+    record_flu,
     schools,
     imms_api_helper,
     sessions_page,
@@ -82,12 +84,12 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     children_page,
 ):
     """
-    Test: Create, edit, and delete an HPV vaccination record and verify changes in
+    Test: Create, edit, and delete a flu vaccination record and verify changes in
        the IMMS API and Mavis status.
     Steps:
-    1. Setup: Schedule HPV session, import class list, add vaccine batch, and
+    1. Setup: Schedule flu session, import class list, add vaccine batch, and
        register child with verbal consent.
-    2. Create: Record HPV vaccination for the child (LEFT_ARM_UPPER).
+    2. Create: Record flu vaccination for the child (LEFT_ARM_UPPER).
     3. Verify: Check the vaccination record exists in the IMMS API.
        Check Mavis shows "Synced".
     4. Edit: Change the delivery site to RIGHT_ARM_LOWER and save.
@@ -97,12 +99,12 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     7. Verify: Check the vaccination record is removed from the IMMS API.
        Check Mavis shows "Not synced".
     """
-    child, vaccination_time = record_hpv
-    school = schools[Programme.HPV][0]
+    child, vaccination_time = record_flu
+    school = schools[Programme.FLU][0]
 
     # Step 3: Verify creation in IMMS API
     imms_api_helper.check_record_in_imms_api(
-        Vaccine.GARDASIL_9,
+        Vaccine.SEQUIRUS,
         child,
         school,
         DeliverySite.LEFT_ARM_UPPER,
@@ -121,7 +123,7 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
 
     # Step 5: Verify update in IMMS API
     imms_api_helper.check_record_in_imms_api(
-        Vaccine.GARDASIL_9,
+        Vaccine.SEQUIRUS,
         child,
         school,
         DeliverySite.RIGHT_ARM_UPPER,
@@ -139,6 +141,6 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     programmes_page.click_save_changes()
 
     # Step 7: Verify deletion in IMMS API
-    imms_api_helper.check_record_is_not_in_imms_api(Vaccine.GARDASIL_9, child)
+    imms_api_helper.check_record_is_not_in_imms_api(Vaccine.SEQUIRUS, child)
     sessions_page.click_vaccination_details(school)
     children_page.expect_vaccination_details("Synced with NHS England?", "Not synced")
