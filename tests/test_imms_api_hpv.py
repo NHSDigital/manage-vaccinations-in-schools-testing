@@ -101,7 +101,8 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     school = schools[Programme.HPV][0]
 
     # Step 3: Verify creation in IMMS API
-    imms_api_helper.check_hpv_record_in_imms_api(
+    imms_api_helper.check_record_in_imms_api(
+        Programme.HPV,
         child,
         school,
         DeliverySite.LEFT_ARM_UPPER,
@@ -119,7 +120,8 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     programmes_page.click_save_changes()
 
     # Step 5: Verify update in IMMS API
-    imms_api_helper.check_hpv_record_in_imms_api(
+    imms_api_helper.check_record_in_imms_api(
+        Programme.HPV,
         child,
         school,
         DeliverySite.RIGHT_ARM_UPPER,
@@ -137,6 +139,6 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     programmes_page.click_save_changes()
 
     # Step 7: Verify deletion in IMMS API
-    imms_api_helper.check_hpv_record_is_not_in_imms_api(child)
+    imms_api_helper.check_record_is_not_in_imms_api(Programme.HPV, child)
     sessions_page.click_vaccination_details(school)
     children_page.expect_vaccination_details("Synced with NHS England?", "Not synced")
