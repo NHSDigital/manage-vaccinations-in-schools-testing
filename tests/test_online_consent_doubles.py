@@ -15,32 +15,13 @@ def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def url_with_all_sessions_scheduled(schedule_all_sessions_and_get_consent_url, schools):
-    yield from schedule_all_sessions_and_get_consent_url(
-        schools["doubles"],
-        Programme.MENACWY,
-        Programme.TD_IPV,
-    )
-
-
-@pytest.fixture
-def start_consent_with_one_session_scheduled(
-    url_with_session_scheduled, page, start_page
-):
+def start_consent_with_session_scheduled(url_with_session_scheduled, page, start_page):
     page.goto(url_with_session_scheduled)
     start_page.start()
 
 
-@pytest.fixture
-def start_consent_with_all_sessions_scheduled(
-    url_with_all_sessions_scheduled, page, start_page
-):
-    page.goto(url_with_all_sessions_scheduled)
-    start_page.start()
-
-
 def test_consent_refused_for_doubles_vaccination(
-    start_consent_with_one_session_scheduled,
+    start_consent_with_session_scheduled,
     online_consent_page,
     schools,
     children,
@@ -79,21 +60,15 @@ def test_consent_refused_for_doubles_vaccination(
     ids=lambda v: f"programmes: {v}",
 )
 @pytest.mark.parametrize(
-    "change_school",
-    [False, True],
-    ids=lambda v: f"change_school: {v}",
-)
-@pytest.mark.parametrize(
     "yes_to_health_questions",
     [False, True],
     ids=lambda v: f"yes_to_health_questions: {v}",
 )
 def test_consent_given_for_doubles_vaccination(
-    start_consent_with_one_session_scheduled,
+    start_consent_with_session_scheduled,
     online_consent_page,
     schools,
     programmes,
-    change_school,
     yes_to_health_questions,
     children,
 ):
@@ -114,9 +89,7 @@ def test_consent_given_for_doubles_vaccination(
     child = children["doubles"][0]
     schools = schools["doubles"]
 
-    online_consent_page.fill_details(
-        child, child.parents[0], schools, change_school=change_school
-    )
+    online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_doubles_vaccinations(*programmes)
     online_consent_page.fill_address_details(*child.address)
 

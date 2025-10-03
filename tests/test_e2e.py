@@ -203,6 +203,7 @@ def test_recording_doubles_vaccination_e2e(
     sessions_page.record_vaccination_for_child(
         VaccinationRecord(child, Programme.MENACWY, menquadfi_batch_name)
     )
+    sessions_page.click_back_to_record_vaccinations()
     sessions_page.record_vaccination_for_child(
         VaccinationRecord(child, Programme.TD_IPV, revaxis_batch_name)
     )

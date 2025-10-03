@@ -213,3 +213,45 @@ def test_create_child_record_from_consent_without_nhs_number(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_page.verify_activity_log_for_created_or_matched_child(child)
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    give_online_consent,
+    go_to_unmatched_consent_responses,
+    accessibility_helper,
+    children,
+    dashboard_page,
+    programmes_page,
+    import_records_page,
+    match_consent_response_page,
+    consent_response_page,
+    unmatched_consent_responses_page,
+):
+    """
+    Test: Check accessibility of consent response pages.
+    Steps:
+    1. Navigate to the consent response page.
+    2. Verify each page passes accessibility checks.
+    Verification:
+    - Accessibility checks pass on all relevant pages.
+    """
+    child = children[Programme.HPV][0]
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_programmes()
+    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_unmatched_consent_responses()
+    accessibility_helper.check_accessibility()
+
+    unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
+    accessibility_helper.check_accessibility()
+
+    consent_response_page.click_match()
+    accessibility_helper.check_accessibility()
+
+    match_consent_response_page.search_for_child_with_all_filters(child)
+    accessibility_helper.check_accessibility()
