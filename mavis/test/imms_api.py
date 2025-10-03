@@ -6,7 +6,13 @@ from typing import NamedTuple
 import dateutil.parser
 import requests
 
-from mavis.test.models import Child, DeliverySite, ImmsEndpoints, Programme, School
+from mavis.test.models import (
+    Child,
+    DeliverySite,
+    ImmsEndpoints,
+    School,
+    Vaccine,
+)
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -35,7 +41,7 @@ class ImmsApiVaccinationRecord(NamedTuple):
         return cls(
             patient_nhs_number=immunization["patient"]["identifier"]["value"],
             vaccine_code=immunization["vaccineCode"]["coding"][0]["code"],
-            delivery_site=DeliverySite.from_code(
+            delivery_site=DeliverySite.from_imms_api_code(
                 immunization["site"]["coding"][0]["code"],
             ),
             vaccination_location_urn=immunization["location"]["identifier"]["value"],
@@ -47,7 +53,7 @@ class ImmsApiVaccinationRecord(NamedTuple):
     @classmethod
     def from_values(
         cls,
-        programme: Programme,
+        vaccine: Vaccine,
         child: Child,
         delivery_site: DeliverySite,
         school: School,
@@ -55,7 +61,7 @@ class ImmsApiVaccinationRecord(NamedTuple):
     ) -> "ImmsApiVaccinationRecord":
         return cls(
             patient_nhs_number=child.nhs_number,
-            vaccine_code=programme.vaccines[0].imms_api_code,
+            vaccine_code=vaccine.imms_api_code,
             delivery_site=delivery_site,
             vaccination_location_urn=school.urn,
             vaccination_time=vaccination_time,
@@ -74,7 +80,7 @@ class ImmsApiHelper:
 
     def check_record_in_imms_api(
         self,
-        programme: Programme,
+        vaccine: Vaccine,
         child: Child,
         school: School,
         delivery_site: DeliverySite,
@@ -84,11 +90,11 @@ class ImmsApiHelper:
         for attempt in range(max_attempts):
             try:
                 imms_vaccination_record = self._get_imms_api_record_for_child(
-                    programme, child
+                    vaccine, child
                 )
                 self.check_expected_and_actual_records_match(
                     ImmsApiVaccinationRecord.from_values(
-                        programme, child, delivery_site, school, vaccination_time
+                        vaccine, child, delivery_site, school, vaccination_time
                     ),
                     imms_vaccination_record,
                 )
@@ -156,13 +162,13 @@ class ImmsApiHelper:
 
     def check_record_is_not_in_imms_api(
         self,
-        programme: Programme,
+        vaccine: Vaccine,
         child: Child,
     ) -> None:
         max_attempts = 5
         for attempt in range(max_attempts):
             imms_vaccination_record = self._get_imms_api_record_for_child(
-                programme, child
+                vaccine, child
             )
             if imms_vaccination_record is None:
                 break
@@ -173,12 +179,12 @@ class ImmsApiHelper:
 
     def _get_imms_api_record_for_child(
         self,
-        programme: Programme,
+        vaccine: Vaccine,
         child: Child,
     ) -> ImmsApiVaccinationRecord | None:
         _params = {
             "_include": "Immunization:patient",
-            "-immunization.target": programme.upper(),
+            "-immunization.target": vaccine.programme.upper(),
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
