@@ -6,7 +6,7 @@ from typing import NamedTuple
 import dateutil.parser
 import requests
 
-from mavis.test.models import Child, DeliverySite, ImmsEndpoints, School
+from mavis.test.models import Child, DeliverySite, ImmsEndpoints, Programme, School
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -44,6 +44,23 @@ class ImmsApiVaccinationRecord(NamedTuple):
             ),
         )
 
+    @classmethod
+    def from_values(
+        cls,
+        programme: Programme,
+        child: Child,
+        delivery_site: DeliverySite,
+        school: School,
+        vaccination_time: datetime,
+    ) -> "ImmsApiVaccinationRecord":
+        return cls(
+            patient_nhs_number=child.nhs_number,
+            vaccine_code=programme.vaccines[0].imms_api_code,
+            delivery_site=delivery_site,
+            vaccination_location_urn=school.urn,
+            vaccination_time=vaccination_time,
+        )
+
 
 class ImmsApiHelper:
     def __init__(self, token: str) -> None:
@@ -55,8 +72,9 @@ class ImmsApiHelper:
             "Authorization": f"Bearer {token}",
         }
 
-    def check_hpv_record_in_imms_api(
+    def check_record_in_imms_api(
         self,
+        programme: Programme,
         child: Child,
         school: School,
         delivery_site: DeliverySite,
@@ -65,12 +83,13 @@ class ImmsApiHelper:
         max_attempts = 5
         for attempt in range(max_attempts):
             try:
-                imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
-                self.check_record_has_expected_fields(
-                    child,
-                    school,
-                    delivery_site,
-                    vaccination_time,
+                imms_vaccination_record = self._get_imms_api_record_for_child(
+                    programme, child
+                )
+                self.check_expected_and_actual_records_match(
+                    ImmsApiVaccinationRecord.from_values(
+                        programme, child, delivery_site, school, vaccination_time
+                    ),
                     imms_vaccination_record,
                 )
                 break  # Success, exit loop
@@ -79,42 +98,42 @@ class ImmsApiHelper:
                     raise
                 time.sleep(3)
 
-    def check_record_has_expected_fields(
+    def check_expected_and_actual_records_match(
         self,
-        child: Child,
-        school: School,
-        delivery_site: DeliverySite,
-        vaccination_time: datetime,
-        imms_vaccination_record: ImmsApiVaccinationRecord | None,
+        expected_record: ImmsApiVaccinationRecord,
+        actual_record: ImmsApiVaccinationRecord | None,
     ) -> None:
-        if imms_vaccination_record is None:
+        if actual_record is None:
             msg = "No immunization record found"
             raise AssertionError(msg)
 
         self._raise_error_if_not_equal(
-            imms_vaccination_record.patient_nhs_number, child.nhs_number, "NHS number"
+            actual_record.patient_nhs_number,
+            expected_record.patient_nhs_number,
+            "NHS number",
         )
 
-        gardasil_9_vaccine_code = "33493111000001108"
         self._raise_error_if_not_equal(
-            imms_vaccination_record.vaccine_code,
-            gardasil_9_vaccine_code,
+            actual_record.vaccine_code,
+            expected_record.vaccine_code,
             "Vaccine code",
         )
 
         self._raise_error_if_not_equal(
-            imms_vaccination_record.delivery_site, delivery_site, "Vaccination site"
+            actual_record.delivery_site,
+            expected_record.delivery_site,
+            "Vaccination site",
         )
 
         self._raise_error_if_not_equal(
-            imms_vaccination_record.vaccination_location_urn,
-            school.urn,
+            actual_record.vaccination_location_urn,
+            expected_record.vaccination_location_urn,
             "Vaccination location urn",
         )
 
         self._raise_error_if_time_not_within_tolerance(
-            vaccination_time,
-            imms_vaccination_record.vaccination_time,
+            actual_record.vaccination_time,
+            expected_record.vaccination_time,
             tolerance_seconds=10,
         )
 
@@ -130,18 +149,21 @@ class ImmsApiHelper:
     ) -> None:
         if abs(actual - expected).total_seconds() >= tolerance_seconds:
             msg = (
-                f"Vaccination time: expected within {tolerance_seconds} seconds ",
+                f"Vaccination time: expected within {tolerance_seconds} seconds "
                 f"of {expected}, got {actual}",
             )
             raise AssertionError(msg)
 
-    def check_hpv_record_is_not_in_imms_api(
+    def check_record_is_not_in_imms_api(
         self,
+        programme: Programme,
         child: Child,
     ) -> None:
         max_attempts = 5
         for attempt in range(max_attempts):
-            imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
+            imms_vaccination_record = self._get_imms_api_record_for_child(
+                programme, child
+            )
             if imms_vaccination_record is None:
                 break
             if attempt == max_attempts - 1:
@@ -149,13 +171,14 @@ class ImmsApiHelper:
                 raise AssertionError(msg)
             time.sleep(3)
 
-    def _get_hpv_imms_api_record_for_child(
+    def _get_imms_api_record_for_child(
         self,
+        programme: Programme,
         child: Child,
     ) -> ImmsApiVaccinationRecord | None:
         _params = {
             "_include": "Immunization:patient",
-            "-immunization.target": "HPV",
+            "-immunization.target": programme.upper(),
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
