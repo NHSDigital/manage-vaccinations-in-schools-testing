@@ -62,54 +62,92 @@ class ImmsApiHelper:
         delivery_site: DeliverySite,
         vaccination_time: datetime,
     ) -> None:
-        imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
+        max_attempts = 5
+        for attempt in range(max_attempts):
+            try:
+                imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
+                self.check_record_has_expected_fields(
+                    child,
+                    school,
+                    delivery_site,
+                    vaccination_time,
+                    imms_vaccination_record,
+                )
+                break  # Success, exit loop
+            except AssertionError:
+                if attempt == max_attempts - 1:
+                    raise
+                time.sleep(3)
 
-        assert imms_vaccination_record is not None, "No immunization record found"
+    def check_record_has_expected_fields(
+        self,
+        child: Child,
+        school: School,
+        delivery_site: DeliverySite,
+        vaccination_time: datetime,
+        imms_vaccination_record: ImmsApiVaccinationRecord | None,
+    ) -> None:
+        if imms_vaccination_record is None:
+            msg = "No immunization record found"
+            raise AssertionError(msg)
 
-        assert imms_vaccination_record.patient_nhs_number == child.nhs_number, (
-            f"Expected NHS number {child.nhs_number}, "
-            f"got {imms_vaccination_record.patient_nhs_number}"
+        self._raise_error_if_not_equal(
+            imms_vaccination_record.patient_nhs_number, child.nhs_number, "NHS number"
         )
 
         gardasil_9_vaccine_code = "33493111000001108"
-        assert imms_vaccination_record.vaccine_code == gardasil_9_vaccine_code, (
-            f"Expected vaccine code {gardasil_9_vaccine_code}, "
-            f"got {imms_vaccination_record.vaccine_code}"
+        self._raise_error_if_not_equal(
+            imms_vaccination_record.vaccine_code,
+            gardasil_9_vaccine_code,
+            "Vaccine code",
         )
 
-        assert imms_vaccination_record.delivery_site == delivery_site, (
-            f"Expected vaccination site {delivery_site}, "
-            f"got {imms_vaccination_record.delivery_site}"
+        self._raise_error_if_not_equal(
+            imms_vaccination_record.delivery_site, delivery_site, "Vaccination site"
         )
 
-        assert imms_vaccination_record.vaccination_location_urn == school.urn, (
-            f"Expected vaccination location urn {school.urn}, "
-            f"got {imms_vaccination_record.vaccination_location_urn}"
+        self._raise_error_if_not_equal(
+            imms_vaccination_record.vaccination_location_urn,
+            school.urn,
+            "Vaccination location urn",
         )
 
-        tolerance_seconds = 10
-        assert (
-            abs(
-                (
-                    vaccination_time - imms_vaccination_record.vaccination_time
-                ).total_seconds(),
+        self._raise_error_if_time_not_within_tolerance(
+            vaccination_time,
+            imms_vaccination_record.vaccination_time,
+            tolerance_seconds=10,
+        )
+
+    def _raise_error_if_not_equal(
+        self, actual: object, expected: object, message: str
+    ) -> None:
+        if actual != expected:
+            msg = f"{message}: expected '{expected}', got '{actual}'"
+            raise AssertionError(msg)
+
+    def _raise_error_if_time_not_within_tolerance(
+        self, actual: datetime, expected: datetime, tolerance_seconds: int
+    ) -> None:
+        if abs(actual - expected).total_seconds() >= tolerance_seconds:
+            msg = (
+                f"Vaccination time: expected within {tolerance_seconds} seconds ",
+                f"of {expected}, got {actual}",
             )
-            < tolerance_seconds
-        ), (
-            f"Expected vaccination time within {tolerance_seconds} seconds of"
-            f" {vaccination_time}, got {imms_vaccination_record.vaccination_time}"
-        )
+            raise AssertionError(msg)
 
     def check_hpv_record_is_not_in_imms_api(
         self,
         child: Child,
     ) -> None:
-        imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
-
-        assert imms_vaccination_record is None, (
-            f"Expected no immunization record for {child.nhs_number}, "
-            f"got {imms_vaccination_record}"
-        )
+        max_attempts = 5
+        for attempt in range(max_attempts):
+            imms_vaccination_record = self._get_hpv_imms_api_record_for_child(child)
+            if imms_vaccination_record is None:
+                break
+            if attempt == max_attempts - 1:
+                msg = f"Immunization record still found for {child.nhs_number}"
+                raise AssertionError(msg)
+            time.sleep(3)
 
     def _get_hpv_imms_api_record_for_child(
         self,
@@ -120,9 +158,6 @@ class ImmsApiHelper:
             "-immunization.target": "HPV",
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
-
-        # wait 15 seconds for the API to be updated with the latest information
-        time.sleep(15)
 
         response = requests.get(
             url=ImmsEndpoints.READ.to_url,
