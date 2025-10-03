@@ -540,6 +540,7 @@ class SessionsPage:
             self.click_save_note()
 
         self.expect_alert_text("Note added")
+        self.page.reload()
         reload_until_element_is_visible(self.page, self.page.get_by_text(note))
 
         self.check_notes_appear_in_order([note])

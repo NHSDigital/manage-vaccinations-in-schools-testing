@@ -3,7 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import Programme, VaccinationRecord, Vaccine
+from mavis.test.models import ConsentMethod, Programme, VaccinationRecord, Vaccine
 
 pytestmark = pytest.mark.sessions
 
@@ -159,7 +159,11 @@ def test_consent_filters_and_refusal_checkbox(
     sessions_page.review_child_with_no_response()
     sessions_page.click_child(child)
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.parent_paper_refuse_consent(parent=child.parents[0])
+
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    verbal_consent_page.record_parent_refuse_consent()
+
     sessions_page.click_overview_tab()
     sessions_page.click_review_consent_refused()
     sessions_page.expect_consent_refused_checkbox_to_be_checked()
@@ -227,9 +231,10 @@ def test_triage_consent_given_and_triage_outcome(
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.parent_phone_positive(
-        child.parents[0], yes_to_health_questions=True
-    )
+
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.PHONE)
+    verbal_consent_page.record_parent_positive_consent(yes_to_health_questions=True)
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
@@ -264,7 +269,9 @@ def test_consent_refused_and_activity_log(
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
-    verbal_consent_page.parent_paper_refuse_consent(child.parents[0])
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    verbal_consent_page.record_parent_refuse_consent()
     verbal_consent_page.expect_text_in_alert(str(child))
 
     sessions_page.select_consent_refused()
@@ -321,9 +328,9 @@ def test_verify_excel_export_and_clinic_invitation(
         check_date=True,
     )
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.parent_verbal_positive(
-        parent=child.parents[0],
-    )
+    verbal_consent_page.select_parent(child.parents[0])
+    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
+    verbal_consent_page.record_parent_positive_consent()
     sessions_page.register_child_as_attending(child)
     sessions_page.record_vaccination_for_child(
         VaccinationRecord(child, Programme.HPV, batch_name),
