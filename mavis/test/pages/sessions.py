@@ -115,7 +115,7 @@ class SessionsPage:
         )
         self.delete_button = self.page.get_by_role("button", name="Delete")
         self.back_link = self.page.get_by_role("link", name="Back", exact=True).first
-        self.continue_link = self.page.get_by_role("link", name="Continue")
+        self.save_changes_link = self.page.get_by_role("button", name="Save changes")
         self.mark_as_invalid_link = self.page.get_by_role(
             "link",
             name="Mark as invalid",
@@ -389,9 +389,9 @@ class SessionsPage:
     def click_back(self) -> None:
         self.back_link.click()
 
-    @step("Click Continue")
-    def click_continue_link(self) -> None:
-        self.continue_link.click()
+    @step("Click Save changes")
+    def click_save_changes(self) -> None:
+        self.save_changes_link.click()
 
     @step("Click on Delete")
     def click_delete(self) -> None:
@@ -658,7 +658,7 @@ class SessionsPage:
         self.click_change_session_dates()
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
-        self.click_continue_link()
+        self.click_save_changes()
         expect(
             self.page.locator("div")
             .filter(has_text=re.compile(r"^Session datesNot provided$"))
@@ -714,7 +714,7 @@ class SessionsPage:
             "Session dates",
             self.__get_display_formatted_date(date_to_format=_future_date),
         )
-        self.click_continue_link()
+        self.click_save_changes()
 
     def edit_a_session_to_today(self, location: str, programme_group: str) -> None:
         _future_date = get_offset_date_compact_format(offset_days=0, skip_weekends=True)
@@ -744,7 +744,7 @@ class SessionsPage:
                 self.page.wait_for_load_state()
 
             self.click_back()
-            self.click_continue_link()
+            self.click_save_changes()
             self.click_sessions()
 
     def create_invalid_session(self, location: str, programme_group: str) -> None:

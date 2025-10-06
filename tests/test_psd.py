@@ -98,7 +98,7 @@ def test_delivering_vaccination_after_psd(
     sessions_page.click_change_psd()
     sessions_page.answer_whether_psd_should_be_enabled("Yes")
     sessions_page.click_continue_button()
-    sessions_page.click_continue_link()
+    sessions_page.click_save_changes()
 
     sessions_page.click_consent_tab()
     sessions_page.search_child(child)
@@ -182,7 +182,7 @@ def test_bulk_adding_psd(
     sessions_page.click_change_psd()
     sessions_page.answer_whether_psd_should_be_enabled("Yes")
     sessions_page.click_continue_button()
-    sessions_page.click_continue_link()
+    sessions_page.click_save_changes()
     sessions_page.click_psds_tab()
     sessions_page.click_add_new_psds()
     sessions_page.click_yes_add_psds()
