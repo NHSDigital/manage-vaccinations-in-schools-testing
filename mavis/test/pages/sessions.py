@@ -673,11 +673,11 @@ class SessionsPage:
         self.click_mark_as_invalid_link()
         self.fill_notes(invalidation_notes)
         self.click_mark_as_invalid_button()
-        self.expect_details("Decision", "Consent refusedInvalid")
+        self.expect_details("Response", "Consent refusedInvalid")
         self.expect_details("Notes", invalidation_notes)
 
         self.click_back()
-        self.expect_details("Decision", "Consent refusedInvalid")
+        self.expect_details("Response", "Consent refusedInvalid")
         expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
 
     def expect_details(self, key: str, value: str) -> None:
