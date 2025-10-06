@@ -196,3 +196,43 @@ def test_bulk_adding_psd(
     for child in children[Programme.FLU]:
         sessions_page.search_for(str(child))
         sessions_page.check_child_has_psd(child)
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    sessions_page,
+    accessibility_helper,
+    setup_session_with_one_child,
+    dashboard_page,
+    schools,
+):
+    """
+    Test: Check for accessibility violations in the PSD tab.
+    Steps:
+    1. Navigate to the sessions page.
+    2. Use the accessibility helper to check for common accessibility issues.
+    Verification:
+    - No accessibility issues are found.
+    """
+    school = schools[Programme.HPV][0]
+
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
+
+    sessions_page.click_session_for_programme_group(school, Programme.FLU)
+    sessions_page.schedule_a_valid_session()
+    sessions_page.click_edit_session()
+    sessions_page.click_change_psd()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.answer_whether_psd_should_be_enabled("Yes")
+    sessions_page.click_continue_button()
+    sessions_page.click_save_changes()
+    sessions_page.click_psds_tab()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_add_new_psds()
+    accessibility_helper.check_accessibility()
+
+    sessions_page.click_yes_add_psds()
+    accessibility_helper.check_accessibility()

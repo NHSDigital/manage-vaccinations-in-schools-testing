@@ -402,7 +402,7 @@ def test_accessibility(
     accessibility_helper.check_accessibility()
 
     sessions_page.click_back()
-    sessions_page.click_continue_link()
+    sessions_page.click_save_changes()
 
     sessions_page.click_children_tab()
     accessibility_helper.check_accessibility()
