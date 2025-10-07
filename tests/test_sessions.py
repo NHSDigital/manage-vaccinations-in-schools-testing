@@ -87,11 +87,16 @@ def test_create_invalid_session(setup_tests, schools, sessions_page):
     Steps:
     1. Navigate to sessions page.
     2. Attempt to create a session with invalid data for the school and programme.
+    3. Attempt to create sessions in previous and next academic years.
     Verification:
     - Error is shown or invalid session is not created.
     """
     school = schools[Programme.HPV][0]
     sessions_page.create_invalid_session(school, Programme.HPV)
+
+    sessions_page.create_session_in_previous_academic_year()
+
+    sessions_page.create_session_in_next_academic_year()
 
 
 @pytest.mark.bug

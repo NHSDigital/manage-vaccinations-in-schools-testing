@@ -563,8 +563,12 @@ class SessionsPage:
         self.search_textbox.fill(name)
         self.search_button.click()
 
-    @step("Fill date fields")
-    def fill_date_fields(self, day: str, month: str, year: str) -> None:
+    @step("Fill date fields with {1}")
+    def fill_date_fields(self, date: str) -> None:
+        day = date[-2:]
+        month = date[4:6]
+        year = date[:4]
+
         if not self.day_textbox.last.is_visible():
             self.add_another_date_button.click()
         self.day_textbox.last.fill(day)
@@ -644,29 +648,24 @@ class SessionsPage:
     def click_sessions(self) -> None:
         self.sessions_link.click()
 
-    def __schedule_session(self, on_date: str, *, expect_error: bool = False) -> None:
-        _day = on_date[-2:]
-        _month = on_date[4:6]
-        _year = on_date[:4]
-
-        if self.schedule_sessions_link.is_visible():
-            self.click_schedule_sessions()
-            self.click_add_session_dates()
-        else:
-            self.click_edit_session()
-            self.click_change_session_dates()
-        self.fill_date_fields(_day, _month, _year)
+    def __schedule_session(self, date: str) -> None:
+        self.schedule_or_edit_session()
+        self.add_or_change_session_dates()
+        self.fill_date_fields(date)
         self.click_continue_button()
-        if expect_error:
-            self.expect_alert_text("There is a problemEnter a date")
 
-    def __edit_session(self, to_date: str) -> None:
-        _day = to_date[-2:]
-        _month = to_date[4:6]
-        _year = to_date[:4]
+    def schedule_or_edit_session(self) -> None:
+        locator = self.schedule_sessions_link.or_(self.edit_session_link).first
+        locator.click()
+
+    def add_or_change_session_dates(self) -> None:
+        locator = self.add_session_dates_link.or_(self.change_session_dates_link).first
+        locator.click()
+
+    def __edit_session(self, date: str) -> None:
         self.click_edit_session()
         self.click_change_session_dates()
-        self.fill_date_fields(_day, _month, _year)
+        self.fill_date_fields(date)
         self.click_continue_button()
         self.click_save_changes()
         expect(
@@ -719,7 +718,7 @@ class SessionsPage:
         _future_date = get_offset_date_compact_format(
             offset_days=offset_days, skip_weekends=True
         )
-        self.__schedule_session(on_date=_future_date)
+        self.__schedule_session(date=_future_date)
         self.expect_details(
             "Session dates",
             self.__get_display_formatted_date(date_to_format=_future_date),
@@ -729,7 +728,7 @@ class SessionsPage:
     def edit_a_session_to_today(self, location: str, programme_group: str) -> None:
         _future_date = get_offset_date_compact_format(offset_days=0, skip_weekends=True)
         self.click_session_for_programme_group(location, programme_group)
-        self.__edit_session(to_date=_future_date)
+        self.__edit_session(date=_future_date)
 
     def delete_all_sessions(self, school: School) -> None:
         sessions_with_dates = (
@@ -760,7 +759,25 @@ class SessionsPage:
     def create_invalid_session(self, location: str, programme_group: str) -> None:
         _invalid_date = "20251332"
         self.click_session_for_programme_group(location, programme_group)
-        self.__schedule_session(on_date=_invalid_date, expect_error=True)
+        self.__schedule_session(_invalid_date)
+
+    def create_session_in_previous_academic_year(self) -> None:
+        _previous_year_date = get_offset_date_compact_format(offset_days=-365)
+        self.add_or_change_session_dates()
+        self.fill_date_fields(_previous_year_date)
+        self.click_continue_button()
+        self.expect_alert_text("Enter a date on or after the start of the school year")
+        self.click_back()
+
+    def create_session_in_next_academic_year(self) -> None:
+        _next_year_date = get_offset_date_compact_format(offset_days=365)
+        self.add_or_change_session_dates()
+        self.fill_date_fields(_next_year_date)
+        self.click_continue_button()
+        self.expect_alert_text(
+            "Enter a date on or before the end of the current school year"
+        )
+        self.click_back()
 
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
         programme_names = [str(programme) for programme in programmes]
