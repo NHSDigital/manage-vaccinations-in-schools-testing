@@ -141,3 +141,39 @@ def test_download_school_moves_csv(
     download_school_moves_page.verify_school_moves_csv_contents(
         school_moves_csv, children, school
     )
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    setup_confirm_and_ignore,
+    dashboard_page,
+    accessibility_helper,
+    school_moves_page,
+    download_school_moves_page,
+    children,
+):
+    """
+    Test: Check accessibility of the school moves page.
+    Steps:
+    1. Setup: Ensure school moves exist by confirming/ignoring moves for two children.
+    2. Navigate to the school moves page.
+    3. Run accessibility checks on the page.
+    Verification:
+    - The school moves page passes accessibility checks.
+    """
+    child = children[Programme.HPV][0]
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_school_moves()
+    accessibility_helper.check_accessibility()
+
+    school_moves_page.click_download()
+    accessibility_helper.check_accessibility()
+
+    download_school_moves_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    dashboard_page.click_mavis()
+    dashboard_page.click_school_moves()
+    school_moves_page.click_child(*child.name)
+    accessibility_helper.check_accessibility()
