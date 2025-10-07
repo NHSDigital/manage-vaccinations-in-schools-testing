@@ -22,6 +22,7 @@ from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
     get_current_datetime,
     get_current_datetime_compact,
+    get_day_month_year_from_compact_date,
     get_offset_date_compact_format,
     get_todays_date,
     reload_until_element_is_visible,
@@ -564,16 +565,40 @@ class SessionsPage:
         self.search_button.click()
 
     @step("Fill date fields with {1}")
-    def fill_date_fields(self, date: str) -> None:
-        day = date[-2:]
-        month = date[4:6]
-        year = date[:4]
+    def fill_date_fields(self, date: str, *, edit_existing_date: bool = False) -> None:
+        day, month, year = get_day_month_year_from_compact_date(date)
 
-        if not self.day_textbox.last.is_visible():
-            self.add_another_date_button.click()
-        self.day_textbox.last.fill(day)
-        self.month_textbox.last.fill(month)
-        self.year_textbox.last.fill(year)
+        if (
+            not self.day_textbox.first.is_visible()
+            or self.day_textbox.first.input_value() != ""
+        ):
+            self.click_add_another_date()
+
+        if edit_existing_date:
+            self.day_textbox.first.fill(day)
+            self.month_textbox.first.fill(month)
+            self.year_textbox.first.fill(year)
+        else:
+            self.day_textbox.last.fill(day)
+            self.month_textbox.last.fill(month)
+            self.year_textbox.last.fill(year)
+
+    def session_date_already_scheduled(self, date: str) -> bool:
+        day, month, year = get_day_month_year_from_compact_date(date)
+
+        for i in range(len(self.day_textbox.all())):
+            if (
+                self.day_textbox.nth(i).input_value() == day
+                and self.month_textbox.nth(i).input_value() == month
+                and self.year_textbox.nth(i).input_value() == year
+            ):
+                return True
+
+        return False
+
+    @step("Add another date")
+    def click_add_another_date(self) -> None:
+        self.add_another_date_button.click()
 
     @step("Click on Record offline")
     def download_offline_recording_excel(self) -> Path:
@@ -651,7 +676,8 @@ class SessionsPage:
     def __schedule_session(self, date: str) -> None:
         self.schedule_or_edit_session()
         self.add_or_change_session_dates()
-        self.fill_date_fields(date)
+        if not self.session_date_already_scheduled(date):
+            self.fill_date_fields(date)
         self.click_continue_button()
 
     def schedule_or_edit_session(self) -> None:
@@ -665,7 +691,8 @@ class SessionsPage:
     def __edit_session(self, date: str) -> None:
         self.click_edit_session()
         self.click_change_session_dates()
-        self.fill_date_fields(date)
+        if not self.session_date_already_scheduled(date):
+            self.fill_date_fields(date, edit_existing_date=True)
         self.click_continue_button()
         self.click_save_changes()
         expect(
@@ -707,14 +734,12 @@ class SessionsPage:
         if not self.page.get_by_text(
             self.__get_display_formatted_date(date_to_format=todays_date),
         ).is_visible():
-            self.schedule_a_valid_session(for_today=True)
+            self.schedule_a_valid_session(offset_days=0)
 
     def schedule_a_valid_session(
         self,
-        *,
-        for_today: bool = False,
+        offset_days: int = 7,
     ) -> None:
-        offset_days = 0 if for_today else 7
         _future_date = get_offset_date_compact_format(
             offset_days=offset_days, skip_weekends=True
         )
@@ -760,11 +785,14 @@ class SessionsPage:
         _invalid_date = "20251332"
         self.click_session_for_programme_group(location, programme_group)
         self.__schedule_session(_invalid_date)
+        self.expect_alert_text("Enter a date")
+        self.click_back()
 
     def create_session_in_previous_academic_year(self) -> None:
         _previous_year_date = get_offset_date_compact_format(offset_days=-365)
         self.add_or_change_session_dates()
-        self.fill_date_fields(_previous_year_date)
+        if not self.session_date_already_scheduled(_previous_year_date):
+            self.fill_date_fields(_previous_year_date)
         self.click_continue_button()
         self.expect_alert_text("Enter a date on or after the start of the school year")
         self.click_back()
@@ -772,7 +800,8 @@ class SessionsPage:
     def create_session_in_next_academic_year(self) -> None:
         _next_year_date = get_offset_date_compact_format(offset_days=365)
         self.add_or_change_session_dates()
-        self.fill_date_fields(_next_year_date)
+        if not self.session_date_already_scheduled(_next_year_date):
+            self.fill_date_fields(_next_year_date)
         self.click_continue_button()
         self.expect_alert_text(
             "Enter a date on or before the end of the current school year"

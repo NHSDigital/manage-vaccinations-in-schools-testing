@@ -72,6 +72,7 @@ def test_session_lifecycle(setup_tests, schools, dashboard_page, sessions_page):
     school = schools[Programme.HPV][0]
 
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
+    sessions_page.schedule_a_valid_session(offset_days=14)
     sessions_page.schedule_a_valid_session()
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
