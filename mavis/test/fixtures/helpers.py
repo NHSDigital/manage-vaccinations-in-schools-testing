@@ -67,51 +67,6 @@ def schedule_session_and_get_consent_url(
 
 
 @pytest.fixture
-def schedule_all_sessions_and_get_consent_url(
-    set_feature_flags,
-    nurse,
-    team,
-    dashboard_page,
-    log_in_page,
-    sessions_page,
-):
-    def wrapper(schools: list[School], *programmes: Programme):
-        try:
-            url = None
-
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-
-            for idx, school in enumerate(schools):
-                dashboard_page.navigate()
-                dashboard_page.click_sessions()
-                sessions_page.click_session_for_programme_group(
-                    school, programmes[0].group
-                )
-                sessions_page.schedule_a_valid_session()
-                if idx == 0:
-                    url = sessions_page.get_online_consent_url(*programmes)
-
-            log_in_page.log_out()
-
-            if url is None:
-                msg = "No schools provided"
-                raise ValueError(msg)
-
-            yield url
-        finally:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            for school in schools:
-                dashboard_page.navigate()
-                dashboard_page.click_sessions()
-                sessions_page.delete_all_sessions(school)
-            log_in_page.log_out()
-
-    return wrapper
-
-
-@pytest.fixture
 def log_in_as_medical_secretary(
     set_feature_flags,
     medical_secretary,

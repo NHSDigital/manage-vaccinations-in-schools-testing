@@ -14,31 +14,13 @@ def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def url_with_all_sessions_scheduled(schedule_all_sessions_and_get_consent_url, schools):
-    yield from schedule_all_sessions_and_get_consent_url(
-        schools[Programme.HPV.group],
-        Programme.HPV,
-    )
-
-
-@pytest.fixture
-def start_consent_with_one_session_scheduled(
-    url_with_session_scheduled, page, start_page
-):
+def start_consent_with_session_scheduled(url_with_session_scheduled, page, start_page):
     page.goto(url_with_session_scheduled)
     start_page.start()
 
 
-@pytest.fixture
-def start_consent_with_all_sessions_scheduled(
-    url_with_all_sessions_scheduled, page, start_page
-):
-    page.goto(url_with_all_sessions_scheduled)
-    start_page.start()
-
-
 def test_consent_refused_for_hpv_vaccination(
-    start_consent_with_one_session_scheduled, online_consent_page, schools, children
+    start_consent_with_session_scheduled, online_consent_page, schools, children
 ):
     """
     Test: Submit an online consent form refusing HPV vaccination and
@@ -68,20 +50,14 @@ def test_consent_refused_for_hpv_vaccination(
 
 
 @pytest.mark.parametrize(
-    "change_school",
-    [False, True],
-    ids=lambda v: f"change_school: {v}",
-)
-@pytest.mark.parametrize(
     "yes_to_health_questions",
     [False, True],
     ids=lambda v: f"yes_to_health_questions: {v}",
 )
 def test_consent_given_for_hpv_vaccination(
-    start_consent_with_one_session_scheduled,
+    start_consent_with_session_scheduled,
     online_consent_page,
     schools,
-    change_school,
     yes_to_health_questions,
     children,
 ):
@@ -102,9 +78,7 @@ def test_consent_given_for_hpv_vaccination(
     schools = schools[Programme.HPV]
     number_of_health_questions = len(Programme.health_questions(Programme.HPV))
 
-    online_consent_page.fill_details(
-        child, child.parents[0], schools, change_school=change_school
-    )
+    online_consent_page.fill_details(child, child.parents[0], schools)
     online_consent_page.agree_to_hpv_vaccination()
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
