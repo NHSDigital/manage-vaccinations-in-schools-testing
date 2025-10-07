@@ -1,0 +1,141 @@
+name: Accessibility tests
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      tests:
+        description: 'Tests to run (leave blank to run all tests!)'
+        required: false
+        default: ''
+      device:
+        description: 'Device to test'
+        required: true
+        default: 'Desktop Chrome'
+        type: choice
+        options:
+          - Desktop Chrome
+          - Desktop Edge
+          - Desktop Firefox
+          - Desktop Safari
+          - Galaxy S9+
+          - Pixel 7
+          - iPad (gen 7) landscape
+          - iPhone 15
+      programmes:
+        description: 'Programmes to use (HPV, MENACWY, TD_IPV, FLU)'
+        required: true
+        default: 'HPV,MENACWY,TD_IPV,FLU'
+      environment:
+        description: 'Environment to run tests on'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - qa
+          - training
+          - sandbox-alpha
+          - sandbox-beta
+      screenshot_all_steps:
+        description: 'Take screenshots for all steps (in addition to failures)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      set_feature_flags:
+        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      additional_feature_flags:
+        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        required: false
+        default: ''
+
+jobs:
+  test:
+    permissions:
+      contents: write
+    
+    name: Functional tests
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: "Europe/London"
+
+    steps:
+      - name: Set variables
+        id: set-variables
+        run: |
+          declare -A env_map=(
+            [qa]="https://qa.mavistesting.com"
+            [training]="https://training.manage-vaccinations-in-schools.nhs.uk"
+            [sandbox-alpha]="https://sandbox-alpha.mavistesting.com"
+            [sandbox-beta]="https://sandbox-beta.mavistesting.com"
+          )
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "tests=" >> $GITHUB_OUTPUT
+            echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
+            echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
+            echo "programmes=HPV,MENACWY,TD_IPV,FLU" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=false" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=" >> $GITHUB_OUTPUT
+            echo "deploy_report=false" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
+          else
+            echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
+            echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
+
+            input_env="${{ github.event.inputs.environment }}"
+            url="${env_map[$input_env]:-${env_map[qa]}}"
+            echo "environment=$url" >> $GITHUB_OUTPUT
+
+            echo "programmes=${{ github.event.inputs.programmes }}" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "deploy_report=true" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@v5
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: /home/runner/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+
+      - name: Run tests
+        uses: ./.github/actions/run-functional-tests
+        with:
+          tests: ${{ steps.set-variables.outputs.tests }}
+          accessibility_tests: 'true'
+          device: ${{ steps.set-variables.outputs.device }}
+          base_url: ${{ steps.set-variables.outputs.environment }}
+          programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
+          screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
+          additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
+        env:
+          BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+          IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
+          IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
+          IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
+          IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
+
+      - name: Process reports
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        uses: ./.github/actions/deploy-reports
+        with:
+          device: ${{ steps.set-variables.outputs.device }}
+          environment: ${{ github.event.inputs.environment }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

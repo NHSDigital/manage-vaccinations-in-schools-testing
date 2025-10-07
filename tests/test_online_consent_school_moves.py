@@ -179,3 +179,53 @@ def test_online_consent_school_moves_with_new_patient(
     )
 
     log_in_page.log_out()
+
+
+@pytest.mark.accessibility
+def test_accessibility(
+    start_consent_with_session_scheduled,
+    online_consent_page,
+    schools,
+    children,
+    accessibility_helper,
+):
+    """
+    Test: Validate accessibility of online consent pages when changing schools.
+    Steps:
+    1. Go through submitting online consent, checking accessibility on each page.
+    Verification:
+    - No accessibility violations found.
+    """
+    child = children[Programme.FLU][0]
+    schools = schools[Programme.FLU]
+
+    online_consent_page.fill_child_name_details(*child.name)
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.fill_child_date_of_birth(child.date_of_birth)
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.click_no_they_go_to_a_different_school()
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.fill_school_name(str(schools[1]))
+    online_consent_page.click_continue()
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.fill_parent_details(child.parents[0])
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.fill_address_details(*child.address)
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.answer_health_questions(
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
+        yes_to_health_questions=False,
+    )
+    accessibility_helper.check_accessibility()
+
+    online_consent_page.click_confirm()
+    accessibility_helper.check_accessibility()
