@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
@@ -71,12 +73,12 @@
           </elementProp>
           <elementProp name="User" elementType="Argument">
             <stringProp name="Argument.name">User</stringProp>
-            <stringProp name="Argument.value">${__P(User, nurse.jackie@example.org)}</stringProp>
+            <stringProp name="Argument.value">${__P(User, nurse.perftest@example.com)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="URN" elementType="Argument">
             <stringProp name="Argument.name">URN</stringProp>
-            <stringProp name="Argument.value">${__P(URN, 100006)}</stringProp>
+            <stringProp name="Argument.value">${__P(URN, 104698)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -128,7 +130,7 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Prep" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Prep">
           <stringProp name="TestPlan.comments">Login, get all sessions for a particular URN, set them all in progress</stringProp>
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
@@ -393,7 +395,7 @@ for(loop=1;loop&lt;=vaccineCount;loop++){
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="sessionLoop" enabled="true">
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="sessionLoop">
             <stringProp name="LoopController.loops">3</stringProp>
           </LoopController>
           <hashTree>
@@ -432,7 +434,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
               </JSR223PostProcessor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Sessions" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Sessions">
               <stringProp name="HTTPSampler.path">sessions</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -443,7 +445,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Sessions/edit" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Sessions/edit">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -495,11 +497,11 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Sessions/dates" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET draft-session/dates">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
-              <stringProp name="HTTPSampler.path">sessions/${ConsentSession}/dates</stringProp>
+              <stringProp name="HTTPSampler.path">draft-session/dates</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -509,7 +511,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
                 <collectionProp name="HeaderManager.headers">
                   <elementProp name="sec-ch-ua" elementType="Header">
                     <stringProp name="Header.name">sec-ch-ua</stringProp>
@@ -526,17 +528,17 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/dates&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
-                <stringProp name="RegexExtractor.match_number">2</stringProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-546414053">&lt;title&gt;When will sessions be held? – Manage vaccinations in schools&lt;/title&gt;</stringProp>
                 </collectionProp>
@@ -546,18 +548,18 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 <intProp name="Assertion.test_type">16</intProp>
               </ResponseAssertion>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get unused dates" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get unused dates">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">sessionDatesArray</stringProp>
-                <stringProp name="RegexExtractor.regex">\[(.d?)\]\[value\(3i\)].*?value=&quot;(.*?)&quot;.*?value\(2i\)].*?value=&quot;(.*?)&quot;.*?value\(1i\)].*?value=&quot;(.*?)&quot;&gt;[\s\S]*?type=&quot;hidden&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="RegexExtractor.template">session%5Bsession_dates_attributes%5D%5B$1$%5D%5Bvalue%283i%29%5D=$2$&amp;session%5Bsession_dates_attributes%5D%5B$1$%5D%5Bvalue%282i%29%5D=$3$&amp;session%5Bsession_dates_attributes%5D%5B$1$%5D%5Bvalue%281i%29%5D=$4$&amp;session%5Bsession_dates_attributes%5D%5B$1$%5D%5Bid%5D=$5$&amp;</stringProp>
+                <stringProp name="RegexExtractor.regex">session_date_(.\d?)\]\[value\(3i\)\].*?value=&quot;(.*?)&quot;.*?value=&quot;(.*?)&quot;.*?value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">draft_session%5Bsession_date_$1$%5D%5Bvalue%283i%29%5D=$2$&amp;draft_session%5Bsession_date_$1$%5D%5Bvalue%282i%29%5D=$3$&amp;draft_session%5Bsession_date_$1$%5D%5Bvalue%281i%29%5D=$4$&amp;</stringProp>
                 <stringProp name="RegexExtractor.default"></stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
-                <stringProp name="RegexExtractor.match_number">1</stringProp>
+                <stringProp name="RegexExtractor.match_number">-1</stringProp>
                 <stringProp name="TestPlan.comments">This regex gets all the dates that are unused and therefore have day, month, year and ID</stringProp>
               </RegexExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get used dates" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get used dates">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">useddatesArray</stringProp>
                 <stringProp name="RegexExtractor.regex">cannot be changed[\s\S]*?value=\&quot;(\d*)&quot;[\s\S]*?attributes\]\[(\d*)\]</stringProp>
@@ -569,11 +571,11 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Session/dates (add another)" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates (add another)">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
-              <stringProp name="HTTPSampler.path">sessions/${ConsentSession}/dates</stringProp>
+              <stringProp name="HTTPSampler.path">draft-session/dates</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -582,21 +584,32 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 <collectionProp name="Arguments.arguments">
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">_method=put&amp;authenticity_token=${Authenticity_Token}&amp;${sessionDatesArray}add_another=</stringProp>
+                    <stringProp name="Argument.value">_method=put&amp;authenticity_token=${Authenticity_Token}&amp;${sessionDatesArray}draft_session%5B_add_another%5D=true</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>
                 </collectionProp>
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor">
                 <stringProp name="scriptLanguage">groovy</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
                 <stringProp name="cacheKey">true</stringProp>
-                <stringProp name="script">if(vars.get(&quot;sessionDatesArray&quot;)==&quot;&quot;){
-	vars.put(&quot;sessionDatesArray&quot;,vars.get(&quot;useddatesArray&quot;))
+                <stringProp name="script">numberOfDates=vars.get(&quot;sessionDatesArray_matchNr&quot;).toInteger()
+
+fullArray=&quot;&quot;
+for(loop=1;loop&lt;=numberOfDates;loop++){
+	fullArray=fullArray &amp; vars.get(&quot;sessionDatesArray_&quot; &amp; loop.toString())
 }
+
+vars.put(&quot;sessionDatesArray&quot;,fullArray)
+
+//Will need to fix this
+//if(vars.get(&quot;sessionDatesArray&quot;)==&quot;&quot;){
+//	vars.put(&quot;sessionDatesArray&quot;,vars.get(&quot;useddatesArray&quot;))
+//}
+
 </stringProp>
               </JSR223PreProcessor>
               <hashTree/>
@@ -621,7 +634,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-546414053">&lt;title&gt;When will sessions be held? – Manage vaccinations in schools&lt;/title&gt;</stringProp>
                 </collectionProp>
@@ -631,7 +644,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 <intProp name="Assertion.test_type">16</intProp>
               </ResponseAssertion>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">NewSessionNum</stringProp>
                 <stringProp name="RegexExtractor.regex">session_dates_attributes]\[(\d*)\]\[value\(3i\)\]&quot; type=&quot;text&quot; inputmode=&quot;numeric&quot;&gt;</stringProp>
@@ -641,13 +654,29 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
               <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/dates&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
+              </RegexExtractor>
+              <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Sessions/dates (new date)" enabled="true">
+            <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler">
+              <boolProp name="displayJMeterProperties">false</boolProp>
+              <boolProp name="displayJMeterVariables">true</boolProp>
+              <boolProp name="displaySystemProperties">false</boolProp>
+            </DebugSampler>
+            <hashTree/>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates (new date)">
               <stringProp name="TestPlan.comments">This adds tomorrow as a session date, if it already exists then it will intentionally fail</stringProp>
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
-              <stringProp name="HTTPSampler.path">sessions/${ConsentSession}/dates</stringProp>
+              <stringProp name="HTTPSampler.path">draft-session/dates</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -663,7 +692,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor">
                 <stringProp name="scriptLanguage">groovy</stringProp>
                 <stringProp name="parameters"></stringProp>
                 <stringProp name="filename"></stringProp>
@@ -679,27 +708,40 @@ highestunused=0;
 highestused=0;
 postbody=&quot;_method=put&amp;&quot;;
 postbody=postbody + &quot;authenticity_token=&quot; + vars.get(&quot;Authenticity_Token&quot;) + &quot;&amp;&quot;;
-postbody=postbody + vars.get(&quot;sessionDatesArray&quot;); //might need multiples here
+postbody=postbody + vars.get(&quot;sessionDatesArray&quot;); 
+
 
 def today = new java.util.Date();
 day=today.next().format(&quot;dd&quot;);
 month=today.next().format(&quot;MM&quot;);
 year=today.next().format(&quot;yyyy&quot;);
 
-postbody=postbody + &quot;session%5Bsession_dates_attributes%5D%5B&quot; + vars.get(&quot;NewSessionNum&quot;) + &quot;%5D%5Bvalue%283i%29%5D=&quot; + day + &quot;&amp;&quot;;
-postbody=postbody + &quot;session%5Bsession_dates_attributes%5D%5B&quot; + vars.get(&quot;NewSessionNum&quot;) + &quot;%5D%5Bvalue%282i%29%5D=&quot; + month + &quot;&amp;&quot;;
-postbody=postbody + &quot;session%5Bsession_dates_attributes%5D%5B&quot; + vars.get(&quot;NewSessionNum&quot;) + &quot;%5D%5Bvalue%281i%29%5D=&quot; + year;
+// sessionDatesArray_matchNr contains the number of existing dates, however as it&apos;s zero base it means it can also be used for the next in the array
+
+postbody=postbody + &quot;draft_session%5Bsession_date_&quot; + vars.get(&quot;sessionDatesArray_matchNr&quot;) + &quot;%5D%5Bvalue%283i%29%5D=&quot; + day + &quot;&amp;&quot;;
+postbody=postbody + &quot;draft_session%5Bsession_date_&quot; + vars.get(&quot;sessionDatesArray_matchNr&quot;) + &quot;%5D%5Bvalue%282i%29%5D=&quot; + month + &quot;&amp;&quot;;
+postbody=postbody + &quot;draft_session%5Bsession_date_&quot; + vars.get(&quot;sessionDatesArray_matchNr&quot;) + &quot;%5D%5Bvalue%281i%29%5D=&quot; + year;
 
 vars.put(&quot;postbody&quot;,postbody);
 </stringProp>
               </JSR223PreProcessor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/confirm&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Check for error">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">DateAlreadyUsed</stringProp>
+                <stringProp name="RegexExtractor.regex">Error: &lt;/span&gt;(.*?)&lt;/p&gt;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">noError</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
@@ -737,11 +779,70 @@ vars.put(&quot;postbody&quot;,postbody);
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress" enabled="true">
+            <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller">
+              <stringProp name="IfController.condition">${__jexl3(&quot;${DateAlreadyUsed}&quot; == &quot;noError&quot;)}</stringProp>
+              <boolProp name="IfController.evaluateAll">false</boolProp>
+              <boolProp name="IfController.useExpression">true</boolProp>
+            </IfController>
+            <hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/confirm (new confirm requirement)">
+                <boolProp name="HTTPSampler.image_parser">true</boolProp>
+                <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
+                <intProp name="HTTPSampler.concurrentPool">6</intProp>
+                <stringProp name="HTTPSampler.path">draft-session/confirm</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">_method=put&amp;authenticity_token=${Authenticity_Token}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="sec-ch-ua" elementType="Header">
+                      <stringProp name="Header.name">sec-ch-ua</stringProp>
+                      <stringProp name="Header.value">&quot;Not(A:Brand&quot;;v=&quot;99&quot;, &quot;Google Chrome&quot;;v=&quot;133&quot;, &quot;Chromium&quot;;v=&quot;133&quot;</stringProp>
+                    </elementProp>
+                    <elementProp name="sec-ch-ua-mobile" elementType="Header">
+                      <stringProp name="Header.name">sec-ch-ua-mobile</stringProp>
+                      <stringProp name="Header.value">?0</stringProp>
+                    </elementProp>
+                    <elementProp name="sec-ch-ua-platform" elementType="Header">
+                      <stringProp name="Header.name">sec-ch-ua-platform</stringProp>
+                      <stringProp name="Header.value">&quot;macOS&quot;</stringProp>
+                    </elementProp>
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value"> application/x-www-form-urlencoded</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="594760089">Overview</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.custom_message"></stringProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">16</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
+            <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress">
               <boolProp name="TransactionController.includeTimers">false</boolProp>
             </TransactionController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions list" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions list">
                 <stringProp name="HTTPSampler.path">sessions</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -752,7 +853,7 @@ vars.put(&quot;postbody&quot;,postbody);
                 </elementProp>
               </HTTPSamplerProxy>
               <hashTree/>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session">
                 <boolProp name="HTTPSampler.image_parser">true</boolProp>
                 <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
                 <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -814,7 +915,7 @@ vars.put(&quot;postbody&quot;,postbody);
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress">
                 <stringProp name="HTTPSampler.path">sessions/${ConsentSession}/make-in-progress</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1155,7 +1256,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Next Patient from STS">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Next Patient from STS" enabled="true">
           <stringProp name="TestPlan.comments">While there is only one patient list for consents, I&apos;m applying consent for all programmes and ignoring the programme value in the STS file</stringProp>
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">9191</stringProp>
@@ -1269,19 +1370,19 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="End user if no more patients">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="End user if no more patients" enabled="true">
           <stringProp name="IfController.condition">${__jexl3(&quot;${Result}&quot; == &quot;KO&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Stop on no data">
+          <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Stop on no data" enabled="true">
             <intProp name="ActionProcessor.action">0</intProp>
             <intProp name="ActionProcessor.target">0</intProp>
             <stringProp name="ActionProcessor.duration">0</stringProp>
           </TestAction>
           <hashTree>
-            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Search failed">
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Search failed" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
