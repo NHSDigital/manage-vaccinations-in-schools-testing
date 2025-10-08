@@ -91,6 +91,7 @@ __all__ = [
     "log_in_as_nurse",
     "log_in_as_prescriber",
     "log_in_page",
+    "log_out_page",
     "match_consent_response_page",
     "medical_secretary",
     "nurse",
