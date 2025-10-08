@@ -40,3 +40,23 @@ class LogInPage:
         if self.select_a_team_heading.is_visible():
             self.page.get_by_role("radio", name=team.name).check()
             self.continue_button.click()
+
+
+class LogOutPage:
+    def __init__(self, page: Page) -> None:
+        self.page = page
+        self.log_out_button = page.locator("#main-content").get_by_role(
+            "button", name="Log out"
+        )
+        self.log_out_header = page.get_by_role("heading", name="Log out")
+        self.start_page_link = page.get_by_role("link", name="Start now")
+
+    @step("Go to Log out page")
+    def go_to_log_out_page(self) -> None:
+        self.page.goto(self.page.url.replace("dashboard", "logout"))
+
+    @step("Verify log out page")
+    def verify_log_out_page(self) -> None:
+        expect(self.log_out_header).to_be_visible()
+        self.log_out_button.click()
+        expect(self.start_page_link).to_be_visible()

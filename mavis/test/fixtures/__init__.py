@@ -41,6 +41,7 @@ from .pages import (
     flipper_page,
     import_records_page,
     log_in_page,
+    log_out_page,
     match_consent_response_page,
     online_consent_page,
     programmes_page,
