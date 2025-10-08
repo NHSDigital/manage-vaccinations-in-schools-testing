@@ -644,7 +644,7 @@ class SessionsPage:
     def click_sessions(self) -> None:
         self.sessions_link.click()
 
-    def __schedule_session(self, on_date: str) -> None:
+    def __schedule_session(self, on_date: str, *, expect_error: bool = False) -> None:
         _day = on_date[-2:]
         _month = on_date[4:6]
         _year = on_date[:4]
@@ -657,6 +657,8 @@ class SessionsPage:
             self.click_change_session_dates()
         self.fill_date_fields(_day, _month, _year)
         self.click_continue_button()
+        if expect_error:
+            self.expect_alert_text("There is a problemEnter a date")
 
     def __edit_session(self, to_date: str) -> None:
         _day = to_date[-2:]
@@ -697,15 +699,6 @@ class SessionsPage:
         detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
         expect(detail_value).to_contain_text(value)
-
-    def expect_not_to_have_details(self, key: str, value: str) -> None:
-        detail_key = self.page.locator(
-            ".nhsuk-summary-list__key",
-            has_text=re.compile(f"^{key}$"),
-        ).first
-        detail_value = detail_key.locator("xpath=following-sibling::*[1]")
-
-        expect(detail_value).not_to_contain_text(value)
 
     def ensure_session_scheduled_for_today(
         self, location: str, programme_group: str
@@ -765,13 +758,9 @@ class SessionsPage:
             self.click_sessions()
 
     def create_invalid_session(self, location: str, programme_group: str) -> None:
-        _invalid_date = "20260532"
+        _invalid_date = "20251332"
         self.click_session_for_programme_group(location, programme_group)
-        self.__schedule_session(on_date=_invalid_date)
-        self.expect_not_to_have_details(
-            "Session dates",
-            "32 May 2026",
-        )
+        self.__schedule_session(on_date=_invalid_date, expect_error=True)
 
     def get_online_consent_url(self, *programmes: list[Programme]) -> str:
         programme_names = [str(programme) for programme in programmes]
