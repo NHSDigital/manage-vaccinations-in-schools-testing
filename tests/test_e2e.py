@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import ConsentOption, Programme, VaccinationRecord
+from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
 
 pytestmark = pytest.mark.e2e
 
@@ -27,9 +27,9 @@ def setup_session_with_file_upload(
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             batch_names = [
-                add_vaccine_batch(prog.vaccines[0])
-                for prog in Programme
-                if prog.group == programme_group
+                add_vaccine_batch(vaccine, vaccine.replace(" ", "") + "123")
+                for vaccine in Vaccine
+                if vaccine.programme.group == programme_group
             ]
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
@@ -166,7 +166,9 @@ def test_recording_doubles_vaccination_e2e(
     """
     child = children["doubles"][0]
     schools = schools["doubles"]
-    menquadfi_batch_name, revaxis_batch_name = setup_session_for_doubles
+    menquadfi_batch_name = setup_session_for_doubles[0]
+    revaxis_batch_name = setup_session_for_doubles[-1]
+
     number_of_health_questions = (
         online_consent_page.get_number_of_health_questions_for_programmes(
             [Programme.MENACWY, Programme.TD_IPV],

@@ -1,3 +1,4 @@
+from datetime import datetime
 from io import StringIO
 
 import pandas as pd
@@ -37,6 +38,9 @@ class ProgrammesPage:
         }
         self.change_outcome_link = page.get_by_role("link", name="Change   outcome")
         self.change_site_link = page.get_by_role("link", name="Change   site")
+        self.change_time_link = page.get_by_role("link", name="Change   time")
+        self.hour_textbox = page.get_by_role("textbox", name="Hour")
+        self.minute_textbox = page.get_by_role("textbox", name="Minute")
         self.they_refused_it_radio_button = page.get_by_role(
             "radio",
             name="They refused it",
@@ -85,6 +89,15 @@ class ProgrammesPage:
     @step("Click on Change site")
     def click_change_site(self) -> None:
         self.change_site_link.click()
+
+    @step("Click on Change time")
+    def click_change_time(self) -> None:
+        self.change_time_link.click()
+
+    @step("Change time of delivery")
+    def change_time_of_delivery(self, new_vaccination_time: datetime) -> None:
+        self.hour_textbox.fill(str(new_vaccination_time.hour))
+        self.minute_textbox.fill(str(new_vaccination_time.minute))
 
     @step("Click delivery site {1}")
     def click_delivery_site(self, delivery_site: DeliverySite) -> None:
