@@ -95,7 +95,7 @@ def test_logout_page(log_in_page, log_out_page, users, team):
     - After logging out, the start page link is visible.
     """
     log_in_page.log_in_and_choose_team_if_necessary(users["nurse"], team)
-    log_out_page.go_to_log_out_page()
+    log_out_page.navigate()
     log_out_page.verify_log_out_page()
 
 
