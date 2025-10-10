@@ -58,16 +58,14 @@ def test_online_consent_school_moves_with_existing_patient(
 ):
     """
     Test: Submit online flu consent for an existing child and
-    change schools to a school with no sessions scheduled.
+    change schools.
     Steps:
-    1. Fill in child and parent details and submit consent with the first method.
-    2. Submit a second consent for the same child with the
-       second method (different parent).
-    3. Navigate to the session and consent tab.
-    4. Search for the child and verify the correct consent method is shown.
+    1. Fill in child and parent details and change schools.
+    2. Verify the school move is created in Mavis and confirm it.
+    3. Navigate to the session at the new school and go to consent tab.
+    4. Search for the child and verify the correct consent appears.
     Verification:
-    - The consent method displayed in the session matches the expected method
-      from the last consent.
+    - The consent method displayed in the session matches the expected method.
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
@@ -124,17 +122,15 @@ def test_online_consent_school_moves_with_new_patient(
     team,
 ):
     """
-    Test: Submit online flu consent for child not in mavis and change schools
-    to a school with no sessions scheduled.
+    Test: Submit online flu consent for a new child and
+    change schools.
     Steps:
-    1. Fill in child and parent details and submit consent with the first method.
-    2. Submit a second consent for the same child with the
-       second method (different parent).
-    3. Navigate to the session and consent tab.
-    4. Search for the child and verify the correct consent method is shown.
+    1. Fill in child and parent details and change schools.
+    2. Verify the school move is created in Mavis and confirm it.
+    3. Navigate to the session at the new school and go to consent tab.
+    4. Search for the child and verify the correct consent appears.
     Verification:
-    - The consent method displayed in the session matches the expected method
-      from the last consent.
+    - The consent method displayed in the session matches the expected method.
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
