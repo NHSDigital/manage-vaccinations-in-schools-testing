@@ -15,6 +15,7 @@ from mavis.test.pages import (
     FlipperPage,
     ImportRecordsPage,
     LogInPage,
+    LogOutPage,
     MatchConsentResponsePage,
     OnlineConsentPage,
     ProgrammesPage,
@@ -144,3 +145,8 @@ def vaccines_page(page: Page) -> VaccinesPage:
 @pytest.fixture
 def verbal_consent_page(page: Page) -> VerbalConsentPage:
     return VerbalConsentPage(page)
+
+
+@pytest.fixture
+def log_out_page(page: Page) -> LogOutPage:
+    return LogOutPage(page)

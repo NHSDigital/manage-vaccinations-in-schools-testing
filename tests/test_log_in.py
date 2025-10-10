@@ -81,6 +81,24 @@ def test_login_with_valid_credentials(
     log_in_page.log_out()
 
 
+def test_logout_page(log_in_page, log_out_page, users, team):
+    """
+    Test: Verify the log out page functionality.
+    Steps:
+    1. Navigate to the log in page (autouse fixture).
+    2. Log in as a nurse and choose team if necessary.
+    3. Navigate to the log out page.
+    4. Verify the log out page is displayed correctly.
+    5. Click the log out button and verify redirection to the start page.
+    Verification:
+    - Log out page is displayed with the correct heading.
+    - After logging out, the start page link is visible.
+    """
+    log_in_page.log_in_and_choose_team_if_necessary(users["nurse"], team)
+    log_out_page.navigate()
+    log_out_page.verify_log_out_page()
+
+
 @pytest.mark.accessibility
 def test_accessibility(accessibility_helper, dashboard_page, log_in_page, users, team):
     """
