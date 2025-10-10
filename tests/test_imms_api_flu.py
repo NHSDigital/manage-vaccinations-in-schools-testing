@@ -212,7 +212,6 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
 
     programmes_page.click_edit_vaccination_record()
-    programmes_page.page.pause()
     programmes_page.click_change_time()
     new_vaccination_time = random_datetime_earlier_today(vaccination_time)
     programmes_page.change_time_of_delivery(new_vaccination_time)
