@@ -11,7 +11,7 @@ on:
         description: "Create and import a cohort (not needed if there are already enough patients)"
         required: true
         type: boolean
-        default: true
+        default: false
       runConsent:
         description: "Run consent journey"
         required: true
@@ -52,10 +52,10 @@ on:
         type: string
         default: '1000'
       user:
-        description: "Optional (default Nurse Jackie) user."
+        description: "Optional (default Nurse perftest) user."
         required: true
         type: string
-        default: 'nurse.jackie@example.org'
+        default: 'nurse.perftest@example.com'
 
 jobs:
   nurse_journey_performance_test:
@@ -166,6 +166,7 @@ jobs:
               -JURN=${{inputs.URN}}
 
       - name: Upload consent journey JMeter output
+        if: inputs.runConsent == true
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
@@ -194,6 +195,7 @@ jobs:
               -JURN=${{inputs.URN}}
 
       - name: Upload nurse journey JMeter output
+        if: inputs.runNurse == true
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
@@ -201,6 +203,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Publish report to GH Pages
+        if: inputs.runNurse == true
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
