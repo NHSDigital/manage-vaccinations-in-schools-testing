@@ -22,9 +22,9 @@ on:
           - iPad (gen 7) landscape
           - iPhone 15
       programmes:
-        description: 'Programmes to use (HPV, MENACWY, TD_IPV, FLU)'
+        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
         required: true
-        default: 'HPV,MENACWY,TD_IPV,FLU'
+        default: FLU,HPV,MENACWY,MMR,TD_IPV
       environment:
         description: 'Environment to run tests on'
         required: true
