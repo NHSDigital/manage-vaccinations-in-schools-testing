@@ -96,6 +96,7 @@ class Programme(StrEnum):
     FLU = "flu"
     HPV = "HPV"
     MENACWY = "MenACWY"
+    MMR = "MMR"
     TD_IPV = "Td/IPV"
 
     @property
@@ -182,6 +183,8 @@ class Programme(StrEnum):
                 return list(range(12))
             case self.HPV:
                 return list(range(8, 12))
+            case self.MMR:
+                return list(range(12))
             case self.MENACWY | self.TD_IPV:
                 return list(range(9, 12))
 
