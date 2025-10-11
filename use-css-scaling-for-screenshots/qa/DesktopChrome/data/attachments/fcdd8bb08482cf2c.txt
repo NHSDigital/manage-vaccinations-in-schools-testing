@@ -1,0 +1,1 @@
+AllValidValues, Homeschooled, UnknownSchool, YearGroupEmpty, UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3

@@ -1,0 +1,12 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+Test: A PSD can be created for a child and the vaccination can be
+   administered by a healthcare assistant.
+Steps:
+1. Import child records and set up a session with PSD enabled.
+2. Record verbal consent with PSD option for the child.
+3. Verify the PSD is created.
+4. Log in as a healthcare assistant and administer the vaccination.
+Verification:
+- The PSD is correctly created and the vaccination is recorded without errors.
+","43310","test_delivering_vaccination_after_psd","tests","Thu Sep 25 12:01:29 BST 2025","passed","Thu Sep 25 12:02:12 BST 2025","","test_psd","",""
