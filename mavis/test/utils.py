@@ -35,6 +35,13 @@ def get_current_datetime_compact() -> str:
     return get_current_datetime().strftime("%Y%m%d%H%M%S")
 
 
+def get_day_month_year_from_compact_date(compact_date: str) -> tuple[str, str, str]:
+    day = compact_date[-2:]
+    month = compact_date[4:6]
+    year = compact_date[:4]
+    return day, month, year
+
+
 def get_current_time_hms_format() -> str:
     return get_current_datetime().strftime("%H:%M:%S")
 
