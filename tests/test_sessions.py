@@ -374,6 +374,31 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
     sessions_page.download_consent_form(Programme.HPV)
 
 
+def test_editing_session_programmes(setup_fixed_child, sessions_page, children):
+    """
+    Test: Edit the programmes of an existing session and verify changes.
+    Steps:
+    1. Open a session with a fixed child.
+    2. Edit the session to change its programmes.
+    3. Save changes and verify the updated programmes are reflected.
+    4. Verify the Flu tab appears for a child in the session.
+    Verification:
+    - Session programmes are updated correctly without errors.
+    """
+    child = children[Programme.HPV][0]
+
+    sessions_page.click_edit_session()
+    sessions_page.click_change_programmes()
+    sessions_page.add_programme(Programme.FLU)
+    sessions_page.click_continue_button()
+    sessions_page.expect_details("Programmes", "Flu HPV")
+    sessions_page.click_save_changes()
+    sessions_page.expect_session_to_have_programmes([Programme.FLU, Programme.HPV])
+    sessions_page.click_consent_tab()
+    sessions_page.click_child(child)
+    sessions_page.click_programme_tab(Programme.FLU)
+
+
 @pytest.mark.accessibility
 def test_accessibility(
     setup_fixed_child,

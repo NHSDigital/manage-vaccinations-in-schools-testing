@@ -195,6 +195,9 @@ class SessionsPage:
         self.change_psd_link = self.page.get_by_role(
             "link", name="Change   use patient specific direction"
         )
+        self.change_programmes_link = self.page.get_by_role(
+            "link", name="Change   programmes"
+        )
         self.notes_length_error = (
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
@@ -382,6 +385,24 @@ class SessionsPage:
     @step("Click on Edit session")
     def click_edit_session(self) -> None:
         self.edit_session_link.click()
+
+    @step("Click on Change programmes")
+    def click_change_programmes(self) -> None:
+        self.change_programmes_link.click()
+
+    def add_programme(self, programme: Programme) -> None:
+        self.page.get_by_role("checkbox", name=programme).check()
+
+    def expect_session_to_have_programmes(self, programmes: list[Programme]) -> None:
+        if len(programmes) == 1:
+            expected_text = str(programmes[0])
+        else:
+            expected_text = (
+                ", ".join(str(programme) for programme in programmes[:-1])
+                + " and "
+                + str(programmes[-1])
+            )
+        expect(self.page.get_by_text(expected_text)).to_be_visible()
 
     @step("Click on Change session dates")
     def click_change_session_dates(self) -> None:
