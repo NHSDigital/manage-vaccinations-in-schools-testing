@@ -217,6 +217,9 @@ class SessionsPage:
             "link",
             name="Record vaccinations",
         )
+        self.keep_session_dates_button = self.page.get_by_role(
+            "button", name="Keep session dates"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -748,28 +751,48 @@ class SessionsPage:
         expect(detail_value).to_contain_text(value)
 
     def ensure_session_scheduled_for_today(
-        self, location: str, programme_group: str
+        self, location: str, programme_group: str, *, expect_dates_check: bool = False
     ) -> None:
         self.click_session_for_programme_group(location, programme_group)
         todays_date = get_todays_date().strftime("%Y%m%d")
         if not self.page.get_by_text(
             self.__get_display_formatted_date(date_to_format=todays_date),
         ).is_visible():
-            self.schedule_a_valid_session(offset_days=0)
+            self.schedule_a_valid_session(
+                offset_days=0, expect_dates_check=expect_dates_check
+            )
 
     def schedule_a_valid_session(
         self,
         offset_days: int = 7,
+        *,
+        expect_dates_check: bool = False,
     ) -> None:
         _future_date = get_offset_date_compact_format(
             offset_days=offset_days, skip_weekends=True
         )
         self.__schedule_session(date=_future_date)
+
+        if expect_dates_check:
+            self.click_keep_session_dates()
+
         self.expect_details(
             "Session dates",
             self.__get_display_formatted_date(date_to_format=_future_date),
         )
         self.click_save_changes()
+
+    @step("Click Keep session dates")
+    def click_keep_session_dates(self) -> None:
+        self.keep_session_dates_button.click()
+
+    def is_catch_up(self, programme: Programme, year_group: int) -> bool:
+        if programme is Programme.MMR:
+            return True
+        if programme is Programme.FLU:
+            return False
+
+        return year_group != programme.year_groups[0]
 
     def edit_a_session_to_today(self, location: str, programme_group: str) -> None:
         _future_date = get_offset_date_compact_format(offset_days=0, skip_weekends=True)
