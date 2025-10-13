@@ -1045,10 +1045,14 @@ class SessionsPage:
     def click_back_to_record_vaccinations(self) -> None:
         self.record_vaccinations_breadcrumb.click()
 
-    def check_tally_for_category(self, category: str) -> None:
+    def check_tally_for_category(self, programme: Programme, category: str) -> None:
         self.click_overview_tab()
         self.show_tallying()
-        assert self.get_total_for_category(category) == 1
+        for programme_category in programme.tally_categories:
+            if programme_category == category:
+                assert self.get_total_for_category(programme_category) == 1
+            else:
+                assert self.get_total_for_category(programme_category) == 0
 
     def show_tallying(self) -> None:
         self.page.goto(self.page.url + "?tallying=true")

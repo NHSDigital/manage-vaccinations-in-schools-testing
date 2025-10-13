@@ -6,6 +6,7 @@ from mavis.test.models import (
     ConsentOption,
     ConsentRefusalReason,
     Programme,
+    TallyCategory,
     VaccinationRecord,
     Vaccine,
 )
@@ -84,7 +85,7 @@ def test_tallying(
     batch_name = setup_fixed_child[Vaccine.FLUENZ]
     school = schools[Programme.FLU][0]
 
-    sessions_page.check_tally_for_category("No response")
+    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.NO_RESPONSE)
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
@@ -93,7 +94,9 @@ def test_tallying(
     verbal_consent_page.record_parent_positive_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
-    sessions_page.check_tally_for_category("Consent given for injection")
+    sessions_page.check_tally_for_category(
+        Programme.FLU, TallyCategory.CONSENT_GIVEN_FOR_INJECTION
+    )
 
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)
@@ -106,13 +109,15 @@ def test_tallying(
     verbal_consent_page.click_withdraw_consent()
     sessions_page.click_back()
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category("Contraindicated or did not consent")
+    sessions_page.check_tally_for_category(
+        Programme.FLU, TallyCategory.CONTRAINDICATED_OR_DID_NOT_CONSENT
+    )
 
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)
     sessions_page.invalidate_parent_refusal(child.parents[0])
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category("No response")
+    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.NO_RESPONSE)
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
@@ -123,11 +128,13 @@ def test_tallying(
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY,
     )
-    sessions_page.check_tally_for_category("Consent given for nasal spray")
+    sessions_page.check_tally_for_category(
+        Programme.FLU, TallyCategory.CONSENT_GIVEN_FOR_NASAL_SPRAY
+    )
 
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccination_for_child(
         VaccinationRecord(child, Programme.FLU, batch_name, ConsentOption.BOTH)
     )
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category("Vaccinated")
+    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.VACCINATED)
