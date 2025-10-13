@@ -81,6 +81,12 @@ class VerbalConsentPage:
         self.notes_length_error = (
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
+        self.withdraw_consent_button = self.page.get_by_role(
+            "button", name="Withdraw consent"
+        )
+        self.withdraw_consent_notes_textbox = self.page.get_by_role(
+            "textbox", name="Notes"
+        )
 
     @step("Click Continue")
     def click_continue(self) -> None:
@@ -363,3 +369,9 @@ class VerbalConsentPage:
     def fill_assessment_notes_with_string_of_length(self, length: int) -> None:
         notes = generate_random_string(target_length=length, generate_spaced_words=True)
         self.fill_assessment_notes(notes)
+
+    def click_withdraw_consent(self) -> None:
+        self.withdraw_consent_button.click()
+
+    def give_withdraw_consent_notes(self, notes: str) -> None:
+        self.withdraw_consent_notes_textbox.fill(notes)
