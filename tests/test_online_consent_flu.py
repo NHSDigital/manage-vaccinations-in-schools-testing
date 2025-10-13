@@ -180,9 +180,11 @@ def test_flu_consent_method_displayed_correctly(
        second method (different parent).
     3. Navigate to the session and consent tab.
     4. Search for the child and verify the correct consent method is shown.
+    5. Verify the pattern of consent details text in the offline excel.
     Verification:
     - The consent method displayed in the session matches the expected method
       from the last consent.
+    - The consent details in the excel download match the expected pattern.
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
