@@ -24,9 +24,9 @@ on:
           - iPad (gen 7) landscape
           - iPhone 15
       programmes:
-        description: 'Programmes to use (HPV, MENACWY, TD_IPV, FLU)'
+        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
         required: true
-        default: 'HPV,MENACWY,TD_IPV,FLU'
+        default: FLU,HPV,MENACWY,MMR,TD_IPV
       environment:
         description: 'Environment to run tests on'
         required: true
@@ -79,11 +79,11 @@ jobs:
             [sandbox-alpha]="https://sandbox-alpha.mavistesting.com"
             [sandbox-beta]="https://sandbox-beta.mavistesting.com"
           )
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "schedule" ]]; then
             echo "tests=" >> $GITHUB_OUTPUT
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
             echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
-            echo "programmes=HPV,MENACWY,TD_IPV,FLU" >> $GITHUB_OUTPUT
+            echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV" >> $GITHUB_OUTPUT
             echo "set_feature_flags=false" >> $GITHUB_OUTPUT
             echo "additional_feature_flags=" >> $GITHUB_OUTPUT
             echo "deploy_report=false" >> $GITHUB_OUTPUT
