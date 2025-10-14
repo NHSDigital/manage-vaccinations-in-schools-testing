@@ -202,6 +202,10 @@ class Vaccine(StrEnum):
     MENVEO = "Menveo"
     NIMENRIX = "Nimenrix"
 
+    # MMR
+    MMR_VAXPRO = "MMR VaxPro"
+    PRIORIX = "Priorix"
+
     # Td/IPV
     REVAXIS = "Revaxis"
 
@@ -226,6 +230,8 @@ class Vaccine(StrEnum):
             Vaccine.MENVEO: Programme.MENACWY,
             Vaccine.NIMENRIX: Programme.MENACWY,
             Vaccine.REVAXIS: Programme.TD_IPV,
+            Vaccine.MMR_VAXPRO: Programme.MMR,
+            Vaccine.PRIORIX: Programme.MMR,
         }
         return programme_mapping[self]
 
