@@ -7,7 +7,6 @@ import urllib.parse
 import uuid
 
 import jwt
-import nhs_number
 import pytest
 import requests
 from faker import Faker
@@ -17,15 +16,12 @@ from mavis.test.models import (
     Clinic,
     Onboarding,
     Organisation,
-    Parent,
     Programme,
-    Relationship,
     School,
     Subteam,
     Team,
     User,
 )
-from mavis.test.utils import get_date_of_birth_for_year_group, normalize_postcode
 
 logger = logging.getLogger(__name__)
 
@@ -156,31 +152,9 @@ def team(onboarding) -> Team:
 
 @pytest.fixture
 def children(year_groups) -> dict[str, list[Child]]:
-    def _generate_children(n: int, year_group: int) -> list[Child]:
-        return [
-            Child(
-                first_name=onboarding_faker.first_name(),
-                last_name=onboarding_faker.last_name().upper(),
-                nhs_number=nhs_number.generate(
-                    for_region=nhs_number.REGION_SYNTHETIC,
-                )[0],
-                address=(
-                    onboarding_faker.secondary_address(),
-                    onboarding_faker.street_name(),
-                    onboarding_faker.city(),
-                    normalize_postcode(onboarding_faker.postcode()),
-                ),
-                date_of_birth=get_date_of_birth_for_year_group(year_group),
-                year_group=year_group,
-                parents=(Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
-            )
-            for _ in range(n)
-        ]
-
-    return {
-        programme.group: _generate_children(2, year_groups[programme.group])
-        for programme in Programme
-    }
+    return Child.generate_children_in_year_group_for_each_programme_group(
+        2, year_groups
+    )
 
 
 def _read_imms_api_credentials() -> dict[str, str]:

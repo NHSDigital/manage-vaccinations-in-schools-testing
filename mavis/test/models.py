@@ -5,11 +5,16 @@ from datetime import date
 from enum import StrEnum
 from typing import NamedTuple
 
+import nhs_number
 import requests
 from attr import dataclass
 from faker import Faker
 
-from mavis.test.utils import normalize_whitespace
+from mavis.test.utils import (
+    get_date_of_birth_for_year_group,
+    normalize_postcode,
+    normalize_whitespace,
+)
 
 faker = Faker("en_GB")
 
@@ -554,6 +559,40 @@ class Child(NamedTuple):
     @property
     def name(self) -> tuple[str, str]:
         return self.first_name, self.last_name
+
+    @classmethod
+    def generate(cls, year_group: int) -> "Child":
+        return cls(
+            first_name=faker.first_name(),
+            last_name=faker.last_name().upper(),
+            nhs_number=nhs_number.generate(
+                for_region=nhs_number.REGION_SYNTHETIC,
+            )[0],
+            address=(
+                faker.secondary_address(),
+                faker.street_name(),
+                faker.city(),
+                normalize_postcode(faker.postcode()),
+            ),
+            date_of_birth=get_date_of_birth_for_year_group(year_group),
+            year_group=year_group,
+            parents=(Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
+        )
+
+    @classmethod
+    def generate_children_for_year_group(cls, n: int, year_group: int) -> list["Child"]:
+        return [cls.generate(year_group) for _ in range(n)]
+
+    @classmethod
+    def generate_children_in_year_group_for_each_programme_group(
+        cls, n: int, year_group_dict: dict[str, int]
+    ) -> dict[str, list["Child"]]:
+        return {
+            programme.group: cls.generate_children_for_year_group(
+                n, year_group_dict[programme.group]
+            )
+            for programme in Programme
+        }
 
 
 class ImmsEndpoints(StrEnum):
