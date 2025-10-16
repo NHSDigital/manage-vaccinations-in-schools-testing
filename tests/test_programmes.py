@@ -34,9 +34,9 @@ def upload_vaccination(
 
     try:
         dashboard_page.click_sessions()
-        catch_up = sessions_page.is_catch_up(Programme.HPV, year_group)
         sessions_page.ensure_session_scheduled_for_today(
-            school, Programme.HPV, expect_dates_check=catch_up
+            school,
+            Programme.HPV,
         )
         sessions_page.click_import_class_lists()
         import_records_page.import_class_list(
