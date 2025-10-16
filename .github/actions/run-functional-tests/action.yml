@@ -1,5 +1,5 @@
-name: "Run Tests"
-description: "Execute tests"
+name: 'Run Tests'
+description: 'Execute tests'
 inputs:
   tests:
     default: ''
@@ -10,7 +10,7 @@ inputs:
   base_url:
     required: true
   programmes_enabled:
-    required: true
+    default: 'FLU,HPV,MENACWY,MMR,TD_IPV'
   screenshot_all_steps:
     required: true
   set_feature_flags:
