@@ -579,6 +579,21 @@ class Child(NamedTuple):
             parents=(Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
         )
 
+    @classmethod
+    def generate_children_for_year_group(cls, n: int, year_group: int) -> list["Child"]:
+        return [cls.generate(year_group) for _ in range(n)]
+
+    @classmethod
+    def generate_children_in_year_group_for_each_programme_group(
+        cls, n: int, year_group_dict: dict[str, int]
+    ) -> dict[str, list["Child"]]:
+        return {
+            programme.group: cls.generate_children_for_year_group(
+                n, year_group_dict[programme.group]
+            )
+            for programme in Programme
+        }
+
 
 class ImmsEndpoints(StrEnum):
     AUTH = "/oauth2/token"

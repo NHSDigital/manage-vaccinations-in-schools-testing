@@ -152,16 +152,9 @@ def team(onboarding) -> Team:
 
 @pytest.fixture
 def children(year_groups) -> dict[str, list[Child]]:
-    def _generate_children(n: int, year_group: int) -> list[Child]:
-        return [
-            Child.generate(year_group)
-            for _ in range(n)
-        ]
-
-    return {
-        programme.group: _generate_children(2, year_groups[programme.group])
-        for programme in Programme
-    }
+    return Child.generate_children_in_year_group_for_each_programme_group(
+        2, year_groups
+    )
 
 
 def _read_imms_api_credentials() -> dict[str, str]:
