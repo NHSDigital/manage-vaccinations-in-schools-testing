@@ -390,7 +390,7 @@ class School(NamedTuple):
                 "type": "school",
                 "status": "open",
                 "is_attached_to_team": "false",
-                "year_groups[]": [str(year_group)],
+                "gias_year_groups[]": [str(year_group)],
             }
 
             response = requests.get(url, params=params, timeout=30)
