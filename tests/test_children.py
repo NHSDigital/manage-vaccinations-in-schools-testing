@@ -54,7 +54,9 @@ def setup_mav_853(
     schools,
     dashboard_page,
     import_records_page,
-    programmes_page,
+    programmes_list_page,
+    programme_overview_page,
+    programme_children_page,
     sessions_page,
     year_groups,
 ):
@@ -72,7 +74,9 @@ def setup_mav_853(
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
-        programmes_page.navigate_to_cohort_import(Programme.HPV)
+        programmes_list_page.click_programme_for_current_year(Programme.HPV)
+        programme_overview_page.click_children_tab()
+        programme_children_page.click_import_child_records()
         import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
