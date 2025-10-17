@@ -305,7 +305,7 @@ class SessionsPage:
         self.search_textbox.fill(str(location))
         self.search_button.click()
 
-        self.page.get_by_role("link", name=str(location)).click()
+        self.page.get_by_role("link", name=str(location)).first.click()
 
         ten_seconds_ms = 10000
 
