@@ -952,11 +952,15 @@ class SessionsPage:
             f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
         )
         flu_consent_section = patient_card.locator("p:has-text('Flu')")
+        reload_until_element_is_visible(self.page, flu_consent_section)
+
         expect(flu_consent_section).to_contain_text("Consent given")
         if option is ConsentOption.INJECTION:
-            expect(flu_consent_section).to_contain_text("injected")
+            method_locator = flu_consent_section.get_by_text("injected")
         else:
-            expect(flu_consent_section).to_contain_text("nasal spray")
+            method_locator = flu_consent_section.get_by_text("nasal spray")
+
+        reload_until_element_is_visible(self.page, method_locator)
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
