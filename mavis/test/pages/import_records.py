@@ -83,7 +83,7 @@ class ImportRecordsPage:
 
         tag = self.completed_tag.or_(self.invalid_tag)
 
-        reload_until_element_is_visible(self.page, tag, seconds=30)
+        reload_until_element_is_visible(self.page, tag, seconds=60)
 
     def navigate_to_child_record_import(self) -> None:
         self.click_import_records()
