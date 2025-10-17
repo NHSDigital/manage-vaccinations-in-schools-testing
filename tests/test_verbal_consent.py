@@ -199,7 +199,7 @@ def test_parent_provides_consent_twice(
     verbal_consent_page.select_parent(child.parents[0])
     verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
     verbal_consent_page.record_parent_positive_consent(yes_to_health_questions=True)
-    sessions_page.select_consent_given()
+    sessions_page.select_consent_given_filters_for_programme(Programme.HPV)
 
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
     verbal_consent_page.update_triage_outcome_positive()
@@ -260,7 +260,7 @@ def test_conflicting_consent_with_gillick_consent(
     verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
     verbal_consent_page.record_parent_positive_consent()
 
-    sessions_page.select_consent_given()
+    sessions_page.select_consent_given_filters_for_programme(Programme.HPV)
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
     verbal_consent_page.select_parent(child.parents[1])
@@ -281,7 +281,7 @@ def test_conflicting_consent_with_gillick_consent(
     verbal_consent_page.record_child_positive_consent()
     verbal_consent_page.expect_text_in_alert(f"Consent recorded for {child!s}")
 
-    sessions_page.select_consent_given()
+    sessions_page.select_consent_given_filters_for_programme(Programme.HPV)
     sessions_page.click_child(child)
     sessions_page.click_programme_tab(Programme.HPV)
     sessions_page.expect_consent_status(Programme.HPV, "Consent given")

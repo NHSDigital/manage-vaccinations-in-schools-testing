@@ -49,6 +49,7 @@ class SessionsPage:
         self.consent_given_checkbox = self.page.get_by_role(
             "checkbox",
             name="Consent given",
+            exact=True,
         )
         self.consent_given_for_injected_vaccine_checkbox = self.page.get_by_role(
             "checkbox",
@@ -220,6 +221,9 @@ class SessionsPage:
         self.keep_session_dates_button = self.page.get_by_role(
             "button", name="Keep session dates"
         )
+        self.did_not_consent_link = self.page.get_by_role(
+            "link", name="Did not consent"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -235,9 +239,9 @@ class SessionsPage:
     def click_psds_tab(self) -> None:
         self._select_tab("PSDs")
 
-    @step("Click Review consent refused")
-    def click_review_consent_refused(self) -> None:
-        self.review_consent_refused_link.click()
+    @step("Click Did not consent")
+    def click_did_not_consent(self) -> None:
+        self.did_not_consent_link.click()
 
     @step("Expect Consent refused checkbox to be checked")
     def expect_consent_refused_checkbox_to_be_checked(self) -> None:
@@ -261,6 +265,19 @@ class SessionsPage:
     @step("Select Consent given for nasal spray")
     def select_consent_given_for_nasal_spray(self) -> None:
         self.consent_given_for_nasal_spray_checkbox.check()
+        self.update_results_button.click()
+
+    def select_consent_given_filters_for_programme(
+        self,
+        programme: Programme,
+    ) -> None:
+        if programme is not Programme.FLU:
+            self.consent_given_for_injected_vaccine_checkbox.or_(
+                self.consent_given_checkbox
+            ).check()
+        else:
+            self.consent_given_for_injected_vaccine_checkbox.check()
+            self.consent_given_for_nasal_spray_checkbox.check()
         self.update_results_button.click()
 
     @step("Select Conflicting consent")
@@ -397,15 +414,8 @@ class SessionsPage:
         self.page.get_by_role("checkbox", name=programme).check()
 
     def expect_session_to_have_programmes(self, programmes: list[Programme]) -> None:
-        if len(programmes) == 1:
-            expected_text = str(programmes[0])
-        else:
-            expected_text = (
-                ", ".join(str(programme) for programme in programmes[:-1])
-                + " and "
-                + str(programmes[-1])
-            )
-        expect(self.page.get_by_text(expected_text)).to_be_visible()
+        for programme in programmes:
+            expect(self.page.get_by_role("heading", name=programme)).to_be_visible()
 
     @step("Click on Change session dates")
     def click_change_session_dates(self) -> None:
