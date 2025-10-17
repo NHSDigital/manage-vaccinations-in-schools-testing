@@ -43,6 +43,14 @@ on:
         options:
           - true
           - false
+      enable_reruns:
+        description: 'Enable test reruns on failure (up to 3 attempts)'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
       set_feature_flags:
         description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
         required: true
@@ -87,6 +95,7 @@ jobs:
             echo "additional_feature_flags=" >> $GITHUB_OUTPUT
             echo "deploy_report=false" >> $GITHUB_OUTPUT
             echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
+            echo "enable_reruns=true" >> $GITHUB_OUTPUT
           else
             echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
             echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
@@ -100,6 +109,7 @@ jobs:
             echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
             echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
+            echo "enable_reruns=${{ github.event.inputs.enable_reruns }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v5
@@ -119,6 +129,7 @@ jobs:
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
           screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          enable_reruns: ${{ steps.set-variables.outputs.enable_reruns }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}

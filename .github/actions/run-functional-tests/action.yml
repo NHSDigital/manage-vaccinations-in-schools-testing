@@ -13,6 +13,8 @@ inputs:
     default: 'FLU,HPV,MENACWY,MMR,TD_IPV'
   screenshot_all_steps:
     required: true
+  enable_reruns:
+    default: 'true'
   set_feature_flags:
     default: 'false'
   additional_feature_flags:
@@ -46,8 +48,18 @@ runs:
         fi
       shell: bash
 
+    - name: Determine if reruns are enabled
+      id: reruns
+      run: |
+        if [ "${{ inputs.enable_reruns }}" = "true" ]; then
+          echo "reruns=--reruns 2" >> $GITHUB_OUTPUT
+        else
+          echo "reruns=" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
     - name: Run tests
-      run: uv run pytest --reruns 2 -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: uv run pytest ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}

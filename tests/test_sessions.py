@@ -146,7 +146,7 @@ def test_session_search_functionality(setup_random_child, sessions_page):
 
 @issue("MAV-1381")
 @pytest.mark.bug
-def test_consent_filters_and_refusal_checkbox(
+def test_consent_filters(
     setup_fixed_child,
     sessions_page,
     verbal_consent_page,
@@ -171,7 +171,7 @@ def test_consent_filters_and_refusal_checkbox(
     verbal_consent_page.record_parent_refuse_consent()
 
     sessions_page.click_overview_tab()
-    sessions_page.click_review_consent_refused()
+    sessions_page.click_did_not_consent()
     sessions_page.expect_consent_refused_checkbox_to_be_checked()
 
 
@@ -393,6 +393,7 @@ def test_editing_session_programmes(setup_fixed_child, sessions_page, children):
     sessions_page.click_continue_button()
     sessions_page.expect_details("Programmes", "Flu HPV")
     sessions_page.click_save_changes()
+    sessions_page.page.pause()
     sessions_page.expect_session_to_have_programmes([Programme.FLU, Programme.HPV])
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)
