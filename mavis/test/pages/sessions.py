@@ -5,7 +5,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.data import TestData
@@ -113,7 +113,7 @@ class SessionsPage:
         self.close_session_link = self.page.get_by_role("link", name="Close session")
         self.change_session_dates_link = self.page.get_by_role(
             "link",
-            name="Change session dates",
+            name="Change   session dates",
         )
         self.delete_button = self.page.get_by_role("button", name="Delete")
         self.back_link = self.page.get_by_role("link", name="Back", exact=True).first
@@ -714,10 +714,12 @@ class SessionsPage:
             self.fill_date_fields(date)
         self.click_continue_button()
 
+    @step("Go to Edit session page")
     def schedule_or_edit_session(self) -> None:
         locator = self.schedule_sessions_link.or_(self.edit_session_link).first
         locator.click()
 
+    @step("Go to Change session dates page")
     def add_or_change_session_dates(self) -> None:
         locator = self.add_session_dates_link.or_(self.change_session_dates_link).first
         locator.click()
@@ -950,11 +952,7 @@ class SessionsPage:
         child: Child,
         option: ConsentOption,
     ) -> None:
-        patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
-        )
-        flu_consent_section = patient_card.locator("p:has-text('Flu')")
-        reload_until_element_is_visible(self.page, flu_consent_section)
+        flu_consent_section = self.get_flu_consent_status_locator_from_search(child)
 
         expect(flu_consent_section).to_contain_text("Consent given")
         if option is ConsentOption.INJECTION:
@@ -963,6 +961,15 @@ class SessionsPage:
             method_locator = flu_consent_section.get_by_text("nasal spray")
 
         reload_until_element_is_visible(self.page, method_locator)
+
+    def get_flu_consent_status_locator_from_search(self, child: Child) -> Locator:
+        patient_card = self.page.locator(
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
+        )
+        flu_consent_section = patient_card.locator("p:has-text('Flu')")
+        reload_until_element_is_visible(self.page, flu_consent_section)
+
+        return flu_consent_section
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
