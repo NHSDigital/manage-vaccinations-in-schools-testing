@@ -771,15 +771,17 @@ class SessionsPage:
             self.__get_display_formatted_date(date_to_format=todays_date),
         ).is_visible():
             self.schedule_a_valid_session(
-                offset_days=0,
+                offset_days=0, skip_weekends=False
             )
 
     def schedule_a_valid_session(
         self,
         offset_days: int = 7,
+        *,
+        skip_weekends: bool = True,
     ) -> None:
         _future_date = get_offset_date_compact_format(
-            offset_days=offset_days, skip_weekends=True
+            offset_days=offset_days, skip_weekends=skip_weekends
         )
         self.__schedule_session(date=_future_date)
 
@@ -805,7 +807,7 @@ class SessionsPage:
         return year_group != programme.year_groups[0]
 
     def edit_a_session_to_today(self, location: str, programme_group: str) -> None:
-        _future_date = get_offset_date_compact_format(offset_days=0, skip_weekends=True)
+        _future_date = get_offset_date_compact_format(offset_days=0)
         self.click_session_for_programme_group(location, programme_group)
         self.__edit_session(date=_future_date)
 
