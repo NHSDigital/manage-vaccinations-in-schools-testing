@@ -1,0 +1,9 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+Test: Attempt to create an invalid session and verify error handling.
+Steps:
+1. Navigate to sessions page.
+2. Attempt to create a session with invalid data for the school and programme.
+Verification:
+- Error is shown or invalid session is not created.
+","3023","test_create_invalid_session","tests","Wed Oct 08 11:07:12 BST 2025","passed","Wed Oct 08 11:07:15 BST 2025","","test_sessions","",""
