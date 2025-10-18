@@ -189,9 +189,22 @@ def test_bulk_adding_psd(
     sessions_page.answer_whether_psd_should_be_enabled("Yes")
     sessions_page.click_continue_button()
     sessions_page.click_save_changes()
+
+    sessions_page.click_consent_tab()
+    for child in children[Programme.FLU]:
+        sessions_page.get_flu_consent_status_locator_from_search(child)
+
     sessions_page.click_psds_tab()
+    for child in children[Programme.FLU]:
+        sessions_page.search_for(str(child))
+        sessions_page.check_child_does_not_have_psd(child)
+
+    sessions_page.verify_psd_banner_has_patients(2)
+
     sessions_page.click_add_new_psds()
     sessions_page.click_yes_add_psds()
+
+    sessions_page.verify_psd_banner_has_patients(0)
 
     for child in children[Programme.FLU]:
         sessions_page.search_for(str(child))

@@ -5,7 +5,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.data import TestData
@@ -113,7 +113,7 @@ class SessionsPage:
         self.close_session_link = self.page.get_by_role("link", name="Close session")
         self.change_session_dates_link = self.page.get_by_role(
             "link",
-            name="Change session dates",
+            name="Change   session dates",
         )
         self.delete_button = self.page.get_by_role("button", name="Delete")
         self.back_link = self.page.get_by_role("link", name="Back", exact=True).first
@@ -714,10 +714,14 @@ class SessionsPage:
             self.fill_date_fields(date)
         self.click_continue_button()
 
+    @step("Go to Edit session page")
     def schedule_or_edit_session(self) -> None:
         locator = self.schedule_sessions_link.or_(self.edit_session_link).first
+        # temporary wait to prevent page not found error
+        time.sleep(1)
         locator.click()
 
+    @step("Go to Change session dates page")
     def add_or_change_session_dates(self) -> None:
         locator = self.add_session_dates_link.or_(self.change_session_dates_link).first
         locator.click()
@@ -770,9 +774,7 @@ class SessionsPage:
         if not self.page.get_by_text(
             self.__get_display_formatted_date(date_to_format=todays_date),
         ).is_visible():
-            self.schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
+            self.schedule_a_valid_session(offset_days=0, skip_weekends=False)
 
     def schedule_a_valid_session(
         self,
@@ -950,11 +952,7 @@ class SessionsPage:
         child: Child,
         option: ConsentOption,
     ) -> None:
-        patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
-        )
-        flu_consent_section = patient_card.locator("p:has-text('Flu')")
-        reload_until_element_is_visible(self.page, flu_consent_section)
+        flu_consent_section = self.get_flu_consent_status_locator_from_search(child)
 
         expect(flu_consent_section).to_contain_text("Consent given")
         if option is ConsentOption.INJECTION:
@@ -963,6 +961,15 @@ class SessionsPage:
             method_locator = flu_consent_section.get_by_text("nasal spray")
 
         reload_until_element_is_visible(self.page, method_locator)
+
+    def get_flu_consent_status_locator_from_search(self, child: Child) -> Locator:
+        patient_card = self.page.locator(
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
+        )
+        flu_consent_section = patient_card.locator("p:has-text('Flu')")
+        reload_until_element_is_visible(self.page, flu_consent_section)
+
+        return flu_consent_section
 
     @step("Click on {1} vaccination details")
     def click_vaccination_details(self, school: School) -> None:
@@ -988,11 +995,23 @@ class SessionsPage:
             ),
         ).get_by_label(answer).check()
 
+    @step("Check {1} has PSD")
     def check_child_has_psd(self, child: Child) -> None:
         patient_card = self.page.locator(
             f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
         )
-        expect(patient_card).to_contain_text("PSD added")
+        reload_until_element_is_visible(
+            self.page, patient_card.get_by_text("PSD added")
+        )
+
+    @step("Check {1} does not have PSD")
+    def check_child_does_not_have_psd(self, child: Child) -> None:
+        patient_card = self.page.locator(
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
+        )
+        reload_until_element_is_visible(
+            self.page, patient_card.get_by_text("PSD not added")
+        )
 
     @step("Click on Send reminders")
     def click_send_reminders(self, school: School) -> None:
@@ -1011,6 +1030,13 @@ class SessionsPage:
     @step("Click Yes, add PSDs")
     def click_yes_add_psds(self) -> None:
         self.yes_add_psds_button.click()
+
+    @step("Check PSD banner")
+    def verify_psd_banner_has_patients(self, number_of_patients: int) -> None:
+        psd_banner = self.page.get_by_text(
+            f"There are {number_of_patients} children with consent"
+        )
+        reload_until_element_is_visible(self.page, psd_banner)
 
     @step("Go back to Record Vaccinations")
     def click_back_to_record_vaccinations(self) -> None:
