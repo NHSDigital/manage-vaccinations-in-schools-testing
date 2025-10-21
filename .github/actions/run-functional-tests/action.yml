@@ -15,6 +15,8 @@ inputs:
     required: true
   enable_reruns:
     default: 'true'
+  test_workers:
+    default: '4'
   set_feature_flags:
     default: 'false'
   additional_feature_flags:
@@ -59,7 +61,7 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: uv run pytest ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: uv run pytest -n ${{ inputs.test_workers }} ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}

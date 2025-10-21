@@ -86,7 +86,7 @@ class ImmsApiHelper:
         delivery_site: DeliverySite,
         vaccination_time: datetime,
     ) -> None:
-        max_attempts = 5
+        max_attempts = 20
         for attempt in range(max_attempts):
             try:
                 imms_vaccination_record = self._get_imms_api_record_for_child(

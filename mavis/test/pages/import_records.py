@@ -1,3 +1,4 @@
+import time
 from datetime import timedelta
 from pathlib import Path
 
@@ -83,7 +84,7 @@ class ImportRecordsPage:
 
         tag = self.completed_tag.or_(self.invalid_tag)
 
-        reload_until_element_is_visible(self.page, tag, seconds=30)
+        reload_until_element_is_visible(self.page, tag, seconds=60)
 
     def navigate_to_child_record_import(self) -> None:
         self.click_import_records()
@@ -98,6 +99,10 @@ class ImportRecordsPage:
         self.click_continue()
 
         self.page.wait_for_load_state()
+
+        # temp wait for school to appear in Mavis
+        time.sleep(1)
+        self.page.reload()
 
         self.fill_location(location)
         self.page.get_by_role("option", name=str(location)).first.click()
@@ -124,6 +129,8 @@ class ImportRecordsPage:
         _scenario_list = self.test_data.read_scenario_list_from_file(_input_file_path)
 
         self.set_input_file(_input_file_path)
+        # temporary sleep to ensure urn appears in Mavis
+        time.sleep(1)
         self.record_upload_time()
         self.click_continue(_coverage=_scenario_list)
 
