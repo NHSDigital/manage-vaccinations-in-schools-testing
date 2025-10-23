@@ -1047,15 +1047,11 @@ class SessionsPage:
 
     def check_tally_for_category(self, programme: Programme, category: str) -> None:
         self.click_overview_tab()
-        self.show_tallying()
         for programme_category in programme.tally_categories:
             if programme_category == category:
                 assert self.get_total_for_category(programme_category) == 1
             else:
                 assert self.get_total_for_category(programme_category) == 0
-
-    def show_tallying(self) -> None:
-        self.page.goto(self.page.url + "?tallying=true")
 
     def get_total_for_category(self, category: str) -> int:
         category_locator = self.page.locator(

@@ -100,7 +100,7 @@ class HealthQuestion(StrEnum):
 
 class TallyCategory(StrEnum):
     NO_RESPONSE = "No response"
-    CONTRAINDICATED_OR_DID_NOT_CONSENT = "Contraindicated or did not consent"
+    DID_NOT_CONSENT = "Did not consent"
     VACCINATED = "Vaccinated"
     CONSENT_GIVEN = "Consent given"
     CONSENT_GIVEN_FOR_INJECTION = "Consent given for injection"
@@ -206,7 +206,7 @@ class Programme(StrEnum):
     def tally_categories(self) -> list[str]:
         common_categories = [
             TallyCategory.NO_RESPONSE,
-            TallyCategory.CONTRAINDICATED_OR_DID_NOT_CONSENT,
+            TallyCategory.DID_NOT_CONSENT,
             TallyCategory.VACCINATED,
         ]
         if self is self.FLU:

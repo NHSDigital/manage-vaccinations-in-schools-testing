@@ -1,5 +1,6 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import (
     ConsentMethod,
@@ -11,7 +12,7 @@ from mavis.test.models import (
     Vaccine,
 )
 
-pytestmark = pytest.mark.sessions
+pytestmark = pytest.mark.tallying
 
 
 @pytest.fixture
@@ -63,12 +64,12 @@ def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
 
 
+@issue("MAV-1669")
 @pytest.mark.bug
 def test_tallying(
     setup_fixed_child,
     sessions_page,
     verbal_consent_page,
-    dashboard_page,
     children,
     schools,
 ):
@@ -109,9 +110,7 @@ def test_tallying(
     verbal_consent_page.click_withdraw_consent()
     sessions_page.click_back()
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category(
-        Programme.FLU, TallyCategory.CONTRAINDICATED_OR_DID_NOT_CONSENT
-    )
+    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.DID_NOT_CONSENT)
 
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)
