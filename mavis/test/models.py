@@ -26,11 +26,12 @@ class ConsentOption(StrEnum):
 
 
 class PreScreeningCheck(StrEnum):
-    KNOW_VACCINATION = "knows what the vaccination is for, and is happy to have it"
+    KNOW_VACCINATION = "knows what the vaccination is for, and agrees to have it"
     NOT_ACUTELY_UNWELL = "is not acutely unwell"
-    NOT_ALREADY_HAD = "has not already had this vaccination"
+    NO_OTHER_CONTRAINDICATIONS = (
+        "has no other contraindications which prevent vaccination"
+    )
     NOT_PREGNANT = "is not pregnant"
-    NO_RELEVANT_ALLERGIES = "has no allergies which would prevent vaccination"
     NO_RELEVANT_MEDICATION = "is not taking any medication which prevents vaccination"
     NO_ASTHMA_FLARE_UP = (
         "if they have asthma, has not had a flare-up of symptoms in the past 72 hours,"
@@ -165,8 +166,7 @@ class Programme(StrEnum):
     ) -> list[PreScreeningCheck]:
         checks = [
             PreScreeningCheck.NOT_ACUTELY_UNWELL,
-            PreScreeningCheck.NO_RELEVANT_ALLERGIES,
-            PreScreeningCheck.NOT_ALREADY_HAD,
+            PreScreeningCheck.NO_OTHER_CONTRAINDICATIONS,
             PreScreeningCheck.KNOW_VACCINATION,
         ]
 
