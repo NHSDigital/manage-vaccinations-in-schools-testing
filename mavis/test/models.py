@@ -98,6 +98,15 @@ class HealthQuestion(StrEnum):
     FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
 
 
+class TallyCategory(StrEnum):
+    NO_RESPONSE = "No response"
+    DID_NOT_CONSENT = "Did not consent"
+    VACCINATED = "Vaccinated"
+    CONSENT_GIVEN = "Consent given"
+    CONSENT_GIVEN_FOR_INJECTION = "Consent given for injection"
+    CONSENT_GIVEN_FOR_NASAL_SPRAY = "Consent given for nasal spray"
+
+
 class Programme(StrEnum):
     FLU = "flu"
     HPV = "HPV"
@@ -192,6 +201,21 @@ class Programme(StrEnum):
                 return list(range(12))
             case self.MENACWY | self.TD_IPV:
                 return list(range(9, 12))
+
+    @property
+    def tally_categories(self) -> list[str]:
+        common_categories = [
+            TallyCategory.NO_RESPONSE,
+            TallyCategory.DID_NOT_CONSENT,
+            TallyCategory.VACCINATED,
+        ]
+        if self is self.FLU:
+            return [
+                *common_categories,
+                TallyCategory.CONSENT_GIVEN_FOR_INJECTION,
+                TallyCategory.CONSENT_GIVEN_FOR_NASAL_SPRAY,
+            ]
+        return [*common_categories, TallyCategory.CONSENT_GIVEN]
 
 
 class Vaccine(StrEnum):

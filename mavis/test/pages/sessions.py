@@ -224,6 +224,9 @@ class SessionsPage:
         self.did_not_consent_link = self.page.get_by_role(
             "link", name="Did not consent"
         )
+        self.withdraw_consent_link = self.page.get_by_role(
+            "link", name="Withdraw consent"
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -744,15 +747,15 @@ class SessionsPage:
 
     def invalidate_parent_refusal(self, parent: Parent) -> None:
         invalidation_notes = "Invalidation notes."
-        self.page.get_by_role("link", name=parent.full_name).click()
+        self.click_response_from_parent(parent)
         self.click_mark_as_invalid_link()
         self.fill_notes(invalidation_notes)
         self.click_mark_as_invalid_button()
-        self.expect_details("Response", "Consent refusedInvalid")
+        self.expect_details("Response", "Invalid")
         self.expect_details("Notes", invalidation_notes)
 
         self.click_back()
-        self.expect_details("Response", "Consent refusedInvalid")
+        self.expect_details("Response", "Invalid")
         expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
 
     def expect_details(self, key: str, value: str) -> None:
@@ -1041,3 +1044,29 @@ class SessionsPage:
     @step("Go back to Record Vaccinations")
     def click_back_to_record_vaccinations(self) -> None:
         self.record_vaccinations_breadcrumb.click()
+
+    def check_tally_for_category(self, programme: Programme, category: str) -> None:
+        self.click_overview_tab()
+        for programme_category in programme.tally_categories:
+            if programme_category == category:
+                assert self.get_total_for_category(programme_category) == 1
+            else:
+                assert self.get_total_for_category(programme_category) == 0
+
+    def get_total_for_category(self, category: str) -> int:
+        category_locator = self.page.locator(
+            ".nhsuk-card__heading.nhsuk-heading-xs", has_text=category
+        )
+        total_locator = category_locator.locator("xpath=following-sibling::*[1]")
+        return int(total_locator.inner_text())
+
+    @step("Click response from {1}")
+    def click_response_from_parent(self, parent: Parent) -> None:
+        self.page.get_by_role("link", name=parent.full_name).click()
+
+    def click_withdraw_consent(self) -> None:
+        self.withdraw_consent_link.click()
+
+    def go_back_to_session_for_school(self, school: School) -> None:
+        self.page.get_by_role("link", name=school.name).click()
+        expect(self.page.get_by_role("heading", name=school.name).first).to_be_visible()

@@ -47,6 +47,7 @@ markers = [
   "school_moves",
   "sessions",
   "smoke",
+  "tallying",
   "vaccinations",
   "vaccines",
 ]
