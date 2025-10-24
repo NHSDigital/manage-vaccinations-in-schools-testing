@@ -320,6 +320,54 @@ def test_verify_systmone_report_for_menacwy(setup_reports, programmes_page):
     )
 
 
+@pytest.mark.reports
+def test_verify_careplus_report_for_mmr(setup_reports, programmes_page):
+    """
+    Test: Generate and verify CarePlus report for MMR programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate CarePlus report for MMR.
+    Verification:
+    - Report is generated in CarePlus format for MMR.
+    """
+    programmes_page.verify_report_format(
+        programme=Programme.MMR,
+        report_format=ReportFormat.CAREPLUS,
+    )
+
+
+@pytest.mark.reports
+def test_verify_csv_report_for_mmr(setup_reports, programmes_page):
+    """
+    Test: Generate and verify CSV report for MMR programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate CSV report for MMR.
+    Verification:
+    - Report is generated in CSV format for MMR.
+    """
+    programmes_page.verify_report_format(
+        programme=Programme.MMR,
+        report_format=ReportFormat.CSV,
+    )
+
+
+@pytest.mark.reports
+def test_verify_systmone_report_for_mmr(setup_reports, programmes_page):
+    """
+    Test: Generate and verify SystmOne report for MMR programme.
+    Steps:
+    1. Navigate to reports page.
+    2. Generate SystmOne report for MMR.
+    Verification:
+    - Report is generated in SystmOne format for MMR.
+    """
+    programmes_page.verify_report_format(
+        programme=Programme.MMR,
+        report_format=ReportFormat.SYSTMONE,
+    )
+
+
 @pytest.mark.accessibility
 def test_accessibility(
     setup_reports, dashboard_page, accessibility_helper, programmes_page
