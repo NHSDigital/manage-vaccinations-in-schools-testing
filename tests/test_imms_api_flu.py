@@ -105,7 +105,8 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     schools,
     imms_api_helper,
     sessions_page,
-    programmes_page,
+    vaccination_record_page,
+    edit_vaccination_record_page,
     children_page,
 ):
     """
@@ -140,11 +141,11 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     sessions_page.click_vaccination_details(school)
     children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
 
-    programmes_page.click_edit_vaccination_record()
-    programmes_page.click_change_site()
-    programmes_page.click_delivery_site(DeliverySite.RIGHT_ARM_LOWER)
-    programmes_page.click_continue()
-    programmes_page.click_save_changes()
+    vaccination_record_page.click_edit_vaccination_record()
+    edit_vaccination_record_page.click_change_site()
+    edit_vaccination_record_page.click_delivery_site(DeliverySite.RIGHT_ARM_LOWER)
+    edit_vaccination_record_page.click_continue()
+    edit_vaccination_record_page.click_save_changes()
 
     # Step 5: Verify update in IMMS API
     imms_api_helper.check_record_in_imms_api(
@@ -159,11 +160,11 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     sessions_page.click_vaccination_details(school)
     children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
 
-    programmes_page.click_edit_vaccination_record()
-    programmes_page.click_change_outcome()
-    programmes_page.click_they_refused_it()
-    programmes_page.click_continue()
-    programmes_page.click_save_changes()
+    vaccination_record_page.click_edit_vaccination_record()
+    edit_vaccination_record_page.click_change_outcome()
+    edit_vaccination_record_page.click_they_refused_it()
+    edit_vaccination_record_page.click_continue()
+    edit_vaccination_record_page.click_save_changes()
 
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.SEQUIRUS, child)
@@ -176,7 +177,8 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     schools,
     imms_api_helper,
     sessions_page,
-    programmes_page,
+    vaccination_record_page,
+    edit_vaccination_record_page,
     children_page,
 ):
     """
@@ -211,12 +213,12 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     sessions_page.click_vaccination_details(school)
     children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
 
-    programmes_page.click_edit_vaccination_record()
-    programmes_page.click_change_time()
+    vaccination_record_page.click_edit_vaccination_record()
+    edit_vaccination_record_page.click_change_time()
     new_vaccination_time = random_datetime_earlier_today(vaccination_time)
-    programmes_page.change_time_of_delivery(new_vaccination_time)
-    programmes_page.click_continue()
-    programmes_page.click_save_changes()
+    edit_vaccination_record_page.change_time_of_delivery(new_vaccination_time)
+    edit_vaccination_record_page.click_continue()
+    edit_vaccination_record_page.click_save_changes()
 
     # Step 5: Verify update in IMMS API
     imms_api_helper.check_record_in_imms_api(
@@ -231,11 +233,11 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     sessions_page.click_vaccination_details(school)
     children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
 
-    programmes_page.click_edit_vaccination_record()
-    programmes_page.click_change_outcome()
-    programmes_page.click_they_refused_it()
-    programmes_page.click_continue()
-    programmes_page.click_save_changes()
+    vaccination_record_page.click_edit_vaccination_record()
+    edit_vaccination_record_page.click_change_outcome()
+    edit_vaccination_record_page.click_they_refused_it()
+    edit_vaccination_record_page.click_continue()
+    edit_vaccination_record_page.click_save_changes()
 
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.FLUENZ, child)
