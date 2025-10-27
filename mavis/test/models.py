@@ -154,6 +154,7 @@ class Programme(StrEnum):
     ) -> list[HealthQuestion]:
         includes_nasal = consent_option is not ConsentOption.INJECTION
         includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
+        without_gelatine = consent_option is ConsentOption.MMR_WITHOUT_GELATINE
 
         flu_questions = [
             HealthQuestion.ASTHMA_STEROIDS if includes_nasal else None,
@@ -172,6 +173,18 @@ class Programme(StrEnum):
             HealthQuestion.EXTRA_SUPPORT,
         ]
         flu_questions = [q for q in flu_questions if q is not None]
+
+        mmr_questions = [
+            HealthQuestion.MMR_BLEEDING_DISORDER,
+            HealthQuestion.MMR_ANTICOAGULANTS,
+            HealthQuestion.MMR_ALLERGIC_REACTION,
+            HealthQuestion.MMR_ALLERGIC_REACTION_NEOMYCIN,
+            HealthQuestion.MMR_TREATMENT,
+            HealthQuestion.MMR_HOUSEHOLD_IMMUNE_SYSTEM,
+            HealthQuestion.MMR_OTHER_MEDICAL_CONDITIONS,
+            HealthQuestion.MMR_EITHER_GELATINE if not without_gelatine else None,
+        ]
+        mmr_questions = [q for q in mmr_questions if q is not None]
 
         common_doubles_questions = [
             HealthQuestion.BLEEDING_DISORDER,
@@ -195,6 +208,7 @@ class Programme(StrEnum):
                 HealthQuestion.EXTRA_SUPPORT,
             ],
             Programme.FLU: flu_questions,
+            Programme.MMR: mmr_questions,
         }
         return programme_specific_questions[self]
 
