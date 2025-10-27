@@ -167,7 +167,7 @@ jobs:
 
       - name: Upload consent journey JMeter output
         if: inputs.runConsent == true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
@@ -196,7 +196,7 @@ jobs:
 
       - name: Upload nurse journey JMeter output
         if: inputs.runNurse == true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
           path: nurse-output
