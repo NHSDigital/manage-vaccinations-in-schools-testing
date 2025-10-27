@@ -23,6 +23,8 @@ class ConsentOption(StrEnum):
     INJECTION = "Injection"
     NASAL_SPRAY = "Nasal spray"
     BOTH = ""
+    MMR_WITHOUT_GELATINE = "Without gelatine"
+    MMR_EITHER = "Either"
 
 
 class PreScreeningCheck(StrEnum):
@@ -96,6 +98,33 @@ class HealthQuestion(StrEnum):
     )
     ASPIRIN = "Does your child take regular aspirin?"
     FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
+
+    # MMR
+    MMR_BLEEDING_DISORDER = "Does your child have a bleeding disorder"
+    MMR_ANTICOAGULANTS = (
+        "Does your child take blood-thinning medicine (anticoagulants)?"
+    )
+    MMR_ALLERGIC_REACTION = (
+        "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
+        " of MMR or any other measles, mumps or rubella vaccine?"
+    )
+    MMR_ALLERGIC_REACTION_NEOMYCIN = (
+        "Has your child ever had a severe allergic reaction (anaphylaxis) to neomycin?"
+    )
+    MMR_TREATMENT = (
+        "Does your child have a disease or treatment that severely affects"
+        " their immune system?"
+    )
+    MMR_HOUSEHOLD_IMMUNE_SYSTEM = (
+        "Is your child in regular close contact with anyone currently having treatment"
+        " that severely affects their immune system?"
+    )
+    MMR_OTHER_MEDICAL_CONDITIONS = (
+        "Does the child have any other medical conditions we should know about?"
+    )
+    MMR_EITHER_GELATINE = (
+        "Has your child ever had a severe allergic reaction (anaphylaxis) to gelatine?"
+    )
 
 
 class TallyCategory(StrEnum):
