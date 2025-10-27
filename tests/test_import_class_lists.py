@@ -14,8 +14,9 @@ def setup_class_list(
     school = schools[Programme.HPV][0]
     try:
         dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
-        sessions_page.schedule_a_valid_session()
+        sessions_page.ensure_session_scheduled_for_next_week(
+            school, Programme.HPV.group
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         yield

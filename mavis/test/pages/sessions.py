@@ -779,6 +779,16 @@ class SessionsPage:
         ).is_visible():
             self.schedule_a_valid_session(offset_days=0, skip_weekends=False)
 
+    def ensure_session_scheduled_for_next_week(
+        self, location: str, programme_group: str
+    ) -> None:
+        self.click_session_for_programme_group(location, programme_group)
+        future_date = get_offset_date_compact_format(offset_days=7)
+        if not self.page.get_by_text(
+            self.__get_display_formatted_date(date_to_format=future_date),
+        ).is_visible():
+            self.schedule_a_valid_session(offset_days=7)
+
     def schedule_a_valid_session(
         self,
         offset_days: int = 7,
