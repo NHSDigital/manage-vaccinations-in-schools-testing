@@ -17,6 +17,7 @@ from .programmes import (
     ProgrammeSessionsPage,
     ProgrammesListPage,
 )
+from .reports import ReportsDownloadPage, ReportsVaccinationsPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .sessions import SessionsPage
 from .start import StartPage
@@ -46,6 +47,8 @@ __all__ = [
     "ProgrammeOverviewPage",
     "ProgrammeSessionsPage",
     "ProgrammesListPage",
+    "ReportsDownloadPage",
+    "ReportsVaccinationsPage",
     "ReviewSchoolMovePage",
     "SchoolMovesPage",
     "SessionsPage",
