@@ -46,16 +46,16 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         self.page.get_by_role("radio", name=programme).check()
 
     def check_cohort_has_n_children(self, expected_value: int) -> None:
-        cohort_heading = self.page.get_by_role("heading", name="Cohort")
-        cohort_value = cohort_heading.locator("xpath=following-sibling::div[1]")
-        expect(cohort_value).to_have_text(f"{expected_value}children")
+        cohort_heading = self.page.get_by_role("heading", name="Cohort", exact=True)
+        cohort_value = cohort_heading.locator("xpath=following-sibling::*[1]")
+        expect(cohort_value).to_contain_text(f"{expected_value}children")
 
     def check_category_percentage(
-        self, category: str, expected_percentage: float
+        self, category: str, expected_percentage: str
     ) -> None:
-        category_heading = self.page.get_by_role("heading", name=category)
-        category_value = category_heading.locator("xpath=following-sibling::div[1]")
-        expect(category_value).to_have_text(f"{expected_percentage}%")
+        category_heading = self.page.get_by_role("heading", name=category, exact=True)
+        category_value = category_heading.locator("xpath=following-sibling::*[1]")
+        expect(category_value).to_contain_text(f"{expected_percentage}%")
 
 
 class ReportsDownloadPage(ReportsTabsMixin):
@@ -65,7 +65,7 @@ class ReportsDownloadPage(ReportsTabsMixin):
             "radio", name="Aggregate vaccination data"
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
-        self.download_button = self.page.get_by_role("button", name="Download report")
+        self.download_button = self.page.get_by_role("button", name="Download")
 
     @step("Check Aggregate vaccination data radio")
     def check_aggregate_data_radio(self) -> None:
@@ -84,8 +84,8 @@ class ReportsDownloadPage(ReportsTabsMixin):
 
         with self.page.expect_download() as download_info:
             self.click_download_button()
-            download = download_info.value
-            download.save_as(_file_path)
+        download = download_info.value
+        download.save_as(_file_path)
         return pd.read_csv(_file_path)
 
     def check_vaccinated_values(
