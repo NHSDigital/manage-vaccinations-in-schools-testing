@@ -341,7 +341,9 @@ def test_verify_systmone_report_for_menacwy(
 
 
 @pytest.mark.reports
-def test_verify_careplus_report_for_mmr(setup_reports, programmes_page):
+def test_verify_careplus_report_for_mmr(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify CarePlus report for MMR programme.
     Steps:
@@ -350,14 +352,16 @@ def test_verify_careplus_report_for_mmr(setup_reports, programmes_page):
     Verification:
     - Report is generated in CarePlus format for MMR.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.MMR,
+    programmes_list_page.click_programme_for_current_year(Programme.MMR)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
-def test_verify_csv_report_for_mmr(setup_reports, programmes_page):
+def test_verify_csv_report_for_mmr(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify CSV report for MMR programme.
     Steps:
@@ -366,14 +370,16 @@ def test_verify_csv_report_for_mmr(setup_reports, programmes_page):
     Verification:
     - Report is generated in CSV format for MMR.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.MMR,
+    programmes_list_page.click_programme_for_current_year(Programme.MMR)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
 
 @pytest.mark.reports
-def test_verify_systmone_report_for_mmr(setup_reports, programmes_page):
+def test_verify_systmone_report_for_mmr(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify SystmOne report for MMR programme.
     Steps:
@@ -382,8 +388,8 @@ def test_verify_systmone_report_for_mmr(setup_reports, programmes_page):
     Verification:
     - Report is generated in SystmOne format for MMR.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.MMR,
+    programmes_list_page.click_programme_for_current_year(Programme.MMR)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
