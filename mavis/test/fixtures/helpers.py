@@ -51,8 +51,9 @@ def schedule_session_and_get_consent_url(
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             dashboard_page.click_sessions()
-            sessions_page.click_session_for_programme_group(school, programmes[0].group)
-            sessions_page.schedule_a_valid_session()
+            sessions_page.ensure_session_scheduled_for_next_week(
+                school, programmes[0].group
+            )
             url = sessions_page.get_online_consent_url(*programmes)
             log_in_page.log_out()
             yield url

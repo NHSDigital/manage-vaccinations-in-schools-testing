@@ -232,8 +232,7 @@ def test_accessibility(
     dashboard_page.navigate()
     dashboard_page.click_sessions()
 
-    sessions_page.click_session_for_programme_group(school, Programme.FLU)
-    sessions_page.schedule_a_valid_session()
+    sessions_page.ensure_session_scheduled_for_next_week(school, Programme.FLU.group)
     sessions_page.click_edit_session()
     sessions_page.click_change_psd()
     accessibility_helper.check_accessibility()
