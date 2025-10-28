@@ -1,4 +1,10 @@
-from .children import ChildrenPage
+from .children import (
+    ChildActivityLogPage,
+    ChildArchivePage,
+    ChildDetailsPage,
+    ChildEditPage,
+    ChildrenSearchPage,
+)
 from .consent_responses import (
     ArchiveConsentResponsePage,
     ConsentResponsePage,
@@ -30,7 +36,11 @@ __all__ = [
     "AddBatchPage",
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
-    "ChildrenPage",
+    "ChildActivityLogPage",
+    "ChildArchivePage",
+    "ChildDetailsPage",
+    "ChildEditPage",
+    "ChildrenSearchPage",
     "ConsentResponsePage",
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",

@@ -6,7 +6,11 @@ from mavis.test.pages import (
     AddBatchPage,
     ArchiveBatchPage,
     ArchiveConsentResponsePage,
-    ChildrenPage,
+    ChildActivityLogPage,
+    ChildArchivePage,
+    ChildDetailsPage,
+    ChildEditPage,
+    ChildrenSearchPage,
     ConsentResponsePage,
     CreateNewRecordConsentResponsePage,
     DashboardPage,
@@ -53,8 +57,28 @@ def archive_consent_response_page(page: Page) -> ArchiveConsentResponsePage:
 
 
 @pytest.fixture
-def children_page(page: Page, test_data: TestData) -> ChildrenPage:
-    return ChildrenPage(page, test_data)
+def child_activity_log_page(page: Page) -> ChildActivityLogPage:
+    return ChildActivityLogPage(page)
+
+
+@pytest.fixture
+def child_archive_page(page: Page) -> ChildArchivePage:
+    return ChildArchivePage(page)
+
+
+@pytest.fixture
+def child_details_page(page: Page) -> ChildDetailsPage:
+    return ChildDetailsPage(page)
+
+
+@pytest.fixture
+def child_edit_page(page: Page) -> ChildEditPage:
+    return ChildEditPage(page)
+
+
+@pytest.fixture
+def children_search_page(page: Page, test_data: TestData) -> ChildrenSearchPage:
+    return ChildrenSearchPage(page, test_data)
 
 
 @pytest.fixture
