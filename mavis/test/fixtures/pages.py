@@ -12,19 +12,24 @@ from mavis.test.pages import (
     DashboardPage,
     DownloadSchoolMovesPage,
     EditBatchPage,
+    EditVaccinationRecordPage,
     FlipperPage,
     ImportRecordsPage,
     LogInPage,
     LogOutPage,
     MatchConsentResponsePage,
     OnlineConsentPage,
-    ProgrammesPage,
+    ProgrammeChildrenPage,
+    ProgrammeOverviewPage,
+    ProgrammeSessionsPage,
+    ProgrammesListPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
     SessionsPage,
     StartPage,
     TeamPage,
     UnmatchedConsentResponsesPage,
+    VaccinationRecordPage,
     VaccinesPage,
     VerbalConsentPage,
 )
@@ -78,6 +83,11 @@ def edit_batch_page(page: Page) -> EditBatchPage:
 
 
 @pytest.fixture
+def edit_vaccination_record_page(page: Page) -> EditVaccinationRecordPage:
+    return EditVaccinationRecordPage(page)
+
+
+@pytest.fixture
 def flipper_page(page: Page) -> FlipperPage:
     return FlipperPage(page)
 
@@ -103,8 +113,23 @@ def online_consent_page(page: Page) -> OnlineConsentPage:
 
 
 @pytest.fixture
-def programmes_page(page: Page, test_data: TestData) -> ProgrammesPage:
-    return ProgrammesPage(page, test_data)
+def programmes_list_page(page: Page) -> ProgrammesListPage:
+    return ProgrammesListPage(page)
+
+
+@pytest.fixture
+def programme_overview_page(page: Page, test_data: TestData) -> ProgrammeOverviewPage:
+    return ProgrammeOverviewPage(page, test_data)
+
+
+@pytest.fixture
+def programme_sessions_page(page: Page) -> ProgrammeSessionsPage:
+    return ProgrammeSessionsPage(page)
+
+
+@pytest.fixture
+def programme_children_page(page: Page) -> ProgrammeChildrenPage:
+    return ProgrammeChildrenPage(page)
 
 
 @pytest.fixture
@@ -135,6 +160,11 @@ def team_page(page: Page) -> TeamPage:
 @pytest.fixture
 def unmatched_consent_responses_page(page: Page) -> UnmatchedConsentResponsesPage:
     return UnmatchedConsentResponsesPage(page)
+
+
+@pytest.fixture
+def vaccination_record_page(page: Page) -> VaccinationRecordPage:
+    return VaccinationRecordPage(page)
 
 
 @pytest.fixture

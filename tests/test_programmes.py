@@ -9,10 +9,14 @@ from mavis.test.models import Programme, ReportFormat
 def setup_cohort_upload(
     log_in_as_nurse,
     dashboard_page,
-    programmes_page,
+    programmes_list_page,
+    programme_overview_page,
+    programme_children_page,
 ):
     dashboard_page.click_programmes()
-    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.click_import_child_records()
 
 
 @pytest.fixture
@@ -135,7 +139,9 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_page)
 @pytest.mark.bug
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_cohort_upload,
-    programmes_page,
+    programmes_list_page,
+    programme_overview_page,
+    programme_children_page,
     dashboard_page,
     children_page,
     import_records_page,
@@ -163,7 +169,9 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.click_import_child_records()
 
     import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
@@ -178,7 +186,11 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 @pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given(
     upload_vaccination,
-    programmes_page,
+    programmes_list_page,
+    programme_children_page,
+    programme_overview_page,
+    vaccination_record_page,
+    edit_vaccination_record_page,
     children_page,
     children,
 ):
@@ -193,21 +205,23 @@ def test_edit_vaccination_dose_to_not_given(
     """
     child = children[Programme.HPV][0]
 
-    programmes_page.click_programme_for_current_year(Programme.HPV)
-    programmes_page.click_children_tab()
-    programmes_page.search_for_child(child)
-    programmes_page.click_child(child)
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.search_for_child(child)
+    programme_children_page.click_child(child)
     children_page.click_vaccination_details(Programme.HPV)
-    programmes_page.click_edit_vaccination_record()
-    programmes_page.click_change_outcome()
-    programmes_page.click_they_refused_it()
-    programmes_page.click_continue()
-    programmes_page.click_save_changes()
-    programmes_page.expect_alert_text("Vaccination outcome recorded for HPV")
+    vaccination_record_page.click_edit_vaccination_record()
+    edit_vaccination_record_page.click_change_outcome()
+    edit_vaccination_record_page.click_they_refused_it()
+    edit_vaccination_record_page.click_continue()
+    edit_vaccination_record_page.click_save_changes()
+    programme_children_page.expect_alert_text("Vaccination outcome recorded for HPV")
 
 
 @pytest.mark.reports
-def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
+def test_verify_careplus_report_for_hpv(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify CarePlus report for HPV programme.
     Steps:
@@ -216,17 +230,15 @@ def test_verify_careplus_report_for_hpv(setup_reports, programmes_page):
     Verification:
     - Report is generated in CarePlus format for HPV.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.HPV,
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_doubles(
-    setup_reports,
-    dashboard_page,
-    programmes_page,
+    setup_reports, programmes_list_page, programme_overview_page, dashboard_page
 ):
     """
     Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
@@ -237,20 +249,22 @@ def test_verify_careplus_report_for_doubles(
     Verification:
     - Reports are generated in CarePlus format for both MenACWY and Td/IPV.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.MENACWY,
+    programmes_list_page.click_programme_for_current_year(Programme.MENACWY)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_report_format(
-        programme=Programme.TD_IPV,
+    programmes_list_page.click_programme_for_current_year(Programme.TD_IPV)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
-def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
+def test_verify_csv_report_for_hpv(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify CSV report for HPV programme.
     Steps:
@@ -259,14 +273,16 @@ def test_verify_csv_report_for_hpv(setup_reports, programmes_page):
     Verification:
     - Report is generated in CSV format for HPV.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.HPV,
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
 
 @pytest.mark.reports
-def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes_page):
+def test_verify_csv_report_for_doubles(
+    setup_reports, dashboard_page, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify CSV report for MenACWY and Td/IPV programmes.
     Steps:
@@ -276,20 +292,22 @@ def test_verify_csv_report_for_doubles(setup_reports, dashboard_page, programmes
     Verification:
     - Reports are generated in CSV format for both MenACWY and Td/IPV.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.MENACWY,
+    programmes_list_page.click_programme_for_current_year(Programme.MENACWY)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CSV,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.verify_report_format(
-        programme=Programme.TD_IPV,
+    programmes_list_page.click_programme_for_current_year(Programme.TD_IPV)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
 
 @pytest.mark.reports
-def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
+def test_verify_systmone_report_for_hpv(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify SystmOne report for HPV programme.
     Steps:
@@ -298,14 +316,16 @@ def test_verify_systmone_report_for_hpv(setup_reports, programmes_page):
     Verification:
     - Report is generated in SystmOne format for HPV.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.HPV,
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
 
 @pytest.mark.reports
-def test_verify_systmone_report_for_menacwy(setup_reports, programmes_page):
+def test_verify_systmone_report_for_menacwy(
+    setup_reports, programmes_list_page, programme_overview_page
+):
     """
     Test: Generate and verify SystmOne report for MenACWY programme.
     Steps:
@@ -314,8 +334,8 @@ def test_verify_systmone_report_for_menacwy(setup_reports, programmes_page):
     Verification:
     - Report is generated in SystmOne format for MenACWY.
     """
-    programmes_page.verify_report_format(
-        programme=Programme.MENACWY,
+    programmes_list_page.click_programme_for_current_year(Programme.MENACWY)
+    programme_overview_page.verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
@@ -370,7 +390,11 @@ def test_verify_systmone_report_for_mmr(setup_reports, programmes_page):
 
 @pytest.mark.accessibility
 def test_accessibility(
-    setup_reports, dashboard_page, accessibility_helper, programmes_page
+    setup_reports,
+    dashboard_page,
+    accessibility_helper,
+    programmes_list_page,
+    programme_overview_page,
 ):
     """
     Test: Check accessibility of the programmes page.
@@ -381,21 +405,21 @@ def test_accessibility(
     """
     accessibility_helper.check_accessibility()
 
-    programmes_page.click_programme_for_current_year(Programme.FLU)
+    programmes_list_page.click_programme_for_current_year(Programme.FLU)
     accessibility_helper.check_accessibility()
 
-    programmes_page.click_download_report()
+    programme_overview_page.click_download_report()
     accessibility_helper.check_accessibility()
 
-    programmes_page.click_continue()
+    programme_overview_page.click_continue()
     accessibility_helper.check_accessibility()
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.click_programme_for_current_year(Programme.FLU)
+    programmes_list_page.click_programme_for_current_year(Programme.FLU)
 
-    programmes_page.click_sessions_tab()
+    programme_overview_page.click_sessions_tab()
     accessibility_helper.check_accessibility()
 
-    programmes_page.click_children_tab()
+    programme_overview_page.click_children_tab()
     accessibility_helper.check_accessibility()

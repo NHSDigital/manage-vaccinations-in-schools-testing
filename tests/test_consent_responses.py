@@ -101,7 +101,9 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     consent_response_page,
     dashboard_page,
     match_consent_response_page,
-    programmes_page,
+    programmes_list_page,
+    programme_overview_page,
+    programme_children_page,
     unmatched_consent_responses_page,
     import_records_page,
 ):
@@ -122,7 +124,9 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.click_import_child_records()
     import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
@@ -222,7 +226,9 @@ def test_accessibility(
     accessibility_helper,
     children,
     dashboard_page,
-    programmes_page,
+    programmes_list_page,
+    programme_overview_page,
+    programme_children_page,
     import_records_page,
     match_consent_response_page,
     consent_response_page,
@@ -240,7 +246,9 @@ def test_accessibility(
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
-    programmes_page.navigate_to_cohort_import(Programme.HPV)
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.click_import_child_records()
     import_records_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
