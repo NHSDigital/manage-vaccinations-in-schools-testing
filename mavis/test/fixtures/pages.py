@@ -8,8 +8,8 @@ from mavis.test.pages import (
     ArchiveConsentResponsePage,
     ChildActivityLogPage,
     ChildArchivePage,
-    ChildDetailsPage,
     ChildEditPage,
+    ChildRecordPage,
     ChildrenSearchPage,
     ConsentResponsePage,
     CreateNewRecordConsentResponsePage,
@@ -67,8 +67,8 @@ def child_archive_page(page: Page) -> ChildArchivePage:
 
 
 @pytest.fixture
-def child_details_page(page: Page) -> ChildDetailsPage:
-    return ChildDetailsPage(page)
+def child_record_page(page: Page) -> ChildRecordPage:
+    return ChildRecordPage(page)
 
 
 @pytest.fixture

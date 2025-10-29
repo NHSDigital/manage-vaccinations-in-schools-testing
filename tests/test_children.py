@@ -101,7 +101,7 @@ def test_patient_details_load_with_missing_vaccine_info(
     setup_mav_853,
     schools,
     children,
-    child_details_page,
+    child_record_page,
     child_activity_log_page,
     vaccination_record_page,
     children_search_page,
@@ -126,13 +126,13 @@ def test_patient_details_load_with_missing_vaccine_info(
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     # Verify activity log
-    child_details_page.click_activity_log()
+    child_record_page.click_activity_log()
     child_activity_log_page.expect_activity_log_header(
         "Vaccinated with Gardasil 9", unique=True
     )
     # Verify vaccination record
-    child_details_page.click_child_record()
-    child_details_page.click_vaccination_details(school)
+    child_record_page.click_child_record()
+    child_record_page.click_vaccination_details(school)
     vaccination_record_page.expect_vaccination_details("Outcome", "Vaccinated")
 
 
@@ -140,7 +140,7 @@ def test_patient_details_load_with_missing_vaccine_info(
 def test_invalid_nhs_number_change_is_rejected(
     setup_fixed_child,
     children_search_page,
-    child_details_page,
+    child_record_page,
     child_edit_page,
     children,
 ):
@@ -159,11 +159,11 @@ def test_invalid_nhs_number_change_is_rejected(
 
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_edit_child_record()
+    child_record_page.click_edit_child_record()
     child_edit_page.click_change_nhs_no()
     child_edit_page.fill_nhs_no_for_child(child, "9123456789")
     child_edit_page.click_continue()
-    child_details_page.expect_text_in_alert("Enter a valid NHS number")
+    child_record_page.expect_text_in_alert("Enter a valid NHS number")
 
 
 @issue("MAV-1839")
@@ -171,7 +171,7 @@ def test_invalid_nhs_number_change_is_rejected(
 def test_merge_child_records_does_not_crash(
     setup_child_merge,
     children_search_page,
-    child_details_page,
+    child_record_page,
     child_archive_page,
     children,
 ):
@@ -191,17 +191,17 @@ def test_merge_child_records_does_not_crash(
     child2 = children[Programme.HPV][1]
     children_search_page.search_with_all_filters_for_child_name(str(child1))
     children_search_page.click_record_for_child(child1)
-    child_details_page.click_archive_child_record()
+    child_record_page.click_archive_child_record()
     child_archive_page.click_its_a_duplicate(child2.nhs_number)
     child_archive_page.click_archive_record()
-    child_details_page.expect_text_in_alert("This record has been archived")
+    child_record_page.expect_text_in_alert("This record has been archived")
 
 
 @pytest.mark.accessibility
 def test_accessibility(
     setup_fixed_child,
     children_search_page,
-    child_details_page,
+    child_record_page,
     accessibility_helper,
     children,
 ):
@@ -221,5 +221,5 @@ def test_accessibility(
     children_search_page.click_record_for_child(child)
     accessibility_helper.check_accessibility()
 
-    child_details_page.click_activity_log()
+    child_record_page.click_activity_log()
     accessibility_helper.check_accessibility()

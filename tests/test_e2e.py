@@ -233,7 +233,7 @@ def test_recording_flu_vaccination_e2e(
     online_consent_page,
     sessions_page,
     children_search_page,
-    child_details_page,
+    child_record_page,
     vaccination_record_page,
     start_page,
     schools,
@@ -294,7 +294,7 @@ def test_recording_flu_vaccination_e2e(
     dashboard_page.click_children()
     children_search_page.search_for_a_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_vaccination_details(schools[0])
+    child_record_page.click_vaccination_details(schools[0])
     vaccination_record_page.click_edit_vaccination_record()
     sessions_page.expect_text_to_not_be_visible("Incorrect vaccine given")
 

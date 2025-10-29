@@ -118,7 +118,7 @@ class ChildrenSearchPage:
         self.children_aged_out_of_programmes_checkbox.check()
 
 
-class ChildDetailsTabsMixin:
+class ChildRecordTabsMixin:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.child_record_tab = page.get_by_role("link", name="Child record")
@@ -130,7 +130,7 @@ class ChildDetailsTabsMixin:
         self.activity_log_tab.get_by_role("strong").wait_for()
 
 
-class ChildDetailsPage(ChildDetailsTabsMixin):
+class ChildRecordPage(ChildRecordTabsMixin):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
 
@@ -274,7 +274,7 @@ class ChildArchivePage:
         expect(self.page.get_by_text("Archive reason")).to_be_visible()
 
 
-class ChildActivityLogPage(ChildDetailsTabsMixin):
+class ChildActivityLogPage(ChildRecordTabsMixin):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
         self.manually_matched_card = self.page.get_by_text(

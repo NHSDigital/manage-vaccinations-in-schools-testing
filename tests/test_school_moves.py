@@ -17,7 +17,7 @@ def setup_confirm_and_ignore(
     import_records_page,
     year_groups,
     children_search_page,
-    child_details_page,
+    child_record_page,
     child_activity_log_page,
     children,
 ):
@@ -54,7 +54,7 @@ def setup_confirm_and_ignore(
         sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
         upload_class_list()
         children_search_page.click_record_for_child(children[0])
-        child_details_page.click_activity_log()
+        child_record_page.click_activity_log()
         child_activity_log_page.expect_activity_log_header(
             f"Added to the session at {schools[0]}"
         )

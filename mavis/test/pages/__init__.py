@@ -1,8 +1,8 @@
 from .children import (
     ChildActivityLogPage,
     ChildArchivePage,
-    ChildDetailsPage,
     ChildEditPage,
+    ChildRecordPage,
     ChildrenSearchPage,
 )
 from .consent_responses import (
@@ -38,8 +38,8 @@ __all__ = [
     "ArchiveConsentResponsePage",
     "ChildActivityLogPage",
     "ChildArchivePage",
-    "ChildDetailsPage",
     "ChildEditPage",
+    "ChildRecordPage",
     "ChildrenSearchPage",
     "ConsentResponsePage",
     "CreateNewRecordConsentResponsePage",
