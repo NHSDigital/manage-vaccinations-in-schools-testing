@@ -910,14 +910,14 @@ while(vars.get(&quot;vaccination_&quot; + i)){
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="script">//Get the current thread number
 Threadnum=ctx.getThreadNum().toInteger()
-Threadnum=3 // Use to override a vaccine if needed
+//Threadnum=2 // Use to override a vaccine if needed
 
 //Divide threads equally between the four programmes, each nurse stays with the programme (might bias it towards Flu at some point)
 
