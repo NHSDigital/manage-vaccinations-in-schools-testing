@@ -53,7 +53,7 @@ class SessionsPage:
         )
         self.consent_given_for_injected_vaccine_checkbox = self.page.get_by_role(
             "checkbox",
-            name="Consent given for injected vaccine",
+            name="Consent given for gelatine-free injection",
         )
         self.consent_given_for_nasal_spray_checkbox = self.page.get_by_role(
             "checkbox",
@@ -969,7 +969,7 @@ class SessionsPage:
 
         expect(flu_consent_section).to_contain_text("Consent given")
         if option is ConsentOption.INJECTION:
-            method_locator = flu_consent_section.get_by_text("injected")
+            method_locator = flu_consent_section.get_by_text("injection")
         else:
             method_locator = flu_consent_section.get_by_text("nasal spray")
 
