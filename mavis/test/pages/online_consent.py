@@ -106,15 +106,15 @@ class OnlineConsentPage:
         )
         self.mmr_consent_agree_radio = self.page.get_by_role(
             "radio",
-            name="Yes, I agree to the MMR vaccine",
+            name="Yes, I agree",
         )
         self.mmr_consent_agree_without_gelatine_radio = self.page.get_by_role(
             "radio",
-            name="Yes, they want their child to have a vaccine that does not contain gelatine",
+            name="I want my child to have the vaccine that does not contain gelatine",
         )
         self.mmr_consent_agree_either_radio = self.page.get_by_role(
             "radio",
-            name="Their child can have either type of vaccine",
+            name="My child can have either type of vaccine",
         )
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
 
@@ -241,6 +241,7 @@ class OnlineConsentPage:
     @step("Agree to MMR vaccination (consent option = {consent_option})")
     def agree_to_mmr_vaccination(self, consent_option: ConsentOption) -> None:
         self.mmr_consent_agree_radio.check()
+        self.click_continue()
         if consent_option is ConsentOption.MMR_WITHOUT_GELATINE:
             self.mmr_consent_agree_without_gelatine_radio.check()
         elif consent_option is ConsentOption.MMR_EITHER:
