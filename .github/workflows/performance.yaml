@@ -41,11 +41,6 @@ on:
         required: false
         type: string
         default: '900'
-      vaccination_loop:
-        description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
-        required: false
-        type: string
-        default: '20'
       row_count:
         description: "Optional (default 1000) number of rows in the cohort file."
         required: false
@@ -196,7 +191,6 @@ jobs:
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JLoops=-1 \
               -JThreads=${{inputs.threads}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}} \
               -JRampUp=${{inputs.ramp_up}} \
               -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
