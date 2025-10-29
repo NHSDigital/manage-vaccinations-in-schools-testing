@@ -118,13 +118,13 @@
           </elementProp>
           <elementProp name="Loops" elementType="Argument">
             <stringProp name="Argument.name">Loops</stringProp>
-            <stringProp name="Argument.value">${__P(Loops, 5)}</stringProp>
+            <stringProp name="Argument.value">${__P(Loops, 1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">How many loops total (must be multiple times higher than vaccinationloop)</stringProp>
           </elementProp>
           <elementProp name="Threads" elementType="Argument">
             <stringProp name="Argument.name">Threads</stringProp>
-            <stringProp name="Argument.value">${__P(Threads, 4)}</stringProp>
+            <stringProp name="Argument.value">${__P(Threads, 1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc"></stringProp>
           </elementProp>
@@ -146,7 +146,7 @@
           </elementProp>
           <elementProp name="User" elementType="Argument">
             <stringProp name="Argument.name">User</stringProp>
-            <stringProp name="Argument.value">${__P(User, nurse.perftest@example.com)}</stringProp>
+            <stringProp name="Argument.value">${__P(User, nurse.perf2test@example.com)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -495,7 +495,7 @@ props.put(&quot;VaccineCount_td_ipv&quot;,&quot;0&quot;)
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Search for all scheduled sessions" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Search for all scheduled sessions">
           <stringProp name="TestPlan.comments">(assuming they all fit on one page) </stringProp>
           <stringProp name="HTTPSampler.path">sessions?q=&amp;%5Bprogrammes%5D%5B%5D=&amp;status=scheduled&amp;type=school</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -906,18 +906,18 @@ while(vars.get(&quot;vaccination_&quot; + i)){
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="2.0 Register attendance" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="2.0 Register attendance">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="script">//Get the current thread number
 Threadnum=ctx.getThreadNum().toInteger()
-//Threadnum=3 // Use to override a vaccine if needed
+Threadnum=3 // Use to override a vaccine if needed
 
 //Divide threads equally between the four programmes, each nurse stays with the programme (might bias it towards Flu at some point)
 
@@ -955,7 +955,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Next Patient from STS" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Next Patient from STS">
             <stringProp name="TestPlan.comments">I&apos;m searching for patients based on programme, so each nurse (thread) will work only on one programme and inside one session</stringProp>
             <stringProp name="HTTPSampler.domain">localhost</stringProp>
             <stringProp name="HTTPSampler.port">9191</stringProp>
@@ -1090,7 +1090,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="false">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -1153,8 +1153,8 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
             </ConstantTimer>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3 Search by first/last name" enabled="true">
-            <stringProp name="HTTPSampler.path">sessions/${SessionId}/register?q=${CHILD_FIRST_NAME}+${CHILD_LAST_NAME}&amp;register_status=&amp;vaccination_status=none_yet&amp;%5Byear_groups%5D%5B%5D=&amp;date_of_birth_day=&amp;date_of_birth_month=&amp;date_of_birth_year=&amp;archived=0&amp;missing_nhs_number=0</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3 Search by first/last name">
+            <stringProp name="HTTPSampler.path">sessions/${SessionId}/register?q=${CHILD_FIRST_NAME}+${CHILD_LAST_NAME}&amp;%5Bprogramme_types%5D%5B%5D=&amp;register_status=&amp;vaccination_status=&amp;%5Byear_groups%5D%5B%5D=&amp;date_of_birth_day=&amp;date_of_birth_month=&amp;date_of_birth_year=&amp;archived=0&amp;missing_nhs_number=0</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -1198,7 +1198,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="RegexExtractor.match_number">-1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get SessionStatus" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get SessionStatus">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">SessionStatus</stringProp>
               <stringProp name="RegexExtractor.regex">Registration status&lt;\/dt&gt;&lt;dd class=&quot;nhsuk-summary-list__value&quot;&gt;&lt;strong class=&quot;nhsuk-tag .*?&quot;&gt;(.*?)&lt;\/strong</stringProp>
@@ -1209,7 +1209,13 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (No further patients)" enabled="true">
+          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
+            <boolProp name="displayJMeterProperties">false</boolProp>
+            <boolProp name="displayJMeterVariables">true</boolProp>
+            <boolProp name="displaySystemProperties">false</boolProp>
+          </DebugSampler>
+          <hashTree/>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (No further patients)">
             <stringProp name="IfController.condition">${__jexl3(&quot;${PatientName_matchNr}&quot; == &quot;0&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
@@ -1246,7 +1252,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <hashTree/>
             </hashTree>
           </hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get correct patient name" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get correct patient name">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1302,7 +1308,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <hashTree/>
             </hashTree>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
             <stringProp name="IfController.condition">${__jexl3(&quot;${SessionStatus}&quot; == &quot;green Completed session&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
@@ -1396,7 +1402,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <hashTree/>
             </hashTree>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Check for session attendance" enabled="true">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Check for session attendance">
             <stringProp name="IfController.condition">${__jexl3(&quot;${SessionStatus}&quot; != &quot;Attending session&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
@@ -1437,7 +1443,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <hashTree/>
             </hashTree>
           </hashTree>
-          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
             <boolProp name="displayJMeterProperties">false</boolProp>
             <boolProp name="displayJMeterVariables">true</boolProp>
             <boolProp name="displaySystemProperties">false</boolProp>
