@@ -296,7 +296,7 @@ def test_verify_excel_export_and_clinic_invitation(
     schools,
     clinics,
     children_search_page,
-    child_details_page,
+    child_record_page,
     sessions_page,
     dashboard_page,
     verbal_consent_page,
@@ -328,8 +328,8 @@ def test_verify_excel_export_and_clinic_invitation(
     dashboard_page.click_children()
     children_search_page.search_for_a_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_invite_to_community_clinic()
-    child_details_page.click_session_for_programme(
+    child_record_page.click_invite_to_community_clinic()
+    child_record_page.click_session_for_programme(
         "Community clinic",
         Programme.HPV,
         check_date=True,

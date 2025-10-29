@@ -98,7 +98,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     go_to_unmatched_consent_responses,
     children,
     children_search_page,
-    child_details_page,
+    child_record_page,
     child_activity_log_page,
     consent_response_page,
     dashboard_page,
@@ -146,7 +146,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_activity_log()
+    child_record_page.click_activity_log()
     child_activity_log_page.verify_activity_log_for_created_or_matched_child()
 
 
@@ -155,7 +155,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     go_to_unmatched_consent_responses,
     pds_child,
     children_search_page,
-    child_details_page,
+    child_record_page,
     child_activity_log_page,
     consent_response_page,
     create_new_record_consent_response_page,
@@ -188,7 +188,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_activity_log()
+    child_record_page.click_activity_log()
     child_activity_log_page.verify_activity_log_for_created_or_matched_child()
 
 
@@ -197,7 +197,7 @@ def test_create_child_record_from_consent_without_nhs_number(
     go_to_unmatched_consent_responses,
     children,
     children_search_page,
-    child_details_page,
+    child_record_page,
     child_activity_log_page,
     consent_response_page,
     create_new_record_consent_response_page,
@@ -230,7 +230,7 @@ def test_create_child_record_from_consent_without_nhs_number(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_activity_log()
+    child_record_page.click_activity_log()
     child_activity_log_page.verify_activity_log_for_created_or_matched_child()
 
 

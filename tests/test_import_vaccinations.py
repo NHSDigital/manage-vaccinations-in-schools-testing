@@ -287,7 +287,7 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     dashboard_page,
     import_records_page,
     children_search_page,
-    child_details_page,
+    child_record_page,
     vaccination_record_page,
     children,
 ):
@@ -313,7 +313,7 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     children_search_page.check_children_aged_out_of_programmes()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_vaccination_details(school)
+    child_record_page.click_vaccination_details(school)
     vaccination_record_page.expect_vaccination_details("Location", str(school))
 
 

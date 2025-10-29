@@ -49,7 +49,7 @@ def record_hpv(
     children,
     schools,
     dashboard_page,
-    children_search_page
+    children_search_page,
 ):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]

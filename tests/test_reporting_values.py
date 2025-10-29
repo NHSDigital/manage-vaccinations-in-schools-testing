@@ -48,7 +48,6 @@ def refresh_and_setup_recording_injected_flu(
 @pytest.fixture
 def record_injected_flu(
     refresh_and_setup_recording_injected_flu,
-    setup_recording_injected_flu,
     children_search_page,
     sessions_page,
     verbal_consent_page,
@@ -91,7 +90,7 @@ def test_report_view(
     reports_vaccinations_page,
     dashboard_page,
     children_search_page,
-    child_details_page,
+    child_record_page,
     vaccination_record_page,
     edit_vaccination_record_page,
 ):
@@ -156,7 +155,7 @@ def test_report_view(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_details_page.click_vaccination_details(school)
+    child_record_page.click_vaccination_details(school)
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_outcome()
     edit_vaccination_record_page.click_they_refused_it()
