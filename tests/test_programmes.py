@@ -143,7 +143,9 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     programme_overview_page,
     programme_children_page,
     dashboard_page,
-    children_page,
+    children_search_page,
+    child_details_page,
+    child_archive_page,
     import_records_page,
     children,
 ):
@@ -163,9 +165,10 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
-    children_page.archive_child_record()
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_details_page.click_archive_child_record()
+    child_archive_page.archive_child_record()
 
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
@@ -177,9 +180,9 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
-    children_page.check_child_is_unarchived()
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_details_page.check_child_is_unarchived()
 
 
 @pytest.mark.rav
@@ -191,7 +194,7 @@ def test_edit_vaccination_dose_to_not_given(
     programme_overview_page,
     vaccination_record_page,
     edit_vaccination_record_page,
-    children_page,
+    child_details_page,
     children,
 ):
     """
@@ -209,7 +212,7 @@ def test_edit_vaccination_dose_to_not_given(
     programme_overview_page.click_children_tab()
     programme_children_page.search_for_child(child)
     programme_children_page.click_child(child)
-    children_page.click_vaccination_details(Programme.HPV)
+    child_details_page.click_vaccination_details(Programme.HPV)
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_outcome()
     edit_vaccination_record_page.click_they_refused_it()

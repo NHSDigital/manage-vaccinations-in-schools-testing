@@ -51,7 +51,7 @@ def setup_recording_hpv(
 @pytest.fixture
 def record_hpv(
     setup_recording_hpv,
-    children_page,
+    children_search_page,
     sessions_page,
     verbal_consent_page,
     children,
@@ -59,7 +59,7 @@ def record_hpv(
     child = children[Programme.HPV][0]
     batch_name = setup_recording_hpv
 
-    children_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     verbal_consent_page.select_parent(child.parents[0])
     verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
@@ -80,7 +80,6 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     sessions_page,
     vaccination_record_page,
     edit_vaccination_record_page,
-    children_page,
 ):
     """
     Test: Create, edit, and delete an HPV vaccination record and verify changes in
@@ -112,7 +111,9 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
 
     # Step 4: Edit delivery site to RIGHT_ARM_LOWER
     sessions_page.click_vaccination_details(school)
-    children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
+    vaccination_record_page.expect_vaccination_details(
+        "Synced with NHS England?", "Synced"
+    )
 
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_site()
@@ -131,7 +132,9 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
 
     # Step 6: Edit outcome to refused
     sessions_page.click_vaccination_details(school)
-    children_page.expect_vaccination_details("Synced with NHS England?", "Synced")
+    vaccination_record_page.expect_vaccination_details(
+        "Synced with NHS England?", "Synced"
+    )
 
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_outcome()
@@ -142,4 +145,6 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.GARDASIL_9, child)
     sessions_page.click_vaccination_details(school)
-    children_page.expect_vaccination_details("Synced with NHS England?", "Not synced")
+    vaccination_record_page.expect_vaccination_details(
+        "Synced with NHS England?", "Not synced"
+    )

@@ -48,7 +48,8 @@ def refresh_and_setup_recording_injected_flu(
 @pytest.fixture
 def record_injected_flu(
     refresh_and_setup_recording_injected_flu,
-    children_page,
+    setup_recording_injected_flu,
+    children_search_page,
     sessions_page,
     verbal_consent_page,
     children,
@@ -64,7 +65,7 @@ def record_injected_flu(
     sessions_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_page.click_consent_tab()
 
-    children_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
     verbal_consent_page.select_parent(child.parents[0])
     verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
@@ -89,7 +90,8 @@ def test_report_view(
     schools,
     reports_vaccinations_page,
     dashboard_page,
-    children_page,
+    children_search_page,
+    child_details_page,
     vaccination_record_page,
     edit_vaccination_record_page,
 ):
@@ -152,9 +154,9 @@ def test_report_view(
 
     dashboard_page.navigate()
     dashboard_page.click_children()
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
-    children_page.click_vaccination_details(school)
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_details_page.click_vaccination_details(school)
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_outcome()
     edit_vaccination_record_page.click_they_refused_it()
