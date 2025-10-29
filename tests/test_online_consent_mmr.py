@@ -1,21 +1,23 @@
 import pytest
 
-from mavis.test.models import ConsentRefusalReason, Programme
+from mavis.test.models import ConsentOption, ConsentRefusalReason, Programme
 
 pytestmark = pytest.mark.consent
 
 
 @pytest.fixture
-def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
-    yield from schedule_session_and_get_consent_url(
+def url_with_mmr_session_scheduled(schedule_mmr_session_and_get_consent_url, schools):
+    yield from schedule_mmr_session_and_get_consent_url(
         schools[Programme.MMR.group][0],
         Programme.MMR,
     )
 
 
 @pytest.fixture
-def start_consent_with_session_scheduled(url_with_session_scheduled, page, start_page):
-    page.goto(url_with_session_scheduled)
+def start_consent_with_session_scheduled(
+    url_with_mmr_session_scheduled, page, start_page
+):
+    page.goto(url_with_mmr_session_scheduled)
     start_page.start()
 
 
@@ -54,11 +56,17 @@ def test_consent_refused_for_mmr_vaccination(
     [False, True],
     ids=lambda v: f"yes_to_health_questions: {v}",
 )
+@pytest.mark.parametrize(
+    "consent_option",
+    [ConsentOption.MMR_WITHOUT_GELATINE, ConsentOption.MMR_EITHER],
+    ids=lambda v: f"consent_option: {v}",
+)
 def test_consent_given_for_mmr_vaccination(
     start_consent_with_session_scheduled,
     online_consent_page,
     schools,
     yes_to_health_questions,
+    consent_option,
     children,
 ):
     """
@@ -76,10 +84,12 @@ def test_consent_given_for_mmr_vaccination(
     """
     child = children[Programme.MMR][0]
     schools = schools[Programme.MMR]
-    number_of_health_questions = len(Programme.health_questions(Programme.MMR))
+    number_of_health_questions = len(
+        Programme.health_questions(Programme.MMR, consent_option)
+    )
 
     online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_mmr_vaccination()
+    online_consent_page.agree_to_mmr_vaccination(consent_option)
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
         number_of_health_questions,

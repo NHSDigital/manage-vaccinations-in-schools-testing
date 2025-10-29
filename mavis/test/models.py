@@ -104,9 +104,13 @@ class HealthQuestion(StrEnum):
     MMR_ANTICOAGULANTS = (
         "Does your child take blood-thinning medicine (anticoagulants)?"
     )
+    MMR_TRANSFUSION = (
+        "Has your child received a blood or plasma transfusion,"
+        " or immunoglobulin in the last 3 months?"
+    )
     MMR_ALLERGIC_REACTION = (
         "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
-        " of MMR or any other measles, mumps or rubella vaccine?"
+        " of MMR or any other vaccine?"
     )
     MMR_ALLERGIC_REACTION_NEOMYCIN = (
         "Has your child ever had a severe allergic reaction (anaphylaxis) to neomycin?"
@@ -119,8 +123,15 @@ class HealthQuestion(StrEnum):
         "Is your child in regular close contact with anyone currently having treatment"
         " that severely affects their immune system?"
     )
+    MMR_TB_TEST = (
+        "Has your child recently had, or are they soon due to have a TB skin"
+        " test, chickenpox vaccine or yellow fever vaccine?"
+    )
     MMR_OTHER_MEDICAL_CONDITIONS = (
         "Does the child have any other medical conditions we should know about?"
+    )
+    MMR_EXTRA_SUPPORT = (
+        "Does your child need extra support during vaccination sessions?"
     )
     MMR_EITHER_GELATINE = (
         "Has your child ever had a severe allergic reaction (anaphylaxis) to gelatine?"
@@ -154,7 +165,7 @@ class Programme(StrEnum):
     ) -> list[HealthQuestion]:
         includes_nasal = consent_option is not ConsentOption.INJECTION
         includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
-        without_gelatine = consent_option is ConsentOption.MMR_WITHOUT_GELATINE
+        mmr_either = consent_option is ConsentOption.MMR_EITHER
 
         flu_questions = [
             HealthQuestion.ASTHMA_STEROIDS if includes_nasal else None,
@@ -177,12 +188,15 @@ class Programme(StrEnum):
         mmr_questions = [
             HealthQuestion.MMR_BLEEDING_DISORDER,
             HealthQuestion.MMR_ANTICOAGULANTS,
+            HealthQuestion.MMR_TRANSFUSION,
             HealthQuestion.MMR_ALLERGIC_REACTION,
             HealthQuestion.MMR_ALLERGIC_REACTION_NEOMYCIN,
             HealthQuestion.MMR_TREATMENT,
             HealthQuestion.MMR_HOUSEHOLD_IMMUNE_SYSTEM,
+            HealthQuestion.MMR_TB_TEST,
             HealthQuestion.MMR_OTHER_MEDICAL_CONDITIONS,
-            HealthQuestion.MMR_EITHER_GELATINE if not without_gelatine else None,
+            HealthQuestion.MMR_EXTRA_SUPPORT,
+            HealthQuestion.MMR_EITHER_GELATINE if mmr_either else None,
         ]
         mmr_questions = [q for q in mmr_questions if q is not None]
 

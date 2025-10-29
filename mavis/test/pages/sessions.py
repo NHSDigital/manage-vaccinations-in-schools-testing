@@ -316,11 +316,12 @@ class SessionsPage:
     def click_session_for_programme_group(
         self, location: str, programme_group: str
     ) -> None:
-        for programme in Programme:
-            if programme.group == programme_group:
-                self.page.get_by_role("checkbox", name=str(programme)).check()
-            else:
-                self.page.get_by_role("checkbox", name=str(programme)).uncheck()
+        if programme_group != Programme.MMR:
+            for programme in Programme:
+                if programme.group == programme_group:
+                    self.page.get_by_role("checkbox", name=str(programme)).check()
+                else:
+                    self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
         self.search_textbox.fill(str(location))
         self.search_button.click()
@@ -789,6 +790,33 @@ class SessionsPage:
             offset_days=offset_days, skip_weekends=skip_weekends
         )
         self.__schedule_session(date=_future_date)
+
+        if self.keep_session_dates_button.is_visible():
+            self.click_keep_session_dates()  # MAV-2066
+
+        self.expect_details(
+            "Session dates",
+            self.__get_display_formatted_date(date_to_format=_future_date),
+        )
+        self.click_save_changes()
+
+    def schedule_a_valid_mmr_session(
+        self,
+        offset_days: int = 7,
+        *,
+        skip_weekends: bool = True,
+    ) -> None:
+        _future_date = get_offset_date_compact_format(
+            offset_days=offset_days, skip_weekends=skip_weekends
+        )
+        self.schedule_or_edit_session()
+        self.click_change_programmes()
+        self.add_programme(Programme.MMR)
+        self.click_continue_button()
+        self.add_or_change_session_dates()
+        if not self.session_date_already_scheduled(_future_date):
+            self.fill_date_fields(_future_date)
+        self.click_continue_button()
 
         if self.keep_session_dates_button.is_visible():
             self.click_keep_session_dates()  # MAV-2066

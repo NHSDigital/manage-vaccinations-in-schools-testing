@@ -31,8 +31,9 @@ class LogInPage:
 
     @step("Log out")
     def log_out(self) -> None:
-        self.log_out_button.click()
-        expect(self.start_page_link).to_be_visible()
+        if self.log_out_button.is_visible():
+            self.log_out_button.click()
+            expect(self.start_page_link).to_be_visible()
 
     @step("Log in as {1} and choose team {2}")
     def log_in_and_choose_team_if_necessary(self, user: User, team: Team) -> None:
