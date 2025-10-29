@@ -41,11 +41,6 @@ on:
         required: false
         type: string
         default: '900'
-      vaccination_loop:
-        description: "Optional (default 20) Vaccination loop. The number of vaccinations each nurse will perform before logging and back in again."
-        required: false
-        type: string
-        default: '20'
       row_count:
         description: "Optional (default 1000) number of rows in the cohort file."
         required: false
@@ -56,6 +51,11 @@ on:
         required: true
         type: string
         default: 'nurse.perftest@example.com'
+      BaseURL:
+        description: "Optional (default qa.mavistesting.com) URL"
+        required: true
+        type: string
+        default: 'qa.mavistesting.com'
 
 jobs:
   nurse_journey_performance_test:
@@ -131,6 +131,7 @@ jobs:
               -j $generate_cohort_output_dir/jmeter.log \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JURN=${{inputs.URN}} \
+              -JBaseURL=${{inputs.BaseURL}} \
               -JRowCount=${{inputs.row_count}}
 
       - name: Run file import for new file
@@ -143,6 +144,7 @@ jobs:
               -j $import_output_dir/jmeter.log \
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JUser=${{inputs.user}} \
+              -JBaseURL=${{inputs.BaseURL}} \
               -JInputFile="cohortnew.csv"
 
       - name: Run Consent Journey
@@ -163,6 +165,7 @@ jobs:
               -JRampUp=60 \
               -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
+              -JBaseURL=${{inputs.BaseURL}} \
               -JURN=${{inputs.URN}}
 
       - name: Upload consent journey JMeter output
@@ -188,10 +191,10 @@ jobs:
               -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
               -JLoops=-1 \
               -JThreads=${{inputs.threads}} \
-              -JVaccinationLoop=${{inputs.vaccination_loop}} \
               -JRampUp=${{inputs.ramp_up}} \
               -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
+              -JBaseURL=${{inputs.BaseURL}} \
               -JURN=${{inputs.URN}}
 
       - name: Upload nurse journey JMeter output

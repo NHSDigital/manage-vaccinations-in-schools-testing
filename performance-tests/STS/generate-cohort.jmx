@@ -171,12 +171,17 @@ writer.close();</stringProp>
           </elementProp>
           <elementProp name="URN" elementType="Argument">
             <stringProp name="Argument.name">URN</stringProp>
-            <stringProp name="Argument.value">${__P(URN, 100006)}</stringProp>
+            <stringProp name="Argument.value">${__P(URN, 108657)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="RowCount" elementType="Argument">
             <stringProp name="Argument.name">RowCount</stringProp>
-            <stringProp name="Argument.value">${__P(RowCount,100)}</stringProp>
+            <stringProp name="Argument.value">${__P(RowCount,300)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="BaseURL" elementType="Argument">
+            <stringProp name="Argument.name">BaseURL</stringProp>
+            <stringProp name="Argument.value">${__P(BaseURL,qa.mavistesting.com)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
