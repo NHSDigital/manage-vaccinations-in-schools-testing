@@ -77,8 +77,8 @@ def child_edit_page(page: Page) -> ChildEditPage:
 
 
 @pytest.fixture
-def children_search_page(page: Page, test_data: TestData) -> ChildrenSearchPage:
-    return ChildrenSearchPage(page, test_data)
+def children_search_page(page: Page) -> ChildrenSearchPage:
+    return ChildrenSearchPage(page)
 
 
 @pytest.fixture
@@ -179,8 +179,8 @@ def school_moves_page(page: Page) -> SchoolMovesPage:
 
 
 @pytest.fixture
-def sessions_page(page: Page, test_data: TestData) -> SessionsPage:
-    return SessionsPage(page, test_data)
+def sessions_page(page: Page) -> SessionsPage:
+    return SessionsPage(page)
 
 
 @pytest.fixture
