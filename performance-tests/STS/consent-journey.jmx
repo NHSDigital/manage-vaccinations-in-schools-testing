@@ -81,13 +81,18 @@
             <stringProp name="Argument.value">5</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="BaseURL" elementType="Argument">
+            <stringProp name="Argument.name">BaseURL</stringProp>
+            <stringProp name="Argument.value">${__P(BaseURL,qa.mavistesting.com)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
         <stringProp name="TestPlan.comments">User	${__P(User, nurse.perftest@example.com)}	
 URN	${__P(URN, 137390)}	</stringProp>
       </Arguments>
       <hashTree/>
       <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
-        <stringProp name="HTTPSampler.domain">qa.mavistesting.com</stringProp>
+        <stringProp name="HTTPSampler.domain">${BaseURL}</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
           <collectionProp name="Arguments.arguments"/>
@@ -1144,7 +1149,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
             <hashTree/>
           </hashTree>
         </hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients" enabled="true">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -1153,7 +1158,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.num_threads">${ConsentThreads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -1439,7 +1444,7 @@ vars.get(&quot;VaccineCount_td_ipv&quot;,props.get(&quot;VaccineCount_td_ipv&quo
       </hashTree>
       <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Get patients for processing" enabled="false"/>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate patient requirements">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate patient requirements" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
