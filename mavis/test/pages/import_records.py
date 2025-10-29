@@ -5,7 +5,7 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data import FileMapping, TestData
+from mavis.test.data import FileMapping, TestData, read_scenario_list_from_file
 from mavis.test.models import Programme
 from mavis.test.utils import (
     format_datetime_for_upload_link,
@@ -126,7 +126,7 @@ class ImportRecordsPage:
             session_id=session_id,
             programme_group=programme_group,
         )
-        _scenario_list = self.test_data.read_scenario_list_from_file(_input_file_path)
+        _scenario_list = read_scenario_list_from_file(_input_file_path)
 
         self.set_input_file(_input_file_path)
         # temporary sleep to ensure urn appears in Mavis
