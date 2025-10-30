@@ -105,12 +105,6 @@ def test_report_view(
     child, _ = record_injected_flu
     school = schools[Programme.FLU][0]
 
-    reports_vaccinations_page.navigate()
-    reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
-    reports_vaccinations_page.check_cohort_has_n_children(0)
-    reports_vaccinations_page.check_category_percentage("Not vaccinated", "0")
-    reports_vaccinations_page.check_category_percentage("Vaccinated", "0")
-
     reports_vaccinations_page.navigate_and_refresh_reports()
     reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
 

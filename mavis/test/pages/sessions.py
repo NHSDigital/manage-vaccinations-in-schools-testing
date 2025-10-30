@@ -181,7 +181,7 @@ class SessionsPage:
             "button",
             name="Set session in progress for today",
         )
-        vaccinations_card = page.get_by_role("table", name="Vaccinations")
+        vaccinations_card = page.get_by_role("table", name="Vaccination records")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.sessions_link = page.get_by_role("link", name="Sessions", exact=True).first
         self.advanced_filters_link = page.get_by_text("Advanced filters")
@@ -275,9 +275,12 @@ class SessionsPage:
         programme: Programme,
     ) -> None:
         if programme is not Programme.FLU:
-            self.consent_given_for_injected_vaccine_checkbox.or_(
-                self.consent_given_checkbox
-            ).check()
+            for locator in [
+                self.consent_given_for_injected_vaccine_checkbox,
+                self.consent_given_checkbox,
+            ]:
+                if locator.is_visible():
+                    locator.check()
         else:
             self.consent_given_for_injected_vaccine_checkbox.check()
             self.consent_given_for_nasal_spray_checkbox.check()
@@ -419,7 +422,7 @@ class SessionsPage:
 
     def expect_session_to_have_programmes(self, programmes: list[Programme]) -> None:
         for programme in programmes:
-            expect(self.page.get_by_text(programme)).to_be_visible()
+            expect(self.page.get_by_text(programme).first).to_be_visible()
 
     @step("Click on Change session dates")
     def click_change_session_dates(self) -> None:
