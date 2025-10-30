@@ -89,6 +89,19 @@ def test_report_view(
     vaccination_record_page,
     edit_vaccination_record_page,
 ):
+    """
+    Test: Verify reporting values update correctly after vaccination and edit.
+    Steps:
+    1. Record a flu vaccination for a child and verify initial reporting values.
+    2. Refresh reports and check that the cohort and vaccination percentages update.
+    3. Edit the child's vaccination record to mark the outcome as refused.
+    4. Refresh reports and verify that the reporting values reflect the refusal.
+    Verification:
+    - Initial report shows 0 vaccinated and 0 not vaccinated.
+    - After vaccination, report shows 1 vaccinated and 0 not vaccinated.
+    - After marking as refused, report shows 0 vaccinated and 1 not vaccinated.
+    """
+
     child, _ = record_injected_flu
     school = schools[Programme.FLU][0]
 
