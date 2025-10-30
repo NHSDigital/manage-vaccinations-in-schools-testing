@@ -41,6 +41,9 @@ def test_class_list_file_upload_valid_data(
     2. Upload a valid class list file.
     Verification:
     - Output indicates successful import of records.
+    Scenarios covered:
+    AllValidValues, YearGroupOverride, SameYearGroup, EmptyPostCode, EmptyYearGroup,
+    UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
     """
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
@@ -66,6 +69,11 @@ def test_class_list_file_upload_invalid_data(
     2. Upload a class list file with invalid data.
     Verification:
     - Output lists errors as expected for each record
+    Scenarios covered:
+    EmptyFirstName, EmptyLastName, EmptyDOB, LongNHSNo, InvalidPostCode,
+    InvalidParent1Email, InvalidParent2Email, InvalidYearGroup, InvalidFirstName,
+    InvalidLastName, InvalidPrefFirstName, InvalidPrefLastName, InvalidParent1Name,
+    InvalidParent2Name
     """
     school = schools["doubles"][0]
     year_group = year_groups["doubles"]
