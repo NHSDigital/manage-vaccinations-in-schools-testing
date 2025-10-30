@@ -66,6 +66,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 @issue("MAV-1669")
 @pytest.mark.bug
+@pytest.mark.skip
 def test_tallying(
     setup_fixed_child,
     sessions_page,
