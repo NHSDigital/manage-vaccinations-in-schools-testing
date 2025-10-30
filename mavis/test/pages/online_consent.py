@@ -104,6 +104,18 @@ class OnlineConsentPage:
             "radio",
             name="Yes, I agree",
         )
+        self.mmr_consent_agree_radio = self.page.get_by_role(
+            "radio",
+            name="Yes, I agree",
+        )
+        self.mmr_consent_agree_without_gelatine_radio = self.page.get_by_role(
+            "radio",
+            name="I want my child to have the vaccine that does not contain gelatine",
+        )
+        self.mmr_consent_agree_either_radio = self.page.get_by_role(
+            "radio",
+            name="My child can have either type of vaccine",
+        )
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
 
     @step("Click Continue")
@@ -226,6 +238,16 @@ class OnlineConsentPage:
         self.hpv_consent_agree_radio.check()
         self.click_continue()
 
+    @step("Agree to MMR vaccination (consent option = {consent_option})")
+    def agree_to_mmr_vaccination(self, consent_option: ConsentOption) -> None:
+        self.mmr_consent_agree_radio.check()
+        self.click_continue()
+        if consent_option is ConsentOption.MMR_WITHOUT_GELATINE:
+            self.mmr_consent_agree_without_gelatine_radio.check()
+        elif consent_option is ConsentOption.MMR_EITHER:
+            self.mmr_consent_agree_either_radio.check()
+        self.click_continue()
+
     @step("Don't agree to vaccination")
     def dont_agree_to_vaccination(self) -> None:
         self.no_consent_radio.check()
@@ -339,6 +361,14 @@ class OnlineConsentPage:
         if consent_option is not ConsentOption.INJECTION:
             number_of_health_questions -= 1
         return number_of_health_questions
+
+    def get_number_of_health_questions_for_mmr(
+        self,
+        consent_option: ConsentOption,
+    ) -> int:
+        return len(
+            Programme.health_questions(Programme.MMR, consent_option),
+        )
 
     def check_final_consent_message(
         self,
