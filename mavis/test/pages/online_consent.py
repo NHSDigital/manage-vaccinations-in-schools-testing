@@ -238,7 +238,7 @@ class OnlineConsentPage:
         self.hpv_consent_agree_radio.check()
         self.click_continue()
 
-    @step("Agree to MMR vaccination (consent option = {consent_option})")
+    @step("Agree to MMR vaccination (consent option = {1})")
     def agree_to_mmr_vaccination(self, consent_option: ConsentOption) -> None:
         self.mmr_consent_agree_radio.check()
         self.click_continue()
