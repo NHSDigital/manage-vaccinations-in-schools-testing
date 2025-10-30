@@ -101,6 +101,24 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
     2. Upload a valid vaccination file.
     Verification:
     - Output indicates successful import of records.
+    Scenarios covered:
+    HPV:
+    HPV_Optional, HPV_Gardasil9, HPV_Gardasil, HPV_Cervarix, HPV_NFA, HPV_Add_Not_Known,
+    HPV_AllowPastExpiryDate, HPV_SiteRAU, HPV_SiteRAL, HPV_NotVaccinated,
+    Doubles:
+    TDIPV_Optional, TDIPV_NFA, TDIPV_Add_Not_Known, TDIPV_AllowPastExpiryDate,
+    TDIPV_SiteRAU, TDIPV_SiteRAL, TDIPV_NotVaccinated, MenACWY_Optional, MenACWY_NFA,
+    MenACWY_Add_Not_Known, MenACWY_AllowPastExpiryDate, MenACWY_SiteRAU,MenACWY_SiteRAL,
+    MenACWY_NotVaccinated, MenACWY_BatchName100Chars,
+    Flu:
+    Flu_Optional, Flu_NFA,
+    Flu_Add_Not_Known, Flu_AllowPastExpiryDate, Flu_SiteRAU, Flu_SiteRAL,
+    Flu_NotVaccinated, Flu_BatchName100Chars,
+    MMR:
+    MMR_Optional, MMR_NFA, MMR_Add_Not_Known,
+    MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL, MMR_NotVaccinated,
+    MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
+    MMR_UnknownDoseSeq
     """
     import_records_page.upload_and_verify_output(
         file_mapping=VaccsFileMapping.POSITIVE,
@@ -117,6 +135,19 @@ def test_vaccination_file_upload_invalid_data(setup_vaccs, import_records_page):
     2. Upload a vaccination file with invalid data.
     Verification:
     - Output lists errors as expected for each record
+    Scenarios covered:
+
+    HPV_InvalidODSCode, HPV_EmptyOrgCode, HPV_EmptySchoolURN, HPV_NotKnownSchoolEmpty,
+    HPV_LongNHSNumber, HPV_ShortNHSNumber, HPV_EmptyForename, HPV_EmptyLastname,
+    HPV_EmptyDOB, HPV_InvalidFormatDOB, HPV_FutureDOB, HPV_NonLeapYearDOB,
+    HPV_EmptyGender, HPV_InvalidGender, HPV_EmptyPostCode, HPV_InvalidPostCode,
+    HPV_EmptyVaccDate, HPV_FutureVaccDate, HPV_EmptyVaccGiven, HPV_EmptyBatchNumber,
+    HPV_EmptyExpiryDate, HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite,
+    HPV_EmptyDoseSeq, HPV_InvalidDoseSeq, HPV_EmptyCareSetting, HPV_InvalidProfFName,
+    HPV_InvalidProfSName, HPV_InvalidProfEmail, HPV_InvalidClinic, HPV_InvalidTime,
+    HPV_InvalidReason, HPV_InvalidVaccinatedFlag, HPV_InvalidCareSetting,
+    HPV_TimeInFuture, HPV_VaccinatedFlagEmpty, TDIPV_EmptyDoseSeq, TDIPV_InvalidDoseSeq,
+    MenACWY_EmptyDoseSeq, MenACWY_InvalidDoseSeq, MenACWY_LongBatchNumber, MMR_DoseSeq3
     """
     import_records_page.upload_and_verify_output(
         file_mapping=VaccsFileMapping.NEGATIVE,
@@ -137,6 +168,9 @@ def test_vaccination_file_upload_duplicate_records(
     2. Upload a second file with more duplicates.
     Verification:
     - Output indicates duplicates are detected and handled.
+    Scenarios covered:
+    1. Duplicate records within the same file, and
+    2. Duplicate records across 2 different files
     """
     import_records_page.upload_and_verify_output(
         VaccsFileMapping.DUP_1,
@@ -201,6 +235,18 @@ def test_vaccination_file_upload_historic_valid_data(setup_vaccs, import_records
     2. Upload a historic file with valid data.
     Verification:
     - Output indicates successful import of historic records.
+    Scenarios covered:
+    HPV:
+    HPV_Gardasil9, HPV_Gardasil, HPV_Cervarix, HPV_NFA, HPV_Add_Not_Known,
+    HPV_AllowPastExpiryDate, HPV_SiteRAU, HPV_SiteRAL, HPV_NotVaccinated,
+    Doubles:
+    TDIPV_Revaxis, TDIPV_NFA, TDIPV_Add_Not_Known, TDIPV_AllowPastExpiryDate,
+    TDIPV_SiteRAU, TDIPV_SiteRAL, TDIPV_NotVaccinated, MenACWY_MenQuadfi, MenACWY_NFA,
+    MenACWY_Add_Not_Known, MenACWY_AllowPastExpiryDate, MenACWY_SiteRAU,MenACWY_SiteRAL,
+    MenACWY_NotVaccinated, MAV_855, MenACWY_BatchName100Chars,
+    MMR:
+    MMR, MMR_NFA, MMR_Add_Not_Known, MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL,
+    MMR_NotVaccinated, MMR_DoseSeq1, MMR_DoseSeq2
     """
     import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_POSITIVE)
 
@@ -218,6 +264,16 @@ def test_vaccination_file_upload_historic_invalid_data(
     2. Upload a historic file with invalid data.
     Verification:
     - Output lists errors as expected for each record
+    Scenarios covered:
+    InvalidODSCode, EmptyOrgCode, EmptySchoolURN, NotKnownSchoolEmpty, LongNHSNumber,
+    ShortNHSNumber, EmptyForename, EmptyLastname, EmptyDOB, InvalidFormatDOB, FutureDOB,
+    NonLeapYearDOB, EmptyGender, InvalidGender, EmptyPostCode, InvalidPostCode,
+    EmptyVaccDate, FutureVaccDate, EmptyVaccGiven, EmptyBatchNumber, EmptyExpiryDate,
+    EmptyAnatomicalSite, InvalidAnatomicalSite, InvalidAnatomicalSite,
+    InvalidAnatomicalSite, EmptyDoseSeq, InvalidDoseSeq, EmptyCareSetting,
+    InvalidProfFName, InvalidProfSName, InvalidProfEmail, InvalidClinic, InvalidTime,
+    InvalidReason, InvalidVaccinatedFlag, InvalidCareSetting, TimeInFuture,
+    LongBatchNumber
     """
     import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_NEGATIVE)
 
@@ -242,6 +298,7 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     3. Open vaccination details for the child.
     Verification:
     - Vaccination location is displayed as the school.
+    Scenarios covered: MAV-855
     """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -270,6 +327,9 @@ def test_vaccination_file_upload_systmone_valid_data(
     2. Upload a SystmOne file with valid data.
     Verification:
     - Output indicates successful import of SystmOne records.
+    Scenarios covered:
+    AllValuesCervarix, AllValuesG9, AllValuesHistorical, MandatoryValues, Batch100Chars,
+    AllValuesMMR_DoseSeq1, AllValuesMMR_DoseSeq2
     """
     import_records_page.upload_and_verify_output(VaccsFileMapping.SYSTMONE_POSITIVE)
 
@@ -287,6 +347,12 @@ def test_vaccination_file_upload_systmone_invalid_data(
     2. Upload a SystmOne file with invalid data.
     Verification:
     - Output lists errors as expected for each record
+    Scenarios covered:
+    EmptyDoB, InvalidDoB, LongerNHSNo, ShorterNHSNo, InvalidVaccsType, InvalidVaccsDose,
+    InvalidVaccsType, EmptyFirstName, EmptyPostcode, InvalidPostcode, EmptySex,
+    InvalidSex, EmptyLastName, EmptyEventDate, InvalidEventDate, FutureEventDate,
+    PastEventDate, InvalidEventTime, FutureEventTime, InvalidSchoolURN, LongBatchNumber,
+    AllValuesMMR_DoseSeq3
     """
     import_records_page.upload_and_verify_output(VaccsFileMapping.SYSTMONE_NEGATIVE)
 
@@ -304,6 +370,11 @@ def test_vaccination_file_upload_systmone_historic_invalid_data(
     2. Upload a SystmOne historic file with invalid data.
     Verification:
     - Output lists errors as expected for each record
+    Scenarios covered:
+    EmptyDoB, InvalidDoB, LongerNHSNo, ShorterNHSNo, InvalidVaccsType, InvalidVaccsDose,
+    InvalidVaccsType, EmptyFirstName, EmptyPostcode, InvalidPostcode, EmptySex,
+    InvalidSex, EmptyLastName, EmptyEventDate, InvalidEventDate, FutureEventDate,
+    PastEventDate, InvalidEventTime, InvalidSchoolURN
     """
     import_records_page.upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_HIST_NEGATIVE,
@@ -327,6 +398,8 @@ def test_vaccination_file_upload_whitespace_normalization(
     3. Verify the list is normalized and imported correctly.
     Verification:
     - Imported list matches expected normalized data.
+    Scenarios covered:
+    TwoSpaces, Tabs, NBSP (non-breaking space), ZWJ (zero-width joiner)
     """
     input_file, _ = import_records_page.upload_and_verify_output(
         VaccsFileMapping.WHITESPACE,
@@ -350,6 +423,9 @@ def test_vaccination_file_upload_systmone_whitespace_normalization(
     1. Upload a SystmOne file with whitespace issues.
     Verification:
     - Output indicates successful normalization and import.
+    Scenarios covered:
+    TwoSpaces, Tabs, NBSP (non-breaking space), ZWJ (zero-width joiner),
+    HistoricalTwoSpaces, HistoricalTabs, HistoricalNBSP, HistoricalZWJ
     """
     import_records_page.upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_WHITESPACE,

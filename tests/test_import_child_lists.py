@@ -18,6 +18,9 @@ def test_child_list_file_upload_valid_data(setup_child_list, import_records_page
     2. Upload a valid child list file.
     Verification:
     - Output indicates successful import of records.
+    Scenarios covered:
+    AllValidValues, Homeschooled, UnknownSchool, YearGroupEmpty, UnicodeApostrophe1,
+    UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
     """
     import_records_page.upload_and_verify_output(ChildFileMapping.POSITIVE)
 
@@ -31,6 +34,10 @@ def test_child_list_file_upload_invalid_data(setup_child_list, import_records_pa
     2. Upload a child list file with invalid data.
     Verification:
     - Output lists errors as expected for each record
+    Scenarios covered:
+    EmptyFirstName, EmptyLastName, EmptyURN, EmptyDOB, LongNHSNo, ShortNHSNo,
+    InvalidPostCode, InvalidParent1Email, InvalidParent2Email, InvalidYearGroup,
+    SpaceInDOB, InvalidFirstName, InvalidLastName, InvalidParent1Name,InvalidParent2Name
     """
     import_records_page.upload_and_verify_output(ChildFileMapping.NEGATIVE)
 
