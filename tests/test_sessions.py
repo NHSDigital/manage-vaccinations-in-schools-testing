@@ -393,7 +393,6 @@ def test_editing_session_programmes(setup_fixed_child, sessions_page, children):
     sessions_page.click_continue_button()
     sessions_page.expect_details("Programmes", "Flu HPV")
     sessions_page.click_save_changes()
-    sessions_page.page.pause()
     sessions_page.expect_session_to_have_programmes([Programme.FLU, Programme.HPV])
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)

@@ -100,8 +100,6 @@ def test_report_has_correct_values(
 
     reports_vaccinations_page.navigate_and_refresh_reports()
     reports_vaccinations_page.check_filter_for_programme(Programme.HPV)
-
-    reports_vaccinations_page.page.pause()
     reports_vaccinations_page.check_cohort_has_n_children(1)
     reports_vaccinations_page.check_category_percentage("Not vaccinated", "0.0")
     reports_vaccinations_page.check_category_percentage("Vaccinated", "100.0")
