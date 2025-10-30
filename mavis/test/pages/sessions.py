@@ -616,22 +616,22 @@ class SessionsPage:
             self.click_add_another_date()
 
         if edit_existing_date:
-            self.day_textbox.first.fill(day)
-            self.month_textbox.first.fill(month)
-            self.year_textbox.first.fill(year)
+            self.day_textbox.first.fill(str(day))
+            self.month_textbox.first.fill(str(month))
+            self.year_textbox.first.fill(str(year))
         else:
-            self.day_textbox.last.fill(day)
-            self.month_textbox.last.fill(month)
-            self.year_textbox.last.fill(year)
+            self.day_textbox.last.fill(str(day))
+            self.month_textbox.last.fill(str(month))
+            self.year_textbox.last.fill(str(year))
 
     def session_date_already_scheduled(self, date: str) -> bool:
         day, month, year = get_day_month_year_from_compact_date(date)
 
         for i in range(len(self.day_textbox.all())):
             if (
-                self.day_textbox.nth(i).input_value() == day
-                and self.month_textbox.nth(i).input_value() == month
-                and self.year_textbox.nth(i).input_value() == year
+                self.day_textbox.nth(i).input_value() == str(day)
+                and self.month_textbox.nth(i).input_value() == str(month)
+                and self.year_textbox.nth(i).input_value() == str(year)
             ):
                 return True
 
