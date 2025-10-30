@@ -97,20 +97,54 @@ def test_report_view(
     3. Edit the child's vaccination record to mark the outcome as refused.
     4. Refresh reports and verify that the reporting values reflect the refusal.
     Verification:
-    - Initial report shows 0 vaccinated and 0 not vaccinated.
-    - After vaccination, report shows 1 vaccinated and 0 not vaccinated.
-    - After marking as refused, report shows 0 vaccinated and 1 not vaccinated.
+    - After vaccination, report shows 1 more vaccinated and 0 more not vaccinated.
+    - After marking as refused, report shows 0 more vaccinated and
+      1 more not vaccinated.
     """
 
     child, _ = record_injected_flu
     school = schools[Programme.FLU][0]
 
+    reports_vaccinations_page.navigate()
+    reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
+
+    vaccinated_count = reports_vaccinations_page.get_children_count("Vaccinated")
+    unvaccinated_count = reports_vaccinations_page.get_children_count("Not vaccinated")
+
+    (
+        expected_cohort_count,
+        expected_unvaccinated_percentage,
+        expected_vaccinated_percentage,
+    ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
+        unvaccinated_count, vaccinated_count
+    )
+
+    reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
+    reports_vaccinations_page.check_category_percentage(
+        "Not vaccinated", expected_unvaccinated_percentage
+    )
+    reports_vaccinations_page.check_category_percentage(
+        "Vaccinated", expected_vaccinated_percentage
+    )
+
     reports_vaccinations_page.navigate_and_refresh_reports()
     reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
 
-    reports_vaccinations_page.check_cohort_has_n_children(1)
-    reports_vaccinations_page.check_category_percentage("Not vaccinated", "0.0")
-    reports_vaccinations_page.check_category_percentage("Vaccinated", "100.0")
+    (
+        expected_cohort_count,
+        expected_unvaccinated_percentage,
+        expected_vaccinated_percentage,
+    ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
+        unvaccinated_count, vaccinated_count + 1
+    )
+
+    reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
+    reports_vaccinations_page.check_category_percentage(
+        "Not vaccinated", expected_unvaccinated_percentage
+    )
+    reports_vaccinations_page.check_category_percentage(
+        "Vaccinated", expected_vaccinated_percentage
+    )
 
     dashboard_page.navigate()
     dashboard_page.click_children()
@@ -125,6 +159,18 @@ def test_report_view(
 
     reports_vaccinations_page.navigate_and_refresh_reports()
     reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
-    reports_vaccinations_page.check_cohort_has_n_children(1)
-    reports_vaccinations_page.check_category_percentage("Not vaccinated", "100.0")
-    reports_vaccinations_page.check_category_percentage("Vaccinated", "0.0")
+    (
+        expected_cohort_count,
+        expected_unvaccinated_percentage,
+        expected_vaccinated_percentage,
+    ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
+        unvaccinated_count + 1, vaccinated_count
+    )
+
+    reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
+    reports_vaccinations_page.check_category_percentage(
+        "Not vaccinated", expected_unvaccinated_percentage
+    )
+    reports_vaccinations_page.check_category_percentage(
+        "Vaccinated", expected_vaccinated_percentage
+    )

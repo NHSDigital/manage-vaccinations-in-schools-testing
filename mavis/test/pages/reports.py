@@ -1,3 +1,5 @@
+import re
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import pandas as pd
@@ -56,6 +58,34 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         category_heading = self.page.get_by_role("heading", name=category, exact=True)
         category_value = category_heading.locator("xpath=following-sibling::*[1]")
         expect(category_value).to_contain_text(f"{expected_percentage}%")
+
+    def get_children_count(self, category: str) -> int:
+        category_card = self.page.locator(
+            f"//div[@class='nhsuk-card__content'][.//h3[normalize-space()='{category}']]"
+        )
+        caption_text = category_card.locator(".nhsuk-card__caption").inner_text()
+
+        match = re.search(r"(\d+)", caption_text)
+        if match:
+            num_children = int(match.group(1))
+        else:
+            msg = "Number of children not found"
+            raise AssertionError(msg)
+        return num_children
+
+    def get_expected_cohort_and_percentage_strings(
+        self, unvaccinated_count: int, vaccinated_count: int
+    ) -> tuple[str, str, str]:
+        total = unvaccinated_count + vaccinated_count
+        if total == 0:
+            return "0", "0", "0"
+        unvaccinated_pct = Decimal(unvaccinated_count / total).quantize(
+            Decimal("0.1"), rounding=ROUND_HALF_UP
+        )
+        vaccinated_pct = Decimal(vaccinated_count / total).quantize(
+            Decimal("0.1"), rounding=ROUND_HALF_UP
+        )
+        return str(total), str(unvaccinated_pct), str(vaccinated_pct)
 
 
 class ReportsDownloadPage(ReportsTabsMixin):

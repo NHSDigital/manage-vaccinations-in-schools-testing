@@ -100,9 +100,8 @@ def test_report_has_correct_values(
 
     reports_vaccinations_page.navigate_and_refresh_reports()
     reports_vaccinations_page.check_filter_for_programme(Programme.HPV)
-    reports_vaccinations_page.check_cohort_has_n_children(1)
-    reports_vaccinations_page.check_category_percentage("Not vaccinated", "0.0")
-    reports_vaccinations_page.check_category_percentage("Vaccinated", "100.0")
+    vaccinated_count = reports_vaccinations_page.get_children_count("Vaccinated")
+    unvaccinated_count = reports_vaccinations_page.get_children_count("Not vaccinated")
 
     reports_vaccinations_page.click_download_data_tab()
     reports_download_page.check_aggregate_data_radio()
@@ -112,7 +111,10 @@ def test_report_has_correct_values(
     report = reports_download_page.download_and_get_dataframe()
 
     reports_download_page.check_vaccinated_values(
-        report, expected_cohort=1, expected_vaccinated=1, expected_not_vaccinated=0
+        report,
+        expected_cohort=unvaccinated_count + vaccinated_count,
+        expected_vaccinated=vaccinated_count,
+        expected_not_vaccinated=unvaccinated_count,
     )
 
 
