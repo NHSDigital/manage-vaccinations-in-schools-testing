@@ -23,6 +23,8 @@ from mavis.test.pages import (
     ProgrammeOverviewPage,
     ProgrammeSessionsPage,
     ProgrammesListPage,
+    ReportsDownloadPage,
+    ReportsVaccinationsPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
     SessionsPage,
@@ -130,6 +132,16 @@ def programme_sessions_page(page: Page) -> ProgrammeSessionsPage:
 @pytest.fixture
 def programme_children_page(page: Page) -> ProgrammeChildrenPage:
     return ProgrammeChildrenPage(page)
+
+
+@pytest.fixture
+def reports_download_page(page: Page) -> ReportsDownloadPage:
+    return ReportsDownloadPage(page)
+
+
+@pytest.fixture
+def reports_vaccinations_page(page: Page) -> ReportsVaccinationsPage:
+    return ReportsVaccinationsPage(page)
 
 
 @pytest.fixture
