@@ -242,9 +242,9 @@ class SessionsPage:
     def click_psds_tab(self) -> None:
         self._select_tab("PSDs")
 
-    @step("Click Did not consent")
-    def click_did_not_consent(self) -> None:
-        self.did_not_consent_link.click()
+    @step("Click Review consent refused")
+    def click_review_consent_refused(self) -> None:
+        self.review_consent_refused_link.click()
 
     @step("Expect Consent refused checkbox to be checked")
     def expect_consent_refused_checkbox_to_be_checked(self) -> None:
@@ -418,7 +418,7 @@ class SessionsPage:
 
     def expect_session_to_have_programmes(self, programmes: list[Programme]) -> None:
         for programme in programmes:
-            expect(self.page.get_by_role("heading", name=programme)).to_be_visible()
+            expect(self.page.get_by_text(programme)).to_be_visible()
 
     @step("Click on Change session dates")
     def click_change_session_dates(self) -> None:
