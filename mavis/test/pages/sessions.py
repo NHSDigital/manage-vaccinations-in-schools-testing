@@ -8,7 +8,7 @@ import pandas as pd
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data import TestData
+from mavis.test.data import get_session_id
 from mavis.test.models import (
     Child,
     ConsentOption,
@@ -33,9 +33,7 @@ class SessionsPage:
     def __init__(
         self,
         page: Page,
-        test_data: TestData,
     ) -> None:
-        self.test_data = test_data
         self.page = page
 
         self.no_response_checkbox = self.page.get_by_role(
@@ -708,7 +706,7 @@ class SessionsPage:
 
     def get_session_id_from_offline_excel(self) -> str:
         file_path = self.download_offline_recording_excel()
-        return self.test_data.get_session_id(file_path)
+        return get_session_id(file_path)
 
     @step("Click Sessions")
     def click_sessions(self) -> None:
