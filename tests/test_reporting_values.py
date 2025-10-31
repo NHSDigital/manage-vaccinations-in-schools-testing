@@ -12,7 +12,7 @@ from mavis.test.models import (
 
 
 @pytest.fixture
-def setup_recording_injected_flu(
+def refresh_and_setup_recording_injected_flu(
     log_in_as_nurse,
     add_vaccine_batch,
     schools,
@@ -20,9 +20,13 @@ def setup_recording_injected_flu(
     import_records_page,
     sessions_page,
     year_groups,
+    reports_vaccinations_page,
 ):
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
+
+    reports_vaccinations_page.navigate_and_refresh_reports()
+    dashboard_page.navigate()
 
     try:
         batch_name = add_vaccine_batch(Vaccine.SEQUIRUS)
@@ -43,7 +47,7 @@ def setup_recording_injected_flu(
 
 @pytest.fixture
 def record_injected_flu(
-    setup_recording_injected_flu,
+    refresh_and_setup_recording_injected_flu,
     children_page,
     sessions_page,
     verbal_consent_page,
@@ -53,7 +57,7 @@ def record_injected_flu(
 ):
     child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
-    batch_name = setup_recording_injected_flu
+    batch_name = refresh_and_setup_recording_injected_flu
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
