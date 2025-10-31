@@ -47,11 +47,13 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
     def check_filter_for_programme(self, programme: Programme) -> None:
         self.page.get_by_role("radio", name=programme).check()
 
+    @step("Check cohort has {1} children")
     def check_cohort_has_n_children(self, expected_value: int) -> None:
         cohort_heading = self.page.get_by_role("heading", name="Cohort", exact=True)
         cohort_value = cohort_heading.locator("xpath=following-sibling::*[1]")
         expect(cohort_value).to_contain_text(f"{expected_value}children")
 
+    @step("Check category {1} percentage is {2}%")
     def check_category_percentage(
         self, category: str, expected_percentage: str
     ) -> None:
