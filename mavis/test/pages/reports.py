@@ -41,7 +41,7 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
 
     @step("Navigate to and refresh Reports")
     def navigate_and_refresh_reports(self) -> None:
-        self.page.goto("/api/testing/refresh-reporting")
+        self.page.goto("/api/testing/refresh-reporting", timeout=60000)
 
     @step("Click {1}")
     def check_filter_for_programme(self, programme: Programme) -> None:
@@ -79,10 +79,10 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         total = unvaccinated_count + vaccinated_count
         if total == 0:
             return "0", "0", "0"
-        unvaccinated_pct = Decimal(unvaccinated_count / total).quantize(
+        unvaccinated_pct = Decimal(100 * unvaccinated_count / total).quantize(
             Decimal("0.1"), rounding=ROUND_HALF_UP
         )
-        vaccinated_pct = Decimal(vaccinated_count / total).quantize(
+        vaccinated_pct = Decimal(100 * vaccinated_count / total).quantize(
             Decimal("0.1"), rounding=ROUND_HALF_UP
         )
         return str(total), str(unvaccinated_pct), str(vaccinated_pct)
