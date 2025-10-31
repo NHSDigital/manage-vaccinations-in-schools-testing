@@ -308,7 +308,7 @@ class TestData:
         if not nhs_numbers:
             exception_message = "Failed to generate NHS number."
             raise ValueError(exception_message)
-        return nhs_numbers[0]
+        return str(nhs_numbers[0])
 
     def get_expected_errors(self, file_path: Path) -> list[str] | None:
         file_content = self.read_file(file_path)
@@ -323,7 +323,7 @@ class TestData:
         _input_file_path = self.create_file_from_template(
             template_path=file_mapping.input_template_path,
             file_name_prefix=str(file_mapping),
-            session_id=session_id,
+            session_id=str(session_id),
             programme_group=programme_group,
         )
 
