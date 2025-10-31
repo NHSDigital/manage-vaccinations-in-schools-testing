@@ -361,7 +361,13 @@ class TestData:
 
     def get_session_id(self, path: Path) -> str:
         data_frame = pd.read_excel(path, sheet_name="Vaccinations", dtype=str)
-        return data_frame["SESSION_ID"].iloc[0]
+        session_ids = data_frame["SESSION_ID"].dropna()
+        session_ids = session_ids[session_ids.str.strip() != ""]
+
+        if session_ids.empty:
+            msg = "No valid SESSION_ID found in the file."
+            raise ValueError(msg)
+        return session_ids.iloc[0]
 
     def increment_date_of_birth_for_records(self, file_path: Path) -> None:
         _file_df = pd.read_csv(file_path)
