@@ -5,8 +5,6 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
@@ -158,7 +156,7 @@
         <stringProp name="TestPlan.comments">User	${__P(User, nurse.perftest@example.com)}	</stringProp>
       </Arguments>
       <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
         <boolProp name="HTTPSampler.image_parser">true</boolProp>
         <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
         <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -204,7 +202,7 @@
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Get all valid patients for vaccination" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Get all valid patients for vaccination">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -224,7 +222,7 @@
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Nurse journey" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Nurse journey">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -246,7 +244,7 @@
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -283,7 +281,7 @@
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server" enabled="true">
+      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server">
         <stringProp name="HttpSimpleTableControlGui.port">9191</stringProp>
         <boolProp name="HttpSimpleTableControlGui.timestamp">true</boolProp>
         <stringProp name="HttpSimpleTableControlGui.dir">C:\apache-jmeter-5.6.3\bin</stringProp>
@@ -379,7 +377,7 @@ props.put(&quot;VaccineCount_td_ipv&quot;,&quot;0&quot;)
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in page" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in page">
           <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -390,15 +388,15 @@ props.put(&quot;VaccineCount_td_ipv&quot;,&quot;0&quot;)
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-            <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-            <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-            <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-            <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_01</stringProp>
-            <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-            <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-          </BoundaryExtractor>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+            <stringProp name="RegexExtractor.regex">\/users\/sign-in&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+          </RegexExtractor>
           <hashTree/>
           <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
@@ -409,7 +407,7 @@ props.put(&quot;VaccineCount_td_ipv&quot;,&quot;0&quot;)
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in">
           <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -451,17 +449,17 @@ props.put(&quot;VaccineCount_td_ipv&quot;,&quot;0&quot;)
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-            <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-            <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/teams&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-            <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-            <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_02</stringProp>
-            <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-            <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-          </BoundaryExtractor>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+            <stringProp name="RegexExtractor.regex">\/users/teams&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_02</stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+          </RegexExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">organisationId</stringProp>
             <stringProp name="RegexExtractor.regex">class=&quot;nhsuk-radios__input&quot; type=&quot;radio&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -801,7 +799,7 @@ while(vars.get(&quot;vaccination_&quot; + i)){
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2 Sign-in page" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2 Sign-in page">
             <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -812,22 +810,22 @@ while(vars.get(&quot;vaccination_&quot; + i)){
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-              <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-              <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-              <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-              <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-              <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_01</stringProp>
-              <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-              <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-            </BoundaryExtractor>
-            <hashTree/>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
               <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+              <stringProp name="RegexExtractor.regex">\/users\/sign-in&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3 Sign-in" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3 Sign-in">
             <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -869,15 +867,15 @@ while(vars.get(&quot;vaccination_&quot; + i)){
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-              <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-              <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-              <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/teams&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-              <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-              <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_02</stringProp>
-              <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-              <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-            </BoundaryExtractor>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+              <stringProp name="RegexExtractor.regex">\/users/teams&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_02</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
             <hashTree/>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
               <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
@@ -915,14 +913,14 @@ while(vars.get(&quot;vaccination_&quot; + i)){
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Choose session">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="script">//Get the current thread number
 Threadnum=ctx.getThreadNum().toInteger()
-//Threadnum=2 // Use to override a vaccine if needed
+//Threadnum=3 // Use to override a vaccine if needed
 
 //Divide threads equally between the four programmes, each nurse stays with the programme (might bias it towards Flu at some point)
 
@@ -1173,7 +1171,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
             </ConstantTimer>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
               <stringProp name="RegexExtractor.regex">type=&quot;submit&quot;&gt;Attending&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -1321,7 +1319,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
 </stringProp>
           </IfController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4 Open Sessions list" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4 Open Sessions list">
               <stringProp name="HTTPSampler.path">sessions</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1336,7 +1334,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
                 <stringProp name="ConstantTimer.delay">${__Random(7000,12000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="LogOut_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="LogOut_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">LogOut_Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">Log out&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -1354,7 +1352,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <stringProp name="TestPlan.comments">Use the same if controller as login</stringProp>
             </IfController>
             <hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6.1 Logout">
                 <stringProp name="HTTPSampler.path">logout</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1413,7 +1411,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4 Patient attending session" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4 Patient attending session">
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/register/${PatientId}/present</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1436,7 +1434,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-449183188">is attending today’s session.&lt;/p&gt;</stringProp>
                 </collectionProp>
@@ -1498,7 +1496,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Extractor">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
               <stringProp name="RegexExtractor.regex">&lt;form class=&quot;button_to&quot; method=&quot;post&quot; action=&quot;/sessions/${SessionId}/patients/${PatientId}/hpv/consents&quot;&gt;&lt;button class=&quot;nhsuk-button app-button--secondary&quot; data-module=&quot;nhsuk-button&quot; new_tab=&quot;false&quot; type=&quot;submit&quot;&gt;Get consent response&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot; /&gt;&lt;/form&gt;</stringProp>
@@ -1508,7 +1506,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Vaccinate_Authenticity_Token Extractor">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Vaccinate_Authenticity_Token</stringProp>
               <stringProp name="RegexExtractor.regex">vaccinations.*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -1549,7 +1547,7 @@ vars.put(&quot;vaccineCount&quot;,vaccineCount.toString())
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="VaccinationGiven" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="VaccinationGiven">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">VaccinationGiven</stringProp>
               <stringProp name="RegexExtractor.regex">&lt;h3 class=&quot;nhsuk-heading-m&quot;&gt;Programme outcome&lt;\/h3&gt;[\S\s]*?: (.*?)\n</stringProp>
@@ -1559,7 +1557,7 @@ vars.put(&quot;vaccineCount&quot;,vaccineCount.toString())
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Consent_Authenticity_Token Extractor" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Consent_Authenticity_Token Extractor">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Consent_Authenticity_Token</stringProp>
               <stringProp name="RegexExtractor.regex">type=&quot;submit&quot;&gt;Record a new consent response&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -1571,7 +1569,7 @@ vars.put(&quot;vaccineCount&quot;,vaccineCount.toString())
             <hashTree/>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Not Consented" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Not Consented">
           <stringProp name="IfController.condition">//From Flu it&apos;s &apos;Consent given for nasal spray&apos;
 //From others it&apos;s &apos;Consent given&apos;
 
@@ -1616,7 +1614,7 @@ ${__jexl3(&quot;${ConsentGiven}&quot;!^&quot;Consent given&quot;)}</stringProp>
                 <stringProp name="ConstantTimer.delay">${__Random(7000,13000,)}</stringProp>
               </ConstantTimer>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Consent_Authenticity_Token Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Consent_Authenticity_Token Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Consent_Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">draft-consent\/who.*?name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -2564,7 +2562,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 </stringProp>
             </JSR223Sampler>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch">
               <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2606,15 +2604,15 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/draft-vaccination-record/confirm&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; /&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_11</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+                <stringProp name="RegexExtractor.regex">\/draft-vaccination-record\/confirm&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound_11</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
+              </RegexExtractor>
               <hashTree/>
               <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 5-8s" enabled="true">
                 <stringProp name="ConstantTimer.delay">${__Random(5000,8000,)}</stringProp>

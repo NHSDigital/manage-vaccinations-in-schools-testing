@@ -5,8 +5,6 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
@@ -73,7 +71,7 @@
           </elementProp>
           <elementProp name="User" elementType="Argument">
             <stringProp name="Argument.name">User</stringProp>
-            <stringProp name="Argument.value">${__P(User, nurse.perftest@example.com)}</stringProp>
+            <stringProp name="Argument.value">${__P(User, nurse.perf2test@example.com)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="ConsentThreads" elementType="Argument">
@@ -91,7 +89,7 @@
 URN	${__P(URN, 137390)}	</stringProp>
       </Arguments>
       <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
         <stringProp name="HTTPSampler.domain">${BaseURL}</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -124,7 +122,7 @@ URN	${__P(URN, 137390)}	</stringProp>
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
       </CacheManager>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group">
         <stringProp name="TestPlan.comments">Because I&apos;m no longer using a data file, this set up thread group can be here purely to set up sessions and data</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
@@ -152,7 +150,7 @@ URN	${__P(URN, 137390)}	</stringProp>
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2 Sign-in page" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2 Sign-in page">
             <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -163,22 +161,22 @@ URN	${__P(URN, 137390)}	</stringProp>
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-              <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-              <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-              <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-              <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-              <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_01</stringProp>
-              <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-              <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-            </BoundaryExtractor>
-            <hashTree/>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time 3-5s" enabled="true">
               <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+              <stringProp name="RegexExtractor.regex">\/users\/sign-in&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3 Sign-in" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3 Sign-in">
             <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -220,10 +218,10 @@ URN	${__P(URN, 137390)}	</stringProp>
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
+            <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor">
               <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
               <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-              <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/teams&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
+              <stringProp name="BoundaryExtractor.lboundary">\/users\/teams&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
               <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
               <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_02</stringProp>
               <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
@@ -234,7 +232,7 @@ URN	${__P(URN, 137390)}	</stringProp>
               <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
             </ConstantTimer>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">organisationId</stringProp>
               <stringProp name="RegexExtractor.regex">class=&quot;nhsuk-radios__input&quot; type=&quot;radio&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -482,7 +480,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
@@ -534,7 +532,7 @@ log.info(vars.get(&quot;ConsentSession&quot;));</stringProp>
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
@@ -702,7 +700,7 @@ vars.put(&quot;postbody&quot;,postbody);
 </stringProp>
               </JSR223PreProcessor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                 <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
@@ -791,7 +789,7 @@ vars.put(&quot;postbody&quot;,postbody);
                   </collectionProp>
                 </HeaderManager>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
                   <stringProp name="RegexExtractor.regex">Set session in progress for today&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot;</stringProp>
@@ -822,7 +820,7 @@ vars.put(&quot;postbody&quot;,postbody);
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress">
                 <stringProp name="HTTPSampler.path">sessions/${ConsentSession}/make-in-progress</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -857,7 +855,7 @@ vars.put(&quot;postbody&quot;,postbody);
                   </collectionProp>
                 </HeaderManager>
                 <hashTree/>
-                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                   <collectionProp name="Asserion.test_strings">
                     <stringProp name="559030002">&lt;p class=&quot;nhsuk-notification-banner__heading&quot;&gt;Session is now in progress&lt;/p&gt;</stringProp>
                   </collectionProp>
@@ -1149,7 +1147,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
             <hashTree/>
           </hashTree>
         </hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -1158,7 +1156,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
         <stringProp name="ThreadGroup.num_threads">${ConsentThreads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -1350,13 +1348,13 @@ vars.get(&quot;VaccineCount_td_ipv&quot;,props.get(&quot;VaccineCount_td_ipv&quo
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server" enabled="true">
+      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server">
         <stringProp name="HttpSimpleTableControlGui.port">9191</stringProp>
         <boolProp name="HttpSimpleTableControlGui.timestamp">true</boolProp>
         <stringProp name="HttpSimpleTableControlGui.dir">C:\apache-jmeter-5.6.3\bin</stringProp>
       </org.jmeterplugins.protocol.http.control.HttpSimpleTableControl>
       <hashTree/>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -1444,7 +1442,7 @@ vars.get(&quot;VaccineCount_td_ipv&quot;,props.get(&quot;VaccineCount_td_ipv&quo
       </hashTree>
       <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Get patients for processing" enabled="false"/>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate patient requirements" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate patient requirements">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
@@ -1503,7 +1501,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1512,7 +1510,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Homepage" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Homepage">
           <stringProp name="HTTPSampler.path">start</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1532,7 +1530,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in page" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in page">
           <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1543,17 +1541,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-            <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-            <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-            <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-            <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_01</stringProp>
-            <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-            <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-          </BoundaryExtractor>
-          <hashTree/>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="false">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1561,8 +1549,18 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
             <stringProp name="script">prev.setIgnore()</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+            <stringProp name="RegexExtractor.regex">\/users\/sign-in&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+          </RegexExtractor>
+          <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Data prep Sign-in">
           <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1604,16 +1602,6 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="true">
-            <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-            <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="BoundaryExtractor.lboundary">&lt;form action=&quot;/users/teams&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;</stringProp>
-            <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-            <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound_02</stringProp>
-            <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-            <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-          </BoundaryExtractor>
-          <hashTree/>
           <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Organisation ID Extractor" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">organisationId</stringProp>
@@ -1632,8 +1620,18 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
             <stringProp name="script">prev.setIgnore()</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
+          <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor">
+            <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
+            <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
+            <stringProp name="BoundaryExtractor.lboundary">\/users/organisations&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+            <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
+            <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
+            <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
+            <stringProp name="BoundaryExtractor.match_number">1</stringProp>
+          </BoundaryExtractor>
+          <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions page" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions page">
           <stringProp name="HTTPSampler.path">sessions</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1644,7 +1642,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="false">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1699,7 +1697,7 @@ without actual network activity. This helps debugging tests.</stringProp>
           </JSR223PreProcessor>
           <hashTree/>
         </hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller">
           <stringProp name="ForeachController.inputVal">SessionID</stringProp>
           <stringProp name="ForeachController.returnVal">CurrentSessionID</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
@@ -1714,7 +1712,7 @@ without actual network activity. This helps debugging tests.</stringProp>
             <stringProp name="script">log.info(&quot;Currently working with &quot; + vars.get(&quot;CurrentSessionID&quot;))</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Individual session" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Individual session (keep for when tallying is activated)" enabled="false">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -1745,7 +1743,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
               <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
@@ -1765,10 +1763,10 @@ without actual network activity. This helps debugging tests.</stringProp>
               <intProp name="Assertion.test_type">16</intProp>
             </ResponseAssertion>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Programme" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Programme">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Programme</stringProp>
-              <stringProp name="RegexExtractor.regex">&lt;h3 class=&quot;nhsuk-heading-m nhsuk-u-margin-bottom-2&quot;&gt;\n *(.*?)\n *&lt;\/h3&gt;</stringProp>
+              <stringProp name="RegexExtractor.regex">&lt;p class=&quot;nhsuk-caption-l nhsuk-u-margin-bottom-4&quot;&gt;\n *(.*?)\n *&lt;\/h3&gt;</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default">ProgrammeNotFound</stringProp>
               <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -1781,7 +1779,7 @@ JSR223 Sampler: HPV
 </stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Consent Counts" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Consent Counts">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">ConsentCount</stringProp>
               <stringProp name="RegexExtractor.regex">no_response&quot;&gt;(\d*?) </stringProp>
@@ -1791,7 +1789,103 @@ JSR223 Sampler: HPV
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Check for &apos;no sessions scheduled&apos;" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Check for &apos;no sessions scheduled&apos;">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">noSessions</stringProp>
+              <stringProp name="RegexExtractor.regex">&lt;strong class=&quot;nhsuk-tag nhsuk-tag--purple&quot;&gt;(.*?)&lt;/strong&gt;&lt;/p&gt;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">0</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="false">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">prev.setIgnore()</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Individual session">
+            <boolProp name="HTTPSampler.image_parser">true</boolProp>
+            <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
+            <intProp name="HTTPSampler.concurrentPool">6</intProp>
+            <stringProp name="HTTPSampler.path">sessions/${CurrentSessionID}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="sec-ch-ua" elementType="Header">
+                  <stringProp name="Header.name">sec-ch-ua</stringProp>
+                  <stringProp name="Header.value">&quot;Not(A:Brand&quot;;v=&quot;99&quot;, &quot;Google Chrome&quot;;v=&quot;133&quot;, &quot;Chromium&quot;;v=&quot;133&quot;</stringProp>
+                </elementProp>
+                <elementProp name="sec-ch-ua-mobile" elementType="Header">
+                  <stringProp name="Header.name">sec-ch-ua-mobile</stringProp>
+                  <stringProp name="Header.value">?0</stringProp>
+                </elementProp>
+                <elementProp name="sec-ch-ua-platform" elementType="Header">
+                  <stringProp name="Header.name">sec-ch-ua-platform</stringProp>
+                  <stringProp name="Header.value">&quot;macOS&quot;</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+              <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-346973804">Manage vaccinations in schools&lt;/title&gt;</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">16</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Programme">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">Programme</stringProp>
+              <stringProp name="RegexExtractor.regex">&lt;p class=&quot;nhsuk-caption-l nhsuk-u-margin-bottom-4&quot;&gt;\n *([a-zA-Z]*?)[ |\n]</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">ProgrammeNotFound</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+              <stringProp name="TestPlan.comments">Only three different options, but assume any MenACWY also include a Td/IPV 
+
+JSR223 Sampler: Flu
+JSR223 Sampler: MenACWY
+JSR223 Sampler: HPV
+</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Consent Counts">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">ConsentCount</stringProp>
+              <stringProp name="RegexExtractor.regex">no_response&quot;&gt;(\d*?) </stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">0</stringProp>
+              <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Check for &apos;no sessions scheduled&apos;">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">noSessions</stringProp>
               <stringProp name="RegexExtractor.regex">&lt;strong class=&quot;nhsuk-tag nhsuk-tag--purple&quot;&gt;(.*?)&lt;/strong&gt;&lt;/p&gt;</stringProp>
@@ -1816,7 +1910,7 @@ JSR223 Sampler: HPV
             <boolProp name="displaySystemProperties">false</boolProp>
           </DebugSampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Determine whether the session is needed" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Determine whether the session is needed">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1843,7 +1937,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
 }</stringProp>
           </JSR223Sampler>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -1858,7 +1952,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Set session date and in progress" enabled="true">
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Set session date and in progress">
               <collectionProp name="ModuleController.node_path">
                 <stringProp name="764597751">Test Plan</stringProp>
                 <stringProp name="764597751">Test Plan</stringProp>
@@ -1866,7 +1960,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
               </collectionProp>
             </ModuleController>
             <hashTree/>
-            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get offline file and load into STS" enabled="true">
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get offline file and load into STS">
               <collectionProp name="ModuleController.node_path">
                 <stringProp name="764597751">Test Plan</stringProp>
                 <stringProp name="764597751">Test Plan</stringProp>
@@ -1910,7 +2004,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
             <stringProp name="RegexExtractor.regex">name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
@@ -1962,10 +2056,10 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/dates&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+            <stringProp name="RegexExtractor.regex">\/draft-session\/dates&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
             <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
             <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -2005,7 +2099,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates (add another)" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates (add another)">
           <boolProp name="HTTPSampler.image_parser">true</boolProp>
           <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
           <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2088,10 +2182,10 @@ vars.put(&quot;sessionDatesArray&quot;,fullArray)
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/dates&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+            <stringProp name="RegexExtractor.regex">\/draft-session\/dates&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
             <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
             <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -2163,20 +2257,20 @@ vars.put(&quot;postbody&quot;,postbody);
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-            <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/confirm&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+            <stringProp name="RegexExtractor.regex">\/draft-session\/confirm&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
             <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
             <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Dates_Check_Authenticity_token regex" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Dates_Check_Authenticity_token regex">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">Dates_Check_Authenticity_Token</stringProp>
-            <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/dates-check&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+            <stringProp name="RegexExtractor.regex">\/draft-session\/dates-check&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
             <stringProp name="RegexExtractor.default">Dates_Check_Authenticity_Token_NotFound</stringProp>
             <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -2214,7 +2308,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
             <collectionProp name="Asserion.test_strings">
               <stringProp name="-2050906913">&lt;title&gt;Edit session – Manage vaccinations in schools&lt;/title&gt;</stringProp>
               <stringProp name="460217339">Enter a different date to the other session dates</stringProp>
@@ -2239,7 +2333,7 @@ vars.put(&quot;postbody&quot;,postbody);
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates-check" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates-check">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2290,10 +2384,10 @@ vars.put(&quot;postbody&quot;,postbody);
                 <intProp name="Assertion.test_type">16</intProp>
               </ResponseAssertion>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">&quot;\/draft-session\/confirm&quot; .*? name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; </stringProp>
+                <stringProp name="RegexExtractor.regex">\/draft-session\/confirm&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -2302,7 +2396,7 @@ vars.put(&quot;postbody&quot;,postbody);
               <hashTree/>
             </hashTree>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/confirm (new confirm requirement)" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/confirm (new confirm requirement)">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2355,7 +2449,7 @@ vars.put(&quot;postbody&quot;,postbody);
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Set Session In Progress">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
@@ -2370,7 +2464,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open session">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2401,10 +2495,10 @@ vars.put(&quot;postbody&quot;,postbody);
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_token regex">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-              <stringProp name="RegexExtractor.regex">Set session in progress for today&lt;/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot; autocomplete=&quot;off&quot;</stringProp>
+              <stringProp name="RegexExtractor.regex">Set session in progress for today[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
               <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -2432,7 +2526,7 @@ vars.put(&quot;postbody&quot;,postbody);
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set session in progress">
             <stringProp name="HTTPSampler.path">sessions/${CurrentSessionID}/make-in-progress</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2773,18 +2867,18 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Flu consent" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Flu consent">
           <stringProp name="IfController.condition">${__jexl3(&quot;${Programme}&quot; == &quot;flu&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="FLU Homepage" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="FLU Homepage">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${SessionID}/flu/start" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${SessionID}/flu/start">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -2798,7 +2892,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
                 <collectionProp name="HeaderManager.headers">
                   <elementProp name="sec-ch-ua" elementType="Header">
                     <stringProp name="Header.name">sec-ch-ua</stringProp>
@@ -2815,45 +2909,35 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="false">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">\/consents&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number"></stringProp>
               </RegexExtractor>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Session_Slug</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;session_slug&quot; id=&quot;session_slug&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Session_Slug_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Session_Slug RegEx Extractor">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Session_Slug</stringProp>
+                <stringProp name="RegexExtractor.regex">id=&quot;session_slug&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Session_Slug_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Programme_Types</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;programme_types&quot; id=&quot;programme_types&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Programme_Types_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Programme_Types RegEx Extractor">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Programme_Types</stringProp>
+                <stringProp name="RegexExtractor.regex">id=&quot;programme_types&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Programme_Types_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
               <hashTree/>
               <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
@@ -2867,7 +2951,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="FLU ChildsData" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="FLU ChildsData">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
@@ -2939,10 +3023,10 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">name&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">name&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3069,10 +3153,10 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">date-of-birth&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">date-of-birth&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3165,7 +3249,7 @@ vars.put(&quot;SchoolYear&quot;, String.valueOf(schoolYear));
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Generate Test Data PreProcessor" enabled="true">
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Generate Test Data PreProcessor">
                 <stringProp name="cacheKey">true</stringProp>
                 <stringProp name="filename"></stringProp>
                 <stringProp name="parameters"></stringProp>
@@ -3188,10 +3272,10 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">confirm-school&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">confirm-school&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3280,10 +3364,10 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">parent&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">parent&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3305,7 +3389,7 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/parent" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/parent">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -3432,10 +3516,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">consent.*?&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">response-flu&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3464,7 +3548,7 @@ else
               </ConstantTimer>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-flu" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-flu">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -3531,10 +3615,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">alternative&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">alternative&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3623,10 +3707,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">address&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">address&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3742,10 +3826,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">health-question&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">health-question&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3856,10 +3940,10 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor" enabled="true">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Confirm_Authenticity_Token</stringProp>
-                  <stringProp name="RegexExtractor.regex">Confirm&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                  <stringProp name="RegexExtractor.regex">Confirm[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
                   <stringProp name="RegexExtractor.default">Confirm_Authenticity_Token_NotFound</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -3994,18 +4078,18 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="hpv consent" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="hpv consent">
           <stringProp name="IfController.condition">${__jexl3(&quot;${Programme}&quot; == &quot;hpv&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="HPV Homepage" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="HPV Homepage">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${SessionID}/hpv/start" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${SessionID}/hpv/start">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -4036,46 +4120,6 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="false">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
-                <stringProp name="RegexExtractor.match_number"></stringProp>
-              </RegexExtractor>
-              <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Session_Slug</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;session_slug&quot; id=&quot;session_slug&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Session_Slug_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Programme_Types</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;programme_types&quot; id=&quot;programme_types&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Programme_Types_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
               <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-272993516">&lt;h1 class=&quot;nhsuk-heading-xl&quot;&gt;Give or refuse consent for vaccinations&lt;/h1&gt;</stringProp>
@@ -4085,6 +4129,36 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 <boolProp name="Assertion.assume_success">false</boolProp>
                 <intProp name="Assertion.test_type">16</intProp>
               </ResponseAssertion>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+                <stringProp name="RegexExtractor.regex">\/consents&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Session_Slug RegEx Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Session_Slug</stringProp>
+                <stringProp name="RegexExtractor.regex">id=&quot;session_slug&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Session_Slug_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Programme_Types RegEx Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Programme_Types</stringProp>
+                <stringProp name="RegexExtractor.regex">id=&quot;programme_types&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Programme_Types_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
               <hashTree/>
             </hashTree>
           </hashTree>
@@ -4160,10 +4234,10 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">name&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">name&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -4290,17 +4364,17 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">date-of-birth&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">date-of-birth&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                 <stringProp name="RegexExtractor.match_number"></stringProp>
               </RegexExtractor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="63813508">&lt;h1 class=&quot;nhsuk-fieldset__heading&quot;&gt;What is your child’s date of birth?&lt;/h1&gt;</stringProp>
                 </collectionProp>
@@ -4365,7 +4439,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
               </elementProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
                 <collectionProp name="HeaderManager.headers">
                   <elementProp name="sec-ch-ua" elementType="Header">
                     <stringProp name="Header.name">sec-ch-ua</stringProp>
@@ -4409,10 +4483,10 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">confirm-school&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">confirm-school&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -4501,10 +4575,10 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">parent&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">parent&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -4653,10 +4727,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">consent.*?&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">response-hpv&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -4670,7 +4744,7 @@ else
                 <boolProp name="displaySystemProperties">false</boolProp>
               </DebugPostProcessor>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-975309908">&lt;h1 class=&quot;nhsuk-fieldset__heading&quot;&gt;Do you agree to your child having the Human papillomavirus (HPV) vaccination?&lt;/h1&gt;</stringProp>
                 </collectionProp>
@@ -4752,10 +4826,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">address&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">address&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -4871,10 +4945,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">health-question&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">health-question&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -4975,20 +5049,20 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                 </elementProp>
               </HTTPSamplerProxy>
               <hashTree>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                  <stringProp name="RegexExtractor.regex">health-question&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                  <stringProp name="RegexExtractor.regex">health-question&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
                   <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor" enabled="true">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Confirm_Authenticity_Token</stringProp>
-                  <stringProp name="RegexExtractor.regex">Confirm&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                  <stringProp name="RegexExtractor.regex">Confirm[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
                   <stringProp name="RegexExtractor.default">Confirm_Authenticity_Token_NotFound</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5120,7 +5194,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
             </hashTree>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Doubles consent" enabled="true">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Doubles consent">
           <stringProp name="IfController.condition">${__jexl3(&quot;${Programme}&quot; == &quot;menacwy&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">false</boolProp>
@@ -5131,7 +5205,7 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession_MenACWY}/menacwy-td_ipv/start" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/${ConsentSession_MenACWY}/menacwy-td_ipv/start">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5162,46 +5236,6 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 </collectionProp>
               </HeaderManager>
               <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Authenticity_Token Boundary Extractor" enabled="false">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">consents&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
-                <stringProp name="RegexExtractor.template">$1$</stringProp>
-                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
-                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
-                <stringProp name="RegexExtractor.match_number"></stringProp>
-              </RegexExtractor>
-              <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Session_Slug Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Session_Slug</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;session_slug&quot; id=&quot;session_slug&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Session_Slug_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
-              <BoundaryExtractor guiclass="BoundaryExtractorGui" testclass="BoundaryExtractor" testname="Programme_Types Boundary Extractor" enabled="true">
-                <stringProp name="BoundaryExtractor.useHeaders">false</stringProp>
-                <stringProp name="BoundaryExtractor.refname">Programme_Types</stringProp>
-                <stringProp name="BoundaryExtractor.lboundary">&lt;input type=&quot;hidden&quot; name=&quot;programme_types&quot; id=&quot;programme_types&quot; value=&quot;</stringProp>
-                <stringProp name="BoundaryExtractor.rboundary">&quot; autocomplete=&quot;off&quot; /&gt;</stringProp>
-                <stringProp name="BoundaryExtractor.default">Programme_Types_NotFound</stringProp>
-                <boolProp name="BoundaryExtractor.default_empty_value">false</boolProp>
-                <stringProp name="BoundaryExtractor.match_number">1</stringProp>
-              </BoundaryExtractor>
-              <hashTree/>
               <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="-272993516">&lt;h1 class=&quot;nhsuk-heading-xl&quot;&gt;Give or refuse consent for vaccinations&lt;/h1&gt;</stringProp>
@@ -5212,9 +5246,39 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 <intProp name="Assertion.test_type">16</intProp>
               </ResponseAssertion>
               <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
+                <stringProp name="RegexExtractor.regex">\/consents&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Session_Slug RegEx Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Session_Slug</stringProp>
+                <stringProp name="RegexExtractor.regex">id=&quot;session_slug&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Session_Slug_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Programme_Types RegEx Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">Programme_Types</stringProp>
+                <stringProp name="RegexExtractor.regex">id=&quot;programme_types&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default">Programme_Types_NotFound</stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+              </RegexExtractor>
+              <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MEN ChildsData" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MEN ChildsData">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
@@ -5286,10 +5350,10 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">name&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">name&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5416,10 +5480,10 @@ vars.put(&quot;Authenticity_Token&quot;,vars.get(&quot;Confirm_Authenticity_Toke
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">date-of-birth&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">date-of-birth&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5535,10 +5599,10 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">confirm-school&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">confirm-school&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5627,10 +5691,10 @@ vars.put(&quot;Day&quot;, dateOfBirth[2]);
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">parent&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">parent&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5779,10 +5843,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">consent.*?&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">response-doubles&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5811,7 +5875,7 @@ else
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-doubles" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://qa.mavistesting.com/consents/{ConsentId}/edit/response-doubles">
               <boolProp name="HTTPSampler.image_parser">true</boolProp>
               <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
               <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -5878,10 +5942,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">address&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">address&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -5904,7 +5968,7 @@ else
               <hashTree/>
             </hashTree>
           </hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MEN HomeAddress" enabled="true">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="MEN HomeAddress">
             <boolProp name="TransactionController.parent">true</boolProp>
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
@@ -5997,10 +6061,10 @@ else
                 <stringProp name="BoundaryExtractor.match_number">1</stringProp>
               </BoundaryExtractor>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token RegEx Extractor">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
-                <stringProp name="RegexExtractor.regex">health-question&quot; accept-charset=&quot;UTF-8&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;put&quot; autocomplete=&quot;off&quot; \/&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                <stringProp name="RegexExtractor.regex">health-question&quot;[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1$</stringProp>
                 <stringProp name="RegexExtractor.default">Authenticity_Token_NotFound</stringProp>
                 <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
@@ -6111,10 +6175,10 @@ vars.put(&quot;PageTitle&quot;,&quot;NotFound&quot;)</stringProp>
                   <stringProp name="RegexExtractor.match_number"></stringProp>
                 </RegexExtractor>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor" enabled="true">
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Confirm_Authenticity_Token RegEx Extractor">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">Confirm_Authenticity_Token</stringProp>
-                  <stringProp name="RegexExtractor.regex">Confirm&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
+                  <stringProp name="RegexExtractor.regex">Confirm[\s\S]*?authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
                   <stringProp name="RegexExtractor.template">$1$</stringProp>
                   <stringProp name="RegexExtractor.default">Confirm_Authenticity_Token_NotFound</stringProp>
                   <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
