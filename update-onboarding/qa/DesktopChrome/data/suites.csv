@@ -1,0 +1,9 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+Test: Upload a valid vaccination records file and verify successful import.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a valid vaccination file.
+Verification:
+- Output indicates successful import of records.
+","5768","test_vaccination_file_upload_valid_data","tests","Fri Oct 17 09:30:14 BST 2025","passed","Fri Oct 17 09:30:19 BST 2025","","test_import_vaccinations","",""

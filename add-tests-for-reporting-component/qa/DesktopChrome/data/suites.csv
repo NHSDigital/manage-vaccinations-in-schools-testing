@@ -1,0 +1,104 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+Test: Upload an invalid cohort (class list) file and verify error handling.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a cohort file with invalid data.
+Verification:
+- Import fails and error is shown.
+","0","test_cohort_upload_with_invalid_file","tests","Wed Oct 29 17:36:21 GMT 2025","broken","Wed Oct 29 17:36:21 GMT 2025","","test_programmes","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","0","test_batch_add_change_archive[Gardasil 9]","tests","Wed Oct 29 17:38:29 GMT 2025","broken","Wed Oct 29 17:38:29 GMT 2025","","test_vaccines","",""
+"
+Test: Upload duplicate vaccination records and verify duplicate handling.
+Steps:
+1. Upload a vaccination file with duplicate records.
+2. Upload a second file with more duplicates.
+Verification:
+- Output indicates duplicates are detected and handled.
+","0","test_vaccination_file_upload_duplicate_records","tests","Wed Oct 29 17:38:18 GMT 2025","broken","Wed Oct 29 17:38:18 GMT 2025","","test_import_vaccinations","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","0","test_batch_add_change_archive[Cell-based Trivalent Influenza Vaccine Seqirus]","tests","Wed Oct 29 17:36:29 GMT 2025","broken","Wed Oct 29 17:36:29 GMT 2025","","test_vaccines","",""
+"
+Test: Upload a valid vaccination records file and verify successful import.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a valid vaccination file.
+Verification:
+- Output indicates successful import of records.
+","0","test_vaccination_file_upload_valid_data","tests","Wed Oct 29 17:33:26 GMT 2025","broken","Wed Oct 29 17:33:26 GMT 2025","","test_import_vaccinations","",""
+"
+Test: Upload a cohort file with invalid structure and verify error handling.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a file with incorrect structure.
+Verification:
+- Import fails and structural error is shown.
+","0","test_cohort_upload_with_invalid_structure","tests","Wed Oct 29 17:38:22 GMT 2025","broken","Wed Oct 29 17:38:22 GMT 2025","","test_programmes","",""
+"
+Test: Submit an online consent form refusing flu vaccination and
+   verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Select 'do not agree' to vaccination.
+3. Choose refusal reason and provide details.
+4. Submit the consent form.
+Verification:
+- Confirmation text indicates consent was refused for flu vaccination.
+","0","test_consent_refused_for_flu_vaccination","tests","Wed Oct 29 17:35:21 GMT 2025","broken","Wed Oct 29 17:35:21 GMT 2025","","test_online_consent_flu","",""
+"
+Test: Upload an invalid vaccination records file and verify error handling.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a vaccination file with invalid data.
+Verification:
+- Output lists errors as expected for each record
+","0","test_vaccination_file_upload_invalid_data","tests","Wed Oct 29 17:36:27 GMT 2025","broken","Wed Oct 29 17:36:27 GMT 2025","","test_import_vaccinations","",""
+"
+Test: Upload a valid cohort (class list) file and verify successful import.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a valid cohort file.
+Verification:
+- Import completes successfully with expected records.
+","0","test_cohort_upload_with_valid_file","tests","Wed Oct 29 17:33:21 GMT 2025","broken","Wed Oct 29 17:33:21 GMT 2025","","test_programmes","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","0","test_consent_given_for_flu_vaccination[yes_to_health_questions: False-consent_option: Nasal spray]","tests","Wed Oct 29 17:37:21 GMT 2025","broken","Wed Oct 29 17:37:21 GMT 2025","","test_online_consent_flu","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","0","test_batch_add_change_archive[Fluenz]","tests","Wed Oct 29 17:33:28 GMT 2025","broken","Wed Oct 29 17:33:28 GMT 2025","","test_vaccines","",""
