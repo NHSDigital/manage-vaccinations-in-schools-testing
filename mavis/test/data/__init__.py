@@ -40,6 +40,8 @@ class VaccsFileMapping(FileMapping):
     DUP_2 = "dup_2"
     INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
+    FLU_INJECTED = "flu_injected"
+    FLU_NASAL = "flu_nasal"
     HPV_DOSE_TWO = "hpv_dose_two"
     HEADER_ONLY = "header_only"
     NOT_GIVEN = "not_given"
