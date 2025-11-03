@@ -1,4 +1,5 @@
 import os
+import re
 
 import pytest
 from playwright.sync_api import Page
@@ -196,6 +197,46 @@ def upload_offline_vaccination(
             sessions_page.delete_all_sessions(school)
 
     return wrapper
+
+@pytest.fixture
+def setup_session_and_batches_with_fixed_child(
+    add_vaccine_batch,
+    schools,
+    dashboard_page,
+    sessions_page,
+    import_records_page,
+    children,
+    log_in_page,
+    nurse,
+    team,
+):
+    def _setup(programme_group):
+        school = schools[programme_group][0]
+        child = children[programme_group][0]
+
+        try:
+            log_in_page.navigate()
+            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+            batch_names = {
+                vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
+                for vaccine in Vaccine
+                if vaccine.programme.group == programme_group
+            }
+            dashboard_page.click_mavis()
+            dashboard_page.click_sessions()
+            sessions_page.click_session_for_programme_group(school, programme_group)
+            sessions_page.click_import_class_lists()
+            import_records_page.import_class_list(
+                ClassFileMapping.FIXED_CHILD,
+                child.year_group,
+                programme_group,
+            )
+            return batch_names
+        finally:
+            dashboard_page.navigate()
+            log_in_page.log_out()
+
+    return _setup
 
 
 @pytest.fixture

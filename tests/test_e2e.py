@@ -1,51 +1,9 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.data import ClassFileMapping
 from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
 
 pytestmark = pytest.mark.e2e
-
-
-@pytest.fixture
-def setup_session_with_file_upload(
-    add_vaccine_batch,
-    schools,
-    dashboard_page,
-    sessions_page,
-    import_records_page,
-    children,
-    log_in_page,
-    nurse,
-    team,
-):
-    def _setup(programme_group):
-        school = schools[programme_group][0]
-        child = children[programme_group][0]
-
-        try:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            batch_names = [
-                add_vaccine_batch(vaccine, vaccine.replace(" ", "") + "123")
-                for vaccine in Vaccine
-                if vaccine.programme.group == programme_group
-            ]
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
-            sessions_page.click_session_for_programme_group(school, programme_group)
-            sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(
-                ClassFileMapping.FIXED_CHILD,
-                child.year_group,
-                programme_group,
-            )
-            return batch_names
-        finally:
-            dashboard_page.navigate()
-            log_in_page.log_out()
-
-    return _setup
 
 
 @pytest.fixture
@@ -56,8 +14,8 @@ def hpv_consent_url(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def setup_session_for_hpv(setup_session_with_file_upload):
-    return setup_session_with_file_upload(Programme.HPV)
+def setup_session_for_hpv(setup_session_and_batches_with_fixed_child):
+    return setup_session_and_batches_with_fixed_child(Programme.HPV)
 
 
 def test_recording_hpv_vaccination_e2e(
@@ -88,7 +46,7 @@ def test_recording_hpv_vaccination_e2e(
     """
     child = children[Programme.HPV][0]
     schools = schools[Programme.HPV]
-    gardasil_9_batch_name = setup_session_for_hpv[0]
+    gardasil_9_batch_name = setup_session_for_hpv[Vaccine.GARDASIL_9]
     number_of_health_questions = len(Programme.health_questions(Programme.HPV))
 
     online_consent_page.go_to_url(hpv_consent_url)
@@ -133,8 +91,8 @@ def doubles_consent_url(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def setup_session_for_doubles(setup_session_with_file_upload):
-    return setup_session_with_file_upload("doubles")
+def setup_session_for_doubles(setup_session_and_batches_with_fixed_child):
+    return setup_session_and_batches_with_fixed_child("doubles")
 
 
 def test_recording_doubles_vaccination_e2e(
@@ -166,8 +124,8 @@ def test_recording_doubles_vaccination_e2e(
     """
     child = children["doubles"][0]
     schools = schools["doubles"]
-    menquadfi_batch_name = setup_session_for_doubles[0]
-    revaxis_batch_name = setup_session_for_doubles[-1]
+    menquadfi_batch_name = setup_session_for_doubles[Vaccine.MENQUADFI]
+    revaxis_batch_name = setup_session_for_doubles[Vaccine.REVAXIS]
 
     number_of_health_questions = (
         online_consent_page.get_number_of_health_questions_for_programmes(
@@ -222,11 +180,16 @@ def flu_consent_url(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def setup_session_for_flu(setup_session_with_file_upload):
-    return setup_session_with_file_upload(Programme.FLU)
+def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
+    return setup_session_and_batches_with_fixed_child(Programme.FLU)
 
 
 @issue("MAV-1831")
+@pytest.mark.parametrize(
+    "consent_option",
+    [ConsentOption.BOTH, ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION],
+    ids=lambda v: f"consent_option: {v}",
+)
 def test_recording_flu_vaccination_e2e(
     flu_consent_url,
     setup_session_for_flu,
@@ -242,6 +205,7 @@ def test_recording_flu_vaccination_e2e(
     log_in_page,
     nurse,
     team,
+    consent_option,
 ):
     """
     Test: End-to-end test for recording a flu vaccination for a child.
@@ -258,16 +222,22 @@ def test_recording_flu_vaccination_e2e(
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
-    fluenz_batch_name = setup_session_for_flu[0]
+
+    batch_names = setup_session_for_flu
+    batch_name = (
+        batch_names[Vaccine.SEQUIRUS]
+        if consent_option is ConsentOption.INJECTION
+        else batch_names[Vaccine.FLUENZ]
+    )
 
     online_consent_page.go_to_url(flu_consent_url)
     start_page.start()
 
     online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    online_consent_page.agree_to_flu_vaccination(consent_option=consent_option)
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
+        online_consent_page.get_number_of_health_questions_for_flu(consent_option),
         yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
@@ -275,7 +245,7 @@ def test_recording_flu_vaccination_e2e(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
-        consent_option=ConsentOption.BOTH,
+        consent_option=consent_option,
     )
 
     log_in_page.navigate()
@@ -286,7 +256,7 @@ def test_recording_flu_vaccination_e2e(
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.BOTH)
+        VaccinationRecord(child, Programme.FLU, batch_name, consent_option)
     )
 
     # MAV-1831
