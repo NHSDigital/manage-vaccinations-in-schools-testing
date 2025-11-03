@@ -61,6 +61,7 @@ def test_create_edit_delete_hpv_vaccination_and_verify_imms_api(
     )
 
     # Step 4: Edit delivery site to RIGHT_ARM_LOWER
+    vaccination_record_page.page.reload()
     vaccination_record_page.expect_vaccination_details(
         "Synced with NHS England?", "Synced"
     )
