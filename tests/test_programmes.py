@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
+from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme, ReportFormat
 
 
@@ -22,50 +22,6 @@ def setup_cohort_upload(
 @pytest.fixture
 def setup_reports(log_in_as_nurse, dashboard_page):
     dashboard_page.click_programmes()
-
-
-@pytest.fixture
-def upload_vaccination(
-    log_in_as_nurse,
-    schools,
-    dashboard_page,
-    import_records_page,
-    sessions_page,
-    year_groups,
-):
-    school = schools[Programme.HPV][0]
-    year_group = year_groups[Programme.HPV]
-
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(
-            school,
-            Programme.HPV,
-        )
-        sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(
-            ClassFileMapping.RANDOM_CHILD,
-            year_group,
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
-        session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.click_mavis()
-        dashboard_page.click_import_records()
-        import_records_page.navigate_to_vaccination_records_import()
-        import_records_page.upload_and_verify_output(
-            file_mapping=VaccsFileMapping.HPV_DOSE_TWO,
-            session_id=session_id,
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_programmes()
-        yield
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
 
 
 @pytest.mark.cohorts
@@ -185,10 +141,15 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     child_record_page.check_child_is_unarchived()
 
 
+@pytest.fixture
+def upload_offline_vaccination_hpv(upload_offline_vaccination):
+    yield from upload_offline_vaccination(Programme.HPV)
+
+
 @pytest.mark.rav
 @pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given(
-    upload_vaccination,
+    upload_offline_vaccination_hpv,
     programmes_list_page,
     programme_children_page,
     programme_overview_page,
@@ -213,6 +174,7 @@ def test_edit_vaccination_dose_to_not_given(
     programme_children_page.search_for_child(child)
     programme_children_page.click_child(child)
     child_record_page.click_vaccination_details(Programme.HPV)
+    vaccination_record_page.page.pause()
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_outcome()
     edit_vaccination_record_page.click_they_refused_it()
