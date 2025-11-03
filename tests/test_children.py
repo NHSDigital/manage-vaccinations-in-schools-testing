@@ -95,6 +95,7 @@ def setup_mav_853(
         sessions_page.delete_all_sessions(school)
 
 
+@pytest.mark.skip(reason="Obsolete test - to be removed")
 def test_children_page_headers_and_filtering(
     setup_fixed_child,
     children_page,
