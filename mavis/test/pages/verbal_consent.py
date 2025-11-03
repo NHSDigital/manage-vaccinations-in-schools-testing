@@ -342,7 +342,7 @@ class VerbalConsentPage:
             "The child knows which vaccination they will have",
             "The child knows which disease the vaccination protects against",
             "The child knows what could happen if they got the disease",
-            "The child knows how the injection will be given",
+            "The child knows how the vaccination will be given",
             "The child knows which side effects they might experience",
         ]
         response = "Yes" if is_competent else "No"
