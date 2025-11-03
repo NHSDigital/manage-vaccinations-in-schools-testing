@@ -198,6 +198,7 @@ def upload_offline_vaccination(
 
     return wrapper
 
+
 @pytest.fixture
 def setup_session_and_batches_with_fixed_child(
     add_vaccine_batch,
