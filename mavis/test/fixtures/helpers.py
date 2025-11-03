@@ -133,11 +133,17 @@ def upload_offline_vaccination(
     dashboard_page,
     import_records_page,
     sessions_page,
+    programmes_list_page,
+    programme_children_page,
+    programme_overview_page,
+    child_record_page,
+    children,
     year_groups,
 ):
     def wrapper(
         programme: Programme, consent_option: ConsentOption = ConsentOption.INJECTION
     ):
+        child = children[programme][0]
         school = schools[programme][0]
         year_group = year_groups[programme]
 
@@ -150,7 +156,7 @@ def upload_offline_vaccination(
                 else VaccsFileMapping.FLU_NASAL
             )
         else:
-            msg = "Unsupported programme for vaccination upload"
+            msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
 
         try:
@@ -177,6 +183,11 @@ def upload_offline_vaccination(
             )
             dashboard_page.click_mavis()
             dashboard_page.click_programmes()
+            programmes_list_page.click_programme_for_current_year(Programme.HPV)
+            programme_overview_page.click_children_tab()
+            programme_children_page.search_for_child(child)
+            programme_children_page.click_child(child)
+            child_record_page.click_vaccination_details(Programme.HPV)
             yield
         finally:
             dashboard_page.navigate()

@@ -150,13 +150,9 @@ def upload_offline_vaccination_hpv(upload_offline_vaccination):
 @pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given(
     upload_offline_vaccination_hpv,
-    programmes_list_page,
     programme_children_page,
-    programme_overview_page,
     vaccination_record_page,
     edit_vaccination_record_page,
-    child_record_page,
-    children,
 ):
     """
     Test: Edit a vaccination dose to 'not given' and verify outcome.
@@ -167,14 +163,6 @@ def test_edit_vaccination_dose_to_not_given(
     Verification:
     - Alert confirms vaccination outcome recorded as refused.
     """
-    child = children[Programme.HPV][0]
-
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
-    programme_children_page.search_for_child(child)
-    programme_children_page.click_child(child)
-    child_record_page.click_vaccination_details(Programme.HPV)
-    vaccination_record_page.page.pause()
     vaccination_record_page.click_edit_vaccination_record()
     edit_vaccination_record_page.click_change_outcome()
     edit_vaccination_record_page.click_they_refused_it()

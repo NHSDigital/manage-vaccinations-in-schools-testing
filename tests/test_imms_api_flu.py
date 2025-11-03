@@ -126,6 +126,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     """
     child, vaccination_time = record_flu_with_consent_option(ConsentOption.INJECTION)
     school = schools[Programme.FLU][0]
+    sessions_page.page.pause()
 
     # Step 3: Verify creation in IMMS API
     imms_api_helper.check_record_in_imms_api(
