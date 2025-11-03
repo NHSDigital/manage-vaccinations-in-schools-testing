@@ -286,7 +286,9 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     schools,
     dashboard_page,
     import_records_page,
-    children_page,
+    children_search_page,
+    child_record_page,
+    vaccination_record_page,
     children,
 ):
     """
@@ -307,12 +309,12 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
-    children_page.click_advanced_filters()
-    children_page.check_children_aged_out_of_programmes()
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
-    children_page.click_vaccination_details(school)
-    children_page.expect_vaccination_details("Location", str(school))
+    children_search_page.click_advanced_filters()
+    children_search_page.check_children_aged_out_of_programmes()
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_record_page.click_vaccination_details(school)
+    vaccination_record_page.expect_vaccination_details("Location", str(school))
 
 
 @pytest.mark.vaccinations
@@ -386,7 +388,7 @@ def test_vaccination_file_upload_systmone_historic_invalid_data(
 def test_vaccination_file_upload_whitespace_normalization(
     setup_vaccs,
     import_records_page,
-    children_page,
+    children_search_page,
     dashboard_page,
 ):
     """
@@ -407,7 +409,7 @@ def test_vaccination_file_upload_whitespace_normalization(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=True)
+    children_search_page.verify_list_has_been_uploaded(input_file, is_vaccinations=True)
 
 
 @pytest.mark.vaccinations

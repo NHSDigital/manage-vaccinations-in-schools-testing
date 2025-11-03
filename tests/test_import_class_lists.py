@@ -192,7 +192,7 @@ def test_class_list_file_upload_whitespace_normalization(
     setup_class_list,
     schools,
     import_records_page,
-    children_page,
+    children_search_page,
     dashboard_page,
     year_groups,
 ):
@@ -215,4 +215,6 @@ def test_class_list_file_upload_whitespace_normalization(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.verify_list_has_been_uploaded(input_file, is_vaccinations=False)
+    children_search_page.verify_list_has_been_uploaded(
+        input_file, is_vaccinations=False
+    )

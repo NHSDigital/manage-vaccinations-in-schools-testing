@@ -44,12 +44,12 @@ def setup_recording_hpv(
 @pytest.fixture
 def record_hpv(
     setup_recording_hpv,
-    children_page,
     sessions_page,
     verbal_consent_page,
     children,
     schools,
     dashboard_page,
+    children_search_page,
 ):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -60,7 +60,7 @@ def record_hpv(
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.click_consent_tab()
 
-    children_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.search_with_all_filters_for_child_name(str(child))
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     verbal_consent_page.select_parent(child.parents[0])
     verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)

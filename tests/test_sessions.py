@@ -295,7 +295,8 @@ def test_verify_excel_export_and_clinic_invitation(
     add_vaccine_batch,
     schools,
     clinics,
-    children_page,
+    children_search_page,
+    child_record_page,
     sessions_page,
     dashboard_page,
     verbal_consent_page,
@@ -325,10 +326,10 @@ def test_verify_excel_export_and_clinic_invitation(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_page.search_for_a_child_name(str(child))
-    children_page.click_record_for_child(child)
-    children_page.click_invite_to_community_clinic()
-    children_page.click_session_for_programme(
+    children_search_page.search_for_a_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_record_page.click_invite_to_community_clinic()
+    child_record_page.click_session_for_programme(
         "Community clinic",
         Programme.HPV,
         check_date=True,

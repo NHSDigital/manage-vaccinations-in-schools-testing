@@ -99,9 +99,12 @@ def setup_mav_853(
 @pytest.mark.bug
 def test_patient_details_load_with_missing_vaccine_info(
     setup_mav_853,
-    children_page,
     schools,
     children,
+    child_record_page,
+    child_activity_log_page,
+    vaccination_record_page,
+    children_search_page,
 ):
     """
     Test: Ensure patient details page loads for a child with missing vaccine info
@@ -120,21 +123,25 @@ def test_patient_details_load_with_missing_vaccine_info(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
     # Verify activity log
-    children_page.click_activity_log()
-    children_page.expect_activity_log_header("Vaccinated with Gardasil 9", unique=True)
+    child_record_page.click_activity_log()
+    child_activity_log_page.expect_activity_log_header(
+        "Vaccinated with Gardasil 9", unique=True
+    )
     # Verify vaccination record
-    children_page.click_child_record()
-    children_page.click_vaccination_details(school)
-    children_page.expect_vaccination_details("Outcome", "Vaccinated")
+    child_record_page.click_child_record()
+    child_record_page.click_vaccination_details(school)
+    vaccination_record_page.expect_vaccination_details("Outcome", "Vaccinated")
 
 
 @pytest.mark.bug
 def test_invalid_nhs_number_change_is_rejected(
     setup_fixed_child,
-    children_page,
+    children_search_page,
+    child_record_page,
+    child_edit_page,
     children,
 ):
     """
@@ -150,18 +157,24 @@ def test_invalid_nhs_number_change_is_rejected(
     """
     child = children[Programme.HPV][0]
 
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
-    children_page.click_edit_child_record()
-    children_page.click_change_nhs_no()
-    children_page.fill_nhs_no_for_child(child, "9123456789")
-    children_page.click_continue()
-    children_page.expect_text_in_alert("Enter a valid NHS number")
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_record_page.click_edit_child_record()
+    child_edit_page.click_change_nhs_no()
+    child_edit_page.fill_nhs_no_for_child(child, "9123456789")
+    child_edit_page.click_continue()
+    child_record_page.expect_text_in_alert("Enter a valid NHS number")
 
 
 @issue("MAV-1839")
 @pytest.mark.children
-def test_merge_child_records_does_not_crash(setup_child_merge, children_page, children):
+def test_merge_child_records_does_not_crash(
+    setup_child_merge,
+    children_search_page,
+    child_record_page,
+    child_archive_page,
+    children,
+):
     """
     Test: Merging two child records does not cause a crash (MAV-1839).
     Steps:
@@ -176,18 +189,19 @@ def test_merge_child_records_does_not_crash(setup_child_merge, children_page, ch
     """
     child1 = children[Programme.HPV][0]
     child2 = children[Programme.HPV][1]
-    children_page.search_with_all_filters_for_child_name(str(child1))
-    children_page.click_record_for_child(child1)
-    children_page.click_archive_child_record()
-    children_page.click_its_a_duplicate(child2.nhs_number)
-    children_page.click_archive_record()
-    children_page.expect_text_in_alert("This record has been archived")
+    children_search_page.search_with_all_filters_for_child_name(str(child1))
+    children_search_page.click_record_for_child(child1)
+    child_record_page.click_archive_child_record()
+    child_archive_page.click_its_a_duplicate(child2.nhs_number)
+    child_archive_page.click_archive_record()
+    child_record_page.expect_text_in_alert("This record has been archived")
 
 
 @pytest.mark.accessibility
 def test_accessibility(
     setup_fixed_child,
-    children_page,
+    children_search_page,
+    child_record_page,
     accessibility_helper,
     children,
 ):
@@ -199,13 +213,13 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the children page.
     """
-    children_page.click_advanced_filters()
+    children_search_page.click_advanced_filters()
     accessibility_helper.check_accessibility()
 
     child = children[Programme.HPV][0]
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.click_record_for_child(child)
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
     accessibility_helper.check_accessibility()
 
-    children_page.click_activity_log()
+    child_record_page.click_activity_log()
     accessibility_helper.check_accessibility()

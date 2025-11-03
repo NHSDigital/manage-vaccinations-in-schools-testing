@@ -16,7 +16,9 @@ def setup_confirm_and_ignore(
     sessions_page,
     import_records_page,
     year_groups,
-    children_page,
+    children_search_page,
+    child_record_page,
+    child_activity_log_page,
     children,
 ):
     schools = schools[Programme.HPV]
@@ -51,9 +53,9 @@ def setup_confirm_and_ignore(
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
         upload_class_list()
-        children_page.click_record_for_child(children[0])
-        children_page.click_activity_log()
-        children_page.expect_activity_log_header(
+        children_search_page.click_record_for_child(children[0])
+        child_record_page.click_activity_log()
+        child_activity_log_page.expect_activity_log_header(
             f"Added to the session at {schools[0]}"
         )
         dashboard_page.click_mavis()
