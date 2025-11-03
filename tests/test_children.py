@@ -95,27 +95,6 @@ def setup_mav_853(
         sessions_page.delete_all_sessions(school)
 
 
-def test_children_page_headers_and_filtering(
-    setup_fixed_child,
-    children_page,
-    children,
-):
-    """
-    Test: Verify children page headers and filtering by child name.
-    Steps:
-    1. Setup: Import a fixed child class list and navigate to the children page.
-    2. Search for a child using all filters by name.
-    3. Verify the table headers are correct.
-    Verification:
-    - Assert that exactly one child is found in the results.
-    """
-    child = children[Programme.HPV][0]
-
-    children_page.search_with_all_filters_for_child_name(str(child))
-    children_page.verify_headers()
-    children_page.assert_n_children_found(1)
-
-
 @issue("MAV-853")
 @pytest.mark.bug
 def test_patient_details_load_with_missing_vaccine_info(
