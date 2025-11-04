@@ -225,6 +225,16 @@ class SessionsPage:
         self.withdraw_consent_link = self.page.get_by_role(
             "link", name="Withdraw consent"
         )
+        self.triage_safe_mmr_either_radio = self.page.get_by_role(
+            "radio",
+            name="Yes, it’s safe to vaccinate",
+            exact=True,
+        )
+        self.triage_safe_mmr_gelatine_free_radio = self.page.get_by_role(
+            "radio",
+            name="Yes, it’s safe to vaccinate with the gelatine-free injection",
+            exact=True,
+        )
 
     def __get_display_formatted_date(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
@@ -536,6 +546,17 @@ class SessionsPage:
             expect(locator).to_be_visible()
         self.page.wait_for_load_state()
         self.pre_screening_checkbox.check()
+
+    @step("Triage MMR patient")
+    def triage_mmr_patient(self, child: Child, consent_option: ConsentOption) -> None:
+        self.click_triage_tab()
+        self.click_child(child)
+        self.click_programme_tab(Programme.MMR)
+        if consent_option == ConsentOption.MMR_EITHER:
+            self.triage_safe_mmr_either_radio.check()
+        else:
+            self.triage_safe_mmr_gelatine_free_radio.check()
+        self.save_triage_button.click()
 
     @step("Click on Yes")
     def select_identity_confirmed_by_child(self, child: Child) -> None:
