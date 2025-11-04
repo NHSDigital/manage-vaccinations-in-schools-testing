@@ -7,6 +7,7 @@ from .helpers import (
     schedule_mmr_session_and_get_consent_url,
     schedule_session_and_get_consent_url,
     set_feature_flags,
+    setup_session_and_batches_with_fixed_child,
     test_data,
     upload_offline_vaccination,
 )
@@ -132,6 +133,7 @@ __all__ = [
     "schools",
     "sessions_page",
     "set_feature_flags",
+    "setup_session_and_batches_with_fixed_child",
     "start_page",
     "subteam",
     "superuser",
