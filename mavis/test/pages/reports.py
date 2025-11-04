@@ -7,7 +7,11 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import Programme
-from mavis.test.utils import get_current_datetime_compact
+from mavis.test.utils import (
+    get_current_datetime_compact,
+    reload_until_element_is_not_visible,
+    reload_until_element_is_visible,
+)
 
 
 class ReportsTabsMixin:
@@ -41,7 +45,18 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
 
     @step("Navigate to and refresh Reports")
     def navigate_and_refresh_reports(self) -> None:
-        self.page.goto("/api/testing/refresh-reporting", timeout=60000)
+        self.page.goto("/sidekiq/recurring-jobs")
+        self.page.locator(
+            'form[action$="/refresh_reporting_data/enqueue"]'
+        ).get_by_role("button").click()
+        self.page.goto("/sidekiq/busy")
+        reload_until_element_is_visible(
+            self.page, self.page.get_by_text("ReportingAPI::RefreshJob"), 60
+        )
+        reload_until_element_is_not_visible(
+            self.page, self.page.get_by_text("ReportingAPI::RefreshJob"), 120
+        )
+        self.navigate()
 
     @step("Click {1}")
     def check_filter_for_programme(self, programme: Programme) -> None:

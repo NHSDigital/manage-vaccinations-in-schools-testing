@@ -169,3 +169,17 @@ def reload_until_element_is_visible(
         page.reload()
     else:
         expect(tag).to_be_visible()
+
+
+def reload_until_element_is_not_visible(
+    page: Page, tag: Locator, seconds: int = DEFAULT_TIMEOUT_SECONDS
+) -> None:
+    for _ in range(seconds * 2):
+        if not tag.is_visible():
+            break
+
+        time.sleep(0.5)
+
+        page.reload()
+    else:
+        expect(tag).to_be_hidden()
