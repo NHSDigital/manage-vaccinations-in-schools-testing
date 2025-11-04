@@ -4,15 +4,14 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data import TestData
+from mavis.test.data import create_child_list_from_file
 from mavis.test.models import Child, Programme, School
 from mavis.test.utils import get_current_datetime, reload_until_element_is_visible
 
 
 class ChildrenSearchPage:
-    def __init__(self, page: Page, test_data: TestData) -> None:
+    def __init__(self, page: Page) -> None:
         self.page = page
-        self.test_data = test_data
 
         self.children_heading = self.page.get_by_role(
             "heading",
@@ -57,7 +56,7 @@ class ChildrenSearchPage:
         *,
         is_vaccinations: bool,
     ) -> None:
-        child_names = self.test_data.create_child_list_from_file(
+        child_names = create_child_list_from_file(
             file_path,
             is_vaccinations=is_vaccinations,
         )
