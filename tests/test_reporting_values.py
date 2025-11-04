@@ -1,91 +1,17 @@
 import pytest
 
-from mavis.test.data import ClassFileMapping
 from mavis.test.models import (
-    ConsentMethod,
-    ConsentOption,
-    DeliverySite,
     Programme,
-    VaccinationRecord,
-    Vaccine,
 )
 
 
 @pytest.fixture
-def refresh_and_setup_recording_injected_flu(
-    log_in_as_nurse,
-    add_vaccine_batch,
-    schools,
-    dashboard_page,
-    import_records_page,
-    sessions_page,
-    year_groups,
-    reports_vaccinations_page,
-):
-    school = schools[Programme.FLU][0]
-    year_group = year_groups[Programme.FLU]
-
-    reports_vaccinations_page.navigate_and_refresh_reports()
-    dashboard_page.navigate()
-
-    try:
-        batch_name = add_vaccine_batch(Vaccine.SEQUIRUS)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
-        sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(
-            ClassFileMapping.FIXED_CHILD, year_group, Programme.FLU.group
-        )
-        yield batch_name
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
-
-
-@pytest.fixture
-def record_injected_flu(
-    refresh_and_setup_recording_injected_flu,
-    children_search_page,
-    sessions_page,
-    verbal_consent_page,
-    children,
-    schools,
-    dashboard_page,
-):
-    child = children[Programme.FLU][0]
-    school = schools[Programme.FLU][0]
-    batch_name = refresh_and_setup_recording_injected_flu
-
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(school, Programme.FLU)
-    sessions_page.click_consent_tab()
-
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    sessions_page.navigate_to_consent_response(child, Programme.FLU)
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_positive_consent(
-        Programme.FLU, ConsentOption.INJECTION
-    )
-    sessions_page.register_child_as_attending(child)
-    vaccination_time = sessions_page.record_vaccination_for_child(
-        VaccinationRecord(
-            child,
-            Programme.FLU,
-            batch_name,
-            consent_option=ConsentOption.INJECTION,
-            delivery_site=DeliverySite.LEFT_ARM_UPPER,
-        )
-    )
-    return child, vaccination_time
+def upload_offline_vaccination_injected_flu(upload_offline_vaccination):
+    yield from upload_offline_vaccination(Programme.FLU)
 
 
 def test_report_view(
-    record_injected_flu,
+    upload_offline_vaccination_injected_flu,
     schools,
     reports_vaccinations_page,
     dashboard_page,
@@ -93,6 +19,7 @@ def test_report_view(
     child_record_page,
     vaccination_record_page,
     edit_vaccination_record_page,
+    children,
 ):
     """
     Test: Verify reporting values update correctly after vaccination and edit.
@@ -107,7 +34,7 @@ def test_report_view(
       1 more not vaccinated.
     """
 
-    child, _ = record_injected_flu
+    child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
 
     reports_vaccinations_page.navigate()

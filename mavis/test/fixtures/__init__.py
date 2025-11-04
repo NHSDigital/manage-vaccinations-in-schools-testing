@@ -8,6 +8,7 @@ from .helpers import (
     schedule_session_and_get_consent_url,
     set_feature_flags,
     test_data,
+    upload_offline_vaccination,
 )
 from .models import (
     authenticate_api,
@@ -138,6 +139,7 @@ __all__ = [
     "team_page",
     "test_data",
     "unmatched_consent_responses_page",
+    "upload_offline_vaccination",
     "vaccination_record_page",
     "vaccines_page",
     "verbal_consent_page",
