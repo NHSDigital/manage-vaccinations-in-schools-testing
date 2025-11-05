@@ -38,38 +38,6 @@ def setup_vaccs(
 
 
 @pytest.fixture
-def setup_vaccs_clinic(
-    log_in_as_nurse,
-    schools,
-    dashboard_page,
-    sessions_page,
-    import_records_page,
-    year_groups,
-):
-    school = schools[Programme.HPV][0]
-    year_group = year_groups[Programme.HPV]
-
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
-        sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(ClassFileMapping.RANDOM_CHILD, year_group)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
-        session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.click_mavis()
-        dashboard_page.click_import_records()
-        import_records_page.navigate_to_vaccination_records_import()
-        yield session_id
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
-
-
-@pytest.fixture
 def setup_vaccs_systmone(
     log_in_as_nurse,
     schools,
@@ -480,7 +448,7 @@ def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
 @pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccination_file_upload_community_clinic_name_case(
-    setup_vaccs_clinic,
+    setup_vaccs,
     import_records_page,
 ):
     """
@@ -494,5 +462,5 @@ def test_vaccination_file_upload_community_clinic_name_case(
     """
     import_records_page.upload_and_verify_output(
         VaccsFileMapping.CLINIC_NAME_CASE,
-        session_id=setup_vaccs_clinic,
+        session_id=setup_vaccs,
     )
