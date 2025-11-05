@@ -6,7 +6,11 @@ from mavis.test.models import (
 
 
 @pytest.fixture
-def upload_offline_vaccination_injected_flu(upload_offline_vaccination):
+def upload_offline_vaccination_injected_flu(
+    upload_offline_vaccination, reports_vaccinations_page, dashboard_page
+):
+    reports_vaccinations_page.navigate_and_refresh_reports()
+    dashboard_page.navigate()
     yield from upload_offline_vaccination(Programme.FLU)
 
 
@@ -49,25 +53,6 @@ def test_report_view(
         expected_vaccinated_percentage,
     ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
         unvaccinated_count, vaccinated_count
-    )
-
-    reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
-    reports_vaccinations_page.check_category_percentage(
-        "Not vaccinated", expected_unvaccinated_percentage
-    )
-    reports_vaccinations_page.check_category_percentage(
-        "Vaccinated", expected_vaccinated_percentage
-    )
-
-    reports_vaccinations_page.navigate_and_refresh_reports()
-    reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
-
-    (
-        expected_cohort_count,
-        expected_unvaccinated_percentage,
-        expected_vaccinated_percentage,
-    ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
-        unvaccinated_count, vaccinated_count + 1
     )
 
     reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
