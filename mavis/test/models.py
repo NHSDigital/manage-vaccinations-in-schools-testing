@@ -598,16 +598,16 @@ class Relationship(StrEnum):
 
     @property
     def generate_name(self) -> str:
-        if self == Relationship.DAD:
+        if self is Relationship.DAD:
             return faker.name_male()
-        if self == Relationship.MUM:
+        if self is Relationship.MUM:
             return faker.name_female()
         return faker.name_nonbinary()
 
 
 class Parent(NamedTuple):
     full_name: str
-    relationship: str
+    relationship: Relationship
     email_address: str
 
     @property
@@ -618,7 +618,7 @@ class Parent(NamedTuple):
     def get(cls, relationship: Relationship) -> "Parent":
         return cls(
             full_name=relationship.generate_name,
-            relationship=str(relationship),
+            relationship=relationship,
             email_address=faker.email(),
         )
 

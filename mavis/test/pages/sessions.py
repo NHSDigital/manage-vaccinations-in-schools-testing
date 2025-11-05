@@ -552,7 +552,7 @@ class SessionsPage:
         self.click_triage_tab()
         self.click_child(child)
         self.click_programme_tab(Programme.MMR)
-        if consent_option == ConsentOption.MMR_EITHER:
+        if consent_option is ConsentOption.MMR_EITHER:
             self.triage_safe_mmr_either_radio.check()
         else:
             self.triage_safe_mmr_gelatine_free_radio.check()
