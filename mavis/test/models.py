@@ -22,7 +22,7 @@ faker = Faker("en_GB")
 class ConsentOption(StrEnum):
     INJECTION = "Injection"
     NASAL_SPRAY = "Nasal spray"
-    BOTH = ""
+    NASAL_SPRAY_OR_INJECTION = ""
     MMR_WITHOUT_GELATINE = "Without gelatine"
     MMR_EITHER = "Either"
 
@@ -297,14 +297,12 @@ class Vaccine(StrEnum):
 
     @property
     def imms_api_code(self) -> str:
-        if self is self.SEQUIRUS:
-            return "43207411000001105"
-        if self is self.FLUENZ:
-            return "43208811000001106"
-        if self is self.GARDASIL_9:
-            return "33493111000001108"
-        msg = f"Vaccine '{self.value}' is not supported by IMMS API"
-        raise ValueError(msg)
+        code_map = {
+            self.SEQUIRUS: "43207411000001105",
+            self.FLUENZ: "43208811000001106",
+            self.GARDASIL_9: "33493111000001108",
+        }
+        return code_map[self]
 
     @property
     def programme(self) -> Programme:

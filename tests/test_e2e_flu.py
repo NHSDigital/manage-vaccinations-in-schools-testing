@@ -21,7 +21,7 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
 @issue("MAV-1831")
 @pytest.mark.parametrize(
     "consent_option",
-    [ConsentOption.BOTH, ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION],
+    [ConsentOption.NASAL_SPRAY_OR_INJECTION, ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION],
     ids=lambda v: f"consent_option: {v}",
 )
 def test_recording_flu_vaccination_e2e(

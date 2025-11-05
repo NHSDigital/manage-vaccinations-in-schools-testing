@@ -257,7 +257,7 @@ class VerbalConsentPage:
                 self.click_yes_for_injected_vaccine()
             else:
                 self.click_yes_for_nasal_spray()
-                if consent_option is ConsentOption.BOTH:
+                if consent_option is ConsentOption.NASAL_SPRAY_OR_INJECTION:
                     self.select_yes()
                 else:
                     self.select_no()

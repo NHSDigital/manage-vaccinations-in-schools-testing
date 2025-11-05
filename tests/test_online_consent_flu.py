@@ -81,7 +81,7 @@ def test_consent_refused_for_flu_vaccination(
 
 @pytest.mark.parametrize(
     "consent_option",
-    [ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION, ConsentOption.BOTH],
+    [ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION, ConsentOption.NASAL_SPRAY_OR_INJECTION],
     ids=lambda v: f"consent_option: {v}",
 )
 @pytest.mark.parametrize(
@@ -114,7 +114,7 @@ def test_consent_given_for_flu_vaccination(
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
     number_of_health_questions = {
-        ConsentOption.BOTH: 11,
+        ConsentOption.NASAL_SPRAY_OR_INJECTION: 11,
         ConsentOption.NASAL_SPRAY: 9,
         ConsentOption.INJECTION: 5,
     }
@@ -154,9 +154,9 @@ def test_consent_given_for_flu_vaccination(
             ConsentOption.NASAL_SPRAY,
         ),
         (ConsentOption.INJECTION, ConsentOption.INJECTION, ConsentOption.INJECTION),
-        (ConsentOption.BOTH, ConsentOption.NASAL_SPRAY, ConsentOption.NASAL_SPRAY),
-        (ConsentOption.BOTH, ConsentOption.INJECTION, ConsentOption.INJECTION),
-        (ConsentOption.BOTH, ConsentOption.BOTH, ConsentOption.NASAL_SPRAY),
+        (ConsentOption.NASAL_SPRAY_OR_INJECTION, ConsentOption.NASAL_SPRAY, ConsentOption.NASAL_SPRAY),
+        (ConsentOption.NASAL_SPRAY_OR_INJECTION, ConsentOption.INJECTION, ConsentOption.INJECTION),
+        (ConsentOption.NASAL_SPRAY_OR_INJECTION, ConsentOption.NASAL_SPRAY_OR_INJECTION, ConsentOption.NASAL_SPRAY),
     ],
     ids=lambda v: f"consents: {v}",
 )

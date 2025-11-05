@@ -74,10 +74,10 @@ def test_online_consent_school_moves_with_existing_patient(
     online_consent_page.fill_details(
         child, child.parents[0], schools, change_school=True
     )
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.NASAL_SPRAY_OR_INJECTION),
         yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
@@ -85,7 +85,7 @@ def test_online_consent_school_moves_with_existing_patient(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
-        consent_option=ConsentOption.BOTH,
+        consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION,
     )
 
     # Verify in session
@@ -103,7 +103,7 @@ def test_online_consent_school_moves_with_existing_patient(
     sessions_page.select_consent_given_for_injected_vaccine()
     sessions_page.search_for(str(child))
     sessions_page.verify_child_shows_correct_flu_consent_method(
-        child, ConsentOption.BOTH
+        child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
 
 
@@ -138,10 +138,10 @@ def test_online_consent_school_moves_with_new_patient(
     online_consent_page.fill_details(
         child, child.parents[0], schools, change_school=True
     )
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH),
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.NASAL_SPRAY_OR_INJECTION),
         yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
@@ -149,7 +149,7 @@ def test_online_consent_school_moves_with_new_patient(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
-        consent_option=ConsentOption.BOTH,
+        consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION,
     )
 
     log_in_page.navigate()
@@ -171,7 +171,7 @@ def test_online_consent_school_moves_with_new_patient(
     sessions_page.select_consent_given_for_injected_vaccine()
     sessions_page.search_for(str(child))
     sessions_page.verify_child_shows_correct_flu_consent_method(
-        child, ConsentOption.BOTH
+        child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
 
     log_in_page.log_out()
@@ -212,7 +212,7 @@ def test_accessibility(
 
     accessibility_helper.check_accessibility()
 
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.BOTH)
+    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
     accessibility_helper.check_accessibility()
 
     online_consent_page.fill_address_details(*child.address)
@@ -222,7 +222,7 @@ def test_accessibility(
     accessibility_helper.check_accessibility()
 
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.BOTH)
+        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.NASAL_SPRAY_OR_INJECTION)
         + 1,
         yes_to_health_questions=True,
     )
