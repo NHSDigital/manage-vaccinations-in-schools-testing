@@ -174,7 +174,7 @@ def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_page):
 @issue("MAV-855")
 @pytest.mark.vaccinations
 @pytest.mark.bug
-def test_vaccination_file_upload_no_urn_location_mav_855(
+def test_vaccination_file_upload_creates_child_no_setting(
     setup_vaccs,
     schools,
     dashboard_page,
@@ -185,10 +185,10 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
     children,
 ):
     """
-    Test: Upload a vaccination file with no URN/care setting and verify location is
-       set to school (MAV-855).
+    Test: Upload a vaccination file with no URN/care setting and verify the child
+    record is created and the location is set to school (MAV-855).
     Steps:
-    1. Upload a vaccination file missing care setting.
+    1. Upload a vaccination file missing care setting for a child not in Mavis.
     2. Navigate to children page and search for the child.
     3. Open vaccination details for the child.
     Verification:

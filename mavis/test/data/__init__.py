@@ -34,6 +34,7 @@ class FileMapping(Enum):
 class VaccsFileMapping(FileMapping):
     POSITIVE = "positive"
     NEGATIVE = "negative"
+    HIST_HPV = "hist_hpv"
     HIST_POSITIVE = "hist_positive"
     HIST_NEGATIVE = "hist_negative"
     DUP_1 = "dup_1"
