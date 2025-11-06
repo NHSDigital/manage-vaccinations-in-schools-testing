@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import Child
+from mavis.test.models import Child, Relationship
 from mavis.test.utils import reload_until_element_is_visible
 
 
@@ -25,7 +25,7 @@ class UnmatchedConsentResponsesPage:
     @step("Click on consent response for {1}")
     def click_parent_on_consent_record_for_child(self, child: Child) -> None:
         parent_name = next(
-            (p.full_name for p in child.parents if p.relationship == "Dad"),
+            (p.full_name for p in child.parents if p.relationship is Relationship.DAD),
             None,
         )
         reload_until_element_is_visible(

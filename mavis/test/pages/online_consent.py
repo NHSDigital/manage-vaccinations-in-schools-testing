@@ -228,7 +228,7 @@ class OnlineConsentPage:
         else:
             self.flu_agree_nasal_radio.check()
         self.click_continue()
-        if consent_option is ConsentOption.BOTH:
+        if consent_option is ConsentOption.NASAL_SPRAY_OR_INJECTION:
             self.answer_yes()
         elif consent_option is ConsentOption.NASAL_SPRAY:
             self.answer_no()
