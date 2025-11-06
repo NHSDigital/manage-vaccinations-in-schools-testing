@@ -32,7 +32,6 @@ def test_vaccination_file_upload_systmone_valid_data(
     AllValuesMMR_DoseSeq1, AllValuesMMR_DoseSeq2
     """
     import_records_page.upload_and_verify_output(VaccsFileMapping.SYSTMONE_POSITIVE)
-    import_records_page.page.pause()
 
 
 @pytest.mark.vaccinations
