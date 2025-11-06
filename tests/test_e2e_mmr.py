@@ -38,7 +38,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     2. Go to online consent URL and fill in child and parent details.
     3. Agree to MMR vaccination, fill address, answer health questions, and confirm.
     4. Log in as nurse, navigate to session, set session in progress,
-       register child as attending.
+       register child as attending, triage (set as safe to vaccinate).
     5. Record MMR vaccination for the child.
     Verification:
     - Final consent message is shown after online consent.
@@ -89,7 +89,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     log_in_page.log_out()
 
 
-def test_recording_mmr_vaccination_e2e_without_triage(
+def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
     online_consent_page,
@@ -143,12 +143,20 @@ def test_recording_mmr_vaccination_e2e_without_triage(
     log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
     dashboard_page.click_sessions()
 
+    # Dose 1 flow
     sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
     sessions_page.click_set_session_in_progress_for_today()
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccination_for_child(
         VaccinationRecord(child, Programme.MMR, mmr_batch_name)
     )
+
+    # Attempt to record second dose on the same day
+    dashboard_page.navigate()
+    dashboard_page.click_sessions()
+    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_page.click_record_vaccinations_tab()
+    sessions_page.search_child_that_should_not_exist(child)
 
     dashboard_page.navigate()
     log_in_page.log_out()
