@@ -1,6 +1,7 @@
 import pytest
 
 from mavis.test.data import VaccsFileMapping
+from mavis.test.models import Programme
 
 
 @pytest.fixture
@@ -66,3 +67,36 @@ def test_vaccination_file_upload_historic_invalid_data(
     LongBatchNumber
     """
     import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_NEGATIVE)
+
+
+def test_historical_vaccination_file_upload_creates_child(
+    setup_hist_vaccs,
+    schools,
+    dashboard_page,
+    import_records_page,
+    children_search_page,
+    child_record_page,
+    children,
+):
+    """
+    Test: Upload a vaccination file and verify the child record and vaccination record
+       exist.
+    Steps:
+    1. Upload a vaccination file for a child not in mavis.
+    2. Navigate to children page and search for the child.
+    3. Open vaccination details for the child.
+    Verification:
+    - Vaccination record and child record exist.
+    """
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+
+    import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_HPV)
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
+
+    children_search_page.click_advanced_filters()
+    children_search_page.check_children_aged_out_of_programmes()
+    children_search_page.search_with_all_filters_for_child_name(str(child))
+    children_search_page.click_record_for_child(child)
+    child_record_page.click_vaccination_details(school)
