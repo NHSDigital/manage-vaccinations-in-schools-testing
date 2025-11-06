@@ -51,10 +51,10 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         ).get_by_role("button").click()
         self.page.goto("/sidekiq/busy")
         reload_until_element_is_visible(
-            self.page, self.page.get_by_text("ReportingAPI::RefreshJob"), 60
+            self.page, self.page.get_by_text("ReportingAPI::RefreshJob").first, 60
         )
         reload_until_element_is_not_visible(
-            self.page, self.page.get_by_text("ReportingAPI::RefreshJob"), 120
+            self.page, self.page.get_by_text("ReportingAPI::RefreshJob").first, 120
         )
         self.navigate()
 
