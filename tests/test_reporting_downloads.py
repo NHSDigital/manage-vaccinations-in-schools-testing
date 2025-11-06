@@ -89,6 +89,11 @@ def test_report_has_all_expected_headers(
             "Vaccinated Elsewhere (Declared)",
             "Vaccinated Elsewhere (Recorded)",
             "Vaccinated Previously",
+            "Consent Given",
+            "No Consent Response",
+            "Conflicting Consent",
+            "Parent Refused Consent",
+            "Child Refused Vaccination",
         ],
     )
     dashboard_page.navigate()
