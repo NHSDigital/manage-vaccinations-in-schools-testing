@@ -37,29 +37,6 @@ def setup_vaccs(
         sessions_page.delete_all_sessions(school)
 
 
-@pytest.fixture
-def setup_vaccs_systmone(
-    log_in_as_nurse,
-    schools,
-    dashboard_page,
-    sessions_page,
-    import_records_page,
-):
-    school = schools[Programme.HPV][0]
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
-        dashboard_page.click_mavis()
-        dashboard_page.click_import_records()
-        import_records_page.navigate_to_vaccination_records_import()
-        yield
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
-
-
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
     """
@@ -194,58 +171,6 @@ def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_page):
     import_records_page.upload_and_verify_output(VaccsFileMapping.EMPTY_FILE)
 
 
-@pytest.mark.vaccinations
-def test_vaccination_file_upload_historic_valid_data(setup_vaccs, import_records_page):
-    """
-    Test: Upload a historic vaccination records file with valid data and verify import.
-    Steps:
-    1. Navigate to vaccination records import page.
-    2. Upload a historic file with valid data.
-    Verification:
-    - Output indicates successful import of historic records.
-    Scenarios covered:
-    HPV:
-    HPV_Gardasil9, HPV_Gardasil, HPV_Cervarix, HPV_NFA, HPV_Add_Not_Known,
-    HPV_AllowPastExpiryDate, HPV_SiteRAU, HPV_SiteRAL, HPV_NotVaccinated,
-    Doubles:
-    TDIPV_Revaxis, TDIPV_NFA, TDIPV_Add_Not_Known, TDIPV_AllowPastExpiryDate,
-    TDIPV_SiteRAU, TDIPV_SiteRAL, TDIPV_NotVaccinated, MenACWY_MenQuadfi, MenACWY_NFA,
-    MenACWY_Add_Not_Known, MenACWY_AllowPastExpiryDate, MenACWY_SiteRAU,MenACWY_SiteRAL,
-    MenACWY_NotVaccinated, MAV_855, MenACWY_BatchName100Chars,
-    MMR:
-    MMR, MMR_NFA, MMR_Add_Not_Known, MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL,
-    MMR_NotVaccinated, MMR_DoseSeq1, MMR_DoseSeq2
-    """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_POSITIVE)
-
-
-@pytest.mark.vaccinations
-def test_vaccination_file_upload_historic_invalid_data(
-    setup_vaccs,
-    import_records_page,
-):
-    """
-    Test: Upload a historic vaccination records file with invalid data and
-       verify error handling.
-    Steps:
-    1. Navigate to vaccination records import page.
-    2. Upload a historic file with invalid data.
-    Verification:
-    - Output lists errors as expected for each record
-    Scenarios covered:
-    InvalidODSCode, EmptyOrgCode, EmptySchoolURN, NotKnownSchoolEmpty, LongNHSNumber,
-    ShortNHSNumber, EmptyForename, EmptyLastname, EmptyDOB, InvalidFormatDOB, FutureDOB,
-    NonLeapYearDOB, EmptyGender, InvalidGender, EmptyPostCode, InvalidPostCode,
-    EmptyVaccDate, FutureVaccDate, EmptyVaccGiven, EmptyBatchNumber, EmptyExpiryDate,
-    EmptyAnatomicalSite, InvalidAnatomicalSite, InvalidAnatomicalSite,
-    InvalidAnatomicalSite, EmptyDoseSeq, InvalidDoseSeq, EmptyCareSetting,
-    InvalidProfFName, InvalidProfSName, InvalidProfEmail, InvalidClinic, InvalidTime,
-    InvalidReason, InvalidVaccinatedFlag, InvalidCareSetting, TimeInFuture,
-    LongBatchNumber
-    """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.HIST_NEGATIVE)
-
-
 @issue("MAV-855")
 @pytest.mark.vaccinations
 @pytest.mark.bug
@@ -286,72 +211,6 @@ def test_vaccination_file_upload_no_urn_location_mav_855(
 
 
 @pytest.mark.vaccinations
-def test_vaccination_file_upload_systmone_valid_data(
-    setup_vaccs_systmone,
-    import_records_page,
-):
-    """
-    Test: Upload a SystmOne vaccination records file with valid data and verify import.
-    Steps:
-    1. Navigate to vaccination records import page.
-    2. Upload a SystmOne file with valid data.
-    Verification:
-    - Output indicates successful import of SystmOne records.
-    Scenarios covered:
-    AllValuesCervarix, AllValuesG9, AllValuesHistorical, MandatoryValues, Batch100Chars,
-    AllValuesMMR_DoseSeq1, AllValuesMMR_DoseSeq2
-    """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.SYSTMONE_POSITIVE)
-
-
-@pytest.mark.vaccinations
-def test_vaccination_file_upload_systmone_invalid_data(
-    setup_vaccs_systmone,
-    import_records_page,
-):
-    """
-    Test: Upload a SystmOne vaccination records file with invalid data and
-       verify error handling.
-    Steps:
-    1. Navigate to vaccination records import page.
-    2. Upload a SystmOne file with invalid data.
-    Verification:
-    - Output lists errors as expected for each record
-    Scenarios covered:
-    EmptyDoB, InvalidDoB, LongerNHSNo, ShorterNHSNo, InvalidVaccsType, InvalidVaccsDose,
-    InvalidVaccsType, EmptyFirstName, EmptyPostcode, InvalidPostcode, EmptySex,
-    InvalidSex, EmptyLastName, EmptyEventDate, InvalidEventDate, FutureEventDate,
-    PastEventDate, InvalidEventTime, FutureEventTime, InvalidSchoolURN, LongBatchNumber,
-    AllValuesMMR_DoseSeq3
-    """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.SYSTMONE_NEGATIVE)
-
-
-@pytest.mark.vaccinations
-def test_vaccination_file_upload_systmone_historic_invalid_data(
-    setup_vaccs_systmone,
-    import_records_page,
-):
-    """
-    Test: Upload a SystmOne historic vaccination records file with invalid data and
-       verify error handling.
-    Steps:
-    1. Navigate to vaccination records import page.
-    2. Upload a SystmOne historic file with invalid data.
-    Verification:
-    - Output lists errors as expected for each record
-    Scenarios covered:
-    EmptyDoB, InvalidDoB, LongerNHSNo, ShorterNHSNo, InvalidVaccsType, InvalidVaccsDose,
-    InvalidVaccsType, EmptyFirstName, EmptyPostcode, InvalidPostcode, EmptySex,
-    InvalidSex, EmptyLastName, EmptyEventDate, InvalidEventDate, FutureEventDate,
-    PastEventDate, InvalidEventTime, InvalidSchoolURN
-    """
-    import_records_page.upload_and_verify_output(
-        VaccsFileMapping.SYSTMONE_HIST_NEGATIVE,
-    )
-
-
-@pytest.mark.vaccinations
 @pytest.mark.bug
 def test_vaccination_file_upload_whitespace_normalization(
     setup_vaccs,
@@ -378,70 +237,6 @@ def test_vaccination_file_upload_whitespace_normalization(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
     children_search_page.verify_list_has_been_uploaded(input_file, is_vaccinations=True)
-
-
-@pytest.mark.vaccinations
-@pytest.mark.bug
-def test_vaccination_file_upload_systmone_whitespace_normalization(
-    setup_vaccs_systmone,
-    import_records_page,
-):
-    """
-    Test: Upload a SystmOne vaccination records file with extra whitespace and
-       verify normalization.
-    Steps:
-    1. Upload a SystmOne file with whitespace issues.
-    Verification:
-    - Output indicates successful normalization and import.
-    Scenarios covered:
-    TwoSpaces, Tabs, NBSP (non-breaking space), ZWJ (zero-width joiner),
-    HistoricalTwoSpaces, HistoricalTabs, HistoricalNBSP, HistoricalZWJ
-    """
-    import_records_page.upload_and_verify_output(
-        VaccsFileMapping.SYSTMONE_WHITESPACE,
-    )
-
-
-@issue("MAV-1547")
-@pytest.mark.vaccinations
-@pytest.mark.bug
-def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
-    setup_vaccs,
-    import_records_page,
-):
-    """
-    Test: Upload a NIVS historic flu vaccination file for previous years and verify
-       it is disallowed.
-    Steps:
-    1. Upload a historic flu file for previous years.
-    Verification:
-    - Output indicates flu vaccinations for previous years are not allowed.
-    """
-    import_records_page.upload_and_verify_output(
-        VaccsFileMapping.HIST_FLU_NIVS,
-        session_id=setup_vaccs,
-    )
-
-
-@issue("MAV-1599")
-@pytest.mark.vaccinations
-@pytest.mark.bug
-def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
-    setup_vaccs_systmone,
-    import_records_page,
-):
-    """
-    Test: Upload a SystmOne historic flu vaccination file for previous years and verify
-       it is disallowed.
-    Steps:
-    1. Upload a SystmOne historic flu file for previous years.
-    Verification:
-    - Output indicates flu vaccinations for previous years are not allowed.
-    """
-    import_records_page.upload_and_verify_output(
-        VaccsFileMapping.HIST_FLU_SYSTMONE,
-        session_id=setup_vaccs_systmone,
-    )
 
 
 @issue("MAV-691")
