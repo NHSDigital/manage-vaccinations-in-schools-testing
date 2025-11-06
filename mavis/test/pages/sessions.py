@@ -219,8 +219,8 @@ class SessionsPage:
         self.keep_session_dates_button = self.page.get_by_role(
             "button", name="Keep session dates"
         )
-        self.did_not_consent_link = self.page.get_by_role(
-            "link", name="Did not consent"
+        self.consent_refused_link = self.page.get_by_role(
+            "link", name="Consent refused"
         )
         self.withdraw_consent_link = self.page.get_by_role(
             "link", name="Withdraw consent"
@@ -250,9 +250,9 @@ class SessionsPage:
     def click_psds_tab(self) -> None:
         self._select_tab("PSDs")
 
-    @step("Click Did not consent")
-    def click_did_not_consent(self) -> None:
-        self.did_not_consent_link.click()
+    @step("Click Consent refused")
+    def click_consent_refused(self) -> None:
+        self.consent_refused_link.click()
 
     @step("Expect Consent refused checkbox to be checked")
     def expect_consent_refused_checkbox_to_be_checked(self) -> None:
