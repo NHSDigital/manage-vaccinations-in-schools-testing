@@ -171,7 +171,7 @@ def test_consent_filters(
     verbal_consent_page.record_parent_refuse_consent()
 
     sessions_page.click_overview_tab()
-    sessions_page.click_review_consent_refused()
+    sessions_page.click_did_not_consent()
     sessions_page.expect_consent_refused_checkbox_to_be_checked()
 
 
