@@ -131,7 +131,12 @@ def test_delivering_vaccination_after_psd(
     sessions_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.FLU, fluenz_batch_name, ConsentOption.NASAL_SPRAY_OR_INJECTION),
+        VaccinationRecord(
+            child,
+            Programme.FLU,
+            fluenz_batch_name,
+            ConsentOption.NASAL_SPRAY_OR_INJECTION,
+        ),
         psd_option=True,
     )
 
@@ -164,7 +169,9 @@ def test_bulk_adding_psd(
         online_consent_page.fill_details(
             child, child.parents[0], schools[Programme.FLU]
         )
-        online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
+        online_consent_page.agree_to_flu_vaccination(
+            consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
+        )
         online_consent_page.fill_address_details(*child.address)
         online_consent_page.answer_health_questions(
             online_consent_page.get_number_of_health_questions_for_flu(

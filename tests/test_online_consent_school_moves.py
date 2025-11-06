@@ -74,10 +74,14 @@ def test_online_consent_school_moves_with_existing_patient(
     online_consent_page.fill_details(
         child, child.parents[0], schools, change_school=True
     )
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
+    online_consent_page.agree_to_flu_vaccination(
+        consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
+    )
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.NASAL_SPRAY_OR_INJECTION),
+        online_consent_page.get_number_of_health_questions_for_flu(
+            ConsentOption.NASAL_SPRAY_OR_INJECTION
+        ),
         yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
@@ -138,10 +142,14 @@ def test_online_consent_school_moves_with_new_patient(
     online_consent_page.fill_details(
         child, child.parents[0], schools, change_school=True
     )
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
+    online_consent_page.agree_to_flu_vaccination(
+        consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
+    )
     online_consent_page.fill_address_details(*child.address)
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.NASAL_SPRAY_OR_INJECTION),
+        online_consent_page.get_number_of_health_questions_for_flu(
+            ConsentOption.NASAL_SPRAY_OR_INJECTION
+        ),
         yes_to_health_questions=False,
     )
     online_consent_page.click_confirm()
@@ -212,7 +220,9 @@ def test_accessibility(
 
     accessibility_helper.check_accessibility()
 
-    online_consent_page.agree_to_flu_vaccination(consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION)
+    online_consent_page.agree_to_flu_vaccination(
+        consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
+    )
     accessibility_helper.check_accessibility()
 
     online_consent_page.fill_address_details(*child.address)
@@ -222,7 +232,9 @@ def test_accessibility(
     accessibility_helper.check_accessibility()
 
     online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(ConsentOption.NASAL_SPRAY_OR_INJECTION)
+        online_consent_page.get_number_of_health_questions_for_flu(
+            ConsentOption.NASAL_SPRAY_OR_INJECTION
+        )
         + 1,
         yes_to_health_questions=True,
     )

@@ -134,7 +134,9 @@ def test_tallying(
 
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.FLU, batch_name, ConsentOption.NASAL_SPRAY_OR_INJECTION)
+        VaccinationRecord(
+            child, Programme.FLU, batch_name, ConsentOption.NASAL_SPRAY_OR_INJECTION
+        )
     )
     sessions_page.go_back_to_session_for_school(school)
     sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.VACCINATED)
