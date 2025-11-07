@@ -1,4 +1,5 @@
 name: Performance
+run-name: Test ${{ inputs.testToRun }} against ${{ inputs.URN }}
 
 on:
   push:
@@ -29,16 +30,23 @@ on:
       duration:
         description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
-        type: string
-        default: '3600'
+        type: number
+        default: 3600
       threads:
         description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
         required: false
-        type: string
-        default: '70'
+        type: number
+        default: 70
       ramp_up:
         description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
         required: false
+        type: number
+        default: 900
+      vaccination_loop:
+        description: "Optional (default 20) Vaccination loop (nurse journey only). The number of vaccinations each nurse will perform before logging and back in again."
+        required: false
+        type: number
+        default: 20
         type: string
         default: '900'
       row_count:
@@ -58,164 +66,111 @@ on:
         default: 'qa.mavistesting.com'
 
 jobs:
-  nurse_journey_performance_test:
+  check-image-presence:
+    name: Check if docker image already exists
     runs-on: ubuntu-latest
-
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-
-    env:
-      jmeter_version: 5.6.3
-      cmdrunner_version: 2.3
-      jmeter_plugins_manager_version: 1.7.0
-      jmeter_plugins: jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv,jpgc-sts
-      # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
-
+    permissions:
+      id-token: write
+    outputs:
+      build-needed: ${{ steps.check-image.outputs.build-needed }}
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubPerformancetestRole
+          aws-region: eu-west-2
+      - name: Check if image exists
+        id: check-image
+        run: |
+          if aws ecr describe-images --repository-name performancetest --image-ids imageTag=${{ github.sha }} > /dev/null 2>&1; then
+            echo "Docker image with given tag already exists"
+          else
+            echo "Docker image does not exist. Build needed"
+            echo "build-needed=true" >> $GITHUB_OUTPUT
+          fi
+  build-and-push:
+    needs: check-image-presence
+    if: needs.check-image-presence.outputs.build-needed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubPerformancetestRole
+          aws-region: eu-west-2
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push performancetest docker image
+        run: |
+          cd performance-tests  
+          docker build -t "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}" .
+          docker push "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
+  run-performance-test:
+    needs: [build-and-push, check-image-presence]
+    if: ${{ !cancelled() &&
+      (needs.build-and-push.result == 'success' || needs.check-image-presence.result == 'success') }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v5
-      
-      - name: Cache jmeter
-        id: cache-jmeter
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-jmeter
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          path: jmeter
-          key: jmeter
-
-#Having run each step separately, it's only the curl request that takes time. So including the unzip and move means I can cache the 'jmeter' folder entirely
-#STS also requires some files in the jmeter folder, but I don't want those cached so the 'touch' commands are being included in the plugins step
-#Finally move some of the report generator options into the jmeter folder to simplify the jmeter command in each execution step
-
-      - name: Install JMeter
-        if: ${{ steps.cache-jmeter.outputs.cache-hit != 'true'}}
-        run: |
-          curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${{ env.jmeter_version }}.tgz
-          tar xzf apache-jmeter-${{ env.jmeter_version }}.tgz
-          mv apache-jmeter-${{ env.jmeter_version }} jmeter
-          curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/kg/apc/cmdrunner/${{ env.cmdrunner_version }}/cmdrunner-${{ env.cmdrunner_version }}.jar
-          curl -LsS --output jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version  }}.jar https://jmeter-plugins.org/get/
-          java -cp jmeter/lib/ext/jmeter-plugins-manager-${{ env.jmeter_plugins_manager_version }}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
-          chmod +x jmeter/bin/PluginsManagerCMD.sh
-  
-      - name: Install JMeter plugins
-        if: env.jmeter_plugins != ''
-        run: |
-          if [ -x "$(command -v parallel)" ]; then
-            echo "Using GNU parallel to install plugins"
-            parallel -d, -j 5 -n 1 jmeter/bin/PluginsManagerCMD.sh install {} ::: ${{ env.jmeter_plugins }}
-          else
-            echo "GNU parallel not found, installing plugins sequentially"
-            IFS=',' read -ra PLUGINS <<< "${{ env.jmeter_plugins }}"
-            for plugin in "${PLUGINS[@]}"; do
-              jmeter/bin/PluginsManagerCMD.sh install $plugin
-            done
-          fi
-          curl -sSO --output-dir jmeter/lib https://repo1.maven.org/maven2/org/apache/tika/tika-app/1.28.5/tika-app-1.28.5.jar
-          sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' jmeter/bin/log4j2.xml
-          sed -i '$ajmeterPlugin.sts.loadAndRunOnStartup=true \njmeterPlugin.sts.port=9191 \njmeterPlugin.sts.daemon=false \njsr223.init.file=jmeter/bin/simple-table-server.groovy' jmeter/bin/user.properties
-          sed -i '$ajmeter.reportgenerator.report_title="MAVIS test report" \njmeter.reportgenerator.overall_granularity=10000 \njmeter.reportgenerator.sample_filter="^.*[^0-9]$"' jmeter/bin/user.properties
-          touch jmeter/consents.txt
-          touch jmeter/vaccinations.txt
-
-      - name: Set timestamp
-        id: timestamp
-        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-      - name: Create new cohort file
-        if: inputs.runImport == true
-        run: |
-          mkdir -p generate-cohort-output
-          generate_cohort_output_dir=generate-cohort-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/generate-cohort.jmx \
-              -l $generate_cohort_output_dir/samples.jtl \
-              -j $generate_cohort_output_dir/jmeter.log \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JURN=${{inputs.URN}} \
-              -JBaseURL=${{inputs.BaseURL}} \
-              -JRowCount=${{inputs.row_count}}
-
-      - name: Run file import for new file
-        if: inputs.runImport == true
-        run: |
-          mkdir -p import-output
-          import_output_dir=import-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/upload-cohort-data.jmx \
-              -l $import_output_dir/samples.jtl \
-              -j $import_output_dir/jmeter.log \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JUser=${{inputs.user}} \
-              -JBaseURL=${{inputs.BaseURL}} \
-              -JInputFile="cohortnew.csv"
-
-      - name: Run Consent Journey
-        if: inputs.runConsent == true
-        run: |
-          mkdir -p consent-output
-          consent_output_dir=consent-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/consent-journey.jmx \
-              -l $consent_output_dir/samples.jtl \
-              -j $consent_output_dir/jmeter.log \
-              -e -o $consent_output_dir/consent-report \
-              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
-              -Jjmeter.reportgenerator.overall_granularity=10000 \
-              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JLoops=-1 \
-              -JThreads=5 \
-              -JRampUp=60 \
-              -JDuration=${{inputs.duration}} \
-              -JUser=${{inputs.user}} \
-              -JBaseURL=${{inputs.BaseURL}} \
-              -JURN=${{inputs.URN}}
-
-      - name: Upload consent journey JMeter output
-        if: inputs.runConsent == true
-        uses: actions/upload-artifact@v5
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubPerformancetestRole
+          aws-region: eu-west-2
+      - name: Create task definition
+        id: create-task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          name: jmeter-consent-journey-output-${{ env.timestamp }}
-          path: consent-output
-          if-no-files-found: warn
-
-      - name: Run nurse Journey
-        if: inputs.runNurse == true
+          task-definition-family: "performancetest-task-definition-template"
+          container-name: "performancetest-container"
+          image: "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
+          environment-variables: |
+            TEST_TO_RUN=${{ inputs.testToRun }}
+            URN=${{ inputs.URN }}
+            DURATION=${{ inputs.duration }}
+            THREADS=${{ inputs.threads }}
+            RAMP_UP=${{ inputs.ramp_up }}
+            VACCINATION_LOOP=${{ inputs.vaccination_loop }}
+            ROW_COUNT=${{ inputs.row_count }}
+          secrets: |
+            AUTH_TOKEN=arn:aws:secretsmanager:eu-west-2:393416225559:secret:performancetest/auth-token
+      - name: Register task definition
+        id: register-task-definition
         run: |
-          mkdir -p nurse-output
-          nurse_output_dir=nurse-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/nurse-journey.jmx \
-              -l $nurse_output_dir/samples.jtl \
-              -j $nurse_output_dir/jmeter.log \
-              -e -o $nurse_output_dir/report \
-              -Jjmeter.reportgenerator.report_title="MAVIS test report" \
-              -Jjmeter.reportgenerator.overall_granularity=10000 \
-              -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JLoops=-1 \
-              -JThreads=${{inputs.threads}} \
-              -JRampUp=${{inputs.ramp_up}} \
-              -JDuration=${{inputs.duration}} \
-              -JUser=${{inputs.user}} \
-              -JBaseURL=${{inputs.BaseURL}} \
-              -JURN=${{inputs.URN}}
-
-      - name: Upload nurse journey JMeter output
-        if: inputs.runNurse == true
-        uses: actions/upload-artifact@v5
-        with:
-          name: jmeter-nurse-journey-output-${{ env.timestamp }}
-          path: nurse-output
-          if-no-files-found: warn
-
-      - name: Publish report to GH Pages
-        if: inputs.runNurse == true
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: nurse-output/report
-          destination_dir: JMeter/report-${{ env.timestamp }}
-          keep_files: true
-
-      - name: Set Job Summary
+          file_path="performancetest-task-definition.json"
+          family_name="performancetest-task-definition"
+          echo "$(jq --arg f "$family_name" '.family = $f' "${{ steps.create-task-definition.outputs.task-definition }}")" > "$file_path"
+          task_definition_arn=$(aws ecs register-task-definition \
+                                  --cli-input-json file://$file_path \
+                                  --query 'taskDefinition.taskDefinitionArn' \
+                                  --output text
+                                )
+          echo "task_definition_arn=$task_definition_arn" >> $GITHUB_OUTPUT
+      - name: Run ECS Task
+        id: run-task
         run: |
-          echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> $GITHUB_STEP_SUMMARY
+          echo "Starting ECS task for ${{ inputs.testToRun }} test against URN: ${{ inputs.URN }}"
+          
+          # Prepare network configuration
+          subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=performancetest-subnet --query 'Subnets[0].SubnetId' --output text)
+          security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=performancetest-sg --query 'SecurityGroups[0].GroupId' --output text)
+          
+          aws ecs run-task \
+            --cluster performancetest \
+            --task-definition ${{ steps.register-task-definition.outputs.task_definition_arn }} \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[$subnet_id],securityGroups=[$security_group_id],assignPublicIp=ENABLED}" \
+            --overrides '{
+              "containerOverrides": [{
+                "name": "performancetest-container"
+              }]
+            }'
           
