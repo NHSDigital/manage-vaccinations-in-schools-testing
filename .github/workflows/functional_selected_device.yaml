@@ -1,6 +1,53 @@
 name: Functional tests
 
 on:
+  workflow_call:
+    inputs:
+      tests:
+        description: 'Tests to run (leave blank to run all tests!)'
+        required: false
+        default: ''
+        type: string
+      device:
+        description: 'Device to test'
+        required: true
+        default: 'Desktop Chrome'
+        type: string
+      programmes:
+        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
+        required: true
+        default: FLU,HPV,MENACWY,MMR,TD_IPV
+        type: string
+      environment:
+        description: 'Environment to run tests on'
+        required: true
+        default: 'qa'
+        type: string
+      screenshot_all_steps:
+        description: 'Take screenshots for all steps (in addition to failures)'
+        required: true
+        default: 'false'
+        type: string
+      enable_reruns:
+        description: 'Enable test reruns on failure (up to 3 attempts)'
+        required: true
+        default: 'true'
+        type: string
+      test_workers:
+        description: 'Number of parallel test workers to use'
+        required: true
+        default: '4'
+        type: string
+      set_feature_flags:
+        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        required: true
+        default: 'false'
+        type: string
+      additional_feature_flags:
+        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        required: false
+        default: ''
+        type: string
   workflow_dispatch:
     inputs:
       tests:
@@ -104,7 +151,7 @@ jobs:
             [sandbox-alpha]="https://sandbox-alpha.mavistesting.com"
             [sandbox-beta]="https://sandbox-beta.mavistesting.com"
           )
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "${{ github.event_name }}" = "push" ]; then
             echo "tests=" >> $GITHUB_OUTPUT
             echo "cross_service_tests=true" >> $GITHUB_OUTPUT
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
@@ -135,6 +182,9 @@ jobs:
           fi
 
       - uses: actions/checkout@v6
+        with:
+          repository: NHSDigital/manage-vaccinations-in-schools-testing
+          ref: main
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
