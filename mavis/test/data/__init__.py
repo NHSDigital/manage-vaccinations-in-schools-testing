@@ -54,6 +54,7 @@ class VaccsFileMapping(FileMapping):
     HIST_FLU_NIVS = "hist_flu_nivs"
     HIST_FLU_SYSTMONE = "hist_flu_systmone"
     CLINIC_NAME_CASE = "clinic_name_case"
+    MMR_DOSE_ONE = "mmr_dose_one"
 
     @property
     def folder(self) -> Path:
