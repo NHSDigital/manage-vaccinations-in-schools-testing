@@ -1,13 +1,18 @@
+import os
 import re
+import time
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import pandas as pd
+import requests
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import Programme
-from mavis.test.utils import get_current_datetime_compact
+from mavis.test.utils import (
+    get_current_datetime_compact,
+)
 
 
 class ReportsTabsMixin:
@@ -34,6 +39,10 @@ class ReportsTabsMixin:
 class ReportsVaccinationsPage(ReportsTabsMixin):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
+        self.cohort_heading = self.page.get_by_role(
+            "heading", name="Cohort", exact=True
+        )
+        self.cohort_value = self.cohort_heading.locator("xpath=following-sibling::*[1]")
 
     @step("Go to Reports page")
     def navigate(self) -> None:
@@ -41,7 +50,14 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
 
     @step("Navigate to and refresh Reports")
     def navigate_and_refresh_reports(self) -> None:
-        self.page.goto("/api/testing/refresh-reporting", timeout=60000)
+        self.navigate()
+        base_url = os.getenv("BASE_URL", "PROVIDEURL")
+        refresh_reports_url = f"{base_url}/api/testing/refresh-reporting"
+        response = requests.get(refresh_reports_url, timeout=30)
+        response.raise_for_status()
+
+        time.sleep(120)
+        self.page.reload()
 
     @step("Click {1}")
     def check_filter_for_programme(self, programme: Programme) -> None:
