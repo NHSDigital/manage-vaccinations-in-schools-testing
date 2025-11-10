@@ -154,6 +154,8 @@ def upload_offline_vaccination(
                 if consent_option is ConsentOption.INJECTION
                 else VaccsFileMapping.FLU_NASAL
             )
+        elif programme is Programme.MMR:
+            vaccs_file = VaccsFileMapping.MMR_DOSE_ONE
         else:
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)

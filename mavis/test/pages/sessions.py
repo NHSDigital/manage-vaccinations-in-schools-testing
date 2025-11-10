@@ -952,6 +952,11 @@ class SessionsPage:
         reload_until_element_is_visible(self.page, child_locator)
         child_locator.click()
 
+    def search_child_that_should_not_exist(self, child: Child) -> None:
+        self.search_for(str(child))
+        child_locator = self.page.get_by_role("link", name=str(child))
+        expect(child_locator).not_to_be_visible()
+
     def record_vaccination_for_child(
         self,
         vaccination_record: VaccinationRecord,
