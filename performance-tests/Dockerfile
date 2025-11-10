@@ -3,7 +3,7 @@ FROM eclipse-temurin:25-jre-jammy
 ENV JMETER_VERSION=5.6.3 \
     CMDRUNNER_VERSION=2.3 \
     JMETER_PLUGINS_MANAGER_VERSION=1.7.0 \
-    JMETER_PLUGINS=jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv \
+    JMETER_PLUGINS=jpgc-udp,jpgc-graphs-basic,jpgc-dummy,bzm-random-csv,jpgc-sts \
     JMETER_HOME=/opt/jmeter \
     PATH="/opt/jmeter/bin:${PATH}"
 
@@ -42,7 +42,7 @@ RUN echo "${JMETER_PLUGINS}" | tr ',' '\n' | \
 # Create directories for test files and outputs
 RUN mkdir -p /performance-tests /output
 WORKDIR /performance-tests
-COPY E2E/ E2E
+COPY STS/ STS
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

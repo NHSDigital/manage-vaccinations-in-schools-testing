@@ -1,13 +1,6 @@
 #!/bin/bash
 set -e
 
-# Default values
-DURATION=${DURATION:-3600}
-THREADS=${THREADS:-70}
-RAMP_UP=${RAMP_UP:-900}
-VACCINATION_LOOP=${VACCINATION_LOOP:-20}
-ROW_COUNT=${ROW_COUNT:-1000}
-
 # Validate required parameters
 if [ -z "$URN" ]; then
     echo "Error: URN is required"
@@ -27,12 +20,15 @@ fi
 echo "==================================="
 echo "Starting Performance Test"
 echo "==================================="
-echo "Test: $TEST_TO_RUN"
+echo "Run Import: $RUN_IMPORT"
+echo "Run Consent: $RUN_CONSENT"
+echo "Run Nurse: $RUN_NURSE"
 echo "URN: $URN"
+echo "BaseURL: $BASE_URL"
+echo "User: $USER"
 echo "Duration: $DURATION seconds"
 echo "Threads: $THREADS"
 echo "Ramp Up: $RAMP_UP seconds"
-echo "Vaccination Loop: $VACCINATION_LOOP"
 echo "Row Count: $ROW_COUNT"
 echo "Result Path: $RESULT_PATH"
 echo "==================================="
@@ -44,89 +40,87 @@ mkdir -p /output/consent
 mkdir -p /output/nurse
 
 # Step 1: Generate cohort file
-echo "Step 1: Generating cohort file..."
-jmeter -n -t E2E/generate-cohort.jmx \
-    -l /output/generate-cohort/samples.jtl \
-    -j /output/generate-cohort/jmeter.log \
-    -e -o /output/generate-cohort/report \
-    -JAuthToken="$AUTH_TOKEN" \
-    -JURN="$URN" \
-    -JRowCount="$ROW_COUNT"
-
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to generate cohort file"
-    exit 1
-fi
-echo "Cohort file generated successfully"
-
-# Step 2: Import cohort file
-echo "Step 2: Importing cohort file..."
-jmeter -n -t E2E/upload-cohort-data.jmx \
-    -l /output/import/samples.jtl \
-    -j /output/import/jmeter.log \
-    -e -o /output/import/report \
-    -JAuthToken="$AUTH_TOKEN" \
-    -JInputFile="cohortnew.csv"
-
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to import cohort file"
-    exit 1
-fi
-echo "Cohort file imported successfully"
-
-# Step 3: Run the selected test
-if [ "$TEST_TO_RUN" == "consent-journey" ]; then
-    echo "Step 3: Running Consent Journey test..."
-    jmeter -n -t E2E/consent-journey.jmx \
-        -l /output/consent/samples.jtl \
-        -j /output/consent/jmeter.log \
-        -e -o /output/consent/report \
+if [ "$RUN_IMPORT" = true ]; then
+    echo "Step 1: Generating cohort file..."
+    jmeter -n -t STS/generate-cohort.jmx \
+        -l /output/generate-cohort/samples.jtl \
+        -j /output/generate-cohort/jmeter.log \
+        -e -o /output/generate-cohort/report \
         -JAuthToken="$AUTH_TOKEN" \
-        -JDuration="$DURATION" \
-        -JThreads="$THREADS" \
-        -JRampUp="$RAMP_UP" \
-        -JInputFile="cohortnew.csv"
-    
-    TEST_EXIT_CODE=$?
-    
-elif [ "$TEST_TO_RUN" == "nurse-journey" ]; then
-    echo "Step 3: Running Consent Journey for data prep..."
-    jmeter -n -t E2E/consent-journey.jmx \
-        -l /output/consent/samples.jtl \
-        -j /output/consent/jmeter.log \
-        -e -o /output/consent/report \
-        -JAuthToken="$AUTH_TOKEN" \
-        -JInputFile="cohortnew.csv"
-    
+        -JURN="$URN" \
+        -JBaseURL="$BASE_URL" \
+        -JRowCount="$ROW_COUNT"
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to run consent journey for data prep"
+        echo "Error: Failed to generate cohort file"
         exit 1
     fi
-    
-    echo "Step 4: Running Nurse Journey test..."
-    jmeter -n -t E2E/nurse-journey.jmx \
+    echo "Cohort file generated successfully"
+fi
+
+# Step 2: Import cohort file
+if [ "$RUN_IMPORT" = true ]; then
+    echo "Step 2: Importing cohort file..."
+    jmeter -n -t STS/upload-cohort-data.jmx \
+        -l /output/import/samples.jtl \
+        -j /output/import/jmeter.log \
+        -e -o /output/import/report \
+        -JAuthToken="$AUTH_TOKEN" \
+        -JUser="$USER" \
+        -JBaseURL="$BASE_URL" \
+        -JInputFile="cohortnew.csv"
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to import cohort file"
+        exit 1
+    fi
+    echo "Cohort file imported successfully"
+fi
+
+# Step 3: Run the selected tests
+if [ "$RUN_CONSENT" = true ]; then
+    echo "Running Consent Journey test..."
+    jmeter -n -t STS/consent-journey.jmx \
+        -l /output/consent/samples.jtl \
+        -j /output/consent/jmeter.log \
+        -e -o /output/consent/report \
+        -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+        -Jjmeter.reportgenerator.overall_granularity=10000 \
+        -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
+        -JAuthToken="$AUTH_TOKEN" \
+        -JLoops=-1 \
+        -JThreads=5 \
+        -JRampUp=60 \
+        -JDuration="$DURATION" \
+        -JUser="$USER" \
+        -JBaseURL="$BASE_URL" \
+        -JURN="$URN"
+    if [ $? -ne 0 ]; then
+        echo "Error: Consent Journey test failed"
+        exit 1
+    fi
+fi
+
+if [ "$RUN_NURSE" = true ]; then
+    echo "Running Nurse Journey test..."
+    jmeter -n -t STS/nurse-journey.jmx \
         -l /output/nurse/samples.jtl \
         -j /output/nurse/jmeter.log \
         -e -o /output/nurse/report \
+        -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+        -Jjmeter.reportgenerator.overall_granularity=10000 \
+        -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
         -JAuthToken="$AUTH_TOKEN" \
+        -JLoops=-1 \
         -JDuration="$DURATION" \
         -JThreads="$THREADS" \
         -JRampUp="$RAMP_UP" \
-        -JVaccinationLoop="$VACCINATION_LOOP" \
-        -JInputFile="cohortnew.csv"
-    
-    TEST_EXIT_CODE=$?
-else
-    echo "Error: Unknown test type: $TEST_TO_RUN"
-    exit 1
-fi
-
-# Check test results
-if [ $TEST_EXIT_CODE -ne 0 ]; then
-    echo "==================================="
-    echo "Performance test FAILED"
-    echo "==================================="
-    exit 1
+        -JUser="$USER" \
+        -JBaseURL="$BASE_URL" \
+        -JURN="$URN"
+    if [ $? -ne 0 ]; then
+        echo "Error: Nurse Journey test failed"
+        exit 1
+    fi
 fi
 
 # Upload results to S3

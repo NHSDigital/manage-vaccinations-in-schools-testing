@@ -1,5 +1,5 @@
 name: Performance
-run-name: Test ${{ inputs.testToRun }} against ${{ inputs.URN }}
+run-name: Performance test against ${{ inputs.URN }}
 
 on:
   push:
@@ -42,18 +42,11 @@ on:
         required: false
         type: number
         default: 900
-      vaccination_loop:
-        description: "Optional (default 20) Vaccination loop (nurse journey only). The number of vaccinations each nurse will perform before logging and back in again."
-        required: false
-        type: number
-        default: 20
-        type: string
-        default: '900'
       row_count:
         description: "Optional (default 1000) number of rows in the cohort file."
         required: false
-        type: string
-        default: '1000'
+        type: number
+        default: 1000
       user:
         description: "Optional (default Nurse perftest) user."
         required: true
@@ -120,7 +113,7 @@ jobs:
       contents: write
     timeout-minutes: 180
     env:
-      RESULT_PATH: ${{ inputs.testToRun }}/${{ inputs.URN }}/${{ github.run_number }}
+      RESULT_PATH: ${{ inputs.URN }}/${{ github.run_number }}
     steps:
       - uses: actions/checkout@v5
       - name: Set timestamp
@@ -138,13 +131,16 @@ jobs:
           container-name: "performancetest-container"
           image: "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
           environment-variables: |
-            TEST_TO_RUN=${{ inputs.testToRun }}
+            RUN_IMPORT=${{ inputs.runImport }}
+            RUN_CONSENT=${{ inputs.runConsent }}
+            RUN_NURSE=${{ inputs.runNurse }}
             RESULT_PATH=${{ env.RESULT_PATH }}
             URN=${{ inputs.URN }}
+            BASE_URL=${{ inputs.BaseURL }}
+            USER=${{ inputs.user }}
             DURATION=${{ inputs.duration }}
             THREADS=${{ inputs.threads }}
             RAMP_UP=${{ inputs.ramp_up }}
-            VACCINATION_LOOP=${{ inputs.vaccination_loop }}
             ROW_COUNT=${{ inputs.row_count }}
           secrets: |
             AUTH_TOKEN=arn:aws:secretsmanager:eu-west-2:393416225559:secret:performancetest/auth-token
@@ -163,7 +159,7 @@ jobs:
       - name: Start performance test
         id: run-task
         run: |
-          echo "Starting ECS task for ${{ inputs.testToRun }} test against URN: ${{ inputs.URN }}"
+          echo "Starting ECS task to run performance test against ${{ inputs.URN }}"
           
           subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=performancetest-subnet --query 'Subnets[0].SubnetId' --output text)
           security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=performancetest-sg --query 'SecurityGroups[0].GroupId' --output text)
@@ -215,12 +211,6 @@ jobs:
           echo "Downloading test results from S3"
           S3_PATH="s3://performancetest-reports/${{ env.RESULT_PATH }}"          
           aws s3 sync "${S3_PATH}" ./test-results --no-progress
-
-          if [ "${{ inputs.testToRun }}" == "consent-journey" ]; then
-            echo "REPORT_DIR=test-results/consent/report" >> $GITHUB_OUTPUT
-          elif [ "${{ inputs.testToRun }}" == "nurse-journey" ]; then
-            echo "REPORT_DIR=test-results/nurse/report" >> $GITHUB_OUTPUT
-          fi
       - name: Publish report to GH Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -233,7 +223,6 @@ jobs:
         run: |
           echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Test Type:** ${{ inputs.testToRun }}" >> $GITHUB_STEP_SUMMARY
           echo "- **URN:** ${{ inputs.URN }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
