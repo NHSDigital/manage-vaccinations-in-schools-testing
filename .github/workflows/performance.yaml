@@ -117,9 +117,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: write
     timeout-minutes: 180
+    env:
+      RESULT_PATH: ${{ inputs.testToRun }}/${{ inputs.URN }}/${{ github.run_number }}
     steps:
       - uses: actions/checkout@v5
+      - name: Set timestamp
+        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -134,6 +139,7 @@ jobs:
           image: "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
           environment-variables: |
             TEST_TO_RUN=${{ inputs.testToRun }}
+            RESULT_PATH=${{ env.RESULT_PATH }}
             URN=${{ inputs.URN }}
             DURATION=${{ inputs.duration }}
             THREADS=${{ inputs.threads }}
@@ -154,16 +160,15 @@ jobs:
                                   --output text
                                 )
           echo "task_definition_arn=$task_definition_arn" >> $GITHUB_OUTPUT
-      - name: Run ECS Task
+      - name: Start performance test
         id: run-task
         run: |
           echo "Starting ECS task for ${{ inputs.testToRun }} test against URN: ${{ inputs.URN }}"
           
-          # Prepare network configuration
           subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=performancetest-subnet --query 'Subnets[0].SubnetId' --output text)
           security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=performancetest-sg --query 'SecurityGroups[0].GroupId' --output text)
           
-          aws ecs run-task \
+          task_arn=$(aws ecs run-task \
             --cluster performancetest \
             --task-definition ${{ steps.register-task-definition.outputs.task_definition_arn }} \
             --launch-type FARGATE \
@@ -172,5 +177,64 @@ jobs:
               "containerOverrides": [{
                 "name": "performancetest-container"
               }]
-            }'
+            }' \
+            --query 'tasks[0].taskArn' \
+            --output text)
           
+          echo "task_arn=$task_arn" >> $GITHUB_OUTPUT
+          echo "Started task: $task_arn"
+      - name: Wait for performance test to complete
+        run: |
+          echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"
+          aws ecs wait tasks-stopped \
+            --cluster performancetest \
+            --tasks ${{ steps.run-task.outputs.task_arn }}
+          
+          task_status=$(aws ecs describe-tasks \
+            --cluster performancetest \
+            --tasks ${{ steps.run-task.outputs.task_arn }} \
+            --query 'tasks[0].lastStatus' \
+            --output text)
+          
+          exit_code=$(aws ecs describe-tasks \
+            --cluster performancetest \
+            --tasks ${{ steps.run-task.outputs.task_arn }} \
+            --query 'tasks[0].containers[0].exitCode' \
+            --output text)
+          
+          echo "Task final status: $task_status"
+          echo "Container exit code: $exit_code"
+          
+          if [ "$exit_code" != "0" ]; then
+            echo "ECS task failed with exit code: $exit_code"
+            exit 1
+          fi
+      - name: Collect test result
+        id: collect-results
+        run: |
+          echo "Downloading test results from S3"
+          S3_PATH="s3://performancetest-reports/${{ env.RESULT_PATH }}"          
+          aws s3 sync "${S3_PATH}" ./test-results --no-progress
+
+          if [ "${{ inputs.testToRun }}" == "consent-journey" ]; then
+            echo "REPORT_DIR=test-results/consent/report" >> $GITHUB_OUTPUT
+          elif [ "${{ inputs.testToRun }}" == "nurse-journey" ]; then
+            echo "REPORT_DIR=test-results/nurse/report" >> $GITHUB_OUTPUT
+          fi
+      - name: Publish report to GH Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ${{ steps.collect-results.outputs.REPORT_DIR }}
+          destination_dir: JMeter/${{ env.RESULT_PATH }}
+          keep_files: true
+      - name: Set Job Summary
+        run: |
+          echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Type:** ${{ inputs.testToRun }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URN:** ${{ inputs.URN }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 View Test Report: https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/" >> $GITHUB_STEP_SUMMARY

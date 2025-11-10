@@ -2,14 +2,11 @@
 set -e
 
 # Default values
-TEST_TO_RUN=${TEST_TO_RUN:-"consent-journey"}
-URN=${URN:-""}
 DURATION=${DURATION:-3600}
 THREADS=${THREADS:-70}
 RAMP_UP=${RAMP_UP:-900}
 VACCINATION_LOOP=${VACCINATION_LOOP:-20}
 ROW_COUNT=${ROW_COUNT:-1000}
-AUTH_TOKEN=${AUTH_TOKEN:-""}
 
 # Validate required parameters
 if [ -z "$URN" ]; then
@@ -22,8 +19,10 @@ if [ -z "$AUTH_TOKEN" ]; then
     exit 1
 fi
 
-# Set timestamp for output files
-TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+if [ -z "$RESULT_PATH" ]; then
+    echo "Error: RESULT_PATH is required"
+    exit 1
+fi
 
 echo "==================================="
 echo "Starting Performance Test"
@@ -35,7 +34,7 @@ echo "Threads: $THREADS"
 echo "Ramp Up: $RAMP_UP seconds"
 echo "Vaccination Loop: $VACCINATION_LOOP"
 echo "Row Count: $ROW_COUNT"
-echo "Timestamp: $TIMESTAMP"
+echo "Result Path: $RESULT_PATH"
 echo "==================================="
 
 # Create output directories
@@ -130,9 +129,25 @@ if [ $TEST_EXIT_CODE -ne 0 ]; then
     exit 1
 fi
 
+# Upload results to S3
+echo "==================================="
+echo "Uploading results to S3"
+echo "==================================="
+
+S3_BUCKET="performancetest-reports"
+
+S3_PATH="s3://${S3_BUCKET}/${RESULT_PATH}"
+
+echo "Uploading to: ${S3_PATH}"
+
+if aws s3 sync /output "${S3_PATH}" --no-progress; then
+    echo "Successfully uploaded results to S3"
+    echo "S3 Location: ${S3_PATH}"
+else
+    echo "ERROR: Failed to upload results to S3"
+    exit 1
+fi
+
 echo "==================================="
 echo "Performance test completed successfully"
 echo "==================================="
-echo "Results are available in /output"
-ls -la /output/
-exit 0

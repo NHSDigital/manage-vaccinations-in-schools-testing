@@ -7,7 +7,13 @@ ENV JMETER_VERSION=5.6.3 \
     JMETER_HOME=/opt/jmeter \
     PATH="/opt/jmeter/bin:${PATH}"
 
-RUN apt-get update && apt-get install -y curl tar parallel && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl tar parallel unzip && rm -rf /var/lib/apt/lists/*
+
+# Install AWS CLI v2 for S3 uploads
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws
 
 WORKDIR /opt
 
