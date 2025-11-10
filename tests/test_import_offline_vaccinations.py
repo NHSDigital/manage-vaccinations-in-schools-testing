@@ -63,7 +63,7 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
     MMR_Optional, MMR_NFA, MMR_Add_Not_Known,
     MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL, MMR_NotVaccinated,
     MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
-    MMR_UnknownDoseSeq
+    MMR_UnknownDoseSeq, MMRNoDelayDose1, MMRNoDelayDose2, MMR_NoDelayDoseUnknown
     """
     import_records_page.upload_and_verify_output(
         file_mapping=VaccsFileMapping.POSITIVE,
