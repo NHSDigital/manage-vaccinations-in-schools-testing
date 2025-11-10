@@ -41,7 +41,7 @@ on:
         description: "Optional (default Nurse perftest) user."
         required: true
         type: string
-        default: 'nurse.perftest@example.com'
+        default: 'nurse.perf2test@example.com'
       BaseURL:
         description: "Optional (default qa.mavistesting.com) URL"
         required: true
