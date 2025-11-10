@@ -48,6 +48,10 @@ on:
         required: false
         default: ''
         type: string
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS:
+        description: 'HTTP Basic Auth token for the environment under test'
+        required: true
   workflow_dispatch:
     inputs:
       tests:
