@@ -9,9 +9,11 @@ def setup_systmone_nivs(
     log_in_as_nurse,
     dashboard_page,
     import_records_journey_page,
+    imports_page,
 ):
     dashboard_page.click_mavis()
     dashboard_page.click_import_records()
+    imports_page.click_import_records()
     import_records_journey_page.navigate_to_vaccination_records_import()
 
 

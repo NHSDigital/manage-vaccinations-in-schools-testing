@@ -139,6 +139,7 @@ def upload_offline_vaccination(
     programme_overview_page,
     child_record_page,
     children,
+    imports_page,
 ):
     def wrapper(
         programme: Programme, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -178,6 +179,7 @@ def upload_offline_vaccination(
             session_id = sessions_page.get_session_id_from_offline_excel()
             dashboard_page.click_mavis()
             dashboard_page.click_import_records()
+            imports_page.click_import_records()
             import_records_journey_page.navigate_to_vaccination_records_import()
             import_records_journey_page.upload_and_verify_output(
                 file_mapping=vaccs_file,

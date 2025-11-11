@@ -12,6 +12,7 @@ def setup_vaccs(
     dashboard_page,
     sessions_page,
     import_records_journey_page,
+    imports_page,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -30,6 +31,7 @@ def setup_vaccs(
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
+        imports_page.click_import_records()
         import_records_journey_page.navigate_to_vaccination_records_import()
         yield session_id
     finally:
@@ -107,6 +109,7 @@ def test_vaccination_file_upload_duplicate_records(
     setup_vaccs,
     dashboard_page,
     import_records_journey_page,
+    imports_page,
 ):
     """
     Test: Upload duplicate vaccination records and verify duplicate handling.
@@ -125,6 +128,7 @@ def test_vaccination_file_upload_duplicate_records(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_import_records()
+    imports_page.click_import_records()
     import_records_journey_page.navigate_to_vaccination_records_import()
     import_records_journey_page.upload_and_verify_output(
         VaccsFileMapping.DUP_2,

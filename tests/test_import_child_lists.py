@@ -129,6 +129,7 @@ def test_accessibility(
     log_in_as_nurse,
     accessibility_helper,
     dashboard_page,
+    imports_page,
     import_records_journey_page,
 ):
     """
@@ -142,7 +143,7 @@ def test_accessibility(
     dashboard_page.click_import_records()
     accessibility_helper.check_accessibility()
 
-    import_records_journey_page.click_import_records()
+    imports_page.click_import_records()
     accessibility_helper.check_accessibility()
 
     import_records_journey_page.select_child_records()

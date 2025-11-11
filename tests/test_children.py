@@ -59,6 +59,7 @@ def setup_mav_853(
     programme_children_page,
     sessions_page,
     year_groups,
+    imports_page,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
@@ -82,6 +83,7 @@ def setup_mav_853(
         import_records_journey_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
+        imports_page.click_import_records()
         import_records_journey_page.navigate_to_vaccination_records_import()
         import_records_journey_page.upload_and_verify_output(
             file_mapping=VaccsFileMapping.NOT_GIVEN,
