@@ -175,22 +175,28 @@ jobs:
               }]
             }' \
             --query 'tasks[0].taskArn' \
+            --enable-execute-command \
             --output text)
           
           echo "task_arn=$task_arn" >> $GITHUB_OUTPUT
           echo "Started task: $task_arn"
       - name: Wait for performance test to complete
         run: |
-          echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"
-          aws ecs wait tasks-stopped \
-            --cluster performancetest \
-            --tasks ${{ steps.run-task.outputs.task_arn }}
-          
-          task_status=$(aws ecs describe-tasks \
-            --cluster performancetest \
-            --tasks ${{ steps.run-task.outputs.task_arn }} \
-            --query 'tasks[0].lastStatus' \
-            --output text)
+          echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"          
+          while true; do
+            task_status=$(aws ecs describe-tasks \
+              --cluster performancetest \
+              --tasks ${{ steps.run-task.outputs.task_arn }} \
+              --query 'tasks[0].lastStatus' \
+              --output text)
+            
+            echo "Current task status: $task_status"
+            if [ "$task_status" == "STOPPED" ]; then
+              echo "Task has stopped"
+              break
+            fi
+            sleep 30 # Check every 30 seconds
+          done
           
           exit_code=$(aws ecs describe-tasks \
             --cluster performancetest \
@@ -198,7 +204,6 @@ jobs:
             --query 'tasks[0].containers[0].exitCode' \
             --output text)
           
-          echo "Task final status: $task_status"
           echo "Container exit code: $exit_code"
           
           if [ "$exit_code" != "0" ]; then
