@@ -14,7 +14,7 @@ def setup_confirm_and_ignore(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_journey,
+    import_records_journey_page,
     year_groups,
     children_search_page,
     child_record_page,
@@ -31,13 +31,13 @@ def setup_confirm_and_ignore(
 
     def upload_class_list():
         sessions_page.click_import_class_lists()
-        import_records_journey.select_year_groups(year_group)
+        import_records_journey_page.select_year_groups(year_group)
         sessions_page.choose_file_child_records(input_file_path)
         sessions_page.click_continue_button()
-        import_records_journey.record_upload_time()
-        import_records_journey.click_uploaded_file_datetime()
-        import_records_journey.wait_for_processed()
-        import_records_journey.verify_upload_output(output_file_path)
+        import_records_journey_page.record_upload_time()
+        import_records_journey_page.click_uploaded_file_datetime()
+        import_records_journey_page.wait_for_processed()
+        import_records_journey_page.verify_upload_output(output_file_path)
 
     try:
         dashboard_page.click_sessions()

@@ -11,7 +11,7 @@ def setup_class_list_import(
     dashboard_page,
     sessions_page,
     imports_page,
-    import_records_journey,
+    import_records_journey_page,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -24,7 +24,7 @@ def setup_class_list_import(
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         imports_page.click_import_records()
-        import_records_journey.navigate_to_class_list_record_import(
+        import_records_journey_page.navigate_to_class_list_record_import(
             str(school), year_group
         )
         yield
@@ -38,7 +38,7 @@ def setup_class_list_import(
 @pytest.mark.classlist
 def test_class_list_file_upload_valid_data(
     setup_class_list_import,
-    import_records_journey,
+    import_records_journey_page,
 ):
     """
     Test: Upload a valid class list file and verify successful import.
@@ -51,13 +51,13 @@ def test_class_list_file_upload_valid_data(
     AllValidValues, YearGroupOverride, SameYearGroup, EmptyPostCode, EmptyYearGroup,
     UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
     """
-    import_records_journey.upload_and_verify_output(ClassFileMapping.POSITIVE)
+    import_records_journey_page.upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_invalid_data(
     setup_class_list_import,
-    import_records_journey,
+    import_records_journey_page,
 ):
     """
     Test: Upload an invalid class list file and verify error handling.
@@ -72,13 +72,13 @@ def test_class_list_file_upload_invalid_data(
     InvalidLastName, InvalidPrefFirstName, InvalidPrefLastName, InvalidParent1Name,
     InvalidParent2Name
     """
-    import_records_journey.upload_and_verify_output(ClassFileMapping.NEGATIVE)
+    import_records_journey_page.upload_and_verify_output(ClassFileMapping.NEGATIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_invalid_structure(
     setup_class_list_import,
-    import_records_journey,
+    import_records_journey_page,
 ):
     """
     Test: Upload a class list file with invalid structure and verify error handling.
@@ -88,13 +88,15 @@ def test_class_list_file_upload_invalid_structure(
     Verification:
     - Output indicates structural errors.
     """
-    import_records_journey.upload_and_verify_output(ClassFileMapping.INVALID_STRUCTURE)
+    import_records_journey_page.upload_and_verify_output(
+        ClassFileMapping.INVALID_STRUCTURE
+    )
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_header_only(
     setup_class_list_import,
-    import_records_journey,
+    import_records_journey_page,
 ):
     """
     Test: Upload a class list file with only headers and verify no
@@ -105,13 +107,13 @@ def test_class_list_file_upload_header_only(
     Verification:
     - Output indicates no records imported.
     """
-    import_records_journey.upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
+    import_records_journey_page.upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_empty_file(
     setup_class_list_import,
-    import_records_journey,
+    import_records_journey_page,
 ):
     """
     Test: Upload an empty class list file and verify error handling.
@@ -121,14 +123,14 @@ def test_class_list_file_upload_empty_file(
     Verification:
     - Output indicates error or no records imported.
     """
-    import_records_journey.upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
+    import_records_journey_page.upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_wrong_year_group(
     setup_class_list_import,
     schools,
-    import_records_journey,
+    import_records_journey_page,
     year_groups,
 ):
     """
@@ -139,14 +141,16 @@ def test_class_list_file_upload_wrong_year_group(
     Verification:
     - Output indicates year group mismatch or error.
     """
-    import_records_journey.upload_and_verify_output(ClassFileMapping.WRONG_YEAR_GROUP)
+    import_records_journey_page.upload_and_verify_output(
+        ClassFileMapping.WRONG_YEAR_GROUP
+    )
 
 
 @pytest.mark.classlist
 @pytest.mark.bug
 def test_class_list_file_upload_whitespace_normalization(
     setup_class_list_import,
-    import_records_journey,
+    import_records_journey_page,
     children_search_page,
     dashboard_page,
 ):
@@ -159,7 +163,7 @@ def test_class_list_file_upload_whitespace_normalization(
     Verification:
     - Imported list matches expected normalized data.
     """
-    input_file, _ = import_records_journey.upload_and_verify_output(
+    input_file, _ = import_records_journey_page.upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
     )
     dashboard_page.click_mavis()

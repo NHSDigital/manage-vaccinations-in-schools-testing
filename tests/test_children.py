@@ -13,7 +13,7 @@ def setup_children_session(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_journey,
+    import_records_journey_page,
     year_groups,
 ):
     def _setup(class_list_file):
@@ -25,7 +25,7 @@ def setup_children_session(
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
             sessions_page.click_import_class_lists()
-            import_records_journey.import_class_list(class_list_file, year_group)
+            import_records_journey_page.import_class_list(class_list_file, year_group)
             dashboard_page.click_mavis()
             dashboard_page.click_children()
             yield
@@ -53,7 +53,7 @@ def setup_mav_853(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    import_records_journey,
+    import_records_journey_page,
     programmes_list_page,
     programme_overview_page,
     programme_children_page,
@@ -67,7 +67,7 @@ def setup_mav_853(
         dashboard_page.click_sessions()
         sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
         sessions_page.click_import_class_lists()
-        import_records_journey.import_class_list(
+        import_records_journey_page.import_class_list(
             ClassFileMapping.RANDOM_CHILD, year_group
         )
         dashboard_page.click_mavis()
@@ -79,11 +79,11 @@ def setup_mav_853(
         programmes_list_page.click_programme_for_current_year(Programme.HPV)
         programme_overview_page.click_children_tab()
         programme_children_page.click_import_child_records()
-        import_records_journey.import_class_list(CohortsFileMapping.FIXED_CHILD)
+        import_records_journey_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
-        import_records_journey.navigate_to_vaccination_records_import()
-        import_records_journey.upload_and_verify_output(
+        import_records_journey_page.navigate_to_vaccination_records_import()
+        import_records_journey_page.upload_and_verify_output(
             file_mapping=VaccsFileMapping.NOT_GIVEN,
             session_id=session_id,
         )

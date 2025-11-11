@@ -25,7 +25,9 @@ def setup_reports(log_in_as_nurse, dashboard_page):
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_journey):
+def test_cohort_upload_with_valid_file(
+    setup_cohort_upload, import_records_journey_page
+):
     """
     Test: Upload a valid cohort (class list) file and verify successful import.
     Steps:
@@ -34,11 +36,13 @@ def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_journ
     Verification:
     - Import completes successfully with expected records.
     """
-    import_records_journey.import_class_list(CohortsFileMapping.POSITIVE)
+    import_records_journey_page.import_class_list(CohortsFileMapping.POSITIVE)
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_invalid_file(setup_cohort_upload, import_records_journey):
+def test_cohort_upload_with_invalid_file(
+    setup_cohort_upload, import_records_journey_page
+):
     """
     Test: Upload an invalid cohort (class list) file and verify error handling.
     Steps:
@@ -47,12 +51,12 @@ def test_cohort_upload_with_invalid_file(setup_cohort_upload, import_records_jou
     Verification:
     - Import fails and error is shown.
     """
-    import_records_journey.import_class_list(CohortsFileMapping.NEGATIVE)
+    import_records_journey_page.import_class_list(CohortsFileMapping.NEGATIVE)
 
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_invalid_structure(
-    setup_cohort_upload, import_records_journey
+    setup_cohort_upload, import_records_journey_page
 ):
     """
     Test: Upload a cohort file with invalid structure and verify error handling.
@@ -62,12 +66,12 @@ def test_cohort_upload_with_invalid_structure(
     Verification:
     - Import fails and structural error is shown.
     """
-    import_records_journey.import_class_list(CohortsFileMapping.INVALID_STRUCTURE)
+    import_records_journey_page.import_class_list(CohortsFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.cohorts
 def test_cohort_upload_with_header_only_file(
-    setup_cohort_upload, import_records_journey
+    setup_cohort_upload, import_records_journey_page
 ):
     """
     Test: Upload a cohort file with only headers and verify no records are imported.
@@ -77,11 +81,13 @@ def test_cohort_upload_with_header_only_file(
     Verification:
     - No records are imported and appropriate message is shown.
     """
-    import_records_journey.import_class_list(CohortsFileMapping.HEADER_ONLY)
+    import_records_journey_page.import_class_list(CohortsFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_journey):
+def test_cohort_upload_with_empty_file(
+    setup_cohort_upload, import_records_journey_page
+):
     """
     Test: Upload an empty cohort file and verify error handling.
     Steps:
@@ -90,7 +96,7 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_journ
     Verification:
     - Import fails and error is shown.
     """
-    import_records_journey.import_class_list(CohortsFileMapping.EMPTY_FILE)
+    import_records_journey_page.import_class_list(CohortsFileMapping.EMPTY_FILE)
 
 
 @issue("MAV-909")
@@ -106,7 +112,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     children_search_page,
     child_record_page,
     child_archive_page,
-    import_records_journey,
+    import_records_journey_page,
     children,
 ):
     """
@@ -121,7 +127,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     """
     child = children[Programme.HPV][0]
 
-    import_records_journey.import_class_list(CohortsFileMapping.FIXED_CHILD)
+    import_records_journey_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
@@ -136,7 +142,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     programme_overview_page.click_children_tab()
     programme_children_page.click_import_child_records()
 
-    import_records_journey.import_class_list(CohortsFileMapping.FIXED_CHILD)
+    import_records_journey_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
