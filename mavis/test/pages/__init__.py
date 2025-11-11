@@ -15,7 +15,7 @@ from .consent_responses import (
 from .dashboard import DashboardPage
 from .errorpages import BadRequestPage, InternalServerErrorPage
 from .flipper import FlipperPage
-from .import_records import ImportRecordsPage
+from .import_records import ImportRecordsWizardPage, ImportsPage
 from .log_in import LogInPage, LogOutPage
 from .online_consent import OnlineConsentPage
 from .programmes import (
@@ -50,7 +50,8 @@ __all__ = [
     "EditBatchPage",
     "EditVaccinationRecordPage",
     "FlipperPage",
-    "ImportRecordsPage",
+    "ImportRecordsWizardPage",
+    "ImportsPage",
     "InternalServerErrorPage",
     "LogInPage",
     "LogOutPage",

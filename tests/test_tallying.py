@@ -27,7 +27,7 @@ def setup_session_with_file_upload(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_page,
+    import_records_wizard_page,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -43,7 +43,7 @@ def setup_session_with_file_upload(
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 class_list_file, year_group, Programme.FLU.group
             )
             dashboard_page.click_mavis()
