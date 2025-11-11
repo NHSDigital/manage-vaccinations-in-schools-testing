@@ -49,4 +49,4 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Mount directories as volumes to make them writeable
-VOLUME [ "/output", "/performance-tests/temp" ]
+VOLUME [ "/output", "/performance-tests/temp", "/opt/jmeter" ]

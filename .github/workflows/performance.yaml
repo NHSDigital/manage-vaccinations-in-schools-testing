@@ -216,12 +216,28 @@ jobs:
           echo "Downloading test results from S3"
           S3_PATH="s3://performancetest-reports/${{ env.RESULT_PATH }}"          
           aws s3 sync "${S3_PATH}" ./test-results --no-progress
+
+      - name: Upload nurse journey JMeter output
+        if: inputs.runNurse == true
+        uses: actions/upload-artifact@v5
+        with:
+          name: jmeter-nurse-journey-output-${{ env.timestamp }}
+          path: test-results/nurse
+          if-no-files-found: warn
+      - name: Upload consent journey JMeter output
+        if: inputs.runConsent == true
+        uses: actions/upload-artifact@v5
+        with:
+          name: jmeter-consent-journey-output-${{ env.timestamp }}
+          path: test-results/consent
+          if-no-files-found: warn
       - name: Publish report to GH Pages
+        if: inputs.runNurse == true
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ${{ steps.collect-results.outputs.REPORT_DIR }}
+          publish_dir: test-results/nurse/report
           destination_dir: JMeter/${{ env.RESULT_PATH }}
           keep_files: true
       - name: Set Job Summary
