@@ -18,7 +18,7 @@ def setup_all_programmes(
     add_vaccine_batch,
     schools,
     dashboard_page,
-    import_records_journey_page,
+    import_records_wizard_page,
     sessions_page,
     children,
 ):
@@ -36,7 +36,7 @@ def setup_all_programmes(
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, programme_group)
         sessions_page.click_import_class_lists()
-        import_records_journey_page.import_class_list(
+        import_records_wizard_page.import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
             "doubles",

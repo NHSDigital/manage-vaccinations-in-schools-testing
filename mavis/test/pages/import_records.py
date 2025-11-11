@@ -13,7 +13,7 @@ from mavis.test.utils import (
 )
 
 
-class ImportRecordsJourneyPage:
+class ImportRecordsWizardPage:
     def __init__(
         self,
         page: Page,

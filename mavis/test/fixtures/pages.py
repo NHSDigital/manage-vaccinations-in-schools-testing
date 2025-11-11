@@ -18,7 +18,7 @@ from mavis.test.pages import (
     EditBatchPage,
     EditVaccinationRecordPage,
     FlipperPage,
-    ImportRecordsJourneyPage,
+    ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
     LogOutPage,
@@ -125,10 +125,10 @@ def imports_page(page: Page) -> ImportsPage:
 
 
 @pytest.fixture
-def import_records_journey_page(
+def import_records_wizard_page(
     page: Page, test_data: TestData
-) -> ImportRecordsJourneyPage:
-    return ImportRecordsJourneyPage(page, test_data)
+) -> ImportRecordsWizardPage:
+    return ImportRecordsWizardPage(page, test_data)
 
 
 @pytest.fixture

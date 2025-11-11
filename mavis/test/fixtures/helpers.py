@@ -132,7 +132,7 @@ def upload_offline_vaccination(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    import_records_journey_page,
+    import_records_wizard_page,
     sessions_page,
     programmes_list_page,
     programme_children_page,
@@ -168,7 +168,7 @@ def upload_offline_vaccination(
                 programme,
             )
             sessions_page.click_import_class_lists()
-            import_records_journey_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,
                 programme.group,
@@ -180,8 +180,8 @@ def upload_offline_vaccination(
             dashboard_page.click_mavis()
             dashboard_page.click_import_records()
             imports_page.click_import_records()
-            import_records_journey_page.navigate_to_vaccination_records_import()
-            import_records_journey_page.upload_and_verify_output(
+            import_records_wizard_page.navigate_to_vaccination_records_import()
+            import_records_wizard_page.upload_and_verify_output(
                 file_mapping=vaccs_file,
                 session_id=session_id,
                 programme_group=programme.group,
@@ -209,7 +209,7 @@ def setup_session_and_batches_with_fixed_child(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_journey_page,
+    import_records_wizard_page,
     children,
     log_in_page,
     nurse,
@@ -231,7 +231,7 @@ def setup_session_and_batches_with_fixed_child(
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, programme_group)
             sessions_page.click_import_class_lists()
-            import_records_journey_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,
                 programme_group,
