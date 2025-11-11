@@ -1,5 +1,5 @@
 name: Performance
-run-name: Performance test against ${{ inputs.URN }}
+run-name: Performance test against ${{ inputs.BaseURL }} for URN ${{ inputs.URN }}
 
 on:
   push:
@@ -70,7 +70,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::393416225559:role/GitHubPerformancetestRole
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
       - name: Check if image exists
         id: check-image
@@ -85,6 +85,9 @@ jobs:
     needs: check-image-presence
     if: needs.check-image-presence.outputs.build-needed == 'true'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: performance-tests/
     permissions:
       id-token: write
     steps:
@@ -93,20 +96,35 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::393416225559:role/GitHubPerformancetestRole
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
+      - name: Cache base jmeter image
+        id: jmeter-base
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-jmeter
+        with:
+          path: ${{ runner.temp }}/jmeter-image.tar
+          key: jmeter-image-${{ hashFiles('performance-tests/base.Dockerfile') }}
+      - name: Build base jmeter image
+        if: steps.jmeter-base.outputs.cache-hit != 'true'
+        run: |
+          docker build -t base-jmeter-image:latest -f base.Dockerfile .
+          docker save -o ${{ runner.temp }}/jmeter-image.tar base-jmeter-image:latest
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
       - name: Build and push performancetest docker image
         run: |
-          cd performance-tests  
+          docker load -i ${{ runner.temp }}/jmeter-image.tar
           docker build -t "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}" .
           docker push "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
   run-performance-test:
     needs: [build-and-push, check-image-presence]
     if: ${{ !cancelled() &&
-      (needs.build-and-push.result == 'success' || needs.check-image-presence.result == 'success') }}
+      (needs.build-and-push.result == 'success' || 
+      (needs.check-image-presence.result == 'success' && needs.build-and-push.result == 'skipped')
+      ) }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -121,13 +139,13 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::393416225559:role/GitHubPerformancetestRole
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
       - name: Create task definition
         id: create-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition-family: "performancetest-task-definition-template"
+          task-definition-family: "assurance-testing-performance-task-definition-template"
           container-name: "performancetest-container"
           image: "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
           environment-variables: |
@@ -147,8 +165,8 @@ jobs:
       - name: Register task definition
         id: register-task-definition
         run: |
-          file_path="performancetest-task-definition.json"
-          family_name="performancetest-task-definition"
+          file_path="assurance-testing-performance-task-definition.json"
+          family_name="assurance-testing-performance-task-definition"
           echo "$(jq --arg f "$family_name" '.family = $f' "${{ steps.create-task-definition.outputs.task-definition }}")" > "$file_path"
           task_definition_arn=$(aws ecs register-task-definition \
                                   --cli-input-json file://$file_path \
@@ -161,11 +179,11 @@ jobs:
         run: |
           echo "Starting ECS task to run performance test against ${{ inputs.URN }}"
           
-          subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=performancetest-subnet --query 'Subnets[0].SubnetId' --output text)
-          security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=performancetest-sg --query 'SecurityGroups[0].GroupId' --output text)
+          subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=assurance-testing-subnet --query 'Subnets[0].SubnetId' --output text)
+          security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=assurance-testing-performance-sg --query 'SecurityGroups[0].GroupId' --output text)
           
           task_arn=$(aws ecs run-task \
-            --cluster performancetest \
+            --cluster assurance-testing \
             --task-definition ${{ steps.register-task-definition.outputs.task_definition_arn }} \
             --launch-type FARGATE \
             --network-configuration "awsvpcConfiguration={subnets=[$subnet_id],securityGroups=[$security_group_id],assignPublicIp=ENABLED}" \
@@ -182,10 +200,11 @@ jobs:
           echo "Started task: $task_arn"
       - name: Wait for performance test to complete
         run: |
+          #TODO: Add link to cloudwatch here
           echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"          
           while true; do
             task_status=$(aws ecs describe-tasks \
-              --cluster performancetest \
+              --cluster assurance-testing \
               --tasks ${{ steps.run-task.outputs.task_arn }} \
               --query 'tasks[0].lastStatus' \
               --output text)
@@ -199,7 +218,7 @@ jobs:
           done
           
           exit_code=$(aws ecs describe-tasks \
-            --cluster performancetest \
+            --cluster assurance-testing \
             --tasks ${{ steps.run-task.outputs.task_arn }} \
             --query 'tasks[0].containers[0].exitCode' \
             --output text)
