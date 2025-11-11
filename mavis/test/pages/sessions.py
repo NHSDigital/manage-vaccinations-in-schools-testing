@@ -550,7 +550,7 @@ class SessionsPage:
     @step("Triage MMR patient")
     def triage_mmr_patient(self, child: Child, consent_option: ConsentOption) -> None:
         self.click_triage_tab()
-        self.click_child(child)
+        self.search_child(child)
         self.click_programme_tab(Programme.MMR)
         if consent_option is ConsentOption.MMR_EITHER:
             self.triage_safe_mmr_either_radio.check()
