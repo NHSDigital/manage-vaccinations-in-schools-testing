@@ -32,30 +32,30 @@ class FileMapping(Enum):
 
 
 class VaccsFileMapping(FileMapping):
-    POSITIVE = "positive"
-    NEGATIVE = "negative"
-    HIST_HPV = "hist_hpv"
-    HIST_POSITIVE = "hist_positive"
-    HIST_NEGATIVE = "hist_negative"
+    CLINIC_NAME_CASE = "clinic_name_case"
     DUP_1 = "dup_1"
     DUP_2 = "dup_2"
-    INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     FLU_INJECTED = "flu_injected"
     FLU_NASAL = "flu_nasal"
-    HPV_DOSE_TWO = "hpv_dose_two"
     HEADER_ONLY = "header_only"
-    NOT_GIVEN = "not_given"
-    NO_CARE_SETTING = "no_care_setting"
-    SYSTMONE_POSITIVE = "systmone_positive"
-    SYSTMONE_NEGATIVE = "systmone_negative"
-    SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
-    WHITESPACE = "whitespace"
-    SYSTMONE_WHITESPACE = "systmone_whitespace"
     HIST_FLU_NIVS = "hist_flu_nivs"
     HIST_FLU_SYSTMONE = "hist_flu_systmone"
-    CLINIC_NAME_CASE = "clinic_name_case"
+    HIST_HPV = "hist_hpv"
+    HIST_NEGATIVE = "hist_negative"
+    HIST_POSITIVE = "hist_positive"
+    HPV_DOSE_TWO = "hpv_dose_two"
+    INVALID_STRUCTURE = "invalid_structure"
     MMR_DOSE_ONE = "mmr_dose_one"
+    NEGATIVE = "negative"
+    NO_CARE_SETTING = "no_care_setting"
+    NOT_GIVEN = "not_given"
+    POSITIVE = "positive"
+    SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
+    SYSTMONE_NEGATIVE = "systmone_negative"
+    SYSTMONE_POSITIVE = "systmone_positive"
+    SYSTMONE_WHITESPACE = "systmone_whitespace"
+    WHITESPACE = "whitespace"
 
     @property
     def folder(self) -> Path:
@@ -63,12 +63,12 @@ class VaccsFileMapping(FileMapping):
 
 
 class CohortsFileMapping(FileMapping):
-    POSITIVE = "positive"
-    NEGATIVE = "negative"
-    INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
-    HEADER_ONLY = "header_only"
     FIXED_CHILD = "fixed_child"
+    HEADER_ONLY = "header_only"
+    INVALID_STRUCTURE = "invalid_structure"
+    NEGATIVE = "negative"
+    POSITIVE = "positive"
 
     @property
     def folder(self) -> Path:
@@ -76,11 +76,11 @@ class CohortsFileMapping(FileMapping):
 
 
 class ChildFileMapping(FileMapping):
-    POSITIVE = "positive"
-    NEGATIVE = "negative"
-    INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
+    INVALID_STRUCTURE = "invalid_structure"
+    NEGATIVE = "negative"
+    POSITIVE = "positive"
     WHITESPACE = "whitespace"
 
     @property
@@ -89,17 +89,17 @@ class ChildFileMapping(FileMapping):
 
 
 class ClassFileMapping(FileMapping):
-    POSITIVE = "positive"
-    NEGATIVE = "negative"
-    INVALID_STRUCTURE = "invalid_structure"
     EMPTY_FILE = "empty"
-    HEADER_ONLY = "header_only"
-    WHITESPACE = "whitespace"
-    WRONG_YEAR_GROUP = "wrong_year_group"
-    RANDOM_CHILD = "random_child"
     FIXED_CHILD = "fixed_child"
+    HEADER_ONLY = "header_only"
+    INVALID_STRUCTURE = "invalid_structure"
+    NEGATIVE = "negative"
+    POSITIVE = "positive"
+    RANDOM_CHILD = "random_child"
     TWO_FIXED_CHILDREN = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
+    WHITESPACE = "whitespace"
+    WRONG_YEAR_GROUP = "wrong_year_group"
 
     @property
     def folder(self) -> Path:
