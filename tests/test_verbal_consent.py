@@ -14,7 +14,7 @@ def setup_session_with_file_upload(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_page,
+    import_records_journey,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -28,7 +28,7 @@ def setup_session_with_file_upload(
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.HPV)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(class_list_file, year_group)
+            import_records_journey.import_class_list(class_list_file, year_group)
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
             yield
@@ -68,6 +68,7 @@ def test_gillick_competence(
     verbal_consent_page.add_gillick_competence(is_competent=True)
     sessions_page.click_edit_gillick_competence()
     verbal_consent_page.edit_gillick_competence(is_competent=False)
+    verbal_consent_page.page.pause()
 
 
 @issue("MAV-955")

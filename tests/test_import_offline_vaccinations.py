@@ -11,7 +11,7 @@ def setup_vaccs(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_page,
+    import_records_journey,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -21,14 +21,16 @@ def setup_vaccs(
         dashboard_page.click_sessions()
         sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
         sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(ClassFileMapping.RANDOM_CHILD, year_group)
+        import_records_journey.import_class_list(
+            ClassFileMapping.RANDOM_CHILD, year_group
+        )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_page.click_session_for_programme_group(school, Programme.HPV)
         session_id = sessions_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
-        import_records_page.navigate_to_vaccination_records_import()
+        import_records_journey.navigate_to_vaccination_records_import()
         yield session_id
     finally:
         dashboard_page.navigate()
@@ -38,7 +40,7 @@ def setup_vaccs(
 
 
 @pytest.mark.vaccinations
-def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
+def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_journey):
     """
     Test: Upload a valid vaccination records file and verify successful import.
     Steps:
@@ -65,14 +67,14 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, import_records_page):
     MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
     MMR_UnknownDoseSeq, MMRNoDelayDose1, MMRNoDelayDose2, MMR_NoDelayDoseUnknown
     """
-    import_records_page.upload_and_verify_output(
+    import_records_journey.upload_and_verify_output(
         file_mapping=VaccsFileMapping.POSITIVE,
         session_id=setup_vaccs,
     )
 
 
 @pytest.mark.vaccinations
-def test_vaccination_file_upload_invalid_data(setup_vaccs, import_records_page):
+def test_vaccination_file_upload_invalid_data(setup_vaccs, import_records_journey):
     """
     Test: Upload an invalid vaccination records file and verify error handling.
     Steps:
@@ -94,7 +96,7 @@ def test_vaccination_file_upload_invalid_data(setup_vaccs, import_records_page):
     HPV_TimeInFuture, HPV_VaccinatedFlagEmpty, TDIPV_EmptyDoseSeq, TDIPV_InvalidDoseSeq,
     MenACWY_EmptyDoseSeq, MenACWY_InvalidDoseSeq, MenACWY_LongBatchNumber, MMR_DoseSeq3
     """
-    import_records_page.upload_and_verify_output(
+    import_records_journey.upload_and_verify_output(
         file_mapping=VaccsFileMapping.NEGATIVE,
         session_id=setup_vaccs,
     )
@@ -104,7 +106,7 @@ def test_vaccination_file_upload_invalid_data(setup_vaccs, import_records_page):
 def test_vaccination_file_upload_duplicate_records(
     setup_vaccs,
     dashboard_page,
-    import_records_page,
+    import_records_journey,
 ):
     """
     Test: Upload duplicate vaccination records and verify duplicate handling.
@@ -117,21 +119,21 @@ def test_vaccination_file_upload_duplicate_records(
     1. Duplicate records within the same file, and
     2. Duplicate records across 2 different files
     """
-    import_records_page.upload_and_verify_output(
+    import_records_journey.upload_and_verify_output(
         VaccsFileMapping.DUP_1,
         session_id=setup_vaccs,
     )
     dashboard_page.click_mavis()
     dashboard_page.click_import_records()
-    import_records_page.navigate_to_vaccination_records_import()
-    import_records_page.upload_and_verify_output(
+    import_records_journey.navigate_to_vaccination_records_import()
+    import_records_journey.upload_and_verify_output(
         VaccsFileMapping.DUP_2,
         session_id=setup_vaccs,
     )
 
 
 @pytest.mark.vaccinations
-def test_vaccination_file_upload_invalid_structure(setup_vaccs, import_records_page):
+def test_vaccination_file_upload_invalid_structure(setup_vaccs, import_records_journey):
     """
     Test: Upload a vaccination records file with invalid structure and
        verify error handling.
@@ -141,11 +143,11 @@ def test_vaccination_file_upload_invalid_structure(setup_vaccs, import_records_p
     Verification:
     - Output indicates structural errors.
     """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.INVALID_STRUCTURE)
+    import_records_journey.upload_and_verify_output(VaccsFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.vaccinations
-def test_vaccination_file_upload_header_only(setup_vaccs, import_records_page):
+def test_vaccination_file_upload_header_only(setup_vaccs, import_records_journey):
     """
     Test: Upload a vaccination records file with only headers and verify no records are
        imported.
@@ -155,11 +157,11 @@ def test_vaccination_file_upload_header_only(setup_vaccs, import_records_page):
     Verification:
     - Output indicates no records imported.
     """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.HEADER_ONLY)
+    import_records_journey.upload_and_verify_output(VaccsFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.vaccinations
-def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_page):
+def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_journey):
     """
     Test: Upload an empty vaccination records file and verify error handling.
     Steps:
@@ -168,7 +170,7 @@ def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_page):
     Verification:
     - Output indicates error or no records imported.
     """
-    import_records_page.upload_and_verify_output(VaccsFileMapping.EMPTY_FILE)
+    import_records_journey.upload_and_verify_output(VaccsFileMapping.EMPTY_FILE)
 
 
 @issue("MAV-855")
@@ -178,7 +180,7 @@ def test_vaccination_file_upload_creates_child_no_setting(
     setup_vaccs,
     schools,
     dashboard_page,
-    import_records_page,
+    import_records_journey,
     children_search_page,
     child_record_page,
     vaccination_record_page,
@@ -198,7 +200,7 @@ def test_vaccination_file_upload_creates_child_no_setting(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    import_records_page.upload_and_verify_output(VaccsFileMapping.NO_CARE_SETTING)
+    import_records_journey.upload_and_verify_output(VaccsFileMapping.NO_CARE_SETTING)
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
@@ -214,7 +216,7 @@ def test_vaccination_file_upload_creates_child_no_setting(
 @pytest.mark.bug
 def test_vaccination_file_upload_whitespace_normalization(
     setup_vaccs,
-    import_records_page,
+    import_records_journey,
     children_search_page,
     dashboard_page,
 ):
@@ -230,7 +232,7 @@ def test_vaccination_file_upload_whitespace_normalization(
     Scenarios covered:
     TwoSpaces, Tabs, NBSP (non-breaking space), ZWJ (zero-width joiner)
     """
-    input_file, _ = import_records_page.upload_and_verify_output(
+    input_file, _ = import_records_journey.upload_and_verify_output(
         VaccsFileMapping.WHITESPACE,
         session_id=setup_vaccs,
     )
@@ -244,7 +246,7 @@ def test_vaccination_file_upload_whitespace_normalization(
 @pytest.mark.bug
 def test_vaccination_file_upload_community_clinic_name_case(
     setup_vaccs,
-    import_records_page,
+    import_records_journey,
 ):
     """
     Test: Upload a vaccination file with community clinic name case variations and
@@ -255,7 +257,7 @@ def test_vaccination_file_upload_community_clinic_name_case(
     - Output indicates clinic names are handled case-insensitively and
        imported correctly.
     """
-    import_records_page.upload_and_verify_output(
+    import_records_journey.upload_and_verify_output(
         VaccsFileMapping.CLINIC_NAME_CASE,
         session_id=setup_vaccs,
     )
