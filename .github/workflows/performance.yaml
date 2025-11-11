@@ -7,11 +7,11 @@ on:
 
   workflow_dispatch:
     inputs:
-      runImport:
-        description: "Create and import a cohort (not needed if there are already enough patients)"
+      AddNewSession:
+        description: "Add a new session date (not needed if there are already enough patients)"
         required: true
-        type: boolean
-        default: false
+        type: string
+        default: 'False'
       runConsent:
         description: "Run consent journey"
         required: true
@@ -22,10 +22,6 @@ on:
         required: true
         type: boolean
         default: true
-      URN:
-        description: "Required: what URN to run the test against."
-        required: true
-        type: string
       duration:
         description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
@@ -41,16 +37,11 @@ on:
         required: false
         type: string
         default: '900'
-      row_count:
-        description: "Optional (default 1000) number of rows in the cohort file."
-        required: false
-        type: string
-        default: '1000'
       user:
         description: "Optional (default Nurse perftest) user."
         required: true
         type: string
-        default: 'nurse.perftest@example.com'
+        default: 'nurse.perf2test@example.com'
       BaseURL:
         description: "Optional (default qa.mavistesting.com) URL"
         required: true
@@ -72,7 +63,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      
+
+      - name: Echo workflow inputs
+        run: |
+          echo "AddNewSession:${{ inputs.AddNewSession }}" >> $GITHUB_STEP_SUMMARY
+          echo "RunConsent:${{ inputs.runConsent }},runNurse:${{ inputs.runNurse }}" >> $GITHUB_STEP_SUMMARY
+          echo "duration:${{ inputs.duration }},threads:${{ inputs.threads }},ramp_up:${{ inputs.ramp_up }}" >> $GITHUB_STEP_SUMMARY
+          echo "user:${{ inputs.user }},BaseURL:${{ inputs.BaseURL }}" >> $GITHUB_STEP_SUMMARY
+         
       - name: Cache jmeter
         id: cache-jmeter
         uses: actions/cache@v4
@@ -121,32 +119,6 @@ jobs:
         id: timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-      - name: Create new cohort file
-        if: inputs.runImport == true
-        run: |
-          mkdir -p generate-cohort-output
-          generate_cohort_output_dir=generate-cohort-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/generate-cohort.jmx \
-              -l $generate_cohort_output_dir/samples.jtl \
-              -j $generate_cohort_output_dir/jmeter.log \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JURN=${{inputs.URN}} \
-              -JBaseURL=${{inputs.BaseURL}} \
-              -JRowCount=${{inputs.row_count}}
-
-      - name: Run file import for new file
-        if: inputs.runImport == true
-        run: |
-          mkdir -p import-output
-          import_output_dir=import-output
-          jmeter/bin/jmeter -n -t performance-tests/STS/upload-cohort-data.jmx \
-              -l $import_output_dir/samples.jtl \
-              -j $import_output_dir/jmeter.log \
-              -JAuthToken=${{secrets.HTTP_AUTH_TOKEN_FOR_TESTS}} \
-              -JUser=${{inputs.user}} \
-              -JBaseURL=${{inputs.BaseURL}} \
-              -JInputFile="cohortnew.csv"
-
       - name: Run Consent Journey
         if: inputs.runConsent == true
         run: |
@@ -166,7 +138,8 @@ jobs:
               -JDuration=${{inputs.duration}} \
               -JUser=${{inputs.user}} \
               -JBaseURL=${{inputs.BaseURL}} \
-              -JURN=${{inputs.URN}}
+              -JURN=${{inputs.URN}} \
+              -JAddNewSession=${{inputs.AddNewSession}}
 
       - name: Upload consent journey JMeter output
         if: inputs.runConsent == true
