@@ -25,6 +25,7 @@ from .fixtures import (
     edit_batch_page,
     edit_vaccination_record_page,
     flipper_page,
+    gillick_competence_page,
     healthcare_assistant,
     imms_base_url,
     import_records_wizard_page,
@@ -37,6 +38,7 @@ from .fixtures import (
     match_consent_response_page,
     medical_secretary,
     nurse,
+    nurse_consent_wizard_page,
     onboarding,
     online_consent_page,
     organisation,
@@ -67,7 +69,6 @@ from .fixtures import (
     upload_offline_vaccination,
     vaccination_record_page,
     vaccines_page,
-    verbal_consent_page,
     year_groups,
 )
 from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
@@ -99,6 +100,7 @@ __all__ = [
     "edit_batch_page",
     "edit_vaccination_record_page",
     "flipper_page",
+    "gillick_competence_page",
     "healthcare_assistant",
     "imms_base_url",
     "import_records_wizard_page",
@@ -111,6 +113,7 @@ __all__ = [
     "match_consent_response_page",
     "medical_secretary",
     "nurse",
+    "nurse_consent_wizard_page",
     "onboarding",
     "online_consent_page",
     "organisation",
@@ -144,6 +147,5 @@ __all__ = [
     "upload_offline_vaccination",
     "vaccination_record_page",
     "vaccines_page",
-    "verbal_consent_page",
     "year_groups",
 ]

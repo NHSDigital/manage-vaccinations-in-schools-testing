@@ -47,7 +47,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_gillick_competence(
-    setup_fixed_child, schools, sessions_page, verbal_consent_page, children
+    setup_fixed_child, schools, sessions_page, gillick_competence_page, children
 ):
     """
     Test: Add and edit Gillick competence assessment for a child.
@@ -65,14 +65,14 @@ def test_gillick_competence(
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
-    verbal_consent_page.add_gillick_competence(is_competent=True)
+    gillick_competence_page.add_gillick_competence(is_competent=True)
     sessions_page.click_edit_gillick_competence()
-    verbal_consent_page.edit_gillick_competence(is_competent=False)
+    gillick_competence_page.edit_gillick_competence(is_competent=False)
 
 
 @issue("MAV-955")
 def test_gillick_competence_notes(
-    setup_fixed_child, schools, sessions_page, verbal_consent_page, children
+    setup_fixed_child, schools, sessions_page, gillick_competence_page, children
 ):
     """
     Test: Validate Gillick competence assessment notes length and update.
@@ -93,23 +93,23 @@ def test_gillick_competence_notes(
     sessions_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_page.navigate_to_gillick_competence(child, Programme.HPV)
 
-    verbal_consent_page.answer_gillick_competence_questions(is_competent=True)
-    verbal_consent_page.fill_assessment_notes_with_string_of_length(
+    gillick_competence_page.answer_gillick_competence_questions(is_competent=True)
+    gillick_competence_page.fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    verbal_consent_page.click_complete_assessment()
-    verbal_consent_page.check_notes_length_error_appears()
+    gillick_competence_page.click_complete_assessment()
+    gillick_competence_page.check_notes_length_error_appears()
 
-    verbal_consent_page.fill_assessment_notes("Gillick competent")
-    verbal_consent_page.click_complete_assessment()
+    gillick_competence_page.fill_assessment_notes("Gillick competent")
+    gillick_competence_page.click_complete_assessment()
 
     sessions_page.click_edit_gillick_competence()
-    verbal_consent_page.answer_gillick_competence_questions(is_competent=True)
-    verbal_consent_page.fill_assessment_notes_with_string_of_length(
+    gillick_competence_page.answer_gillick_competence_questions(is_competent=True)
+    gillick_competence_page.fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    verbal_consent_page.click_update_assessment()
-    verbal_consent_page.check_notes_length_error_appears()
+    gillick_competence_page.click_update_assessment()
+    gillick_competence_page.check_notes_length_error_appears()
 
 
 @pytest.mark.bug
@@ -117,7 +117,7 @@ def test_invalid_consent(
     setup_fixed_child,
     sessions_page,
     schools,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
 ):
     """
@@ -139,16 +139,16 @@ def test_invalid_consent(
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_no_response()
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_no_response()
 
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.select_parent(child.parents[1])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_refuse_consent()
+    nurse_consent_wizard_page.select_parent(child.parents[1])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_refuse_consent()
 
     sessions_page.select_consent_refused()
     sessions_page.click_child(child)
@@ -172,7 +172,7 @@ def test_parent_provides_consent_twice(
     setup_fixed_child,
     sessions_page,
     schools,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
 ):
     """
@@ -196,19 +196,21 @@ def test_parent_provides_consent_twice(
     sessions_page.select_no_response()
 
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
-    verbal_consent_page.record_parent_positive_consent(yes_to_health_questions=True)
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
+    nurse_consent_wizard_page.record_parent_positive_consent(
+        yes_to_health_questions=True
+    )
     sessions_page.select_consent_given_filters_for_programme(Programme.HPV)
 
     sessions_page.navigate_to_update_triage_outcome(child, Programme.HPV)
-    verbal_consent_page.update_triage_outcome_positive()
+    nurse_consent_wizard_page.update_triage_outcome_positive()
 
     sessions_page.click_record_a_new_consent_response()
 
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_refuse_consent()
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_refuse_consent()
 
     sessions_page.select_consent_refused()
 
@@ -230,7 +232,8 @@ def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child,
     sessions_page,
     schools,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
+    gillick_competence_page,
     children,
 ):
     """
@@ -256,16 +259,16 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.select_no_response()
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_positive_consent()
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_positive_consent()
 
     sessions_page.select_consent_given_filters_for_programme(Programme.HPV)
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
 
-    verbal_consent_page.select_parent(child.parents[1])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_refuse_consent()
+    nurse_consent_wizard_page.select_parent(child.parents[1])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_refuse_consent()
 
     sessions_page.select_conflicting_consent()
 
@@ -274,12 +277,12 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_page.expect_consent_status(Programme.HPV, "Conflicting consent")
     sessions_page.expect_conflicting_consent_text()
     sessions_page.click_assess_gillick_competence()
-    verbal_consent_page.add_gillick_competence(is_competent=True)
+    gillick_competence_page.add_gillick_competence(is_competent=True)
     sessions_page.click_record_a_new_consent_response()
 
-    verbal_consent_page.select_gillick_competent_child()
-    verbal_consent_page.record_child_positive_consent()
-    verbal_consent_page.expect_text_in_alert(f"Consent recorded for {child!s}")
+    nurse_consent_wizard_page.select_gillick_competent_child()
+    nurse_consent_wizard_page.record_child_positive_consent()
+    nurse_consent_wizard_page.expect_text_in_alert(f"Consent recorded for {child!s}")
 
     sessions_page.select_consent_given_filters_for_programme(Programme.HPV)
     sessions_page.click_child(child)
@@ -297,7 +300,7 @@ def test_accessibility(
     add_vaccine_batch,
     sessions_page,
     schools,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
     accessibility_helper,
     dashboard_page,
@@ -315,28 +318,28 @@ def test_accessibility(
     sessions_page.navigate_to_consent_response(child, Programme.HPV)
     accessibility_helper.check_accessibility()
 
-    verbal_consent_page.click_radio_button(child.parents[0].name_and_relationship)
-    verbal_consent_page.click_continue()
+    nurse_consent_wizard_page.click_radio_button(child.parents[0].name_and_relationship)
+    nurse_consent_wizard_page.click_continue()
 
     accessibility_helper.check_accessibility()
-    verbal_consent_page.click_continue()
+    nurse_consent_wizard_page.click_continue()
 
     accessibility_helper.check_accessibility()
 
-    verbal_consent_page.select_consent_method(ConsentMethod.PAPER)
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
     accessibility_helper.check_accessibility()
 
-    verbal_consent_page.click_yes_they_agree()
-    verbal_consent_page.click_continue()
+    nurse_consent_wizard_page.click_yes_they_agree()
+    nurse_consent_wizard_page.click_continue()
     accessibility_helper.check_accessibility()
 
-    verbal_consent_page.answer_all_health_questions(
+    nurse_consent_wizard_page.answer_all_health_questions(
         programme=Programme.HPV,
     )
-    verbal_consent_page.click_continue()
+    nurse_consent_wizard_page.click_continue()
     accessibility_helper.check_accessibility()
 
-    verbal_consent_page.click_confirm()
+    nurse_consent_wizard_page.click_confirm()
     accessibility_helper.check_accessibility()
 
     sessions_page.register_child_as_attending(child)

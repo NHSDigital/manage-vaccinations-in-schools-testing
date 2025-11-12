@@ -77,7 +77,7 @@ def test_delivering_vaccination_after_psd(
     setup_session_with_one_child,
     sessions_page,
     schools,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
     log_in_page,
     healthcare_assistant,
@@ -110,9 +110,9 @@ def test_delivering_vaccination_after_psd(
     sessions_page.search_child(child)
     sessions_page.click_programme_tab(Programme.FLU)
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_positive_consent(
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_positive_consent(
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION,
         psd_option=True,

@@ -69,7 +69,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 def test_tallying(
     setup_fixed_child,
     sessions_page,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
     schools,
 ):
@@ -91,9 +91,9 @@ def test_tallying(
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.PHONE)
-    verbal_consent_page.record_parent_positive_consent(
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
+    nurse_consent_wizard_page.record_parent_positive_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
 
@@ -105,11 +105,11 @@ def test_tallying(
     sessions_page.click_child(child)
     sessions_page.click_response_from_parent(child.parents[0])
     sessions_page.click_withdraw_consent()
-    verbal_consent_page.click_consent_refusal_reason(
+    nurse_consent_wizard_page.click_consent_refusal_reason(
         ConsentRefusalReason.PERSONAL_CHOICE
     )
-    verbal_consent_page.give_withdraw_consent_notes("notes")
-    verbal_consent_page.click_withdraw_consent()
+    nurse_consent_wizard_page.give_withdraw_consent_notes("notes")
+    nurse_consent_wizard_page.click_withdraw_consent()
     sessions_page.click_back()
     sessions_page.go_back_to_session_for_school(school)
 
@@ -128,9 +128,9 @@ def test_tallying(
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
-    verbal_consent_page.select_parent(child.parents[1])
-    verbal_consent_page.select_consent_method(ConsentMethod.PHONE)
-    verbal_consent_page.record_parent_positive_consent(
+    nurse_consent_wizard_page.select_parent(child.parents[1])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
+    nurse_consent_wizard_page.record_parent_positive_consent(
         yes_to_health_questions=False,
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY,
