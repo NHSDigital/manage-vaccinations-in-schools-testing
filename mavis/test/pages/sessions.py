@@ -282,6 +282,7 @@ class SessionsPage:
         self,
         programme: Programme,
     ) -> None:
+        self.page.wait_for_load_state()
         if programme is not Programme.FLU:
             for locator in [
                 self.consent_given_for_injected_vaccine_checkbox,

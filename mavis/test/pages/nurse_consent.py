@@ -11,7 +11,7 @@ from mavis.test.models import (
 from mavis.test.utils import generate_random_string
 
 
-class VerbalConsentPage:
+class NurseConsentWizardPage:
     def __init__(self, page: Page) -> None:
         self.page = page
 
@@ -65,21 +65,6 @@ class VerbalConsentPage:
         self.online_flu_agree_injection_radio = self.page.get_by_role(
             "radio",
             name="Yes, for the injected vaccine only",
-        )
-        self.assessment_notes_textbox = self.page.get_by_role(
-            "textbox",
-            name="Assessment notes (optional)",
-        )
-        self.complete_assessment_button = self.page.get_by_role(
-            "button",
-            name="Complete your assessment",
-        )
-        self.update_assessment_button = self.page.get_by_role(
-            "button",
-            name="Update your assessment",
-        )
-        self.notes_length_error = (
-            page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
         self.withdraw_consent_button = self.page.get_by_role(
             "button", name="Withdraw consent"
@@ -291,6 +276,32 @@ class VerbalConsentPage:
         self.click_save_triage()
         self.expect_text_in_alert("Triage outcome updated")
 
+    def click_withdraw_consent(self) -> None:
+        self.withdraw_consent_button.click()
+
+    def give_withdraw_consent_notes(self, notes: str) -> None:
+        self.withdraw_consent_notes_textbox.fill(notes)
+
+
+class GillickCompetencePage:
+    def __init__(self, page: Page) -> None:
+        self.page = page
+        self.assessment_notes_textbox = self.page.get_by_role(
+            "textbox",
+            name="Assessment notes (optional)",
+        )
+        self.complete_assessment_button = self.page.get_by_role(
+            "button",
+            name="Complete your assessment",
+        )
+        self.update_assessment_button = self.page.get_by_role(
+            "button",
+            name="Update your assessment",
+        )
+        self.notes_length_error = (
+            page.locator("div").filter(has_text="There is a problemEnter").nth(3)
+        )
+
     @step("Add Gillick competence details")
     def add_gillick_competence(
         self,
@@ -369,9 +380,3 @@ class VerbalConsentPage:
     def fill_assessment_notes_with_string_of_length(self, length: int) -> None:
         notes = generate_random_string(target_length=length, generate_spaced_words=True)
         self.fill_assessment_notes(notes)
-
-    def click_withdraw_consent(self) -> None:
-        self.withdraw_consent_button.click()
-
-    def give_withdraw_consent_notes(self, notes: str) -> None:
-        self.withdraw_consent_notes_textbox.fill(notes)

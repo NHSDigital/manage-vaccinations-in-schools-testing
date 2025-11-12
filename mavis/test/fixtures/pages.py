@@ -18,11 +18,13 @@ from mavis.test.pages import (
     EditBatchPage,
     EditVaccinationRecordPage,
     FlipperPage,
+    GillickCompetencePage,
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
     LogOutPage,
     MatchConsentResponsePage,
+    NurseConsentWizardPage,
     OnlineConsentPage,
     ProgrammeChildrenPage,
     ProgrammeOverviewPage,
@@ -38,7 +40,6 @@ from mavis.test.pages import (
     UnmatchedConsentResponsesPage,
     VaccinationRecordPage,
     VaccinesPage,
-    VerbalConsentPage,
 )
 
 
@@ -117,6 +118,11 @@ def edit_vaccination_record_page(page: Page) -> EditVaccinationRecordPage:
 @pytest.fixture
 def flipper_page(page: Page) -> FlipperPage:
     return FlipperPage(page)
+
+
+@pytest.fixture
+def gillick_competence_page(page: Page) -> GillickCompetencePage:
+    return GillickCompetencePage(page)
 
 
 @pytest.fixture
@@ -217,8 +223,8 @@ def vaccines_page(page: Page) -> VaccinesPage:
 
 
 @pytest.fixture
-def verbal_consent_page(page: Page) -> VerbalConsentPage:
-    return VerbalConsentPage(page)
+def nurse_consent_wizard_page(page: Page) -> NurseConsentWizardPage:
+    return NurseConsentWizardPage(page)
 
 
 @pytest.fixture

@@ -58,7 +58,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     schools,
     dashboard_page,
     sessions_page,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
 ):
     """
@@ -104,9 +104,9 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
 
             sessions_page.click_programme_tab(programme)
             sessions_page.click_record_a_new_consent_response()
-            verbal_consent_page.select_parent(child.parents[0])
-            verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-            verbal_consent_page.record_parent_positive_consent(
+            nurse_consent_wizard_page.select_parent(child.parents[0])
+            nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+            nurse_consent_wizard_page.record_parent_positive_consent(
                 programme=programme,
                 consent_option=consent_option,
             )
