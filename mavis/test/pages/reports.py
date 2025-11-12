@@ -1,7 +1,6 @@
 import os
 import re
 import time
-from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import pandas as pd
@@ -67,7 +66,10 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
     def check_cohort_has_n_children(self, expected_value: int) -> None:
         cohort_heading = self.page.get_by_role("heading", name="Cohort", exact=True)
         cohort_value = cohort_heading.locator("xpath=following-sibling::*[1]")
-        expect(cohort_value).to_contain_text(f"{expected_value}children")
+        if expected_value == 1:
+            expect(cohort_value).to_contain_text(f"{expected_value}child")
+        else:
+            expect(cohort_value).to_contain_text(f"{expected_value}children")
 
     @step("Check category {1} percentage is {2}%")
     def check_category_percentage(
@@ -97,12 +99,8 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         total = unvaccinated_count + vaccinated_count
         if total == 0:
             return "0", "0", "0"
-        unvaccinated_pct = Decimal(100 * unvaccinated_count / total).quantize(
-            Decimal("0.1"), rounding=ROUND_HALF_UP
-        )
-        vaccinated_pct = Decimal(100 * vaccinated_count / total).quantize(
-            Decimal("0.1"), rounding=ROUND_HALF_UP
-        )
+        unvaccinated_pct = round(100 * unvaccinated_count / total, 1)
+        vaccinated_pct = round(100 * vaccinated_count / total, 1)
         return str(total), str(unvaccinated_pct), str(vaccinated_pct)
 
 
