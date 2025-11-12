@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jre-jammy
+FROM eclipse-temurin:25-jdk-jammy
 
 ENV JMETER_VERSION=5.6.3 \
     CMDRUNNER_VERSION=2.3 \
