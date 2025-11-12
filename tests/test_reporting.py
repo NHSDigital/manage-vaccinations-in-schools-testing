@@ -4,6 +4,8 @@ from mavis.test.models import (
     Programme,
 )
 
+pytestmark = pytest.mark.reporting
+
 
 @pytest.fixture
 def upload_offline_vaccination_injected_flu(

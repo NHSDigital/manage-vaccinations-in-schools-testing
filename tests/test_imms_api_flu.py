@@ -9,6 +9,8 @@ from mavis.test.models import (
 )
 from mavis.test.utils import get_current_datetime, random_datetime_earlier_today
 
+pytestmark = pytest.mark.imms_api
+
 
 @pytest.fixture(scope="session")
 def imms_api_helper(authenticate_api):
