@@ -18,10 +18,10 @@ on:
         required: true
         default: FLU,HPV,MENACWY,MMR,TD_IPV
         type: string
-      environment:
-        description: 'Environment to run tests on'
+      endpoint:
+        description: 'Environment to run tests against'
         required: true
-        default: 'qa'
+        default: 'https://qa.mavistesting.com'
         type: string
       screenshot_all_steps:
         description: 'Take screenshots for all steps (in addition to failures)'
@@ -159,20 +159,24 @@ jobs:
             echo "enable_reruns=true" >> $GITHUB_OUTPUT
             echo "test_workers=4" >> $GITHUB_OUTPUT
           else
-            echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
-            echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
+            echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
+            echo "device=${{ inputs.device }}" >> $GITHUB_OUTPUT
+          
+            input_env="${{ inputs.environment }}"
+            if [ -n "$input_env" ]; then
+              url="${env_map[$input_env]:-${env_map[qa]}}"
+              echo "environment=$url" >> $GITHUB_OUTPUT
+            else
+              echo "environment=${{ inputs.endpoint }}" >> $GITHUB_OUTPUT
+            fi
 
-            input_env="${{ github.event.inputs.environment }}"
-            url="${env_map[$input_env]:-${env_map[qa]}}"
-            echo "environment=$url" >> $GITHUB_OUTPUT
-
-            echo "programmes=${{ github.event.inputs.programmes }}" >> $GITHUB_OUTPUT
-            echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
-            echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "programmes=${{ inputs.programmes }}" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=${{ inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=${{ inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
-            echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
-            echo "enable_reruns=${{ github.event.inputs.enable_reruns }}" >> $GITHUB_OUTPUT
-            echo "test_workers=${{ github.event.inputs.test_workers }}" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=${{ inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
+            echo "enable_reruns=${{ inputs.enable_reruns }}" >> $GITHUB_OUTPUT
+            echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v6
