@@ -18,7 +18,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 WORKDIR /opt
 
 # Install JMeter
-RUN curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
+RUN curl -sSO https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
     && tar xzf apache-jmeter-${JMETER_VERSION}.tgz \
     && mv apache-jmeter-${JMETER_VERSION} jmeter \
     && rm apache-jmeter-${JMETER_VERSION}.tgz
