@@ -1,5 +1,5 @@
 name: Performance
-run-name: Performance test against ${{ inputs.BaseURL }} for URN ${{ inputs.URN }}
+run-name: Performance test against ${{ inputs.BaseURL }}
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
 
   workflow_dispatch:
     inputs:
-      runImport:
-        description: "Create and import a cohort (not needed if there are already enough patients)"
+      AddNewSession:
+        description: "Add a new session date (not needed if there are already enough patients)"
         required: true
         type: boolean
-        default: false
+        default: true
       runConsent:
         description: "Run consent journey"
         required: true
@@ -23,10 +23,6 @@ on:
         required: true
         type: boolean
         default: true
-      URN:
-        description: "Required: what URN to run the test against."
-        required: true
-        type: string
       duration:
         description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
         required: false
@@ -42,16 +38,11 @@ on:
         required: false
         type: number
         default: 900
-      row_count:
-        description: "Optional (default 1000) number of rows in the cohort file."
-        required: false
-        type: number
-        default: 1000
       user:
         description: "Optional (default Nurse perftest) user."
         required: true
         type: string
-        default: 'nurse.perftest@example.com'
+        default: 'nurse.perf2test@example.com'
       BaseURL:
         description: "Optional (default qa.mavistesting.com) URL"
         required: true
@@ -131,7 +122,7 @@ jobs:
       contents: write
     timeout-minutes: 180
     env:
-      RESULT_PATH: ${{ inputs.URN }}/${{ github.run_number }}
+      RESULT_PATH: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@v5
       - name: Set timestamp
@@ -149,17 +140,15 @@ jobs:
           container-name: "performancetest-container"
           image: "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
           environment-variables: |
-            RUN_IMPORT=${{ inputs.runImport }}
+            ADD_NEW_SESSION=${{ inputs.AddNewSession }}
             RUN_CONSENT=${{ inputs.runConsent }}
             RUN_NURSE=${{ inputs.runNurse }}
             RESULT_PATH=${{ env.RESULT_PATH }}
-            URN=${{ inputs.URN }}
             BASE_URL=${{ inputs.BaseURL }}
             USER=${{ inputs.user }}
             DURATION=${{ inputs.duration }}
             THREADS=${{ inputs.threads }}
             RAMP_UP=${{ inputs.ramp_up }}
-            ROW_COUNT=${{ inputs.row_count }}
           secrets: |
             AUTH_TOKEN=arn:aws:secretsmanager:eu-west-2:393416225559:secret:performancetest/auth-token
       - name: Register task definition
@@ -269,7 +258,7 @@ jobs:
         run: |
           echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **URN:** ${{ inputs.URN }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **BaseURL:** ${{ inputs.BaseURL }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Test Logs:** $CLOUDWATCH_URL" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
