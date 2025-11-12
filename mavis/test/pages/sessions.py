@@ -1110,20 +1110,26 @@ class SessionsPage:
     def click_back_to_record_vaccinations(self) -> None:
         self.record_vaccinations_breadcrumb.click()
 
-    def check_tally_for_category(self, programme: Programme, category: str) -> None:
-        self.click_overview_tab()
-        for programme_category in programme.tally_categories:
-            if programme_category == category:
-                assert self.get_total_for_category(programme_category) == 1
-            else:
-                assert self.get_total_for_category(programme_category) == 0
-
     def get_total_for_category(self, category: str) -> int:
         category_locator = self.page.locator(
             ".nhsuk-card__heading.nhsuk-heading-xs", has_text=category
         )
         total_locator = category_locator.locator("xpath=following-sibling::*[1]")
         return int(total_locator.inner_text())
+
+    def get_all_totals(self, programme: Programme) -> dict[str, int]:
+        return {
+            category: self.get_total_for_category(category)
+            for category in programme.tally_categories
+        }
+
+    def check_all_totals(self, totals: dict[str, int]) -> None:
+        self.click_overview_tab()
+        for category, expected_total in totals.items():
+            actual_total = self.get_total_for_category(category)
+            assert actual_total == expected_total, (
+                f"Expected {expected_total} for {category}, but got {actual_total}"
+            )
 
     @step("Click response from {1}")
     def click_response_from_parent(self, parent: Parent) -> None:
