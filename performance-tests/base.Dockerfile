@@ -23,21 +23,37 @@ RUN curl -sSO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JM
     && mv apache-jmeter-${JMETER_VERSION} jmeter \
     && rm apache-jmeter-${JMETER_VERSION}.tgz
 
+# Install Command Runner    
 RUN curl -sSO --output-dir ${JMETER_HOME}/lib \
     https://repo1.maven.org/maven2/kg/apc/cmdrunner/${CMDRUNNER_VERSION}/cmdrunner-${CMDRUNNER_VERSION}.jar
 
+# Install jmeter plugins    
 RUN curl -LsS --output ${JMETER_HOME}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGINS_MANAGER_VERSION}.jar \
     https://jmeter-plugins.org/get/ \
     && java -cp ${JMETER_HOME}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGINS_MANAGER_VERSION}.jar \
     org.jmeterplugins.repository.PluginManagerCMDInstaller \
     && chmod +x ${JMETER_HOME}/bin/PluginsManagerCMD.sh
 
+# Set default logging level    
 RUN sed -i '/<Logger name="org.apache.jmeter.junit" level="debug" \/>/a \    <Logger name="org.apache.jmeter.protocol.http.sampler.HTTPSamplerBase" level="info" additivity="false"\/>' \
     ${JMETER_HOME}/bin/log4j2.xml
 
 # Install JMeter plugins
 RUN echo "${JMETER_PLUGINS}" | tr ',' '\n' | \
     parallel -j 5 "${JMETER_HOME}/bin/PluginsManagerCMD.sh install {}"
+
+# Install Tika
+RUN curl -sSO --output-dir ${JMETER_HOME}/lib https://repo1.maven.org/maven2/org/apache/tika/tika-app/1.28.5/tika-app-1.28.5.jar
+
+# Set STS to startup by default
+RUN sed -i '$ajmeterPlugin.sts.loadAndRunOnStartup=true \njmeterPlugin.sts.port=9191 \njmeterPlugin.sts.daemon=false \njsr223.init.file=/opt/jmeter/bin/simple-table-server.groovy' ${JMETER_HOME}/bin/user.properties
+
+# Set report defaults
+RUN sed -i '$ajmeter.reportgenerator.report_title="MAVIS test report" \njmeter.reportgenerator.overall_granularity=10000 \njmeter.reportgenerator.sample_filter="^.*[^0-9]$"' ${JMETER_HOME}/bin/user.properties
+
+# Create blank data files for STS
+RUN touch ${JMETER_HOME}/consents.txt \
+    touch ${JMETER_HOME}/vaccinations.txt
 
 ENTRYPOINT ["/bin/bash"]
 

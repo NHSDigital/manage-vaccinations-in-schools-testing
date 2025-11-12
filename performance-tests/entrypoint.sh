@@ -2,11 +2,6 @@
 set -e
 
 # Validate required parameters
-if [ -z "$URN" ]; then
-    echo "Error: URN is required"
-    exit 1
-fi
-
 if [ -z "$AUTH_TOKEN" ]; then
     echo "Error: AUTH_TOKEN is required"
     exit 1
@@ -20,16 +15,14 @@ fi
 echo "==================================="
 echo "Starting Performance Test"
 echo "==================================="
-echo "Run Import: $RUN_IMPORT"
+echo "Add New Session: $ADD_NEW_SESSION"
 echo "Run Consent: $RUN_CONSENT"
 echo "Run Nurse: $RUN_NURSE"
-echo "URN: $URN"
 echo "BaseURL: $BASE_URL"
 echo "User: $USER"
 echo "Duration: $DURATION seconds"
 echo "Threads: $THREADS"
 echo "Ramp Up: $RAMP_UP seconds"
-echo "Row Count: $ROW_COUNT"
 echo "Result Path: $RESULT_PATH"
 echo "==================================="
 
@@ -39,44 +32,7 @@ mkdir -p /output/import
 mkdir -p /output/consent
 mkdir -p /output/nurse
 
-# Step 1: Generate cohort file
-if [ "$RUN_IMPORT" = true ]; then
-    echo "Step 1: Generating cohort file..."
-    jmeter -n -t STS/generate-cohort.jmx \
-        -l /output/generate-cohort/samples.jtl \
-        -j /output/generate-cohort/jmeter.log \
-        -e -o /output/generate-cohort/report \
-        -JAuthToken="$AUTH_TOKEN" \
-        -JURN="$URN" \
-        -JBaseURL="$BASE_URL" \
-        -JRowCount="$ROW_COUNT"
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to generate cohort file"
-        exit 1
-    fi
-    echo "Cohort file generated successfully"
-fi
-
-# Step 2: Import cohort file
-if [ "$RUN_IMPORT" = true ]; then
-    echo "Step 2: Importing cohort file..."
-    jmeter -n -t STS/upload-cohort-data.jmx \
-        -l /output/import/samples.jtl \
-        -j /output/import/jmeter.log \
-        -e -o /output/import/report \
-        -JAuthToken="$AUTH_TOKEN" \
-        -JUser="$USER" \
-        -JBaseURL="$BASE_URL" \
-        -JInputFile="cohortnew.csv"
-
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to import cohort file"
-        exit 1
-    fi
-    echo "Cohort file imported successfully"
-fi
-
-# Step 3: Run the selected tests
+# Step 1: Run the selected tests
 if [ "$RUN_CONSENT" = true ]; then
     echo "Running Consent Journey test..."
     jmeter -n -t STS/consent-journey.jmx \
@@ -93,7 +49,8 @@ if [ "$RUN_CONSENT" = true ]; then
         -JDuration="$DURATION" \
         -JUser="$USER" \
         -JBaseURL="$BASE_URL" \
-        -JURN="$URN"
+        -JAddNewSession="$ADD_NEW_SESSION"
+
     if [ $? -ne 0 ]; then
         echo "Error: Consent Journey test failed"
         exit 1
@@ -115,8 +72,7 @@ if [ "$RUN_NURSE" = true ]; then
         -JThreads="$THREADS" \
         -JRampUp="$RAMP_UP" \
         -JUser="$USER" \
-        -JBaseURL="$BASE_URL" \
-        -JURN="$URN"
+        -JBaseURL="$BASE_URL"
     if [ $? -ne 0 ]; then
         echo "Error: Nurse Journey test failed"
         exit 1
