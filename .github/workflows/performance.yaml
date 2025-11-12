@@ -197,11 +197,17 @@ jobs:
             --output text)
           
           echo "task_arn=$task_arn" >> $GITHUB_OUTPUT
+          echo "test_start_time=$(date +%s)000" >> $GITHUB_ENV
           echo "Started task: $task_arn"
       - name: Wait for performance test to complete
+        id: wait-for-completion
         run: |
           #TODO: Add link to cloudwatch here
-          echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"          
+          echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"
+          TASK_ID=$(sed 's:^.*/::' <<< ${{ steps.run-task.outputs.task_arn }})
+          CLOUDWATCH_URL="https://eu-west-2.console.aws.amazon.com/cloudwatch/home?region=eu-west-2#logsV2:log-groups/log-group/assurance-testing-ecs/log-events/assurance-testing-logs\$252Fperformancetest-container\$252F${TASK_ID}\$3Fstart\$3D${test_start_time}\$26end\$3D$(date -d '+1 hour + 15 minutes' +%s)000"
+          echo "Performance test logs: $CLOUDWATCH_URL"
+          echo "CLOUDWATCH_URL=$CLOUDWATCH_URL" >> $GITHUB_ENV
           while true; do
             task_status=$(aws ecs describe-tasks \
               --cluster assurance-testing \
@@ -265,5 +271,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **URN:** ${{ inputs.URN }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Logs:** $CLOUDWATCH_URL" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 View Test Report: https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/" >> $GITHUB_STEP_SUMMARY
