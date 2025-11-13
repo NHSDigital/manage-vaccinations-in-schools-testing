@@ -938,6 +938,9 @@ class SessionsPage:
     def register_child_as_attending(self, child: Child) -> None:
         self.click_register_tab()
         self.search_for(str(child))
+        reload_until_element_is_visible(
+            self.page, self.page.get_by_role("link", name=str(child)).first
+        )
         self.click_on_attending()
 
     def verify_search(self) -> None:
