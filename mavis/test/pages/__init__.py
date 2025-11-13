@@ -27,7 +27,20 @@ from .programmes import (
 )
 from .reports import ReportsDownloadPage, ReportsVaccinationsPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
-from .sessions import SessionsPage
+from .sessions import (
+    SessionsChildrenPage,
+    SessionsConsentPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsPatientSessionActivityPage,
+    SessionsPsdPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsTriagePage,
+    SessionsVaccinationWizardPage,
+)
 from .start import StartPage
 from .team import TeamPage
 from .vaccination_record import EditVaccinationRecordPage, VaccinationRecordPage
@@ -67,7 +80,18 @@ __all__ = [
     "ReportsVaccinationsPage",
     "ReviewSchoolMovePage",
     "SchoolMovesPage",
-    "SessionsPage",
+    "SessionsChildrenPage",
+    "SessionsConsentPage",
+    "SessionsEditPage",
+    "SessionsOverviewPage",
+    "SessionsPatientPage",
+    "SessionsPatientSessionActivityPage",
+    "SessionsPsdPage",
+    "SessionsRecordVaccinationsPage",
+    "SessionsRegisterPage",
+    "SessionsSearchPage",
+    "SessionsTriagePage",
+    "SessionsVaccinationWizardPage",
     "StartPage",
     "TeamPage",
     "UnmatchedConsentResponsesPage",

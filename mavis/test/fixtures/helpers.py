@@ -48,22 +48,20 @@ def schedule_session_and_get_consent_url(
     sessions_page,
 ):
     def wrapper(school: School, *programmes: Programme):
-        try:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            dashboard_page.click_sessions()
-            sessions_page.ensure_session_scheduled_for_next_week(
-                school, programmes[0].group
+        log_in_page.navigate()
+        log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+        dashboard_page.click_sessions()
+        sessions_search_page.click_session_for_programme_group(
+            school, programmes[0].group
+        )
+        if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
+            sessions_overview_page.schedule_or_edit_session()
+            sessions_edit_page.schedule_a_valid_session(
+                offset_days=7, skip_weekends=False
             )
-            url = sessions_page.get_online_consent_url(*programmes)
-            log_in_page.log_out()
-            yield url
-        finally:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(school)
-            log_in_page.log_out()
+        url = sessions_page.get_online_consent_url(*programmes)
+        log_in_page.log_out()
+        yield url
 
     return wrapper
 
@@ -83,16 +81,12 @@ def schedule_mmr_session_and_get_consent_url(
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, programmes[0].group)
+            sessions_overview_page.schedule_or_edit_session()
             sessions_page.schedule_a_valid_mmr_session()
             url = sessions_page.get_online_consent_url(*programmes)
             log_in_page.log_out()
             yield url
         finally:
-            log_in_page.log_out()
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(school)
             log_in_page.log_out()
 
     return wrapper
@@ -161,44 +155,39 @@ def upload_offline_vaccination(
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
 
-        try:
-            dashboard_page.click_sessions()
-            sessions_page.ensure_session_scheduled_for_today(
-                school,
-                programme,
+        sessions_search_page.click_session_for_programme_group(school, programme.group)
+        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
+            sessions_overview_page.schedule_or_edit_session()
+            sessions_edit_page.schedule_a_valid_session(
+                offset_days=0, skip_weekends=False
             )
-            sessions_page.click_import_class_lists()
-            import_records_wizard_page.import_class_list(
-                ClassFileMapping.FIXED_CHILD,
-                child.year_group,
-                programme.group,
-            )
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
-            sessions_page.click_session_for_programme_group(school, programme)
-            session_id = sessions_page.get_session_id_from_offline_excel()
-            dashboard_page.click_mavis()
-            dashboard_page.click_import_records()
-            imports_page.click_import_records()
-            import_records_wizard_page.navigate_to_vaccination_records_import()
-            import_records_wizard_page.upload_and_verify_output(
-                file_mapping=vaccs_file,
-                session_id=session_id,
-                programme_group=programme.group,
-            )
-            dashboard_page.click_mavis()
-            dashboard_page.click_programmes()
-            programmes_list_page.click_programme_for_current_year(programme)
-            programme_overview_page.click_children_tab()
-            programme_children_page.search_for_child(child)
-            programme_children_page.click_child(child)
-            child_record_page.click_vaccination_details(programme)
-            yield
-        finally:
-            dashboard_page.navigate()
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(school)
+        sessions_page.click_import_class_lists()
+        import_records_wizard_page.import_class_list(
+            ClassFileMapping.FIXED_CHILD,
+            child.year_group,
+            programme.group,
+        )
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_page.click_session_for_programme_group(school, programme)
+        session_id = sessions_page.get_session_id_from_offline_excel()
+        dashboard_page.click_mavis()
+        dashboard_page.click_import_records()
+        imports_page.click_import_records()
+        import_records_wizard_page.navigate_to_vaccination_records_import()
+        import_records_wizard_page.upload_and_verify_output(
+            file_mapping=vaccs_file,
+            session_id=session_id,
+            programme_group=programme.group,
+        )
+        dashboard_page.click_mavis()
+        dashboard_page.click_programmes()
+        programmes_list_page.click_programme_for_current_year(programme)
+        programme_overview_page.click_children_tab()
+        programme_children_page.search_for_child(child)
+        programme_children_page.click_child(child)
+        child_record_page.click_vaccination_details(programme)
+        yield
 
     return wrapper
 
