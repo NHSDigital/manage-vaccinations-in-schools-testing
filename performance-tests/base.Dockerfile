@@ -52,7 +52,7 @@ RUN sed -i '$ajmeterPlugin.sts.loadAndRunOnStartup=true \njmeterPlugin.sts.port=
 RUN sed -i '$ajmeter.reportgenerator.report_title="MAVIS test report" \njmeter.reportgenerator.overall_granularity=10000 \njmeter.reportgenerator.sample_filter="^.*[^0-9]$"' ${JMETER_HOME}/bin/user.properties
 
 # Create blank data files for STS
-RUN cd /opt/jmeter && touch consents.txt && touch vaccinations.txt
+RUN cd /opt/jmeter/bin && touch consents.txt && touch vaccinations.txt
 
 ENTRYPOINT ["/bin/bash"]
 
