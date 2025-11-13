@@ -57,4 +57,4 @@ RUN cd /opt/jmeter && touch consents.txt && touch /vaccinations.txt
 ENTRYPOINT ["/bin/bash"]
 
 # Mount directories as volumes to make them writeable
-VOLUME [ "/output", "/performance-tests/temp", "/opt/jmeter" ]
+VOLUME [ "/output", "/performance-tests/temp", "/opt/jmeter", "/root/.java" ]
