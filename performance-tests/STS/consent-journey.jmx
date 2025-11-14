@@ -86,7 +86,7 @@
           </elementProp>
           <elementProp name="AddNewSession" elementType="Argument">
             <stringProp name="Argument.name">AddNewSession</stringProp>
-            <stringProp name="Argument.value">${__P(AddNewSession,False)}</stringProp>
+            <stringProp name="Argument.value">${__P(AddNewSession,True)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -139,6 +139,22 @@ URN	${__P(URN, 137390)}	</stringProp>
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">log.info(vars.get(&quot;AuthToken&quot;))
+log.info(vars.get(&quot;Loops&quot;))
+log.info(vars.get(&quot;Threads&quot;))
+log.info(vars.get(&quot;RampUp&quot;))
+log.info(vars.get(&quot;Duration&quot;))
+log.info(vars.get(&quot;User&quot;))
+log.info(vars.get(&quot;ConsentThreads&quot;))
+log.info(vars.get(&quot;BaseURL&quot;))
+log.info(vars.get(&quot;AddNewSession&quot;))</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="1.0 Prep" enabled="false">
           <stringProp name="TestPlan.comments">Login, get all sessions for a particular URN, set them all in progress</stringProp>
           <boolProp name="TransactionController.includeTimers">false</boolProp>
@@ -1152,13 +1168,13 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
             <hashTree/>
           </hashTree>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller">
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
           <stringProp name="IfController.condition">${__jexl3(&quot;${AddNewSession}&quot; == &quot;True&quot;)}</stringProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Add New Session">
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Add New Session" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="764597751">Test Plan</stringProp>
               <stringProp name="764597751">Test Plan</stringProp>
@@ -1167,7 +1183,7 @@ log.info(&quot;Total Consents found: &quot; + consentCount.toString());
           </ModuleController>
           <hashTree/>
         </hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients" enabled="true">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -1368,13 +1384,13 @@ vars.get(&quot;VaccineCount_td_ipv&quot;,props.get(&quot;VaccineCount_td_ipv&quo
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server">
+      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server" enabled="true">
         <stringProp name="HttpSimpleTableControlGui.port">9191</stringProp>
         <boolProp name="HttpSimpleTableControlGui.timestamp">true</boolProp>
         <stringProp name="HttpSimpleTableControlGui.dir">C:\apache-jmeter-5.6.3\bin</stringProp>
       </org.jmeterplugins.protocol.http.control.HttpSimpleTableControl>
       <hashTree/>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -1732,7 +1748,7 @@ without actual network activity. This helps debugging tests.</stringProp>
             <stringProp name="script">log.info(&quot;Currently working with &quot; + vars.get(&quot;CurrentSessionID&quot;))</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Individual session (keep for when tallying is activated)">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Individual session (keep for when tallying is activated)" enabled="true">
             <boolProp name="HTTPSampler.image_parser">true</boolProp>
             <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
             <intProp name="HTTPSampler.concurrentPool">6</intProp>
@@ -6343,7 +6359,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
 </stringProp>
       </TestFragmentController>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="New session Homepage">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="New session Homepage" enabled="true">
           <stringProp name="HTTPSampler.path">start</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -6363,7 +6379,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="New session Sign-in page">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="New session Sign-in page" enabled="true">
           <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -6393,7 +6409,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="New session Sign-in">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="New session Sign-in" enabled="true">
           <stringProp name="HTTPSampler.path">users/sign-in</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -6464,7 +6480,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
           </BoundaryExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions page">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions page" enabled="true">
           <stringProp name="HTTPSampler.path">sessions</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -6505,7 +6521,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Unscheduled sessions">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Unscheduled sessions" enabled="true">
           <stringProp name="HTTPSampler.path">sessions?q=&amp;%5Bprogrammes%5D%5B%5D=&amp;status=unscheduled&amp;type= </stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -6524,7 +6540,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
             <stringProp name="script">prev.setIgnore()</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get school name">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get school name" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">SchoolName</stringProp>
             <stringProp name="RegexExtractor.regex">href=&quot;\/sessions\/.*?&quot;&gt;(.*?)&lt;\/a&gt;</stringProp>
@@ -6545,7 +6561,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Unscheduled sessions for a particular school">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Unscheduled sessions for a particular school" enabled="true">
           <stringProp name="HTTPSampler.path">sessions?q=${SchoolName}&amp;%5Bprogrammes%5D%5B%5D=&amp;status=unscheduled&amp;type= </stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -6574,7 +6590,7 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
             <stringProp name="RegexExtractor.match_number">-1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">SessionID</stringProp>
             <stringProp name="RegexExtractor.regex">sessions\/(.*?)&quot;[\s\S]{1,500}&gt;\d*? children[\s\S]{1,400}nhsuk-tag nhsuk-tag--white&quot;&gt;(.*?)&lt;</stringProp>
@@ -6586,20 +6602,20 @@ Grab the three session ID&apos;s and use &apos;set session date and in progress&
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler">
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
           <boolProp name="displayJMeterProperties">false</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
           <boolProp name="displaySystemProperties">false</boolProp>
         </DebugSampler>
         <hashTree/>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
           <stringProp name="ForeachController.inputVal">SessionID</stringProp>
           <stringProp name="ForeachController.returnVal">CurrentSessionID</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
           <stringProp name="ForeachController.endIndex">2</stringProp>
         </ForeachController>
         <hashTree>
-          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Module Controller for ${CurrentSessionID}">
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Module Controller for ${CurrentSessionID}" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="764597751">Test Plan</stringProp>
               <stringProp name="764597751">Test Plan</stringProp>
