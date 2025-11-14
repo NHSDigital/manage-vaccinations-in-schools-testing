@@ -256,10 +256,24 @@ jobs:
           keep_files: true
       - name: Set Job Summary
         run: |
+          # Extract task ID from task ARN
+          TASK_ARN="${{ steps.run-task.outputs.task_arn }}"
+          TASK_ID=$(echo $TASK_ARN | awk -F/ '{print $NF}')
+          
+          # Construct CloudWatch Logs URL
+          LOG_GROUP="/ecs/performancetest-task-definition"
+          LOG_STREAM="ecs/performancetest-container/${TASK_ID}"
+          # URL encode the log group and stream names
+          ENCODED_LOG_GROUP=$(echo "$LOG_GROUP" | sed 's/\//%252F/g')
+          ENCODED_LOG_STREAM=$(echo "$LOG_STREAM" | sed 's/\//%252F/g')
+          CLOUDWATCH_URL="https://eu-west-2.console.aws.amazon.com/cloudwatch/home?region=eu-west-2#logsV2:log-groups/log-group/${ENCODED_LOG_GROUP}/log-events/${ENCODED_LOG_STREAM}"
+          
           echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **BaseURL:** ${{ inputs.BaseURL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URN:** ${{ inputs.URN }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Test Logs:** $CLOUDWATCH_URL" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 View Test Report: https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View Test Report](https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📋 [View CloudWatch Logs](${CLOUDWATCH_URL})" >> $GITHUB_STEP_SUMMARY
