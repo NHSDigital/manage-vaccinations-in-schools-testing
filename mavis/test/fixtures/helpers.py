@@ -132,13 +132,14 @@ def upload_offline_vaccination(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    import_records_page,
+    import_records_wizard_page,
     sessions_page,
     programmes_list_page,
     programme_children_page,
     programme_overview_page,
     child_record_page,
     children,
+    imports_page,
 ):
     def wrapper(
         programme: Programme, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -154,6 +155,8 @@ def upload_offline_vaccination(
                 if consent_option is ConsentOption.INJECTION
                 else VaccsFileMapping.FLU_NASAL
             )
+        elif programme is Programme.MMR:
+            vaccs_file = VaccsFileMapping.MMR_DOSE_ONE
         else:
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
@@ -165,7 +168,7 @@ def upload_offline_vaccination(
                 programme,
             )
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,
                 programme.group,
@@ -176,8 +179,9 @@ def upload_offline_vaccination(
             session_id = sessions_page.get_session_id_from_offline_excel()
             dashboard_page.click_mavis()
             dashboard_page.click_import_records()
-            import_records_page.navigate_to_vaccination_records_import()
-            import_records_page.upload_and_verify_output(
+            imports_page.click_import_records()
+            import_records_wizard_page.navigate_to_vaccination_records_import()
+            import_records_wizard_page.upload_and_verify_output(
                 file_mapping=vaccs_file,
                 session_id=session_id,
                 programme_group=programme.group,
@@ -205,7 +209,7 @@ def setup_session_and_batches_with_fixed_child(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_page,
+    import_records_wizard_page,
     children,
     log_in_page,
     nurse,
@@ -227,7 +231,7 @@ def setup_session_and_batches_with_fixed_child(
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, programme_group)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,
                 programme_group,

@@ -16,7 +16,7 @@ def setup_session_with_file_upload(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_page,
+    import_records_wizard_page,
     year_groups,
     add_vaccine_batch,
 ):
@@ -35,7 +35,7 @@ def setup_session_with_file_upload(
             dashboard_page.click_sessions()
             sessions_page.click_session_for_programme_group(school, Programme.FLU)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 class_file_mapping, year_group, Programme.FLU.group
             )
             dashboard_page.click_mavis()
@@ -77,7 +77,7 @@ def test_delivering_vaccination_after_psd(
     setup_session_with_one_child,
     sessions_page,
     schools,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
     log_in_page,
     healthcare_assistant,
@@ -110,9 +110,9 @@ def test_delivering_vaccination_after_psd(
     sessions_page.search_child(child)
     sessions_page.click_programme_tab(Programme.FLU)
     sessions_page.click_record_a_new_consent_response()
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-    verbal_consent_page.record_parent_positive_consent(
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_positive_consent(
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION,
         psd_option=True,

@@ -13,9 +13,11 @@ from .consent_responses import (
     UnmatchedConsentResponsesPage,
 )
 from .dashboard import DashboardPage
+from .errorpages import BadRequestPage, InternalServerErrorPage
 from .flipper import FlipperPage
-from .import_records import ImportRecordsPage
+from .import_records import ImportRecordsWizardPage, ImportsPage
 from .log_in import LogInPage, LogOutPage
+from .nurse_consent import GillickCompetencePage, NurseConsentWizardPage
 from .online_consent import OnlineConsentPage
 from .programmes import (
     ProgrammeChildrenPage,
@@ -30,12 +32,12 @@ from .start import StartPage
 from .team import TeamPage
 from .vaccination_record import EditVaccinationRecordPage, VaccinationRecordPage
 from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
-from .verbal_consent import VerbalConsentPage
 
 __all__ = [
     "AddBatchPage",
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
+    "BadRequestPage",
     "ChildActivityLogPage",
     "ChildArchivePage",
     "ChildEditPage",
@@ -48,10 +50,14 @@ __all__ = [
     "EditBatchPage",
     "EditVaccinationRecordPage",
     "FlipperPage",
-    "ImportRecordsPage",
+    "GillickCompetencePage",
+    "ImportRecordsWizardPage",
+    "ImportsPage",
+    "InternalServerErrorPage",
     "LogInPage",
     "LogOutPage",
     "MatchConsentResponsePage",
+    "NurseConsentWizardPage",
     "OnlineConsentPage",
     "ProgrammeChildrenPage",
     "ProgrammeOverviewPage",
@@ -67,5 +73,4 @@ __all__ = [
     "UnmatchedConsentResponsesPage",
     "VaccinationRecordPage",
     "VaccinesPage",
-    "VerbalConsentPage",
 ]

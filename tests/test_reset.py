@@ -18,7 +18,7 @@ def setup_all_programmes(
     add_vaccine_batch,
     schools,
     dashboard_page,
-    import_records_page,
+    import_records_wizard_page,
     sessions_page,
     children,
 ):
@@ -36,7 +36,7 @@ def setup_all_programmes(
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, programme_group)
         sessions_page.click_import_class_lists()
-        import_records_page.import_class_list(
+        import_records_wizard_page.import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
             "doubles",
@@ -58,7 +58,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     schools,
     dashboard_page,
     sessions_page,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
 ):
     """
@@ -104,9 +104,9 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
 
             sessions_page.click_programme_tab(programme)
             sessions_page.click_record_a_new_consent_response()
-            verbal_consent_page.select_parent(child.parents[0])
-            verbal_consent_page.select_consent_method(ConsentMethod.IN_PERSON)
-            verbal_consent_page.record_parent_positive_consent(
+            nurse_consent_wizard_page.select_parent(child.parents[0])
+            nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+            nurse_consent_wizard_page.record_parent_positive_consent(
                 programme=programme,
                 consent_option=consent_option,
             )

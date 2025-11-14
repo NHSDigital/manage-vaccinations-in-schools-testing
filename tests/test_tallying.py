@@ -27,7 +27,7 @@ def setup_session_with_file_upload(
     schools,
     dashboard_page,
     sessions_page,
-    import_records_page,
+    import_records_wizard_page,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -43,7 +43,7 @@ def setup_session_with_file_upload(
             dashboard_page.click_sessions()
             sessions_page.ensure_session_scheduled_for_today(school, Programme.FLU)
             sessions_page.click_import_class_lists()
-            import_records_page.import_class_list(
+            import_records_wizard_page.import_class_list(
                 class_list_file, year_group, Programme.FLU.group
             )
             dashboard_page.click_mavis()
@@ -66,11 +66,10 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 @issue("MAV-1669")
 @pytest.mark.bug
-@pytest.mark.skip
 def test_tallying(
     setup_fixed_child,
     sessions_page,
-    verbal_consent_page,
+    nurse_consent_wizard_page,
     children,
     schools,
 ):
@@ -87,50 +86,59 @@ def test_tallying(
     batch_name = setup_fixed_child[Vaccine.FLUENZ]
     school = schools[Programme.FLU][0]
 
-    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.NO_RESPONSE)
+    tally_totals = sessions_page.get_all_totals(Programme.FLU)
+    assert tally_totals[TallyCategory.NO_RESPONSE] > 0
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
-    verbal_consent_page.select_parent(child.parents[0])
-    verbal_consent_page.select_consent_method(ConsentMethod.PHONE)
-    verbal_consent_page.record_parent_positive_consent(
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
+    nurse_consent_wizard_page.record_parent_positive_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
-    sessions_page.check_tally_for_category(
-        Programme.FLU, TallyCategory.CONSENT_GIVEN_FOR_INJECTION
-    )
+
+    tally_totals[TallyCategory.NO_RESPONSE] -= 1
+    tally_totals[TallyCategory.CONSENT_GIVEN_FOR_INJECTION] += 1
+    sessions_page.check_all_totals(tally_totals)
 
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)
     sessions_page.click_response_from_parent(child.parents[0])
     sessions_page.click_withdraw_consent()
-    verbal_consent_page.click_consent_refusal_reason(
+    nurse_consent_wizard_page.click_consent_refusal_reason(
         ConsentRefusalReason.PERSONAL_CHOICE
     )
-    verbal_consent_page.give_withdraw_consent_notes("notes")
-    verbal_consent_page.click_withdraw_consent()
+    nurse_consent_wizard_page.give_withdraw_consent_notes("notes")
+    nurse_consent_wizard_page.click_withdraw_consent()
     sessions_page.click_back()
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.DID_NOT_CONSENT)
+
+    tally_totals[TallyCategory.CONSENT_GIVEN_FOR_INJECTION] -= 1
+    tally_totals[TallyCategory.CONSENT_REFUSED] += 1
+    sessions_page.check_all_totals(tally_totals)
 
     sessions_page.click_consent_tab()
     sessions_page.click_child(child)
     sessions_page.invalidate_parent_refusal(child.parents[0])
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.NO_RESPONSE)
+
+    tally_totals[TallyCategory.CONSENT_REFUSED] -= 1
+    tally_totals[TallyCategory.NO_RESPONSE] += 1
+    sessions_page.check_all_totals(tally_totals)
 
     sessions_page.click_consent_tab()
     sessions_page.navigate_to_consent_response(child, Programme.FLU)
-    verbal_consent_page.select_parent(child.parents[1])
-    verbal_consent_page.select_consent_method(ConsentMethod.PHONE)
-    verbal_consent_page.record_parent_positive_consent(
+    nurse_consent_wizard_page.select_parent(child.parents[1])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
+    nurse_consent_wizard_page.record_parent_positive_consent(
         yes_to_health_questions=False,
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY,
     )
-    sessions_page.check_tally_for_category(
-        Programme.FLU, TallyCategory.CONSENT_GIVEN_FOR_NASAL_SPRAY
-    )
+
+    tally_totals[TallyCategory.NO_RESPONSE] -= 1
+    tally_totals[TallyCategory.CONSENT_GIVEN_FOR_NASAL_SPRAY] += 1
+    sessions_page.check_all_totals(tally_totals)
 
     sessions_page.register_child_as_attending(str(child))
     sessions_page.record_vaccination_for_child(
@@ -139,4 +147,7 @@ def test_tallying(
         )
     )
     sessions_page.go_back_to_session_for_school(school)
-    sessions_page.check_tally_for_category(Programme.FLU, TallyCategory.VACCINATED)
+
+    tally_totals[TallyCategory.CONSENT_GIVEN_FOR_NASAL_SPRAY] -= 1
+    tally_totals[TallyCategory.VACCINATED] += 1
+    sessions_page.check_all_totals(tally_totals)

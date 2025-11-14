@@ -1,4 +1,3 @@
-import time
 from datetime import timedelta
 from pathlib import Path
 
@@ -14,7 +13,7 @@ from mavis.test.utils import (
 )
 
 
-class ImportRecordsPage:
+class ImportRecordsWizardPage:
     def __init__(
         self,
         page: Page,
@@ -26,10 +25,6 @@ class ImportRecordsPage:
         self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
         self.invalid_tag = self.page.get_by_role("strong").get_by_text("Invalid")
-        self.import_records_button = self.page.get_by_role(
-            "button",
-            name="Import records",
-        )
         self.child_records_radio_button = self.page.get_by_role(
             "radio",
             name="Child records",
@@ -45,10 +40,6 @@ class ImportRecordsPage:
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.file_input = self.page.locator('input[type="file"]')
         self.location_combobox = self.page.get_by_role("combobox")
-
-    @step("Click on Import Records")
-    def click_import_records(self) -> None:
-        self.import_records_button.click()
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -87,22 +78,16 @@ class ImportRecordsPage:
         reload_until_element_is_visible(self.page, tag, seconds=60)
 
     def navigate_to_child_record_import(self) -> None:
-        self.click_import_records()
         self.select_child_records()
         self.click_continue()
 
     def navigate_to_class_list_record_import(
         self, location: str, *year_groups: int
     ) -> None:
-        self.click_import_records()
         self.select_class_list_records()
         self.click_continue()
 
         self.page.wait_for_load_state()
-
-        # temp wait for school to appear in Mavis
-        time.sleep(1)
-        self.page.reload()
 
         self.fill_location(location)
         self.page.get_by_role("option", name=str(location)).first.click()
@@ -111,7 +96,6 @@ class ImportRecordsPage:
         self.select_year_groups(*year_groups)
 
     def navigate_to_vaccination_records_import(self) -> None:
-        self.click_import_records()
         self.select_vaccination_records()
         self.click_continue()
 
@@ -129,8 +113,6 @@ class ImportRecordsPage:
         _scenario_list = read_scenario_list_from_file(_input_file_path)
 
         self.set_input_file(_input_file_path)
-        # temporary sleep to ensure urn appears in Mavis
-        time.sleep(1)
         self.record_upload_time()
         self.click_continue(_coverage=_scenario_list)
 
@@ -188,3 +170,19 @@ class ImportRecordsPage:
             self.select_year_groups(year_group)
 
         self.upload_and_verify_output(class_list_file, programme_group=programme_group)
+
+
+class ImportsPage:
+    def __init__(
+        self,
+        page: Page,
+    ) -> None:
+        self.page = page
+        self.import_records_button = self.page.get_by_role(
+            "button",
+            name="Import records",
+        )
+
+    @step("Click on Import Records")
+    def click_import_records(self) -> None:
+        self.import_records_button.click()

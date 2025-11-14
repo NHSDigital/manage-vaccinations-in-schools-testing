@@ -5,13 +5,17 @@ from mavis.test.models import Programme
 
 
 @pytest.fixture
-def setup_class_list(
+def setup_class_list_import(
     log_in_as_nurse,
     schools,
     dashboard_page,
     sessions_page,
+    imports_page,
+    import_records_wizard_page,
+    year_groups,
 ):
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
     try:
         dashboard_page.click_sessions()
         sessions_page.ensure_session_scheduled_for_next_week(
@@ -19,6 +23,10 @@ def setup_class_list(
         )
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
+        imports_page.click_import_records()
+        import_records_wizard_page.navigate_to_class_list_record_import(
+            str(school), year_group
+        )
         yield
     finally:
         dashboard_page.navigate()
@@ -29,10 +37,8 @@ def setup_class_list(
 
 @pytest.mark.classlist
 def test_class_list_file_upload_valid_data(
-    setup_class_list,
-    schools,
-    import_records_page,
-    year_groups,
+    setup_class_list_import,
+    import_records_wizard_page,
 ):
     """
     Test: Upload a valid class list file and verify successful import.
@@ -45,22 +51,13 @@ def test_class_list_file_upload_valid_data(
     AllValidValues, YearGroupOverride, SameYearGroup, EmptyPostCode, EmptyYearGroup,
     UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    import_records_page.upload_and_verify_output(
-        ClassFileMapping.POSITIVE,
-        programme_group="doubles",
-    )
+    import_records_wizard_page.upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_invalid_data(
-    setup_class_list,
-    schools,
-    import_records_page,
-    year_groups,
+    setup_class_list_import,
+    import_records_wizard_page,
 ):
     """
     Test: Upload an invalid class list file and verify error handling.
@@ -75,22 +72,13 @@ def test_class_list_file_upload_invalid_data(
     InvalidLastName, InvalidPrefFirstName, InvalidPrefLastName, InvalidParent1Name,
     InvalidParent2Name
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    import_records_page.upload_and_verify_output(
-        ClassFileMapping.NEGATIVE,
-        programme_group="doubles",
-    )
+    import_records_wizard_page.upload_and_verify_output(ClassFileMapping.NEGATIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_invalid_structure(
-    setup_class_list,
-    schools,
-    import_records_page,
-    year_groups,
+    setup_class_list_import,
+    import_records_wizard_page,
 ):
     """
     Test: Upload a class list file with invalid structure and verify error handling.
@@ -100,22 +88,15 @@ def test_class_list_file_upload_invalid_structure(
     Verification:
     - Output indicates structural errors.
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    import_records_page.upload_and_verify_output(
-        ClassFileMapping.INVALID_STRUCTURE,
-        programme_group="doubles",
+    import_records_wizard_page.upload_and_verify_output(
+        ClassFileMapping.INVALID_STRUCTURE
     )
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_header_only(
-    setup_class_list,
-    schools,
-    import_records_page,
-    year_groups,
+    setup_class_list_import,
+    import_records_wizard_page,
 ):
     """
     Test: Upload a class list file with only headers and verify no
@@ -126,22 +107,13 @@ def test_class_list_file_upload_header_only(
     Verification:
     - Output indicates no records imported.
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    import_records_page.upload_and_verify_output(
-        ClassFileMapping.HEADER_ONLY,
-        programme_group="doubles",
-    )
+    import_records_wizard_page.upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_empty_file(
-    setup_class_list,
-    schools,
-    import_records_page,
-    year_groups,
+    setup_class_list_import,
+    import_records_wizard_page,
 ):
     """
     Test: Upload an empty class list file and verify error handling.
@@ -151,21 +123,14 @@ def test_class_list_file_upload_empty_file(
     Verification:
     - Output indicates error or no records imported.
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    import_records_page.upload_and_verify_output(
-        ClassFileMapping.EMPTY_FILE,
-        programme_group="doubles",
-    )
+    import_records_wizard_page.upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_wrong_year_group(
-    setup_class_list,
+    setup_class_list_import,
     schools,
-    import_records_page,
+    import_records_wizard_page,
     year_groups,
 ):
     """
@@ -176,25 +141,18 @@ def test_class_list_file_upload_wrong_year_group(
     Verification:
     - Output indicates year group mismatch or error.
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    import_records_page.upload_and_verify_output(
-        ClassFileMapping.WRONG_YEAR_GROUP,
-        programme_group="doubles",
+    import_records_wizard_page.upload_and_verify_output(
+        ClassFileMapping.WRONG_YEAR_GROUP
     )
 
 
 @pytest.mark.classlist
 @pytest.mark.bug
 def test_class_list_file_upload_whitespace_normalization(
-    setup_class_list,
-    schools,
-    import_records_page,
+    setup_class_list_import,
+    import_records_wizard_page,
     children_search_page,
     dashboard_page,
-    year_groups,
 ):
     """
     Test: Upload a class list file with extra whitespace and verify normalization.
@@ -205,13 +163,8 @@ def test_class_list_file_upload_whitespace_normalization(
     Verification:
     - Imported list matches expected normalized data.
     """
-    school = schools["doubles"][0]
-    year_group = year_groups["doubles"]
-
-    import_records_page.navigate_to_class_list_record_import(str(school), year_group)
-    input_file, _ = import_records_page.upload_and_verify_output(
+    input_file, _ = import_records_wizard_page.upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
-        programme_group="doubles",
     )
     dashboard_page.click_mavis()
     dashboard_page.click_children()

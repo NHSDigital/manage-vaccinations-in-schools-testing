@@ -219,8 +219,8 @@ class SessionsPage:
         self.keep_session_dates_button = self.page.get_by_role(
             "button", name="Keep session dates"
         )
-        self.did_not_consent_link = self.page.get_by_role(
-            "link", name="Did not consent"
+        self.consent_refused_link = self.page.get_by_role(
+            "link", name="Consent refused"
         )
         self.withdraw_consent_link = self.page.get_by_role(
             "link", name="Withdraw consent"
@@ -250,9 +250,9 @@ class SessionsPage:
     def click_psds_tab(self) -> None:
         self._select_tab("PSDs")
 
-    @step("Click Review consent refused")
-    def click_review_consent_refused(self) -> None:
-        self.review_consent_refused_link.click()
+    @step("Click Consent refused")
+    def click_consent_refused(self) -> None:
+        self.consent_refused_link.click()
 
     @step("Expect Consent refused checkbox to be checked")
     def expect_consent_refused_checkbox_to_be_checked(self) -> None:
@@ -282,6 +282,7 @@ class SessionsPage:
         self,
         programme: Programme,
     ) -> None:
+        self.page.wait_for_load_state()
         if programme is not Programme.FLU:
             for locator in [
                 self.consent_given_for_injected_vaccine_checkbox,
@@ -430,7 +431,7 @@ class SessionsPage:
 
     def expect_session_to_have_programmes(self, programmes: list[Programme]) -> None:
         for programme in programmes:
-            expect(self.page.get_by_text(programme).first).to_be_visible()
+            expect(self.page.get_by_role("heading", name=programme)).to_be_visible()
 
     @step("Click on Change session dates")
     def click_change_session_dates(self) -> None:
@@ -550,7 +551,7 @@ class SessionsPage:
     @step("Triage MMR patient")
     def triage_mmr_patient(self, child: Child, consent_option: ConsentOption) -> None:
         self.click_triage_tab()
-        self.click_child(child)
+        self.search_child(child)
         self.click_programme_tab(Programme.MMR)
         if consent_option is ConsentOption.MMR_EITHER:
             self.triage_safe_mmr_either_radio.check()
@@ -937,6 +938,9 @@ class SessionsPage:
     def register_child_as_attending(self, child: Child) -> None:
         self.click_register_tab()
         self.search_for(str(child))
+        reload_until_element_is_visible(
+            self.page, self.page.get_by_role("link", name=str(child)).first
+        )
         self.click_on_attending()
 
     def verify_search(self) -> None:
@@ -951,6 +955,11 @@ class SessionsPage:
         child_locator = self.page.get_by_role("link", name=str(child))
         reload_until_element_is_visible(self.page, child_locator)
         child_locator.click()
+
+    def search_child_that_should_not_exist(self, child: Child) -> None:
+        self.search_for(str(child))
+        child_locator = self.page.get_by_role("link", name=str(child))
+        expect(child_locator).not_to_be_visible()
 
     def record_vaccination_for_child(
         self,
@@ -1105,20 +1114,26 @@ class SessionsPage:
     def click_back_to_record_vaccinations(self) -> None:
         self.record_vaccinations_breadcrumb.click()
 
-    def check_tally_for_category(self, programme: Programme, category: str) -> None:
-        self.click_overview_tab()
-        for programme_category in programme.tally_categories:
-            if programme_category == category:
-                assert self.get_total_for_category(programme_category) == 1
-            else:
-                assert self.get_total_for_category(programme_category) == 0
-
     def get_total_for_category(self, category: str) -> int:
         category_locator = self.page.locator(
             ".nhsuk-card__heading.nhsuk-heading-xs", has_text=category
         )
         total_locator = category_locator.locator("xpath=following-sibling::*[1]")
         return int(total_locator.inner_text())
+
+    def get_all_totals(self, programme: Programme) -> dict[str, int]:
+        return {
+            category: self.get_total_for_category(category)
+            for category in programme.tally_categories
+        }
+
+    def check_all_totals(self, totals: dict[str, int]) -> None:
+        self.click_overview_tab()
+        for category, expected_total in totals.items():
+            actual_total = self.get_total_for_category(category)
+            assert actual_total == expected_total, (
+                f"Expected {expected_total} for {category}, but got {actual_total}"
+            )
 
     @step("Click response from {1}")
     def click_response_from_parent(self, parent: Parent) -> None:
