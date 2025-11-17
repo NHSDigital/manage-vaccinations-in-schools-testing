@@ -44,10 +44,10 @@ on:
         type: string
         default: 'nurse.perf2test@example.com'
       BaseURL:
-        description: "Optional (default qa.mavistesting.com) URL"
+        description: "Optional (default performance.mavistesting.com) URL"
         required: true
         type: string
-        default: 'qa.mavistesting.com'
+        default: 'performance.mavistesting.com'
 
 jobs:
   check-image-presence:
