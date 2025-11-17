@@ -24,7 +24,6 @@ from mavis.test.utils import (
     get_current_datetime_compact,
     get_day_month_year_from_compact_date,
     get_offset_date_compact_format,
-    get_todays_date,
     reload_until_element_is_visible,
 )
 
@@ -802,22 +801,30 @@ class SessionsPage:
         location: str,
         programme_group: str,
     ) -> None:
-        self.click_session_for_programme_group(location, programme_group)
-        todays_date = get_todays_date().strftime("%Y%m%d")
-        if not self.page.get_by_text(
-            self._get_day_month_year(date_to_format=todays_date),
-        ).is_visible():
-            self.schedule_a_valid_session(offset_days=0, skip_weekends=False)
+        self.ensure_session_scheduled_in_n_days(
+            location=location,
+            programme_group=programme_group,
+            offset_days=0,
+        )
 
     def ensure_session_scheduled_for_next_week(
         self, location: str, programme_group: str
     ) -> None:
+        self.ensure_session_scheduled_in_n_days(
+            location=location,
+            programme_group=programme_group,
+            offset_days=7,
+        )
+
+    def ensure_session_scheduled_in_n_days(
+        self, location: str, programme_group: str, offset_days: int
+    ) -> None:
         self.click_session_for_programme_group(location, programme_group)
-        future_date = get_offset_date_compact_format(offset_days=7)
+        future_date = get_offset_date_compact_format(offset_days=offset_days)
         if not self.page.get_by_text(
             self._get_day_month_year(date_to_format=future_date),
         ).is_visible():
-            self.schedule_a_valid_session(offset_days=7)
+            self.schedule_a_valid_session(offset_days=offset_days, skip_weekends=False)
 
     def schedule_a_valid_session(
         self,
