@@ -236,11 +236,17 @@ class SessionsPage:
             exact=True,
         )
 
-    def __get_display_formatted_date(self, date_to_format: str) -> str:
+    def _get_day_month_year_with_day_of_week(self, date_to_format: str) -> str:
         _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
             tzinfo=ZoneInfo("Europe/London")
         )
         return _parsed_date.strftime("%A, %d %B %Y").replace(" 0", " ")
+
+    def _get_day_month_year(self, date_to_format: str) -> str:
+        _parsed_date = datetime.strptime(date_to_format, "%Y%m%d").replace(
+            tzinfo=ZoneInfo("Europe/London")
+        )
+        return _parsed_date.strftime("%d %B %Y").replace(" 0", " ")
 
     @step("Click on Overview tab")
     def click_overview_tab(self) -> None:
@@ -799,7 +805,7 @@ class SessionsPage:
         self.click_session_for_programme_group(location, programme_group)
         todays_date = get_todays_date().strftime("%Y%m%d")
         if not self.page.get_by_text(
-            self.__get_display_formatted_date(date_to_format=todays_date),
+            self._get_day_month_year(date_to_format=todays_date),
         ).is_visible():
             self.schedule_a_valid_session(offset_days=0, skip_weekends=False)
 
@@ -809,7 +815,7 @@ class SessionsPage:
         self.click_session_for_programme_group(location, programme_group)
         future_date = get_offset_date_compact_format(offset_days=7)
         if not self.page.get_by_text(
-            self.__get_display_formatted_date(date_to_format=future_date),
+            self._get_day_month_year(date_to_format=future_date),
         ).is_visible():
             self.schedule_a_valid_session(offset_days=7)
 
@@ -829,7 +835,7 @@ class SessionsPage:
 
         self.expect_details(
             "Session dates",
-            self.__get_display_formatted_date(date_to_format=_future_date),
+            self._get_day_month_year_with_day_of_week(date_to_format=_future_date),
         )
         self.click_save_changes()
 
@@ -856,7 +862,7 @@ class SessionsPage:
 
         self.expect_details(
             "Session dates",
-            self.__get_display_formatted_date(date_to_format=_future_date),
+            self._get_day_month_year_with_day_of_week(date_to_format=_future_date),
         )
         self.click_save_changes()
 
