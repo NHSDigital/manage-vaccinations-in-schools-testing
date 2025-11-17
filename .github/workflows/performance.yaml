@@ -132,6 +132,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
+          role-duration-seconds: 14400 # 4 hours
       - name: Create task definition
         id: create-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -166,7 +167,7 @@ jobs:
       - name: Start performance test
         id: run-task
         run: |
-          echo "Starting ECS task to run performance test against ${{ inputs.URN }}"
+          echo "Starting ECS task to run performance test against ${{ inputs.BaseURL }}"
           
           subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=assurance-testing-subnet --query 'Subnets[0].SubnetId' --output text)
           security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=assurance-testing-performance-sg --query 'SecurityGroups[0].GroupId' --output text)
@@ -191,7 +192,6 @@ jobs:
       - name: Wait for performance test to complete
         id: wait-for-completion
         run: |
-          #TODO: Add link to cloudwatch here
           echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"
           TASK_ID=$(sed 's:^.*/::' <<< ${{ steps.run-task.outputs.task_arn }})
           CLOUDWATCH_URL="https://eu-west-2.console.aws.amazon.com/cloudwatch/home?region=eu-west-2#logsV2:log-groups/log-group/assurance-testing-ecs/log-events/assurance-testing-logs\$252Fperformancetest-container\$252F${TASK_ID}\$3Fstart\$3D${test_start_time}\$26end\$3D$(date -d '+1 hour + 15 minutes' +%s)000"
@@ -270,7 +270,7 @@ jobs:
           
           echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **URN:** ${{ inputs.URN }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **BaseURL:** ${{ inputs.BaseURL }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Test Logs:** $CLOUDWATCH_URL" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
