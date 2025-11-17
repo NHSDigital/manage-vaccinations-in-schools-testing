@@ -55,7 +55,7 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         response = requests.get(refresh_reports_url, timeout=30)
         response.raise_for_status()
 
-        time.sleep(120)
+        time.sleep(30)
         self.page.reload()
 
     @step("Click {1}")
