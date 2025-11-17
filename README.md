@@ -139,46 +139,49 @@ Further details on the scope and approach of the automation are on the [NHSD Con
 
 ### Installation
 
-The JMeter test scenarios require JMeter installed, the latest version is recommended. In addition, two plugins are required:
+The JMeter test scenarios require JMeter installed, the latest version is recommended. In addition, several plugins are required:
 
-1. Dummy Sampler.
-2. Random CSV Data Set
+1. jpgc-udp UDP protocol support (possibly not needed in the future).
+2. jpgc-graphs-basic response time graphs (used for reporting).
+3. jpgc-dummy Dummy transaction (used for script delays and debugging).
+4. bzm-random-csv random CSV access (possibly not needed in the future).
+5. jpgc-sts Simple Table Server (used for temporary data hosting during a test).
 
 It is recommended to install these via JMeter plugins manager, which is either installed by default or can be found here. https://jmeter-plugins.org/wiki/PluginsManager/.
 
-JMeter requires Java installed on the system. Please note that Oracle Java (JDK/JRE) is NOT recommended, an unusual issue was found that could not be replicated or fixed. To avoid the issue, use OpenJDK (latest version)
+JMeter requires Java installed on the system. Please note that Oracle Java (JDK/JRE) is NOT recommended, an unusual issue was found that could not be replicated or fixed. To avoid the issue, use OpenJDK. In addition a pipeline issue was found with the latest OpenJDK, so version 21 is recommended.
 
 Many aspects of scripting are helped with the use of Blazemeter tools, for example the Chrome recorder here. https://chromewebstore.google.com/detail/blazemeter-the-continuous/mbopgmdnpcbohhpnfglgohlbhfongabi
 
-It should be noted that Blazemeter does create a very specific type of script and can need some additional work to produce a reliable script.
+It should be noted that Blazemeter does create a very specific type of script and will need additional work to produce a reliable script.
 
 ### Script execution
 
 The scripts are designed to run as part of a workflow. This is for simplicity as well as satisfy the need for significant performance test hosting capability. The Github runners are (currently) capable of hosting the required tests.
 
-The links for both workflows are at the top of this page. Where possible, the E2E variant should be used.
+Older workflows are no longer viable due to the amount of data involved. Only the STS variants in the relevant folder should be used.
 
 #### Script parameters
 
-The script is designed to run as a 'single click', however there are still a few changes to get to that. In the meantime, the following inputs are configured on the workflow;
+The script is now presented as a 'single click' execution as the 'Performance' GitHub workflow, with many default values being acceptable for repeated testing. For greater control the options and their usage is listed below. 
 
 - Use Workflow from xxxxx . Use Main branch where possible, unless testing a code change in a different branch.
-- Run data prep. Defaulting to true, this flag allows the data prep stage to be turned off. This is useful if data prep has already occurred previously. Data prep includes the file upload and consent journey steps in order to correctly prepare for a test.
-- Run the nurse journey. Defaulting to true, this flag allows the nurse journey test to be turned off. As above this is useful if the data prep is to be run separately at an earlier date/time.
-- URN. This is a required value, and is typically a six digit numeric for a school in the QA environment. This takes the place of the 'session slug' that was in previous scripts. At time of writing this is required to be added manually and must have an active session, however long term the value will be taken from the cohort file (below) and will no longer be required.
-- Input file. This is the cohort file to be used by the E2E flow. This should be in CSV format and must be a valid cohort file. This will be replaced by an automated file generation process, and will be removed at that point. Note the file must exist in the repository in performance-tests/E2E folder.
-- Duration of nurse journey test in seconds. Optional value, if the default of one hour is not suitable for the test required it can be overwritten. This does not affect the consent journey or file upload steps as they have fixed parameters.
-- Number of nurses (threads) to run. Optional value, if the default value of 70 nurses is not suitable for the test required it can be overwritten. This does not affect the consent journey or file upload steps as they have fixed parameters.
-- Ramp up time in seconds. Optional value, if the default of 15 minutes is not suitable for the test required it can be overwritten. This does not affect the consent journey or file upload steps as they have fixed parameters.
-- Vaccination loop count. Optional value, this is to replicate a nurse 'session' where (for example) a group of 20 patients would be vaccinated before the nurse logged out and took a break. This is more effective for longer tests where it will log out and log in on regular intervals. This can be overridden if required, and also does not affect the consent journey or file upload steps as they have fixed parameters.
+- Add a new session date, default is true. This takes an unused session that has cohorts added to it, and creates session dates for today and tomorrow. The default organisation has more than 400 schools for each programme so should not need refreshing for quite some time.
+- Run consent journey, default is true. This completes consents for any/all of the active sessions (including the one created above). This can be run without the previous step if there are already open sessions for today.
+- Run nurse journey, default is true. This completes vaccinations for any/all of the active consents (including the ones created from the consent journey). This can be run without previous steps if there are already sufficient consents for open sessions.
+- Duration of nurse journey test in seconds. Optional value, if the default of one hour is not suitable for the test required it can be overwritten. This does not affect the consent journey as that simply runs for all available consents.
+- Number of nurses (threads) to run. Optional value, if the default value of 70 nurses is not suitable for the test required it can be overwritten. This does not affect the consent journey as consents come from the public website and are not session based.
+- Ramp up time in seconds. Optional value, if the default of 15 minutes is not suitable for the test required it can be overwritten. This does not affect the consent journey. Note that the ramp up time should be adjusted if the duration is also changed, to allow for the maximum time at 100% load.
+- Default user, default is 'perf2test@example.com'. This controls the user login and therefore what organisation, sessions and schools are used. Currently 'perf2' is the most populated organisation.
+- URL, default is 'performance.mavistesting.com'. This allows a performance test to run on different environments. From November 2025 there is a dedicated 'performance' environment which should be used.
 
 #### Results retrieval and analysis
 
-The workflow generates a zip file on successful completion of the script. Once unzipped to a folder it contains the results HTML report which can be viewed in any browser, as well as the results.log which is text based. The metrics and performance should be compared to similar report from Cloudwatch, Splunk and other monitoring tools.
+During the workflow test, a link is provided to Cloudwatch for logging as the workflow no longer has visibility of the real time log. Cloudwatch should be monitored for any indication of a high error count or very slow performance.
+At the end of the test the results are published to GitHub pages, and a link provided in the workflow. This should be used for performance analysis by comparing with previous reports as well as output from Cloudwatch and Grafana. Note that GitHub pages can be slow so the link may not be active immediately after a test has completed. It can take up to five minutes for the results to appear.
 
 #### Future improvements
 
 The following changes will be added soon:
 
-- complete automation of data prep. The first step of the workflow will be to generate a new valid cohort file to be used by the rest of the workflow. This will remove the need for URN and input file to be added as inputs.
-- Better reporting. Current thinking is to have the test results uploaded to Splunk for better analysis, however it is currently unknown whether this will be permitted. Another option would be to publish the reports to github pages, again this may be blocked by permissions. Lastly, a tabular version of the results could be generated directly on the workflow output, this is most definitely a 'backup' option.
+- Real time reporting. With the availability of Grafana it is planned to submit realtime response times to Grafana for analysis. This is a standard approach for performance testing/monitoring, and can be used to correlate between response times and other metrics presented through Grafana.
