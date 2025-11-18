@@ -124,7 +124,7 @@ class ImportRecordsWizardPage:
     def wait_for_processed(self) -> None:
         self.page.wait_for_load_state()
 
-        tag = self.completed_tag.or_(self.invalid_tag)
+        tag = self.completed_tag.or_(self.invalid_tag).or_(self.invalid_file_problem)
 
         reload_until_element_is_visible(self.page, tag, seconds=60)
 
