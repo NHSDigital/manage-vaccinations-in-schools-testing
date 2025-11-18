@@ -545,6 +545,7 @@ class Team(NamedTuple):
             "careplus_venue_code": self.careplus_venue_code,
             "privacy_notice_url": "https://example.com/privacy",
             "privacy_policy_url": "https://example.com/privacy",
+            "type": "poc_only",
         }
 
     @classmethod
