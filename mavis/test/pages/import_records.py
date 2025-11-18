@@ -1,3 +1,4 @@
+import re
 from datetime import timedelta
 from pathlib import Path
 
@@ -41,6 +42,13 @@ class ImportRecordsWizardPage:
         self.file_input = self.page.locator('input[type="file"]')
         self.location_combobox = self.page.get_by_role("combobox")
 
+        # Pattern to match dynamic "X new records" text (s is optional)
+        self.records_pattern = re.compile(r"\d+ new records?")
+        self.approve_import_button = self.page.get_by_role(
+            "button", name="Approve and import records"
+        )
+        self.invalid_file_problem = self.page.get_by_text("There is a problem")
+
     @step("Select Child Records")
     def select_child_records(self) -> None:
         self.child_records_radio_button.click()
@@ -69,6 +77,49 @@ class ImportRecordsWizardPage:
     def is_processing_in_background(self) -> bool:
         self.page.wait_for_load_state()
         return self.alert_success.is_visible()
+
+    def get_preview_page_link(self):  # noqa: ANN201
+        """Get the preview page link using multiple selector strategies."""
+        # Try different selector approaches
+        selectors = [
+            self.page.get_by_role("link").filter(has_text=self.records_pattern),
+            self.page.locator("a").filter(has_text=self.records_pattern),
+            self.page.locator("[href]").filter(has_text=self.records_pattern),
+            self.page.get_by_text(self.records_pattern),
+        ]
+
+        for selector in selectors:
+            if selector.count() > 0:
+                return selector.first
+
+        # Fallback: return the first selector even if not found
+        return selectors[0]
+
+    def is_preview_page_link_visible(self) -> bool:
+        """Check if preview page link is visible using multiple strategies."""
+        selectors = [
+            self.page.get_by_role("link").filter(has_text=self.records_pattern),
+            self.page.locator("a").filter(has_text=self.records_pattern),
+            self.page.locator("[href]").filter(has_text=self.records_pattern),
+            self.page.get_by_text(self.records_pattern),
+        ]
+
+        for selector in selectors:
+            if selector.count() > 0 and selector.first.is_visible():
+                return True
+        return False
+
+    def approve_preview_if_shown(self) -> None:
+        self.get_preview_page_link().click()
+        expect(self.page.get_by_text("Needs review")).to_be_visible()
+        self.approve_import_button.click()
+        expect(
+            self.page.get_by_label("Information")
+            .locator("div")
+            .filter(has_text="Import started")
+        ).to_be_visible()
+        self.click_uploaded_file_datetime()
+        self.wait_for_processed()
 
     def wait_for_processed(self) -> None:
         self.page.wait_for_load_state()
@@ -118,7 +169,17 @@ class ImportRecordsWizardPage:
 
         if self.is_processing_in_background():
             self.click_uploaded_file_datetime()
-            self.wait_for_processed()
+
+        self.page.wait_for_load_state()
+        status_text = (
+            self.page.get_by_text("Needs review")
+            .or_(self.completed_tag)
+            .or_(self.invalid_tag)
+            .or_(self.invalid_file_problem)
+        )
+        reload_until_element_is_visible(self.page, status_text, seconds=60)
+        if self.is_preview_page_link_visible():
+            self.approve_preview_if_shown()
 
         self.verify_upload_output(file_path=_output_file_path)
         return _input_file_path, _output_file_path
