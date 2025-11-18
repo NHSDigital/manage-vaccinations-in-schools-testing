@@ -37,6 +37,8 @@ def setup_confirm_and_ignore(
         import_records_wizard_page.record_upload_time()
         import_records_wizard_page.click_uploaded_file_datetime()
         import_records_wizard_page.wait_for_processed()
+        if import_records_wizard_page.is_preview_page_link_visible():
+            import_records_wizard_page.approve_preview_if_shown()
         import_records_wizard_page.verify_upload_output(output_file_path)
 
     try:

@@ -42,12 +42,19 @@ class ImportRecordsWizardPage:
         self.file_input = self.page.locator('input[type="file"]')
         self.location_combobox = self.page.get_by_role("combobox")
 
-        # Pattern to match dynamic "X new records" text (s is optional)
-        self.records_pattern = re.compile(r"\d+ new records?")
+        # Pattern to match dynamic text (s is optional for records)
+        self.records_pattern = re.compile(
+            r"\d+ new records?"
+            r"|\d+ school moves?"
+            r"|\d+ records? already in Mavis"
+        )
         self.approve_import_button = self.page.get_by_role(
             "button", name="Approve and import records"
         )
         self.invalid_file_problem = self.page.get_by_text("There is a problem")
+        self.needs_review_tag = self.page.get_by_role("strong").get_by_text(
+            "Needs review"
+        )
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -124,7 +131,7 @@ class ImportRecordsWizardPage:
     def wait_for_processed(self) -> None:
         self.page.wait_for_load_state()
 
-        tag = self.completed_tag.or_(self.invalid_tag)
+        tag = self.completed_tag.or_(self.invalid_tag).or_(self.needs_review_tag)
 
         reload_until_element_is_visible(self.page, tag, seconds=60)
 
