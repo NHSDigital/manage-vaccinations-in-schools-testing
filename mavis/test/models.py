@@ -119,13 +119,10 @@ class HealthQuestion(StrEnum):
         "Does your child have a disease or treatment that severely affects"
         " their immune system?"
     )
-    MMR_HOUSEHOLD_IMMUNE_SYSTEM = (
-        "Is your child in regular close contact with anyone currently having treatment"
-        " that severely affects their immune system?"
-    )
     MMR_TB_TEST = (
-        "Has your child recently had, or are they soon due to have a TB skin"
-        " test, chickenpox vaccine or yellow fever vaccine?"
+        "Has your child had any of the following in the last 4 weeks, or are they due"
+        " to have them in the next 4 weeks: TB skin test, chickenpox vaccine, or"
+        " yellow fever vaccine?"
     )
     MMR_OTHER_MEDICAL_CONDITIONS = (
         "Does the child have any other medical conditions we should know about?"
@@ -192,7 +189,6 @@ class Programme(StrEnum):
             HealthQuestion.MMR_ALLERGIC_REACTION,
             HealthQuestion.MMR_ALLERGIC_REACTION_NEOMYCIN,
             HealthQuestion.MMR_TREATMENT,
-            HealthQuestion.MMR_HOUSEHOLD_IMMUNE_SYSTEM,
             HealthQuestion.MMR_TB_TEST,
             HealthQuestion.MMR_OTHER_MEDICAL_CONDITIONS,
             HealthQuestion.MMR_EXTRA_SUPPORT,
