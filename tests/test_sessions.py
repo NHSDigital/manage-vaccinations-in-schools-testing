@@ -362,19 +362,22 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
     schools,
 ):
     """
-    Test: Click the 'Send reminders' link and PDF download links in sessions and
-    verify there are no errors.
+    Test: Click the 'Send reminders' link and PDF download links in sessions,
+    verify there are no errors, and verify pre-screening questions exist in PDF.
     Steps:
     1. Open a session with a fixed child.
     2. Click 'Send reminders' link and verify no errors.
-    3. Attempt to download consent PDFs and verify no errors.
+    3. Download consent PDFs and verify no errors.
+    4. Open the PDF consent form and verify pre-screening questions for the
+       programme exist.
     Verification:
     - No errors occur when sending reminders or downloading PDFs.
+    - PDF contains expected pre-screening questions for HPV programme.
     """
     school = schools[Programme.HPV][0]
 
     sessions_page.click_send_reminders(school)
-    sessions_page.download_consent_form(Programme.HPV)
+    sessions_page.download_and_verify_consent_form(Programme.HPV)
 
 
 def test_editing_session_programmes(setup_fixed_child, sessions_page, children):

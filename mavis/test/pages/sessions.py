@@ -7,6 +7,11 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 from playwright.sync_api import Locator, Page, expect
 
+try:
+    from pypdf import PdfReader
+except ImportError:
+    PdfReader = None
+
 from mavis.test.annotations import step
 from mavis.test.data import get_session_id
 from mavis.test.models import (
@@ -693,8 +698,66 @@ class SessionsPage:
             msg = "CONSENT_DETAILS has entries in an invalid format."
             raise ValueError(msg)
 
-    @step("Click on Download the {1} consent form (PDF)")
+    @step("Download and verify {1} consent form PDF")
+    def download_and_verify_consent_form(self, programme: Programme) -> Path:
+        """Download consent form PDF and verify it contains pre-screening questions."""
+        # Download the PDF
+        _file_path = Path(f"working/consent_{get_current_datetime_compact()}.pdf")
+
+        with self.page.expect_download() as download_info:
+            self.page.get_by_role(
+                "link", name=f"Download the {programme} consent form (PDF)"
+            ).click()
+        download = download_info.value
+        download.save_as(_file_path)
+
+        # Verify PDF contains pre-screening questions
+        self._verify_pdf_pre_screening_questions(_file_path, programme)
+
+        return _file_path
+
+    def _verify_pdf_pre_screening_questions(
+        self, pdf_path: Path, programme: Programme
+    ) -> None:
+        """Verify PDF consent form contains expected pre-screening questions."""
+        if PdfReader is None:
+            msg = (
+                "pypdf is required to read PDF files. "
+                "Install it with: pip install pypdf"
+            )
+            raise ImportError(msg)
+
+        # Get expected pre-screening questions for the programme
+        expected_questions = programme.pre_screening_checks()
+
+        # Read PDF content
+        try:
+            reader = PdfReader(str(pdf_path))
+            pdf_text = ""
+            for page in reader.pages:
+                pdf_text += page.extract_text()
+        except Exception as e:
+            msg = f"Failed to read PDF file {pdf_path}: {e}"
+            raise AssertionError(msg) from e
+
+        # Verify each pre-screening question is present in the PDF
+        missing_questions = [
+            question.value
+            for question in expected_questions
+            if question.value.lower() not in pdf_text.lower()
+        ]
+
+        if missing_questions:
+            msg = (
+                f"The following pre-screening questions for {programme} programme "
+                f"were not found in the PDF consent form:\n"
+                + "\n".join(f"- {q}" for q in missing_questions)
+            )
+            raise AssertionError(msg)
+
+    @step("Download the {1} consent form (PDF)")
     def download_consent_form(self, programme: Programme) -> Path:
+        """Download consent form PDF only (for backward compatibility)."""
         _file_path = Path(f"working/consent_{get_current_datetime_compact()}.pdf")
 
         with self.page.expect_download() as download_info:
