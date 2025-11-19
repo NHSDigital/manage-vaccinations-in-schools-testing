@@ -12,7 +12,10 @@ class LogInPage:
     Page object for login functionality with audit logging.
 
     Usage with organisation tracking:
-        log_in_page = LogInPage(page)
+        # Automatic org code extraction from team (recommended):
+        log_in_page.log_in_and_choose_team_if_necessary(user, team)
+
+        # Manual org code setting:
         log_in_page.set_organisation(onboarding.organisation)  # or
         log_in_page.set_organisation_code("ABC123")
         log_in_page.log_in(user)
@@ -101,6 +104,9 @@ class LogInPage:
 
     @step("Log in as {1} and choose team {2}")
     def log_in_and_choose_team_if_necessary(self, user: User, team: Team) -> None:
+        # Set organisation code from team's workgroup (which contains ods_code)
+        self.current_org_code = team.workgroup
+
         self.log_in(user)
         if self.select_a_team_heading.is_visible():
             self.page.get_by_role("radio", name=team.name).check()
