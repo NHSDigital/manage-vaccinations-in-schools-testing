@@ -45,7 +45,9 @@ def schedule_session_and_get_consent_url(
     team,
     dashboard_page,
     log_in_page,
-    sessions_page,
+    sessions_edit_page,
+    sessions_search_page,
+    sessions_overview_page,
 ):
     def wrapper(school: School, *programmes: Programme):
         log_in_page.navigate()
@@ -59,7 +61,7 @@ def schedule_session_and_get_consent_url(
             sessions_edit_page.schedule_a_valid_session(
                 offset_days=7, skip_weekends=False
             )
-        url = sessions_page.get_online_consent_url(*programmes)
+        url = sessions_overview_page.get_online_consent_url(*programmes)
         log_in_page.log_out()
         yield url
 
@@ -73,17 +75,21 @@ def schedule_mmr_session_and_get_consent_url(
     team,
     dashboard_page,
     log_in_page,
-    sessions_page,
+    sessions_edit_page,
+    sessions_search_page,
+    sessions_overview_page,
 ):
     def wrapper(school: School, *programmes: Programme):
         try:
             log_in_page.navigate()
             log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
             dashboard_page.click_sessions()
-            sessions_page.click_session_for_programme_group(school, programmes[0].group)
+            sessions_search_page.click_session_for_programme_group(
+                school, programmes[0].group
+            )
             sessions_overview_page.schedule_or_edit_session()
-            sessions_page.schedule_a_valid_mmr_session()
-            url = sessions_page.get_online_consent_url(*programmes)
+            sessions_edit_page.schedule_a_valid_mmr_session()
+            url = sessions_overview_page.get_online_consent_url(*programmes)
             log_in_page.log_out()
             yield url
         finally:
@@ -127,7 +133,9 @@ def upload_offline_vaccination(
     schools,
     dashboard_page,
     import_records_wizard_page,
-    sessions_page,
+    sessions_edit_page,
+    sessions_search_page,
+    sessions_overview_page,
     programmes_list_page,
     programme_children_page,
     programme_overview_page,
@@ -155,13 +163,15 @@ def upload_offline_vaccination(
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
 
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
         sessions_search_page.click_session_for_programme_group(school, programme.group)
         if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
             sessions_overview_page.schedule_or_edit_session()
             sessions_edit_page.schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        sessions_page.click_import_class_lists()
+        sessions_overview_page.click_import_class_lists()
         import_records_wizard_page.import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
@@ -169,8 +179,8 @@ def upload_offline_vaccination(
         )
         dashboard_page.click_mavis()
         dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, programme)
-        session_id = sessions_page.get_session_id_from_offline_excel()
+        sessions_search_page.click_session_for_programme_group(school, programme)
+        session_id = sessions_overview_page.get_session_id_from_offline_excel()
         dashboard_page.click_mavis()
         dashboard_page.click_import_records()
         imports_page.click_import_records()
@@ -197,7 +207,8 @@ def setup_session_and_batches_with_fixed_child(
     add_vaccine_batch,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
     import_records_wizard_page,
     children,
     log_in_page,
@@ -218,8 +229,10 @@ def setup_session_and_batches_with_fixed_child(
             }
             dashboard_page.click_mavis()
             dashboard_page.click_sessions()
-            sessions_page.click_session_for_programme_group(school, programme_group)
-            sessions_page.click_import_class_lists()
+            sessions_search_page.click_session_for_programme_group(
+                school, programme_group
+            )
+            sessions_overview_page.click_import_class_lists()
             import_records_wizard_page.import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,

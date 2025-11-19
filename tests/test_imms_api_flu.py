@@ -32,7 +32,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     schools,
     children,
     imms_api_helper,
-    sessions_page,
+    sessions_patient_page,
     vaccination_record_page,
     edit_vaccination_record_page,
 ):
@@ -90,7 +90,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     )
 
     # Step 6: Edit outcome to refused
-    sessions_page.click_vaccination_details(school)
+    sessions_patient_page.click_vaccination_details(school)
     vaccination_record_page.expect_vaccination_details(
         "Synced with NHS England?", "Synced"
     )
@@ -103,7 +103,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
 
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.SEQUIRUS, child)
-    sessions_page.click_vaccination_details(school)
+    sessions_patient_page.click_vaccination_details(school)
     vaccination_record_page.expect_vaccination_details(
         "Synced with NHS England?", "Not synced"
     )
@@ -113,7 +113,7 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     upload_offline_vaccination_nasal_flu,
     schools,
     imms_api_helper,
-    sessions_page,
+    sessions_patient_page,
     vaccination_record_page,
     edit_vaccination_record_page,
     children,
@@ -173,7 +173,7 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     )
 
     # Step 6: Edit outcome to refused
-    sessions_page.click_vaccination_details(school)
+    sessions_patient_page.click_vaccination_details(school)
     vaccination_record_page.expect_vaccination_details(
         "Synced with NHS England?", "Synced"
     )
@@ -186,7 +186,7 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
 
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.FLUENZ, child)
-    sessions_page.click_vaccination_details(school)
+    sessions_patient_page.click_vaccination_details(school)
     vaccination_record_page.expect_vaccination_details(
         "Synced with NHS England?", "Not synced"
     )

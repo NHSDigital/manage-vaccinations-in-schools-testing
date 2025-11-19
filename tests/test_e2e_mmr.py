@@ -22,7 +22,13 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
     online_consent_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_register_page,
+    sessions_triage_page,
+    sessions_patient_page,
+    sessions_vaccination_wizard_page,
+    sessions_record_vaccinations_page,
     start_page,
     schools,
     children,
@@ -73,17 +79,25 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     dashboard_page.click_sessions()
 
     # Triage step added for MMR
-    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_page.triage_mmr_patient(child, ConsentOption.MMR_EITHER)
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_overview_page.click_triage_tab()
+    sessions_triage_page.search_child(child)
+    sessions_patient_page.click_programme_tab(Programme.MMR)
+    sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
     dashboard_page.navigate()
     dashboard_page.click_sessions()
 
-    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_page.click_set_session_in_progress_for_today()
-    sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.MMR, mmr_batch_name)
-    )
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_overview_page.click_set_session_in_progress_for_today()
+
+    sessions_overview_page.click_register_tab()
+    sessions_register_page.register_child_as_attending(str(child))
+    sessions_register_page.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search_child(child)
+
+    vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
+    sessions_patient_page.set_up_vaccination(vaccination_record)
+    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
 
     dashboard_page.navigate()
     log_in_page.log_out()
@@ -93,7 +107,12 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
     online_consent_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_register_page,
+    sessions_record_vaccinations_page,
+    sessions_patient_page,
+    sessions_vaccination_wizard_page,
     start_page,
     schools,
     children,
@@ -146,19 +165,23 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     dashboard_page.click_sessions()
 
     # Dose 1 flow
-    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_page.click_set_session_in_progress_for_today()
-    sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.MMR, mmr_batch_name)
-    )
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_overview_page.click_set_session_in_progress_for_today()
+    sessions_overview_page.click_register_tab()
+    sessions_register_page.register_child_as_attending(str(child))
+    sessions_register_page.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search_child(child)
+
+    vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
+    sessions_patient_page.set_up_vaccination(vaccination_record)
+    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
 
     # Attempt to record second dose on the same day
     dashboard_page.navigate()
     dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_page.click_record_vaccinations_tab()
-    sessions_page.search_child_that_should_not_exist(child)
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_overview_page.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search_child_that_should_not_exist(child)
 
     dashboard_page.navigate()
     log_in_page.log_out()
@@ -168,7 +191,13 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
     online_consent_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_register_page,
+    sessions_triage_page,
+    sessions_patient_page,
+    sessions_vaccination_wizard_page,
+    sessions_record_vaccinations_page,
     start_page,
     schools,
     children,
@@ -227,17 +256,24 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     dashboard_page.click_sessions()
 
     # Triage step added for MMR
-    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_page.triage_mmr_patient(child, ConsentOption.MMR_EITHER)
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_overview_page.click_triage_tab()
+    sessions_triage_page.search_child(child)
+    sessions_patient_page.click_programme_tab(Programme.MMR)
+    sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
     dashboard_page.navigate()
     dashboard_page.click_sessions()
 
-    sessions_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_page.click_set_session_in_progress_for_today()
-    sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.MMR, mmr_batch_name)
-    )
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
+    sessions_overview_page.click_set_session_in_progress_for_today()
+    sessions_overview_page.click_register_tab()
+    sessions_register_page.register_child_as_attending(str(child))
+    sessions_register_page.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search_child(child)
+
+    vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
+    sessions_patient_page.set_up_vaccination(vaccination_record)
+    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
 
     dashboard_page.navigate()
     log_in_page.log_out()

@@ -125,10 +125,6 @@ class SessionsTabsMixin:
     def click_register_tab(self) -> None:
         self._select_tab("Register")
 
-    @step("Click on Session activity and notes tab")
-    def click_session_activity_and_notes(self) -> None:
-        self._select_tab("Session activity and notes")
-
     @step("Click on Overview tab")
     def click_overview_tab(self) -> None:
         self._select_tab("Overview")
@@ -253,6 +249,9 @@ class SessionsOverviewPage(SessionsTabsMixin):
             "button",
             name="Set session in progress for today",
         )
+        self.consent_refused_link = self.page.get_by_role(
+            "link", name="Consent refused"
+        )
 
     def get_total_for_category(self, category: str) -> int:
         category_locator = self.page.locator(
@@ -364,6 +363,10 @@ class SessionsOverviewPage(SessionsTabsMixin):
     def is_date_scheduled(self, date: datetime) -> bool:
         formatted_display_date = date.strftime("%d %B %Y").replace(" 0", " ")
         return self.page.get_by_text(formatted_display_date).is_visible()
+
+    @step("Click Consent refused")
+    def click_consent_refused(self) -> None:
+        self.consent_refused_link.click()
 
 
 class SessionsEditPage:
@@ -1005,6 +1008,10 @@ class SessionsPatientPage:
             expect(self.notes_length_error).to_be_visible()
             self.pre_screening_notes.fill("Prescreening notes")
             self.click_continue_button()
+
+    @step("Click on Session activity and notes tab")
+    def click_session_activity_and_notes(self) -> None:
+        self._select_tab("Session activity and notes")
 
 
 class SessionsPatientSessionActivityPage:

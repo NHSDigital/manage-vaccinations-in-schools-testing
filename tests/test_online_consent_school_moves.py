@@ -26,7 +26,8 @@ def setup_session_with_file_upload(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
     import_records_wizard_page,
     year_groups,
 ):
@@ -35,8 +36,8 @@ def setup_session_with_file_upload(
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(school, Programme.FLU)
-    sessions_page.click_import_class_lists()
+    sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
+    sessions_overview_page.click_import_class_lists()
     import_records_wizard_page.import_class_list(
         CohortsFileMapping.FIXED_CHILD,
         year_group,
@@ -51,7 +52,9 @@ def test_online_consent_school_moves_with_existing_patient(
     online_consent_page,
     schools,
     children,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_consent_page,
     dashboard_page,
     school_moves_page,
     review_school_move_page,
@@ -100,13 +103,13 @@ def test_online_consent_school_moves_with_existing_patient(
 
     dashboard_page.navigate()
     dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(schools[1], Programme.FLU)
+    sessions_search_page.click_session_for_programme_group(schools[1], Programme.FLU)
 
-    sessions_page.click_consent_tab()
-    sessions_page.select_consent_given_for_nasal_spray()
-    sessions_page.select_consent_given_for_injected_vaccine()
-    sessions_page.search_for(str(child))
-    sessions_page.verify_child_shows_correct_flu_consent_method(
+    sessions_overview_page.click_consent_tab()
+    sessions_consent_page.select_consent_given_for_nasal_spray()
+    sessions_consent_page.select_consent_given_for_injected_vaccine()
+    sessions_consent_page.search_for(str(child))
+    sessions_consent_page.verify_child_shows_correct_flu_consent_method(
         child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
 
@@ -116,7 +119,9 @@ def test_online_consent_school_moves_with_new_patient(
     online_consent_page,
     schools,
     children,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_consent_page,
     dashboard_page,
     unmatched_consent_responses_page,
     consent_response_page,
@@ -172,13 +177,13 @@ def test_online_consent_school_moves_with_new_patient(
 
     dashboard_page.navigate()
     dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(schools[1], Programme.FLU)
+    sessions_search_page.click_session_for_programme_group(schools[1], Programme.FLU)
 
-    sessions_page.click_consent_tab()
-    sessions_page.select_consent_given_for_nasal_spray()
-    sessions_page.select_consent_given_for_injected_vaccine()
-    sessions_page.search_for(str(child))
-    sessions_page.verify_child_shows_correct_flu_consent_method(
+    sessions_overview_page.click_consent_tab()
+    sessions_consent_page.select_consent_given_for_nasal_spray()
+    sessions_consent_page.select_consent_given_for_injected_vaccine()
+    sessions_consent_page.search_for(str(child))
+    sessions_consent_page.verify_child_shows_correct_flu_consent_method(
         child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
 

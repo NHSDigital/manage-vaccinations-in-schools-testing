@@ -32,7 +32,12 @@ def test_recording_flu_vaccination_e2e(
     flu_consent_url,
     setup_session_for_flu,
     online_consent_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_register_page,
+    sessions_patient_page,
+    sessions_vaccination_wizard_page,
+    sessions_record_vaccinations_page,
     children_search_page,
     child_record_page,
     vaccination_record_page,
@@ -44,6 +49,7 @@ def test_recording_flu_vaccination_e2e(
     nurse,
     team,
     consent_option,
+    edit_vaccination_record_page,
 ):
     """
     Test: End-to-end test for recording a flu vaccination for a child.
@@ -90,12 +96,18 @@ def test_recording_flu_vaccination_e2e(
     log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
     dashboard_page.click_sessions()
 
-    sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
-    sessions_page.click_set_session_in_progress_for_today()
-    sessions_page.register_child_as_attending(str(child))
-    sessions_page.record_vaccination_for_child(
-        VaccinationRecord(child, Programme.FLU, batch_name, consent_option)
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.FLU)
+    sessions_overview_page.click_set_session_in_progress_for_today()
+    sessions_overview_page.click_register_tab()
+    sessions_register_page.register_child_as_attending(str(child))
+    sessions_register_page.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search_child(child)
+
+    vaccination_record = VaccinationRecord(
+        child, Programme.FLU, batch_name, consent_option
     )
+    sessions_patient_page.set_up_vaccination(vaccination_record)
+    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
 
     # MAV-1831
     dashboard_page.navigate()
@@ -104,7 +116,9 @@ def test_recording_flu_vaccination_e2e(
     children_search_page.click_record_for_child(child)
     child_record_page.click_vaccination_details(schools[0])
     vaccination_record_page.click_edit_vaccination_record()
-    sessions_page.expect_text_to_not_be_visible("Incorrect vaccine given")
+    edit_vaccination_record_page.expect_text_to_not_be_visible(
+        "Incorrect vaccine given"
+    )
 
     dashboard_page.navigate()
     log_in_page.log_out()

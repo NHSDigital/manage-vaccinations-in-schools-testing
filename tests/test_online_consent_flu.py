@@ -27,7 +27,8 @@ def setup_session_with_file_upload(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
     import_records_wizard_page,
     year_groups,
 ):
@@ -36,8 +37,8 @@ def setup_session_with_file_upload(
 
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(school, Programme.FLU)
-    sessions_page.click_import_class_lists()
+    sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
+    sessions_overview_page.click_import_class_lists()
     import_records_wizard_page.import_class_list(
         CohortsFileMapping.FIXED_CHILD,
         year_group,
@@ -184,7 +185,9 @@ def test_flu_consent_method_displayed_correctly(
     children,
     consents,
     start_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_consent_page,
     dashboard_page,
 ):
     """
@@ -245,16 +248,18 @@ def test_flu_consent_method_displayed_correctly(
     dashboard_page.navigate()
     dashboard_page.click_sessions()
 
-    sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
-    sessions_page.click_consent_tab()
-    sessions_page.select_consent_given_for_nasal_spray()
-    sessions_page.select_consent_given_for_injected_vaccine()
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.FLU)
+    sessions_overview_page.click_consent_tab()
+    sessions_consent_page.select_consent_given_for_nasal_spray()
+    sessions_consent_page.select_consent_given_for_injected_vaccine()
 
-    sessions_page.search_for(str(child))
-    sessions_page.verify_child_shows_correct_flu_consent_method(child, consents[2])
+    sessions_consent_page.search_for(str(child))
+    sessions_consent_page.verify_child_shows_correct_flu_consent_method(
+        child, consents[2]
+    )
 
     # Verify in session download
     dashboard_page.navigate()
     dashboard_page.click_sessions()
-    sessions_page.click_session_for_programme_group(schools[0], Programme.FLU)
-    sessions_page.verify_consent_message_in_excel()
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.FLU)
+    sessions_overview_page.verify_consent_message_in_excel()
