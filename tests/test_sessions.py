@@ -356,10 +356,16 @@ def test_verify_excel_export_and_clinic_invitation(
 
 
 @issue("MAV-2023")
+@pytest.mark.parametrize(
+    "programme",
+    [Programme.HPV, Programme.FLU, Programme.MMR, Programme.TD_IPV, Programme.MENACWY],
+    ids=lambda p: f"Programme: {p.name}",
+)
 def test_session_verify_consent_reminders_and_pdf_downloads(
     setup_fixed_child,
     sessions_page,
     schools,
+    programme,
 ):
     """
     Test: Click the 'Send reminders' link and PDF download links in sessions,
@@ -372,12 +378,12 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
        programme exist.
     Verification:
     - No errors occur when sending reminders or downloading PDFs.
-    - PDF contains expected pre-screening questions for HPV programme.
+    - PDF contains expected pre-screening questions for the programme.
     """
-    school = schools[Programme.HPV][0]
+    school = schools[programme][0]
 
     sessions_page.click_send_reminders(school)
-    sessions_page.download_and_verify_consent_form(Programme.HPV)
+    sessions_page.download_and_verify_consent_form(programme)
 
 
 def test_editing_session_programmes(setup_fixed_child, sessions_page, children):
