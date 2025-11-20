@@ -3,6 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import Programme
+from mavis.test.utils import get_offset_date
 
 pytestmark = pytest.mark.school_moves
 
@@ -13,7 +14,9 @@ def setup_confirm_and_ignore(
     test_data,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_edit_page,
     import_records_wizard_page,
     year_groups,
     children_search_page,
@@ -30,10 +33,10 @@ def setup_confirm_and_ignore(
     )
 
     def upload_class_list():
-        sessions_page.click_import_class_lists()
+        sessions_overview_page.click_import_class_lists()
         import_records_wizard_page.select_year_groups(year_group)
-        sessions_page.choose_file_child_records(input_file_path)
-        sessions_page.click_continue_button()
+        import_records_wizard_page.set_input_file(input_file_path)
+        import_records_wizard_page.click_continue()
         import_records_wizard_page.record_upload_time()
         import_records_wizard_page.click_uploaded_file_datetime()
         import_records_wizard_page.wait_for_processed()
@@ -41,40 +44,32 @@ def setup_confirm_and_ignore(
             import_records_wizard_page.approve_preview_if_shown()
         import_records_wizard_page.verify_upload_output(output_file_path)
 
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_next_week(
-            schools[0], Programme.HPV.group
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_next_week(
-            schools[1], Programme.HPV.group
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(schools[0], Programme.HPV)
-        upload_class_list()
-        children_search_page.click_record_for_child(children[0])
-        child_record_page.click_activity_log()
-        child_activity_log_page.expect_activity_log_header(
-            f"Added to the session at {schools[0]}"
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(schools[1], Programme.HPV)
-        upload_class_list()
-        dashboard_page.click_mavis()
-        dashboard_page.click_school_moves()
-        yield
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[0])
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(schools[1])
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.HPV)
+    if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
+        sessions_overview_page.schedule_or_edit_session()
+        sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(schools[1], Programme.HPV)
+    if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
+        sessions_overview_page.schedule_or_edit_session()
+        sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(schools[0], Programme.HPV)
+    upload_class_list()
+    children_search_page.click_record_for_child(children[0])
+    child_record_page.click_activity_log()
+    child_activity_log_page.expect_activity_log_header(
+        f"Added to the session at {schools[0]}"
+    )
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(schools[1], Programme.HPV)
+    upload_class_list()
+    dashboard_page.click_mavis()
+    dashboard_page.click_school_moves()
 
 
 def test_confirm_and_ignore(

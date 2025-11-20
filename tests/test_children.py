@@ -3,6 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
+from mavis.test.utils import get_offset_date
 
 pytestmark = pytest.mark.children
 
@@ -12,7 +13,9 @@ def setup_children_session(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_edit_page,
+    sessions_overview_page,
+    sessions_search_page,
     import_records_wizard_page,
     year_groups,
 ):
@@ -20,20 +23,21 @@ def setup_children_session(
         school = schools[Programme.HPV][0]
         year_group = year_groups[Programme.HPV]
 
-        try:
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
-            sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
-            sessions_page.click_import_class_lists()
-            import_records_wizard_page.import_class_list(class_list_file, year_group)
-            dashboard_page.click_mavis()
-            dashboard_page.click_children()
-            yield
-        finally:
-            dashboard_page.navigate()
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
-            sessions_page.delete_all_sessions(school)
+        dashboard_page.click_mavis()
+        dashboard_page.click_sessions()
+        sessions_search_page.click_session_for_programme_group(
+            school, Programme.HPV.group
+        )
+        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
+            sessions_overview_page.schedule_or_edit_session()
+            sessions_edit_page.schedule_a_valid_session(
+                offset_days=0, skip_weekends=False
+            )
+        sessions_overview_page.click_import_class_lists()
+        import_records_wizard_page.import_class_list(class_list_file, year_group)
+        dashboard_page.click_mavis()
+        dashboard_page.click_children()
+        yield
 
     return _setup
 
@@ -57,46 +61,44 @@ def setup_mav_853(
     programmes_list_page,
     programme_overview_page,
     programme_children_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_edit_page,
     year_groups,
     imports_page,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
-        sessions_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(
-            ClassFileMapping.RANDOM_CHILD, year_group
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
-        session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.click_mavis()
-        dashboard_page.click_programmes()
-        programmes_list_page.click_programme_for_current_year(Programme.HPV)
-        programme_overview_page.click_children_tab()
-        programme_children_page.click_import_child_records()
-        import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
-        dashboard_page.click_mavis()
-        dashboard_page.click_import_records()
-        imports_page.click_import_records()
-        import_records_wizard_page.navigate_to_vaccination_records_import()
-        import_records_wizard_page.upload_and_verify_output(
-            file_mapping=VaccsFileMapping.NOT_GIVEN,
-            session_id=session_id,
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_children()
-        yield
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, Programme.HPV.group)
+    if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
+        sessions_overview_page.schedule_or_edit_session()
+        sessions_edit_page.schedule_a_valid_session(offset_days=0, skip_weekends=False)
+    sessions_overview_page.click_import_class_lists()
+    import_records_wizard_page.import_class_list(
+        ClassFileMapping.RANDOM_CHILD, year_group
+    )
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
+    session_id = sessions_overview_page.get_session_id_from_offline_excel()
+    dashboard_page.click_mavis()
+    dashboard_page.click_programmes()
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.click_import_child_records()
+    import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
+    dashboard_page.click_mavis()
+    dashboard_page.click_import_records()
+    imports_page.click_import_records()
+    import_records_wizard_page.navigate_to_vaccination_records_import()
+    import_records_wizard_page.upload_and_verify_output(
+        file_mapping=VaccsFileMapping.NOT_GIVEN,
+        session_id=session_id,
+    )
+    dashboard_page.click_mavis()
+    dashboard_page.click_children()
 
 
 @issue("MAV-853")

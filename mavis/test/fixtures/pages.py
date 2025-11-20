@@ -34,7 +34,18 @@ from mavis.test.pages import (
     ReportsVaccinationsPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
-    SessionsPage,
+    SessionsChildrenPage,
+    SessionsConsentPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsPatientSessionActivityPage,
+    SessionsPsdPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsTriagePage,
+    SessionsVaccinationWizardPage,
     StartPage,
     TeamPage,
     UnmatchedConsentResponsesPage,
@@ -193,8 +204,65 @@ def school_moves_page(page: Page) -> SchoolMovesPage:
 
 
 @pytest.fixture
-def sessions_page(page: Page) -> SessionsPage:
-    return SessionsPage(page)
+def sessions_psd_page(page: Page) -> SessionsPsdPage:
+    return SessionsPsdPage(page)
+
+
+@pytest.fixture
+def sessions_search_page(page: Page) -> SessionsSearchPage:
+    return SessionsSearchPage(page)
+
+
+@pytest.fixture
+def sessions_overview_page(page: Page) -> SessionsOverviewPage:
+    return SessionsOverviewPage(page)
+
+
+@pytest.fixture
+def sessions_edit_page(page: Page) -> SessionsEditPage:
+    return SessionsEditPage(page)
+
+
+@pytest.fixture
+def sessions_children_page(page: Page) -> SessionsChildrenPage:
+    return SessionsChildrenPage(page)
+
+
+@pytest.fixture
+def sessions_consent_page(page: Page) -> SessionsConsentPage:
+    return SessionsConsentPage(page)
+
+
+@pytest.fixture
+def sessions_triage_page(page: Page) -> SessionsTriagePage:
+    return SessionsTriagePage(page)
+
+
+@pytest.fixture
+def sessions_register_page(page: Page) -> SessionsRegisterPage:
+    return SessionsRegisterPage(page)
+
+
+@pytest.fixture
+def sessions_record_vaccinations_page(page: Page) -> SessionsRecordVaccinationsPage:
+    return SessionsRecordVaccinationsPage(page)
+
+
+@pytest.fixture
+def sessions_patient_page(page: Page) -> SessionsPatientPage:
+    return SessionsPatientPage(page)
+
+
+@pytest.fixture
+def sessions_patient_session_activity_page(
+    page: Page,
+) -> SessionsPatientSessionActivityPage:
+    return SessionsPatientSessionActivityPage(page)
+
+
+@pytest.fixture
+def sessions_vaccination_wizard_page(page: Page) -> SessionsVaccinationWizardPage:
+    return SessionsVaccinationWizardPage(page)
 
 
 @pytest.fixture

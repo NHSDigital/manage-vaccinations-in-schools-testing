@@ -2,6 +2,7 @@ import pytest
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import Programme
+from mavis.test.utils import get_offset_date
 
 
 @pytest.fixture
@@ -9,30 +10,26 @@ def setup_class_list_import(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_edit_page,
     imports_page,
     import_records_wizard_page,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_next_week(
-            school, Programme.HPV.group
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_import_records()
-        imports_page.click_import_records()
-        import_records_wizard_page.navigate_to_class_list_record_import(
-            str(school), year_group
-        )
-        yield
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
+    if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
+        sessions_overview_page.schedule_or_edit_session()
+        sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
+    dashboard_page.click_mavis()
+    dashboard_page.click_import_records()
+    imports_page.click_import_records()
+    import_records_wizard_page.navigate_to_class_list_record_import(
+        str(school), year_group
+    )
 
 
 @pytest.mark.classlist

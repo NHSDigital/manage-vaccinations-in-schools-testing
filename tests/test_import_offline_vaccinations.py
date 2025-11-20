@@ -3,6 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
+from mavis.test.utils import get_offset_date
 
 
 @pytest.fixture
@@ -10,7 +11,9 @@ def setup_vaccs(
     log_in_as_nurse,
     schools,
     dashboard_page,
-    sessions_page,
+    sessions_search_page,
+    sessions_overview_page,
+    sessions_edit_page,
     import_records_wizard_page,
     imports_page,
     year_groups,
@@ -18,27 +21,24 @@ def setup_vaccs(
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
-    try:
-        dashboard_page.click_sessions()
-        sessions_page.ensure_session_scheduled_for_today(school, Programme.HPV)
-        sessions_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(
-            ClassFileMapping.RANDOM_CHILD, year_group
-        )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.click_session_for_programme_group(school, Programme.HPV)
-        session_id = sessions_page.get_session_id_from_offline_excel()
-        dashboard_page.click_mavis()
-        dashboard_page.click_import_records()
-        imports_page.click_import_records()
-        import_records_wizard_page.navigate_to_vaccination_records_import()
-        yield session_id
-    finally:
-        dashboard_page.navigate()
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_page.delete_all_sessions(school)
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, Programme.HPV.group)
+    if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
+        sessions_overview_page.schedule_or_edit_session()
+        sessions_edit_page.schedule_a_valid_session(offset_days=0, skip_weekends=False)
+    sessions_overview_page.click_import_class_lists()
+    import_records_wizard_page.import_class_list(
+        ClassFileMapping.RANDOM_CHILD, year_group
+    )
+    dashboard_page.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
+    session_id = sessions_overview_page.get_session_id_from_offline_excel()
+    dashboard_page.click_mavis()
+    dashboard_page.click_import_records()
+    imports_page.click_import_records()
+    import_records_wizard_page.navigate_to_vaccination_records_import()
+    return session_id
 
 
 @pytest.mark.vaccinations

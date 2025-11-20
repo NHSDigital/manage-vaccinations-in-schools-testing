@@ -89,3 +89,6 @@ class EditVaccinationRecordPage:
     @step("Click on Continue")
     def click_continue(self) -> None:
         self.continue_button.click()
+
+    def expect_text_to_not_be_visible(self, text: str) -> None:
+        expect(self.page.get_by_text(text)).not_to_be_visible()
