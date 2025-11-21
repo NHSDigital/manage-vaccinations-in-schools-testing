@@ -83,7 +83,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -124,7 +124,7 @@ jobs:
     env:
       RESULT_PATH: ${{ github.run_number }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
       - name: Configure AWS credentials
