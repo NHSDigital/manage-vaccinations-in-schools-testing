@@ -40,5 +40,7 @@ def browser_context_args(
             **browser_context_args,
             "extra_http_headers": {"Authorization": f"Basic {basic_auth_token}"},
         }
+    if basic_auth_credentials["username"] and basic_auth_credentials["password"]:
+        return {**browser_context_args, "http_credentials": basic_auth_credentials}
 
-    return {**browser_context_args, "http_credentials": basic_auth_credentials}
+    return browser_context_args
