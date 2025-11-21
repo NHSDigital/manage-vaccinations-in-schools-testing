@@ -66,7 +66,7 @@ jobs:
       # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       
       - name: Cache jmeter
         id: cache-jmeter

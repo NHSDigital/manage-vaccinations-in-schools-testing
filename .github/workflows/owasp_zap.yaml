@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan Mavis on QA with the OWASP ZAP full scan
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0

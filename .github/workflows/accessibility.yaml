@@ -103,7 +103,7 @@ jobs:
             echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
           fi
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
