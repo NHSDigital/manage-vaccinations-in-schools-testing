@@ -101,7 +101,7 @@ def test_recording_flu_vaccination_e2e(
     sessions_overview_page.click_register_tab()
     sessions_register_page.register_child_as_attending(str(child))
     sessions_register_page.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search_child(child)
+    sessions_record_vaccinations_page.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
         child, Programme.FLU, batch_name, consent_option

@@ -99,7 +99,7 @@ def test_tallying(  # noqa: PLR0915
     assert tally_totals[TallyCategory.NO_RESPONSE] > 0
 
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -113,7 +113,7 @@ def test_tallying(  # noqa: PLR0915
     sessions_overview_page.check_all_totals(tally_totals)
 
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_response_from_parent(child.parents[0])
     sessions_patient_page.click_withdraw_consent()
     nurse_consent_wizard_page.click_consent_refusal_reason(
@@ -129,7 +129,7 @@ def test_tallying(  # noqa: PLR0915
     sessions_overview_page.check_all_totals(tally_totals)
 
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.invalidate_parent_refusal(child.parents[0])
     sessions_patient_page.go_back_to_session_for_school(school)
 
@@ -138,7 +138,7 @@ def test_tallying(  # noqa: PLR0915
     sessions_overview_page.check_all_totals(tally_totals)
 
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[1])
@@ -156,7 +156,7 @@ def test_tallying(  # noqa: PLR0915
     sessions_overview_page.click_register_tab()
     sessions_register_page.register_child_as_attending(str(child))
     sessions_register_page.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search_child(child)
+    sessions_record_vaccinations_page.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
         child, Programme.FLU, batch_name, ConsentOption.NASAL_SPRAY

@@ -119,7 +119,7 @@ def test_delivering_vaccination_after_psd(
     sessions_edit_page.click_save_changes()
 
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -144,7 +144,7 @@ def test_delivering_vaccination_after_psd(
     sessions_overview_page.click_register_tab()
     sessions_register_page.register_child_as_attending(str(child))
     sessions_register_page.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search_child(child)
+    sessions_record_vaccinations_page.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
         child, Programme.FLU, fluenz_batch_name, ConsentOption.NASAL_SPRAY_OR_INJECTION
