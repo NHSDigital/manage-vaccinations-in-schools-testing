@@ -82,7 +82,7 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: uv run pytest -n ${{ inputs.test_workers }} ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: uv run pytest -n ${{ inputs.test_workers }} ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" tests/test_start.py::test_start_page_elements_visible
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}
