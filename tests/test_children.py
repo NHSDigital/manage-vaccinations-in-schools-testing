@@ -17,13 +17,13 @@ def setup_children_session(
     sessions_overview_page,
     sessions_search_page,
     import_records_wizard_page,
+    imports_page,
     year_groups,
 ):
     def _setup(class_list_file):
         school = schools[Programme.HPV][0]
         year_group = year_groups[Programme.HPV]
 
-        dashboard_page.click_mavis()
         dashboard_page.click_sessions()
         sessions_search_page.click_session_for_programme_group(
             school, Programme.HPV.group
@@ -35,8 +35,7 @@ def setup_children_session(
             )
         sessions_overview_page.click_import_class_lists()
         import_records_wizard_page.import_class_list(class_list_file, year_group)
-        dashboard_page.click_mavis()
-        dashboard_page.click_children()
+        imports_page.header.click_children_header()
         yield
 
     return _setup
@@ -79,26 +78,23 @@ def setup_mav_853(
     import_records_wizard_page.import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    imports_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     session_id = sessions_overview_page.get_session_id_from_offline_excel()
-    dashboard_page.click_mavis()
-    dashboard_page.click_programmes()
+    sessions_overview_page.header.click_programmes_header()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
     programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
-    dashboard_page.click_mavis()
-    dashboard_page.click_imports()
+
+    imports_page.header.click_imports_header()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
     import_records_wizard_page.upload_and_verify_output(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
 
 
 @issue("MAV-853")

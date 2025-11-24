@@ -7,6 +7,7 @@ from playwright.sync_api import Page, expect
 from mavis.test.annotations import step
 from mavis.test.data import FileMapping, TestData, read_scenario_list_from_file
 from mavis.test.models import Programme
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import (
     format_datetime_for_upload_link,
     get_current_datetime,
@@ -20,8 +21,9 @@ class ImportRecordsWizardPage:
         page: Page,
         test_data: TestData,
     ) -> None:
-        self.test_data = test_data
         self.page = page
+        self.test_data = test_data
+        self.header = HeaderComponent(page)
 
         self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
@@ -252,6 +254,8 @@ class ImportsPage:
         page: Page,
     ) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.upload_button = self.page.get_by_role(
             "button",
             name="Upload records",

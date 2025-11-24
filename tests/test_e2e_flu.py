@@ -112,8 +112,7 @@ def test_recording_flu_vaccination_e2e(
     sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
 
     # MAV-1831
-    dashboard_page.navigate()
-    dashboard_page.click_children()
+    sessions_patient_page.header.click_children_header()
     children_search_page.search_for_a_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.click_vaccination_details(schools[0])

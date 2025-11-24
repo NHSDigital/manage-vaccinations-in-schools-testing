@@ -30,12 +30,10 @@ def setup_vaccs(
     import_records_wizard_page.import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    imports_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     session_id = sessions_overview_page.get_session_id_from_offline_excel()
-    dashboard_page.click_mavis()
-    dashboard_page.click_imports()
+    sessions_overview_page.header.click_imports_header()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
     return session_id
@@ -127,8 +125,7 @@ def test_vaccination_file_upload_duplicate_records(
         VaccsFileMapping.DUP_1,
         session_id=setup_vaccs,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_imports()
+    imports_page.header.click_imports_header()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
     import_records_wizard_page.upload_and_verify_output(
@@ -188,8 +185,8 @@ def test_vaccination_file_upload_empty_file(setup_vaccs, import_records_wizard_p
 def test_vaccination_file_upload_creates_child_no_setting(
     setup_vaccs,
     schools,
-    dashboard_page,
     import_records_wizard_page,
+    imports_page,
     children_search_page,
     child_record_page,
     vaccination_record_page,
@@ -212,8 +209,7 @@ def test_vaccination_file_upload_creates_child_no_setting(
     import_records_wizard_page.upload_and_verify_output(
         VaccsFileMapping.NO_CARE_SETTING
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
 
     children_search_page.click_advanced_filters()
     children_search_page.check_children_aged_out_of_programmes()
@@ -229,7 +225,7 @@ def test_vaccination_file_upload_whitespace_normalization(
     setup_vaccs,
     import_records_wizard_page,
     children_search_page,
-    dashboard_page,
+    imports_page,
 ):
     """
     Test: Upload a vaccination records file with extra whitespace and
@@ -247,8 +243,7 @@ def test_vaccination_file_upload_whitespace_normalization(
         VaccsFileMapping.WHITESPACE,
         session_id=setup_vaccs,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
     children_search_page.verify_list_has_been_uploaded(input_file, is_vaccinations=True)
 
 

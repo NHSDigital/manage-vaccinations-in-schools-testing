@@ -96,7 +96,7 @@ def test_archive_unmatched_consent_response_removes_from_list(
 
 def test_match_unmatched_consent_response_and_verify_activity_log(
     give_online_consent,
-    go_to_unmatched_consent_responses,
+    log_in_as_nurse,
     children,
     children_search_page,
     child_record_page,
@@ -109,6 +109,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     programme_children_page,
     unmatched_consent_responses_page,
     import_records_wizard_page,
+    imports_page,
 ):
     """
     Test: Match an unmatched consent response to a child and verify activity log.
@@ -125,15 +126,12 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     """
     child = children[Programme.HPV][0]
 
-    dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
     programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
-
-    dashboard_page.click_mavis()
-    dashboard_page.click_unmatched_consent_responses()
+    imports_page.header.click_consent_responses_header()
 
     unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
 
@@ -143,8 +141,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     expect(unmatched_consent_responses_page.matched_alert).to_be_visible()
     unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    unmatched_consent_responses_page.header.click_children_header()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.tabs.click_activity_log()
@@ -160,7 +157,6 @@ def test_create_child_record_from_consent_with_nhs_number(
     child_activity_log_page,
     consent_response_page,
     create_new_record_consent_response_page,
-    dashboard_page,
     unmatched_consent_responses_page,
 ):
     """
@@ -185,8 +181,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     expect(unmatched_consent_responses_page.created_alert).to_be_visible()
     unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    unmatched_consent_responses_page.header.click_children_header()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.tabs.click_activity_log()
@@ -227,8 +222,7 @@ def test_create_child_record_from_consent_without_nhs_number(
     expect(unmatched_consent_responses_page.created_alert).to_be_visible()
     unmatched_consent_responses_page.check_response_for_child_not_visible(child)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    unmatched_consent_responses_page.header.click_children_header()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.tabs.click_activity_log()
@@ -238,7 +232,7 @@ def test_create_child_record_from_consent_without_nhs_number(
 @pytest.mark.accessibility
 def test_accessibility(
     give_online_consent,
-    go_to_unmatched_consent_responses,
+    log_in_as_nurse,
     accessibility_helper,
     children,
     dashboard_page,
@@ -249,6 +243,7 @@ def test_accessibility(
     match_consent_response_page,
     consent_response_page,
     unmatched_consent_responses_page,
+    imports_page,
 ):
     """
     Test: Check accessibility of consent response pages.
@@ -260,15 +255,13 @@ def test_accessibility(
     """
     child = children[Programme.HPV][0]
 
-    dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
     programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_unmatched_consent_responses()
+    imports_page.header.click_consent_responses_header()
     accessibility_helper.check_accessibility()
 
     unmatched_consent_responses_page.click_parent_on_consent_record_for_child(child)
@@ -284,10 +277,9 @@ def test_accessibility(
 @issue("MAV-2681")
 def test_match_consent_with_vaccination_record_no_service_error(
     give_online_consent,
-    go_to_unmatched_consent_responses,
+    log_in_as_nurse,
     upload_offline_vaccination,
     children,
-    children_search_page,
     consent_response_page,
     dashboard_page,
     match_consent_response_page,
@@ -295,6 +287,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     programme_overview_page,
     programme_children_page,
     import_records_wizard_page,
+    imports_page,
     unmatched_consent_responses_page,
     service_error_page,
 ):
@@ -319,7 +312,6 @@ def test_match_consent_with_vaccination_record_no_service_error(
     child_with_consent = children[Programme.HPV][0]
 
     # Step 2: Import a class list to create searchable child records for both children
-    dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
     programme_overview_page.tabs.click_children_tab()
@@ -332,8 +324,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     child_with_vaccination = children[Programme.HPV][1]
 
     # Navigate back to unmatched consent responses
-    dashboard_page.click_mavis()
-    dashboard_page.click_unmatched_consent_responses()
+    imports_page.header.click_unmatched_consent_responses_header()
 
     # Step 4: Navigate to unmatched consent responses and attempt to search for
     # the patient who has vaccination record (this tests the edge case)

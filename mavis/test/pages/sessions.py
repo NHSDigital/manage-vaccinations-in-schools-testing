@@ -17,6 +17,7 @@ from mavis.test.models import (
     School,
     VaccinationRecord,
 )
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
     expect_alert_text,
@@ -152,6 +153,7 @@ class SessionsPsdPage:
         self.page = page
         self.search = SearchComponent(page)
         self.tabs = SessionsTabs(page)
+        self.header = HeaderComponent(page)
 
         self.add_new_psds_link = self.page.get_by_role(
             "link",
@@ -196,6 +198,7 @@ class SessionsSearchPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.search = SearchComponent(page)
+        self.header = HeaderComponent(page)
 
     @step("Click on {2} session at {1}")
     def click_session_for_programme_group(
@@ -224,6 +227,7 @@ class SessionsOverviewPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.tabs = SessionsTabs(page)
+        self.header = HeaderComponent(page)
 
         self.schedule_sessions_link = self.page.get_by_role(
             "link",
@@ -376,6 +380,8 @@ class SessionsOverviewPage:
 class SessionsEditPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.add_another_date_button = self.page.get_by_role(
             "button",
             name="Add another date",
@@ -603,6 +609,7 @@ class SessionsChildrenPage:
         self.page = page
         self.tabs = SessionsTabs(page)
         self.search = SearchComponent(page)
+        self.header = HeaderComponent(page)
 
         self.needs_consent_radio = self.page.get_by_role(
             "radio",
@@ -677,6 +684,7 @@ class SessionsRegisterPage:
         self.page = page
         self.tabs = SessionsTabs(page)
         self.search = SearchComponent(page)
+        self.header = HeaderComponent(page)
 
         self.attending_button = self.page.get_by_role("button", name="Attending").first
 
@@ -698,11 +706,14 @@ class SessionsRecordVaccinationsPage:
         self.page = page
         self.tabs = SessionsTabs(page)
         self.search = SearchComponent(page)
+        self.header = HeaderComponent(page)
 
 
 class SessionsPatientPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.update_triage_outcome_link = self.page.get_by_role(
             "link",
             name="Update triage outcome",
@@ -965,6 +976,8 @@ class SessionsPatientPage:
 class SessionsPatientSessionActivityPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.note_textbox = self.page.get_by_role("textbox", name="Note")
         self.add_a_note_span = self.page.get_by_text("Add a note")
         self.save_note_button = self.page.get_by_role("button", name="Save note")
@@ -1002,6 +1015,8 @@ class SessionsPatientSessionActivityPage:
 class SessionsVaccinationWizardPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.vaccination_notes = self.page.get_by_role(
             "textbox",

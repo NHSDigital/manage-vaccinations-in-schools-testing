@@ -9,6 +9,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import Programme
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import (
     get_current_datetime_compact,
 )
@@ -39,6 +40,7 @@ class ReportsVaccinationsPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.tabs = ReportsTabs(page)
+        self.header = HeaderComponent(page)
 
         self.cohort_heading = self.page.get_by_role(
             "heading", name="Cohort", exact=True
@@ -115,6 +117,7 @@ class ReportsDownloadPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.tabs = ReportsTabs(page)
+        self.header = HeaderComponent(page)
 
         self.aggregate_data_radio = self.page.get_by_role(
             "radio", name="Aggregate vaccination data"

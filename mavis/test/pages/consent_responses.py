@@ -2,12 +2,15 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import Child, Relationship
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import reload_until_element_is_visible
 
 
 class UnmatchedConsentResponsesPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.rows = page.get_by_role("row")
         self.empty_paragraph = page.get_by_text(
             "There are currently no unmatched consent responses.",
@@ -42,6 +45,8 @@ class UnmatchedConsentResponsesPage:
 class ConsentResponsePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.archive_link = page.get_by_role("link", name="Archive", exact=True)
         self.create_new_record_link = page.get_by_role(
             "link",
@@ -66,6 +71,8 @@ class ConsentResponsePage:
 class ArchiveConsentResponsePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.notes_textbox = page.get_by_role("textbox", name="Notes")
         self.archive_button = page.get_by_role("button", name="Archive")
 
@@ -78,6 +85,8 @@ class ArchiveConsentResponsePage:
 class CreateNewRecordConsentResponsePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.create_new_record_button = page.get_by_role(
             "button",
             name="Create a new record from response",
@@ -91,6 +100,8 @@ class CreateNewRecordConsentResponsePage:
 class MatchConsentResponsePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.search_textbox = page.get_by_role("textbox", name="Search")
         self.search_button = page.get_by_role("button", name="Search")
         self.link_button = page.get_by_role("button", name="Link response with record")

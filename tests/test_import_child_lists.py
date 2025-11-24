@@ -103,7 +103,7 @@ def test_child_list_file_upload_whitespace_normalization(
     setup_child_import,
     import_records_wizard_page,
     children_search_page,
-    dashboard_page,
+    imports_page,
 ):
     """
     Test: Upload a child list file with extra whitespace and verify normalization.
@@ -117,8 +117,7 @@ def test_child_list_file_upload_whitespace_normalization(
     input_file, _ = import_records_wizard_page.upload_and_verify_output(
         ChildFileMapping.WHITESPACE,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
     children_search_page.verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
     )

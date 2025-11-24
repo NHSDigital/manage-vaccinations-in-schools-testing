@@ -4,11 +4,13 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import DeliverySite
+from mavis.test.pages.header import HeaderComponent
 
 
 class VaccinationRecordPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
 
         self.edit_vaccination_record_button = page.get_by_role(
             "button", name="Edit vaccination record"
@@ -37,6 +39,7 @@ class VaccinationRecordPage:
 class EditVaccinationRecordPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
 
         self.edit_vaccination_record_button = page.get_by_role(
             "button", name="Edit vaccination record"

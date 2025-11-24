@@ -65,8 +65,7 @@ def test_report_view(
         "Vaccinated", expected_vaccinated_percentage
     )
 
-    dashboard_page.navigate()
-    dashboard_page.click_children()
+    reports_vaccinations_page.header.click_children_header()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.click_vaccination_details(school)
