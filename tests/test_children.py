@@ -3,7 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
-from mavis.test.utils import get_offset_date
+from mavis.test.utils import expect_alert_text, get_offset_date
 
 pytestmark = pytest.mark.children
 
@@ -169,7 +169,7 @@ def test_invalid_nhs_number_change_is_rejected(
     child_edit_page.click_change_nhs_no()
     child_edit_page.fill_nhs_no_for_child(child, "9123456789")
     child_edit_page.click_continue()
-    child_record_page.expect_text_in_alert("Enter a valid NHS number")
+    expect_alert_text(child_record_page.page, "Enter a valid NHS number")
 
 
 @issue("MAV-1839")
@@ -200,7 +200,7 @@ def test_merge_child_records_does_not_crash(
     child_record_page.click_archive_child_record()
     child_archive_page.click_its_a_duplicate(child2.nhs_number)
     child_archive_page.click_archive_record()
-    child_record_page.expect_text_in_alert("This record has been archived")
+    expect_alert_text(child_record_page.page, "This record has been archived")
 
 
 @pytest.mark.accessibility

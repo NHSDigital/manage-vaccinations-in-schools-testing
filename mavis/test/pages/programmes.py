@@ -2,7 +2,7 @@ from datetime import datetime
 from io import StringIO
 
 import pandas as pd
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from mavis.test.annotations import step
 from mavis.test.data import TestData
@@ -221,6 +221,3 @@ class ProgrammeChildrenPage(ProgrammeTabsMixin):
     @step("Click on Resolve duplicate")
     def click_resolve_duplicate(self) -> None:
         self.resolve_duplicate_button.click()
-
-    def expect_alert_text(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)

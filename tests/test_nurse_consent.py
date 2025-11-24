@@ -3,7 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import ConsentMethod, DeliverySite, Programme, Vaccine
-from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, get_offset_date
+from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, expect_alert_text, get_offset_date
 
 pytestmark = pytest.mark.consent
 
@@ -328,7 +328,7 @@ def test_conflicting_consent_with_gillick_consent(
 
     nurse_consent_wizard_page.select_gillick_competent_child()
     nurse_consent_wizard_page.record_child_positive_consent()
-    nurse_consent_wizard_page.expect_text_in_alert(f"Consent recorded for {child!s}")
+    expect_alert_text(nurse_consent_wizard_page.page, f"Consent recorded for {child!s}")
 
     sessions_consent_page.select_consent_given_filters_for_programme(Programme.HPV)
     sessions_consent_page.search_and_click_child(child)
