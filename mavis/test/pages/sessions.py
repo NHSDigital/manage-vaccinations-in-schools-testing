@@ -19,6 +19,7 @@ from mavis.test.models import (
 )
 from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
+    expect_alert_text,
     get_current_datetime_compact,
     get_day_month_year_from_compact_date,
     get_offset_date,
@@ -431,7 +432,7 @@ class SessionsEditPage:
         self.add_or_change_session_dates()
         self.fill_date_fields(_invalid_date)
         self.click_continue_button()
-        self.expect_alert_text("Enter a date")
+        expect_alert_text(self.page, "Enter a date")
         self.click_back()
 
     def create_session_in_previous_academic_year(self) -> None:
@@ -439,7 +440,9 @@ class SessionsEditPage:
         self.add_or_change_session_dates()
         self.fill_date_fields(_previous_year_date)
         self.click_continue_button()
-        self.expect_alert_text("Enter a date on or after the start of the school year")
+        expect_alert_text(
+            self.page, "Enter a date on or after the start of the school year"
+        )
         self.click_back()
 
     def create_session_in_next_academic_year(self) -> None:
@@ -447,8 +450,8 @@ class SessionsEditPage:
         self.add_or_change_session_dates()
         self.fill_date_fields(_next_year_date)
         self.click_continue_button()
-        self.expect_alert_text(
-            "Enter a date on or before the end of the current school year"
+        expect_alert_text(
+            self.page, "Enter a date on or before the end of the current school year"
         )
         self.click_back()
 
@@ -581,9 +584,6 @@ class SessionsEditPage:
                 " using a patient specific direction (PSD)?"
             ),
         ).get_by_label(answer).check()
-
-    def expect_alert_text(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)
 
     def expect_details(self, key: str, value: str) -> None:
         detail_key = self.page.locator(
@@ -967,10 +967,7 @@ class SessionsPatientPage:
         expect(self.page.get_by_role("heading", name=school.name).first).to_be_visible()
 
     def verify_triage_updated_for_child(self) -> None:
-        self.expect_alert_text("Triage outcome updated")
-
-    def expect_alert_text(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)
+        expect_alert_text(self.page, "Triage outcome updated")
 
     @step("Triage MMR patient")
     def triage_mmr_patient(self, consent_option: ConsentOption) -> None:
@@ -1037,14 +1034,11 @@ class SessionsPatientSessionActivityPage:
         with self.page.expect_navigation():
             self.click_save_note()
 
-        self.expect_alert_text("Note added")
+        expect_alert_text(self.page, "Note added")
         reload_until_element_is_visible(self.page, self.page.get_by_text(note))
 
     def check_session_activity_entry(self, text: str) -> None:
         expect(self.page.get_by_role("heading", name=text).first).to_be_visible()
-
-    def expect_alert_text(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)
 
 
 class SessionsVaccinationWizardPage:
@@ -1091,9 +1085,6 @@ class SessionsVaccinationWizardPage:
 
         expect(detail_value).to_contain_text(value)
 
-    def expect_alert_text(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)
-
     def record_vaccination(
         self,
         vaccination_record: VaccinationRecord,
@@ -1118,6 +1109,7 @@ class SessionsVaccinationWizardPage:
                 self.vaccination_notes.fill("Confirmation notes")
                 self.click_confirm_button()
 
-            self.expect_alert_text(
-                f"Vaccination outcome recorded for {vaccination_record.programme}"
+            expect_alert_text(
+                self.page,
+                f"Vaccination outcome recorded for {vaccination_record.programme}",
             )

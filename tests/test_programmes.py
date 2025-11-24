@@ -3,6 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme, ReportFormat
+from mavis.test.utils import expect_alert_text
 
 
 @pytest.fixture
@@ -174,7 +175,9 @@ def test_edit_vaccination_dose_to_not_given(
     edit_vaccination_record_page.click_they_refused_it()
     edit_vaccination_record_page.click_continue()
     edit_vaccination_record_page.click_save_changes()
-    programme_children_page.expect_alert_text("Vaccination outcome recorded for HPV")
+    expect_alert_text(
+        programme_children_page.page, "Vaccination outcome recorded for HPV"
+    )
 
 
 @pytest.mark.reports

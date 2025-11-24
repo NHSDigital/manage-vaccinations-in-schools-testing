@@ -183,3 +183,7 @@ def reload_until_element_is_not_visible(
         page.reload()
     else:
         expect(tag).to_be_hidden()
+
+
+def expect_alert_text(page: Page, text: str) -> None:
+    expect(page.get_by_role("alert")).to_contain_text(text)

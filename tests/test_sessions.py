@@ -4,7 +4,7 @@ from playwright.sync_api import expect
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import ConsentMethod, Programme, VaccinationRecord, Vaccine
-from mavis.test.utils import get_offset_date
+from mavis.test.utils import expect_alert_text, get_offset_date
 
 pytestmark = pytest.mark.sessions
 
@@ -406,7 +406,9 @@ def test_verify_excel_export_and_clinic_invitation(
     sessions_vaccination_wizard_page.check_location_radio(clinics[0])
     sessions_vaccination_wizard_page.click_continue_button()
     sessions_vaccination_wizard_page.click_confirm_button()
-    sessions_patient_page.expect_alert_text("Vaccination outcome recorded for HPV")
+    expect_alert_text(
+        sessions_patient_page.page, "Vaccination outcome recorded for HPV"
+    )
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
