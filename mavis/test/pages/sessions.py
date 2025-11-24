@@ -20,6 +20,7 @@ from mavis.test.models import (
 from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
     expect_alert_text,
+    expect_details,
     get_current_datetime_compact,
     get_day_month_year_from_compact_date,
     get_offset_date,
@@ -539,7 +540,8 @@ class SessionsEditPage:
         if self.keep_session_dates_button.is_visible():
             self.click_keep_session_dates()  # MAV-2066
 
-        self.expect_details(
+        expect_details(
+            self.page,
             "Session dates",
             self._get_day_month_year_with_day_of_week(date_to_format=_future_date),
         )
@@ -565,7 +567,8 @@ class SessionsEditPage:
         if self.keep_session_dates_button.is_visible():
             self.click_keep_session_dates()  # MAV-2066
 
-        self.expect_details(
+        expect_details(
+            self.page,
             "Session dates",
             self._get_day_month_year_with_day_of_week(date_to_format=_future_date),
         )
@@ -584,15 +587,6 @@ class SessionsEditPage:
                 " using a patient specific direction (PSD)?"
             ),
         ).get_by_label(answer).check()
-
-    def expect_details(self, key: str, value: str) -> None:
-        detail_key = self.page.locator(
-            ".nhsuk-summary-list__key",
-            has_text=re.compile(f"^{key}$"),
-        ).first
-        detail_value = detail_key.locator("xpath=following-sibling::*[1]")
-
-        expect(detail_value).to_contain_text(value)
 
 
 class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
@@ -860,11 +854,11 @@ class SessionsPatientPage:
         self.click_mark_as_invalid_link()
         self.fill_notes(invalidation_notes)
         self.click_mark_as_invalid_button()
-        self.expect_details("Response", "Invalid")
-        self.expect_details("Notes", invalidation_notes)
+        expect_details(self.page, "Response", "Invalid")
+        expect_details(self.page, "Notes", invalidation_notes)
 
         self.click_back()
-        self.expect_details("Response", "Invalid")
+        expect_details(self.page, "Response", "Invalid")
         expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
 
     @step("Click Back")
@@ -878,15 +872,6 @@ class SessionsPatientPage:
     @step("Fill notes")
     def fill_notes(self, notes: str) -> None:
         self.notes_textbox.fill(notes)
-
-    def expect_details(self, key: str, value: str) -> None:
-        detail_key = self.page.locator(
-            ".nhsuk-summary-list__key",
-            has_text=re.compile(f"^{key}$"),
-        ).first
-        detail_value = detail_key.locator("xpath=following-sibling::*[1]")
-
-        expect(detail_value).to_contain_text(value)
 
     @step("Click on Yes")
     def select_identity_confirmed_by_child(self, child: Child) -> None:
@@ -1076,15 +1061,6 @@ class SessionsVaccinationWizardPage:
         self.page.get_by_role("radio", name=batch_name).check()
         self.click_continue_button()
 
-    def expect_details(self, key: str, value: str) -> None:
-        detail_key = self.page.locator(
-            ".nhsuk-summary-list__key",
-            has_text=re.compile(f"^{key}$"),
-        ).first
-        detail_value = detail_key.locator("xpath=following-sibling::*[1]")
-
-        expect(detail_value).to_contain_text(value)
-
     def record_vaccination(
         self,
         vaccination_record: VaccinationRecord,
@@ -1097,9 +1073,9 @@ class SessionsVaccinationWizardPage:
 
         if at_school:  # only skips MAV-854
             if psd_option:
-                self.expect_details("Protocol", "Patient Specific Direction")
+                expect_details(self.page, "Protocol", "Patient Specific Direction")
             else:
-                self.expect_details("Protocol", "Patient Group Direction (PGD)")
+                expect_details(self.page, "Protocol", "Patient Group Direction (PGD)")
 
             self.vaccination_notes.fill(notes)
             self.click_confirm_button()

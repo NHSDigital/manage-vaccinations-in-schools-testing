@@ -187,3 +187,13 @@ def reload_until_element_is_not_visible(
 
 def expect_alert_text(page: Page, text: str) -> None:
     expect(page.get_by_role("alert")).to_contain_text(text)
+
+
+def expect_details(page: Page, key: str, value: str) -> None:
+    detail_key = page.locator(
+        ".nhsuk-summary-list__key",
+        has_text=re.compile(f"^{key}$"),
+    ).first
+    detail_value = detail_key.locator("xpath=following-sibling::*[1]")
+
+    expect(detail_value).to_contain_text(value)

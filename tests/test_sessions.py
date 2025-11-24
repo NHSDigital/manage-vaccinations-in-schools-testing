@@ -4,7 +4,7 @@ from playwright.sync_api import expect
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import ConsentMethod, Programme, VaccinationRecord, Vaccine
-from mavis.test.utils import expect_alert_text, get_offset_date
+from mavis.test.utils import expect_alert_text, expect_details, get_offset_date
 
 pytestmark = pytest.mark.sessions
 
@@ -461,7 +461,7 @@ def test_editing_session_programmes(
     sessions_edit_page.click_change_programmes()
     sessions_edit_page.add_programme(Programme.FLU)
     sessions_edit_page.click_continue_button()
-    sessions_edit_page.expect_details("Programmes", "Flu HPV")
+    expect_details(sessions_edit_page.page, "Programmes", "Flu HPV")
     sessions_edit_page.click_save_changes()
     sessions_edit_page.expect_session_to_have_programmes([Programme.FLU, Programme.HPV])
     sessions_overview_page.click_consent_tab()
