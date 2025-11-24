@@ -100,7 +100,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             sessions_overview_page.click_register_tab()
             sessions_register_page.register_child_as_attending(str(child))
         sessions_register_page.click_consent_tab()
-        sessions_consent_page.search_child(child)
+        sessions_consent_page.search_and_click_child(child)
         programmes = (
             [Programme.MENACWY, Programme.TD_IPV]
             if programme_group == "doubles"
@@ -128,7 +128,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
                 target_length=MAVIS_NOTE_LENGTH_LIMIT + 1,
                 generate_spaced_words=True,
             )
-            sessions_consent_page.search_child(child)
+            sessions_consent_page.search_and_click_child(child)
             sessions_patient_page.set_up_vaccination(vaccination_record, notes=notes)
             sessions_vaccination_wizard_page.record_vaccination(
                 vaccination_record, notes=notes

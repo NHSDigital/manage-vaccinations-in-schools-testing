@@ -60,13 +60,13 @@ class SearchBarMixin:
             self.page.get_by_text("No children matching search criteria found"),
         ).to_be_visible()
 
-    def search_child(self, child: Child) -> None:
+    def search_and_click_child(self, child: Child) -> None:
         self.search_for(str(child))
         child_locator = self.page.get_by_role("link", name=str(child))
         reload_until_element_is_visible(self.page, child_locator)
         child_locator.click()
 
-    def search_child_that_should_not_exist(self, child: Child) -> None:
+    def search_for_child_that_should_not_exist(self, child: Child) -> None:
         self.search_for(str(child))
         child_locator = self.page.get_by_role("link", name=str(child))
         expect(child_locator).not_to_be_visible()
@@ -78,13 +78,6 @@ class SearchBarMixin:
     @step("Check Archived records")
     def check_archived_records_checkbox(self) -> None:
         self.archived_records_checkbox.check()
-
-    @step("Click on child {1}")
-    def click_child(self, child: Child) -> None:
-        with self.page.expect_navigation():
-            self.page.get_by_role("heading", name=str(child)).get_by_role(
-                "link",
-            ).first.click()
 
     @step("Check box for year {1}")
     def check_year_checkbox(self, year: int) -> None:

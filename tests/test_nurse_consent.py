@@ -74,7 +74,7 @@ def test_gillick_competence(
 
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_assess_gillick_competence()
 
@@ -112,7 +112,7 @@ def test_gillick_competence_notes(
 
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_overview_page.click_consent_tab()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_assess_gillick_competence()
 
@@ -164,7 +164,7 @@ def test_invalid_consent(
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_overview_page.click_consent_tab()
     sessions_consent_page.select_no_response()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
 
@@ -174,7 +174,7 @@ def test_invalid_consent(
 
     sessions_consent_page.select_no_response()
 
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[1])
@@ -182,7 +182,7 @@ def test_invalid_consent(
     nurse_consent_wizard_page.record_parent_refuse_consent()
 
     sessions_consent_page.select_consent_refused()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.invalidate_parent_refusal(child.parents[1])
     sessions_patient_page.click_session_activity_and_notes()
@@ -231,7 +231,7 @@ def test_parent_provides_consent_twice(
     sessions_overview_page.click_consent_tab()
     sessions_consent_page.select_no_response()
 
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -241,7 +241,7 @@ def test_parent_provides_consent_twice(
     )
     sessions_consent_page.select_consent_given_filters_for_programme(Programme.HPV)
 
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -250,7 +250,7 @@ def test_parent_provides_consent_twice(
 
     sessions_consent_page.select_consent_refused()
 
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_vaccination_wizard_page.expect_consent_refused_text(child.parents[0])
     sessions_patient_page.click_session_activity_and_notes()
@@ -299,7 +299,7 @@ def test_conflicting_consent_with_gillick_consent(
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_overview_page.click_consent_tab()
     sessions_consent_page.select_no_response()
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
 
@@ -308,7 +308,7 @@ def test_conflicting_consent_with_gillick_consent(
     nurse_consent_wizard_page.record_parent_positive_consent()
 
     sessions_consent_page.select_consent_given_filters_for_programme(Programme.HPV)
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
 
@@ -318,7 +318,7 @@ def test_conflicting_consent_with_gillick_consent(
 
     sessions_consent_page.select_conflicting_consent()
 
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.expect_consent_status(Programme.HPV, "Conflicting consent")
     sessions_patient_page.expect_conflicting_consent_text()
@@ -331,7 +331,7 @@ def test_conflicting_consent_with_gillick_consent(
     nurse_consent_wizard_page.expect_text_in_alert(f"Consent recorded for {child!s}")
 
     sessions_consent_page.select_consent_given_filters_for_programme(Programme.HPV)
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.expect_consent_status(Programme.HPV, "Consent given")
     sessions_patient_page.click_session_activity_and_notes()
@@ -367,7 +367,7 @@ def test_accessibility(
     sessions_overview_page.click_consent_tab()
     sessions_consent_page.select_no_response()
 
-    sessions_consent_page.click_child(child)
+    sessions_consent_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
     accessibility_helper.check_accessibility()
@@ -401,7 +401,7 @@ def test_accessibility(
     sessions_register_page.click_record_vaccinations_tab()
     accessibility_helper.check_accessibility()
 
-    sessions_record_vaccinations_page.click_child(child)
+    sessions_record_vaccinations_page.search_and_click_child(child)
     accessibility_helper.check_accessibility()
 
     sessions_patient_page.confirm_pre_screening_checks(Programme.HPV)
