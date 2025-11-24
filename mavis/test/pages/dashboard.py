@@ -22,7 +22,7 @@ class DashboardPage:
             "Unmatched Consent Responses",
         )
         self.school_moves_link = links.get_by_text("School Moves")
-        self.import_records_link = links.get_by_text("Import Records")
+        self.imports_link = links.get_by_text("Imports")
         self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
 
@@ -54,9 +54,9 @@ class DashboardPage:
     def click_school_moves(self) -> None:
         self.school_moves_link.click()
 
-    @step("Click on Import Records")
-    def click_import_records(self) -> None:
-        self.import_records_link.click()
+    @step("Click on Imports")
+    def click_imports(self) -> None:
+        self.imports_link.click()
 
     @step("Click on Your Team")
     def click_your_team(self) -> None:
