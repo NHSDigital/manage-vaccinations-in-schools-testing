@@ -325,7 +325,7 @@ def test_consent_refused_and_activity_log(
     nurse_consent_wizard_page.select_parent(child.parents[0])
     nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
     nurse_consent_wizard_page.record_parent_refuse_consent()
-    nurse_consent_wizard_page.expect_text_in_alert(str(child))
+    expect_alert_text(nurse_consent_wizard_page.page, str(child))
 
     sessions_consent_page.select_consent_refused()
     sessions_consent_page.search_and_click_child(child)

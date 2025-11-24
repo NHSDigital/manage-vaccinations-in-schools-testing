@@ -198,9 +198,6 @@ class ChildRecordPage(ChildRecordTabsMixin):
     def click_edit_child_record(self) -> None:
         self.edit_child_record_button.click()
 
-    def expect_text_in_alert(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)
-
     @step("Click on Archive child record")
     def click_archive_child_record(self) -> None:
         self.archive_child_record_link.click()

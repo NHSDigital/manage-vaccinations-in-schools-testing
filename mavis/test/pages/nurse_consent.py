@@ -8,7 +8,7 @@ from mavis.test.models import (
     Parent,
     Programme,
 )
-from mavis.test.utils import generate_random_string
+from mavis.test.utils import expect_alert_text, generate_random_string
 
 
 class NurseConsentWizardPage:
@@ -168,9 +168,6 @@ class NurseConsentWizardPage:
     def click_yes_for_injected_vaccine(self) -> None:
         self.online_flu_agree_injection_radio.check()
 
-    def expect_text_in_alert(self, text: str) -> None:
-        expect(self.page.get_by_role("alert")).to_contain_text(text)
-
     def record_parent_positive_consent(
         self,
         programme: Programme = Programme.HPV,
@@ -274,7 +271,7 @@ class NurseConsentWizardPage:
     def update_triage_outcome_positive(self) -> None:
         self.click_safe_to_vaccinate()
         self.click_save_triage()
-        self.expect_text_in_alert("Triage outcome updated")
+        expect_alert_text(self.page, "Triage outcome updated")
 
     def click_withdraw_consent(self) -> None:
         self.withdraw_consent_button.click()
