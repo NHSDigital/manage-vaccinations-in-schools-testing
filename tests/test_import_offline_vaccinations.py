@@ -35,8 +35,8 @@ def setup_vaccs(
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     session_id = sessions_overview_page.get_session_id_from_offline_excel()
     dashboard_page.click_mavis()
-    dashboard_page.click_import_records()
-    imports_page.click_import_records()
+    dashboard_page.click_imports()
+    imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
     return session_id
 

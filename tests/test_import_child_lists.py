@@ -7,8 +7,8 @@ from mavis.test.data import ChildFileMapping
 def setup_child_import(
     log_in_as_nurse, dashboard_page, imports_page, import_records_wizard_page
 ):
-    dashboard_page.click_import_records()
-    imports_page.click_import_records()
+    dashboard_page.click_imports()
+    imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_child_record_import()
 
 
@@ -140,10 +140,10 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the import records page.
     """
-    dashboard_page.click_import_records()
+    dashboard_page.click_imports()
     accessibility_helper.check_accessibility()
 
-    imports_page.click_import_records()
+    imports_page.click_upload_records()
     accessibility_helper.check_accessibility()
 
     import_records_wizard_page.select_child_records()

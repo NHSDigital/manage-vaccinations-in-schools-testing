@@ -52,8 +52,8 @@ class ImportRecordsWizardPage:
             "button", name="Approve and import records"
         )
         self.invalid_file_problem = self.page.get_by_text("There is a problem")
-        self.needs_review_tag = self.page.get_by_role("strong").get_by_text(
-            "Needs review"
+        self.review_and_approve_tag = self.page.get_by_role("strong").get_by_text(
+            "Review and approve"
         )
 
     @step("Select Child Records")
@@ -118,7 +118,7 @@ class ImportRecordsWizardPage:
 
     def approve_preview_if_shown(self) -> None:
         self.get_preview_page_link().click()
-        expect(self.page.get_by_text("Needs review")).to_be_visible()
+        expect(self.review_and_approve_tag).to_be_visible()
         self.approve_import_button.click()
         expect(
             self.page.get_by_label("Information")
@@ -131,7 +131,7 @@ class ImportRecordsWizardPage:
     def wait_for_processed(self) -> None:
         self.page.wait_for_load_state()
 
-        tag = self.completed_tag.or_(self.invalid_tag).or_(self.needs_review_tag)
+        tag = self.completed_tag.or_(self.invalid_tag).or_(self.review_and_approve_tag)
 
         reload_until_element_is_visible(self.page, tag, seconds=60)
 
@@ -179,8 +179,7 @@ class ImportRecordsWizardPage:
 
         self.page.wait_for_load_state()
         status_text = (
-            self.page.get_by_text("Needs review")
-            .or_(self.completed_tag)
+            self.review_and_approve_tag.or_(self.completed_tag)
             .or_(self.invalid_tag)
             .or_(self.invalid_file_problem)
         )
@@ -246,11 +245,11 @@ class ImportsPage:
         page: Page,
     ) -> None:
         self.page = page
-        self.import_records_button = self.page.get_by_role(
+        self.upload_button = self.page.get_by_role(
             "button",
-            name="Import records",
+            name="Upload records",
         )
 
-    @step("Click on Import Records")
-    def click_import_records(self) -> None:
-        self.import_records_button.click()
+    @step("Click on Upload records")
+    def click_upload_records(self) -> None:
+        self.upload_button.click()
