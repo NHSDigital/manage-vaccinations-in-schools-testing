@@ -8,6 +8,11 @@ on:
         required: false
         default: ''
         type: string
+      github_ref:
+        description: 'Github reference to get tests from'
+        required: false
+        default: 'main'
+        type: string
       device:
         description: 'Device to test'
         required: true
@@ -189,10 +194,11 @@ jobs:
             echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
           fi
 
-      - uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
           repository: NHSDigital/manage-vaccinations-in-schools-testing
-          ref: main
+          ref: ${{ inputs.github_ref || github.ref_name }}
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -207,6 +213,7 @@ jobs:
           tests: ${{ steps.set-variables.outputs.tests }}
           imms_api_tests: ${{ github.event.inputs.cross_service_tests }}
           reporting_tests: ${{ github.event.inputs.cross_service_tests }}
+          github_ref: ${{ inputs.github_ref || github.ref_name }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
