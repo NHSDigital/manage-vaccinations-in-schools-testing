@@ -55,7 +55,7 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         response = requests.get(refresh_reports_url, timeout=30)
         response.raise_for_status()
 
-        time.sleep(30)
+        time.sleep(5)
         self.page.reload()
 
     @step("Click {1}")
@@ -96,11 +96,16 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
     def get_expected_cohort_and_percentage_strings(
         self, unvaccinated_count: int, vaccinated_count: int
     ) -> tuple[str, str, str]:
+        one_hundred_percent = 100.0
         total = unvaccinated_count + vaccinated_count
         if total == 0:
             return "0", "0", "0"
         unvaccinated_pct = round(100 * unvaccinated_count / total, 1)
         vaccinated_pct = round(100 * vaccinated_count / total, 1)
+        if unvaccinated_pct == one_hundred_percent:
+            unvaccinated_pct = int(unvaccinated_pct)
+        if vaccinated_pct == one_hundred_percent:
+            vaccinated_pct = int(vaccinated_pct)
         return str(total), str(unvaccinated_pct), str(vaccinated_pct)
 
 
