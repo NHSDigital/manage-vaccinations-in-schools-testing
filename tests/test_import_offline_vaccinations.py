@@ -128,7 +128,7 @@ def test_vaccination_file_upload_duplicate_records(
     )
     dashboard_page.click_mavis()
     dashboard_page.click_imports()
-    imports_page.click_import_records()
+    imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
     import_records_wizard_page.upload_and_verify_output(
         VaccsFileMapping.DUP_2,

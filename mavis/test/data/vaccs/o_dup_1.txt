@@ -1,2 +1,2 @@
 Duplicates not imported None
-2 vaccination records
+2 imported records
