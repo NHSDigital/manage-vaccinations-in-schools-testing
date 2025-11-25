@@ -70,7 +70,7 @@ def test_login_with_valid_credentials(
     expect(dashboard_page.vaccines_link).to_be_visible()
     expect(dashboard_page.unmatched_consent_responses_link).to_be_visible()
     expect(dashboard_page.school_moves_link).to_be_visible()
-    expect(dashboard_page.import_records_link).to_be_visible()
+    expect(dashboard_page.imports_link).to_be_visible()
     expect(dashboard_page.your_team_link).to_be_visible()
     expect(dashboard_page.service_guidance_link).to_be_visible()
 
