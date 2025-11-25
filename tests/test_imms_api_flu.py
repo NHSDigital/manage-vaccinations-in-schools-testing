@@ -119,15 +119,15 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     children,
 ):
     """
-    Test: Create, edit, and delete an injected flu vaccination record and verify changes
+    Test: Create, edit, and delete a nasal flu vaccination record and verify changes
     in the IMMS API and Mavis status.
     Steps:
     1. Setup: Schedule flu session, import class list, add vaccine batch, and
        register child with verbal consent.
-    2. Create: Record flu vaccination for the child (LEFT_ARM_UPPER).
+    2. Create: Record flu vaccination for the child.
     3. Verify: Check the vaccination record exists in the IMMS API.
        Check Mavis shows "Synced".
-    4. Edit: Change the delivery site to RIGHT_ARM_LOWER and save.
+    4. Edit: Change the delivery time to an earlier time today and save.
     5. Verify: Check the updated vaccination record in the IMMS API.
        Check Mavis still shows "Synced".
     6. Edit: Change the outcome to "They refused it" and save.
@@ -150,7 +150,7 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
         vaccination_time,
     )
 
-    # Step 4: Edit delivery site to RIGHT_ARM_LOWER
+    # Step 4: Edit delivery time to an earlier time today
     vaccination_record_page.page.reload()
     vaccination_record_page.expect_vaccination_details(
         "Synced with NHS England?", "Synced"
