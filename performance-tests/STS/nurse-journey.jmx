@@ -213,10 +213,10 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Check STS" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Check STS">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
-            <stringProp name="-786741421">Mavis_NURSE - 4.4.0</stringProp>
+            <stringProp name="-784896301">Mavis_NURSE - 6.2.0</stringProp>
             <stringProp name="-1777863843">Wait for STS alive</stringProp>
           </collectionProp>
         </ModuleController>
@@ -236,10 +236,10 @@ log.info(vars.get(&quot;User&quot;))
 log.info(vars.get(&quot;BaseURL&quot;))</stringProp>
         </JSR223Sampler>
         <hashTree/>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get all applicable patients" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get all applicable patients">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
-            <stringProp name="-786741421">Mavis_NURSE - 4.4.0</stringProp>
+            <stringProp name="-784896301">Mavis_NURSE - 6.2.0</stringProp>
             <stringProp name="1866184754">Get patients for processing</stringProp>
           </collectionProp>
         </ModuleController>
@@ -258,10 +258,10 @@ log.info(vars.get(&quot;BaseURL&quot;))</stringProp>
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Vaccinate patients" enabled="true">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Vaccinate patients">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
-            <stringProp name="-786741421">Mavis_NURSE - 4.4.0</stringProp>
+            <stringProp name="-784896301">Mavis_NURSE - 6.2.0</stringProp>
             <stringProp name="1242044076">Vaccinate patients</stringProp>
           </collectionProp>
         </ModuleController>
@@ -3340,7 +3340,7 @@ log.info(vars.get(&quot;CHILD_PARTIAL_NAME&quot;))
       </hashTree>
       <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Wait for STS alive" enabled="false"/>
       <hashTree>
-        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller">
           <stringProp name="WhileController.condition">${__jexl3(&quot;${responseCode}&quot;!=&quot;200&quot;)}</stringProp>
         </WhileController>
         <hashTree>
@@ -3385,7 +3385,7 @@ log.info(&quot;Response code is &quot; + vars.get(&quot;responseCode&quot;));</s
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
             <stringProp name="ConstantTimer.delay">1000</stringProp>
           </ConstantTimer>
           <hashTree/>
