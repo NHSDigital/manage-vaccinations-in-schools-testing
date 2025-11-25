@@ -41,6 +41,10 @@ class ImportRecordsWizardPage:
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.file_input = self.page.locator('input[type="file"]')
         self.location_combobox = self.page.get_by_role("combobox")
+        self.imported_records_tab = self.page.get_by_role(
+            "link",
+            name="Imported records",
+        )
 
         # Pattern to match dynamic text (s is optional for records)
         self.records_pattern = re.compile(
@@ -208,7 +212,11 @@ class ImportRecordsWizardPage:
 
         # This handles when an upload occurs across the minute tick over, for
         # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
-        first_link.or_(second_link).first.click()
+        if first_link.or_(second_link).is_visible():
+            first_link.or_(second_link).first.click()
+        else:
+            self.imported_records_tab.click()
+            first_link.or_(second_link).first.click()
 
     def verify_upload_output(self, file_path: Path) -> None:
         _expected_errors = self.test_data.get_expected_errors(file_path)
