@@ -212,7 +212,7 @@ class ImportRecordsWizardPage:
 
         # This handles when an upload occurs across the minute tick over, for
         # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
-        if first_link.or_(second_link).is_visible():
+        if first_link.or_(second_link).first.is_visible():
             first_link.or_(second_link).first.click()
         else:
             self.imported_records_tab.click()
