@@ -55,6 +55,20 @@ class ImportRecordsWizardPage:
         self.needs_review_tag = self.page.get_by_role("strong").get_by_text(
             "Needs review"
         )
+        self.approve_and_import_records_button = self.page.get_by_role(
+            "button", name="Approve and import records"
+        )
+        self.imported_records_tab = self.page.get_by_role(
+            "link", name="Imported records"
+        )
+
+    @step("Approve and import records")
+    def click_approve_and_import_records(self) -> None:
+        self.approve_and_import_records_button.click()
+
+    @step("Click on Imported Records tab")
+    def click_imported_records_tab(self) -> None:
+        self.imported_records_tab.click()
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -177,6 +191,9 @@ class ImportRecordsWizardPage:
         if self.is_processing_in_background():
             self.click_uploaded_file_datetime()
 
+        self.click_approve_and_import_records()
+        self.click_imported_records_tab()
+
         self.page.wait_for_load_state()
         status_text = (
             self.page.get_by_text("Needs review")
@@ -246,11 +263,11 @@ class ImportsPage:
         page: Page,
     ) -> None:
         self.page = page
-        self.import_records_button = self.page.get_by_role(
+        self.upload_records_button = self.page.get_by_role(
             "button",
-            name="Import records",
+            name="Upload records",
         )
 
-    @step("Click on Import Records")
-    def click_import_records(self) -> None:
-        self.import_records_button.click()
+    @step("Click on Upload Records")
+    def click_upload_records(self) -> None:
+        self.upload_records_button.click()

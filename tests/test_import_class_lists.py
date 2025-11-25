@@ -25,8 +25,8 @@ def setup_class_list_import(
         sessions_overview_page.schedule_or_edit_session()
         sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
     dashboard_page.click_mavis()
-    dashboard_page.click_import_records()
-    imports_page.click_import_records()
+    dashboard_page.click_imports()
+    imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_class_list_record_import(
         str(school), year_group
     )
