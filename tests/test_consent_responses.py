@@ -1,7 +1,8 @@
 import pytest
 from playwright.sync_api import expect
 
-from mavis.test.data import CohortsFileMapping, pds
+from mavis.test.annotations import issue
+from mavis.test.data import ClassFileMapping, CohortsFileMapping, pds
 from mavis.test.models import Programme
 
 pytestmark = pytest.mark.consent_responses
@@ -278,3 +279,76 @@ def test_accessibility(
 
     match_consent_response_page.search_for_child_with_all_filters(child)
     accessibility_helper.check_accessibility()
+
+
+@issue("MAV-2681")
+def test_match_consent_with_vaccination_record_no_service_error(
+    give_online_consent,
+    go_to_unmatched_consent_responses,
+    upload_offline_vaccination,
+    children,
+    children_search_page,
+    consent_response_page,
+    dashboard_page,
+    match_consent_response_page,
+    programmes_list_page,
+    programme_overview_page,
+    programme_children_page,
+    import_records_wizard_page,
+    unmatched_consent_responses_page,
+    service_error_page,
+):
+    """
+    Test: Submit a consent form that won't match automatically, find a patient
+    with a vaccination record, attempt to match the consent form with that patient,
+    and verify that ServiceErrorPage is not displayed.
+    Steps:
+    1. Submit a consent form that won't match with a patient automatically
+       (already done by give_online_consent).
+    2. Import a class list to create searchable child records.
+    3. Import a vaccination record for a different child to create a patient with
+       vaccination history.
+    4. Find the patient with vaccination record and attempt to match the consent
+       form with that patient.
+    5. Verify that the ServiceErrorPage is not displayed during the matching
+       process.
+    Verification:
+    - No ServiceErrorPage or error page is displayed during consent matching.
+    - The matching process completes without server errors.
+    """
+    child_with_consent = children[Programme.HPV][0]
+
+    # Step 2: Import a class list to create searchable child records for both children
+    dashboard_page.click_mavis()
+    dashboard_page.click_programmes()
+    programmes_list_page.click_programme_for_current_year(Programme.HPV)
+    programme_overview_page.click_children_tab()
+    programme_children_page.click_import_child_records()
+    import_records_wizard_page.import_class_list(ClassFileMapping.TWO_FIXED_CHILDREN)
+
+    # Step 3: Import a vaccination record for the different child to create a
+    # patient with vaccination history
+    list(upload_offline_vaccination(Programme.HPV))
+    child_with_vaccination = children[Programme.HPV][1]
+
+    # Navigate back to unmatched consent responses
+    dashboard_page.click_mavis()
+    dashboard_page.click_unmatched_consent_responses()
+
+    # Step 4: Navigate to unmatched consent responses and attempt to search for
+    # the patient who has vaccination record (this tests the edge case)
+    unmatched_consent_responses_page.click_parent_on_consent_record_for_child(
+        child_with_consent
+    )
+    consent_response_page.click_match()
+
+    # Verify no service error when searching for different child with vaccination
+    expect(service_error_page.page_heading).not_to_be_visible()
+
+    # Search for child who has vaccination record - should not cause service error
+    match_consent_response_page.search_for_child_with_all_filters(
+        child_with_vaccination
+    )
+
+    # Final verification that no error pages appeared during the search process
+    expect(service_error_page.page_heading).not_to_be_visible()

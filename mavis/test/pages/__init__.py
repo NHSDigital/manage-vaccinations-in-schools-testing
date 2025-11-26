@@ -13,7 +13,7 @@ from .consent_responses import (
     UnmatchedConsentResponsesPage,
 )
 from .dashboard import DashboardPage
-from .errorpages import BadRequestPage, InternalServerErrorPage
+from .error_pages import BadRequestPage, ServiceErrorPage
 from .flipper import FlipperPage
 from .import_records import ImportRecordsWizardPage, ImportsPage
 from .log_in import LogInPage, LogOutPage
@@ -64,7 +64,6 @@ __all__ = [
     "GillickCompetencePage",
     "ImportRecordsWizardPage",
     "ImportsPage",
-    "InternalServerErrorPage",
     "LogInPage",
     "LogOutPage",
     "MatchConsentResponsePage",
@@ -78,6 +77,7 @@ __all__ = [
     "ReportsVaccinationsPage",
     "ReviewSchoolMovePage",
     "SchoolMovesPage",
+    "ServiceErrorPage",
     "SessionsChildrenPage",
     "SessionsEditPage",
     "SessionsOverviewPage",

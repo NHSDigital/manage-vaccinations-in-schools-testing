@@ -12,7 +12,7 @@ class BadRequestPage:
         )
 
 
-class InternalServerErrorPage:
+class ServiceErrorPage:
     def __init__(self, page: Page) -> None:
         self.page = page
 
@@ -21,3 +21,6 @@ class InternalServerErrorPage:
             name="Sorry, there’s a problem with the service",
             exact=True,
         )
+
+    def is_not_displayed(self) -> bool:
+        return self.page_heading.count() == 0

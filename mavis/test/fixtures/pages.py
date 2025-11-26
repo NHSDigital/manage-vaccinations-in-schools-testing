@@ -50,6 +50,7 @@ from mavis.test.pages import (
     VaccinationRecordPage,
     VaccinesPage,
 )
+from mavis.test.pages.error_pages import BadRequestPage, ServiceErrorPage
 
 
 @pytest.fixture
@@ -286,3 +287,13 @@ def nurse_consent_wizard_page(page: Page) -> NurseConsentWizardPage:
 @pytest.fixture
 def log_out_page(page: Page) -> LogOutPage:
     return LogOutPage(page)
+
+
+@pytest.fixture
+def service_error_page(page: Page) -> ServiceErrorPage:
+    return ServiceErrorPage(page)
+
+
+@pytest.fixture
+def bad_request_page(page: Page) -> BadRequestPage:
+    return BadRequestPage(page)

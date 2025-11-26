@@ -117,7 +117,7 @@ class MatchConsentResponsePage:
     def search_for_child_with_all_filters(self, child: Child) -> None:
         filter_locators = [
             self.archived_records_checkbox,
-            self.children_aged_out_of_programmes_checkbox,
+            # self.children_aged_out_of_programmes_checkbox,
             self.children_missing_an_nhs_number_checkbox,
         ]
         child_locator = self.page.get_by_role("link", name=str(child))
