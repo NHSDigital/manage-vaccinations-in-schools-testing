@@ -25,7 +25,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
-    sessions_triage_page,
+    sessions_children_page,
     sessions_patient_page,
     sessions_vaccination_wizard_page,
     sessions_record_vaccinations_page,
@@ -80,8 +80,8 @@ def test_recording_mmr_vaccination_e2e_with_triage(
 
     # Triage step added for MMR
     sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.click_triage_tab()
-    sessions_triage_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.MMR)
     sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
     dashboard_page.navigate()
@@ -194,7 +194,7 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
-    sessions_triage_page,
+    sessions_children_page,
     sessions_patient_page,
     sessions_vaccination_wizard_page,
     sessions_record_vaccinations_page,
@@ -257,8 +257,8 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
 
     # Triage step added for MMR
     sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.click_triage_tab()
-    sessions_triage_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.MMR)
     sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
     dashboard_page.navigate()

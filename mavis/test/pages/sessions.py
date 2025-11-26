@@ -23,6 +23,7 @@ from mavis.test.utils import (
     expect_details,
     get_current_datetime_compact,
     get_day_month_year_from_compact_date,
+    get_formatted_date_for_session_dates,
     get_offset_date,
     get_offset_date_compact_format,
     reload_until_element_is_visible,
@@ -131,10 +132,6 @@ class SessionsTabsMixin:
     @step("Click on Record vaccinations")
     def click_record_vaccinations_tab(self) -> None:
         self._select_tab("Record vaccinations")
-
-    @step("Click on Consent tab")
-    def click_consent_tab(self) -> None:
-        self._select_tab("Consent")
 
     @step("Click on Children tab")
     def click_children_tab(self) -> None:
@@ -247,6 +244,7 @@ class SessionsOverviewPage(SessionsTabsMixin):
         self.consent_refused_link = self.page.get_by_role(
             "link", name="Consent refused"
         )
+        self.has_a_refusal_link = self.page.get_by_role("link", name="Has a refusal")
 
     def get_total_for_category(self, category: str) -> int:
         category_locator = self.page.locator(
@@ -268,6 +266,10 @@ class SessionsOverviewPage(SessionsTabsMixin):
             assert actual_total == expected_total, (
                 f"Expected {expected_total} for {category}, but got {actual_total}"
             )
+
+    @step("Click Has a refusal")
+    def click_has_a_refusal(self) -> None:
+        self.has_a_refusal_link.first.click()
 
     @step("Go to Edit session page")
     def schedule_or_edit_session(self) -> None:
@@ -356,8 +358,9 @@ class SessionsOverviewPage(SessionsTabsMixin):
         return _file_path
 
     def is_date_scheduled(self, date: datetime) -> bool:
-        formatted_display_date = date.strftime("%d %B %Y").replace(" 0", " ")
-        return self.page.get_by_text(formatted_display_date).is_visible()
+        return self.page.get_by_text(
+            get_formatted_date_for_session_dates(date)
+        ).is_visible()
 
     @step("Click Consent refused")
     def click_consent_refused(self) -> None:
@@ -592,36 +595,46 @@ class SessionsEditPage:
 class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
-
-
-class SessionsConsentPage(SearchBarMixin, SessionsTabsMixin):
-    def __init__(self, page: Page) -> None:
-        super().__init__(page)
-        self.no_response_checkbox = self.page.get_by_role(
-            "checkbox",
-            name="No response",
+        self.needs_consent_radio = self.page.get_by_role(
+            "radio",
+            name="Needs consent",
         )
-        self.consent_given_checkbox = self.page.get_by_role(
-            "checkbox",
-            name="Consent given",
-            exact=True,
+        self.has_a_refusal_radio = self.page.get_by_role(
+            "radio",
+            name="Has a refusal",
         )
-        self.consent_given_for_injected_vaccine_checkbox = self.page.get_by_role(
+        self.parent_refused_checkbox = self.page.get_by_role(
             "checkbox",
-            name="Consent given for gelatine-free injection",
+            name="Parent refused",
         )
-        self.consent_given_for_nasal_spray_checkbox = self.page.get_by_role(
-            "checkbox",
-            name="Consent given for nasal spray",
+        self.due_vaccination_radio = self.page.get_by_role(
+            "radio",
+            name="Due vaccination",
         )
         self.conflicting_consent_checkbox = self.page.get_by_role(
             "checkbox",
             name="Conflicting consent",
         )
-        self.consent_refused_checkbox = self.page.get_by_role(
-            "checkbox",
-            name="Consent refused",
-        )
+
+    @step("Select Needs consent")
+    def select_needs_consent(self) -> None:
+        self.needs_consent_radio.check()
+
+    @step("Select Has a refusal")
+    def select_has_a_refusal(self) -> None:
+        self.has_a_refusal_radio.check()
+
+    @step("Select Parent refused")
+    def select_parent_refused(self) -> None:
+        self.parent_refused_checkbox.check()
+
+    @step("Select Due vaccination")
+    def select_due_vaccination(self) -> None:
+        self.due_vaccination_radio.check()
+
+    @step("Select Conflicting consent")
+    def select_conflicting_consent(self) -> None:
+        self.conflicting_consent_checkbox.check()
 
     def verify_child_shows_correct_flu_consent_method(
         self,
@@ -630,7 +643,7 @@ class SessionsConsentPage(SearchBarMixin, SessionsTabsMixin):
     ) -> None:
         flu_consent_section = self.get_flu_consent_status_locator_from_search(child)
 
-        expect(flu_consent_section).to_contain_text("Consent given")
+        expect(flu_consent_section).to_contain_text("Due vaccination")
         if option is ConsentOption.INJECTION:
             method_locator = flu_consent_section.get_by_text("injection")
         else:
@@ -647,61 +660,9 @@ class SessionsConsentPage(SearchBarMixin, SessionsTabsMixin):
 
         return flu_consent_section
 
-    @step("Expect Consent refused checkbox to be checked")
-    def expect_consent_refused_checkbox_to_be_checked(self) -> None:
-        expect(self.consent_refused_checkbox).to_be_checked()
-
-    @step("Select No response")
-    def select_no_response(self) -> None:
-        self.no_response_checkbox.check()
-        self.update_results_button.click()
-
-    @step("Select Consent given")
-    def select_consent_given(self) -> None:
-        self.consent_given_checkbox.check()
-        self.update_results_button.click()
-
-    @step("Select Consent given for injected vaccine")
-    def select_consent_given_for_injected_vaccine(self) -> None:
-        self.consent_given_for_injected_vaccine_checkbox.check()
-        self.update_results_button.click()
-
-    @step("Select Consent given for nasal spray")
-    def select_consent_given_for_nasal_spray(self) -> None:
-        self.consent_given_for_nasal_spray_checkbox.check()
-        self.update_results_button.click()
-
-    def select_consent_given_filters_for_programme(
-        self,
-        programme: Programme,
-    ) -> None:
-        self.page.wait_for_load_state()
-        if programme is not Programme.FLU:
-            for locator in [
-                self.consent_given_for_injected_vaccine_checkbox,
-                self.consent_given_checkbox,
-            ]:
-                if locator.is_visible():
-                    locator.check()
-        else:
-            self.consent_given_for_injected_vaccine_checkbox.check()
-            self.consent_given_for_nasal_spray_checkbox.check()
-        self.update_results_button.click()
-
-    @step("Select Conflicting consent")
-    def select_conflicting_consent(self) -> None:
-        self.conflicting_consent_checkbox.check()
-        self.update_results_button.click()
-
-    @step("Select Consent refused")
-    def select_consent_refused(self) -> None:
-        self.consent_refused_checkbox.check()
-        self.update_results_button.click()
-
-
-class SessionsTriagePage(SearchBarMixin, SessionsTabsMixin):
-    def __init__(self, page: Page) -> None:
-        super().__init__(page)
+    @step("Expect Has a refusal to be selected")
+    def expect_has_a_refusal_to_be_selected(self) -> None:
+        expect(self.has_a_refusal_radio).to_be_checked()
 
 
 class SessionsRegisterPage(SearchBarMixin, SessionsTabsMixin):

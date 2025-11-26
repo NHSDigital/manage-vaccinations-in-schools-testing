@@ -35,6 +35,15 @@ def get_current_datetime_compact() -> str:
     return get_current_datetime().strftime("%Y%m%d%H%M%S")
 
 
+def get_formatted_date_for_session_dates(date: datetime) -> str:
+    try:
+        # Linux (Github Action)
+        return date.strftime(format="%-d %B %Y")
+    except ValueError:
+        # Windows (Dev VDI)
+        return date.strftime(format="%#d %B %Y")
+
+
 def get_day_month_year_from_compact_date(compact_date: str) -> tuple[int, int, int]:
     day = int(compact_date[-2:])
     month = int(compact_date[4:6])

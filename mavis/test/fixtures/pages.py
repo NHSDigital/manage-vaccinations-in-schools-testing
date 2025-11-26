@@ -35,7 +35,6 @@ from mavis.test.pages import (
     ReviewSchoolMovePage,
     SchoolMovesPage,
     SessionsChildrenPage,
-    SessionsConsentPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
@@ -44,7 +43,6 @@ from mavis.test.pages import (
     SessionsRecordVaccinationsPage,
     SessionsRegisterPage,
     SessionsSearchPage,
-    SessionsTriagePage,
     SessionsVaccinationWizardPage,
     StartPage,
     TeamPage,
@@ -226,16 +224,6 @@ def sessions_edit_page(page: Page) -> SessionsEditPage:
 @pytest.fixture
 def sessions_children_page(page: Page) -> SessionsChildrenPage:
     return SessionsChildrenPage(page)
-
-
-@pytest.fixture
-def sessions_consent_page(page: Page) -> SessionsConsentPage:
-    return SessionsConsentPage(page)
-
-
-@pytest.fixture
-def sessions_triage_page(page: Page) -> SessionsTriagePage:
-    return SessionsTriagePage(page)
 
 
 @pytest.fixture
