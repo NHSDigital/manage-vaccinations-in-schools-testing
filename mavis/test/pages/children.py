@@ -35,15 +35,15 @@ class ChildrenSearchPage:
             "checkbox",
             name="Archived records",
         )
+        self.children_aged_out_of_programmes_checkbox = self.page.get_by_role(
+            "checkbox",
+            name="Children aged out of programmes",
+        )
         self.children_missing_an_nhs_number_checkbox = self.page.get_by_role(
             "checkbox",
             name="Children missing an NHS number",
         )
         self.child_record_link = self.page.get_by_role("link", name="Child record")
-        self.not_eligible_radio = self.page.get_by_role(
-            "radio",
-            name="Not eligible",
-        )
 
     def verify_headers(self) -> None:
         expect(self.children_heading).to_be_visible()
@@ -88,6 +88,7 @@ class ChildrenSearchPage:
     def search_with_all_filters_for_child_name(self, child_name: str) -> None:
         filter_locators = [
             self.archived_records_checkbox,
+            self.children_aged_out_of_programmes_checkbox,
             self.children_missing_an_nhs_number_checkbox,
         ]
         child_locator = self.page.get_by_role("link", name=child_name)
@@ -111,9 +112,9 @@ class ChildrenSearchPage:
     def click_advanced_filters(self) -> None:
         self.advanced_filters_link.click()
 
-    @step("Select Not eligible")
-    def select_not_eligible(self) -> None:
-        self.not_eligible_radio.check()
+    @step("Check Children aged out of programmes")
+    def check_children_aged_out_of_programmes(self) -> None:
+        self.children_aged_out_of_programmes_checkbox.check()
 
 
 class ChildRecordTabsMixin:
