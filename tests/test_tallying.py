@@ -109,7 +109,7 @@ def test_tallying(  # noqa: PLR0915
     )
 
     tally_totals[TallyCategory.NEEDS_CONSENT] -= 1
-    tally_totals[TallyCategory.DUE_GELATINE_FREE_INJECTION] += 1
+    tally_totals[TallyCategory.DUE_INJECTION] += 1
     sessions_overview_page.check_all_totals(tally_totals)
 
     sessions_overview_page.click_children_tab()
@@ -124,7 +124,7 @@ def test_tallying(  # noqa: PLR0915
     sessions_patient_page.click_back()
     sessions_patient_page.go_back_to_session_for_school(school)
 
-    tally_totals[TallyCategory.DUE_GELATINE_FREE_INJECTION] -= 1
+    tally_totals[TallyCategory.DUE_INJECTION] -= 1
     tally_totals[TallyCategory.HAS_A_REFUSAL] += 1
     sessions_overview_page.check_all_totals(tally_totals)
 

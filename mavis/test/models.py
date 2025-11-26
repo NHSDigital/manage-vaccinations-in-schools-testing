@@ -140,7 +140,7 @@ class TallyCategory(StrEnum):
     HAS_A_REFUSAL = "Has a refusal"
     VACCINATED = "Vaccinated"
     DUE_VACCINATION = "Due vaccination"
-    DUE_GELATINE_FREE_INJECTION = "Due gelatine-free injection"
+    DUE_INJECTION = "Due injection"
     DUE_NASAL_SPRAY = "Due nasal spray"
 
 
@@ -265,7 +265,7 @@ class Programme(StrEnum):
         if self is self.FLU:
             return [
                 *common_categories,
-                TallyCategory.DUE_GELATINE_FREE_INJECTION,
+                TallyCategory.DUE_INJECTION,
                 TallyCategory.DUE_NASAL_SPRAY,
             ]
         return [*common_categories, TallyCategory.DUE_VACCINATION]
