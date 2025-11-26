@@ -139,7 +139,7 @@ class TallyCategory(StrEnum):
     NEEDS_CONSENT = "Needs consent"
     HAS_A_REFUSAL = "Has a refusal"
     VACCINATED = "Vaccinated"
-    CONSENT_GIVEN = "Consent given"
+    DUE_VACCINATION = "Due vaccination"
     DUE_GELATINE_FREE_INJECTION = "Due gelatine-free injection"
     DUE_NASAL_SPRAY = "Due nasal spray"
 
@@ -268,7 +268,7 @@ class Programme(StrEnum):
                 TallyCategory.DUE_GELATINE_FREE_INJECTION,
                 TallyCategory.DUE_NASAL_SPRAY,
             ]
-        return [*common_categories, TallyCategory.CONSENT_GIVEN]
+        return [*common_categories, TallyCategory.DUE_VACCINATION]
 
 
 class Vaccine(StrEnum):

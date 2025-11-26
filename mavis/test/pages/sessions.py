@@ -23,6 +23,7 @@ from mavis.test.utils import (
     expect_details,
     get_current_datetime_compact,
     get_day_month_year_from_compact_date,
+    get_formatted_date_for_session_dates,
     get_offset_date,
     get_offset_date_compact_format,
     reload_until_element_is_visible,
@@ -357,8 +358,9 @@ class SessionsOverviewPage(SessionsTabsMixin):
         return _file_path
 
     def is_date_scheduled(self, date: datetime) -> bool:
-        formatted_display_date = date.strftime("%d %B %Y").replace(" 0", " ")
-        return self.page.get_by_text(formatted_display_date).is_visible()
+        return self.page.get_by_text(
+            get_formatted_date_for_session_dates(date)
+        ).is_visible()
 
     @step("Click Consent refused")
     def click_consent_refused(self) -> None:
@@ -641,7 +643,7 @@ class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
     ) -> None:
         flu_consent_section = self.get_flu_consent_status_locator_from_search(child)
 
-        expect(flu_consent_section).to_contain_text("Consent given")
+        expect(flu_consent_section).to_contain_text("Due vaccination")
         if option is ConsentOption.INJECTION:
             method_locator = flu_consent_section.get_by_text("injection")
         else:
