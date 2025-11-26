@@ -75,7 +75,7 @@ def test_tallying(  # noqa: PLR0915
     sessions_overview_page,
     sessions_patient_page,
     sessions_register_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_vaccination_wizard_page,
     sessions_record_vaccinations_page,
     nurse_consent_wizard_page,
@@ -98,8 +98,8 @@ def test_tallying(  # noqa: PLR0915
     tally_totals = sessions_overview_page.get_all_totals(Programme.FLU)
     assert tally_totals[TallyCategory.NO_RESPONSE] > 0
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -112,8 +112,8 @@ def test_tallying(  # noqa: PLR0915
     tally_totals[TallyCategory.CONSENT_GIVEN_FOR_INJECTION] += 1
     sessions_overview_page.check_all_totals(tally_totals)
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_response_from_parent(child.parents[0])
     sessions_patient_page.click_withdraw_consent()
     nurse_consent_wizard_page.click_consent_refusal_reason(
@@ -128,8 +128,8 @@ def test_tallying(  # noqa: PLR0915
     tally_totals[TallyCategory.CONSENT_REFUSED] += 1
     sessions_overview_page.check_all_totals(tally_totals)
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.invalidate_parent_refusal(child.parents[0])
     sessions_patient_page.go_back_to_session_for_school(school)
 
@@ -137,8 +137,8 @@ def test_tallying(  # noqa: PLR0915
     tally_totals[TallyCategory.NO_RESPONSE] += 1
     sessions_overview_page.check_all_totals(tally_totals)
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[1])

@@ -54,7 +54,7 @@ def test_online_consent_school_moves_with_existing_patient(
     children,
     sessions_search_page,
     sessions_overview_page,
-    sessions_consent_page,
+    sessions_children_page,
     dashboard_page,
     school_moves_page,
     review_school_move_page,
@@ -105,11 +105,10 @@ def test_online_consent_school_moves_with_existing_patient(
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(schools[1], Programme.FLU)
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.select_consent_given_for_nasal_spray()
-    sessions_consent_page.select_consent_given_for_injected_vaccine()
-    sessions_consent_page.search_for(str(child))
-    sessions_consent_page.verify_child_shows_correct_flu_consent_method(
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.select_due_vaccination()
+    sessions_children_page.search_for(str(child))
+    sessions_children_page.verify_child_shows_correct_flu_consent_method(
         child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
 
@@ -121,7 +120,7 @@ def test_online_consent_school_moves_with_new_patient(
     children,
     sessions_search_page,
     sessions_overview_page,
-    sessions_consent_page,
+    sessions_children_page,
     dashboard_page,
     unmatched_consent_responses_page,
     consent_response_page,
@@ -179,11 +178,10 @@ def test_online_consent_school_moves_with_new_patient(
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(schools[1], Programme.FLU)
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.select_consent_given_for_nasal_spray()
-    sessions_consent_page.select_consent_given_for_injected_vaccine()
-    sessions_consent_page.search_for(str(child))
-    sessions_consent_page.verify_child_shows_correct_flu_consent_method(
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.select_due_vaccination()
+    sessions_children_page.search_for(str(child))
+    sessions_children_page.verify_child_shows_correct_flu_consent_method(
         child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
 

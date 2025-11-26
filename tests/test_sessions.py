@@ -157,7 +157,7 @@ def test_attendance_filters_functionality(
 @issue("MAV-1018")
 @pytest.mark.bug
 def test_session_search_functionality(
-    setup_random_child, sessions_overview_page, sessions_consent_page
+    setup_random_child, sessions_overview_page, sessions_children_page
 ):
     """
     Test: Verify the search functionality within a session.
@@ -167,8 +167,8 @@ def test_session_search_functionality(
     Verification:
     - Search returns expected results for the session.
     """
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.verify_search()
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.verify_search()
 
 
 @issue("MAV-1381")
@@ -176,7 +176,7 @@ def test_session_search_functionality(
 def test_consent_filters(
     setup_fixed_child,
     sessions_overview_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_patient_page,
     nurse_consent_wizard_page,
     children,
@@ -192,16 +192,16 @@ def test_consent_filters(
     """
     child = children[Programme.HPV][0]
     sessions_overview_page.review_child_with_no_response()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_record_a_new_consent_response()
 
     nurse_consent_wizard_page.select_parent(child.parents[0])
     nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
     nurse_consent_wizard_page.record_parent_refuse_consent()
 
-    sessions_consent_page.click_overview_tab()
-    sessions_overview_page.click_consent_refused()
-    sessions_consent_page.expect_consent_refused_checkbox_to_be_checked()
+    sessions_children_page.click_overview_tab()
+    sessions_overview_page.click_has_a_refusal()
+    sessions_children_page.expect_has_a_refusal_to_be_selected()
 
 
 @issue("MAV-1265")
@@ -210,7 +210,7 @@ def test_session_activity_notes_order(
     dashboard_page,
     sessions_search_page,
     sessions_overview_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_patient_page,
     sessions_patient_session_activity_page,
     schools,
@@ -231,18 +231,18 @@ def test_session_activity_notes_order(
     note_1 = "Note 1"
     note_2 = "Note 2"
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.add_note(note_1)
     sessions_patient_session_activity_page.add_note(note_2)
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_for(str(child))
-    sessions_consent_page.check_note_appears_in_search(child, note_2)
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_for(str(child))
+    sessions_children_page.check_note_appears_in_search(child, note_2)
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.check_notes_appear_in_order([note_2, note_1])
 
@@ -253,7 +253,7 @@ def test_triage_consent_given_and_triage_outcome(
     schools,
     sessions_search_page,
     sessions_overview_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_patient_page,
     dashboard_page,
     nurse_consent_wizard_page,
@@ -271,8 +271,8 @@ def test_triage_consent_given_and_triage_outcome(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
 
@@ -288,7 +288,7 @@ def test_triage_consent_given_and_triage_outcome(
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
 
     sessions_overview_page.click_register_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_update_triage_outcome()
     sessions_patient_page.select_yes_safe_to_vaccinate()
@@ -300,7 +300,7 @@ def test_triage_consent_given_and_triage_outcome(
 def test_consent_refused_and_activity_log(
     setup_fixed_child,
     sessions_overview_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_patient_page,
     sessions_patient_session_activity_page,
     nurse_consent_wizard_page,
@@ -317,8 +317,8 @@ def test_consent_refused_and_activity_log(
     """
     child = children[Programme.HPV][0]
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.HPV)
     sessions_patient_page.click_record_a_new_consent_response()
 
@@ -327,8 +327,8 @@ def test_consent_refused_and_activity_log(
     nurse_consent_wizard_page.record_parent_refuse_consent()
     expect_alert_text(nurse_consent_wizard_page.page, str(child))
 
-    sessions_consent_page.select_consent_refused()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_children_page.select_has_a_refusal()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.check_session_activity_entry(
         f"Consent refused by {child.parents[0].name_and_relationship}",
@@ -442,7 +442,7 @@ def test_editing_session_programmes(
     children,
     sessions_overview_page,
     sessions_edit_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_patient_page,
 ):
     """
@@ -464,8 +464,8 @@ def test_editing_session_programmes(
     expect_details(sessions_edit_page.page, "Programmes", "Flu HPV")
     sessions_edit_page.click_save_changes()
     sessions_edit_page.expect_session_to_have_programmes([Programme.FLU, Programme.HPV])
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
 
 
@@ -477,9 +477,8 @@ def test_accessibility(
     sessions_search_page,
     sessions_overview_page,
     sessions_edit_page,
-    sessions_consent_page,
-    sessions_patient_page,
     sessions_children_page,
+    sessions_patient_page,
     sessions_triage_page,
     sessions_register_page,
     schools,
@@ -515,10 +514,7 @@ def test_accessibility(
     sessions_overview_page.click_children_tab()
     accessibility_helper.check_accessibility()
 
-    sessions_children_page.click_consent_tab()
-    accessibility_helper.check_accessibility()
-
-    sessions_consent_page.click_triage_tab()
+    sessions_children_page.click_triage_tab()
     accessibility_helper.check_accessibility()
 
     sessions_triage_page.click_register_tab()

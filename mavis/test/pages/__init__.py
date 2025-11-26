@@ -29,7 +29,6 @@ from .reports import ReportsDownloadPage, ReportsVaccinationsPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .sessions import (
     SessionsChildrenPage,
-    SessionsConsentPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
@@ -81,7 +80,6 @@ __all__ = [
     "ReviewSchoolMovePage",
     "SchoolMovesPage",
     "SessionsChildrenPage",
-    "SessionsConsentPage",
     "SessionsEditPage",
     "SessionsOverviewPage",
     "SessionsPatientPage",

@@ -82,7 +82,7 @@ def test_delivering_vaccination_after_psd(
     sessions_search_page,
     sessions_overview_page,
     sessions_edit_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_psd_page,
     sessions_patient_page,
     sessions_register_page,
@@ -118,8 +118,8 @@ def test_delivering_vaccination_after_psd(
     sessions_edit_page.click_continue_button()
     sessions_edit_page.click_save_changes()
 
-    sessions_overview_page.click_consent_tab()
-    sessions_consent_page.search_and_click_child(child)
+    sessions_overview_page.click_children_tab()
+    sessions_children_page.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -161,7 +161,7 @@ def test_bulk_adding_psd(
     sessions_search_page,
     sessions_overview_page,
     sessions_edit_page,
-    sessions_consent_page,
+    sessions_children_page,
     sessions_psd_page,
     schools,
     children,
@@ -215,11 +215,11 @@ def test_bulk_adding_psd(
     sessions_edit_page.click_continue_button()
     sessions_edit_page.click_save_changes()
 
-    sessions_overview_page.click_consent_tab()
+    sessions_overview_page.click_children_tab()
     for child in children[Programme.FLU]:
-        sessions_consent_page.get_flu_consent_status_locator_from_search(child)
+        sessions_children_page.get_flu_consent_status_locator_from_search(child)
 
-    sessions_consent_page.click_psds_tab()
+    sessions_children_page.click_psds_tab()
     for child in children[Programme.FLU]:
         sessions_psd_page.search_for(str(child))
         sessions_psd_page.check_child_does_not_have_psd(child)
@@ -242,7 +242,6 @@ def test_accessibility(
     sessions_search_page,
     sessions_overview_page,
     sessions_edit_page,
-    sessions_consent_page,
     sessions_psd_page,
     accessibility_helper,
     dashboard_page,
@@ -272,7 +271,7 @@ def test_accessibility(
     sessions_edit_page.answer_whether_psd_should_be_enabled("Yes")
     sessions_edit_page.click_continue_button()
     sessions_edit_page.click_save_changes()
-    sessions_consent_page.click_psds_tab()
+    sessions_overview_page.click_psds_tab()
     accessibility_helper.check_accessibility()
 
     sessions_psd_page.click_add_new_psds()
