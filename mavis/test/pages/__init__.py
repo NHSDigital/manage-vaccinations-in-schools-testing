@@ -37,7 +37,6 @@ from .sessions import (
     SessionsRecordVaccinationsPage,
     SessionsRegisterPage,
     SessionsSearchPage,
-    SessionsTriagePage,
     SessionsVaccinationWizardPage,
 )
 from .start import StartPage
@@ -88,7 +87,6 @@ __all__ = [
     "SessionsRecordVaccinationsPage",
     "SessionsRegisterPage",
     "SessionsSearchPage",
-    "SessionsTriagePage",
     "SessionsVaccinationWizardPage",
     "StartPage",
     "TeamPage",

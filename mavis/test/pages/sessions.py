@@ -663,11 +663,6 @@ class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
         expect(self.has_a_refusal_radio).to_be_checked()
 
 
-class SessionsTriagePage(SearchBarMixin, SessionsTabsMixin):
-    def __init__(self, page: Page) -> None:
-        super().__init__(page)
-
-
 class SessionsRegisterPage(SearchBarMixin, SessionsTabsMixin):
     def __init__(self, page: Page) -> None:
         super().__init__(page)

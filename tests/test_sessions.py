@@ -479,7 +479,6 @@ def test_accessibility(
     sessions_edit_page,
     sessions_children_page,
     sessions_patient_page,
-    sessions_triage_page,
     sessions_register_page,
     schools,
     children,
@@ -514,10 +513,7 @@ def test_accessibility(
     sessions_overview_page.click_children_tab()
     accessibility_helper.check_accessibility()
 
-    sessions_children_page.click_triage_tab()
-    accessibility_helper.check_accessibility()
-
-    sessions_triage_page.click_register_tab()
+    sessions_children_page.click_register_tab()
     accessibility_helper.check_accessibility()
 
     sessions_register_page.search_and_click_child(child)
