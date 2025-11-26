@@ -136,12 +136,12 @@ class HealthQuestion(StrEnum):
 
 
 class TallyCategory(StrEnum):
-    NO_RESPONSE = "No response"
-    CONSENT_REFUSED = "Consent refused"
+    NEEDS_CONSENT = "Needs consent"
+    HAS_A_REFUSAL = "Has a refusal"
     VACCINATED = "Vaccinated"
     CONSENT_GIVEN = "Consent given"
-    CONSENT_GIVEN_FOR_INJECTION = "Consent given for gelatine-free injection"
-    CONSENT_GIVEN_FOR_NASAL_SPRAY = "Consent given for nasal spray"
+    DUE_GELATINE_FREE_INJECTION = "Due gelatine-free injection"
+    DUE_NASAL_SPRAY = "Due nasal spray"
 
 
 class Programme(StrEnum):
@@ -258,15 +258,15 @@ class Programme(StrEnum):
     @property
     def tally_categories(self) -> list[str]:
         common_categories = [
-            TallyCategory.NO_RESPONSE,
-            TallyCategory.CONSENT_REFUSED,
+            TallyCategory.NEEDS_CONSENT,
+            TallyCategory.HAS_A_REFUSAL,
             TallyCategory.VACCINATED,
         ]
         if self is self.FLU:
             return [
                 *common_categories,
-                TallyCategory.CONSENT_GIVEN_FOR_INJECTION,
-                TallyCategory.CONSENT_GIVEN_FOR_NASAL_SPRAY,
+                TallyCategory.DUE_GELATINE_FREE_INJECTION,
+                TallyCategory.DUE_NASAL_SPRAY,
             ]
         return [*common_categories, TallyCategory.CONSENT_GIVEN]
 
