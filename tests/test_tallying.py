@@ -168,3 +168,44 @@ def test_tallying(  # noqa: PLR0915
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] -= 1
     tally_totals[TallyCategory.VACCINATED] += 1
     sessions_overview_page.check_all_totals(tally_totals)
+
+
+@issue("MAV-2689")
+@pytest.mark.parametrize(
+    "programme", list(Programme), ids=lambda p: f"Programme: {p.value}"
+)
+def test_tallying_totals_match_eligible_patients(
+    setup_fixed_child,
+    sessions_overview_page,
+    sessions_children_page,
+    programme,
+    children,
+    schools,
+):
+    """
+    Test: Verify that tallying totals match the number of eligible patients.
+    Steps:
+    1. Navigate to a session with eligible patients for the given programme.
+    2. Compare the sum of the tally boxes with the count of eligible patients.
+    Verification:
+    - Sum of tally totals should equal the number of eligible children shown
+      on the children tab.
+    """
+    # Get tally totals for the programme
+    tally_totals = sessions_overview_page.get_all_totals(programme)
+    sum_of_tally_totals = sum(tally_totals.values())
+
+    # Navigate to children tab to count eligible children
+    sessions_overview_page.click_children_tab()
+
+    # Count all children cards displayed (these are the eligible children)
+    children_cards = sessions_children_page.page.locator(
+        "div.nhsuk-card.app-card.app-card--compact:has(h4)"
+    )
+    eligible_children_count = children_cards.count()
+
+    # Verify that the sum of tally totals equals the number of eligible children
+    assert sum_of_tally_totals == eligible_children_count, (
+        f"Sum of tally totals ({sum_of_tally_totals}) does not match "
+        f"eligible children count ({eligible_children_count}) for {programme}"
+    )

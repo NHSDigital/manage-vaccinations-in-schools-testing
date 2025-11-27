@@ -142,6 +142,8 @@ class TallyCategory(StrEnum):
     DUE_VACCINATION = "Due vaccination"
     DUE_INJECTION = "Due injection"
     DUE_NASAL_SPRAY = "Due nasal spray"
+    NEEDS_TRIAGE = "Needs triage"
+    UNABLE_TO_VACCINATE = "Unable to vaccinate"
 
 
 class Programme(StrEnum):
@@ -261,6 +263,8 @@ class Programme(StrEnum):
             TallyCategory.NEEDS_CONSENT,
             TallyCategory.HAS_A_REFUSAL,
             TallyCategory.VACCINATED,
+            TallyCategory.NEEDS_TRIAGE,
+            TallyCategory.UNABLE_TO_VACCINATE,
         ]
         if self is self.FLU:
             return [
@@ -268,7 +272,7 @@ class Programme(StrEnum):
                 TallyCategory.DUE_INJECTION,
                 TallyCategory.DUE_NASAL_SPRAY,
             ]
-        return [*common_categories, TallyCategory.DUE_VACCINATION]
+        return [*common_categories]
 
 
 class Vaccine(StrEnum):
