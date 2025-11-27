@@ -31,7 +31,7 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
 def test_recording_flu_vaccination_e2e(
     flu_consent_url,
     setup_session_for_flu,
-    online_consent_page,
+    online_consent_wizard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
@@ -74,18 +74,20 @@ def test_recording_flu_vaccination_e2e(
         else batch_names[Vaccine.FLUENZ]
     )
 
-    online_consent_page.go_to_url(flu_consent_url)
+    online_consent_wizard_page.go_to_url(flu_consent_url)
     start_page.start()
 
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_flu_vaccination(consent_option=consent_option)
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(consent_option),
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_flu_vaccination(consent_option=consent_option)
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
+        online_consent_wizard_page.get_number_of_health_questions_for_flu(
+            consent_option
+        ),
         yes_to_health_questions=False,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,

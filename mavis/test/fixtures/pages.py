@@ -25,7 +25,7 @@ from mavis.test.pages import (
     LogOutPage,
     MatchConsentResponsePage,
     NurseConsentWizardPage,
-    OnlineConsentPage,
+    OnlineConsentWizardPage,
     ProgrammeChildrenPage,
     ProgrammeOverviewPage,
     ProgrammeSessionsPage,
@@ -158,8 +158,8 @@ def match_consent_response_page(page: Page) -> MatchConsentResponsePage:
 
 
 @pytest.fixture
-def online_consent_page(page: Page) -> OnlineConsentPage:
-    return OnlineConsentPage(page)
+def online_consent_wizard_page(page: Page) -> OnlineConsentWizardPage:
+    return OnlineConsentWizardPage(page)
 
 
 @pytest.fixture
