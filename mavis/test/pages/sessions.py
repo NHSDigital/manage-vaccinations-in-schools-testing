@@ -48,6 +48,11 @@ class SearchBarMixin:
             name="Archived records",
         )
 
+    def _get_patient_card_locator(self, child: Child) -> Locator:
+        return self.page.locator(
+            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
+        )
+
     @step("Search for {1}")
     def search_for(self, name: str) -> None:
         self.search_textbox.fill(name)
@@ -65,13 +70,17 @@ class SearchBarMixin:
 
     def search_and_click_child(self, child: Child) -> None:
         self.search_for(str(child))
-        child_locator = self.page.get_by_role("link", name=str(child))
+        child_locator = self._get_patient_card_locator(child).get_by_role(
+            "link", name=str(child)
+        )
         reload_until_element_is_visible(self.page, child_locator)
         child_locator.click()
 
     def search_for_child_that_should_not_exist(self, child: Child) -> None:
         self.search_for(str(child))
-        child_locator = self.page.get_by_role("link", name=str(child))
+        child_locator = self._get_patient_card_locator(child).get_by_role(
+            "link", name=str(child)
+        )
         expect(child_locator).not_to_be_visible()
 
     @step("Click Advanced filters")
@@ -157,21 +166,17 @@ class SessionsPsdPage(SearchBarMixin, SessionsTabsMixin):
 
     @step("Check {1} has PSD")
     def check_child_has_psd(self, child: Child) -> None:
-        patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
+        child_with_psd_locator = self._get_patient_card_locator(child).get_by_text(
+            "PSD added"
         )
-        reload_until_element_is_visible(
-            self.page, patient_card.get_by_text("PSD added")
-        )
+        reload_until_element_is_visible(self.page, child_with_psd_locator)
 
     @step("Check {1} does not have PSD")
     def check_child_does_not_have_psd(self, child: Child) -> None:
-        patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
+        child_without_psd_locator = self._get_patient_card_locator(child).get_by_text(
+            "PSD not added"
         )
-        reload_until_element_is_visible(
-            self.page, patient_card.get_by_text("PSD not added")
-        )
+        reload_until_element_is_visible(self.page, child_without_psd_locator)
 
     @step("Click Add new PSDs")
     def click_add_new_psds(self) -> None:
@@ -652,10 +657,8 @@ class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
         reload_until_element_is_visible(self.page, method_locator)
 
     def get_flu_consent_status_locator_from_search(self, child: Child) -> Locator:
-        patient_card = self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))',
-        )
-        flu_consent_section = patient_card.locator("p:has-text('Flu')")
+        child_locator = self._get_patient_card_locator(child)
+        flu_consent_section = child_locator.locator("p:has-text('Flu')")
         reload_until_element_is_visible(self.page, flu_consent_section)
 
         return flu_consent_section
