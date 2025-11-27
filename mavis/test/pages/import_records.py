@@ -227,6 +227,7 @@ class ImportRecordsWizardPage:
                 else:
                     expect(self.page.get_by_role("main")).to_contain_text(_msg)
 
+    @step("Select year groups {1}")
     def select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
             if year_group == 0:
