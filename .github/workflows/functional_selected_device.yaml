@@ -10,7 +10,7 @@ on:
       cross_service_tests:
         description: 'Include imms api and reporting tests'
         required: false
-        default: 'true'
+        default: 'false'
         type: choice
         options:
           - true
