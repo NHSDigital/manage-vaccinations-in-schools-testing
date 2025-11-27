@@ -376,7 +376,7 @@ def create_child_list_from_file(
 
     last_name_list = _file_df[_cols[0]].apply(normalize_whitespace)
     first_name_list = _file_df[_cols[1]].apply(normalize_whitespace)
-    return (last_name_list + ", " + first_name_list).tolist()
+    return last_name_list.str.cat(first_name_list, sep=", ").tolist()
 
 
 def increment_date_of_birth_for_records(file_path: Path) -> None:

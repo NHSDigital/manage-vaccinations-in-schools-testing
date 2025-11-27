@@ -10,10 +10,6 @@ from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
 from mavis.test.utils import reload_until_element_is_visible
 
 
-def get_child_full_name(first_name: str, last_name: str) -> str:
-    return f"{last_name.upper()}, {first_name}"
-
-
 class SchoolMovesPage:
     def __init__(self, page: Page) -> None:
         self.page = page
@@ -26,9 +22,9 @@ class SchoolMovesPage:
             has_text="ignored",
         )
 
-    @step("Click on school move for {1} {2}")
-    def click_child(self, first_name: str, last_name: str) -> None:
-        row = self.get_row_for_child(first_name, last_name)
+    @step("Click on school move for {1}")
+    def click_child(self, child: Child) -> None:
+        row = self.get_row_for_child(child)
         reload_until_element_is_visible(self.page, row)
         row.get_by_role("link", name="Review").click()
 
@@ -36,9 +32,8 @@ class SchoolMovesPage:
     def click_download(self) -> None:
         self.download_button.click()
 
-    def get_row_for_child(self, first_name: str, last_name: str) -> Locator:
-        full_name = get_child_full_name(first_name, last_name)
-        return self.rows.filter(has=self.page.get_by_text(full_name))
+    def get_row_for_child(self, child: Child) -> Locator:
+        return self.rows.filter(has=self.page.get_by_text(str(child)))
 
 
 class DownloadSchoolMovesPage:

@@ -98,20 +98,20 @@ def test_confirm_and_ignore(
     schools = schools[Programme.HPV]
     child_1, child_2 = children[Programme.HPV][0], children[Programme.HPV][1]
 
-    row1 = school_moves_page.get_row_for_child(*child_1.name)
-    row2 = school_moves_page.get_row_for_child(*child_2.name)
+    row1 = school_moves_page.get_row_for_child(child_1)
+    row2 = school_moves_page.get_row_for_child(child_2)
 
     expect(row1).to_contain_text(f"Class list updated {schools[0]} to {schools[1]}")
     expect(row2).to_contain_text(f"Class list updated {schools[0]} to {schools[1]}")
 
-    school_moves_page.click_child(*child_1.name)
+    school_moves_page.click_child(child_1)
     review_school_move_page.confirm()
 
     expect(school_moves_page.confirmed_alert).to_contain_text(
         f"{child_1!s}’s school record updated",
     )
 
-    school_moves_page.click_child(*child_2.name)
+    school_moves_page.click_child(child_2)
     review_school_move_page.ignore()
 
     expect(school_moves_page.ignored_alert).to_contain_text(
@@ -179,5 +179,5 @@ def test_accessibility(
 
     dashboard_page.click_mavis()
     dashboard_page.click_school_moves()
-    school_moves_page.click_child(*child.name)
+    school_moves_page.click_child(child)
     accessibility_helper.check_accessibility()
