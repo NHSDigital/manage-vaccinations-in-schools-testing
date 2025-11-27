@@ -98,7 +98,7 @@ def test_online_consent_school_moves_with_existing_patient(
     # Verify in session
     dashboard_page.navigate()
     dashboard_page.click_school_moves()
-    school_moves_page.click_child(*child.name)
+    school_moves_page.click_child(child)
     review_school_move_page.confirm()
 
     dashboard_page.navigate()
