@@ -49,7 +49,7 @@ def setup_session_with_file_upload(
 def test_online_consent_school_moves_with_existing_patient(
     setup_session_with_file_upload,
     start_consent_with_session_scheduled,
-    online_consent_page,
+    online_consent_wizard_page,
     schools,
     children,
     sessions_search_page,
@@ -74,21 +74,21 @@ def test_online_consent_school_moves_with_existing_patient(
     schools = schools[Programme.FLU]
 
     # First consent
-    online_consent_page.fill_details(
+    online_consent_wizard_page.fill_details(
         child, child.parents[0], schools, change_school=True
     )
-    online_consent_page.agree_to_flu_vaccination(
+    online_consent_wizard_page.agree_to_flu_vaccination(
         consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
+        online_consent_wizard_page.get_number_of_health_questions_for_flu(
             ConsentOption.NASAL_SPRAY_OR_INJECTION
         ),
         yes_to_health_questions=False,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
@@ -115,7 +115,7 @@ def test_online_consent_school_moves_with_existing_patient(
 
 def test_online_consent_school_moves_with_new_patient(
     start_consent_with_session_scheduled,
-    online_consent_page,
+    online_consent_wizard_page,
     schools,
     children,
     sessions_search_page,
@@ -143,21 +143,21 @@ def test_online_consent_school_moves_with_new_patient(
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
-    online_consent_page.fill_details(
+    online_consent_wizard_page.fill_details(
         child, child.parents[0], schools, change_school=True
     )
-    online_consent_page.agree_to_flu_vaccination(
+    online_consent_wizard_page.agree_to_flu_vaccination(
         consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
+        online_consent_wizard_page.get_number_of_health_questions_for_flu(
             ConsentOption.NASAL_SPRAY_OR_INJECTION
         ),
         yes_to_health_questions=False,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
@@ -191,7 +191,7 @@ def test_online_consent_school_moves_with_new_patient(
 @pytest.mark.accessibility
 def test_accessibility(
     start_consent_with_session_scheduled,
-    online_consent_page,
+    online_consent_wizard_page,
     schools,
     children,
     accessibility_helper,
@@ -206,36 +206,36 @@ def test_accessibility(
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
-    online_consent_page.fill_child_name_details(*child.name)
+    online_consent_wizard_page.fill_child_name_details(*child.name)
     accessibility_helper.check_accessibility()
 
-    online_consent_page.fill_child_date_of_birth(child.date_of_birth)
+    online_consent_wizard_page.fill_child_date_of_birth(child.date_of_birth)
     accessibility_helper.check_accessibility()
 
-    online_consent_page.click_no_they_go_to_a_different_school()
+    online_consent_wizard_page.click_no_they_go_to_a_different_school()
     accessibility_helper.check_accessibility()
 
-    online_consent_page.fill_school_name(str(schools[1]))
-    online_consent_page.click_continue()
+    online_consent_wizard_page.fill_school_name(str(schools[1]))
+    online_consent_wizard_page.click_continue()
     accessibility_helper.check_accessibility()
 
-    online_consent_page.fill_parent_details(child.parents[0])
+    online_consent_wizard_page.fill_parent_details(child.parents[0])
 
     accessibility_helper.check_accessibility()
 
-    online_consent_page.agree_to_flu_vaccination(
+    online_consent_wizard_page.agree_to_flu_vaccination(
         consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
     accessibility_helper.check_accessibility()
 
-    online_consent_page.fill_address_details(*child.address)
+    online_consent_wizard_page.fill_address_details(*child.address)
     accessibility_helper.check_accessibility()
 
-    online_consent_page.answer_yes()
+    online_consent_wizard_page.answer_yes()
     accessibility_helper.check_accessibility()
 
-    online_consent_page.answer_health_questions(
-        online_consent_page.get_number_of_health_questions_for_flu(
+    online_consent_wizard_page.answer_health_questions(
+        online_consent_wizard_page.get_number_of_health_questions_for_flu(
             ConsentOption.NASAL_SPRAY_OR_INJECTION
         )
         + 1,
@@ -243,5 +243,5 @@ def test_accessibility(
     )
     accessibility_helper.check_accessibility()
 
-    online_consent_page.click_confirm()
+    online_consent_wizard_page.click_confirm()
     accessibility_helper.check_accessibility()

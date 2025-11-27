@@ -13,7 +13,7 @@ from mavis.test.models import (
 )
 
 
-class OnlineConsentPage:
+class OnlineConsentWizardPage:
     def __init__(self, page: Page) -> None:
         self.page = page
 

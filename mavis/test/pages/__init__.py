@@ -18,7 +18,7 @@ from .flipper import FlipperPage
 from .import_records import ImportRecordsWizardPage, ImportsPage
 from .log_in import LogInPage, LogOutPage
 from .nurse_consent import GillickCompetencePage, NurseConsentWizardPage
-from .online_consent import OnlineConsentPage
+from .online_consent import OnlineConsentWizardPage
 from .programmes import (
     ProgrammeChildrenPage,
     ProgrammeOverviewPage,
@@ -68,7 +68,7 @@ __all__ = [
     "LogOutPage",
     "MatchConsentResponsePage",
     "NurseConsentWizardPage",
-    "OnlineConsentPage",
+    "OnlineConsentWizardPage",
     "ProgrammeChildrenPage",
     "ProgrammeOverviewPage",
     "ProgrammeSessionsPage",

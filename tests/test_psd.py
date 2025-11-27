@@ -166,7 +166,7 @@ def test_bulk_adding_psd(
     schools,
     children,
     dashboard_page,
-    online_consent_page,
+    online_consent_wizard_page,
     start_page,
 ):
     """
@@ -181,24 +181,24 @@ def test_bulk_adding_psd(
     school = schools[Programme.FLU][0]
 
     for child in children[Programme.FLU]:
-        online_consent_page.go_to_url(flu_consent_url)
+        online_consent_wizard_page.go_to_url(flu_consent_url)
         start_page.start()
 
-        online_consent_page.fill_details(
+        online_consent_wizard_page.fill_details(
             child, child.parents[0], schools[Programme.FLU]
         )
-        online_consent_page.agree_to_flu_vaccination(
+        online_consent_wizard_page.agree_to_flu_vaccination(
             consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION
         )
-        online_consent_page.fill_address_details(*child.address)
-        online_consent_page.answer_health_questions(
-            online_consent_page.get_number_of_health_questions_for_flu(
+        online_consent_wizard_page.fill_address_details(*child.address)
+        online_consent_wizard_page.answer_health_questions(
+            online_consent_wizard_page.get_number_of_health_questions_for_flu(
                 ConsentOption.NASAL_SPRAY_OR_INJECTION
             ),
             yes_to_health_questions=False,
         )
-        online_consent_page.click_confirm()
-        online_consent_page.check_final_consent_message(
+        online_consent_wizard_page.click_confirm()
+        online_consent_wizard_page.check_final_consent_message(
             child,
             programmes=[Programme.FLU],
             yes_to_health_questions=False,

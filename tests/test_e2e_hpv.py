@@ -20,7 +20,7 @@ def setup_session_for_hpv(setup_session_and_batches_with_fixed_child):
 def test_recording_hpv_vaccination_e2e(
     hpv_consent_url,
     setup_session_for_hpv,
-    online_consent_page,
+    online_consent_wizard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
@@ -53,18 +53,18 @@ def test_recording_hpv_vaccination_e2e(
     gardasil_9_batch_name = setup_session_for_hpv[Vaccine.GARDASIL_9]
     number_of_health_questions = len(Programme.health_questions(Programme.HPV))
 
-    online_consent_page.go_to_url(hpv_consent_url)
+    online_consent_wizard_page.go_to_url(hpv_consent_url)
     start_page.start()
 
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_hpv_vaccination()
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_hpv_vaccination()
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=False,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.HPV],
         yes_to_health_questions=False,

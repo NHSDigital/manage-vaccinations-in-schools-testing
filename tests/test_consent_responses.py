@@ -24,7 +24,7 @@ def online_consent_url(schedule_session_and_get_consent_url, schools):
 def give_online_consent(
     page,
     start_page,
-    online_consent_page,
+    online_consent_wizard_page,
     online_consent_url,
     children,
     schools,
@@ -34,18 +34,18 @@ def give_online_consent(
 
     page.goto(online_consent_url)
     start_page.start()
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_hpv_vaccination()
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(4, yes_to_health_questions=False)
-    online_consent_page.click_confirm()
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_hpv_vaccination()
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(4, yes_to_health_questions=False)
+    online_consent_wizard_page.click_confirm()
 
 
 @pytest.fixture
 def give_online_consent_pds_child(
     page,
     start_page,
-    online_consent_page,
+    online_consent_wizard_page,
     online_consent_url,
     pds_child,
     schools,
@@ -55,11 +55,11 @@ def give_online_consent_pds_child(
 
     page.goto(online_consent_url)
     start_page.start()
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_hpv_vaccination()
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(4, yes_to_health_questions=False)
-    online_consent_page.click_confirm()
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_hpv_vaccination()
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(4, yes_to_health_questions=False)
+    online_consent_wizard_page.click_confirm()
 
 
 @pytest.fixture

@@ -21,7 +21,7 @@ def setup_session_for_mmr(setup_session_and_batches_with_fixed_child):
 def test_recording_mmr_vaccination_e2e_with_triage(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
-    online_consent_page,
+    online_consent_wizard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
@@ -57,18 +57,18 @@ def test_recording_mmr_vaccination_e2e_with_triage(
         Programme.health_questions(Programme.MMR, ConsentOption.MMR_EITHER)
     )
 
-    online_consent_page.go_to_url(url_with_mmr_session_scheduled)
+    online_consent_wizard_page.go_to_url(url_with_mmr_session_scheduled)
     start_page.start()
 
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=True,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=True,
@@ -106,7 +106,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
 def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
-    online_consent_page,
+    online_consent_wizard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
@@ -143,18 +143,20 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
         Programme.health_questions(Programme.MMR, ConsentOption.MMR_WITHOUT_GELATINE)
     )
 
-    online_consent_page.go_to_url(url_with_mmr_session_scheduled)
+    online_consent_wizard_page.go_to_url(url_with_mmr_session_scheduled)
     start_page.start()
 
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_mmr_vaccination(ConsentOption.MMR_WITHOUT_GELATINE)
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_mmr_vaccination(
+        ConsentOption.MMR_WITHOUT_GELATINE
+    )
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=False,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=False,
@@ -190,7 +192,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
 def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
-    online_consent_page,
+    online_consent_wizard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_register_page,
@@ -234,18 +236,18 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     log_in_page.log_out()
 
     # Proceed with consent and vaccination process
-    online_consent_page.go_to_url(url_with_mmr_session_scheduled)
+    online_consent_wizard_page.go_to_url(url_with_mmr_session_scheduled)
     start_page.start()
 
-    online_consent_page.fill_details(child, child.parents[0], schools)
-    online_consent_page.agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
-    online_consent_page.fill_address_details(*child.address)
-    online_consent_page.answer_health_questions(
+    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
+    online_consent_wizard_page.agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
+    online_consent_wizard_page.fill_address_details(*child.address)
+    online_consent_wizard_page.answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=True,
     )
-    online_consent_page.click_confirm()
-    online_consent_page.check_final_consent_message(
+    online_consent_wizard_page.click_confirm()
+    online_consent_wizard_page.check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=True,
