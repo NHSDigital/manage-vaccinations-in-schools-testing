@@ -11,7 +11,6 @@ def setup_hist_vaccs(
     imports_page,
     import_records_wizard_page,
 ):
-    dashboard_page.click_mavis()
     dashboard_page.click_imports()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
@@ -76,6 +75,7 @@ def test_historical_vaccination_file_upload_creates_child(
     schools,
     dashboard_page,
     import_records_wizard_page,
+    imports_page,
     children_search_page,
     child_record_page,
     children,
@@ -94,8 +94,7 @@ def test_historical_vaccination_file_upload_creates_child(
     school = schools[Programme.HPV][0]
 
     import_records_wizard_page.upload_and_verify_output(VaccsFileMapping.HIST_HPV)
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
 
     children_search_page.click_advanced_filters()
     children_search_page.check_children_aged_out_of_programmes()

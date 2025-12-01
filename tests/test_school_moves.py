@@ -18,6 +18,7 @@ def setup_confirm_and_ignore(
     sessions_overview_page,
     sessions_edit_page,
     import_records_wizard_page,
+    imports_page,
     year_groups,
     children_search_page,
     child_record_page,
@@ -49,30 +50,25 @@ def setup_confirm_and_ignore(
     if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
         sessions_overview_page.schedule_or_edit_session()
         sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_overview_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(schools[1], Programme.HPV)
     if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
         sessions_overview_page.schedule_or_edit_session()
         sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_overview_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(schools[0], Programme.HPV)
     upload_class_list()
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
     children_search_page.search_for_a_child_name(str(children[0]))
     children_search_page.click_record_for_child(children[0])
     child_record_page.tabs.click_activity_log()
     child_activity_log_page.expect_activity_log_header(
         f"Added to the session at {schools[0]}"
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    child_activity_log_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(schools[1], Programme.HPV)
     upload_class_list()
-    dashboard_page.click_mavis()
-    dashboard_page.click_school_moves()
+    imports_page.header.click_school_moves_header()
 
 
 def test_confirm_and_ignore(
@@ -167,8 +163,6 @@ def test_accessibility(
     """
     child = children[Programme.HPV][0]
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_school_moves()
     accessibility_helper.check_accessibility()
 
     school_moves_page.click_download()
@@ -177,7 +171,6 @@ def test_accessibility(
     download_school_moves_page.click_continue()
     accessibility_helper.check_accessibility()
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_school_moves()
+    download_school_moves_page.header.click_school_moves_header()
     school_moves_page.click_child(child)
     accessibility_helper.check_accessibility()

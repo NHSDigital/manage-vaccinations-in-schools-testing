@@ -11,7 +11,6 @@ def setup_systmone_nivs(
     import_records_wizard_page,
     imports_page,
 ):
-    dashboard_page.click_mavis()
     dashboard_page.click_imports()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()

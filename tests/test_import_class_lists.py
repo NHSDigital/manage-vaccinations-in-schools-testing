@@ -24,8 +24,8 @@ def setup_class_list_import(
     if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
         sessions_overview_page.schedule_or_edit_session()
         sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
-    dashboard_page.click_mavis()
-    dashboard_page.click_imports()
+
+    sessions_overview_page.header.click_imports_header()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_class_list_record_import(
         str(school), year_group
@@ -149,7 +149,7 @@ def test_class_list_file_upload_whitespace_normalization(
     setup_class_list_import,
     import_records_wizard_page,
     children_search_page,
-    dashboard_page,
+    imports_page,
 ):
     """
     Test: Upload a class list file with extra whitespace and verify normalization.
@@ -163,8 +163,7 @@ def test_class_list_file_upload_whitespace_normalization(
     input_file, _ = import_records_wizard_page.upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
     children_search_page.verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
     )

@@ -179,8 +179,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
 
     # Attempt to record second dose on the same day
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
+    sessions_patient_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
     sessions_overview_page.tabs.click_record_vaccinations_tab()
     sessions_record_vaccinations_page.search.search_for_child_that_should_not_exist(
@@ -265,8 +264,7 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     sessions_children_page.search.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.MMR)
     sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
+    sessions_patient_page.header.click_sessions_header()
 
     sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
     sessions_overview_page.click_set_session_in_progress_for_today()

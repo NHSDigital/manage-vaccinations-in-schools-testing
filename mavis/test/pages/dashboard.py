@@ -1,16 +1,13 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
+from mavis.test.pages.header import HeaderComponent
 
 
 class DashboardPage:
     def __init__(self, page: Page) -> None:
         self.page = page
-
-        self.mavis_link = page.get_by_role(
-            "link",
-            name="Manage vaccinations in schools",
-        )
+        self.header = HeaderComponent(page)
 
         links = page.get_by_role("main").get_by_role("listitem").get_by_role("link")
 
@@ -25,10 +22,6 @@ class DashboardPage:
         self.imports_link = links.get_by_text("Imports")
         self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
-
-    @step("Click on Manage vaccinations in schools")
-    def click_mavis(self) -> None:
-        self.mavis_link.click()
 
     @step("Click on Programmes")
     def click_programmes(self) -> None:

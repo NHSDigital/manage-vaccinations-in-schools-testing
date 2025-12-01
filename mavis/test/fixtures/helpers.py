@@ -163,7 +163,7 @@ def upload_offline_vaccination(
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
 
-        dashboard_page.click_mavis()
+        dashboard_page.navigate()
         dashboard_page.click_sessions()
         sessions_search_page.click_session_for_programme_group(school, programme.group)
         if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
@@ -177,12 +177,10 @@ def upload_offline_vaccination(
             child.year_group,
             programme.group,
         )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
+        imports_page.header.click_sessions_header()
         sessions_search_page.click_session_for_programme_group(school, programme)
         session_id = sessions_overview_page.get_session_id_from_offline_excel()
-        dashboard_page.click_mavis()
-        dashboard_page.click_imports()
+        sessions_overview_page.header.click_imports_header()
         imports_page.click_upload_records()
         import_records_wizard_page.navigate_to_vaccination_records_import()
         import_records_wizard_page.upload_and_verify_output(
@@ -190,8 +188,7 @@ def upload_offline_vaccination(
             session_id=session_id,
             programme_group=programme.group,
         )
-        dashboard_page.click_mavis()
-        dashboard_page.click_programmes()
+        imports_page.header.click_programmes_header()
         programmes_list_page.click_programme_for_current_year(programme)
         programme_overview_page.tabs.click_children_tab()
         programme_children_page.search_for_child(child)
@@ -210,6 +207,7 @@ def setup_session_and_batches_with_fixed_child(
     sessions_search_page,
     sessions_overview_page,
     import_records_wizard_page,
+    imports_page,
     children,
     log_in_page,
     nurse,
@@ -227,8 +225,7 @@ def setup_session_and_batches_with_fixed_child(
                 for vaccine in Vaccine
                 if vaccine.programme.group == programme_group
             }
-            dashboard_page.click_mavis()
-            dashboard_page.click_sessions()
+            imports_page.header.click_sessions_header()
             sessions_search_page.click_session_for_programme_group(
                 school, programme_group
             )

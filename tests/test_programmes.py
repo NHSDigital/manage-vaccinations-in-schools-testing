@@ -110,6 +110,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     child_record_page,
     child_archive_page,
     import_records_wizard_page,
+    imports_page,
     children,
 ):
     """
@@ -126,23 +127,20 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.click_archive_child_record()
     child_archive_page.archive_child_record()
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_programmes()
+    child_record_page.header.click_programmes_header()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
     programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
 
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    imports_page.header.click_children_header()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.check_child_is_unarchived()
@@ -215,8 +213,7 @@ def test_verify_careplus_report_for_doubles(
     programme_overview_page.verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_programmes()
+    programme_overview_page.header.click_programmes_header()
     programmes_list_page.click_programme_for_current_year(Programme.TD_IPV)
     programme_overview_page.verify_report_format(
         report_format=ReportFormat.CAREPLUS,
@@ -258,8 +255,7 @@ def test_verify_csv_report_for_doubles(
     programme_overview_page.verify_report_format(
         report_format=ReportFormat.CSV,
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_programmes()
+    programme_overview_page.header.click_programmes_header()
     programmes_list_page.click_programme_for_current_year(Programme.TD_IPV)
     programme_overview_page.verify_report_format(
         report_format=ReportFormat.CSV,
@@ -382,8 +378,7 @@ def test_accessibility(
     programme_overview_page.click_continue()
     accessibility_helper.check_accessibility()
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_programmes()
+    programme_overview_page.header.click_programmes_header()
     programmes_list_page.click_programme_for_current_year(Programme.FLU)
 
     programme_overview_page.tabs.click_sessions_tab()

@@ -4,6 +4,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import Organisation, Team, User
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import get_current_datetime
 
 
@@ -116,6 +117,8 @@ class LogInPage:
 class LogOutPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.log_out_button = page.locator("#main-content").get_by_role(
             "button", name="Log out"
         )

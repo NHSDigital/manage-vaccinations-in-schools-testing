@@ -31,6 +31,8 @@ def setup_session_with_file_upload(
     sessions_search_page,
     sessions_overview_page,
     import_records_wizard_page,
+    imports_page,
+    vaccines_page,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -41,8 +43,7 @@ def setup_session_with_file_upload(
             vaccine: add_vaccine_batch(vaccine)
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
         }
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
+        vaccines_page.header.click_sessions_header()
         sessions_search_page.click_session_for_programme_group(
             school, Programme.FLU.group
         )
@@ -55,8 +56,7 @@ def setup_session_with_file_upload(
         import_records_wizard_page.import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
+        imports_page.header.click_sessions_header()
         sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
         yield batch_names
 

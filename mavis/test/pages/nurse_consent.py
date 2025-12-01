@@ -8,12 +8,14 @@ from mavis.test.models import (
     Parent,
     Programme,
 )
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import expect_alert_text, generate_random_string
 
 
 class NurseConsentWizardPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
 
         self.yes_radio = self.page.get_by_role("radio", name="Yes", exact=True)
         self.no_radio = self.page.get_by_role("radio", name="No", exact=True)
@@ -283,6 +285,8 @@ class NurseConsentWizardPage:
 class GillickCompetencePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.assessment_notes_textbox = self.page.get_by_role(
             "textbox",
             name="Assessment notes (optional)",

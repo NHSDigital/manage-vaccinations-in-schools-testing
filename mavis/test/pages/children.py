@@ -6,12 +6,14 @@ from playwright.sync_api import Page, expect
 from mavis.test.annotations import step
 from mavis.test.data import create_child_list_from_file
 from mavis.test.models import Child, Programme, School
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import get_current_datetime, reload_until_element_is_visible
 
 
 class ChildrenSearchPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
 
         self.children_heading = self.page.get_by_role(
             "heading",
@@ -133,6 +135,7 @@ class ChildRecordPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.tabs = ChildRecordTabs(page)
+        self.header = HeaderComponent(page)
 
         vaccinations_card = page.locator("section").filter(
             has=page.get_by_role("heading", name="Vaccinations"),
@@ -210,6 +213,8 @@ class ChildRecordPage:
 class ChildEditPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.change_nhs_no_link = self.page.get_by_role(
             "link",
             name="Change   NHS number",
@@ -232,6 +237,8 @@ class ChildEditPage:
 class ChildArchivePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.imported_in_error_radio = self.page.get_by_role(
             "radio",
             name="It was imported in error",
@@ -275,6 +282,8 @@ class ChildActivityLogPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.tabs = ChildRecordTabs(page)
+        self.header = HeaderComponent(page)
+
         self.manually_matched_card = self.page.get_by_text(
             "Consent response manually matched with child record",
         )

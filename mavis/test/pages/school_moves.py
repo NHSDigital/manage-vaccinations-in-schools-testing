@@ -7,12 +7,15 @@ from playwright.sync_api import Locator, Page
 
 from mavis.test.annotations import step
 from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
+from mavis.test.pages.header import HeaderComponent
 from mavis.test.utils import reload_until_element_is_visible
 
 
 class SchoolMovesPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.rows = page.get_by_role("row")
         self.download_button = page.get_by_role("button", name="Download records")
         self.confirmed_alert = page.get_by_role("alert", name="Success").filter(
@@ -39,6 +42,7 @@ class SchoolMovesPage:
 class DownloadSchoolMovesPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
 
         from_group = page.get_by_role("group", name="From")
         self.from_day = from_group.get_by_role("textbox", name="Day")
@@ -141,6 +145,8 @@ class DownloadSchoolMovesPage:
 class ReviewSchoolMovePage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.confirm_radio = page.get_by_role(
             "radio",
             name="Update record with new school",

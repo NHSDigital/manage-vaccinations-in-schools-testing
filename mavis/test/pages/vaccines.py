@@ -4,6 +4,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.models import Vaccine
+from mavis.test.pages.header import HeaderComponent
 
 
 class BatchExpiryDate:
@@ -23,6 +24,7 @@ class AddBatchPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.date = BatchExpiryDate(page)
+        self.header = HeaderComponent(page)
 
         self.name_textbox = page.get_by_role("textbox", name="Batch")
         self.confirm_button = page.get_by_role("button", name="Add batch")
@@ -46,6 +48,7 @@ class EditBatchPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.date = BatchExpiryDate(page)
+        self.header = HeaderComponent(page)
 
         self.confirm_button = page.get_by_role("button", name="Save changes")
         self.success_alert = page.get_by_role("alert", name="Success").filter(
@@ -60,6 +63,8 @@ class EditBatchPage:
 class ArchiveBatchPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
+
         self.confirm_button = page.get_by_role("button", name="Yes, archive this batch")
         self.success_alert = page.get_by_role("alert", name="Success").filter(
             has_text="archived",
@@ -73,6 +78,7 @@ class ArchiveBatchPage:
 class VaccinesPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.header = HeaderComponent(page)
 
     @step("Go to vaccines page")
     def navigate(self) -> None:

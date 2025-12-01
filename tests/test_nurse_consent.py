@@ -18,6 +18,7 @@ def setup_session_with_file_upload(
     sessions_edit_page,
     import_records_wizard_page,
     year_groups,
+    imports_page,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
@@ -32,13 +33,9 @@ def setup_session_with_file_upload(
             sessions_edit_page.schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
         sessions_overview_page.click_import_class_lists()
         import_records_wizard_page.import_class_list(class_list_file, year_group)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
+        imports_page.header.click_sessions_header()
         yield
 
     return _setup

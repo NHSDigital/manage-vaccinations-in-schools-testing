@@ -37,7 +37,7 @@ def setup_all_programmes(
         Programme.FLU: add_vaccine_batch(Vaccine.FLUENZ),
     }
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
-        dashboard_page.click_mavis()
+        dashboard_page.header.click_mavis_header()
         dashboard_page.click_sessions()
         sessions_search_page.click_session_for_programme_group(school, programme_group)
         if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
@@ -93,7 +93,7 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     batch_names = setup_all_programmes
 
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
-        dashboard_page.click_mavis()
+        dashboard_page.header.click_mavis_header()
         dashboard_page.click_sessions()
         sessions_search_page.click_session_for_programme_group(school, programme_group)
         if programme_group is Programme.HPV:

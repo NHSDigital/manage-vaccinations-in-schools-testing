@@ -34,7 +34,6 @@ def setup_session_with_file_upload(
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
 
-    dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_overview_page.click_import_class_lists()
@@ -101,8 +100,7 @@ def test_online_consent_school_moves_with_existing_patient(
     school_moves_page.click_child(child)
     review_school_move_page.confirm()
 
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
+    school_moves_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(schools[1], Programme.FLU)
 
     sessions_overview_page.tabs.click_children_tab()
@@ -174,8 +172,7 @@ def test_online_consent_school_moves_with_new_patient(
     consent_response_page.click_create_new_record()
     create_new_record_consent_response_page.create_new_record()
 
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
+    unmatched_consent_responses_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(schools[1], Programme.FLU)
 
     sessions_overview_page.tabs.click_children_tab()

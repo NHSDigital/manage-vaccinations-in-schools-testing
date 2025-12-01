@@ -18,11 +18,11 @@ def setup_tests(log_in_as_nurse, dashboard_page):
 def setup_session_with_file_upload(
     setup_tests,
     schools,
-    dashboard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_edit_page,
     import_records_wizard_page,
+    imports_page,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -39,8 +39,7 @@ def setup_session_with_file_upload(
             )
         sessions_overview_page.click_import_class_lists()
         import_records_wizard_page.import_class_list(class_list_file, year_group)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
+        imports_page.header.click_sessions_header()
         sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
         yield
 
@@ -87,9 +86,6 @@ def test_session_lifecycle(
     sessions_edit_page.schedule_a_valid_session(offset_days=14)
     sessions_overview_page.schedule_or_edit_session()
     sessions_edit_page.schedule_a_valid_session(offset_days=1)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_overview_page.click_edit_session()
     sessions_edit_page.edit_a_session_to_today()
 
@@ -207,7 +203,6 @@ def test_consent_filters(
 @issue("MAV-1265")
 def test_session_activity_notes_order(
     setup_fixed_child,
-    dashboard_page,
     sessions_search_page,
     sessions_overview_page,
     sessions_children_page,
@@ -236,8 +231,7 @@ def test_session_activity_notes_order(
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.add_note(note_1)
     sessions_patient_session_activity_page.add_note(note_2)
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_patient_session_activity_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     sessions_overview_page.tabs.click_children_tab()
     sessions_children_page.search.search_for(str(child))
@@ -282,8 +276,7 @@ def test_triage_consent_given_and_triage_outcome(
         yes_to_health_questions=True
     )
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_patient_page.header.click_sessions_header()
 
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
 
@@ -370,8 +363,7 @@ def test_verify_excel_export_and_clinic_invitation(
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_overview_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(
         "Community clinic", Programme.HPV.group
     )
@@ -379,8 +371,7 @@ def test_verify_excel_export_and_clinic_invitation(
         sessions_overview_page.schedule_or_edit_session()
         sessions_edit_page.schedule_a_valid_session(offset_days=0, skip_weekends=False)
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_children()
+    sessions_overview_page.header.click_children_header()
     children_search_page.search_for_a_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.click_invite_to_community_clinic()
@@ -409,8 +400,7 @@ def test_verify_excel_export_and_clinic_invitation(
     expect_alert_text(
         sessions_patient_page.page, "Vaccination outcome recorded for HPV"
     )
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_patient_page.header.click_sessions_header()
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
     assert sessions_overview_page.get_session_id_from_offline_excel()
 
@@ -494,8 +484,7 @@ def test_accessibility(
     school = schools[Programme.HPV][0]
     child = children[Programme.HPV][0]
 
-    dashboard_page.click_mavis()
-    dashboard_page.click_sessions()
+    sessions_overview_page.header.click_sessions_header()
     accessibility_helper.check_accessibility()
 
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV)

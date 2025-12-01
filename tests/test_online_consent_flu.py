@@ -35,7 +35,6 @@ def setup_session_with_file_upload(
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
 
-    dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_overview_page.click_import_class_lists()
@@ -258,7 +257,5 @@ def test_flu_consent_method_displayed_correctly(
     )
 
     # Verify in session download
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.FLU)
+    sessions_children_page.tabs.click_overview_tab()
     sessions_overview_page.verify_consent_message_in_excel()

@@ -20,8 +20,10 @@ def setup_session_with_file_upload(
     sessions_overview_page,
     sessions_edit_page,
     import_records_wizard_page,
+    imports_page,
     year_groups,
     add_vaccine_batch,
+    vaccines_page,
 ):
     def _factory(
         class_file_mapping: ClassFileMapping, *, schedule_session_for_today: bool = True
@@ -29,26 +31,22 @@ def setup_session_with_file_upload(
         school = schools[Programme.FLU][0]
         year_group = year_groups[Programme.FLU]
         batch_name = add_vaccine_batch(Vaccine.FLUENZ)
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        if schedule_session_for_today:
-            sessions_search_page.click_session_for_programme_group(
-                school, Programme.FLU.group
+        vaccines_page.header.click_sessions_header()
+        sessions_search_page.click_session_for_programme_group(
+            school, Programme.FLU.group
+        )
+        if schedule_session_for_today and not sessions_overview_page.is_date_scheduled(
+            get_offset_date(0)
+        ):
+            sessions_overview_page.schedule_or_edit_session()
+            sessions_edit_page.schedule_a_valid_session(
+                offset_days=0, skip_weekends=False
             )
-            if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-                sessions_overview_page.schedule_or_edit_session()
-                sessions_edit_page.schedule_a_valid_session(
-                    offset_days=0, skip_weekends=False
-                )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
         sessions_overview_page.click_import_class_lists()
         import_records_wizard_page.import_class_list(
             class_file_mapping, year_group, Programme.FLU.group
         )
-        dashboard_page.click_mavis()
-        dashboard_page.click_sessions()
+        imports_page.header.click_sessions_header()
         return batch_name
 
     return _factory
@@ -138,7 +136,6 @@ def test_delivering_vaccination_after_psd(
     log_in_page.navigate()
     log_in_page.log_in_and_choose_team_if_necessary(healthcare_assistant, team)
 
-    dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
     sessions_overview_page.tabs.click_register_tab()
@@ -256,9 +253,6 @@ def test_accessibility(
     - No accessibility issues are found.
     """
     school = schools[Programme.HPV][0]
-
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
 
     sessions_search_page.click_session_for_programme_group(school, Programme.HPV.group)
     if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
