@@ -14,7 +14,7 @@ from mavis.test.utils import (
 )
 
 
-class ReportsTabsMixin:
+class ReportsTabs:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.vaccinations_tab = page.get_by_label("Secondary menu").get_by_role(
@@ -35,9 +35,11 @@ class ReportsTabsMixin:
         self.download_data_tab.get_by_role("strong").wait_for()
 
 
-class ReportsVaccinationsPage(ReportsTabsMixin):
+class ReportsVaccinationsPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = ReportsTabs(page)
+
         self.cohort_heading = self.page.get_by_role(
             "heading", name="Cohort", exact=True
         )
@@ -109,9 +111,11 @@ class ReportsVaccinationsPage(ReportsTabsMixin):
         return str(total), str(unvaccinated_pct), str(vaccinated_pct)
 
 
-class ReportsDownloadPage(ReportsTabsMixin):
+class ReportsDownloadPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = ReportsTabs(page)
+
         self.aggregate_data_radio = self.page.get_by_role(
             "radio", name="Aggregate vaccination data"
         )
