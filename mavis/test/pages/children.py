@@ -117,7 +117,7 @@ class ChildrenSearchPage:
         self.children_aged_out_of_programmes_checkbox.check()
 
 
-class ChildRecordTabsMixin:
+class ChildRecordTabs:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.child_record_tab = page.get_by_role("link", name="Child record")
@@ -129,9 +129,10 @@ class ChildRecordTabsMixin:
         self.activity_log_tab.get_by_role("strong").wait_for()
 
 
-class ChildRecordPage(ChildRecordTabsMixin):
+class ChildRecordPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = ChildRecordTabs(page)
 
         vaccinations_card = page.locator("section").filter(
             has=page.get_by_role("heading", name="Vaccinations"),
@@ -270,9 +271,10 @@ class ChildArchivePage:
         expect(self.page.get_by_text("Archive reason")).to_be_visible()
 
 
-class ChildActivityLogPage(ChildRecordTabsMixin):
+class ChildActivityLogPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = ChildRecordTabs(page)
         self.manually_matched_card = self.page.get_by_text(
             "Consent response manually matched with child record",
         )
