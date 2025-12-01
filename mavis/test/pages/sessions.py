@@ -30,7 +30,7 @@ from mavis.test.utils import (
 )
 
 
-class SearchBarMixin:
+class SearchComponent:
     def __init__(
         self,
         page: Page,
@@ -48,7 +48,7 @@ class SearchBarMixin:
             name="Archived records",
         )
 
-    def _get_patient_card_locator(self, child: Child) -> Locator:
+    def get_patient_card_locator(self, child: Child) -> Locator:
         return self.page.locator(
             f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
         )
@@ -70,7 +70,7 @@ class SearchBarMixin:
 
     def search_and_click_child(self, child: Child) -> None:
         self.search_for(str(child))
-        child_locator = self._get_patient_card_locator(child).get_by_role(
+        child_locator = self.get_patient_card_locator(child).get_by_role(
             "link", name=str(child)
         )
         reload_until_element_is_visible(self.page, child_locator)
@@ -78,7 +78,7 @@ class SearchBarMixin:
 
     def search_for_child_that_should_not_exist(self, child: Child) -> None:
         self.search_for(str(child))
-        child_locator = self._get_patient_card_locator(child).get_by_role(
+        child_locator = self.get_patient_card_locator(child).get_by_role(
             "link", name=str(child)
         )
         expect(child_locator).not_to_be_visible()
@@ -112,7 +112,7 @@ class SearchBarMixin:
         expect(next_element.get_by_role("blockquote")).to_have_text(note)
 
 
-class SessionsTabsMixin:
+class SessionsTabs:
     def __init__(
         self,
         page: Page,
@@ -146,14 +146,12 @@ class SessionsTabsMixin:
     def click_children_tab(self) -> None:
         self._select_tab("Children")
 
-    @step("Click on Triage tab")
-    def click_triage_tab(self) -> None:
-        self._select_tab("Triage")
 
-
-class SessionsPsdPage(SearchBarMixin, SessionsTabsMixin):
+class SessionsPsdPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.search = SearchComponent(page)
+        self.tabs = SessionsTabs(page)
 
         self.add_new_psds_link = self.page.get_by_role(
             "link",
@@ -166,16 +164,16 @@ class SessionsPsdPage(SearchBarMixin, SessionsTabsMixin):
 
     @step("Check {1} has PSD")
     def check_child_has_psd(self, child: Child) -> None:
-        child_with_psd_locator = self._get_patient_card_locator(child).get_by_text(
-            "PSD added"
-        )
+        child_with_psd_locator = self.search.get_patient_card_locator(
+            child
+        ).get_by_text("PSD added")
         reload_until_element_is_visible(self.page, child_with_psd_locator)
 
     @step("Check {1} does not have PSD")
     def check_child_does_not_have_psd(self, child: Child) -> None:
-        child_without_psd_locator = self._get_patient_card_locator(child).get_by_text(
-            "PSD not added"
-        )
+        child_without_psd_locator = self.search.get_patient_card_locator(
+            child
+        ).get_by_text("PSD not added")
         reload_until_element_is_visible(self.page, child_without_psd_locator)
 
     @step("Click Add new PSDs")
@@ -194,9 +192,10 @@ class SessionsPsdPage(SearchBarMixin, SessionsTabsMixin):
         reload_until_element_is_visible(self.page, psd_banner)
 
 
-class SessionsSearchPage(SearchBarMixin):
+class SessionsSearchPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.search = SearchComponent(page)
 
     @step("Click on {2} session at {1}")
     def click_session_for_programme_group(
@@ -209,8 +208,8 @@ class SessionsSearchPage(SearchBarMixin):
                 else:
                     self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
-        self.search_textbox.fill(str(location))
-        self.search_button.click()
+        self.search.search_textbox.fill(str(location))
+        self.search.search_button.click()
 
         self.page.get_by_role("link", name=str(location)).first.click()
 
@@ -221,9 +220,11 @@ class SessionsSearchPage(SearchBarMixin):
         )
 
 
-class SessionsOverviewPage(SessionsTabsMixin):
+class SessionsOverviewPage:
     def __init__(self, page: Page) -> None:
         self.page = page
+        self.tabs = SessionsTabs(page)
+
         self.schedule_sessions_link = self.page.get_by_role(
             "link",
             name="Schedule sessions",
@@ -265,7 +266,7 @@ class SessionsOverviewPage(SessionsTabsMixin):
         }
 
     def check_all_totals(self, totals: dict[str, int]) -> None:
-        self.click_overview_tab()
+        self.tabs.click_overview_tab()
         for category, expected_total in totals.items():
             actual_total = self.get_total_for_category(category)
             assert actual_total == expected_total, (
@@ -597,9 +598,12 @@ class SessionsEditPage:
         ).get_by_label(answer).check()
 
 
-class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
+class SessionsChildrenPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = SessionsTabs(page)
+        self.search = SearchComponent(page)
+
         self.needs_consent_radio = self.page.get_by_role(
             "radio",
             name="Needs consent",
@@ -657,7 +661,7 @@ class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
         reload_until_element_is_visible(self.page, method_locator)
 
     def get_flu_consent_status_locator_from_search(self, child: Child) -> Locator:
-        child_locator = self._get_patient_card_locator(child)
+        child_locator = self.search.get_patient_card_locator(child)
         flu_consent_section = child_locator.locator("p:has-text('Flu')")
         reload_until_element_is_visible(self.page, flu_consent_section)
 
@@ -668,14 +672,17 @@ class SessionsChildrenPage(SearchBarMixin, SessionsTabsMixin):
         expect(self.has_a_refusal_radio).to_be_checked()
 
 
-class SessionsRegisterPage(SearchBarMixin, SessionsTabsMixin):
+class SessionsRegisterPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = SessionsTabs(page)
+        self.search = SearchComponent(page)
+
         self.attending_button = self.page.get_by_role("button", name="Attending").first
 
     def register_child_as_attending(self, child: Child) -> None:
-        self.click_register_tab()
-        self.search_for(str(child))
+        self.tabs.click_register_tab()
+        self.search.search_for(str(child))
         reload_until_element_is_visible(
             self.page, self.page.get_by_role("link", name=str(child)).first
         )
@@ -686,9 +693,11 @@ class SessionsRegisterPage(SearchBarMixin, SessionsTabsMixin):
         self.attending_button.click()
 
 
-class SessionsRecordVaccinationsPage(SearchBarMixin, SessionsTabsMixin):
+class SessionsRecordVaccinationsPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = SessionsTabs(page)
+        self.search = SearchComponent(page)
 
 
 class SessionsPatientPage:

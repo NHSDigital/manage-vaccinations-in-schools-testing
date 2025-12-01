@@ -35,12 +35,12 @@ def test_batch_add_change_archive(
 
     vaccines_page.click_add_batch(vaccine)
     add_batch_page.fill_name(batch_name)
-    add_batch_page.fill_expiry_date(get_offset_date(1))
+    add_batch_page.date.fill_expiry_date(get_offset_date(1))
     add_batch_page.confirm()
     expect(add_batch_page.success_alert).to_be_visible()
 
     vaccines_page.click_change_batch(vaccine, batch_name)
-    edit_batch_page.fill_expiry_date(get_offset_date(2))
+    edit_batch_page.date.fill_expiry_date(get_offset_date(2))
     edit_batch_page.confirm()
     expect(edit_batch_page.success_alert).to_be_visible()
 
@@ -63,7 +63,7 @@ def test_batch_name_too_short(vaccine, add_batch_page, vaccines_page):
     """
     vaccines_page.click_add_batch(vaccine)
     add_batch_page.fill_name("a")
-    add_batch_page.fill_expiry_date(get_offset_date(1))
+    add_batch_page.date.fill_expiry_date(get_offset_date(1))
     add_batch_page.confirm()
     expect(
         add_batch_page.error_listitem.filter(
@@ -86,7 +86,7 @@ def test_batch_name_too_long(vaccine, add_batch_page, vaccines_page):
     """
     vaccines_page.click_add_batch(vaccine)
     add_batch_page.fill_name("a" * 101)
-    add_batch_page.fill_expiry_date(get_offset_date(1))
+    add_batch_page.date.fill_expiry_date(get_offset_date(1))
     add_batch_page.confirm()
     expect(
         add_batch_page.error_listitem.filter(
@@ -133,14 +133,14 @@ def test_accessibility(
     accessibility_helper.check_accessibility()
 
     add_batch_page.fill_name(batch_name)
-    add_batch_page.fill_expiry_date(get_offset_date(1))
+    add_batch_page.date.fill_expiry_date(get_offset_date(1))
     add_batch_page.confirm()
     accessibility_helper.check_accessibility()
 
     vaccines_page.click_change_batch(Vaccine.GARDASIL_9, batch_name)
     accessibility_helper.check_accessibility()
 
-    edit_batch_page.fill_expiry_date(get_offset_date(2))
+    edit_batch_page.date.fill_expiry_date(get_offset_date(2))
     edit_batch_page.confirm()
     vaccines_page.click_archive_batch(Vaccine.GARDASIL_9, batch_name)
 

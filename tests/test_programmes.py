@@ -16,7 +16,7 @@ def setup_cohort_upload(
 ):
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
 
 
@@ -136,7 +136,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
 
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
@@ -386,8 +386,8 @@ def test_accessibility(
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.FLU)
 
-    programme_overview_page.click_sessions_tab()
+    programme_overview_page.tabs.click_sessions_tab()
     accessibility_helper.check_accessibility()
 
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     accessibility_helper.check_accessibility()

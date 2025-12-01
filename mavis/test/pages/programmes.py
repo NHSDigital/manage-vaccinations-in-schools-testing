@@ -5,7 +5,6 @@ import pandas as pd
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.data import TestData
 from mavis.test.models import Child, DeliverySite, Programme, ReportFormat
 from mavis.test.utils import get_current_datetime_compact
 
@@ -24,7 +23,7 @@ class ProgrammesListPage:
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
 
 
-class ProgrammeTabsMixin:
+class ProgrammeTabs:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.children_tab = page.get_by_label("Secondary menu").get_by_role(
@@ -45,11 +44,10 @@ class ProgrammeTabsMixin:
         self.sessions_tab.get_by_role("strong").wait_for()
 
 
-class ProgrammeOverviewPage(ProgrammeTabsMixin):
-    def __init__(self, page: Page, test_data: TestData) -> None:
-        super().__init__(page)
+class ProgrammeOverviewPage:
+    def __init__(self, page: Page) -> None:
         self.page = page
-        self.test_data = test_data
+        self.tabs = ProgrammeTabs(page)
 
         self.review_link = page.get_by_role("link", name="Review")
         self.edit_vaccination_record_button = page.get_by_role(
@@ -171,14 +169,17 @@ class ProgrammeOverviewPage(ProgrammeTabsMixin):
             raise AssertionError(error_message)
 
 
-class ProgrammeSessionsPage(ProgrammeTabsMixin):
+class ProgrammeSessionsPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = ProgrammeTabs(page)
 
 
-class ProgrammeChildrenPage(ProgrammeTabsMixin):
+class ProgrammeChildrenPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
+        self.tabs = ProgrammeTabs(page)
+
         self.import_child_records_link = page.get_by_text("Import child records")
         self.search_textbox = page.get_by_role("textbox", name="Search")
         self.search_button = page.get_by_role("button", name="Search")

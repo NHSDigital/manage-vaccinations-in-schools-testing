@@ -86,7 +86,7 @@ def setup_mav_853(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()
@@ -132,7 +132,7 @@ def test_patient_details_load_with_missing_vaccine_info(
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
     # Verify activity log
-    child_record_page.click_activity_log()
+    child_record_page.tabs.click_activity_log()
     child_activity_log_page.expect_activity_log_header(
         "Vaccinated with Gardasil 9", unique=True
     )
@@ -227,5 +227,5 @@ def test_accessibility(
     children_search_page.click_record_for_child(child)
     accessibility_helper.check_accessibility()
 
-    child_record_page.click_activity_log()
+    child_record_page.tabs.click_activity_log()
     accessibility_helper.check_accessibility()

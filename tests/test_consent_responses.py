@@ -128,7 +128,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
@@ -147,7 +147,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_record_page.click_activity_log()
+    child_record_page.tabs.click_activity_log()
     child_activity_log_page.verify_activity_log_for_created_or_matched_child()
 
 
@@ -189,7 +189,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_record_page.click_activity_log()
+    child_record_page.tabs.click_activity_log()
     child_activity_log_page.verify_activity_log_for_created_or_matched_child()
 
 
@@ -231,7 +231,7 @@ def test_create_child_record_from_consent_without_nhs_number(
     dashboard_page.click_children()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)
-    child_record_page.click_activity_log()
+    child_record_page.tabs.click_activity_log()
     child_activity_log_page.verify_activity_log_for_created_or_matched_child()
 
 
@@ -263,7 +263,7 @@ def test_accessibility(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
@@ -322,7 +322,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(ClassFileMapping.TWO_FIXED_CHILDREN)
 
