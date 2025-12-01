@@ -128,7 +128,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
@@ -263,7 +263,7 @@ def test_accessibility(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
 
@@ -322,7 +322,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(ClassFileMapping.TWO_FIXED_CHILDREN)
 

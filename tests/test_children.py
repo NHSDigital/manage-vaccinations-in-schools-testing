@@ -86,7 +86,7 @@ def setup_mav_853(
     dashboard_page.click_mavis()
     dashboard_page.click_programmes()
     programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.click_children_tab()
+    programme_overview_page.tabs.click_children_tab()
     programme_children_page.click_import_child_records()
     import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
     dashboard_page.click_mavis()

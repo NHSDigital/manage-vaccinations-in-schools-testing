@@ -193,7 +193,7 @@ def upload_offline_vaccination(
         dashboard_page.click_mavis()
         dashboard_page.click_programmes()
         programmes_list_page.click_programme_for_current_year(programme)
-        programme_overview_page.click_children_tab()
+        programme_overview_page.tabs.click_children_tab()
         programme_children_page.search_for_child(child)
         programme_children_page.click_child(child)
         child_record_page.click_vaccination_details(programme)
