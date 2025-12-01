@@ -257,5 +257,5 @@ def test_flu_consent_method_displayed_correctly(
     )
 
     # Verify in session download
-    sessions_children_page.click_overview_tab()
+    sessions_children_page.tabs.click_overview_tab()
     sessions_overview_page.verify_consent_message_in_excel()

@@ -324,7 +324,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     child_with_vaccination = children[Programme.HPV][1]
 
     # Navigate back to unmatched consent responses
-    imports_page.header.click_unmatched_consent_responses_header()
+    imports_page.header.click_consent_responses_header()
 
     # Step 4: Navigate to unmatched consent responses and attempt to search for
     # the patient who has vaccination record (this tests the edge case)

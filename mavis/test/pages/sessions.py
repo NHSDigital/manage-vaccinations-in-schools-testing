@@ -551,6 +551,7 @@ class SessionsEditPage:
             offset_days=offset_days, skip_weekends=skip_weekends
         )
         self.__schedule_session(date=_future_date)
+        self.page.wait_for_load_state()
 
         if self.keep_session_dates_button.is_visible():
             self.click_keep_session_dates()  # MAV-2066

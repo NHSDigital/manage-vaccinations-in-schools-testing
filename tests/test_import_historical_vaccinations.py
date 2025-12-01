@@ -11,7 +11,7 @@ def setup_hist_vaccs(
     imports_page,
     import_records_wizard_page,
 ):
-    dashboard_page.click_import_records()
+    dashboard_page.click_imports()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_vaccination_records_import()
 

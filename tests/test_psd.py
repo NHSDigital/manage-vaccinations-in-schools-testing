@@ -23,6 +23,7 @@ def setup_session_with_file_upload(
     imports_page,
     year_groups,
     add_vaccine_batch,
+    vaccines_page,
 ):
     def _factory(
         class_file_mapping: ClassFileMapping, *, schedule_session_for_today: bool = True
@@ -30,7 +31,7 @@ def setup_session_with_file_upload(
         school = schools[Programme.FLU][0]
         year_group = year_groups[Programme.FLU]
         batch_name = add_vaccine_batch(Vaccine.FLUENZ)
-        dashboard_page.click_sessions()
+        vaccines_page.header.click_sessions_header()
         sessions_search_page.click_session_for_programme_group(
             school, Programme.FLU.group
         )

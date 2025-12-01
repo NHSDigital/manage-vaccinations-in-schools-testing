@@ -163,6 +163,7 @@ def upload_offline_vaccination(
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
 
+        dashboard_page.navigate()
         dashboard_page.click_sessions()
         sessions_search_page.click_session_for_programme_group(school, programme.group)
         if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
