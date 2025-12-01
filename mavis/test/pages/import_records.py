@@ -230,10 +230,8 @@ class ImportRecordsWizardPage:
     @step("Select year groups {1}")
     def select_year_groups(self, *year_groups: int) -> None:
         for year_group in year_groups:
-            if year_group == 0:
-                self.page.get_by_label("Reception").check()
-            else:
-                self.page.get_by_label(text=f"Year {year_group}", exact=True).check()
+            self.page.locator(f'input[type="checkbox"][value="{year_group}"]').check()
+
         self.click_continue()
 
     def import_class_list(
