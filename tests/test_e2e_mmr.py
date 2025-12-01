@@ -1,6 +1,19 @@
 import pytest
 
 from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+from mavis.test.pages import (
+    DashboardPage,
+    LogInPage,
+    OnlineConsentWizardPage,
+    SessionsChildrenPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsVaccinationWizardPage,
+    StartPage,
+)
 
 pytestmark = pytest.mark.e2e
 
@@ -21,19 +34,9 @@ def setup_session_for_mmr(setup_session_and_batches_with_fixed_child):
 def test_recording_mmr_vaccination_e2e_with_triage(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
-    online_consent_wizard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_register_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_vaccination_wizard_page,
-    sessions_record_vaccinations_page,
-    start_page,
+    page,
     schools,
     children,
-    dashboard_page,
-    log_in_page,
     nurse,
     team,
 ):
@@ -57,67 +60,62 @@ def test_recording_mmr_vaccination_e2e_with_triage(
         Programme.health_questions(Programme.MMR, ConsentOption.MMR_EITHER)
     )
 
-    online_consent_wizard_page.go_to_url(url_with_mmr_session_scheduled)
-    start_page.start()
+    OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
+    StartPage(page).start()
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=True,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=True,
     )
 
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-    dashboard_page.click_sessions()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).click_sessions()
 
     # Triage step added for MMR
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.MMR)
-    sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.MMR
+    )
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.MMR)
+    SessionsPatientPage(page).triage_mmr_patient(ConsentOption.MMR_EITHER)
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_sessions()
 
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.click_set_session_in_progress_for_today()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.MMR
+    )
+    SessionsOverviewPage(page).click_set_session_in_progress_for_today()
 
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
-    sessions_patient_page.set_up_vaccination(vaccination_record)
-    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
+    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
-    dashboard_page.navigate()
-    log_in_page.log_out()
+    DashboardPage(page).navigate()
+    LogInPage(page).log_out()
 
 
 def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
-    online_consent_wizard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_register_page,
-    sessions_record_vaccinations_page,
-    sessions_patient_page,
-    sessions_vaccination_wizard_page,
-    start_page,
+    page,
     schools,
     children,
-    dashboard_page,
-    log_in_page,
     nurse,
     team,
 ):
@@ -143,69 +141,63 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
         Programme.health_questions(Programme.MMR, ConsentOption.MMR_WITHOUT_GELATINE)
     )
 
-    online_consent_wizard_page.go_to_url(url_with_mmr_session_scheduled)
-    start_page.start()
+    OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
+    StartPage(page).start()
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_mmr_vaccination(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_mmr_vaccination(
         ConsentOption.MMR_WITHOUT_GELATINE
     )
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=False,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=False,
     )
 
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-    dashboard_page.click_sessions()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).click_sessions()
 
     # Dose 1 flow
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.click_set_session_in_progress_for_today()
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.MMR
+    )
+    SessionsOverviewPage(page).click_set_session_in_progress_for_today()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
-    sessions_patient_page.set_up_vaccination(vaccination_record)
-    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
+    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
     # Attempt to record second dose on the same day
-    sessions_patient_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_for_child_that_should_not_exist(
+    SessionsPatientPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.MMR
+    )
+    SessionsOverviewPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_for_child_that_should_not_exist(
         child
     )
 
-    dashboard_page.navigate()
-    log_in_page.log_out()
+    DashboardPage(page).navigate()
+    LogInPage(page).log_out()
 
 
 def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,
-    online_consent_wizard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_register_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_vaccination_wizard_page,
-    sessions_record_vaccinations_page,
-    start_page,
+    page,
     schools,
     children,
-    dashboard_page,
-    log_in_page,
     nurse,
     team,
     upload_offline_vaccination,
@@ -234,48 +226,52 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
 
     # Import vaccination file with MMR dose 1
     list(upload_offline_vaccination(Programme.MMR))
-    log_in_page.log_out()
+    LogInPage(page).log_out()
 
     # Proceed with consent and vaccination process
-    online_consent_wizard_page.go_to_url(url_with_mmr_session_scheduled)
-    start_page.start()
+    OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
+    StartPage(page).start()
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_mmr_vaccination(ConsentOption.MMR_EITHER)
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=True,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=True,
     )
 
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-    dashboard_page.click_sessions()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).click_sessions()
 
     # Triage step added for MMR
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.MMR)
-    sessions_patient_page.triage_mmr_patient(ConsentOption.MMR_EITHER)
-    sessions_patient_page.header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.MMR
+    )
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.MMR)
+    SessionsPatientPage(page).triage_mmr_patient(ConsentOption.MMR_EITHER)
+    SessionsPatientPage(page).header.click_sessions_header()
 
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.MMR)
-    sessions_overview_page.click_set_session_in_progress_for_today()
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.MMR
+    )
+    SessionsOverviewPage(page).click_set_session_in_progress_for_today()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
-    sessions_patient_page.set_up_vaccination(vaccination_record)
-    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
+    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
-    dashboard_page.navigate()
-    log_in_page.log_out()
+    DashboardPage(page).navigate()
+    LogInPage(page).log_out()

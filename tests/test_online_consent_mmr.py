@@ -1,6 +1,10 @@
 import pytest
 
 from mavis.test.models import ConsentOption, ConsentRefusalReason, Programme
+from mavis.test.pages import (
+    OnlineConsentWizardPage,
+    StartPage,
+)
 
 pytestmark = pytest.mark.consent
 
@@ -15,14 +19,15 @@ def url_with_mmr_session_scheduled(schedule_mmr_session_and_get_consent_url, sch
 
 @pytest.fixture
 def start_consent_with_session_scheduled(
-    url_with_mmr_session_scheduled, page, start_page
+    url_with_mmr_session_scheduled,
+    page,
 ):
     page.goto(url_with_mmr_session_scheduled)
-    start_page.start()
+    StartPage(page).start()
 
 
 def test_consent_refused_for_mmr_vaccination(
-    start_consent_with_session_scheduled, online_consent_wizard_page, schools, children
+    start_consent_with_session_scheduled, page, schools, children
 ):
     """
     Test: Submit an online consent form refusing MMR vaccination and
@@ -38,14 +43,14 @@ def test_consent_refused_for_mmr_vaccination(
     child = children[Programme.MMR][0]
     schools = schools[Programme.MMR]
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.dont_agree_to_vaccination()
-    online_consent_wizard_page.select_consent_not_given_reason(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).dont_agree_to_vaccination()
+    OnlineConsentWizardPage(page).select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.expect_confirmation_text(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).expect_confirmation_text(
         f"Consent refusedYou’ve told us that you do not want"
         f" {child.first_name} {child.last_name} to get the MMR vaccination at school"
     )
@@ -63,7 +68,7 @@ def test_consent_refused_for_mmr_vaccination(
 )
 def test_consent_given_for_mmr_vaccination(
     start_consent_with_session_scheduled,
-    online_consent_wizard_page,
+    page,
     schools,
     yes_to_health_questions,
     consent_option,
@@ -88,15 +93,15 @@ def test_consent_given_for_mmr_vaccination(
         Programme.health_questions(Programme.MMR, consent_option)
     )
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_mmr_vaccination(consent_option)
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_mmr_vaccination(consent_option)
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=yes_to_health_questions,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=yes_to_health_questions,

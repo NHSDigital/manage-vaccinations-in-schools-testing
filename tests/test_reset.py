@@ -9,6 +9,18 @@ from mavis.test.models import (
     VaccinationRecord,
     Vaccine,
 )
+from mavis.test.pages import (
+    DashboardPage,
+    ImportRecordsWizardPage,
+    NurseConsentWizardPage,
+    SessionsChildrenPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsVaccinationWizardPage,
+)
 from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
     generate_random_string,
@@ -21,11 +33,8 @@ def setup_all_programmes(
     log_in_as_nurse,
     add_vaccine_batch,
     schools,
-    dashboard_page,
-    import_records_wizard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
+    page,
+    test_data,
     children,
 ):
     school = schools["doubles"][0]
@@ -37,16 +46,18 @@ def setup_all_programmes(
         Programme.FLU: add_vaccine_batch(Vaccine.FLUENZ),
     }
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
-        dashboard_page.header.click_mavis_header()
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(school, programme_group)
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        DashboardPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, programme_group
+        )
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-    sessions_overview_page.click_import_class_lists()
-    import_records_wizard_page.import_class_list(
+    SessionsOverviewPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, test_data).import_class_list(
         ClassFileMapping.FIXED_CHILD,
         child.year_group,
         "doubles",
@@ -61,14 +72,7 @@ def setup_all_programmes(
 def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     setup_all_programmes,
     schools,
-    dashboard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_register_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_vaccination_wizard_page,
-    nurse_consent_wizard_page,
+    page,
     children,
 ):
     """
@@ -93,14 +97,16 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
     batch_names = setup_all_programmes
 
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
-        dashboard_page.header.click_mavis_header()
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(school, programme_group)
+        DashboardPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, programme_group
+        )
         if programme_group is Programme.HPV:
-            sessions_overview_page.tabs.click_register_tab()
-            sessions_register_page.register_child_as_attending(str(child))
-        sessions_register_page.tabs.click_children_tab()
-        sessions_children_page.search.search_and_click_child(child)
+            SessionsOverviewPage(page).tabs.click_register_tab()
+            SessionsRegisterPage(page).register_child_as_attending(child)
+        SessionsRegisterPage(page).tabs.click_children_tab()
+        SessionsChildrenPage(page).search.search_and_click_child(child)
         programmes = (
             [Programme.MENACWY, Programme.TD_IPV]
             if programme_group == "doubles"
@@ -113,11 +119,11 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
                 else ConsentOption.INJECTION
             )
 
-            sessions_patient_page.click_programme_tab(programme)
-            sessions_patient_page.click_record_a_new_consent_response()
-            nurse_consent_wizard_page.select_parent(child.parents[0])
-            nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-            nurse_consent_wizard_page.record_parent_positive_consent(
+            SessionsPatientPage(page).click_programme_tab(programme)
+            SessionsPatientPage(page).click_record_a_new_consent_response()
+            NurseConsentWizardPage(page).select_parent(child.parents[0])
+            NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+            NurseConsentWizardPage(page).record_parent_positive_consent(
                 programme=programme,
                 consent_option=consent_option,
             )
@@ -128,8 +134,10 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
                 target_length=MAVIS_NOTE_LENGTH_LIMIT + 1,
                 generate_spaced_words=True,
             )
-            sessions_children_page.search.search_and_click_child(child)
-            sessions_patient_page.set_up_vaccination(vaccination_record, notes=notes)
-            sessions_vaccination_wizard_page.record_vaccination(
+            SessionsChildrenPage(page).search.search_and_click_child(child)
+            SessionsPatientPage(page).set_up_vaccination(
+                vaccination_record, notes=notes
+            )
+            SessionsVaccinationWizardPage(page).record_vaccination(
                 vaccination_record, notes=notes
             )

@@ -1,8 +1,25 @@
 import pytest
 
+from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import ConsentMethod, DeliverySite, Programme, Vaccine
+from mavis.test.pages import (
+    DashboardPage,
+    GillickCompetencePage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    NurseConsentWizardPage,
+    SessionsChildrenPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsPatientSessionActivityPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsVaccinationWizardPage,
+)
 from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, expect_alert_text, get_offset_date
 
 pytestmark = pytest.mark.consent
@@ -12,30 +29,28 @@ pytestmark = pytest.mark.consent
 def setup_session_with_file_upload(
     log_in_as_nurse,
     schools,
-    dashboard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
-    import_records_wizard_page,
+    page,
+    test_data,
     year_groups,
-    imports_page,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
     def _setup(class_list_file):
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV.group
         )
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        sessions_overview_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(class_list_file, year_group)
-        imports_page.header.click_sessions_header()
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
+            class_list_file, year_group
+        )
+        ImportsPage(page).header.click_sessions_header()
         yield
 
     return _setup
@@ -49,12 +64,8 @@ def setup_fixed_child(setup_session_with_file_upload):
 def test_gillick_competence(
     setup_fixed_child,
     schools,
-    sessions_search_page,
-    gillick_competence_page,
+    page,
     children,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
 ):
     """
     Test: Add and edit Gillick competence assessment for a child.
@@ -69,27 +80,23 @@ def test_gillick_competence(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_assess_gillick_competence()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_assess_gillick_competence()
 
-    gillick_competence_page.add_gillick_competence(is_competent=True)
-    sessions_patient_page.click_edit_gillick_competence()
-    gillick_competence_page.edit_gillick_competence(is_competent=False)
+    GillickCompetencePage(page).add_gillick_competence(is_competent=True)
+    SessionsPatientPage(page).click_edit_gillick_competence()
+    GillickCompetencePage(page).edit_gillick_competence(is_competent=False)
 
 
 @issue("MAV-955")
 def test_gillick_competence_notes(
     setup_fixed_child,
     schools,
-    gillick_competence_page,
+    page,
     children,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
 ):
     """
     Test: Validate Gillick competence assessment notes length and update.
@@ -107,41 +114,36 @@ def test_gillick_competence_notes(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_assess_gillick_competence()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_assess_gillick_competence()
 
-    gillick_competence_page.answer_gillick_competence_questions(is_competent=True)
-    gillick_competence_page.fill_assessment_notes_with_string_of_length(
+    GillickCompetencePage(page).answer_gillick_competence_questions(is_competent=True)
+    GillickCompetencePage(page).fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    gillick_competence_page.click_complete_assessment()
-    gillick_competence_page.check_notes_length_error_appears()
+    GillickCompetencePage(page).click_complete_assessment()
+    GillickCompetencePage(page).check_notes_length_error_appears()
 
-    gillick_competence_page.fill_assessment_notes("Gillick competent")
-    gillick_competence_page.click_complete_assessment()
+    GillickCompetencePage(page).fill_assessment_notes("Gillick competent")
+    GillickCompetencePage(page).click_complete_assessment()
 
-    sessions_patient_page.click_edit_gillick_competence()
-    gillick_competence_page.answer_gillick_competence_questions(is_competent=True)
-    gillick_competence_page.fill_assessment_notes_with_string_of_length(
+    SessionsPatientPage(page).click_edit_gillick_competence()
+    GillickCompetencePage(page).answer_gillick_competence_questions(is_competent=True)
+    GillickCompetencePage(page).fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    gillick_competence_page.click_update_assessment()
-    gillick_competence_page.check_notes_length_error_appears()
+    GillickCompetencePage(page).click_update_assessment()
+    GillickCompetencePage(page).check_notes_length_error_appears()
 
 
 @pytest.mark.bug
 def test_invalid_consent(
     setup_fixed_child,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_patient_session_activity_page,
+    page,
     schools,
-    nurse_consent_wizard_page,
     children,
 ):
     """
@@ -158,40 +160,40 @@ def test_invalid_consent(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.select_needs_consent()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-    nurse_consent_wizard_page.record_parent_no_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).record_parent_no_response()
 
-    sessions_children_page.select_needs_consent()
+    SessionsChildrenPage(page).select_needs_consent()
 
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
-    nurse_consent_wizard_page.select_parent(child.parents[1])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-    nurse_consent_wizard_page.record_parent_refuse_consent()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[1])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    sessions_children_page.select_has_a_refusal()
-    sessions_children_page.select_parent_refused()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.invalidate_parent_refusal(child.parents[1])
-    sessions_patient_page.click_session_activity_and_notes()
+    SessionsChildrenPage(page).select_has_a_refusal()
+    SessionsChildrenPage(page).select_parent_refused()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).invalidate_parent_refusal(child.parents[1])
+    SessionsPatientPage(page).click_session_activity_and_notes()
 
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent from {child.parents[1].full_name} invalidated",
     )
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent refused by {child.parents[1].name_and_relationship}",
     )
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent not_provided by {child.parents[0].name_and_relationship}",
     )
 
@@ -199,14 +201,8 @@ def test_invalid_consent(
 @pytest.mark.bug
 def test_parent_provides_consent_twice(
     setup_fixed_child,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_patient_session_activity_page,
-    sessions_vaccination_wizard_page,
+    page,
     schools,
-    nurse_consent_wizard_page,
     children,
 ):
     """
@@ -225,41 +221,41 @@ def test_parent_provides_consent_twice(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.select_needs_consent()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).select_needs_consent()
 
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
-    nurse_consent_wizard_page.record_parent_positive_consent(
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
+    NurseConsentWizardPage(page).record_parent_positive_consent(
         yes_to_health_questions=True
     )
-    sessions_children_page.select_due_vaccination()
+    SessionsChildrenPage(page).select_due_vaccination()
 
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-    nurse_consent_wizard_page.record_parent_refuse_consent()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    sessions_children_page.select_has_a_refusal()
-    sessions_children_page.select_parent_refused()
+    SessionsChildrenPage(page).select_has_a_refusal()
+    SessionsChildrenPage(page).select_parent_refused()
 
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_vaccination_wizard_page.expect_consent_refused_text(child.parents[0])
-    sessions_patient_page.click_session_activity_and_notes()
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsVaccinationWizardPage(page).expect_consent_refused_text(child.parents[0])
+    SessionsPatientPage(page).click_session_activity_and_notes()
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent refused by {child.parents[0].name_and_relationship}",
     )
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         "Triaged decision: Safe to vaccinate"
     )
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent given by {child.parents[0].name_and_relationship}",
     )
 
@@ -267,14 +263,8 @@ def test_parent_provides_consent_twice(
 @pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_patient_session_activity_page,
+    page,
     schools,
-    nurse_consent_wizard_page,
-    gillick_competence_page,
     children,
 ):
     """
@@ -295,48 +285,52 @@ def test_conflicting_consent_with_gillick_consent(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.select_needs_consent()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-    nurse_consent_wizard_page.record_parent_positive_consent()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).record_parent_positive_consent()
 
-    sessions_children_page.select_due_vaccination()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsChildrenPage(page).select_due_vaccination()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_parent(child.parents[1])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-    nurse_consent_wizard_page.record_parent_refuse_consent()
+    NurseConsentWizardPage(page).select_parent(child.parents[1])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    sessions_children_page.select_has_a_refusal()
-    sessions_children_page.select_parent_refused()
-    sessions_children_page.select_conflicting_consent()
+    SessionsChildrenPage(page).select_has_a_refusal()
+    SessionsChildrenPage(page).select_parent_refused()
+    SessionsChildrenPage(page).select_conflicting_consent()
 
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.expect_consent_status(Programme.HPV, "Conflicting consent")
-    sessions_patient_page.expect_conflicting_consent_text()
-    sessions_patient_page.click_assess_gillick_competence()
-    gillick_competence_page.add_gillick_competence(is_competent=True)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).expect_consent_status(
+        Programme.HPV, "Conflicting consent"
+    )
+    SessionsPatientPage(page).expect_conflicting_consent_text()
+    SessionsPatientPage(page).click_assess_gillick_competence()
+    GillickCompetencePage(page).add_gillick_competence(is_competent=True)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_gillick_competent_child()
-    nurse_consent_wizard_page.record_child_positive_consent()
-    expect_alert_text(nurse_consent_wizard_page.page, f"Consent recorded for {child!s}")
+    NurseConsentWizardPage(page).select_gillick_competent_child()
+    NurseConsentWizardPage(page).record_child_positive_consent()
+    expect_alert_text(
+        NurseConsentWizardPage(page).page, f"Consent recorded for {child!s}"
+    )
 
-    sessions_children_page.select_due_vaccination()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.expect_consent_status(Programme.HPV, "Consent given")
-    sessions_patient_page.click_session_activity_and_notes()
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsChildrenPage(page).select_due_vaccination()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent given")
+    SessionsPatientPage(page).click_session_activity_and_notes()
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
     )
 
@@ -345,78 +339,71 @@ def test_conflicting_consent_with_gillick_consent(
 def test_accessibility(
     setup_fixed_child,
     add_vaccine_batch,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_register_page,
-    sessions_record_vaccinations_page,
-    sessions_vaccination_wizard_page,
+    page,
     schools,
-    nurse_consent_wizard_page,
     children,
-    accessibility_helper,
-    dashboard_page,
 ):
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
 
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.select_needs_consent()
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).select_needs_consent()
 
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
-    accessibility_helper.check_accessibility()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    AccessibilityHelper(page).check_accessibility()
 
-    nurse_consent_wizard_page.click_radio_button(child.parents[0].name_and_relationship)
-    nurse_consent_wizard_page.click_continue()
+    NurseConsentWizardPage(page).click_radio_button(
+        child.parents[0].name_and_relationship
+    )
+    NurseConsentWizardPage(page).click_continue()
 
-    accessibility_helper.check_accessibility()
-    nurse_consent_wizard_page.click_continue()
+    AccessibilityHelper(page).check_accessibility()
+    NurseConsentWizardPage(page).click_continue()
 
-    accessibility_helper.check_accessibility()
+    AccessibilityHelper(page).check_accessibility()
 
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
-    accessibility_helper.check_accessibility()
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
+    AccessibilityHelper(page).check_accessibility()
 
-    nurse_consent_wizard_page.click_yes_they_agree()
-    nurse_consent_wizard_page.click_continue()
-    accessibility_helper.check_accessibility()
+    NurseConsentWizardPage(page).click_yes_they_agree()
+    NurseConsentWizardPage(page).click_continue()
+    AccessibilityHelper(page).check_accessibility()
 
-    nurse_consent_wizard_page.answer_all_health_questions(
+    NurseConsentWizardPage(page).answer_all_health_questions(
         programme=Programme.HPV,
     )
-    nurse_consent_wizard_page.click_continue()
-    accessibility_helper.check_accessibility()
+    NurseConsentWizardPage(page).click_continue()
+    AccessibilityHelper(page).check_accessibility()
 
-    nurse_consent_wizard_page.click_confirm()
-    accessibility_helper.check_accessibility()
+    NurseConsentWizardPage(page).click_confirm()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    accessibility_helper.check_accessibility()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
-    accessibility_helper.check_accessibility()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_patient_page.confirm_pre_screening_checks(Programme.HPV)
-    sessions_patient_page.select_identity_confirmed_by_child(child)
-    sessions_patient_page.select_ready_for_vaccination()
-    sessions_patient_page.select_delivery_site(DeliverySite.LEFT_ARM_UPPER)
-    sessions_vaccination_wizard_page.click_continue_button()
-    accessibility_helper.check_accessibility()
+    SessionsPatientPage(page).confirm_pre_screening_checks(Programme.HPV)
+    SessionsPatientPage(page).select_identity_confirmed_by_child(child)
+    SessionsPatientPage(page).select_ready_for_vaccination()
+    SessionsPatientPage(page).select_delivery_site(DeliverySite.LEFT_ARM_UPPER)
+    SessionsVaccinationWizardPage(page).click_continue_button()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_vaccination_wizard_page.choose_batch(batch_name)
-    accessibility_helper.check_accessibility()
+    SessionsVaccinationWizardPage(page).choose_batch(batch_name)
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_vaccination_wizard_page.click_confirm_button()
-    accessibility_helper.check_accessibility()
+    SessionsVaccinationWizardPage(page).click_confirm_button()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_patient_page.click_vaccination_details(school)
-    accessibility_helper.check_accessibility()
+    SessionsPatientPage(page).click_vaccination_details(school)
+    AccessibilityHelper(page).check_accessibility()

@@ -35,7 +35,7 @@ def get_current_datetime_compact() -> str:
     return get_current_datetime().strftime("%Y%m%d%H%M%S")
 
 
-def get_formatted_date_for_session_dates(date: datetime) -> str:
+def get_formatted_date_for_session_dates(date: date) -> str:
     try:
         # Linux (Github Action)
         return date.strftime(format="%-d %B %Y")

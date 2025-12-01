@@ -3,6 +3,15 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import ConsentOption, ConsentRefusalReason, Programme
+from mavis.test.pages import (
+    DashboardPage,
+    ImportRecordsWizardPage,
+    OnlineConsentWizardPage,
+    SessionsChildrenPage,
+    SessionsOverviewPage,
+    SessionsSearchPage,
+    StartPage,
+)
 
 pytestmark = pytest.mark.consent
 
@@ -16,9 +25,9 @@ def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def start_consent_with_session_scheduled(url_with_session_scheduled, page, start_page):
+def start_consent_with_session_scheduled(url_with_session_scheduled, page):
     page.goto(url_with_session_scheduled)
-    start_page.start()
+    StartPage(page).start()
 
 
 @pytest.fixture
@@ -26,19 +35,17 @@ def setup_session_with_file_upload(
     url_with_session_scheduled,
     log_in_as_nurse,
     schools,
-    dashboard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    import_records_wizard_page,
+    page,
+    test_data,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
 
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
-    sessions_overview_page.click_import_class_lists()
-    import_records_wizard_page.import_class_list(
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
+    SessionsOverviewPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, test_data).import_class_list(
         CohortsFileMapping.FIXED_CHILD,
         year_group,
         Programme.FLU.group,
@@ -48,7 +55,7 @@ def setup_session_with_file_upload(
 
 def test_consent_refused_for_flu_vaccination(
     start_consent_with_session_scheduled,
-    online_consent_wizard_page,
+    page,
     schools,
     children,
 ):
@@ -66,14 +73,14 @@ def test_consent_refused_for_flu_vaccination(
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.dont_agree_to_vaccination()
-    online_consent_wizard_page.select_consent_not_given_reason(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).dont_agree_to_vaccination()
+    OnlineConsentWizardPage(page).select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.expect_confirmation_text(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).expect_confirmation_text(
         f"Consent refusedYou’ve told us that you do not want"
         f" {child.first_name} {child.last_name} to get the flu vaccination at school",
     )
@@ -95,7 +102,7 @@ def test_consent_refused_for_flu_vaccination(
 )
 def test_consent_given_for_flu_vaccination(
     start_consent_with_session_scheduled,
-    online_consent_wizard_page,
+    page,
     schools,
     consent_option,
     yes_to_health_questions,
@@ -123,23 +130,25 @@ def test_consent_given_for_flu_vaccination(
         ConsentOption.INJECTION: 5,
     }
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_flu_vaccination(consent_option=consent_option)
-    online_consent_wizard_page.fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_flu_vaccination(
+        consent_option=consent_option
+    )
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
 
     num_questions = number_of_health_questions[consent_option]
     if consent_option is not ConsentOption.INJECTION and yes_to_health_questions:
-        online_consent_wizard_page.answer_yes()
+        OnlineConsentWizardPage(page).answer_yes()
         num_questions += 1
 
-    online_consent_wizard_page.answer_health_questions(
+    OnlineConsentWizardPage(page).answer_health_questions(
         num_questions,
         yes_to_health_questions=yes_to_health_questions,
     )
 
-    online_consent_wizard_page.click_confirm()
+    OnlineConsentWizardPage(page).click_confirm()
 
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=yes_to_health_questions,
@@ -179,15 +188,10 @@ def test_consent_given_for_flu_vaccination(
 def test_flu_consent_method_displayed_correctly(
     setup_session_with_file_upload,
     start_consent_with_session_scheduled,
-    online_consent_wizard_page,
+    page,
     schools,
     children,
     consents,
-    start_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    dashboard_page,
 ):
     """
     Test: Submit multiple online flu consent forms with different methods and
@@ -209,15 +213,17 @@ def test_flu_consent_method_displayed_correctly(
     url = setup_session_with_file_upload
 
     # First consent
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_flu_vaccination(consent_option=consents[0])
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
-        online_consent_wizard_page.get_number_of_health_questions_for_flu(consents[0]),
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_flu_vaccination(consent_option=consents[0])
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
+        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
+            consents[0]
+        ),
         yes_to_health_questions=False,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
@@ -225,18 +231,20 @@ def test_flu_consent_method_displayed_correctly(
     )
 
     # Second consent (different parent)
-    online_consent_wizard_page.go_to_url(url)
-    start_page.start()
+    OnlineConsentWizardPage(page).go_to_url(url)
+    StartPage(page).start()
 
-    online_consent_wizard_page.fill_details(child, child.parents[1], schools)
-    online_consent_wizard_page.agree_to_flu_vaccination(consent_option=consents[1])
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
-        online_consent_wizard_page.get_number_of_health_questions_for_flu(consents[1]),
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[1], schools)
+    OnlineConsentWizardPage(page).agree_to_flu_vaccination(consent_option=consents[1])
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
+        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
+            consents[1]
+        ),
         yes_to_health_questions=False,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
@@ -244,18 +252,20 @@ def test_flu_consent_method_displayed_correctly(
     )
 
     # Verify in session
-    dashboard_page.navigate()
-    dashboard_page.click_sessions()
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_sessions()
 
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.FLU)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.select_due_vaccination()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.FLU
+    )
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).select_due_vaccination()
 
-    sessions_children_page.search.search_for(str(child))
-    sessions_children_page.verify_child_shows_correct_flu_consent_method(
+    SessionsChildrenPage(page).search.search_for(str(child))
+    SessionsChildrenPage(page).verify_child_shows_correct_flu_consent_method(
         child, consents[2]
     )
 
     # Verify in session download
-    sessions_children_page.tabs.click_overview_tab()
-    sessions_overview_page.verify_consent_message_in_excel()
+    SessionsChildrenPage(page).tabs.click_overview_tab()
+    SessionsOverviewPage(page).verify_consent_message_in_excel()

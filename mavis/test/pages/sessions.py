@@ -1,6 +1,6 @@
 import re
 import time
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -296,7 +296,7 @@ class SessionsOverviewPage:
     def click_edit_session(self) -> None:
         self.edit_session_link.click()
 
-    def get_online_consent_url(self, *programmes: list[Programme]) -> str:
+    def get_online_consent_url(self, *programmes: Programme) -> str:
         programme_names = [str(programme) for programme in programmes]
         link_text = f"View the {' and '.join(programme_names)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
@@ -367,7 +367,7 @@ class SessionsOverviewPage:
 
         return _file_path
 
-    def is_date_scheduled(self, date: datetime) -> bool:
+    def is_date_scheduled(self, date: date) -> bool:
         return self.page.get_by_text(
             get_formatted_date_for_session_dates(date)
         ).is_visible()
