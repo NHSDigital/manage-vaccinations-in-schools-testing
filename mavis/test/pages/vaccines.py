@@ -6,7 +6,7 @@ from mavis.test.annotations import step
 from mavis.test.models import Vaccine
 
 
-class BatchExpiryDateMixin:
+class BatchExpiryDate:
     def __init__(self, page: Page) -> None:
         self.expiry_day_textbox = page.get_by_role("textbox", name="Day")
         self.expiry_month_textbox = page.get_by_role("textbox", name="Month")
@@ -19,11 +19,10 @@ class BatchExpiryDateMixin:
         self.expiry_year_textbox.fill(str(value.year))
 
 
-class AddBatchPage(BatchExpiryDateMixin):
+class AddBatchPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
-
         self.page = page
+        self.date = BatchExpiryDate(page)
 
         self.name_textbox = page.get_by_role("textbox", name="Batch")
         self.confirm_button = page.get_by_role("button", name="Add batch")
@@ -43,11 +42,10 @@ class AddBatchPage(BatchExpiryDateMixin):
         self.confirm_button.click()
 
 
-class EditBatchPage(BatchExpiryDateMixin):
+class EditBatchPage:
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
-
         self.page = page
+        self.date = BatchExpiryDate(page)
 
         self.confirm_button = page.get_by_role("button", name="Save changes")
         self.success_alert = page.get_by_role("alert", name="Success").filter(

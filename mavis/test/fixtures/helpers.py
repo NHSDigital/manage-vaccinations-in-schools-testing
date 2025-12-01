@@ -31,7 +31,7 @@ def add_vaccine_batch(add_batch_page, vaccines_page):
         vaccines_page.navigate()
         vaccines_page.click_add_batch(vaccine)
         add_batch_page.fill_name(batch_name)
-        add_batch_page.fill_expiry_date(get_offset_date(1))
+        add_batch_page.date.fill_expiry_date(get_offset_date(1))
         add_batch_page.confirm()
         return batch_name
 
