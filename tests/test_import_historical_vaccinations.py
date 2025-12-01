@@ -97,7 +97,7 @@ def test_historical_vaccination_file_upload_creates_child(
     dashboard_page.click_mavis()
     dashboard_page.click_children()
 
-    children_search_page.click_advanced_filters()
+    children_search_page.search.click_advanced_filters()
     children_search_page.check_children_aged_out_of_programmes()
     children_search_page.search_with_all_filters_for_child_name(str(child))
     children_search_page.click_record_for_child(child)

@@ -61,7 +61,7 @@ def setup_confirm_and_ignore(
     upload_class_list()
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_search_page.search_for_a_child_name(str(children[0]))
+    children_search_page.search.search_for_a_child_name(str(children[0]))
     children_search_page.click_record_for_child(children[0])
     child_record_page.tabs.click_activity_log()
     child_activity_log_page.expect_activity_log_header(

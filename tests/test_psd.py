@@ -118,8 +118,8 @@ def test_delivering_vaccination_after_psd(
     sessions_edit_page.click_continue_button()
     sessions_edit_page.click_save_changes()
 
-    sessions_overview_page.click_children_tab()
-    sessions_children_page.search_and_click_child(child)
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(Programme.FLU)
     sessions_patient_page.click_record_a_new_consent_response()
     nurse_consent_wizard_page.select_parent(child.parents[0])
@@ -130,8 +130,8 @@ def test_delivering_vaccination_after_psd(
         psd_option=True,
         yes_to_health_questions=True,
     )
-    sessions_overview_page.click_psds_tab()
-    sessions_psd_page.search_for(str(child))
+    sessions_overview_page.tabs.click_psds_tab()
+    sessions_psd_page.search.search_for(str(child))
     sessions_psd_page.check_child_has_psd(child)
 
     log_in_page.log_out()
@@ -141,10 +141,10 @@ def test_delivering_vaccination_after_psd(
     dashboard_page.click_mavis()
     dashboard_page.click_sessions()
     sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
-    sessions_overview_page.click_register_tab()
+    sessions_overview_page.tabs.click_register_tab()
     sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search_and_click_child(child)
+    sessions_register_page.tabs.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
         child, Programme.FLU, fluenz_batch_name, ConsentOption.NASAL_SPRAY_OR_INJECTION
@@ -215,13 +215,13 @@ def test_bulk_adding_psd(
     sessions_edit_page.click_continue_button()
     sessions_edit_page.click_save_changes()
 
-    sessions_overview_page.click_children_tab()
+    sessions_overview_page.tabs.click_children_tab()
     for child in children[Programme.FLU]:
         sessions_children_page.get_flu_consent_status_locator_from_search(child)
 
-    sessions_children_page.click_psds_tab()
+    sessions_children_page.tabs.click_psds_tab()
     for child in children[Programme.FLU]:
-        sessions_psd_page.search_for(str(child))
+        sessions_psd_page.search.search_for(str(child))
         sessions_psd_page.check_child_does_not_have_psd(child)
 
     sessions_psd_page.verify_psd_banner_has_patients(2)
@@ -232,7 +232,7 @@ def test_bulk_adding_psd(
     sessions_psd_page.verify_psd_banner_has_patients(0)
 
     for child in children[Programme.FLU]:
-        sessions_psd_page.search_for(str(child))
+        sessions_psd_page.search.search_for(str(child))
         sessions_psd_page.check_child_has_psd(child)
 
 
@@ -271,7 +271,7 @@ def test_accessibility(
     sessions_edit_page.answer_whether_psd_should_be_enabled("Yes")
     sessions_edit_page.click_continue_button()
     sessions_edit_page.click_save_changes()
-    sessions_overview_page.click_psds_tab()
+    sessions_overview_page.tabs.click_psds_tab()
     accessibility_helper.check_accessibility()
 
     sessions_psd_page.click_add_new_psds()

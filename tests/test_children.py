@@ -219,7 +219,7 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the children page.
     """
-    children_search_page.click_advanced_filters()
+    children_search_page.search.click_advanced_filters()
     accessibility_helper.check_accessibility()
 
     child = children[Programme.HPV][0]

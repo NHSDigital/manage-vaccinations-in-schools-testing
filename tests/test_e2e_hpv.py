@@ -76,10 +76,10 @@ def test_recording_hpv_vaccination_e2e(
 
     sessions_search_page.click_session_for_programme_group(schools[0], Programme.HPV)
     sessions_overview_page.click_set_session_in_progress_for_today()
-    sessions_overview_page.click_register_tab()
+    sessions_overview_page.tabs.click_register_tab()
     sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search_and_click_child(child)
+    sessions_register_page.tabs.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.HPV, gardasil_9_batch_name)
     sessions_patient_page.set_up_vaccination(vaccination_record)
