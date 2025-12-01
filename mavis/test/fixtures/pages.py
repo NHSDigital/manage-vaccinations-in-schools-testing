@@ -168,8 +168,8 @@ def programmes_list_page(page: Page) -> ProgrammesListPage:
 
 
 @pytest.fixture
-def programme_overview_page(page: Page, test_data: TestData) -> ProgrammeOverviewPage:
-    return ProgrammeOverviewPage(page, test_data)
+def programme_overview_page(page: Page) -> ProgrammeOverviewPage:
+    return ProgrammeOverviewPage(page)
 
 
 @pytest.fixture

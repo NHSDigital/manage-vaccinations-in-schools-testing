@@ -381,7 +381,7 @@ def test_verify_excel_export_and_clinic_invitation(
 
     dashboard_page.click_mavis()
     dashboard_page.click_children()
-    children_search_page.search.search_for_a_child_name(str(child))
+    children_search_page.search_for_a_child_name(str(child))
     children_search_page.click_record_for_child(child)
     child_record_page.click_invite_to_community_clinic()
     child_record_page.click_session_for_programme(
