@@ -39,7 +39,6 @@ def setup_children_session(
         year_group = year_groups[Programme.HPV]
 
         DashboardPage(page).click_sessions()
-        DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV.group
         )
