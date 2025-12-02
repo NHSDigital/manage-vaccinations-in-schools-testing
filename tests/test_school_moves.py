@@ -18,7 +18,7 @@ from mavis.test.pages import (
     SessionsOverviewPage,
     SessionsSearchPage,
 )
-from mavis.test.utils import get_offset_date
+from mavis.test.utils import get_current_datetime, get_offset_date
 
 pytestmark = pytest.mark.school_moves
 
@@ -45,11 +45,15 @@ def setup_confirm_and_ignore(
         ImportRecordsWizardPage(page, test_data).select_year_groups(year_group)
         ImportRecordsWizardPage(page, test_data).set_input_file(input_file_path)
         ImportRecordsWizardPage(page, test_data).click_continue()
-        ImportRecordsWizardPage(page, test_data).record_upload_time()
-        ImportRecordsWizardPage(page, test_data).click_uploaded_file_datetime()
+        upload_time = get_current_datetime()
+        ImportRecordsWizardPage(page, test_data).click_uploaded_file_datetime(
+            upload_time
+        )
         ImportRecordsWizardPage(page, test_data).wait_for_processed()
         if ImportRecordsWizardPage(page, test_data).is_preview_page_link_visible():
-            ImportRecordsWizardPage(page, test_data).approve_preview_if_shown()
+            ImportRecordsWizardPage(page, test_data).approve_preview_if_shown(
+                upload_time
+            )
         ImportRecordsWizardPage(page, test_data).verify_upload_output(output_file_path)
 
     DashboardPage(page).click_sessions()
