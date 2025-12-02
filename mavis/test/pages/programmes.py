@@ -189,7 +189,7 @@ class ProgrammeChildrenPage:
         self.header = HeaderComponent(page)
 
         self.import_child_records_link = page.get_by_text("Import child records")
-        self.search_textbox = page.get_by_role("textbox", name="Search")
+        self.search_textbox = page.get_by_role("searchbox", name="Search")
         self.search_button = page.get_by_role("button", name="Search")
         self.continue_button = page.get_by_role("button", name="Continue")
         self.use_duplicate_radio_button = page.get_by_role(

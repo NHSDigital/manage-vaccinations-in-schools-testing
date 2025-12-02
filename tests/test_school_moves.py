@@ -1,9 +1,24 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import Programme
-from mavis.test.utils import get_offset_date
+from mavis.test.pages import (
+    ChildActivityLogPage,
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    DownloadSchoolMovesPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    ReviewSchoolMovePage,
+    SchoolMovesPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsSearchPage,
+)
+from mavis.test.utils import get_current_datetime, get_offset_date
 
 pytestmark = pytest.mark.school_moves
 
@@ -11,18 +26,10 @@ pytestmark = pytest.mark.school_moves
 @pytest.fixture
 def setup_confirm_and_ignore(
     log_in_as_nurse,
+    page,
     test_data,
     schools,
-    dashboard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
-    import_records_wizard_page,
-    imports_page,
     year_groups,
-    children_search_page,
-    child_record_page,
-    child_activity_log_page,
     children,
 ):
     schools = schools[Programme.HPV]
@@ -34,48 +41,63 @@ def setup_confirm_and_ignore(
     )
 
     def upload_class_list():
-        sessions_overview_page.click_import_class_lists()
-        import_records_wizard_page.select_year_groups(year_group)
-        import_records_wizard_page.set_input_file(input_file_path)
-        import_records_wizard_page.click_continue()
-        import_records_wizard_page.record_upload_time()
-        import_records_wizard_page.click_uploaded_file_datetime()
-        import_records_wizard_page.wait_for_processed()
-        if import_records_wizard_page.is_preview_page_link_visible():
-            import_records_wizard_page.approve_preview_if_shown()
-        import_records_wizard_page.verify_upload_output(output_file_path)
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).select_year_groups(year_group)
+        ImportRecordsWizardPage(page, test_data).set_input_file(input_file_path)
+        ImportRecordsWizardPage(page, test_data).click_continue()
+        upload_time = get_current_datetime()
+        ImportRecordsWizardPage(page, test_data).click_uploaded_file_datetime(
+            upload_time
+        )
+        ImportRecordsWizardPage(page, test_data).wait_for_processed()
+        if ImportRecordsWizardPage(page, test_data).is_preview_page_link_visible():
+            ImportRecordsWizardPage(page, test_data).approve_preview_if_shown(
+                upload_time
+            )
+        ImportRecordsWizardPage(page, test_data).verify_upload_output(output_file_path)
 
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.HPV)
-    if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
-        sessions_overview_page.schedule_or_edit_session()
-        sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
-    sessions_overview_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(schools[1], Programme.HPV)
-    if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
-        sessions_overview_page.schedule_or_edit_session()
-        sessions_edit_page.schedule_a_valid_session(offset_days=7, skip_weekends=False)
-    sessions_overview_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.HPV)
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.HPV
+    )
+    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
+        SessionsOverviewPage(page).schedule_or_edit_session()
+        SessionsEditPage(page).schedule_a_valid_session(
+            offset_days=7, skip_weekends=False
+        )
+    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[1], Programme.HPV
+    )
+    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
+        SessionsOverviewPage(page).schedule_or_edit_session()
+        SessionsEditPage(page).schedule_a_valid_session(
+            offset_days=7, skip_weekends=False
+        )
+    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.HPV
+    )
     upload_class_list()
-    imports_page.header.click_children_header()
-    children_search_page.search_for_a_child_name(str(children[0]))
-    children_search_page.click_record_for_child(children[0])
-    child_record_page.tabs.click_activity_log()
-    child_activity_log_page.expect_activity_log_header(
+    ImportsPage(page).header.click_children_header()
+    ChildrenSearchPage(page).search_for_a_child_name(str(children[0]))
+    ChildrenSearchPage(page).click_record_for_child(children[0])
+    ChildRecordPage(page).tabs.click_activity_log()
+    ChildActivityLogPage(page).expect_activity_log_header(
         f"Added to the session at {schools[0]}"
     )
-    child_activity_log_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(schools[1], Programme.HPV)
+    ChildActivityLogPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[1], Programme.HPV
+    )
     upload_class_list()
-    imports_page.header.click_school_moves_header()
+    ImportsPage(page).header.click_school_moves_header()
 
 
 def test_confirm_and_ignore(
     setup_confirm_and_ignore,
     schools,
-    school_moves_page,
-    review_school_move_page,
+    page,
     children,
 ):
     """
@@ -94,31 +116,30 @@ def test_confirm_and_ignore(
     schools = schools[Programme.HPV]
     child_1, child_2 = children[Programme.HPV][0], children[Programme.HPV][1]
 
-    row1 = school_moves_page.get_row_for_child(child_1)
-    row2 = school_moves_page.get_row_for_child(child_2)
+    row1 = SchoolMovesPage(page).get_row_for_child(child_1)
+    row2 = SchoolMovesPage(page).get_row_for_child(child_2)
 
     expect(row1).to_contain_text(f"Class list updated {schools[0]} to {schools[1]}")
     expect(row2).to_contain_text(f"Class list updated {schools[0]} to {schools[1]}")
 
-    school_moves_page.click_child(child_1)
-    review_school_move_page.confirm()
+    SchoolMovesPage(page).click_child(child_1)
+    ReviewSchoolMovePage(page).confirm()
 
-    expect(school_moves_page.confirmed_alert).to_contain_text(
+    expect(SchoolMovesPage(page).confirmed_alert).to_contain_text(
         f"{child_1!s}’s school record updated",
     )
 
-    school_moves_page.click_child(child_2)
-    review_school_move_page.ignore()
+    SchoolMovesPage(page).click_child(child_2)
+    ReviewSchoolMovePage(page).ignore()
 
-    expect(school_moves_page.ignored_alert).to_contain_text(
+    expect(SchoolMovesPage(page).ignored_alert).to_contain_text(
         f"{child_2!s}’s school move ignored",
     )
 
 
 def test_download_school_moves_csv(
     setup_confirm_and_ignore,
-    school_moves_page,
-    download_school_moves_page,
+    page,
     schools,
     children,
 ):
@@ -135,10 +156,10 @@ def test_download_school_moves_csv(
     """
     school = schools[Programme.HPV][0]
     children = children[Programme.HPV]
-    school_moves_page.click_download()
-    download_school_moves_page.enter_date_range()
-    school_moves_csv = download_school_moves_page.confirm_and_get_school_moves_csv()
-    download_school_moves_page.verify_school_moves_csv_contents(
+    SchoolMovesPage(page).click_download()
+    DownloadSchoolMovesPage(page).enter_date_range()
+    school_moves_csv = DownloadSchoolMovesPage(page).confirm_and_get_school_moves_csv()
+    DownloadSchoolMovesPage(page).verify_school_moves_csv_contents(
         school_moves_csv, children, school
     )
 
@@ -146,10 +167,7 @@ def test_download_school_moves_csv(
 @pytest.mark.accessibility
 def test_accessibility(
     setup_confirm_and_ignore,
-    dashboard_page,
-    accessibility_helper,
-    school_moves_page,
-    download_school_moves_page,
+    page,
     children,
 ):
     """
@@ -163,14 +181,14 @@ def test_accessibility(
     """
     child = children[Programme.HPV][0]
 
-    accessibility_helper.check_accessibility()
+    AccessibilityHelper(page).check_accessibility()
 
-    school_moves_page.click_download()
-    accessibility_helper.check_accessibility()
+    SchoolMovesPage(page).click_download()
+    AccessibilityHelper(page).check_accessibility()
 
-    download_school_moves_page.click_continue()
-    accessibility_helper.check_accessibility()
+    DownloadSchoolMovesPage(page).click_continue()
+    AccessibilityHelper(page).check_accessibility()
 
-    download_school_moves_page.header.click_school_moves_header()
-    school_moves_page.click_child(child)
-    accessibility_helper.check_accessibility()
+    DownloadSchoolMovesPage(page).header.click_school_moves_header()
+    SchoolMovesPage(page).click_child(child)
+    AccessibilityHelper(page).check_accessibility()

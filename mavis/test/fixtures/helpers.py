@@ -2,37 +2,51 @@ import os
 import re
 
 import pytest
-from playwright.sync_api import Page
 
-from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.data import ClassFileMapping, TestData, VaccsFileMapping
 from mavis.test.models import ConsentOption, Programme, School, Vaccine
+from mavis.test.pages import (
+    AddBatchPage,
+    ChildRecordPage,
+    DashboardPage,
+    FlipperPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    LogInPage,
+    ProgrammeChildrenPage,
+    ProgrammeOverviewPage,
+    ProgrammesListPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsSearchPage,
+    VaccinesPage,
+)
 from mavis.test.utils import get_offset_date
 
 
 @pytest.fixture
-def set_feature_flags(flipper_page):
+def set_feature_flags(page):
     set_check_feature_flags = os.getenv("SET_FEATURE_FLAGS", "false").lower() == "true"
 
     if set_check_feature_flags:
-        flipper_page.navigate()
-        flipper_page.set_feature_flags()
+        FlipperPage(page).navigate()
+        FlipperPage(page).set_feature_flags()
 
     yield
 
     if set_check_feature_flags:
-        flipper_page.navigate()
-        flipper_page.set_feature_flags(check_only=True)
+        FlipperPage(page).navigate()
+        FlipperPage(page).set_feature_flags(check_only=True)
 
 
 @pytest.fixture
-def add_vaccine_batch(add_batch_page, vaccines_page):
+def add_vaccine_batch(page):
     def wrapper(vaccine: Vaccine, batch_name: str = "ABC123"):
-        vaccines_page.navigate()
-        vaccines_page.click_add_batch(vaccine)
-        add_batch_page.fill_name(batch_name)
-        add_batch_page.date.fill_expiry_date(get_offset_date(1))
-        add_batch_page.confirm()
+        VaccinesPage(page).navigate()
+        VaccinesPage(page).click_add_batch(vaccine)
+        AddBatchPage(page).fill_name(batch_name)
+        AddBatchPage(page).date.fill_expiry_date(get_offset_date(1))
+        AddBatchPage(page).confirm()
         return batch_name
 
     return wrapper
@@ -43,26 +57,22 @@ def schedule_session_and_get_consent_url(
     set_feature_flags,
     nurse,
     team,
-    dashboard_page,
-    log_in_page,
-    sessions_edit_page,
-    sessions_search_page,
-    sessions_overview_page,
+    page,
 ):
     def wrapper(school: School, *programmes: Programme):
-        log_in_page.navigate()
-        log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
             school, programmes[0].group
         )
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(7)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=7, skip_weekends=False
             )
-        url = sessions_overview_page.get_online_consent_url(*programmes)
-        log_in_page.log_out()
+        url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
+        LogInPage(page).log_out()
         yield url
 
     return wrapper
@@ -73,27 +83,23 @@ def schedule_mmr_session_and_get_consent_url(
     set_feature_flags,
     nurse,
     team,
-    dashboard_page,
-    log_in_page,
-    sessions_edit_page,
-    sessions_search_page,
-    sessions_overview_page,
+    page,
 ):
     def wrapper(school: School, *programmes: Programme):
         try:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-            dashboard_page.click_sessions()
-            sessions_search_page.click_session_for_programme_group(
+            LogInPage(page).navigate()
+            LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+            DashboardPage(page).click_sessions()
+            SessionsSearchPage(page).click_session_for_programme_group(
                 school, programmes[0].group
             )
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_mmr_session()
-            url = sessions_overview_page.get_online_consent_url(*programmes)
-            log_in_page.log_out()
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_mmr_session()
+            url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
+            LogInPage(page).log_out()
             yield url
         finally:
-            log_in_page.log_out()
+            LogInPage(page).log_out()
 
     return wrapper
 
@@ -103,45 +109,37 @@ def log_in_as_medical_secretary(
     set_feature_flags,
     medical_secretary,
     team,
-    log_in_page,
+    page,
 ):
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(medical_secretary, team)
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(medical_secretary, team)
     yield
-    log_in_page.log_out()
+    LogInPage(page).log_out()
 
 
 @pytest.fixture
-def log_in_as_nurse(set_feature_flags, nurse, team, log_in_page):
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+def log_in_as_nurse(set_feature_flags, nurse, team, page):
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
     yield
-    log_in_page.log_out()
+    LogInPage(page).log_out()
 
 
 @pytest.fixture
-def log_in_as_prescriber(set_feature_flags, prescriber, team, log_in_page):
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(prescriber, team)
+def log_in_as_prescriber(set_feature_flags, prescriber, team, page):
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(prescriber, team)
     yield
-    log_in_page.log_out()
+    LogInPage(page).log_out()
 
 
 @pytest.fixture
 def upload_offline_vaccination(
     log_in_as_nurse,
     schools,
-    dashboard_page,
-    import_records_wizard_page,
-    sessions_edit_page,
-    sessions_search_page,
-    sessions_overview_page,
-    programmes_list_page,
-    programme_children_page,
-    programme_overview_page,
-    child_record_page,
+    page,
     children,
-    imports_page,
+    test_data,
 ):
     def wrapper(
         programme: Programme, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -163,37 +161,41 @@ def upload_offline_vaccination(
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
 
-        dashboard_page.navigate()
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(school, programme.group)
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        DashboardPage(page).navigate()
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, programme.group
+        )
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        sessions_overview_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
             programme.group,
         )
-        imports_page.header.click_sessions_header()
-        sessions_search_page.click_session_for_programme_group(school, programme)
-        session_id = sessions_overview_page.get_session_id_from_offline_excel()
-        sessions_overview_page.header.click_imports_header()
-        imports_page.click_upload_records()
-        import_records_wizard_page.navigate_to_vaccination_records_import()
-        import_records_wizard_page.upload_and_verify_output(
+        ImportsPage(page).header.click_sessions_header()
+        SessionsSearchPage(page).click_session_for_programme_group(school, programme)
+        session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+        SessionsOverviewPage(page).header.click_imports_header()
+        ImportsPage(page).click_upload_records()
+        ImportRecordsWizardPage(
+            page, test_data
+        ).navigate_to_vaccination_records_import()
+        ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
             file_mapping=vaccs_file,
             session_id=session_id,
             programme_group=programme.group,
         )
-        imports_page.header.click_programmes_header()
-        programmes_list_page.click_programme_for_current_year(programme)
-        programme_overview_page.tabs.click_children_tab()
-        programme_children_page.search_for_child(child)
-        programme_children_page.click_child(child)
-        child_record_page.click_vaccination_details(programme)
+        ImportsPage(page).header.click_programmes_header()
+        ProgrammesListPage(page).click_programme_for_current_year(programme)
+        ProgrammeOverviewPage(page).tabs.click_children_tab()
+        ProgrammeChildrenPage(page).search_for_child(child)
+        ProgrammeChildrenPage(page).click_child(child)
+        ChildRecordPage(page).click_vaccination_details(school)
         yield
 
     return wrapper
@@ -203,13 +205,9 @@ def upload_offline_vaccination(
 def setup_session_and_batches_with_fixed_child(
     add_vaccine_batch,
     schools,
-    dashboard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    import_records_wizard_page,
-    imports_page,
     children,
-    log_in_page,
+    page,
+    test_data,
     nurse,
     team,
 ):
@@ -218,27 +216,27 @@ def setup_session_and_batches_with_fixed_child(
         child = children[programme_group][0]
 
         try:
-            log_in_page.navigate()
-            log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
+            LogInPage(page).navigate()
+            LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
             batch_names = {
                 vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
                 for vaccine in Vaccine
                 if vaccine.programme.group == programme_group
             }
-            imports_page.header.click_sessions_header()
-            sessions_search_page.click_session_for_programme_group(
+            ImportsPage(page).header.click_sessions_header()
+            SessionsSearchPage(page).click_session_for_programme_group(
                 school, programme_group
             )
-            sessions_overview_page.click_import_class_lists()
-            import_records_wizard_page.import_class_list(
+            SessionsOverviewPage(page).click_import_class_lists()
+            ImportRecordsWizardPage(page, test_data).import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,
                 programme_group,
             )
             return batch_names
         finally:
-            dashboard_page.navigate()
-            log_in_page.log_out()
+            DashboardPage(page).navigate()
+            LogInPage(page).log_out()
 
     return _setup
 
@@ -246,8 +244,3 @@ def setup_session_and_batches_with_fixed_child(
 @pytest.fixture
 def test_data(organisation, schools, nurse, children, clinics, year_groups):
     return TestData(organisation, schools, nurse, children, clinics, year_groups)
-
-
-@pytest.fixture
-def accessibility_helper(page: Page) -> AccessibilityHelper:
-    return AccessibilityHelper(page)

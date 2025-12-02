@@ -2,24 +2,29 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import VaccsFileMapping
+from mavis.test.pages import (
+    DashboardPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+)
 
 
 @pytest.fixture
 def setup_systmone_nivs(
     log_in_as_nurse,
-    dashboard_page,
-    import_records_wizard_page,
-    imports_page,
+    page,
+    test_data,
 ):
-    dashboard_page.click_imports()
-    imports_page.click_upload_records()
-    import_records_wizard_page.navigate_to_vaccination_records_import()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
 
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_systmone_valid_data(
     setup_systmone_nivs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a SystmOne vaccination records file with valid data and verify import.
@@ -32,7 +37,7 @@ def test_vaccination_file_upload_systmone_valid_data(
     AllValuesCervarix, AllValuesG9, AllValuesHistorical, MandatoryValues, Batch100Chars,
     AllValuesMMR_DoseSeq1, AllValuesMMR_DoseSeq2
     """
-    import_records_wizard_page.upload_and_verify_output(
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_POSITIVE
     )
 
@@ -40,7 +45,8 @@ def test_vaccination_file_upload_systmone_valid_data(
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_systmone_invalid_data(
     setup_systmone_nivs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a SystmOne vaccination records file with invalid data and
@@ -57,7 +63,7 @@ def test_vaccination_file_upload_systmone_invalid_data(
     PastEventDate, InvalidEventTime, FutureEventTime, InvalidSchoolURN, LongBatchNumber,
     AllValuesMMR_DoseSeq3
     """
-    import_records_wizard_page.upload_and_verify_output(
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_NEGATIVE
     )
 
@@ -65,7 +71,8 @@ def test_vaccination_file_upload_systmone_invalid_data(
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_systmone_historic_invalid_data(
     setup_systmone_nivs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a SystmOne historic vaccination records file with invalid data and
@@ -81,7 +88,7 @@ def test_vaccination_file_upload_systmone_historic_invalid_data(
     InvalidSex, EmptyLastName, EmptyEventDate, InvalidEventDate, FutureEventDate,
     PastEventDate, InvalidEventTime, InvalidSchoolURN
     """
-    import_records_wizard_page.upload_and_verify_output(
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_HIST_NEGATIVE,
     )
 
@@ -90,7 +97,8 @@ def test_vaccination_file_upload_systmone_historic_invalid_data(
 @pytest.mark.bug
 def test_vaccination_file_upload_systmone_whitespace_normalization(
     setup_systmone_nivs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a SystmOne vaccination records file with extra whitespace and
@@ -103,7 +111,7 @@ def test_vaccination_file_upload_systmone_whitespace_normalization(
     TwoSpaces, Tabs, NBSP (non-breaking space), ZWJ (zero-width joiner),
     HistoricalTwoSpaces, HistoricalTabs, HistoricalNBSP, HistoricalZWJ
     """
-    import_records_wizard_page.upload_and_verify_output(
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.SYSTMONE_WHITESPACE,
     )
 
@@ -113,7 +121,8 @@ def test_vaccination_file_upload_systmone_whitespace_normalization(
 @pytest.mark.bug
 def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
     setup_systmone_nivs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a NIVS historic flu vaccination file for previous years and verify
@@ -123,7 +132,7 @@ def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
     Verification:
     - Output indicates flu vaccinations for previous years are not allowed.
     """
-    import_records_wizard_page.upload_and_verify_output(
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.HIST_FLU_NIVS,
     )
 
@@ -133,7 +142,8 @@ def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
 @pytest.mark.bug
 def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
     setup_systmone_nivs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a SystmOne historic flu vaccination file for previous years and verify
@@ -143,6 +153,6 @@ def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
     Verification:
     - Output indicates flu vaccinations for previous years are not allowed.
     """
-    import_records_wizard_page.upload_and_verify_output(
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.HIST_FLU_SYSTMONE,
     )

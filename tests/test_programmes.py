@@ -1,32 +1,43 @@
 import pytest
 
+from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
 from mavis.test.models import Programme, ReportFormat
+from mavis.test.pages import (
+    ChildArchivePage,
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    EditVaccinationRecordPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    ProgrammeChildrenPage,
+    ProgrammeOverviewPage,
+    ProgrammesListPage,
+    VaccinationRecordPage,
+)
 from mavis.test.utils import expect_alert_text
 
 
 @pytest.fixture
 def setup_cohort_upload(
     log_in_as_nurse,
-    dashboard_page,
-    programmes_list_page,
-    programme_overview_page,
-    programme_children_page,
+    page,
 ):
-    dashboard_page.click_programmes()
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.tabs.click_children_tab()
-    programme_children_page.click_import_child_records()
+    DashboardPage(page).click_programmes()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).tabs.click_children_tab()
+    ProgrammeChildrenPage(page).click_import_child_records()
 
 
 @pytest.fixture
-def setup_reports(log_in_as_nurse, dashboard_page):
-    dashboard_page.click_programmes()
+def setup_reports(log_in_as_nurse, page):
+    DashboardPage(page).click_programmes()
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_wizard_page):
+def test_cohort_upload_with_valid_file(setup_cohort_upload, page, test_data):
     """
     Test: Upload a valid cohort (class list) file and verify successful import.
     Steps:
@@ -35,13 +46,13 @@ def test_cohort_upload_with_valid_file(setup_cohort_upload, import_records_wizar
     Verification:
     - Import completes successfully with expected records.
     """
-    import_records_wizard_page.import_class_list(CohortsFileMapping.POSITIVE)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.POSITIVE
+    )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_invalid_file(
-    setup_cohort_upload, import_records_wizard_page
-):
+def test_cohort_upload_with_invalid_file(setup_cohort_upload, page, test_data):
     """
     Test: Upload an invalid cohort (class list) file and verify error handling.
     Steps:
@@ -50,13 +61,13 @@ def test_cohort_upload_with_invalid_file(
     Verification:
     - Import fails and error is shown.
     """
-    import_records_wizard_page.import_class_list(CohortsFileMapping.NEGATIVE)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.NEGATIVE
+    )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_invalid_structure(
-    setup_cohort_upload, import_records_wizard_page
-):
+def test_cohort_upload_with_invalid_structure(setup_cohort_upload, page, test_data):
     """
     Test: Upload a cohort file with invalid structure and verify error handling.
     Steps:
@@ -65,13 +76,13 @@ def test_cohort_upload_with_invalid_structure(
     Verification:
     - Import fails and structural error is shown.
     """
-    import_records_wizard_page.import_class_list(CohortsFileMapping.INVALID_STRUCTURE)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.INVALID_STRUCTURE
+    )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_header_only_file(
-    setup_cohort_upload, import_records_wizard_page
-):
+def test_cohort_upload_with_header_only_file(setup_cohort_upload, page, test_data):
     """
     Test: Upload a cohort file with only headers and verify no records are imported.
     Steps:
@@ -80,11 +91,13 @@ def test_cohort_upload_with_header_only_file(
     Verification:
     - No records are imported and appropriate message is shown.
     """
-    import_records_wizard_page.import_class_list(CohortsFileMapping.HEADER_ONLY)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.HEADER_ONLY
+    )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_wizard_page):
+def test_cohort_upload_with_empty_file(setup_cohort_upload, page, test_data):
     """
     Test: Upload an empty cohort file and verify error handling.
     Steps:
@@ -93,7 +106,9 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_wizar
     Verification:
     - Import fails and error is shown.
     """
-    import_records_wizard_page.import_class_list(CohortsFileMapping.EMPTY_FILE)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.EMPTY_FILE
+    )
 
 
 @issue("MAV-909")
@@ -102,15 +117,8 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, import_records_wizar
 @pytest.mark.bug
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_cohort_upload,
-    programmes_list_page,
-    programme_overview_page,
-    programme_children_page,
-    dashboard_page,
-    children_search_page,
-    child_record_page,
-    child_archive_page,
-    import_records_wizard_page,
-    imports_page,
+    page,
+    test_data,
     children,
 ):
     """
@@ -125,25 +133,29 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     """
     child = children[Programme.HPV][0]
 
-    import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.FIXED_CHILD
+    )
 
-    imports_page.header.click_children_header()
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.click_archive_child_record()
-    child_archive_page.archive_child_record()
+    ImportsPage(page).header.click_children_header()
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).click_archive_child_record()
+    ChildArchivePage(page).archive_child_record()
 
-    child_record_page.header.click_programmes_header()
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.tabs.click_children_tab()
-    programme_children_page.click_import_child_records()
+    ChildRecordPage(page).header.click_programmes_header()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).tabs.click_children_tab()
+    ProgrammeChildrenPage(page).click_import_child_records()
 
-    import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.FIXED_CHILD
+    )
 
-    imports_page.header.click_children_header()
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.check_child_is_unarchived()
+    ImportsPage(page).header.click_children_header()
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).check_child_is_unarchived()
 
 
 @pytest.fixture
@@ -155,9 +167,7 @@ def upload_offline_vaccination_hpv(upload_offline_vaccination):
 @pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given(
     upload_offline_vaccination_hpv,
-    programme_children_page,
-    vaccination_record_page,
-    edit_vaccination_record_page,
+    page,
 ):
     """
     Test: Edit a vaccination dose to 'not given' and verify outcome.
@@ -168,19 +178,18 @@ def test_edit_vaccination_dose_to_not_given(
     Verification:
     - Alert confirms vaccination outcome recorded as refused.
     """
-    vaccination_record_page.click_edit_vaccination_record()
-    edit_vaccination_record_page.click_change_outcome()
-    edit_vaccination_record_page.click_they_refused_it()
-    edit_vaccination_record_page.click_continue()
-    edit_vaccination_record_page.click_save_changes()
-    expect_alert_text(
-        programme_children_page.page, "Vaccination outcome recorded for HPV"
-    )
+    VaccinationRecordPage(page).click_edit_vaccination_record()
+    EditVaccinationRecordPage(page).click_change_outcome()
+    EditVaccinationRecordPage(page).click_they_refused_it()
+    EditVaccinationRecordPage(page).click_continue()
+    EditVaccinationRecordPage(page).click_save_changes()
+    expect_alert_text(page, "Vaccination outcome recorded for HPV")
 
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_hpv(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify CarePlus report for HPV programme.
@@ -190,15 +199,16 @@ def test_verify_careplus_report_for_hpv(
     Verification:
     - Report is generated in CarePlus format for HPV.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_doubles(
-    setup_reports, programmes_list_page, programme_overview_page, dashboard_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
@@ -209,20 +219,21 @@ def test_verify_careplus_report_for_doubles(
     Verification:
     - Reports are generated in CarePlus format for both MenACWY and Td/IPV.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.MENACWY)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.MENACWY)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
-    programme_overview_page.header.click_programmes_header()
-    programmes_list_page.click_programme_for_current_year(Programme.TD_IPV)
-    programme_overview_page.verify_report_format(
+    ProgrammeOverviewPage(page).header.click_programmes_header()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.TD_IPV)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_hpv(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify CSV report for HPV programme.
@@ -232,15 +243,16 @@ def test_verify_csv_report_for_hpv(
     Verification:
     - Report is generated in CSV format for HPV.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_doubles(
-    setup_reports, dashboard_page, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify CSV report for MenACWY and Td/IPV programmes.
@@ -251,20 +263,21 @@ def test_verify_csv_report_for_doubles(
     Verification:
     - Reports are generated in CSV format for both MenACWY and Td/IPV.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.MENACWY)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.MENACWY)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
-    programme_overview_page.header.click_programmes_header()
-    programmes_list_page.click_programme_for_current_year(Programme.TD_IPV)
-    programme_overview_page.verify_report_format(
+    ProgrammeOverviewPage(page).header.click_programmes_header()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.TD_IPV)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_hpv(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify SystmOne report for HPV programme.
@@ -274,15 +287,16 @@ def test_verify_systmone_report_for_hpv(
     Verification:
     - Report is generated in SystmOne format for HPV.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_menacwy(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify SystmOne report for MenACWY programme.
@@ -292,15 +306,16 @@ def test_verify_systmone_report_for_menacwy(
     Verification:
     - Report is generated in SystmOne format for MenACWY.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.MENACWY)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.MENACWY)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
 
 @pytest.mark.reports
 def test_verify_careplus_report_for_mmr(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify CarePlus report for MMR programme.
@@ -310,15 +325,16 @@ def test_verify_careplus_report_for_mmr(
     Verification:
     - Report is generated in CarePlus format for MMR.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.MMR)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.MMR)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
 
 @pytest.mark.reports
 def test_verify_csv_report_for_mmr(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify CSV report for MMR programme.
@@ -328,15 +344,16 @@ def test_verify_csv_report_for_mmr(
     Verification:
     - Report is generated in CSV format for MMR.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.MMR)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.MMR)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
 
 @pytest.mark.reports
 def test_verify_systmone_report_for_mmr(
-    setup_reports, programmes_list_page, programme_overview_page
+    setup_reports,
+    page,
 ):
     """
     Test: Generate and verify SystmOne report for MMR programme.
@@ -346,8 +363,8 @@ def test_verify_systmone_report_for_mmr(
     Verification:
     - Report is generated in SystmOne format for MMR.
     """
-    programmes_list_page.click_programme_for_current_year(Programme.MMR)
-    programme_overview_page.verify_report_format(
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.MMR)
+    ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
@@ -355,10 +372,7 @@ def test_verify_systmone_report_for_mmr(
 @pytest.mark.accessibility
 def test_accessibility(
     setup_reports,
-    dashboard_page,
-    accessibility_helper,
-    programmes_list_page,
-    programme_overview_page,
+    page,
 ):
     """
     Test: Check accessibility of the programmes page.
@@ -367,22 +381,22 @@ def test_accessibility(
     Verification:
     - Page passes accessibility checks.
     """
-    accessibility_helper.check_accessibility()
+    AccessibilityHelper(page).check_accessibility()
 
-    programmes_list_page.click_programme_for_current_year(Programme.FLU)
-    accessibility_helper.check_accessibility()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.FLU)
+    AccessibilityHelper(page).check_accessibility()
 
-    programme_overview_page.click_download_report()
-    accessibility_helper.check_accessibility()
+    ProgrammeOverviewPage(page).click_download_report()
+    AccessibilityHelper(page).check_accessibility()
 
-    programme_overview_page.click_continue()
-    accessibility_helper.check_accessibility()
+    ProgrammeOverviewPage(page).click_continue()
+    AccessibilityHelper(page).check_accessibility()
 
-    programme_overview_page.header.click_programmes_header()
-    programmes_list_page.click_programme_for_current_year(Programme.FLU)
+    ProgrammeOverviewPage(page).header.click_programmes_header()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.FLU)
 
-    programme_overview_page.tabs.click_sessions_tab()
-    accessibility_helper.check_accessibility()
+    ProgrammeOverviewPage(page).tabs.click_sessions_tab()
+    AccessibilityHelper(page).check_accessibility()
 
-    programme_overview_page.tabs.click_children_tab()
-    accessibility_helper.check_accessibility()
+    ProgrammeOverviewPage(page).tabs.click_children_tab()
+    AccessibilityHelper(page).check_accessibility()

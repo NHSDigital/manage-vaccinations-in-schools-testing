@@ -1,6 +1,10 @@
 import pytest
 
 from mavis.test.models import ConsentRefusalReason, Programme
+from mavis.test.pages import (
+    OnlineConsentWizardPage,
+    StartPage,
+)
 
 pytestmark = pytest.mark.consent
 
@@ -15,14 +19,14 @@ def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
 
 
 @pytest.fixture
-def start_consent_with_session_scheduled(url_with_session_scheduled, page, start_page):
+def start_consent_with_session_scheduled(url_with_session_scheduled, page):
     page.goto(url_with_session_scheduled)
-    start_page.start()
+    StartPage(page).start()
 
 
 def test_consent_refused_for_doubles_vaccination(
     start_consent_with_session_scheduled,
-    online_consent_wizard_page,
+    page,
     schools,
     children,
 ):
@@ -40,14 +44,14 @@ def test_consent_refused_for_doubles_vaccination(
     child = children["doubles"][0]
     schools = schools["doubles"]
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.dont_agree_to_vaccination()
-    online_consent_wizard_page.select_consent_not_given_reason(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).dont_agree_to_vaccination()
+    OnlineConsentWizardPage(page).select_consent_not_given_reason(
         reason=ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
         details="Vaccine already received in previous school",
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.expect_confirmation_text(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).expect_confirmation_text(
         f"Consent refusedYou’ve told us that you do not want"
         f" {child.first_name} {child.last_name} to get the MenACWY and Td/IPV"
         " vaccinations at school",
@@ -66,7 +70,7 @@ def test_consent_refused_for_doubles_vaccination(
 )
 def test_consent_given_for_doubles_vaccination(
     start_consent_with_session_scheduled,
-    online_consent_wizard_page,
+    page,
     schools,
     programmes,
     yes_to_health_questions,
@@ -89,29 +93,27 @@ def test_consent_given_for_doubles_vaccination(
     child = children["doubles"][0]
     schools = schools["doubles"]
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_doubles_vaccinations(*programmes)
-    online_consent_wizard_page.fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_doubles_vaccinations(*programmes)
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
 
-    number_of_health_questions = (
-        online_consent_wizard_page.get_number_of_health_questions_for_programmes(
-            programmes
-        )
-    )
+    number_of_health_questions = OnlineConsentWizardPage(
+        page
+    ).get_number_of_health_questions_for_programmes(programmes)
 
-    online_consent_wizard_page.answer_health_questions(
+    OnlineConsentWizardPage(page).answer_health_questions(
         number_of_health_questions,
         yes_to_health_questions=yes_to_health_questions,
     )
 
     if programmes != [Programme.MENACWY, Programme.TD_IPV]:
-        online_consent_wizard_page.select_consent_not_given_reason(
+        OnlineConsentWizardPage(page).select_consent_not_given_reason(
             ConsentRefusalReason.PERSONAL_CHOICE,
         )
 
-    online_consent_wizard_page.click_confirm()
+    OnlineConsentWizardPage(page).click_confirm()
 
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=programmes,
         yes_to_health_questions=yes_to_health_questions,

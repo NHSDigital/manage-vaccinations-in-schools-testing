@@ -11,14 +11,29 @@ from mavis.test.models import (
     VaccinationRecord,
     Vaccine,
 )
+from mavis.test.pages import (
+    DashboardPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    NurseConsentWizardPage,
+    SessionsChildrenPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsVaccinationWizardPage,
+    VaccinesPage,
+)
 from mavis.test.utils import get_offset_date
 
 pytestmark = pytest.mark.tallying
 
 
 @pytest.fixture
-def setup_tests(log_in_as_nurse, dashboard_page):
-    dashboard_page.click_sessions()
+def setup_tests(log_in_as_nurse, page):
+    DashboardPage(page).click_sessions()
 
 
 @pytest.fixture
@@ -26,13 +41,8 @@ def setup_session_with_file_upload(
     setup_tests,
     add_vaccine_batch,
     schools,
-    dashboard_page,
-    sessions_edit_page,
-    sessions_search_page,
-    sessions_overview_page,
-    import_records_wizard_page,
-    imports_page,
-    vaccines_page,
+    page,
+    test_data,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -43,21 +53,23 @@ def setup_session_with_file_upload(
             vaccine: add_vaccine_batch(vaccine)
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
         }
-        vaccines_page.header.click_sessions_header()
-        sessions_search_page.click_session_for_programme_group(
+        VaccinesPage(page).header.click_sessions_header()
+        SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU.group
         )
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        sessions_overview_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
-        imports_page.header.click_sessions_header()
-        sessions_search_page.click_session_for_programme_group(school, Programme.FLU)
+        ImportsPage(page).header.click_sessions_header()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, Programme.FLU
+        )
         yield batch_names
 
     return _setup
@@ -72,13 +84,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 @pytest.mark.bug
 def test_tallying(  # noqa: PLR0915
     setup_fixed_child,
-    sessions_overview_page,
-    sessions_patient_page,
-    sessions_register_page,
-    sessions_children_page,
-    sessions_vaccination_wizard_page,
-    sessions_record_vaccinations_page,
-    nurse_consent_wizard_page,
+    page,
     children,
     schools,
 ):
@@ -95,55 +101,55 @@ def test_tallying(  # noqa: PLR0915
     batch_name = setup_fixed_child[Vaccine.FLUENZ]
     school = schools[Programme.FLU][0]
 
-    tally_totals = sessions_overview_page.get_all_totals(Programme.FLU)
+    tally_totals = SessionsOverviewPage(page).get_all_totals(Programme.FLU)
     assert tally_totals[TallyCategory.NEEDS_CONSENT] > 0
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.FLU)
-    sessions_patient_page.click_record_a_new_consent_response()
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
-    nurse_consent_wizard_page.record_parent_positive_consent(
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
+    NurseConsentWizardPage(page).record_parent_positive_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
 
     tally_totals[TallyCategory.NEEDS_CONSENT] -= 1
     tally_totals[TallyCategory.DUE_INJECTION] += 1
-    sessions_overview_page.check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(tally_totals)
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_response_from_parent(child.parents[0])
-    sessions_patient_page.click_withdraw_consent()
-    nurse_consent_wizard_page.click_consent_refusal_reason(
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_response_from_parent(child.parents[0])
+    SessionsPatientPage(page).click_withdraw_consent()
+    NurseConsentWizardPage(page).click_consent_refusal_reason(
         ConsentRefusalReason.PERSONAL_CHOICE
     )
-    nurse_consent_wizard_page.give_withdraw_consent_notes("notes")
-    nurse_consent_wizard_page.click_withdraw_consent()
-    sessions_patient_page.click_back()
-    sessions_patient_page.go_back_to_session_for_school(school)
+    NurseConsentWizardPage(page).give_withdraw_consent_notes("notes")
+    NurseConsentWizardPage(page).click_withdraw_consent()
+    SessionsPatientPage(page).click_back()
+    SessionsPatientPage(page).go_back_to_session_for_school(school)
 
     tally_totals[TallyCategory.DUE_INJECTION] -= 1
     tally_totals[TallyCategory.HAS_A_REFUSAL] += 1
-    sessions_overview_page.check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(tally_totals)
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.invalidate_parent_refusal(child.parents[0])
-    sessions_patient_page.go_back_to_session_for_school(school)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).invalidate_parent_refusal(child.parents[0])
+    SessionsPatientPage(page).go_back_to_session_for_school(school)
 
     tally_totals[TallyCategory.HAS_A_REFUSAL] -= 1
     tally_totals[TallyCategory.NEEDS_CONSENT] += 1
-    sessions_overview_page.check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(tally_totals)
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.FLU)
-    sessions_patient_page.click_record_a_new_consent_response()
-    nurse_consent_wizard_page.select_parent(child.parents[1])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
-    nurse_consent_wizard_page.record_parent_positive_consent(
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[1])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
+    NurseConsentWizardPage(page).record_parent_positive_consent(
         yes_to_health_questions=False,
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY,
@@ -151,23 +157,23 @@ def test_tallying(  # noqa: PLR0915
 
     tally_totals[TallyCategory.NEEDS_CONSENT] -= 1
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] += 1
-    sessions_overview_page.check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(tally_totals)
 
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
         child, Programme.FLU, batch_name, ConsentOption.NASAL_SPRAY
     )
-    sessions_patient_page.set_up_vaccination(vaccination_record)
-    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
-    sessions_patient_page.go_back_to_session_for_school(school)
+    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    SessionsPatientPage(page).go_back_to_session_for_school(school)
 
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] -= 1
     tally_totals[TallyCategory.VACCINATED] += 1
-    sessions_overview_page.check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(tally_totals)
 
 
 @issue("MAV-2689")
@@ -176,8 +182,7 @@ def test_tallying(  # noqa: PLR0915
 )
 def test_tallying_totals_match_eligible_patients(
     setup_fixed_child,
-    sessions_overview_page,
-    sessions_children_page,
+    page,
     programme,
     children,
     schools,
@@ -192,14 +197,14 @@ def test_tallying_totals_match_eligible_patients(
       on the children tab.
     """
     # Get tally totals for the programme
-    tally_totals = sessions_overview_page.get_all_totals(programme)
+    tally_totals = SessionsOverviewPage(page).get_all_totals(programme)
     sum_of_tally_totals = sum(tally_totals.values())
 
     # Navigate to children tab to count eligible children
-    sessions_overview_page.tabs.click_children_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
 
     # Count all children cards displayed (these are the eligible children)
-    children_cards = sessions_children_page.page.locator(
+    children_cards = SessionsChildrenPage(page).page.locator(
         "div.nhsuk-card.app-card.app-card--compact:has(h4)"
     )
     eligible_children_count = children_cards.count()

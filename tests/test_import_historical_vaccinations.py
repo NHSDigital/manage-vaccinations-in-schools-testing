@@ -2,23 +2,31 @@ import pytest
 
 from mavis.test.data import VaccsFileMapping
 from mavis.test.models import Programme
+from mavis.test.pages import (
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+)
 
 
 @pytest.fixture
 def setup_hist_vaccs(
     log_in_as_nurse,
-    dashboard_page,
-    imports_page,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
-    dashboard_page.click_imports()
-    imports_page.click_upload_records()
-    import_records_wizard_page.navigate_to_vaccination_records_import()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
 
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_historic_valid_data(
-    setup_hist_vaccs, import_records_wizard_page
+    setup_hist_vaccs,
+    page,
+    test_data,
 ):
     """
     Test: Upload a historic vaccination records file with valid data and verify import.
@@ -40,13 +48,16 @@ def test_vaccination_file_upload_historic_valid_data(
     MMR, MMR_NFA, MMR_Add_Not_Known, MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL,
     MMR_NotVaccinated, MMR_DoseSeq1, MMR_DoseSeq2
     """
-    import_records_wizard_page.upload_and_verify_output(VaccsFileMapping.HIST_POSITIVE)
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+        VaccsFileMapping.HIST_POSITIVE
+    )
 
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_historic_invalid_data(
     setup_hist_vaccs,
-    import_records_wizard_page,
+    page,
+    test_data,
 ):
     """
     Test: Upload a historic vaccination records file with invalid data and
@@ -67,17 +78,16 @@ def test_vaccination_file_upload_historic_invalid_data(
     InvalidReason, InvalidVaccinatedFlag, InvalidCareSetting, TimeInFuture,
     LongBatchNumber
     """
-    import_records_wizard_page.upload_and_verify_output(VaccsFileMapping.HIST_NEGATIVE)
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+        VaccsFileMapping.HIST_NEGATIVE
+    )
 
 
 def test_historical_vaccination_file_upload_creates_child(
     setup_hist_vaccs,
     schools,
-    dashboard_page,
-    import_records_wizard_page,
-    imports_page,
-    children_search_page,
-    child_record_page,
+    page,
+    test_data,
     children,
 ):
     """
@@ -93,11 +103,13 @@ def test_historical_vaccination_file_upload_creates_child(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    import_records_wizard_page.upload_and_verify_output(VaccsFileMapping.HIST_HPV)
-    imports_page.header.click_children_header()
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+        VaccsFileMapping.HIST_HPV
+    )
+    ImportsPage(page).header.click_children_header()
 
-    children_search_page.click_advanced_filters()
-    children_search_page.check_children_aged_out_of_programmes()
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.click_vaccination_details(school)
+    ChildrenSearchPage(page).click_advanced_filters()
+    ChildrenSearchPage(page).check_children_aged_out_of_programmes()
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).click_vaccination_details(school)

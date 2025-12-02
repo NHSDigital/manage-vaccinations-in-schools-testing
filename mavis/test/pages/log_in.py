@@ -14,12 +14,12 @@ class LogInPage:
 
     Usage with organisation tracking:
         # Automatic org code extraction from team (recommended):
-        log_in_page.log_in_and_choose_team_if_necessary(user, team)
+        LogInPage(page).log_in_and_choose_team_if_necessary(user, team)
 
         # Manual org code setting:
-        log_in_page.set_organisation(onboarding.organisation)  # or
-        log_in_page.set_organisation_code("ABC123")
-        log_in_page.log_in(user)
+        LogInPage(page).set_organisation(onboarding.organisation)  # or
+        LogInPage(page).set_organisation_code("ABC123")
+        LogInPage(page).log_in(user)
     """
 
     def __init__(self, page: Page) -> None:

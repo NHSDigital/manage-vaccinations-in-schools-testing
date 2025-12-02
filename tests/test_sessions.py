@@ -1,46 +1,65 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
 from mavis.test.models import ConsentMethod, Programme, VaccinationRecord, Vaccine
+from mavis.test.pages import (
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    NurseConsentWizardPage,
+    SessionsChildrenPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsPatientSessionActivityPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsVaccinationWizardPage,
+)
 from mavis.test.utils import expect_alert_text, expect_details, get_offset_date
 
 pytestmark = pytest.mark.sessions
 
 
 @pytest.fixture
-def setup_tests(log_in_as_nurse, dashboard_page):
-    dashboard_page.click_sessions()
+def setup_tests(log_in_as_nurse, page):
+    DashboardPage(page).click_sessions()
 
 
 @pytest.fixture
 def setup_session_with_file_upload(
     setup_tests,
     schools,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
-    import_records_wizard_page,
-    imports_page,
+    page,
+    test_data,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
     def _setup(class_list_file):
-        sessions_search_page.click_session_for_programme_group(
+        SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV.group
         )
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        sessions_overview_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(class_list_file, year_group)
-        imports_page.header.click_sessions_header()
-        sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
+            class_list_file, year_group
+        )
+        ImportsPage(page).header.click_sessions_header()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, Programme.HPV
+        )
         yield
 
     return _setup
@@ -64,10 +83,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 def test_session_lifecycle(
     setup_tests,
     schools,
-    dashboard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
+    page,
 ):
     """
     Test: Create, edit, and delete a session for a school and verify lifecycle actions.
@@ -81,21 +97,19 @@ def test_session_lifecycle(
     """
     school = schools[Programme.HPV][0]
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.schedule_or_edit_session()
-    sessions_edit_page.schedule_a_valid_session(offset_days=14)
-    sessions_overview_page.schedule_or_edit_session()
-    sessions_edit_page.schedule_a_valid_session(offset_days=1)
-    sessions_overview_page.click_edit_session()
-    sessions_edit_page.edit_a_session_to_today()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).schedule_or_edit_session()
+    SessionsEditPage(page).schedule_a_valid_session(offset_days=14)
+    SessionsOverviewPage(page).schedule_or_edit_session()
+    SessionsEditPage(page).schedule_a_valid_session(offset_days=1)
+    SessionsOverviewPage(page).click_edit_session()
+    SessionsEditPage(page).edit_a_session_to_today()
 
 
 def test_create_invalid_session(
     setup_tests,
     schools,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
+    page,
 ):
     """
     Test: Attempt to create an invalid session and verify error handling.
@@ -107,21 +121,20 @@ def test_create_invalid_session(
     - Error is shown or invalid session is not created.
     """
     school = schools[Programme.HPV][0]
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.schedule_or_edit_session()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).schedule_or_edit_session()
 
-    sessions_edit_page.create_invalid_session()
+    SessionsEditPage(page).create_invalid_session()
 
-    sessions_edit_page.create_session_in_previous_academic_year()
+    SessionsEditPage(page).create_session_in_previous_academic_year()
 
-    sessions_edit_page.create_session_in_next_academic_year()
+    SessionsEditPage(page).create_session_in_next_academic_year()
 
 
 @pytest.mark.bug
 def test_attendance_filters_functionality(
     setup_positive_upload,
-    sessions_overview_page,
-    sessions_register_page,
+    page,
     year_groups,
 ):
     """
@@ -135,25 +148,26 @@ def test_attendance_filters_functionality(
     """
     year_group = year_groups[Programme.HPV]
 
-    sessions_overview_page.tabs.click_register_tab()
-    search_summary = sessions_register_page.page.get_by_text("Showing 1 to")
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    search_summary = SessionsRegisterPage(page).page.get_by_text("Showing 1 to")
 
     expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-    sessions_register_page.search.check_year_checkbox(year_group)
-    sessions_register_page.search.click_on_update_results()
+    SessionsRegisterPage(page).search.check_year_checkbox(year_group)
+    SessionsRegisterPage(page).search.click_on_update_results()
     expect(search_summary).to_contain_text("Showing 1 to")
 
-    sessions_register_page.search.uncheck_year_checkbox(year_group)
-    sessions_register_page.search.click_advanced_filters()
-    sessions_register_page.search.check_archived_records_checkbox()
-    sessions_register_page.search.click_on_update_results()
+    SessionsRegisterPage(page).search.uncheck_year_checkbox(year_group)
+    SessionsRegisterPage(page).search.click_advanced_filters()
+    SessionsRegisterPage(page).search.check_archived_records_checkbox()
+    SessionsRegisterPage(page).search.click_on_update_results()
     expect(search_summary).not_to_be_visible()
 
 
 @issue("MAV-1018")
 @pytest.mark.bug
 def test_session_search_functionality(
-    setup_random_child, sessions_overview_page, sessions_children_page
+    setup_random_child,
+    page,
 ):
     """
     Test: Verify the search functionality within a session.
@@ -163,18 +177,15 @@ def test_session_search_functionality(
     Verification:
     - Search returns expected results for the session.
     """
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.verify_search()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.verify_search()
 
 
 @issue("MAV-1381")
 @pytest.mark.bug
 def test_consent_filters(
     setup_fixed_child,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    nurse_consent_wizard_page,
+    page,
     children,
 ):
     """
@@ -187,27 +198,23 @@ def test_consent_filters(
     - Consent refused checkbox is checked for the child.
     """
     child = children[Programme.HPV][0]
-    sessions_overview_page.review_child_with_no_response()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsOverviewPage(page).review_child_with_no_response()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
-    nurse_consent_wizard_page.record_parent_refuse_consent()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
+    NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    sessions_children_page.tabs.click_overview_tab()
-    sessions_overview_page.click_has_a_refusal()
-    sessions_children_page.expect_has_a_refusal_to_be_selected()
+    SessionsChildrenPage(page).tabs.click_overview_tab()
+    SessionsOverviewPage(page).click_has_a_refusal()
+    SessionsChildrenPage(page).expect_has_a_refusal_to_be_selected()
 
 
 @issue("MAV-1265")
 def test_session_activity_notes_order(
     setup_fixed_child,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_patient_session_activity_page,
+    page,
     schools,
     children,
 ):
@@ -226,31 +233,28 @@ def test_session_activity_notes_order(
     note_1 = "Note 1"
     note_2 = "Note 2"
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_session_activity_and_notes()
-    sessions_patient_session_activity_page.add_note(note_1)
-    sessions_patient_session_activity_page.add_note(note_2)
-    sessions_patient_session_activity_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_for(str(child))
-    sessions_children_page.search.check_note_appears_in_search(child, note_2)
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_session_activity_and_notes()
-    sessions_patient_session_activity_page.check_notes_appear_in_order([note_2, note_1])
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_session_activity_and_notes()
+    SessionsPatientSessionActivityPage(page).add_note(note_1)
+    SessionsPatientSessionActivityPage(page).add_note(note_2)
+    SessionsPatientSessionActivityPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_for(str(child))
+    SessionsChildrenPage(page).search.check_note_appears_in_search(child, note_2)
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_session_activity_and_notes()
+    SessionsPatientSessionActivityPage(page).check_notes_appear_in_order(
+        [note_2, note_1]
+    )
 
 
 @pytest.mark.rav
 def test_triage_consent_given_and_triage_outcome(
     setup_fixed_child,
     schools,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    dashboard_page,
-    nurse_consent_wizard_page,
+    page,
     children,
 ):
     """
@@ -265,38 +269,34 @@ def test_triage_consent_given_and_triage_outcome(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PHONE)
-    nurse_consent_wizard_page.record_parent_positive_consent(
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
+    NurseConsentWizardPage(page).record_parent_positive_consent(
         yes_to_health_questions=True
     )
 
-    sessions_patient_page.header.click_sessions_header()
+    SessionsPatientPage(page).header.click_sessions_header()
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
 
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_update_triage_outcome()
-    sessions_patient_page.select_yes_safe_to_vaccinate()
-    sessions_patient_page.click_save_triage()
-    sessions_patient_page.verify_triage_updated_for_child()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_update_triage_outcome()
+    SessionsPatientPage(page).select_yes_safe_to_vaccinate()
+    SessionsPatientPage(page).click_save_triage()
+    SessionsPatientPage(page).verify_triage_updated_for_child()
 
 
 @pytest.mark.rav
 def test_consent_refused_and_activity_log(
     setup_fixed_child,
-    sessions_overview_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_patient_session_activity_page,
-    nurse_consent_wizard_page,
+    page,
     children,
 ):
     """
@@ -310,20 +310,20 @@ def test_consent_refused_and_activity_log(
     """
     child = children[Programme.HPV][0]
 
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.HPV)
-    sessions_patient_page.click_record_a_new_consent_response()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
 
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.PAPER)
-    nurse_consent_wizard_page.record_parent_refuse_consent()
-    expect_alert_text(nurse_consent_wizard_page.page, str(child))
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
+    NurseConsentWizardPage(page).record_parent_refuse_consent()
+    expect_alert_text(page, str(child))
 
-    sessions_children_page.select_has_a_refusal()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_session_activity_and_notes()
-    sessions_patient_session_activity_page.check_session_activity_entry(
+    SessionsChildrenPage(page).select_has_a_refusal()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_session_activity_and_notes()
+    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent refused by {child.parents[0].name_and_relationship}",
     )
 
@@ -335,17 +335,7 @@ def test_verify_excel_export_and_clinic_invitation(
     add_vaccine_batch,
     schools,
     clinics,
-    children_search_page,
-    child_record_page,
-    sessions_edit_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_patient_page,
-    sessions_register_page,
-    sessions_vaccination_wizard_page,
-    sessions_record_vaccinations_page,
-    dashboard_page,
-    nurse_consent_wizard_page,
+    page,
     children,
 ):
     """
@@ -363,52 +353,52 @@ def test_verify_excel_export_and_clinic_invitation(
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
 
-    sessions_overview_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(
+    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(
         "Community clinic", Programme.HPV.group
     )
-    if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-        sessions_overview_page.schedule_or_edit_session()
-        sessions_edit_page.schedule_a_valid_session(offset_days=0, skip_weekends=False)
+    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+        SessionsOverviewPage(page).schedule_or_edit_session()
+        SessionsEditPage(page).schedule_a_valid_session(
+            offset_days=0, skip_weekends=False
+        )
 
-    sessions_overview_page.header.click_children_header()
-    children_search_page.search_for_a_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.click_invite_to_community_clinic()
-    child_record_page.click_session_for_programme(
+    SessionsOverviewPage(page).header.click_children_header()
+    ChildrenSearchPage(page).search_for_a_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).click_invite_to_community_clinic()
+    ChildRecordPage(page).click_session_for_programme(
         "Community clinic",
         Programme.HPV,
         check_date=True,
     )
-    sessions_patient_page.click_record_a_new_consent_response()
-    nurse_consent_wizard_page.select_parent(child.parents[0])
-    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
-    nurse_consent_wizard_page.record_parent_positive_consent()
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).record_parent_positive_consent()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
     vaccination_record = VaccinationRecord(child, Programme.HPV, batch_name)
-    sessions_patient_page.set_up_vaccination(vaccination_record)
-    sessions_vaccination_wizard_page.record_vaccination(
+    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(
         vaccination_record, at_school=False
     )
 
-    sessions_vaccination_wizard_page.check_location_radio(clinics[0])
-    sessions_vaccination_wizard_page.click_continue_button()
-    sessions_vaccination_wizard_page.click_confirm_button()
-    expect_alert_text(
-        sessions_patient_page.page, "Vaccination outcome recorded for HPV"
-    )
-    sessions_patient_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    assert sessions_overview_page.get_session_id_from_offline_excel()
+    SessionsVaccinationWizardPage(page).check_location_radio(clinics[0])
+    SessionsVaccinationWizardPage(page).click_continue_button()
+    SessionsVaccinationWizardPage(page).click_confirm_button()
+    expect_alert_text(page, "Vaccination outcome recorded for HPV")
+    SessionsPatientPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    assert SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
 
 @issue("MAV-2023")
 def test_session_verify_consent_reminders_and_pdf_downloads(
     setup_fixed_child,
-    sessions_overview_page,
+    page,
     schools,
 ):
     """
@@ -423,17 +413,14 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
     """
     school = schools[Programme.HPV][0]
 
-    sessions_overview_page.click_send_reminders(school)
-    sessions_overview_page.download_consent_form(Programme.HPV)
+    SessionsOverviewPage(page).click_send_reminders(school)
+    SessionsOverviewPage(page).download_consent_form(Programme.HPV)
 
 
 def test_editing_session_programmes(
     setup_fixed_child,
     children,
-    sessions_overview_page,
-    sessions_edit_page,
-    sessions_children_page,
-    sessions_patient_page,
+    page,
 ):
     """
     Test: Edit the programmes of an existing session and verify changes.
@@ -447,29 +434,24 @@ def test_editing_session_programmes(
     """
     child = children[Programme.HPV][0]
 
-    sessions_overview_page.click_edit_session()
-    sessions_edit_page.click_change_programmes()
-    sessions_edit_page.add_programme(Programme.FLU)
-    sessions_edit_page.click_continue_button()
-    expect_details(sessions_edit_page.page, "Programmes", "Flu HPV")
-    sessions_edit_page.click_save_changes()
-    sessions_edit_page.expect_session_to_have_programmes([Programme.FLU, Programme.HPV])
-    sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(Programme.FLU)
+    SessionsOverviewPage(page).click_edit_session()
+    SessionsEditPage(page).click_change_programmes()
+    SessionsEditPage(page).add_programme(Programme.FLU)
+    SessionsEditPage(page).click_continue_button()
+    expect_details(page, "Programmes", "Flu HPV")
+    SessionsEditPage(page).click_save_changes()
+    SessionsEditPage(page).expect_session_to_have_programmes(
+        [Programme.FLU, Programme.HPV]
+    )
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
 
 
 @pytest.mark.accessibility
 def test_accessibility(
     setup_fixed_child,
-    dashboard_page,
-    accessibility_helper,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
-    sessions_children_page,
-    sessions_patient_page,
-    sessions_register_page,
+    page,
     schools,
     children,
 ):
@@ -484,29 +466,29 @@ def test_accessibility(
     school = schools[Programme.HPV][0]
     child = children[Programme.HPV][0]
 
-    sessions_overview_page.header.click_sessions_header()
-    accessibility_helper.check_accessibility()
+    SessionsOverviewPage(page).header.click_sessions_header()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    accessibility_helper.check_accessibility()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_overview_page.click_edit_session()
-    accessibility_helper.check_accessibility()
+    SessionsOverviewPage(page).click_edit_session()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_edit_page.click_change_session_dates()
-    accessibility_helper.check_accessibility()
+    SessionsEditPage(page).click_change_session_dates()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_edit_page.click_back()
-    sessions_edit_page.click_save_changes()
+    SessionsEditPage(page).click_back()
+    SessionsEditPage(page).click_save_changes()
 
-    sessions_overview_page.tabs.click_children_tab()
-    accessibility_helper.check_accessibility()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_children_page.tabs.click_register_tab()
-    accessibility_helper.check_accessibility()
+    SessionsChildrenPage(page).tabs.click_register_tab()
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_register_page.search.search_and_click_child(child)
-    accessibility_helper.check_accessibility()
+    SessionsRegisterPage(page).search.search_and_click_child(child)
+    AccessibilityHelper(page).check_accessibility()
 
-    sessions_patient_page.click_session_activity_and_notes()
-    accessibility_helper.check_accessibility()
+    SessionsPatientPage(page).click_session_activity_and_notes()
+    AccessibilityHelper(page).check_accessibility()

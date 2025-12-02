@@ -3,28 +3,34 @@ import pytest
 from mavis.test.models import (
     Programme,
 )
+from mavis.test.pages import (
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    EditVaccinationRecordPage,
+    LogInPage,
+    LogOutPage,
+    ReportsVaccinationsPage,
+    VaccinationRecordPage,
+)
 
 pytestmark = pytest.mark.reporting
 
 
 @pytest.fixture
 def upload_offline_vaccination_injected_flu(
-    upload_offline_vaccination, reports_vaccinations_page, dashboard_page
+    upload_offline_vaccination,
+    page,
 ):
-    reports_vaccinations_page.navigate_and_refresh_reports()
-    dashboard_page.navigate()
+    ReportsVaccinationsPage(page).navigate_and_refresh_reports()
+    DashboardPage(page).navigate()
     yield from upload_offline_vaccination(Programme.FLU)
 
 
 def test_report_view(
     upload_offline_vaccination_injected_flu,
     schools,
-    reports_vaccinations_page,
-    dashboard_page,
-    children_search_page,
-    child_record_page,
-    vaccination_record_page,
-    edit_vaccination_record_page,
+    page,
     children,
 ):
     """
@@ -43,61 +49,61 @@ def test_report_view(
     child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
 
-    reports_vaccinations_page.navigate()
-    reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
+    ReportsVaccinationsPage(page).navigate()
+    ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
 
-    vaccinated_count = reports_vaccinations_page.get_children_count("Vaccinated")
-    unvaccinated_count = reports_vaccinations_page.get_children_count("Not vaccinated")
+    vaccinated_count = ReportsVaccinationsPage(page).get_children_count("Vaccinated")
+    unvaccinated_count = ReportsVaccinationsPage(page).get_children_count(
+        "Not vaccinated"
+    )
 
     (
         expected_cohort_count,
         expected_unvaccinated_percentage,
         expected_vaccinated_percentage,
-    ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
+    ) = ReportsVaccinationsPage(page).get_expected_cohort_and_percentage_strings(
         unvaccinated_count, vaccinated_count
     )
 
-    reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
-    reports_vaccinations_page.check_category_percentage(
+    ReportsVaccinationsPage(page).check_cohort_has_n_children(expected_cohort_count)
+    ReportsVaccinationsPage(page).check_category_percentage(
         "Not vaccinated", expected_unvaccinated_percentage
     )
-    reports_vaccinations_page.check_category_percentage(
+    ReportsVaccinationsPage(page).check_category_percentage(
         "Vaccinated", expected_vaccinated_percentage
     )
 
-    reports_vaccinations_page.header.click_children_header()
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.click_vaccination_details(school)
-    vaccination_record_page.click_edit_vaccination_record()
-    edit_vaccination_record_page.click_change_outcome()
-    edit_vaccination_record_page.click_they_refused_it()
-    edit_vaccination_record_page.click_continue()
-    edit_vaccination_record_page.click_save_changes()
+    ReportsVaccinationsPage(page).header.click_children_header()
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).click_vaccination_details(school)
+    VaccinationRecordPage(page).click_edit_vaccination_record()
+    EditVaccinationRecordPage(page).click_change_outcome()
+    EditVaccinationRecordPage(page).click_they_refused_it()
+    EditVaccinationRecordPage(page).click_continue()
+    EditVaccinationRecordPage(page).click_save_changes()
 
-    reports_vaccinations_page.navigate_and_refresh_reports()
-    reports_vaccinations_page.check_filter_for_programme(Programme.FLU)
+    ReportsVaccinationsPage(page).navigate_and_refresh_reports()
+    ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
     (
         expected_cohort_count,
         expected_unvaccinated_percentage,
         expected_vaccinated_percentage,
-    ) = reports_vaccinations_page.get_expected_cohort_and_percentage_strings(
+    ) = ReportsVaccinationsPage(page).get_expected_cohort_and_percentage_strings(
         unvaccinated_count + 1, vaccinated_count
     )
 
-    reports_vaccinations_page.check_cohort_has_n_children(expected_cohort_count)
-    reports_vaccinations_page.check_category_percentage(
+    ReportsVaccinationsPage(page).check_cohort_has_n_children(expected_cohort_count)
+    ReportsVaccinationsPage(page).check_category_percentage(
         "Not vaccinated", expected_unvaccinated_percentage
     )
-    reports_vaccinations_page.check_category_percentage(
+    ReportsVaccinationsPage(page).check_category_percentage(
         "Vaccinated", expected_vaccinated_percentage
     )
 
 
 def test_log_out_via_reporting_component(
-    log_in_page,
-    log_out_page,
-    reports_vaccinations_page,
+    page,
     nurse,
     team,
 ):
@@ -111,8 +117,8 @@ def test_log_out_via_reporting_component(
     Verification:
     - User is successfully logged out and the log out page is shown.
     """
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-    reports_vaccinations_page.navigate()
-    log_in_page.log_out_via_reporting_component()
-    log_out_page.verify_log_out_page()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    ReportsVaccinationsPage(page).navigate()
+    LogInPage(page).log_out_via_reporting_component()
+    LogOutPage(page).verify_log_out_page()

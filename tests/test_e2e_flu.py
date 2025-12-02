@@ -2,6 +2,22 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+from mavis.test.pages import (
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    EditVaccinationRecordPage,
+    LogInPage,
+    OnlineConsentWizardPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
+    SessionsSearchPage,
+    SessionsVaccinationWizardPage,
+    StartPage,
+    VaccinationRecordPage,
+)
 
 pytestmark = pytest.mark.e2e
 
@@ -31,25 +47,12 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
 def test_recording_flu_vaccination_e2e(
     flu_consent_url,
     setup_session_for_flu,
-    online_consent_wizard_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_register_page,
-    sessions_patient_page,
-    sessions_vaccination_wizard_page,
-    sessions_record_vaccinations_page,
-    children_search_page,
-    child_record_page,
-    vaccination_record_page,
-    start_page,
+    page,
     schools,
     children,
-    dashboard_page,
-    log_in_page,
     nurse,
     team,
     consent_option,
-    edit_vaccination_record_page,
 ):
     """
     Test: End-to-end test for recording a flu vaccination for a child.
@@ -74,52 +77,56 @@ def test_recording_flu_vaccination_e2e(
         else batch_names[Vaccine.FLUENZ]
     )
 
-    online_consent_wizard_page.go_to_url(flu_consent_url)
-    start_page.start()
+    OnlineConsentWizardPage(page).go_to_url(flu_consent_url)
+    StartPage(page).start()
 
-    online_consent_wizard_page.fill_details(child, child.parents[0], schools)
-    online_consent_wizard_page.agree_to_flu_vaccination(consent_option=consent_option)
-    online_consent_wizard_page.fill_address_details(*child.address)
-    online_consent_wizard_page.answer_health_questions(
-        online_consent_wizard_page.get_number_of_health_questions_for_flu(
+    OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
+    OnlineConsentWizardPage(page).agree_to_flu_vaccination(
+        consent_option=consent_option
+    )
+    OnlineConsentWizardPage(page).fill_address_details(*child.address)
+    OnlineConsentWizardPage(page).answer_health_questions(
+        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
             consent_option
         ),
         yes_to_health_questions=False,
     )
-    online_consent_wizard_page.click_confirm()
-    online_consent_wizard_page.check_final_consent_message(
+    OnlineConsentWizardPage(page).click_confirm()
+    OnlineConsentWizardPage(page).check_final_consent_message(
         child,
         programmes=[Programme.FLU],
         yes_to_health_questions=False,
         consent_option=consent_option,
     )
 
-    log_in_page.navigate()
-    log_in_page.log_in_and_choose_team_if_necessary(nurse, team)
-    dashboard_page.click_sessions()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).click_sessions()
 
-    sessions_search_page.click_session_for_programme_group(schools[0], Programme.FLU)
-    sessions_overview_page.click_set_session_in_progress_for_today()
-    sessions_overview_page.tabs.click_register_tab()
-    sessions_register_page.register_child_as_attending(str(child))
-    sessions_register_page.tabs.click_record_vaccinations_tab()
-    sessions_record_vaccinations_page.search.search_and_click_child(child)
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.FLU
+    )
+    SessionsOverviewPage(page).click_set_session_in_progress_for_today()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
         child, Programme.FLU, batch_name, consent_option
     )
-    sessions_patient_page.set_up_vaccination(vaccination_record)
-    sessions_vaccination_wizard_page.record_vaccination(vaccination_record)
+    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
     # MAV-1831
-    sessions_patient_page.header.click_children_header()
-    children_search_page.search_for_a_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.click_vaccination_details(schools[0])
-    vaccination_record_page.click_edit_vaccination_record()
-    edit_vaccination_record_page.expect_text_to_not_be_visible(
+    SessionsPatientPage(page).header.click_children_header()
+    ChildrenSearchPage(page).search_for_a_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).click_vaccination_details(schools[0])
+    VaccinationRecordPage(page).click_edit_vaccination_record()
+    EditVaccinationRecordPage(page).expect_text_to_not_be_visible(
         "Incorrect vaccine given"
     )
 
-    dashboard_page.navigate()
-    log_in_page.log_out()
+    DashboardPage(page).navigate()
+    LogInPage(page).log_out()

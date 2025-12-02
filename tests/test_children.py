@@ -1,8 +1,26 @@
 import pytest
 
+from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.models import Programme
+from mavis.test.pages import (
+    ChildActivityLogPage,
+    ChildArchivePage,
+    ChildEditPage,
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    ProgrammeChildrenPage,
+    ProgrammeOverviewPage,
+    ProgrammesListPage,
+    SessionsEditPage,
+    SessionsOverviewPage,
+    SessionsSearchPage,
+    VaccinationRecordPage,
+)
 from mavis.test.utils import expect_alert_text, get_offset_date
 
 pytestmark = pytest.mark.children
@@ -11,31 +29,29 @@ pytestmark = pytest.mark.children
 @pytest.fixture
 def setup_children_session(
     log_in_as_nurse,
+    page,
+    test_data,
     schools,
-    dashboard_page,
-    sessions_edit_page,
-    sessions_overview_page,
-    sessions_search_page,
-    import_records_wizard_page,
-    imports_page,
     year_groups,
 ):
     def _setup(class_list_file):
         school = schools[Programme.HPV][0]
         year_group = year_groups[Programme.HPV]
 
-        dashboard_page.click_sessions()
-        sessions_search_page.click_session_for_programme_group(
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV.group
         )
-        if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-            sessions_overview_page.schedule_or_edit_session()
-            sessions_edit_page.schedule_a_valid_session(
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        sessions_overview_page.click_import_class_lists()
-        import_records_wizard_page.import_class_list(class_list_file, year_group)
-        imports_page.header.click_children_header()
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
+            class_list_file, year_group
+        )
+        ImportsPage(page).header.click_children_header()
         yield
 
     return _setup
@@ -55,46 +71,45 @@ def setup_child_merge(setup_children_session):
 def setup_mav_853(
     log_in_as_nurse,
     schools,
-    dashboard_page,
-    import_records_wizard_page,
-    programmes_list_page,
-    programme_overview_page,
-    programme_children_page,
-    sessions_search_page,
-    sessions_overview_page,
-    sessions_edit_page,
+    page,
+    test_data,
     year_groups,
-    imports_page,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV.group)
-    if not sessions_overview_page.is_date_scheduled(get_offset_date(0)):
-        sessions_overview_page.schedule_or_edit_session()
-        sessions_edit_page.schedule_a_valid_session(offset_days=0, skip_weekends=False)
-    sessions_overview_page.click_import_class_lists()
-    import_records_wizard_page.import_class_list(
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        school, Programme.HPV.group
+    )
+    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+        SessionsOverviewPage(page).schedule_or_edit_session()
+        SessionsEditPage(page).schedule_a_valid_session(
+            offset_days=0, skip_weekends=False
+        )
+    SessionsOverviewPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, test_data).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    imports_page.header.click_sessions_header()
-    sessions_search_page.click_session_for_programme_group(school, Programme.HPV)
-    session_id = sessions_overview_page.get_session_id_from_offline_excel()
-    sessions_overview_page.header.click_programmes_header()
-    programmes_list_page.click_programme_for_current_year(Programme.HPV)
-    programme_overview_page.tabs.click_children_tab()
-    programme_children_page.click_import_child_records()
-    import_records_wizard_page.import_class_list(CohortsFileMapping.FIXED_CHILD)
+    ImportsPage(page).header.click_sessions_header()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+    SessionsOverviewPage(page).header.click_programmes_header()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).tabs.click_children_tab()
+    ProgrammeChildrenPage(page).click_import_child_records()
+    ImportRecordsWizardPage(page, test_data).import_class_list(
+        CohortsFileMapping.FIXED_CHILD
+    )
 
-    imports_page.header.click_imports_header()
-    imports_page.click_upload_records()
-    import_records_wizard_page.navigate_to_vaccination_records_import()
-    import_records_wizard_page.upload_and_verify_output(
+    ImportsPage(page).header.click_imports_header()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
-    imports_page.header.click_children_header()
+    ImportsPage(page).header.click_children_header()
 
 
 @issue("MAV-853")
@@ -103,10 +118,7 @@ def test_patient_details_load_with_missing_vaccine_info(
     setup_mav_853,
     schools,
     children,
-    child_record_page,
-    child_activity_log_page,
-    vaccination_record_page,
-    children_search_page,
+    page,
 ):
     """
     Test: Ensure patient details page loads for a child with missing vaccine info
@@ -125,25 +137,23 @@ def test_patient_details_load_with_missing_vaccine_info(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
     # Verify activity log
-    child_record_page.tabs.click_activity_log()
-    child_activity_log_page.expect_activity_log_header(
+    ChildRecordPage(page).tabs.click_activity_log()
+    ChildActivityLogPage(page).expect_activity_log_header(
         "Vaccinated with Gardasil 9", unique=True
     )
     # Verify vaccination record
-    child_record_page.click_child_record()
-    child_record_page.click_vaccination_details(school)
-    vaccination_record_page.expect_vaccination_details("Outcome", "Vaccinated")
+    ChildRecordPage(page).click_child_record()
+    ChildRecordPage(page).click_vaccination_details(school)
+    VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
 
 
 @pytest.mark.bug
 def test_invalid_nhs_number_change_is_rejected(
     setup_fixed_child,
-    children_search_page,
-    child_record_page,
-    child_edit_page,
+    page,
     children,
 ):
     """
@@ -159,22 +169,20 @@ def test_invalid_nhs_number_change_is_rejected(
     """
     child = children[Programme.HPV][0]
 
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    child_record_page.click_edit_child_record()
-    child_edit_page.click_change_nhs_no()
-    child_edit_page.fill_nhs_no_for_child(child, "9123456789")
-    child_edit_page.click_continue()
-    expect_alert_text(child_record_page.page, "Enter a valid NHS number")
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildRecordPage(page).click_edit_child_record()
+    ChildEditPage(page).click_change_nhs_no()
+    ChildEditPage(page).fill_nhs_no_for_child(child, "9123456789")
+    ChildEditPage(page).click_continue()
+    expect_alert_text(page, "Enter a valid NHS number")
 
 
 @issue("MAV-1839")
 @pytest.mark.children
 def test_merge_child_records_does_not_crash(
     setup_child_merge,
-    children_search_page,
-    child_record_page,
-    child_archive_page,
+    page,
     children,
 ):
     """
@@ -191,20 +199,18 @@ def test_merge_child_records_does_not_crash(
     """
     child1 = children[Programme.HPV][0]
     child2 = children[Programme.HPV][1]
-    children_search_page.search_with_all_filters_for_child_name(str(child1))
-    children_search_page.click_record_for_child(child1)
-    child_record_page.click_archive_child_record()
-    child_archive_page.click_its_a_duplicate(child2.nhs_number)
-    child_archive_page.click_archive_record()
-    expect_alert_text(child_record_page.page, "This record has been archived")
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child1))
+    ChildrenSearchPage(page).click_record_for_child(child1)
+    ChildRecordPage(page).click_archive_child_record()
+    ChildArchivePage(page).click_its_a_duplicate(child2.nhs_number)
+    ChildArchivePage(page).click_archive_record()
+    expect_alert_text(page, "This record has been archived")
 
 
 @pytest.mark.accessibility
 def test_accessibility(
     setup_fixed_child,
-    children_search_page,
-    child_record_page,
-    accessibility_helper,
+    page,
     children,
 ):
     """
@@ -215,13 +221,13 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the children page.
     """
-    children_search_page.click_advanced_filters()
-    accessibility_helper.check_accessibility()
+    ChildrenSearchPage(page).click_advanced_filters()
+    AccessibilityHelper(page).check_accessibility()
 
     child = children[Programme.HPV][0]
-    children_search_page.search_with_all_filters_for_child_name(str(child))
-    children_search_page.click_record_for_child(child)
-    accessibility_helper.check_accessibility()
+    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
+    ChildrenSearchPage(page).click_record_for_child(child)
+    AccessibilityHelper(page).check_accessibility()
 
-    child_record_page.tabs.click_activity_log()
-    accessibility_helper.check_accessibility()
+    ChildRecordPage(page).tabs.click_activity_log()
+    AccessibilityHelper(page).check_accessibility()

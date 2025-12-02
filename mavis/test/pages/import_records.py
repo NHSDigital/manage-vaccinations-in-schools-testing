@@ -1,5 +1,5 @@
 import re
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from playwright.sync_api import Page, expect
@@ -122,7 +122,7 @@ class ImportRecordsWizardPage:
                 return True
         return False
 
-    def approve_preview_if_shown(self) -> None:
+    def approve_preview_if_shown(self, date_time: datetime) -> None:
         self.get_preview_page_link().click()
         expect(self.review_and_approve_tag).to_be_visible()
         self.approve_import_button.click()
@@ -131,7 +131,7 @@ class ImportRecordsWizardPage:
             .locator("div")
             .filter(has_text="Import started")
         ).to_be_visible()
-        self.click_uploaded_file_datetime()
+        self.click_uploaded_file_datetime(date_time)
         self.wait_for_processed()
 
     def wait_for_processed(self) -> None:
@@ -177,11 +177,11 @@ class ImportRecordsWizardPage:
         _scenario_list = read_scenario_list_from_file(_input_file_path)
 
         self.set_input_file(_input_file_path)
-        self.record_upload_time()
+        upload_time = get_current_datetime()
         self.click_continue(_coverage=_scenario_list)
 
         if self.is_processing_in_background():
-            self.click_uploaded_file_datetime()
+            self.click_uploaded_file_datetime(upload_time)
 
         self.page.wait_for_load_state()
         status_text = (
@@ -191,26 +191,25 @@ class ImportRecordsWizardPage:
         )
         reload_until_element_is_visible(self.page, status_text, seconds=60)
         if self.is_preview_page_link_visible():
-            self.approve_preview_if_shown()
+            self.approve_preview_if_shown(upload_time)
 
         self.verify_upload_output(file_path=_output_file_path)
         return _input_file_path, _output_file_path
 
-    def record_upload_time(self) -> None:
-        self.upload_time = get_current_datetime()
-
     @step("Click link with uploaded datetime")
-    def click_uploaded_file_datetime(self) -> None:
+    def click_uploaded_file_datetime(self, date_time: datetime) -> None:
         first_link = self.page.get_by_role(
             "link",
-            name=format_datetime_for_upload_link(self.upload_time),
+            name=format_datetime_for_upload_link(date_time),
         )
         second_link = self.page.get_by_role(
             "link",
             name=format_datetime_for_upload_link(
-                self.upload_time + timedelta(minutes=1),
+                date_time + timedelta(minutes=1),
             ),
         )
+
+        self.page.wait_for_load_state()
 
         # This handles when an upload occurs across the minute tick over, for
         # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
