@@ -321,9 +321,7 @@ def test_conflicting_consent_with_gillick_consent(
 
     NurseConsentWizardPage(page).select_gillick_competent_child()
     NurseConsentWizardPage(page).record_child_positive_consent()
-    expect_alert_text(
-        NurseConsentWizardPage(page).page, f"Consent recorded for {child!s}"
-    )
+    expect_alert_text(page, f"Consent recorded for {child!s}")
 
     SessionsChildrenPage(page).select_due_vaccination()
     SessionsChildrenPage(page).search.search_and_click_child(child)

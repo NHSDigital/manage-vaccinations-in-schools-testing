@@ -175,7 +175,7 @@ def test_invalid_nhs_number_change_is_rejected(
     ChildEditPage(page).click_change_nhs_no()
     ChildEditPage(page).fill_nhs_no_for_child(child, "9123456789")
     ChildEditPage(page).click_continue()
-    expect_alert_text(ChildRecordPage(page).page, "Enter a valid NHS number")
+    expect_alert_text(page, "Enter a valid NHS number")
 
 
 @issue("MAV-1839")
@@ -204,7 +204,7 @@ def test_merge_child_records_does_not_crash(
     ChildRecordPage(page).click_archive_child_record()
     ChildArchivePage(page).click_its_a_duplicate(child2.nhs_number)
     ChildArchivePage(page).click_archive_record()
-    expect_alert_text(ChildRecordPage(page).page, "This record has been archived")
+    expect_alert_text(page, "This record has been archived")
 
 
 @pytest.mark.accessibility

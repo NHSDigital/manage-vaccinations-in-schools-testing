@@ -183,9 +183,7 @@ def test_edit_vaccination_dose_to_not_given(
     EditVaccinationRecordPage(page).click_they_refused_it()
     EditVaccinationRecordPage(page).click_continue()
     EditVaccinationRecordPage(page).click_save_changes()
-    expect_alert_text(
-        ProgrammeChildrenPage(page).page, "Vaccination outcome recorded for HPV"
-    )
+    expect_alert_text(page, "Vaccination outcome recorded for HPV")
 
 
 @pytest.mark.reports

@@ -318,7 +318,7 @@ def test_consent_refused_and_activity_log(
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
     NurseConsentWizardPage(page).record_parent_refuse_consent()
-    expect_alert_text(NurseConsentWizardPage(page).page, str(child))
+    expect_alert_text(page, str(child))
 
     SessionsChildrenPage(page).select_has_a_refusal()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -389,9 +389,7 @@ def test_verify_excel_export_and_clinic_invitation(
     SessionsVaccinationWizardPage(page).check_location_radio(clinics[0])
     SessionsVaccinationWizardPage(page).click_continue_button()
     SessionsVaccinationWizardPage(page).click_confirm_button()
-    expect_alert_text(
-        SessionsPatientPage(page).page, "Vaccination outcome recorded for HPV"
-    )
+    expect_alert_text(page, "Vaccination outcome recorded for HPV")
     SessionsPatientPage(page).header.click_sessions_header()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     assert SessionsOverviewPage(page).get_session_id_from_offline_excel()
@@ -440,7 +438,7 @@ def test_editing_session_programmes(
     SessionsEditPage(page).click_change_programmes()
     SessionsEditPage(page).add_programme(Programme.FLU)
     SessionsEditPage(page).click_continue_button()
-    expect_details(SessionsEditPage(page).page, "Programmes", "Flu HPV")
+    expect_details(page, "Programmes", "Flu HPV")
     SessionsEditPage(page).click_save_changes()
     SessionsEditPage(page).expect_session_to_have_programmes(
         [Programme.FLU, Programme.HPV]
