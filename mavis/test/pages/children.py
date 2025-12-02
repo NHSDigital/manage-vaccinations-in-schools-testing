@@ -30,7 +30,7 @@ class ChildrenSearchPage:
             ]
         ]
 
-        self.search_textbox = self.page.get_by_role("textbox", name="Search")
+        self.search_textbox = self.page.get_by_role("searchbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
         self.advanced_filters_link = self.page.get_by_text("Advanced filters")
         self.archived_records_checkbox = self.page.get_by_role(

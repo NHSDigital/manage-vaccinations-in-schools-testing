@@ -37,7 +37,7 @@ class SearchComponent:
         page: Page,
     ) -> None:
         self.page = page
-        self.search_textbox = self.page.get_by_role("textbox", name="Search")
+        self.search_textbox = self.page.get_by_role("searchbox", name="Search")
         self.search_button = self.page.get_by_role("button", name="Search")
         self.update_results_button = self.page.get_by_role(
             "button",
