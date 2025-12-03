@@ -54,7 +54,9 @@ def setup_confirm_and_ignore(
             ImportRecordsWizardPage(page, test_data).approve_preview_if_shown(
                 upload_time
             )
-        ImportRecordsWizardPage(page, test_data).verify_upload_output(output_file_path)
+        ImportRecordsWizardPage(page, test_data).verify_upload_output(
+            file_path=output_file_path
+        )
 
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
