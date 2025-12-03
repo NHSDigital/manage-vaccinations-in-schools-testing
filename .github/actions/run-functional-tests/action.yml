@@ -8,6 +8,10 @@ inputs:
     required: false
   accessibility_tests:
     default: 'false'
+  reporting_tests:
+    default: 'false'
+  imms_api_tests:
+    default: 'false'
   device:
     required: true
   base_url:
@@ -46,11 +50,28 @@ runs:
     - name: Choose test suite to run
       id: marker
       run: |
-        if [ "${{ inputs.accessibility_tests }}" = "true" ]; then
-          echo "marker=accessibility" >> $GITHUB_OUTPUT
-        else
-          echo "marker=not accessibility" >> $GITHUB_OUTPUT
+        exclude=""
+        if [ "${{ inputs.accessibility_tests }}" = "false" ]; then
+          exclude="not accessibility"
         fi
+        if [ "${{ inputs.reporting_tests }}" = "false" ]; then
+          if [ -n "$exclude" ]; then
+            exclude="$exclude and not reporting"
+          else
+            exclude="not reporting"
+          fi
+        fi
+        if [ "${{ inputs.imms_api_tests }}" = "false" ]; then
+          if [ -n "$exclude" ]; then
+            exclude="$exclude and not imms_api"
+          else
+            exclude="not imms_api"
+          fi
+        fi
+        if [ -z "$exclude" ]; then
+          exclude="True"
+        fi
+        echo "marker=$exclude" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Determine if reruns are enabled

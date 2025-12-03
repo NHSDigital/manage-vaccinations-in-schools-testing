@@ -71,6 +71,14 @@ on:
         description: 'Tests to run (leave blank to run all tests!)'
         required: false
         default: ''
+      cross_service_tests:
+        description: 'Include imms api and reporting tests'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
       device:
         description: 'Device to test'
         required: true
@@ -162,6 +170,7 @@ jobs:
           )
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "tests=" >> $GITHUB_OUTPUT
+            echo "cross_service_tests=true" >> $GITHUB_OUTPUT
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
             echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
             echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV" >> $GITHUB_OUTPUT
@@ -210,6 +219,9 @@ jobs:
         uses: ./.github/actions/run-functional-tests
         with:
           tests: ${{ steps.set-variables.outputs.tests }}
+          imms_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          reporting_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          github_ref: ${{ inputs.github_ref || github.head_ref }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
