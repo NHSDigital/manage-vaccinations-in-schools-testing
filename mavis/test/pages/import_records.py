@@ -82,6 +82,7 @@ class ImportRecordsWizardPage:
     @step("Set input file to {1}")
     def set_input_file(self, file_path: Path) -> None:
         self.file_input.set_input_files(file_path)
+        self.page.wait_for_load_state()
 
     @step("Fill location combobox with {1}")
     def fill_location(self, location: str) -> None:
@@ -219,6 +220,7 @@ class ImportRecordsWizardPage:
             self.imported_records_tab.click()
             first_link.or_(second_link).first.click()
 
+    @step("Verify upload output for {file_path}")
     def verify_upload_output(self, file_path: Path) -> None:
         _expected_errors = self.test_data.get_expected_errors(file_path)
         if _expected_errors is not None:
