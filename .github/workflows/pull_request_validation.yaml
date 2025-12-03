@@ -1,0 +1,63 @@
+name: Pull Request Validation
+
+on: pull_request
+
+permissions: { }
+
+jobs:
+  identify-target-environment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      environment: ${{ steps.identify-target-environment.outputs.environment }}
+      mavis_branch: ${{ steps.check-branch.outputs.mavis_branch }}
+    steps:
+      - name: Check if branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --exit-code --heads https://github.com/nhsuk/manage-vaccinations-in-schools.git ${{ github.head_ref }} > /dev/null 2>&1; then
+            echo "mavis_branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "mavis_branch=main" >> $GITHUB_OUTPUT
+          fi
+      - name: Identify target environment
+        id: identify-target-environment
+        run: |
+          environment='qa'
+          if [[ -n "${{ steps.check-branch.outputs.mavis_branch }}" ]]; then
+            environment='container'
+          fi
+          echo "environment=environment" >> $GITHUB_OUTPUT
+  run-tests-against-staging:
+    needs: identify-target-environment
+    if: needs.identify-target-environment.outputs.environment != 'container'
+    uses: ./.github/workflows/functional_selected_device.yaml
+    permissions:
+      contents: write
+    with:
+      tests: ''
+      cross_service_tests: false
+      github_ref: ${{ github.ref }}
+      endpoint: 'https://qa.mavistesting.com'
+      device: 'Desktop Chrome'
+      programmes: 'FLU,HPV,MENACWY,MMR,TD_IPV'
+      screenshot_all_steps: false
+      enable_reruns: false
+      test_workers: '4'
+      set_feature_flags: false
+      additional_feature_flags: ''
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+  run-tests-against-container:
+    needs: identify-target-environment
+    if: needs.identify-target-environment.outputs.environment == 'container'
+    uses: nhsuk/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests.yml@containerized_regression_tests_for_PRs #TODO: Change once this is in main
+    permissions:
+      id-token: write
+      contents: write
+    with:
+      github_ref: ${{ needs.identify-target-environment.outputs.mavis_branch }}
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+      MAVIS_TESTING_REPO_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
