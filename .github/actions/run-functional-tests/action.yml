@@ -3,6 +3,9 @@ description: 'Execute tests'
 inputs:
   tests:
     default: ''
+  github_ref:
+    default: 'main'
+    required: false
   accessibility_tests:
     default: 'false'
   device:
