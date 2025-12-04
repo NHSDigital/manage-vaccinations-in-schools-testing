@@ -1,12 +1,84 @@
 name: Functional tests
 
 on:
+  workflow_call:
+    inputs:
+      tests:
+        description: 'Tests to run (leave blank to run all tests!)'
+        required: false
+        default: ''
+        type: string
+      cross_service_tests:
+        description: 'Include imms api and reporting tests'
+        required: false
+        default: false
+        type: boolean
+      github_ref:
+        description: 'Github reference to get tests from'
+        required: false
+        default: 'main'
+        type: string
+      device:
+        description: 'Device to test'
+        required: false
+        default: 'Desktop Chrome'
+        type: string
+      programmes:
+        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
+        required: false
+        default: FLU,HPV,MENACWY,MMR,TD_IPV
+        type: string
+      endpoint:
+        description: 'Environment to run tests against'
+        required: false
+        default: 'https://qa.mavistesting.com'
+        type: string
+      screenshot_all_steps:
+        description: 'Take screenshots for all steps (in addition to failures)'
+        required: false
+        default: false
+        type: boolean
+      enable_reruns:
+        description: 'Enable test reruns on failure (up to 3 attempts)'
+        required: false
+        default: true
+        type: boolean
+      test_workers:
+        description: 'Number of parallel test workers to use'
+        required: false
+        default: '4'
+        type: string
+      set_feature_flags:
+        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        required: false
+        default: false
+        type: boolean
+      additional_feature_flags:
+        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        required: false
+        default: ''
+        type: string
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS:
+        description: 'HTTP Basic Auth token for the environment under test'
+        required: true
+      MAVIS_TESTING_REPO_ACCESS_TOKEN:
+        description: 'Git token with access to the mavis testing repo'
+        required: false
   workflow_dispatch:
     inputs:
       tests:
         description: 'Tests to run (leave blank to run all tests!)'
         required: false
         default: ''
+      cross_service_tests:
+        description: 'Include imms api and reporting tests'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
       device:
         description: 'Device to test'
         required: true
@@ -73,7 +145,6 @@ on:
         description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
         required: false
         default: ''
-  pull_request:
 
 jobs:
   test:
@@ -96,8 +167,9 @@ jobs:
             [sandbox-alpha]="https://sandbox-alpha.mavistesting.com"
             [sandbox-beta]="https://sandbox-beta.mavistesting.com"
           )
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "${{ github.event_name }}" = "push" ]; then
             echo "tests=" >> $GITHUB_OUTPUT
+            echo "cross_service_tests=true" >> $GITHUB_OUTPUT
             echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
             echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
             echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV" >> $GITHUB_OUTPUT
@@ -108,23 +180,32 @@ jobs:
             echo "enable_reruns=true" >> $GITHUB_OUTPUT
             echo "test_workers=4" >> $GITHUB_OUTPUT
           else
-            echo "tests=${{ github.event.inputs.tests }}" >> $GITHUB_OUTPUT
-            echo "device=${{ github.event.inputs.device }}" >> $GITHUB_OUTPUT
+            echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
+            echo "cross_service_tests=${{ inputs.cross_service_tests }}" >> $GITHUB_OUTPUT
+            echo "device=${{ inputs.device }}" >> $GITHUB_OUTPUT
+          
+            input_env="${{ inputs.environment }}"
+            if [ -n "$input_env" ]; then
+              url="${env_map[$input_env]:-${env_map[qa]}}"
+              echo "environment=$url" >> $GITHUB_OUTPUT
+            else
+              echo "environment=${{ inputs.endpoint }}" >> $GITHUB_OUTPUT
+            fi
 
-            input_env="${{ github.event.inputs.environment }}"
-            url="${env_map[$input_env]:-${env_map[qa]}}"
-            echo "environment=$url" >> $GITHUB_OUTPUT
-
-            echo "programmes=${{ github.event.inputs.programmes }}" >> $GITHUB_OUTPUT
-            echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
-            echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "programmes=${{ inputs.programmes }}" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=${{ inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=${{ inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
             echo "deploy_report=true" >> $GITHUB_OUTPUT
-            echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
-            echo "enable_reruns=${{ github.event.inputs.enable_reruns }}" >> $GITHUB_OUTPUT
-            echo "test_workers=${{ github.event.inputs.test_workers }}" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=${{ inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
+            echo "enable_reruns=${{ inputs.enable_reruns }}" >> $GITHUB_OUTPUT
+            echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
           fi
 
-      - uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          repository: NHSDigital/manage-vaccinations-in-schools-testing
+          ref: ${{ inputs.github_ref || github.head_ref }}
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -137,6 +218,9 @@ jobs:
         uses: ./.github/actions/run-functional-tests
         with:
           tests: ${{ steps.set-variables.outputs.tests }}
+          imms_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          reporting_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          github_ref: ${{ inputs.github_ref || github.head_ref }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
@@ -160,4 +244,5 @@ jobs:
           device: ${{ steps.set-variables.outputs.device }}
           environment: ${{ github.event.inputs.environment }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+

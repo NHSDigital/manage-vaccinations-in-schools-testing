@@ -23,14 +23,16 @@ runs:
       id: set-pages-dir
       run: |
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
-        echo "dir=${{ github.ref_name }}/${{ inputs.environment }}/$sanitized_device" >> $GITHUB_OUTPUT
+        echo "dir=${{ github.head_ref }}/${{ inputs.environment }}/$sanitized_device" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Checkout gh-pages branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
+        repository: NHSDigital/manage-vaccinations-in-schools-testing
         ref: gh-pages
         path: gh-pages
+        token: ${{ env.GITHUB_TOKEN }}
 
     - name: Replace existing report
       run: |
@@ -53,8 +55,6 @@ runs:
         git push origin gh-pages --force
         git branch -D temp-pages
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
     - name: Set Job Summary
       run: |
