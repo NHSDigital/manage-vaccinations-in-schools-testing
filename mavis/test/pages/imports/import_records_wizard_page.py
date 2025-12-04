@@ -247,21 +247,3 @@ class ImportRecordsWizardPage:
             self.select_year_groups(year_group)
 
         self.upload_and_verify_output(class_list_file, programme_group=programme_group)
-
-
-class ImportsPage:
-    def __init__(
-        self,
-        page: Page,
-    ) -> None:
-        self.page = page
-        self.header = HeaderComponent(page)
-
-        self.upload_button = self.page.get_by_role(
-            "button",
-            name="Upload records",
-        )
-
-    @step("Click on Upload records")
-    def click_upload_records(self) -> None:
-        self.upload_button.click()

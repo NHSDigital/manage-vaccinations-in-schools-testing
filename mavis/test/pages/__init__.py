@@ -5,19 +5,12 @@ from .children import (
     ChildRecordPage,
     ChildrenSearchPage,
 )
-from .consent_responses import (
-    ArchiveConsentResponsePage,
-    ConsentResponsePage,
-    CreateNewRecordConsentResponsePage,
-    MatchConsentResponsePage,
-    UnmatchedConsentResponsesPage,
-)
 from .dashboard import DashboardPage
 from .error_pages import BadRequestPage, ServiceErrorPage
 from .flipper import FlipperPage
-from .import_records import ImportRecordsWizardPage, ImportsPage
-from .log_in import LogInPage, LogOutPage
-from .nurse_consent import GillickCompetencePage, NurseConsentWizardPage
+from .imports import ImportRecordsWizardPage, ImportsPage
+from .log_in import LogInPage
+from .log_out import LogOutPage
 from .online_consent import OnlineConsentWizardPage
 from .programmes import (
     ProgrammeChildrenPage,
@@ -28,6 +21,8 @@ from .programmes import (
 from .reports import ReportsDownloadPage, ReportsVaccinationsPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .sessions import (
+    GillickCompetencePage,
+    NurseConsentWizardPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
@@ -41,6 +36,13 @@ from .sessions import (
 )
 from .start import StartPage
 from .team import TeamPage
+from .unmatched_responses import (
+    ArchiveConsentResponsePage,
+    ConsentResponsePage,
+    CreateNewRecordConsentResponsePage,
+    MatchConsentResponsePage,
+    UnmatchedConsentResponsesPage,
+)
 from .vaccination_record import EditVaccinationRecordPage, VaccinationRecordPage
 from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
 
