@@ -4,7 +4,7 @@ import pandas as pd
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.models import Programme
+from mavis.test.mavis_constants import Programme
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
 from mavis.test.utils import (

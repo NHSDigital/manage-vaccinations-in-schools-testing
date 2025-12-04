@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
-from mavis.test.models import (
+from mavis.test.mavis_constants import (
     ConsentMethod,
     ConsentOption,
     Programme,

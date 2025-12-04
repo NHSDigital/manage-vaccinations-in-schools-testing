@@ -5,10 +5,48 @@ import pandas as pd
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.mavis_constants import DeliverySite, ReportFormat
+from mavis.test.mavis_constants import Child, DeliverySite, Programme, ReportFormat
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.pages.programmes.programme_tabs import ProgrammeTabs
 from mavis.test.utils import get_current_datetime_compact
+
+
+class ProgrammesListPage:
+    def __init__(self, page: Page) -> None:
+        self.page = page
+        self.header = HeaderComponent(page)
+
+        self.current_year_programmes_card = (
+            page.get_by_role("heading")
+            .filter(has_text="2025 to 2026")
+            .locator("xpath=following-sibling::table[1]")
+        )
+
+    @step("Click on {1}")
+    def click_programme_for_current_year(self, programme: Programme) -> None:
+        self.current_year_programmes_card.get_by_role("link", name=programme).click()
+
+
+class ProgrammeTabs:
+    def __init__(self, page: Page) -> None:
+        self.page = page
+        self.header = HeaderComponent(page)
+
+        self.children_tab = page.get_by_label("Secondary menu").get_by_role(
+            "link", name="Children"
+        )
+        self.sessions_tab = page.get_by_label("Secondary menu").get_by_role(
+            "link", name="Sessions"
+        )
+
+    @step("Click on Children")
+    def click_children_tab(self) -> None:
+        self.children_tab.click()
+        self.children_tab.get_by_role("strong").wait_for()
+
+    @step("Click on Sessions")
+    def click_sessions_tab(self) -> None:
+        self.sessions_tab.click()
+        self.sessions_tab.get_by_role("strong").wait_for()
 
 
 class ProgrammeOverviewPage:
@@ -135,3 +173,60 @@ class ProgrammeOverviewPage:
                 f"Report contains unexpected field(s): {_a_not_e}."
             )
             raise AssertionError(error_message)
+
+
+class ProgrammeSessionsPage:
+    def __init__(self, page: Page) -> None:
+        self.page = page
+        self.tabs = ProgrammeTabs(page)
+        self.header = HeaderComponent(page)
+
+
+class ProgrammeChildrenPage:
+    def __init__(self, page: Page) -> None:
+        self.page = page
+        self.tabs = ProgrammeTabs(page)
+        self.header = HeaderComponent(page)
+
+        self.import_child_records_link = page.get_by_text("Import child records")
+        self.search_textbox = page.get_by_role("searchbox", name="Search")
+        self.search_button = page.get_by_role("button", name="Search")
+        self.continue_button = page.get_by_role("button", name="Continue")
+        self.use_duplicate_radio_button = page.get_by_role(
+            "radio",
+            name="Use duplicate record",
+        )
+        self.resolve_duplicate_button = page.get_by_role(
+            "button",
+            name="Resolve duplicate",
+        )
+        self.import_processing_started_alert = page.get_by_role(
+            "alert",
+            name="Import processing started",
+        )
+
+    @step("Click on Import child records")
+    def click_import_child_records(self) -> None:
+        self.page.wait_for_load_state()
+        self.import_child_records_link.click()
+
+    @step("Click on Continue")
+    def click_continue(self) -> None:
+        self.continue_button.click()
+
+    @step("Click on {1}")
+    def click_child(self, child: Child) -> None:
+        self.page.get_by_role("link", name=str(child)).click()
+
+    @step("Click on {1}")
+    def search_for_child(self, child: Child) -> None:
+        self.search_textbox.fill(str(child))
+        self.search_button.click()
+
+    @step("Click on Use duplicate record")
+    def click_use_duplicate(self) -> None:
+        self.use_duplicate_radio_button.click()
+
+    @step("Click on Resolve duplicate")
+    def click_resolve_duplicate(self) -> None:
+        self.resolve_duplicate_button.click()

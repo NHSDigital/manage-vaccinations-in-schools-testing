@@ -3,14 +3,16 @@ import time
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import (
+from mavis.test.data_models import (
     Child,
-    ConsentOption,
-    DeliverySite,
     Parent,
-    Programme,
     School,
     VaccinationRecord,
+)
+from mavis.test.mavis_constants import (
+    ConsentOption,
+    DeliverySite,
+    Programme,
 )
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (

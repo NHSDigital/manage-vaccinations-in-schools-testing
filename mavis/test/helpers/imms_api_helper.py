@@ -6,7 +6,7 @@ from typing import NamedTuple
 import dateutil.parser
 import requests
 
-from mavis.test.models import (
+from mavis.test.mavis_constants import (
     Child,
     DeliverySite,
     ImmsEndpoints,

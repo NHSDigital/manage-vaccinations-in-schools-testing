@@ -3,7 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.data import ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.models import Programme
+from mavis.test.mavis_constants import Programme
 from mavis.test.pages import (
     ChildActivityLogPage,
     ChildRecordPage,

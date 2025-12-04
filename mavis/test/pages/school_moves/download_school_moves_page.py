@@ -6,7 +6,8 @@ from pandas import DataFrame, Series
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
+from mavis.test.data_models import Child, School
+from mavis.test.mavis_constants import SCHOOL_MOVE_HEADERS
 from mavis.test.pages.header_component import HeaderComponent
 
 
