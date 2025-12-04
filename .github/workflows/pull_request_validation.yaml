@@ -28,7 +28,7 @@ jobs:
           if [[ -n "${{ steps.check-branch.outputs.mavis_branch }}" ]]; then
             environment='container'
           fi
-          echo "environment=environment" >> $GITHUB_OUTPUT
+          echo "environment=$environment" >> $GITHUB_OUTPUT
   run-tests-against-staging:
     needs: identify-target-environment
     if: needs.identify-target-environment.outputs.environment != 'container'
