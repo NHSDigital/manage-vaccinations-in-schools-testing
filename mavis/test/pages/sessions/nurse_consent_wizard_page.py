@@ -8,7 +8,7 @@ from mavis.test.models import (
     Parent,
     Programme,
 )
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import expect_alert_text
 
 

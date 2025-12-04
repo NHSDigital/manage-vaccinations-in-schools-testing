@@ -5,13 +5,13 @@ from .children import (
     ChildRecordPage,
     ChildrenSearchPage,
 )
-from .dashboard import DashboardPage
+from .dashboard_page import DashboardPage
 from .error_pages import BadRequestPage, ServiceErrorPage
-from .flipper import FlipperPage
+from .flipper_page import FlipperPage
 from .imports import ImportRecordsWizardPage, ImportsPage
-from .log_in import LogInPage
-from .log_out import LogOutPage
-from .online_consent import OnlineConsentWizardPage
+from .log_in_page import LogInPage
+from .log_out_page import LogOutPage
+from .online_consent_wizard_page import OnlineConsentWizardPage
 from .programmes import (
     ProgrammeChildrenPage,
     ProgrammeOverviewPage,
@@ -34,8 +34,8 @@ from .sessions import (
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
-from .start import StartPage
-from .team import TeamPage
+from .start_page import StartPage
+from .team_page import TeamPage
 from .unmatched_responses import (
     ArchiveConsentResponsePage,
     ConsentResponsePage,

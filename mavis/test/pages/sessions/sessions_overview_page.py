@@ -12,7 +12,7 @@ from mavis.test.models import (
     Programme,
     School,
 )
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
     get_current_datetime_compact,

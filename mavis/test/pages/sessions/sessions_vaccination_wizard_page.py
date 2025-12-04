@@ -5,7 +5,7 @@ from mavis.test.models import (
     Parent,
     VaccinationRecord,
 )
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     MAVIS_NOTE_LENGTH_LIMIT,
     expect_alert_text,
