@@ -1,9 +1,9 @@
 import pytest
 from playwright.sync_api import expect
 
-from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
+from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.models import ConsentMethod, Programme, VaccinationRecord, Vaccine
 from mavis.test.pages import (
     ChildRecordPage,

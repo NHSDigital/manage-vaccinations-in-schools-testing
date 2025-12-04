@@ -424,12 +424,14 @@ SCHOOL_MOVE_HEADERS = {
     "DES_NUMBER",
 }
 
+
 @dataclass
 class Location:
     name: str
 
     def __str__(self) -> str:
         return self.name
+
 
 @dataclass
 class Clinic(Location):
@@ -441,6 +443,7 @@ class Clinic(Location):
         return cls(
             name=faker.company(),
         )
+
 
 @dataclass
 class School(Location):
@@ -565,6 +568,7 @@ class Team:
             phone=subteam.phone,
         )
 
+
 @dataclass
 class User:
     username: str
@@ -626,6 +630,7 @@ class Parent:
             relationship=relationship,
             email_address=faker.email(),
         )
+
 
 @dataclass
 class Child:

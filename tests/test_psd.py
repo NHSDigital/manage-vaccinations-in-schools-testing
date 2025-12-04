@@ -1,7 +1,7 @@
 import pytest
 
-from mavis.test.accessibility import AccessibilityHelper
 from mavis.test.data import ClassFileMapping
+from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.models import (
     ConsentMethod,
     ConsentOption,
