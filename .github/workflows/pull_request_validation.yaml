@@ -19,7 +19,7 @@ jobs:
           if git ls-remote --exit-code --heads https://github.com/nhsuk/manage-vaccinations-in-schools.git ${{ github.head_ref }} > /dev/null 2>&1; then
             echo "mavis_branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
           else
-            echo "mavis_branch=main" >> $GITHUB_OUTPUT
+            echo "mavis_branch=" >> $GITHUB_OUTPUT
           fi
       - name: Identify target environment
         id: identify-target-environment
