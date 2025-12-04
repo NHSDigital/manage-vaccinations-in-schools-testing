@@ -7,7 +7,7 @@ from playwright.sync_api import Page
 
 from mavis.test.annotations import step
 from mavis.test.models import SCHOOL_MOVE_HEADERS, Child, School
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 
 
 class DownloadSchoolMovesPage:

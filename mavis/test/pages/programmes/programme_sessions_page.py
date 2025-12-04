@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.programmes.programme_tabs import ProgrammeTabs
 
 

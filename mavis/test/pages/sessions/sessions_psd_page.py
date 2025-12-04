@@ -4,7 +4,7 @@ from mavis.test.annotations import step
 from mavis.test.models import (
     Child,
 )
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.search_component import SearchComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
