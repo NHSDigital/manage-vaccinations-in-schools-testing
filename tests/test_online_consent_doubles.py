@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.models import ConsentRefusalReason, Programme
+from mavis.test.mavis_constants import ConsentRefusalReason, Programme
 from mavis.test.pages import (
     OnlineConsentWizardPage,
     StartPage,

@@ -3,8 +3,13 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.models import ConsentMethod, Programme, VaccinationRecord, Vaccine
+from mavis.test.mavis_constants import (
+    ConsentMethod,
+    Programme,
+    Vaccine,
+)
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,

@@ -1,10 +1,8 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import (
-    Clinic,
+from mavis.test.mavis_constants import (
     Programme,
-    School,
 )
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.search_component import SearchComponent
@@ -18,7 +16,7 @@ class SessionsSearchPage:
 
     @step("Click on {2} session at {1}")
     def click_session_for_programme_group(
-        self, location: School | Clinic, programme_group: str
+        self, location: str, programme_group: str
     ) -> None:
         if programme_group != Programme.MMR:
             for programme in Programme:

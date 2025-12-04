@@ -3,7 +3,8 @@ import time
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import Programme, School
+from mavis.test.data_models import School
+from mavis.test.mavis_constants import Programme
 from mavis.test.pages.children.child_record_tabs import ChildRecordTabs
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import get_current_datetime

@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.data import CohortsFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.models import ConsentOption, Programme
+from mavis.test.mavis_constants import ConsentOption, Programme
 from mavis.test.pages import (
     ConsentResponsePage,
     CreateNewRecordConsentResponsePage,

@@ -3,7 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.models import Programme
+from mavis.test.mavis_constants import Programme
 from mavis.test.pages import (
     ChildActivityLogPage,
     ChildArchivePage,

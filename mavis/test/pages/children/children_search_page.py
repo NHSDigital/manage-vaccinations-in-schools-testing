@@ -4,7 +4,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.data import create_child_list_from_file
-from mavis.test.models import Child
+from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import reload_until_element_is_visible
 
