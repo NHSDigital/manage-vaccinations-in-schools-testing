@@ -11,6 +11,7 @@ import pytest
 import requests
 from faker import Faker
 
+from mavis.test.constants import Programme
 from mavis.test.data_models import (
     Child,
     Clinic,
@@ -21,7 +22,6 @@ from mavis.test.data_models import (
     Team,
     User,
 )
-from mavis.test.mavis_constants import Programme
 
 logger = logging.getLogger(__name__)
 

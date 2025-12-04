@@ -6,13 +6,12 @@ from typing import NamedTuple
 import dateutil.parser
 import requests
 
-from mavis.test.mavis_constants import (
-    Child,
+from mavis.test.constants import (
     DeliverySite,
     ImmsEndpoints,
-    School,
     Vaccine,
 )
+from mavis.test.data_models import Child, School
 
 
 class ImmsApiVaccinationRecord(NamedTuple):

@@ -2,8 +2,8 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
+from mavis.test.constants import Vaccine
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.mavis_constants import Vaccine
 from mavis.test.pages import (
     AddBatchPage,
     ArchiveBatchPage,

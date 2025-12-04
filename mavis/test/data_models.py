@@ -7,7 +7,7 @@ import requests
 from attr import dataclass
 from faker import Faker
 
-from mavis.test.mavis_constants import (
+from mavis.test.constants import (
     ConsentOption,
     DeliverySite,
     Programme,

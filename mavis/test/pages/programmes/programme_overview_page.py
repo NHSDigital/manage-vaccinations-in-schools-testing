@@ -5,7 +5,7 @@ import pandas as pd
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.mavis_constants import DeliverySite, ReportFormat
+from mavis.test.constants import DeliverySite, ReportFormat
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.programmes.programme_tabs import ProgrammeTabs
 from mavis.test.utils import get_current_datetime_compact

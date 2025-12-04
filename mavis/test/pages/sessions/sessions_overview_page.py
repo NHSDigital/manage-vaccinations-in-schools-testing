@@ -7,11 +7,11 @@ import pandas as pd
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data import get_session_id
-from mavis.test.data_models import School
-from mavis.test.mavis_constants import (
+from mavis.test.constants import (
     Programme,
 )
+from mavis.test.data import get_session_id
+from mavis.test.data_models import School
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (

@@ -1,12 +1,12 @@
 import pytest
 
-from mavis.test.helpers.imms_api_helper import ImmsApiHelper
-from mavis.test.mavis_constants import (
+from mavis.test.constants import (
     ConsentOption,
     DeliverySite,
     Programme,
     Vaccine,
 )
+from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.pages import (
     EditVaccinationRecordPage,
     SessionsPatientPage,

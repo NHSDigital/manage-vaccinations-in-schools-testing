@@ -3,9 +3,9 @@ import re
 
 import pytest
 
+from mavis.test.constants import ConsentOption, Programme, Vaccine
 from mavis.test.data import ClassFileMapping, TestData, VaccsFileMapping
 from mavis.test.data_models import School
-from mavis.test.mavis_constants import ConsentOption, Programme, Vaccine
 from mavis.test.pages import (
     AddBatchPage,
     ChildRecordPage,

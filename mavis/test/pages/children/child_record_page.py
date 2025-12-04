@@ -3,8 +3,8 @@ import time
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data_models import School
-from mavis.test.mavis_constants import Programme
+from mavis.test.constants import Programme
+from mavis.test.data_models import Location, School
 from mavis.test.pages.children.child_record_tabs import ChildRecordTabs
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import get_current_datetime
@@ -36,7 +36,7 @@ class ChildRecordPage:
     @step("Click on {2} session for programme")
     def click_session_for_programme(
         self,
-        location: str,
+        location: Location,
         programme: Programme,
         *,
         check_date: bool = False,

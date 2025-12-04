@@ -1,14 +1,14 @@
 import pytest
 
-from mavis.test.data import ClassFileMapping
-from mavis.test.data_models import VaccinationRecord
-from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.mavis_constants import (
+from mavis.test.constants import (
     ConsentMethod,
     ConsentOption,
     Programme,
     Vaccine,
 )
+from mavis.test.data import ClassFileMapping
+from mavis.test.data_models import VaccinationRecord
+from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,

@@ -1,11 +1,11 @@
 import pytest
 
-from mavis.test.data_models import VaccinationRecord
-from mavis.test.mavis_constants import (
+from mavis.test.constants import (
     ConsentOption,
     Programme,
     Vaccine,
 )
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
     LogInPage,

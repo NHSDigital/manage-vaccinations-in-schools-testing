@@ -7,8 +7,8 @@ from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
 
+from mavis.test.constants import Relationship
 from mavis.test.data_models import Child, Parent
-from mavis.test.mavis_constants import Relationship
 from mavis.test.utils import get_todays_date
 
 

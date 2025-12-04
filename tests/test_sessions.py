@@ -2,14 +2,14 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
-from mavis.test.data import ClassFileMapping
-from mavis.test.data_models import VaccinationRecord
-from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.mavis_constants import (
+from mavis.test.constants import (
     ConsentMethod,
     Programme,
     Vaccine,
 )
+from mavis.test.data import ClassFileMapping
+from mavis.test.data_models import Clinic, VaccinationRecord
+from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -339,8 +339,8 @@ def test_verify_excel_export_and_clinic_invitation(
     setup_fixed_child,
     add_vaccine_batch,
     schools,
-    clinics,
     page,
+    clinics,
     children,
 ):
     """
@@ -357,10 +357,11 @@ def test_verify_excel_export_and_clinic_invitation(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
+    generic_clinic = Clinic(name="Community clinic")
 
     SessionsOverviewPage(page).header.click_sessions_header()
     SessionsSearchPage(page).click_session_for_programme_group(
-        "Community clinic", Programme.HPV.group
+        generic_clinic, Programme.HPV.group
     )
     if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
         SessionsOverviewPage(page).schedule_or_edit_session()
@@ -373,7 +374,7 @@ def test_verify_excel_export_and_clinic_invitation(
     ChildrenSearchPage(page).click_record_for_child(child)
     ChildRecordPage(page).click_invite_to_community_clinic()
     ChildRecordPage(page).click_session_for_programme(
-        "Community clinic",
+        generic_clinic,
         Programme.HPV,
         check_date=True,
     )
