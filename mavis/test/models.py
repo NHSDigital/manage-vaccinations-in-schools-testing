@@ -3,7 +3,6 @@ import random
 import urllib.parse
 from datetime import date
 from enum import StrEnum
-from typing import NamedTuple
 
 import nhs_number
 import requests
@@ -425,13 +424,15 @@ SCHOOL_MOVE_HEADERS = {
     "DES_NUMBER",
 }
 
-
-class Clinic(NamedTuple):
+@dataclass
+class Location:
     name: str
 
     def __str__(self) -> str:
         return self.name
 
+@dataclass
+class Clinic(Location):
     def to_onboarding(self) -> dict:
         return {"name": self.name}
 
@@ -441,9 +442,8 @@ class Clinic(NamedTuple):
             name=faker.company(),
         )
 
-
-class School(NamedTuple):
-    name: str
+@dataclass
+class School(Location):
     urn: str
     site: str
 
@@ -493,7 +493,8 @@ class School(NamedTuple):
         }
 
 
-class Organisation(NamedTuple):
+@dataclass
+class Organisation:
     ods_code: str
 
     def to_onboarding(self) -> dict:
@@ -508,7 +509,8 @@ class Organisation(NamedTuple):
         )
 
 
-class Subteam(NamedTuple):
+@dataclass
+class Subteam:
     key: str
     name: str
     email: str
@@ -530,7 +532,8 @@ class Subteam(NamedTuple):
         )
 
 
-class Team(NamedTuple):
+@dataclass
+class Team:
     name: str
     workgroup: str
     careplus_venue_code: str
@@ -562,8 +565,8 @@ class Team(NamedTuple):
             phone=subteam.phone,
         )
 
-
-class User(NamedTuple):
+@dataclass
+class User:
     username: str
     password: str
     role: str
@@ -606,7 +609,8 @@ class Relationship(StrEnum):
         return faker.name_nonbinary()
 
 
-class Parent(NamedTuple):
+@dataclass
+class Parent:
     full_name: str
     relationship: Relationship
     email_address: str
@@ -623,8 +627,8 @@ class Parent(NamedTuple):
             email_address=faker.email(),
         )
 
-
-class Child(NamedTuple):
+@dataclass
+class Child:
     first_name: str
     last_name: str
     nhs_number: str
