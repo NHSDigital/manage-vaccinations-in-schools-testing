@@ -11,7 +11,7 @@ import pytest
 import requests
 from faker import Faker
 
-from mavis.test.models import (
+from mavis.test.mavis_constants import (
     Child,
     Clinic,
     Onboarding,

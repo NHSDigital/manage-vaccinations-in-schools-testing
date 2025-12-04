@@ -1,7 +1,12 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.models import ConsentOption, Programme, VaccinationRecord, Vaccine
+from mavis.test.data_models import VaccinationRecord
+from mavis.test.mavis_constants import (
+    ConsentOption,
+    Programme,
+    Vaccine,
+)
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,

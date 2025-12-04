@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import CohortsFileMapping
-from mavis.test.models import ConsentOption, ConsentRefusalReason, Programme
+from mavis.test.mavis_constants import ConsentOption, ConsentRefusalReason, Programme
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,

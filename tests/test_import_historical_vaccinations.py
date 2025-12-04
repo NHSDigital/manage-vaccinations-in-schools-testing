@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import VaccsFileMapping
-from mavis.test.models import Programme
+from mavis.test.mavis_constants import Programme
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,

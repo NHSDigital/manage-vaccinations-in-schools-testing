@@ -1,11 +1,11 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.models import (
+from mavis.test.data_models import Parent
+from mavis.test.mavis_constants import (
     ConsentMethod,
     ConsentOption,
     ConsentRefusalReason,
-    Parent,
     Programme,
 )
 from mavis.test.pages.header_component import HeaderComponent

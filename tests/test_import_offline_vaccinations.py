@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
-from mavis.test.models import Programme
+from mavis.test.mavis_constants import Programme
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,

@@ -1,8 +1,8 @@
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import (
-    Child,
+from mavis.test.data_models import Child
+from mavis.test.mavis_constants import (
     ConsentOption,
 )
 from mavis.test.pages.header_component import HeaderComponent

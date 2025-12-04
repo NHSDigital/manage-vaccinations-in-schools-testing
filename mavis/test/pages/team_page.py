@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.models import Team
+from mavis.test.data_models import Team
 from mavis.test.pages.header_component import HeaderComponent
 
 
