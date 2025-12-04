@@ -145,7 +145,6 @@ on:
         description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
         required: false
         default: ''
-  pull_request:
 
 jobs:
   test:
