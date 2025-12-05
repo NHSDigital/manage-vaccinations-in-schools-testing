@@ -57,7 +57,7 @@ There are two ways to run commands with `uv`
     $ pytest
     ```
 
-### CLI arguments
+### Playwright CLI arguments
 
 Playwright offers many [CLI arguments] which can be used when running tests. Some useful ones are highlighted here:
 
@@ -81,25 +81,6 @@ run the tests in headed mode, use the following command:
 ```shell
 $ pytest --headed
 ```
-
-#### Slow motion
-
-When running the tests locally in headed mode, it can be useful to make the
-steps artificially slower to see what's happening at each point. To introduce
-a 1-second delay, use the following command:
-
-```shell
-$ pytest --slowmo 1000
-```
-
-#### Markers
-
-Tests for individual endpoints can be executed using individual markers. For example:
-
-```shell
-$ pytest -m log_in
-```
-
 #### Tracing
 
 There's an option available to run tests with tracing, allowing the test to be
@@ -109,6 +90,28 @@ replayed in the Trace Viewer.
 $ pytest --tracing on
 $ playwright show-trace test-results/.../trace.zip
 ```
+### Pytest CLI arguments
+
+Pytest also has some useful CLI arguments
+
+#### Markers
+
+Some tests are grouped using markers. You can include/exclude groups with the `-m` flag: 
+
+```shell
+$ pytest -m log_in
+$ pytest -m "not imms_api and not accessibility"
+```
+#### Parallel test execution
+
+This repository uses [pytest-xdist] to run test modules in parallel. The number of available workers is equal to the number of CPUs that your system has. By default, when running tests locally, all available workers will be used when running multiple test modules. This behaviour can be configured with the `-n` flag.
+
+```shell
+$ pytest -n 4    # only use 4 workers
+$ pytest -n 0    # disable pytest-xdist
+```
+
+[pytest-xdist]:https://github.com/pytest-dev/pytest-xdist
 
 ### Reporting
 
@@ -123,17 +126,24 @@ $ npx allure-commandline open
 
 ### Linting and formatting
 
-Ruff is used as a linting and formatting tool in this repo:
+[Ruff] is used as a linting and formatting tool in this repo:
 
 ```shell
 $ ruff format
 $ ruff check --fix
 ```
 
+[Ruff]:https://github.com/astral-sh/ruff
+
+### Playwright Page Object Model
+
+The Playwright [Page Object Model] (or POM) approach is taken when developing this repository. Each page/wizard in Mavis should have its own Page object, storing all appropriate locators and methods. When multiple pages use the same locators/methods, a component should be created that extracts these. Then page objects can access this functionality via the component. See `mavis/test/pages/header_component.py` and its usages for an example.
+
+[Page Object Model]:https://playwright.dev/docs/pom
+
 ### More information
 
 Further details on the scope and approach of the automation are on the [NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).
-
 
 ## Performance tests
 
