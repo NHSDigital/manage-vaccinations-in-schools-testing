@@ -11,12 +11,12 @@ import pytest
 import requests
 from faker import Faker
 
-from mavis.test.models import (
+from mavis.test.constants import Programme
+from mavis.test.data_models import (
     Child,
     Clinic,
     Onboarding,
     Organisation,
-    Programme,
     School,
     Subteam,
     Team,

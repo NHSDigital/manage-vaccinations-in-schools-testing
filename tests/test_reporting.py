@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.models import (
+from mavis.test.constants import (
     Programme,
 )
 from mavis.test.pages import (

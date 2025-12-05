@@ -1,14 +1,14 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.data import ClassFileMapping
-from mavis.test.models import (
+from mavis.test.constants import (
     ConsentMethod,
     ConsentOption,
     Programme,
-    VaccinationRecord,
     Vaccine,
 )
+from mavis.test.data import ClassFileMapping
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,

@@ -4,7 +4,7 @@ from datetime import date
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import (
+from mavis.test.constants import (
     Programme,
 )
 from mavis.test.pages.header_component import HeaderComponent

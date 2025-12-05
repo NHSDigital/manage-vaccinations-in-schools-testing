@@ -3,7 +3,7 @@ from datetime import datetime
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import DeliverySite
+from mavis.test.constants import DeliverySite
 from mavis.test.pages.header_component import HeaderComponent
 
 

@@ -1,6 +1,7 @@
 import pytest
 
-from mavis.test.models import Programme, VaccinationRecord, Vaccine
+from mavis.test.constants import Programme, Vaccine
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
     LogInPage,

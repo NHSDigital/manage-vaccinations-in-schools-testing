@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.models import Vaccine
+from mavis.test.constants import Vaccine
 from mavis.test.pages.header_component import HeaderComponent
 
 

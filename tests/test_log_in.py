@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.data_models import User
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.models import User
 from mavis.test.pages import (
     DashboardPage,
     LogInPage,

@@ -7,7 +7,14 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.models import Child, Clinic, Organisation, Programme, School, User
+from mavis.test.constants import Programme
+from mavis.test.data_models import (
+    Child,
+    Clinic,
+    Organisation,
+    School,
+    User,
+)
 from mavis.test.utils import (
     get_current_datetime_compact,
     get_current_time_hms_format,
