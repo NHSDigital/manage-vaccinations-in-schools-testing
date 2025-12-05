@@ -5,7 +5,7 @@ from playwright.sync_api import Page
 
 from mavis.test.annotations import step
 from mavis.test.models import Programme
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
 from mavis.test.utils import (
     get_current_datetime_compact,

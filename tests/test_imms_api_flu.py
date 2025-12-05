@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.imms_api import ImmsApiHelper
+from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.models import (
     ConsentOption,
     DeliverySite,

@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.pages.children.child_record_tabs import ChildRecordTabs
-from mavis.test.pages.header import HeaderComponent
+from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import reload_until_element_is_visible
 
 
