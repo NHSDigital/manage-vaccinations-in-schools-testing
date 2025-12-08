@@ -42,7 +42,7 @@ def setup_session_with_file_upload(
     add_vaccine_batch,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -64,7 +64,7 @@ def setup_session_with_file_upload(
                 offset_days=0, skip_weekends=False
             )
         SessionsOverviewPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
         ImportsPage(page).header.click_mavis_header()
