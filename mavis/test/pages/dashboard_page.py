@@ -22,6 +22,11 @@ class DashboardPage:
         self.imports_link = links.get_by_text("Imports")
         self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
+        self.schools_link = links.get_by_text("Schools")
+
+    @step("Click on Schools")
+    def click_schools(self) -> None:
+        self.schools_link.click()
 
     @step("Click on Programmes")
     def click_programmes(self) -> None:
