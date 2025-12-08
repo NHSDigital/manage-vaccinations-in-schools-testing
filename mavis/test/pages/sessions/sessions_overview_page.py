@@ -165,9 +165,10 @@ class SessionsOverviewPage:
         return _file_path
 
     def is_date_scheduled(self, date: date) -> bool:
+        self.page.pause()
         return self.page.get_by_text(
             get_formatted_date_for_session_dates(date)
-        ).is_visible()
+        ).first.is_visible()
 
     @step("Click Consent refused")
     def click_consent_refused(self) -> None:
