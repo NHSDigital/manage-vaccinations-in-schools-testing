@@ -344,9 +344,9 @@ class ConsentMethod(StrEnum):
 
 
 class ReportFormat(StrEnum):
-    CAREPLUS = "CarePlus"
+    CAREPLUS = "CSV for CarePlus (System C)"
     CSV = "CSV"
-    SYSTMONE = "SystmOne"
+    SYSTMONE = "CSV for SystmOne (TPP)"
 
     @property
     def headers(self) -> str:

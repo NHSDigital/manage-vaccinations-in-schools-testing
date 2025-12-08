@@ -75,7 +75,7 @@ class ProgrammeOverviewPage:
             name="Download vaccination report",
         )
         self.report_format_radio_buttons = {
-            report_format: page.get_by_role("radio", name=report_format)
+            report_format: page.get_by_role("radio", name=report_format, exact=True)
             for report_format in ReportFormat
         }
         self.continue_button = page.get_by_role("button", name="Continue")
