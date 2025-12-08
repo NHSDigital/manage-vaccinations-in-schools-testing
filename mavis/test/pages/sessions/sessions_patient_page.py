@@ -4,6 +4,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import (
+    MAVIS_NOTE_LENGTH_LIMIT,
     ConsentOption,
     DeliverySite,
     Programme,
@@ -16,7 +17,6 @@ from mavis.test.data_models import (
 )
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
-    MAVIS_NOTE_LENGTH_LIMIT,
     expect_alert_text,
     expect_details,
 )
