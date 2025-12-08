@@ -37,7 +37,7 @@ def setup_reports(log_in_as_nurse, page):
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_valid_file(setup_cohort_upload, page, test_data):
+def test_cohort_upload_with_valid_file(setup_cohort_upload, page, file_generator):
     """
     Test: Upload a valid cohort (class list) file and verify successful import.
     Steps:
@@ -46,13 +46,13 @@ def test_cohort_upload_with_valid_file(setup_cohort_upload, page, test_data):
     Verification:
     - Import completes successfully with expected records.
     """
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.POSITIVE
     )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_invalid_file(setup_cohort_upload, page, test_data):
+def test_cohort_upload_with_invalid_file(setup_cohort_upload, page, file_generator):
     """
     Test: Upload an invalid cohort (class list) file and verify error handling.
     Steps:
@@ -61,13 +61,15 @@ def test_cohort_upload_with_invalid_file(setup_cohort_upload, page, test_data):
     Verification:
     - Import fails and error is shown.
     """
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.NEGATIVE
     )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_invalid_structure(setup_cohort_upload, page, test_data):
+def test_cohort_upload_with_invalid_structure(
+    setup_cohort_upload, page, file_generator
+):
     """
     Test: Upload a cohort file with invalid structure and verify error handling.
     Steps:
@@ -76,13 +78,13 @@ def test_cohort_upload_with_invalid_structure(setup_cohort_upload, page, test_da
     Verification:
     - Import fails and structural error is shown.
     """
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.INVALID_STRUCTURE
     )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_header_only_file(setup_cohort_upload, page, test_data):
+def test_cohort_upload_with_header_only_file(setup_cohort_upload, page, file_generator):
     """
     Test: Upload a cohort file with only headers and verify no records are imported.
     Steps:
@@ -91,13 +93,13 @@ def test_cohort_upload_with_header_only_file(setup_cohort_upload, page, test_dat
     Verification:
     - No records are imported and appropriate message is shown.
     """
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.HEADER_ONLY
     )
 
 
 @pytest.mark.cohorts
-def test_cohort_upload_with_empty_file(setup_cohort_upload, page, test_data):
+def test_cohort_upload_with_empty_file(setup_cohort_upload, page, file_generator):
     """
     Test: Upload an empty cohort file and verify error handling.
     Steps:
@@ -106,7 +108,7 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, page, test_data):
     Verification:
     - Import fails and error is shown.
     """
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.EMPTY_FILE
     )
 
@@ -118,7 +120,7 @@ def test_cohort_upload_with_empty_file(setup_cohort_upload, page, test_data):
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_cohort_upload,
     page,
-    test_data,
+    file_generator,
     children,
 ):
     """
@@ -133,7 +135,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     """
     child = children[Programme.HPV][0]
 
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD
     )
 
@@ -150,7 +152,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
 
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD
     )
 

@@ -19,7 +19,7 @@ def setup_class_list_import(
     log_in_as_nurse,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -34,7 +34,7 @@ def setup_class_list_import(
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, test_data).navigate_to_class_list_record_import(
+    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
         str(school), year_group
     )
 
@@ -43,7 +43,7 @@ def setup_class_list_import(
 def test_class_list_file_upload_valid_data(
     setup_class_list_import,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload a valid class list file and verify successful import.
@@ -56,7 +56,7 @@ def test_class_list_file_upload_valid_data(
     AllValidValues, YearGroupOverride, SameYearGroup, EmptyPostCode, EmptyYearGroup,
     UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.POSITIVE
     )
 
@@ -65,7 +65,7 @@ def test_class_list_file_upload_valid_data(
 def test_class_list_file_upload_invalid_data(
     setup_class_list_import,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload an invalid class list file and verify error handling.
@@ -80,7 +80,7 @@ def test_class_list_file_upload_invalid_data(
     InvalidLastName, InvalidPrefFirstName, InvalidPrefLastName, InvalidParent1Name,
     InvalidParent2Name
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.NEGATIVE
     )
 
@@ -89,7 +89,7 @@ def test_class_list_file_upload_invalid_data(
 def test_class_list_file_upload_invalid_structure(
     setup_class_list_import,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload a class list file with invalid structure and verify error handling.
@@ -99,7 +99,7 @@ def test_class_list_file_upload_invalid_structure(
     Verification:
     - Output indicates structural errors.
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.INVALID_STRUCTURE
     )
 
@@ -108,7 +108,7 @@ def test_class_list_file_upload_invalid_structure(
 def test_class_list_file_upload_header_only(
     setup_class_list_import,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload a class list file with only headers and verify no
@@ -119,7 +119,7 @@ def test_class_list_file_upload_header_only(
     Verification:
     - Output indicates no records imported.
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.HEADER_ONLY
     )
 
@@ -128,7 +128,7 @@ def test_class_list_file_upload_header_only(
 def test_class_list_file_upload_empty_file(
     setup_class_list_import,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload an empty class list file and verify error handling.
@@ -138,7 +138,7 @@ def test_class_list_file_upload_empty_file(
     Verification:
     - Output indicates error or no records imported.
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.EMPTY_FILE
     )
 
@@ -148,7 +148,7 @@ def test_class_list_file_upload_wrong_year_group(
     setup_class_list_import,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
 ):
     """
@@ -159,7 +159,7 @@ def test_class_list_file_upload_wrong_year_group(
     Verification:
     - Output indicates year group mismatch or error.
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.WRONG_YEAR_GROUP
     )
 
@@ -169,7 +169,7 @@ def test_class_list_file_upload_wrong_year_group(
 def test_class_list_file_upload_whitespace_normalization(
     setup_class_list_import,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload a class list file with extra whitespace and verify normalization.
@@ -180,7 +180,9 @@ def test_class_list_file_upload_whitespace_normalization(
     Verification:
     - Imported list matches expected normalized data.
     """
-    input_file, _ = ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    input_file, _ = ImportRecordsWizardPage(
+        page, file_generator
+    ).upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
     )
     ImportsPage(page).header.click_mavis_header()

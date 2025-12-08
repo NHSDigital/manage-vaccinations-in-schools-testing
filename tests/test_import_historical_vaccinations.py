@@ -15,18 +15,20 @@ from mavis.test.pages import (
 def setup_hist_vaccs(
     log_in_as_nurse,
     page,
-    test_data,
+    file_generator,
 ):
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(
+        page, file_generator
+    ).navigate_to_vaccination_records_import()
 
 
 @pytest.mark.vaccinations
 def test_vaccination_file_upload_historic_valid_data(
     setup_hist_vaccs,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload a historic vaccination records file with valid data and verify import.
@@ -48,7 +50,7 @@ def test_vaccination_file_upload_historic_valid_data(
     MMR, MMR_NFA, MMR_Add_Not_Known, MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL,
     MMR_NotVaccinated, MMR_DoseSeq1, MMR_DoseSeq2
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         VaccsFileMapping.HIST_POSITIVE
     )
 
@@ -57,7 +59,7 @@ def test_vaccination_file_upload_historic_valid_data(
 def test_vaccination_file_upload_historic_invalid_data(
     setup_hist_vaccs,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Upload a historic vaccination records file with invalid data and
@@ -78,7 +80,7 @@ def test_vaccination_file_upload_historic_invalid_data(
     InvalidReason, InvalidVaccinatedFlag, InvalidCareSetting, TimeInFuture,
     LongBatchNumber
     """
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         VaccsFileMapping.HIST_NEGATIVE
     )
 
@@ -87,7 +89,7 @@ def test_historical_vaccination_file_upload_creates_child(
     setup_hist_vaccs,
     schools,
     page,
-    test_data,
+    file_generator,
     children,
 ):
     """
@@ -103,7 +105,7 @@ def test_historical_vaccination_file_upload_creates_child(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         VaccsFileMapping.HIST_HPV
     )
 

@@ -30,7 +30,7 @@ pytestmark = pytest.mark.children
 def setup_children_session(
     log_in_as_nurse,
     page,
-    test_data,
+    file_generator,
     schools,
     year_groups,
 ):
@@ -50,13 +50,13 @@ def setup_children_session(
         SessionsOverviewPage(page).header.click_mavis_header()
         DashboardPage(page).click_imports()
         ImportsPage(page).click_upload_records()
-        ImportRecordsWizardPage(page, test_data).navigate_to_class_list_record_import(
-            str(school), year_group
-        )
-        ImportRecordsWizardPage(page, test_data).import_class_list(
+        ImportRecordsWizardPage(
+            page, file_generator
+        ).navigate_to_class_list_record_import(str(school), year_group)
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group=None
         )
-        ImportRecordsWizardPage(page, test_data).header.click_mavis_header()
+        ImportRecordsWizardPage(page, file_generator).header.click_mavis_header()
         DashboardPage(page).click_children()
         yield
 
@@ -78,7 +78,7 @@ def setup_mav_853(
     log_in_as_nurse,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -94,7 +94,7 @@ def setup_mav_853(
             offset_days=0, skip_weekends=False
         )
     SessionsOverviewPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
 
@@ -108,15 +108,17 @@ def setup_mav_853(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD
     )
 
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(
+        page, file_generator
+    ).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
