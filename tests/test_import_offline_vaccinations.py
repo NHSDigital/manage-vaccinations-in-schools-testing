@@ -41,10 +41,12 @@ def setup_vaccs(
     ImportRecordsWizardPage(page, test_data).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    ImportsPage(page).header.click_sessions_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-    SessionsOverviewPage(page).header.click_imports_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
     return session_id
@@ -135,7 +137,8 @@ def test_vaccination_file_upload_duplicate_records(
         VaccsFileMapping.DUP_1,
         session_id=setup_vaccs,
     )
-    ImportsPage(page).header.click_imports_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
     ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
@@ -222,7 +225,8 @@ def test_vaccination_file_upload_creates_child_no_setting(
     ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.NO_CARE_SETTING
     )
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).click_advanced_filters()
     ChildrenSearchPage(page).check_children_aged_out_of_programmes()
@@ -255,7 +259,8 @@ def test_vaccination_file_upload_whitespace_normalization(
         VaccsFileMapping.WHITESPACE,
         session_id=setup_vaccs,
     )
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=True
     )

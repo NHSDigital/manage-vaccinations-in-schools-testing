@@ -1,10 +1,6 @@
 import pytest
 
-from mavis.test.constants import (
-    ConsentOption,
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import ConsentOption, Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
@@ -184,7 +180,8 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
     # Attempt to record second dose on the same day
-    SessionsPatientPage(page).header.click_sessions_header()
+    SessionsPatientPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[0], Programme.MMR
     )
@@ -263,7 +260,8 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.MMR)
     SessionsPatientPage(page).triage_mmr_patient(ConsentOption.MMR_EITHER)
-    SessionsPatientPage(page).header.click_sessions_header()
+    SessionsPatientPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
 
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[0], Programme.MMR

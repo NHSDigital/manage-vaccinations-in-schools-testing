@@ -1,11 +1,7 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.constants import (
-    ConsentOption,
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import ConsentOption, Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     ChildRecordPage,
@@ -124,7 +120,8 @@ def test_recording_flu_vaccination_e2e(
     SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
     # MAV-1831
-    SessionsPatientPage(page).header.click_children_header()
+    SessionsPatientPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).search_for_a_child_name(str(child))
     ChildrenSearchPage(page).click_record_for_child(child)
     ChildRecordPage(page).click_vaccination_details(schools[0])

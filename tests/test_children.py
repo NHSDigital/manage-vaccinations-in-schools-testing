@@ -47,11 +47,17 @@ def setup_children_session(
             SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        SessionsOverviewPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
-            class_list_file, year_group
+        SessionsOverviewPage(page).header.click_mavis_header()
+        DashboardPage(page).click_imports()
+        ImportsPage(page).click_upload_records()
+        ImportRecordsWizardPage(page, test_data).navigate_to_class_list_record_import(
+            str(school), year_group
         )
-        ImportsPage(page).header.click_children_header()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
+            class_list_file, year_group=None
+        )
+        ImportRecordsWizardPage(page, test_data).header.click_mavis_header()
+        DashboardPage(page).click_children()
         yield
 
     return _setup
@@ -91,10 +97,11 @@ def setup_mav_853(
     ImportRecordsWizardPage(page, test_data).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    ImportsPage(page).header.click_sessions_header()
+
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-    SessionsOverviewPage(page).header.click_programmes_header()
+    DashboardPage(page).click_programmes()
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
@@ -102,14 +109,16 @@ def setup_mav_853(
         CohortsFileMapping.FIXED_CHILD
     )
 
-    ImportsPage(page).header.click_imports_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
     ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
 
 
 @issue("MAV-853")

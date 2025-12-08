@@ -142,7 +142,8 @@ def test_child_list_file_upload_whitespace_normalization(
     input_file, _ = ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         ChildFileMapping.WHITESPACE,
     )
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
     )

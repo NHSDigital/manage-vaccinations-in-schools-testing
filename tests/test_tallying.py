@@ -53,7 +53,8 @@ def setup_session_with_file_upload(
             vaccine: add_vaccine_batch(vaccine)
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
         }
-        VaccinesPage(page).header.click_sessions_header()
+        VaccinesPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU.group
         )
@@ -66,7 +67,8 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, test_data).import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
-        ImportsPage(page).header.click_sessions_header()
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU
         )

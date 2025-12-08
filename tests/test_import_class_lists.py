@@ -31,8 +31,8 @@ def setup_class_list_import(
         SessionsEditPage(page).schedule_a_valid_session(
             offset_days=7, skip_weekends=False
         )
-
-    SessionsOverviewPage(page).header.click_imports_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, test_data).navigate_to_class_list_record_import(
         str(school), year_group
@@ -183,7 +183,8 @@ def test_class_list_file_upload_whitespace_normalization(
     input_file, _ = ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
     )
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
     )

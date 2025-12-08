@@ -2,11 +2,7 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
-from mavis.test.constants import (
-    ConsentMethod,
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import ConsentMethod, Programme, Vaccine
 from mavis.test.data import ClassFileMapping
 from mavis.test.data_models import Clinic, VaccinationRecord
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
@@ -61,7 +57,8 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, test_data).import_class_list(
             class_list_file, year_group
         )
-        ImportsPage(page).header.click_sessions_header()
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV
         )
@@ -243,7 +240,8 @@ def test_session_activity_notes_order(
     SessionsPatientPage(page).click_session_activity_and_notes()
     SessionsPatientSessionActivityPage(page).add_note(note_1)
     SessionsPatientSessionActivityPage(page).add_note(note_2)
-    SessionsPatientSessionActivityPage(page).header.click_sessions_header()
+    SessionsPatientSessionActivityPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_for(str(child))
@@ -285,7 +283,8 @@ def test_triage_consent_given_and_triage_outcome(
         yes_to_health_questions=True
     )
 
-    SessionsPatientPage(page).header.click_sessions_header()
+    SessionsPatientPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
 
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
 
@@ -359,7 +358,8 @@ def test_verify_excel_export_and_clinic_invitation(
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     generic_clinic = Clinic(name="Community clinic")
 
-    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         generic_clinic, Programme.HPV.group
     )
@@ -369,7 +369,8 @@ def test_verify_excel_export_and_clinic_invitation(
             offset_days=0, skip_weekends=False
         )
 
-    SessionsOverviewPage(page).header.click_children_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).search_for_a_child_name(str(child))
     ChildrenSearchPage(page).click_record_for_child(child)
     ChildRecordPage(page).click_invite_to_community_clinic()
@@ -396,7 +397,8 @@ def test_verify_excel_export_and_clinic_invitation(
     SessionsVaccinationWizardPage(page).click_continue_button()
     SessionsVaccinationWizardPage(page).click_confirm_button()
     expect_alert_text(page, "Vaccination outcome recorded for HPV")
-    SessionsPatientPage(page).header.click_sessions_header()
+    SessionsPatientPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     assert SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
@@ -472,7 +474,8 @@ def test_accessibility(
     school = schools[Programme.HPV][0]
     child = children[Programme.HPV][0]
 
-    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     AccessibilityHelper(page).check_accessibility()
 
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)

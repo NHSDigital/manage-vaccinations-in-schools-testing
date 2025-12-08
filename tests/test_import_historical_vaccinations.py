@@ -106,7 +106,9 @@ def test_historical_vaccination_file_upload_creates_child(
     ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
         VaccsFileMapping.HIST_HPV
     )
-    ImportsPage(page).header.click_children_header()
+
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).click_advanced_filters()
     ChildrenSearchPage(page).check_children_aged_out_of_programmes()
