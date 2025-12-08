@@ -108,7 +108,8 @@ def test_online_consent_school_moves_with_existing_patient(
     SchoolMovesPage(page).click_child(child)
     ReviewSchoolMovePage(page).confirm()
 
-    SchoolMovesPage(page).header.click_sessions_header()
+    SchoolMovesPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[1], Programme.FLU
     )
@@ -174,7 +175,8 @@ def test_online_consent_school_moves_with_new_patient(
     ConsentResponsePage(page).click_create_new_record()
     CreateNewRecordConsentResponsePage(page).create_new_record()
 
-    UnmatchedConsentResponsesPage(page).header.click_sessions_header()
+    UnmatchedConsentResponsesPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[1], Programme.FLU
     )

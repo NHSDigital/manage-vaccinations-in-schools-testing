@@ -178,10 +178,12 @@ def upload_offline_vaccination(
             child.year_group,
             programme.group,
         )
-        ImportsPage(page).header.click_sessions_header()
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(school, programme)
         session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-        SessionsOverviewPage(page).header.click_imports_header()
+        SessionsOverviewPage(page).header.click_mavis_header()
+        DashboardPage(page).click_imports()
         ImportsPage(page).click_upload_records()
         ImportRecordsWizardPage(
             page, test_data
@@ -191,7 +193,8 @@ def upload_offline_vaccination(
             session_id=session_id,
             programme_group=programme.group,
         )
-        ImportsPage(page).header.click_programmes_header()
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_programmes()
         ProgrammesListPage(page).click_programme_for_current_year(programme)
         ProgrammeOverviewPage(page).tabs.click_children_tab()
         ProgrammeChildrenPage(page).search_for_child(child)

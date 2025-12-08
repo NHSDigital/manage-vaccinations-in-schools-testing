@@ -67,7 +67,8 @@ def setup_confirm_and_ignore(
         SessionsEditPage(page).schedule_a_valid_session(
             offset_days=7, skip_weekends=False
         )
-    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[1], Programme.HPV
     )
@@ -76,24 +77,28 @@ def setup_confirm_and_ignore(
         SessionsEditPage(page).schedule_a_valid_session(
             offset_days=7, skip_weekends=False
         )
-    SessionsOverviewPage(page).header.click_sessions_header()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[0], Programme.HPV
     )
     upload_class_list()
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).search_for_a_child_name(str(children[0]))
     ChildrenSearchPage(page).click_record_for_child(children[0])
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).expect_activity_log_header(
         f"Added to the session at {schools[0]}"
     )
-    ChildActivityLogPage(page).header.click_sessions_header()
+    ChildActivityLogPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[1], Programme.HPV
     )
     upload_class_list()
-    ImportsPage(page).header.click_school_moves_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_school_moves()
 
 
 def test_confirm_and_ignore(
@@ -191,6 +196,7 @@ def test_accessibility(
     DownloadSchoolMovesPage(page).click_continue()
     AccessibilityHelper(page).check_accessibility()
 
-    DownloadSchoolMovesPage(page).header.click_school_moves_header()
+    DownloadSchoolMovesPage(page).header.click_mavis_header()
+    DashboardPage(page).click_school_moves()
     SchoolMovesPage(page).click_child(child)
     AccessibilityHelper(page).check_accessibility()

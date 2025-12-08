@@ -1,11 +1,6 @@
 import pytest
 
-from mavis.test.constants import (
-    ConsentMethod,
-    ConsentOption,
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import ConsentMethod, ConsentOption, Programme, Vaccine
 from mavis.test.data import ClassFileMapping
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
@@ -46,7 +41,8 @@ def setup_session_with_file_upload(
         school = schools[Programme.FLU][0]
         year_group = year_groups[Programme.FLU]
         batch_name = add_vaccine_batch(Vaccine.FLUENZ)
-        VaccinesPage(page).header.click_sessions_header()
+        VaccinesPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU.group
         )
@@ -61,7 +57,8 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, test_data).import_class_list(
             class_file_mapping, year_group, Programme.FLU.group
         )
-        ImportsPage(page).header.click_sessions_header()
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         return batch_name
 
     return _factory

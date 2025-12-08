@@ -50,7 +50,8 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, test_data).import_class_list(
             class_list_file, year_group
         )
-        ImportsPage(page).header.click_sessions_header()
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         yield
 
     return _setup

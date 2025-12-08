@@ -137,13 +137,15 @@ def test_archive_and_unarchive_child_via_cohort_upload(
         CohortsFileMapping.FIXED_CHILD
     )
 
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
     ChildrenSearchPage(page).click_record_for_child(child)
     ChildRecordPage(page).click_archive_child_record()
     ChildArchivePage(page).archive_child_record()
 
-    ChildRecordPage(page).header.click_programmes_header()
+    ChildRecordPage(page).header.click_mavis_header()
+    DashboardPage(page).click_programmes()
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
@@ -152,7 +154,8 @@ def test_archive_and_unarchive_child_via_cohort_upload(
         CohortsFileMapping.FIXED_CHILD
     )
 
-    ImportsPage(page).header.click_children_header()
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
     ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
     ChildrenSearchPage(page).click_record_for_child(child)
     ChildRecordPage(page).check_child_is_unarchived()
@@ -223,7 +226,8 @@ def test_verify_careplus_report_for_doubles(
     ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
-    ProgrammeOverviewPage(page).header.click_programmes_header()
+    ProgrammeOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_programmes()
     ProgrammesListPage(page).click_programme_for_current_year(Programme.TD_IPV)
     ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
@@ -267,7 +271,8 @@ def test_verify_csv_report_for_doubles(
     ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
-    ProgrammeOverviewPage(page).header.click_programmes_header()
+    ProgrammeOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_programmes()
     ProgrammesListPage(page).click_programme_for_current_year(Programme.TD_IPV)
     ProgrammeOverviewPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
@@ -392,7 +397,8 @@ def test_accessibility(
     ProgrammeOverviewPage(page).click_continue()
     AccessibilityHelper(page).check_accessibility()
 
-    ProgrammeOverviewPage(page).header.click_programmes_header()
+    ProgrammeOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_programmes()
     ProgrammesListPage(page).click_programme_for_current_year(Programme.FLU)
 
     ProgrammeOverviewPage(page).tabs.click_sessions_tab()
