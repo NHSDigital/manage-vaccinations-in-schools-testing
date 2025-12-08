@@ -98,9 +98,12 @@ def setup_mav_853(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
 
+    ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+
+    SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_programmes()
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
