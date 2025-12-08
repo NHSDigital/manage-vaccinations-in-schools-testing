@@ -6,7 +6,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
-from mavis.test.data import FileMapping, TestData, read_scenario_list_from_file
+from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     format_datetime_for_upload_link,
@@ -19,7 +19,7 @@ class ImportRecordsWizardPage:
     def __init__(
         self,
         page: Page,
-        test_data: TestData,
+        test_data: FileGenerator,
     ) -> None:
         self.page = page
         self.test_data = test_data
