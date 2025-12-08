@@ -1,22 +1,9 @@
-from .helpers import (
-    add_vaccine_batch,
-    file_generator,
-    log_in_as_medical_secretary,
-    log_in_as_nurse,
-    log_in_as_prescriber,
-    schedule_mmr_session_and_get_consent_url,
-    schedule_session_and_get_consent_url,
-    set_feature_flags,
-    setup_session_and_batches_with_fixed_child,
-    upload_offline_vaccination,
-)
-from .models import (
-    authenticate_api,
+from .data_models import (
     children,
     clinics,
     delete_team_after_tests,
+    file_generator,
     healthcare_assistant,
-    imms_base_url,
     medical_secretary,
     nurse,
     onboarding,
@@ -30,6 +17,18 @@ from .models import (
     team,
     year_groups,
 )
+from .helpers import (
+    add_vaccine_batch,
+    log_in_as_medical_secretary,
+    log_in_as_nurse,
+    log_in_as_prescriber,
+    schedule_mmr_session_and_get_consent_url,
+    schedule_session_and_get_consent_url,
+    set_feature_flags,
+    setup_session_and_batches_with_fixed_child,
+    upload_offline_vaccination,
+)
+from .imms_api import authenticate_api
 from .playwright import (
     base_url,
     basic_auth_credentials,
@@ -51,7 +50,6 @@ __all__ = [
     "delete_team_after_tests",
     "file_generator",
     "healthcare_assistant",
-    "imms_base_url",
     "log_in_as_medical_secretary",
     "log_in_as_nurse",
     "log_in_as_prescriber",
