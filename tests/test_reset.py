@@ -36,7 +36,7 @@ def setup_all_programmes(
     add_vaccine_batch,
     schools,
     page,
-    test_data,
+    file_generator,
     children,
 ):
     school = schools["doubles"][0]
@@ -52,7 +52,7 @@ def setup_all_programmes(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.FIXED_CHILD,
         child.year_group,
         "doubles",

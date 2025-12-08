@@ -19,10 +19,10 @@ class ImportRecordsWizardPage:
     def __init__(
         self,
         page: Page,
-        test_data: FileGenerator,
+        file_generator: FileGenerator,
     ) -> None:
         self.page = page
-        self.test_data = test_data
+        self.file_generator = file_generator
         self.header = HeaderComponent(page)
 
         self.alert_success = self.page.get_by_text("Import processing started")
@@ -170,7 +170,7 @@ class ImportRecordsWizardPage:
         session_id: str | None = None,
         programme_group: str = Programme.HPV.group,
     ) -> tuple[Path, Path]:
-        _input_file_path, _output_file_path = self.test_data.get_file_paths(
+        _input_file_path, _output_file_path = self.file_generator.get_file_paths(
             file_mapping=file_mapping,
             session_id=session_id,
             programme_group=programme_group,
@@ -222,7 +222,7 @@ class ImportRecordsWizardPage:
 
     @step("Verify upload output for {file_path}")
     def verify_upload_output(self, file_path: Path) -> None:
-        _expected_errors = self.test_data.get_expected_errors(file_path)
+        _expected_errors = self.file_generator.get_expected_errors(file_path)
         if _expected_errors is not None:
             for _msg in _expected_errors:
                 if _msg.startswith("!"):

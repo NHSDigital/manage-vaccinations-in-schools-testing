@@ -1,5 +1,6 @@
 from .helpers import (
     add_vaccine_batch,
+    file_generator,
     log_in_as_medical_secretary,
     log_in_as_nurse,
     log_in_as_prescriber,
@@ -7,7 +8,6 @@ from .helpers import (
     schedule_session_and_get_consent_url,
     set_feature_flags,
     setup_session_and_batches_with_fixed_child,
-    test_data,
     upload_offline_vaccination,
 )
 from .models import (
@@ -49,6 +49,7 @@ __all__ = [
     "children",
     "clinics",
     "delete_team_after_tests",
+    "file_generator",
     "healthcare_assistant",
     "imms_base_url",
     "log_in_as_medical_secretary",
@@ -69,7 +70,6 @@ __all__ = [
     "subteam",
     "superuser",
     "team",
-    "test_data",
     "upload_offline_vaccination",
     "year_groups",
 ]
