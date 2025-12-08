@@ -11,8 +11,6 @@ faker = Faker()
 
 DEFAULT_TIMEOUT_SECONDS = 30
 
-MAVIS_NOTE_LENGTH_LIMIT = 1000
-
 
 def format_datetime_for_upload_link(now: datetime) -> str:
     am_or_pm = now.strftime(format="%p").lower()

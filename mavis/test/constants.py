@@ -6,6 +6,8 @@ from faker import Faker
 
 faker = Faker("en_GB")
 
+MAVIS_NOTE_LENGTH_LIMIT = 1000
+
 
 class ConsentOption(StrEnum):
     INJECTION = "Injection"
