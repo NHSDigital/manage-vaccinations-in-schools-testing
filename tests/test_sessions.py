@@ -45,7 +45,7 @@ def setup_session_with_file_upload(
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
-    def _setup(class_list_file):
+    def _setup(class_list_file, offset_days: int = 0):
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
@@ -57,10 +57,12 @@ def setup_session_with_file_upload(
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV
         )
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+        if not SessionsOverviewPage(page).is_date_scheduled(
+            get_offset_date(offset_days)
+        ):
             SessionsOverviewPage(page).schedule_or_edit_session()
             SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
+                offset_days=offset_days, skip_weekends=False
             )
         yield
 
@@ -80,6 +82,13 @@ def setup_random_child(setup_session_with_file_upload):
 @pytest.fixture
 def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
+
+
+@pytest.fixture
+def setup_fixed_child_future_date(setup_session_with_file_upload):
+    yield from setup_session_with_file_upload(
+        ClassFileMapping.FIXED_CHILD, offset_days=7
+    )
 
 
 def test_session_lifecycle(
@@ -405,9 +414,8 @@ def test_verify_excel_export_and_clinic_invitation(
 
 @issue("MAV-2023")
 def test_session_verify_consent_reminders_and_pdf_downloads(
-    setup_fixed_child,
+    setup_fixed_child_future_date,
     page,
-    schools,
 ):
     """
     Test: Click the 'Send reminders' link and PDF download links in sessions and
@@ -419,9 +427,8 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
     Verification:
     - No errors occur when sending reminders or downloading PDFs.
     """
-    school = schools[Programme.HPV][0]
 
-    SessionsOverviewPage(page).click_send_reminders(school)
+    SessionsOverviewPage(page).send_consent_reminders()
     SessionsOverviewPage(page).download_consent_form(Programme.HPV)
 
 

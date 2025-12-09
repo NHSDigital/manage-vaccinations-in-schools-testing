@@ -11,7 +11,6 @@ from mavis.test.constants import (
     Programme,
 )
 from mavis.test.data import get_session_id
-from mavis.test.data_models import School
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
@@ -52,6 +51,9 @@ class SessionsOverviewPage:
             "link", name="Consent refused"
         )
         self.has_a_refusal_link = self.page.get_by_role("link", name="Has a refusal")
+        self.send_manual_consent_reminders_button = self.page.get_by_role(
+            "button", name="Send manual consent reminders"
+        )
 
     def get_total_for_category(self, category: str) -> int:
         category_locator = self.page.locator(
@@ -93,20 +95,22 @@ class SessionsOverviewPage:
     def click_edit_session(self) -> None:
         self.edit_session_link.click()
 
+    @step("Click Send manual consent reminders")
+    def click_send_manual_consent_reminders(self) -> None:
+        self.send_manual_consent_reminders_button.click()
+
     def get_online_consent_url(self, *programmes: Programme) -> str:
         programme_names = [str(programme) for programme in programmes]
         link_text = f"View the {' and '.join(programme_names)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
 
-    @step("Click on Send reminders")
-    def click_send_reminders(self, school: School) -> None:
+    @step("Send consent reminders")
+    def send_consent_reminders(self) -> None:
         self.send_reminders_link.click()
         expect(
             self.page.get_by_role("heading", name="Manage consent reminders")
         ).to_be_visible()
-        self.page.get_by_role(
-            "link", name=school.name
-        ).click()  # Update when MAV-2048 is done
+        self.click_send_manual_consent_reminders()
 
     @step("Review child with no response")
     def review_child_with_no_response(self) -> None:
