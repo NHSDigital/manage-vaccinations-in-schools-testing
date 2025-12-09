@@ -108,7 +108,6 @@ class SessionsOverviewPage:
             "link", name=school.name
         ).click()  # Update when MAV-2048 is done
 
-
     @step("Review child with no response")
     def review_child_with_no_response(self) -> None:
         self.review_no_consent_response_link.click()
