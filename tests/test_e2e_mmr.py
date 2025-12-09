@@ -10,7 +10,6 @@ from mavis.test.pages import (
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
     StartPage,
@@ -98,9 +97,9 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
 
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    SessionsRegisterPage(page).register_child_as_attending(child)
-    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).register_child_as_attending(child)
+    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
@@ -170,9 +169,9 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
         schools[0], Programme.MMR
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    SessionsRegisterPage(page).register_child_as_attending(child)
-    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).register_child_as_attending(child)
+    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
@@ -267,9 +266,9 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
         schools[0], Programme.MMR
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    SessionsRegisterPage(page).register_child_as_attending(child)
-    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).register_child_as_attending(child)
+    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)

@@ -3,7 +3,7 @@ from playwright.sync_api import Page
 from mavis.test.annotations import step
 
 
-class SessionsTabs:
+class SchoolsTabs:
     def __init__(
         self,
         page: Page,
@@ -17,17 +17,9 @@ class SessionsTabs:
         link.click()
         link.get_by_role("strong").wait_for()
 
-    @step("Click on Overview tab")
-    def click_overview_tab(self) -> None:
-        self._select_tab("Overview")
-
-    @step("Click on PSDs tab")
-    def click_psds_tab(self) -> None:
-        self._select_tab("PSDs")
-
-    @step("Click on Record vaccinations")
-    def click_record_vaccinations_tab(self) -> None:
-        self._select_tab("Record vaccinations")
+    @step("Click on Sessions tab")
+    def click_sessions_tab(self) -> None:
+        self._select_tab("Sessions")
 
     @step("Click on Children tab")
     def click_children_tab(self) -> None:

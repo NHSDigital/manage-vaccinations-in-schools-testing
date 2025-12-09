@@ -20,6 +20,7 @@ from .programmes import (
 )
 from .reports import ReportsDownloadPage, ReportsVaccinationsPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
+from .schools import SchoolsChildrenPage, SchoolsSearchPage, SchoolsSessionsPage
 from .sessions import (
     GillickCompetencePage,
     NurseConsentWizardPage,
@@ -30,7 +31,6 @@ from .sessions import (
     SessionsPatientSessionActivityPage,
     SessionsPsdPage,
     SessionsRecordVaccinationsPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
@@ -79,6 +79,9 @@ __all__ = [
     "ReportsVaccinationsPage",
     "ReviewSchoolMovePage",
     "SchoolMovesPage",
+    "SchoolsChildrenPage",
+    "SchoolsSearchPage",
+    "SchoolsSessionsPage",
     "ServiceErrorPage",
     "SessionsChildrenPage",
     "SessionsEditPage",
@@ -87,7 +90,6 @@ __all__ = [
     "SessionsPatientSessionActivityPage",
     "SessionsPsdPage",
     "SessionsRecordVaccinationsPage",
-    "SessionsRegisterPage",
     "SessionsSearchPage",
     "SessionsVaccinationWizardPage",
     "StartPage",
