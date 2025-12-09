@@ -7,3 +7,7 @@ UnicodeApostrophe1,Tʼest1,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_
 UnicodeApostrophe2,T`est2,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,<<RANDOM_POSTCODE>>,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
 UnicodeApostrophe3,T’est3,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,<<RANDOM_POSTCODE>>,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
 DuplicateEmail,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,<<RANDOM_POSTCODE>>,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,dad@example.com,,<<FIXED_YEAR_GROUP>>
+PostcodeNFA,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,ZZ99 3VZ,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
+PostcodeAddressNotKnown,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,ZZ99 3WZ,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
+PostcodeAddressNotSpecified,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,ZZ99 3CZ,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>
+
