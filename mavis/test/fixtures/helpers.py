@@ -4,7 +4,7 @@ import re
 import pytest
 
 from mavis.test.constants import ConsentOption, Programme, Vaccine
-from mavis.test.data import ClassFileMapping, TestData, VaccsFileMapping
+from mavis.test.data import ClassFileMapping, FileGenerator, VaccsFileMapping
 from mavis.test.data_models import School
 from mavis.test.pages import (
     AddBatchPage,
@@ -142,7 +142,7 @@ def upload_offline_vaccination(
     schools,
     page,
     children,
-    test_data,
+    file_generator,
 ):
     def wrapper(
         programme: Programme, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -168,7 +168,7 @@ def upload_offline_vaccination(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
             programme.group,
@@ -186,9 +186,9 @@ def upload_offline_vaccination(
         DashboardPage(page).click_imports()
         ImportsPage(page).click_upload_records()
         ImportRecordsWizardPage(
-            page, test_data
+            page, file_generator
         ).navigate_to_vaccination_records_import()
-        ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+        ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
             file_mapping=vaccs_file,
             session_id=session_id,
             programme_group=programme.group,
@@ -211,7 +211,7 @@ def setup_session_and_batches_with_fixed_child(
     schools,
     children,
     page,
-    test_data,
+    file_generator,
     nurse,
     team,
 ):
@@ -231,7 +231,7 @@ def setup_session_and_batches_with_fixed_child(
             DashboardPage(page).click_schools()
             SchoolsSearchPage(page).click_school(school)
             SchoolsChildrenPage(page).click_import_class_lists()
-            ImportRecordsWizardPage(page, test_data).import_class_list(
+            ImportRecordsWizardPage(page, file_generator).import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,
                 programme_group,
@@ -245,5 +245,5 @@ def setup_session_and_batches_with_fixed_child(
 
 
 @pytest.fixture
-def test_data(organisation, schools, nurse, children, clinics, year_groups):
-    return TestData(organisation, schools, nurse, children, clinics, year_groups)
+def file_generator(organisation, schools, nurse, children, clinics, year_groups):
+    return FileGenerator(organisation, schools, nurse, children, clinics, year_groups)

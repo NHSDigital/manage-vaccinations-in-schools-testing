@@ -32,7 +32,7 @@ def setup_session_with_file_upload(
     log_in_as_prescriber,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
     add_vaccine_batch,
 ):
@@ -47,7 +47,7 @@ def setup_session_with_file_upload(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_file_mapping, year_group, Programme.FLU.group
         )
         ImportsPage(page).header.click_mavis_header()

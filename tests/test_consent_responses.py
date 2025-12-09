@@ -117,7 +117,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     log_in_as_nurse,
     children,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Match an unmatched consent response to a child and verify activity log.
@@ -138,7 +138,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD
     )
     ImportsPage(page).header.click_mavis_header()
@@ -238,7 +238,7 @@ def test_accessibility(
     log_in_as_nurse,
     children,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Check accessibility of consent response pages.
@@ -254,7 +254,7 @@ def test_accessibility(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD
     )
     ImportsPage(page).header.click_mavis_header()
@@ -278,7 +278,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     upload_offline_vaccination,
     children,
     page,
-    test_data,
+    file_generator,
 ):
     """
     Test: Submit a consent form that won't match automatically, find a patient
@@ -305,7 +305,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.TWO_FIXED_CHILDREN
     )
 

@@ -32,7 +32,7 @@ pytestmark = pytest.mark.children
 def setup_children_session(
     log_in_as_nurse,
     page,
-    test_data,
+    file_generator,
     schools,
     year_groups,
 ):
@@ -43,7 +43,7 @@ def setup_children_session(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group
         )
         ImportsPage(page).header.click_mavis_header()
@@ -78,7 +78,7 @@ def setup_mav_853(
     log_in_as_nurse,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -87,7 +87,7 @@ def setup_mav_853(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
     ImportsPage(page).header.click_mavis_header()
@@ -107,15 +107,17 @@ def setup_mav_853(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD
     )
 
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, test_data).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, test_data).upload_and_verify_output(
+    ImportRecordsWizardPage(
+        page, file_generator
+    ).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )

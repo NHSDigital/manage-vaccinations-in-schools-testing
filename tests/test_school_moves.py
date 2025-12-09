@@ -29,7 +29,7 @@ pytestmark = pytest.mark.school_moves
 def setup_confirm_and_ignore(
     log_in_as_nurse,
     page,
-    test_data,
+    file_generator,
     schools,
     year_groups,
     children,
@@ -38,25 +38,25 @@ def setup_confirm_and_ignore(
     year_group = year_groups[Programme.HPV]
     children = children[Programme.HPV]
     # We need to make sure we're uploading the same class with the same NHS numbers.
-    input_file_path, output_file_path = test_data.get_file_paths(
+    input_file_path, output_file_path = file_generator.get_file_paths(
         ClassFileMapping.TWO_FIXED_CHILDREN,
     )
 
     def upload_class_list():
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).select_year_groups(year_group)
-        ImportRecordsWizardPage(page, test_data).set_input_file(input_file_path)
-        ImportRecordsWizardPage(page, test_data).click_continue()
+        ImportRecordsWizardPage(page, file_generator).select_year_groups(year_group)
+        ImportRecordsWizardPage(page, file_generator).set_input_file(input_file_path)
+        ImportRecordsWizardPage(page, file_generator).click_continue()
         upload_time = get_current_datetime()
-        ImportRecordsWizardPage(page, test_data).click_uploaded_file_datetime(
+        ImportRecordsWizardPage(page, file_generator).click_uploaded_file_datetime(
             upload_time
         )
-        ImportRecordsWizardPage(page, test_data).wait_for_processed()
-        if ImportRecordsWizardPage(page, test_data).is_preview_page_link_visible():
-            ImportRecordsWizardPage(page, test_data).approve_preview_if_shown(
+        ImportRecordsWizardPage(page, file_generator).wait_for_processed()
+        if ImportRecordsWizardPage(page, file_generator).is_preview_page_link_visible():
+            ImportRecordsWizardPage(page, file_generator).approve_preview_if_shown(
                 upload_time
             )
-        ImportRecordsWizardPage(page, test_data).verify_upload_output(
+        ImportRecordsWizardPage(page, file_generator).verify_upload_output(
             file_path=output_file_path
         )
 

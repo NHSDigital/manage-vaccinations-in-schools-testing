@@ -9,6 +9,7 @@ from .fixtures import (
     children,
     clinics,
     delete_team_after_tests,
+    file_generator,
     healthcare_assistant,
     imms_base_url,
     log_in_as_medical_secretary,
@@ -29,7 +30,6 @@ from .fixtures import (
     subteam,
     superuser,
     team,
-    test_data,
     upload_offline_vaccination,
     year_groups,
 )
@@ -46,6 +46,7 @@ __all__ = [
     "children",
     "clinics",
     "delete_team_after_tests",
+    "file_generator",
     "healthcare_assistant",
     "imms_base_url",
     "log_in_as_medical_secretary",
@@ -69,7 +70,6 @@ __all__ = [
     "subteam",
     "superuser",
     "team",
-    "test_data",
     "upload_offline_vaccination",
     "year_groups",
 ]

@@ -44,7 +44,7 @@ def setup_session_with_file_upload(
     log_in_as_nurse,
     schools,
     page,
-    test_data,
+    file_generator,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -53,7 +53,7 @@ def setup_session_with_file_upload(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, test_data).import_class_list(
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD,
         year_group,
         Programme.FLU.group,
