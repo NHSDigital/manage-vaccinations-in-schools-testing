@@ -17,10 +17,6 @@ class SessionsTabs:
         link.click()
         link.get_by_role("strong").wait_for()
 
-    @step("Click on Register tab")
-    def click_register_tab(self) -> None:
-        self._select_tab("Register")
-
     @step("Click on Overview tab")
     def click_overview_tab(self) -> None:
         self._select_tab("Overview")

@@ -18,7 +18,6 @@ from mavis.test.pages import (
     SessionsPatientPage,
     SessionsPatientSessionActivityPage,
     SessionsRecordVaccinationsPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
@@ -368,9 +367,9 @@ def test_accessibility(
     NurseConsentWizardPage(page).click_confirm()
     AccessibilityHelper(page).check_accessibility()
 
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    SessionsRegisterPage(page).register_child_as_attending(child)
-    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).register_child_as_attending(child)
+    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     AccessibilityHelper(page).check_accessibility()
 
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)

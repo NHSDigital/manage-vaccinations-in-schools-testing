@@ -19,7 +19,6 @@ from mavis.test.pages import (
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
     VaccinesPage,
@@ -111,9 +110,9 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             school, programme_group
         )
         if programme_group is Programme.HPV:
-            SessionsOverviewPage(page).tabs.click_register_tab()
-            SessionsRegisterPage(page).register_child_as_attending(child)
-        SessionsRegisterPage(page).tabs.click_children_tab()
+            SessionsOverviewPage(page).tabs.click_children_tab()
+            SessionsChildrenPage(page).register_child_as_attending(child)
+        SessionsChildrenPage(page).tabs.click_children_tab()
         SessionsChildrenPage(page).search.search_and_click_child(child)
         programmes = (
             [Programme.MENACWY, Programme.TD_IPV]

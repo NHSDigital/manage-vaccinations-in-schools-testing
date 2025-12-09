@@ -21,7 +21,6 @@ from mavis.test.pages import (
     SessionsPatientPage,
     SessionsPatientSessionActivityPage,
     SessionsRecordVaccinationsPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
@@ -143,7 +142,7 @@ def test_attendance_filters_functionality(
     """
     Test: Verify attendance filters on the register tab work as expected.
     Steps:
-    1. Open the register tab in a session.
+    1. Open the children tab in a session.
     2. Check and uncheck year group checkboxes and update results.
     3. Use advanced filters to include archived records.
     Verification:
@@ -151,18 +150,18 @@ def test_attendance_filters_functionality(
     """
     year_group = year_groups[Programme.HPV]
 
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    search_summary = SessionsRegisterPage(page).page.get_by_text("Showing 1 to")
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    search_summary = SessionsChildrenPage(page).page.get_by_text("Showing 1 to")
 
     expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-    SessionsRegisterPage(page).search.check_year_checkbox(year_group)
-    SessionsRegisterPage(page).search.click_on_update_results()
+    SessionsChildrenPage(page).search.check_year_checkbox(year_group)
+    SessionsChildrenPage(page).search.click_on_update_results()
     expect(search_summary).to_contain_text("Showing 1 to")
 
-    SessionsRegisterPage(page).search.uncheck_year_checkbox(year_group)
-    SessionsRegisterPage(page).search.click_advanced_filters()
-    SessionsRegisterPage(page).search.check_archived_records_checkbox()
-    SessionsRegisterPage(page).search.click_on_update_results()
+    SessionsChildrenPage(page).search.uncheck_year_checkbox(year_group)
+    SessionsChildrenPage(page).search.click_advanced_filters()
+    SessionsChildrenPage(page).search.check_archived_records_checkbox()
+    SessionsChildrenPage(page).search.click_on_update_results()
     expect(search_summary).not_to_be_visible()
 
 
@@ -289,7 +288,7 @@ def test_triage_consent_given_and_triage_outcome(
 
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
 
-    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).click_update_triage_outcome()
@@ -384,9 +383,9 @@ def test_verify_excel_export_and_clinic_invitation(
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_positive_consent()
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    SessionsRegisterPage(page).register_child_as_attending(child)
-    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).register_child_as_attending(child)
+    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
     vaccination_record = VaccinationRecord(child, Programme.HPV, batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
@@ -494,10 +493,7 @@ def test_accessibility(
     SessionsOverviewPage(page).tabs.click_children_tab()
     AccessibilityHelper(page).check_accessibility()
 
-    SessionsChildrenPage(page).tabs.click_register_tab()
-    AccessibilityHelper(page).check_accessibility()
-
-    SessionsRegisterPage(page).search.search_and_click_child(child)
+    SessionsChildrenPage(page).search.search_and_click_child(child)
     AccessibilityHelper(page).check_accessibility()
 
     SessionsPatientPage(page).click_session_activity_and_notes()

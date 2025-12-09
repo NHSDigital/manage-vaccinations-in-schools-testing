@@ -19,7 +19,6 @@ from mavis.test.pages import (
     SessionsPatientPage,
     SessionsPsdPage,
     SessionsRecordVaccinationsPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
     StartPage,
@@ -142,9 +141,9 @@ def test_delivering_vaccination_after_psd(
 
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
-    SessionsOverviewPage(page).tabs.click_register_tab()
-    SessionsRegisterPage(page).register_child_as_attending(child)
-    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).register_child_as_attending(child)
+    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(

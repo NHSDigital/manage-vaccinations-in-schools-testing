@@ -31,7 +31,6 @@ from .sessions import (
     SessionsPatientSessionActivityPage,
     SessionsPsdPage,
     SessionsRecordVaccinationsPage,
-    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
@@ -91,7 +90,6 @@ __all__ = [
     "SessionsPatientSessionActivityPage",
     "SessionsPsdPage",
     "SessionsRecordVaccinationsPage",
-    "SessionsRegisterPage",
     "SessionsSearchPage",
     "SessionsVaccinationWizardPage",
     "StartPage",
