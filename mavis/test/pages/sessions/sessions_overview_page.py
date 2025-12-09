@@ -108,9 +108,6 @@ class SessionsOverviewPage:
             "link", name=school.name
         ).click()  # Update when MAV-2048 is done
 
-    @step("Click on Import class lists")
-    def click_import_class_lists(self) -> None:
-        self.import_class_lists_link.click()
 
     @step("Review child with no response")
     def review_child_with_no_response(self) -> None:
@@ -167,7 +164,7 @@ class SessionsOverviewPage:
     def is_date_scheduled(self, date: date) -> bool:
         return self.page.get_by_text(
             get_formatted_date_for_session_dates(date)
-        ).is_visible()
+        ).first.is_visible()
 
     @step("Click Consent refused")
     def click_consent_refused(self) -> None:

@@ -13,6 +13,8 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     NurseConsentWizardPage,
+    SchoolsChildrenPage,
+    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
@@ -29,13 +31,13 @@ pytestmark = pytest.mark.sessions
 
 
 @pytest.fixture
-def setup_tests(log_in_as_nurse, page):
+def go_to_sessions(log_in_as_nurse, page):
     DashboardPage(page).click_sessions()
 
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    setup_tests,
+    log_in_as_nurse,
     schools,
     page,
     test_data,
@@ -45,15 +47,9 @@ def setup_session_with_file_upload(
     year_group = year_groups[Programme.HPV]
 
     def _setup(class_list_file):
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, Programme.HPV.group
-        )
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
-        SessionsOverviewPage(page).click_import_class_lists()
+        DashboardPage(page).click_schools()
+        SchoolsSearchPage(page).click_school(school)
+        SchoolsChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, test_data).import_class_list(
             class_list_file, year_group
         )
@@ -62,6 +58,11 @@ def setup_session_with_file_upload(
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV
         )
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
+                offset_days=0, skip_weekends=False
+            )
         yield
 
     return _setup
@@ -83,7 +84,7 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 
 def test_session_lifecycle(
-    setup_tests,
+    go_to_sessions,
     schools,
     page,
 ):
@@ -109,7 +110,7 @@ def test_session_lifecycle(
 
 
 def test_create_invalid_session(
-    setup_tests,
+    go_to_sessions,
     schools,
     page,
 ):

@@ -16,6 +16,8 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     NurseConsentWizardPage,
+    SchoolsChildrenPage,
+    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
@@ -54,6 +56,13 @@ def setup_session_with_file_upload(
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
         }
         VaccinesPage(page).header.click_mavis_header()
+        DashboardPage(page).click_schools()
+        SchoolsSearchPage(page).click_school(school)
+        SchoolsChildrenPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
+            class_list_file, year_group, Programme.FLU.group
+        )
+        ImportsPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU.group
@@ -63,15 +72,6 @@ def setup_session_with_file_upload(
             SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        SessionsOverviewPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
-            class_list_file, year_group, Programme.FLU.group
-        )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, Programme.FLU
-        )
         yield batch_names
 
     return _setup

@@ -10,6 +10,8 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     NurseConsentWizardPage,
+    SchoolsChildrenPage,
+    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
@@ -37,6 +39,13 @@ def setup_session_with_file_upload(
     year_group = year_groups[Programme.HPV]
 
     def _setup(class_list_file):
+        DashboardPage(page).click_schools()
+        SchoolsSearchPage(page).click_school(school)
+        SchoolsChildrenPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, test_data).import_class_list(
+            class_list_file, year_group
+        )
+        ImportsPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV.group
@@ -46,12 +55,6 @@ def setup_session_with_file_upload(
             SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
-        SessionsOverviewPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, test_data).import_class_list(
-            class_list_file, year_group
-        )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
         yield
 
     return _setup
@@ -64,7 +67,6 @@ def setup_fixed_child(setup_session_with_file_upload):
 
 def test_gillick_competence(
     setup_fixed_child,
-    schools,
     page,
     children,
 ):
@@ -79,9 +81,7 @@ def test_gillick_competence(
     - Gillick competence status is updated and reflected for the child.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -95,7 +95,6 @@ def test_gillick_competence(
 @issue("MAV-955")
 def test_gillick_competence_notes(
     setup_fixed_child,
-    schools,
     page,
     children,
 ):
@@ -113,9 +112,7 @@ def test_gillick_competence_notes(
     - Assessment can be completed and updated with valid notes.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -144,7 +141,6 @@ def test_gillick_competence_notes(
 def test_invalid_consent(
     setup_fixed_child,
     page,
-    schools,
     children,
 ):
     """
@@ -159,9 +155,7 @@ def test_invalid_consent(
     - Activity log contains entries for invalidated consent, refusal, and no response.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).select_needs_consent()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -203,7 +197,6 @@ def test_invalid_consent(
 def test_parent_provides_consent_twice(
     setup_fixed_child,
     page,
-    schools,
     children,
 ):
     """
@@ -220,9 +213,7 @@ def test_parent_provides_consent_twice(
     - Activity log contains entries for refusal, triage, and initial consent.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).select_needs_consent()
 
@@ -265,7 +256,6 @@ def test_parent_provides_consent_twice(
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child,
     page,
-    schools,
     children,
 ):
     """
@@ -284,9 +274,7 @@ def test_conflicting_consent_with_gillick_consent(
     - Activity log contains entry for Gillick competent child consent.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).select_needs_consent()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -346,9 +334,6 @@ def test_accessibility(
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
 
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).select_needs_consent()
 
