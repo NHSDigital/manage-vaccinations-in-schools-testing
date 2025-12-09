@@ -20,6 +20,7 @@ from mavis.test.pages import (
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
+    VaccinesPage,
 )
 from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, expect_alert_text, get_offset_date
 
@@ -333,6 +334,9 @@ def test_accessibility(
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
 
+    VaccinesPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).select_needs_consent()
 
