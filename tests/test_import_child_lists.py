@@ -36,7 +36,8 @@ def test_child_list_file_upload_valid_data(
     - Output indicates successful import of records.
     Scenarios covered:
     AllValidValues, Homeschooled, UnknownSchool, YearGroupEmpty, UnicodeApostrophe1,
-    UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
+    UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail, PostcodeNFA,
+    PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ChildFileMapping.POSITIVE

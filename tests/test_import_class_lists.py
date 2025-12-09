@@ -54,7 +54,8 @@ def test_class_list_file_upload_valid_data(
     - Output indicates successful import of records.
     Scenarios covered:
     AllValidValues, YearGroupOverride, SameYearGroup, EmptyPostCode, EmptyYearGroup,
-    UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail
+    UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail,
+    PostcodeNFA, PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.POSITIVE

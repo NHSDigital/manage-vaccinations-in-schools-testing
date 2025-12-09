@@ -69,6 +69,7 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, page, file_generator):
     HPV:
     HPV_Optional, HPV_Gardasil9, HPV_Gardasil, HPV_Cervarix, HPV_NFA, HPV_Add_Not_Known,
     HPV_AllowPastExpiryDate, HPV_SiteRAU, HPV_SiteRAL, HPV_NotVaccinated,
+    HPV_AddressNFA, HPV_AddressNotKnown, HPV_AddressNotSpecified
     Doubles:
     TDIPV_Optional, TDIPV_NFA, TDIPV_Add_Not_Known, TDIPV_AllowPastExpiryDate,
     TDIPV_SiteRAU, TDIPV_SiteRAL, TDIPV_NotVaccinated, MenACWY_Optional, MenACWY_NFA,
