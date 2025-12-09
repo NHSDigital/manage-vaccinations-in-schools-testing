@@ -1,7 +1,13 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.constants import ConsentMethod, DeliverySite, Programme, Vaccine
+from mavis.test.constants import (
+    MAVIS_NOTE_LENGTH_LIMIT,
+    ConsentMethod,
+    DeliverySite,
+    Programme,
+    Vaccine,
+)
 from mavis.test.data import CohortsFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
@@ -22,7 +28,7 @@ from mavis.test.pages import (
     SessionsVaccinationWizardPage,
     VaccinesPage,
 )
-from mavis.test.utils import MAVIS_NOTE_LENGTH_LIMIT, expect_alert_text, get_offset_date
+from mavis.test.utils import expect_alert_text, get_offset_date
 
 pytestmark = pytest.mark.consent
 

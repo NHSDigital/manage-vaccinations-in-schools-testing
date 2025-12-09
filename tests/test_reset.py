@@ -2,6 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.constants import (
+    MAVIS_NOTE_LENGTH_LIMIT,
     ConsentMethod,
     ConsentOption,
     Programme,
@@ -24,7 +25,6 @@ from mavis.test.pages import (
     VaccinesPage,
 )
 from mavis.test.utils import (
-    MAVIS_NOTE_LENGTH_LIMIT,
     generate_random_string,
     get_offset_date,
 )

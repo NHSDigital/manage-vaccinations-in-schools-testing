@@ -6,6 +6,8 @@ from faker import Faker
 
 faker = Faker("en_GB")
 
+MAVIS_NOTE_LENGTH_LIMIT = 1000
+
 
 class ConsentOption(StrEnum):
     INJECTION = "Injection"
@@ -431,12 +433,7 @@ class Relationship(StrEnum):
 
 
 class ImmsEndpoints(StrEnum):
-    AUTH = "/oauth2/token"
-    CREATE = "/immunisation-fhir-api/FHIR/R4/Immunization"
     READ = "/immunisation-fhir-api/FHIR/R4/Immunization"
-    SEARCH = "/immunisation-fhir-api/FHIR/R4/Immunization/_search"
-    UPDATE = "/immunisation-fhir-api/FHIR/R4/Immunization/"
-    DELETE = "/immunisation-fhir-api/FHIR/R4/Immunization/"
 
     @property
     def to_url(self) -> str:

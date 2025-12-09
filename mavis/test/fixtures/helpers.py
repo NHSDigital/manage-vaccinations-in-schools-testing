@@ -4,7 +4,7 @@ import re
 import pytest
 
 from mavis.test.constants import ConsentOption, Programme, Vaccine
-from mavis.test.data import ClassFileMapping, FileGenerator, VaccsFileMapping
+from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data_models import School
 from mavis.test.pages import (
     AddBatchPage,
@@ -242,8 +242,3 @@ def setup_session_and_batches_with_fixed_child(
             LogInPage(page).log_out()
 
     return _setup
-
-
-@pytest.fixture
-def file_generator(organisation, schools, nurse, children, clinics, year_groups):
-    return FileGenerator(organisation, schools, nurse, children, clinics, year_groups)
