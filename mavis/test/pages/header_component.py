@@ -25,10 +25,15 @@ class HeaderComponent:
         self.school_moves_link = links.get_by_role("link", name="School Moves")
         self.import_records_link = links.get_by_role("link", name="Imports")
         self.your_team_link = links.get_by_role("link", name="Your Team")
+        self.schools_link = links.get_by_role("link", name="Schools")
 
     @step("Click on Manage vaccinations in schools")
     def click_mavis_header(self) -> None:
         self.mavis_link.click()
+
+    @step("Click on Schools")
+    def click_schools_header(self) -> None:
+        self.schools_link.click()
 
     @step("Click on Programmes")
     def click_programmes_header(self) -> None:
