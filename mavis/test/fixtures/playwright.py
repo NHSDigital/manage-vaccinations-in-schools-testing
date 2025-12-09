@@ -35,12 +35,19 @@ def browser_context_args(
     basic_auth_credentials,
     basic_auth_token,
 ) -> dict:
+    # Use context-level settings for privacy mode behavior
+    base_args = {
+        **browser_context_args,
+        "storage_state": None,  # Don't persist storage state (similar to incognito)
+        "accept_downloads": True,
+    }
+
     if basic_auth_token:
         return {
-            **browser_context_args,
+            **base_args,
             "extra_http_headers": {"Authorization": f"Basic {basic_auth_token}"},
         }
     if basic_auth_credentials["username"] and basic_auth_credentials["password"]:
-        return {**browser_context_args, "http_credentials": basic_auth_credentials}
+        return {**base_args, "http_credentials": basic_auth_credentials}
 
-    return browser_context_args
+    return base_args
