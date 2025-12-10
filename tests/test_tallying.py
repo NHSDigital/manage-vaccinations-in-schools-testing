@@ -185,8 +185,6 @@ def test_tallying_totals_match_eligible_patients(
     setup_fixed_child,
     page,
     programme,
-    children,
-    schools,
 ):
     """
     Test: Verify that tallying totals match the number of eligible patients.

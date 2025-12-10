@@ -12,7 +12,7 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session", autouse=False)
+@pytest.fixture(scope="session")
 def authenticate_api():
     _api_auth: dict[str, str] = _read_imms_api_credentials()
     _endpoint = urllib.parse.urljoin(_api_auth["url"], "oauth2-mock/token")

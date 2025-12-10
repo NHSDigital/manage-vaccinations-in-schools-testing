@@ -147,10 +147,8 @@ def test_class_list_file_upload_empty_file(
 @pytest.mark.classlist
 def test_class_list_file_upload_wrong_year_group(
     setup_class_list_import,
-    schools,
     page,
     file_generator,
-    year_groups,
 ):
     """
     Test: Upload a class list file with the wrong year group and verify error handling.
