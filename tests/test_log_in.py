@@ -3,13 +3,8 @@ from playwright.sync_api import expect
 
 from mavis.test.data_models import User
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.pages import (
-    DashboardPage,
-    LogInPage,
-    LogOutPage,
-    StartPage,
-    TeamPage,
-)
+from mavis.test.helpers.page_health_helper import PageHealthHelper
+from mavis.test.pages import DashboardPage, LogInPage, LogOutPage, StartPage, TeamPage
 
 pytestmark = pytest.mark.log_in
 
@@ -88,6 +83,9 @@ def test_login_with_valid_credentials(
     DashboardPage(page).click_your_team()
     TeamPage(page).check_team_name_is_visible(team)
     TeamPage(page).check_team_email_is_visible(team)
+
+    # Check for page health (404 errors and broken links)
+    PageHealthHelper(page).check_page_health(check_links=True, max_links=10)
 
     LogInPage(page).log_out()
 

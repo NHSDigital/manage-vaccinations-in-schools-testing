@@ -204,3 +204,13 @@ def expect_details(page: Page, key: str, value: str) -> None:
     detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
     expect(detail_value).to_contain_text(value)
+
+
+def check_page_health(
+    page: Page, check_links: bool = True, max_links: int = 20
+) -> None:
+    """Quick utility function to check page health without creating a helper instance"""
+    from .helpers.page_health_helper import PageHealthHelper
+
+    helper = PageHealthHelper(page)
+    helper.check_page_health(check_links=check_links, max_links=max_links)
