@@ -11,14 +11,13 @@ from mavis.test.pages import (
     LogInPage,
     NurseConsentWizardPage,
     OnlineConsentWizardPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsPsdPage,
     SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
     StartPage,
@@ -42,15 +41,7 @@ def setup_session_with_file_upload(
         school = schools[Programme.FLU][0]
         year_group = year_groups[Programme.FLU]
         batch_name = add_vaccine_batch(Vaccine.FLUENZ)
-
         VaccinesPage(page).header.click_mavis_header()
-        DashboardPage(page).click_schools()
-        SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
-            class_file_mapping, year_group, Programme.FLU.group
-        )
-        ImportsPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU.group
@@ -62,6 +53,12 @@ def setup_session_with_file_upload(
             SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
+            class_file_mapping, year_group, Programme.FLU.group
+        )
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
         return batch_name
 
     return _factory
@@ -113,6 +110,7 @@ def test_delivering_vaccination_after_psd(
     school = schools[Programme.FLU][0]
     fluenz_batch_name = setup_session_with_one_child
 
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
     SessionsOverviewPage(page).click_edit_session()
     SessionsEditPage(page).click_change_psd()
     SessionsEditPage(page).answer_whether_psd_should_be_enabled("Yes")
@@ -141,9 +139,9 @@ def test_delivering_vaccination_after_psd(
 
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).register_child_as_attending(child)
-    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
@@ -233,6 +231,7 @@ def test_bulk_adding_psd(
 def test_accessibility(
     setup_session_with_one_child,
     page,
+    schools,
 ):
     """
     Test: Check for accessibility violations in the PSD tab.
@@ -242,7 +241,11 @@ def test_accessibility(
     Verification:
     - No accessibility issues are found.
     """
+    school = schools[Programme.HPV][0]
 
+    SessionsSearchPage(page).click_session_for_programme_group(
+        school, Programme.HPV.group
+    )
     if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
         SessionsOverviewPage(page).schedule_or_edit_session()
         SessionsEditPage(page).schedule_a_valid_session(

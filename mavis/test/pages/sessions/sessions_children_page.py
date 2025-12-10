@@ -40,18 +40,6 @@ class SessionsChildrenPage:
             "checkbox",
             name="Conflicting consent",
         )
-        self.attending_button = self.page.get_by_role("button", name="Attending").first
-
-    def register_child_as_attending(self, child: Child) -> None:
-        self.search.search_for(str(child))
-        reload_until_element_is_visible(
-            self.page, self.page.get_by_role("link", name=str(child)).first
-        )
-        self.click_on_attending()
-
-    @step("Click on Attending")
-    def click_on_attending(self) -> None:
-        self.attending_button.click()
 
     @step("Select Needs consent")
     def select_needs_consent(self) -> None:

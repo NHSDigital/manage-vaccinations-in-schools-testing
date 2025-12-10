@@ -7,8 +7,6 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     OnlineConsentWizardPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsSearchPage,
@@ -44,9 +42,9 @@ def setup_session_with_file_upload(
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
 
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
+    SessionsOverviewPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, file_generator).import_class_list(
         CohortsFileMapping.FIXED_CHILD,
         year_group,

@@ -16,13 +16,12 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
     VaccinesPage,
@@ -55,13 +54,6 @@ def setup_session_with_file_upload(
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
         }
         VaccinesPage(page).header.click_mavis_header()
-        DashboardPage(page).click_schools()
-        SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
-            class_list_file, year_group, Programme.FLU.group
-        )
-        ImportsPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.FLU.group
@@ -71,6 +63,15 @@ def setup_session_with_file_upload(
             SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
+        SessionsOverviewPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
+            class_list_file, year_group, Programme.FLU.group
+        )
+        ImportsPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, Programme.FLU
+        )
         yield batch_names
 
     return _setup
@@ -160,9 +161,9 @@ def test_tallying(  # noqa: PLR0915
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] += 1
     SessionsOverviewPage(page).check_all_totals(tally_totals)
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).register_child_as_attending(child)
-    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
     vaccination_record = VaccinationRecord(
