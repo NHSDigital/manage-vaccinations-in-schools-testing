@@ -1,4 +1,3 @@
-# Automatically generated
 from .archive_consent_response_page import ArchiveConsentResponsePage
 from .consent_response_page import ConsentResponsePage
 from .create_new_record_consent_response_page import CreateNewRecordConsentResponsePage

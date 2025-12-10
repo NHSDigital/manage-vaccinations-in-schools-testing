@@ -1,4 +1,3 @@
-# Automatically generated
 from .add_batch_page import AddBatchPage
 from .archive_batch_page import ArchiveBatchPage
 from .batch_expiry_date import BatchExpiryDate
