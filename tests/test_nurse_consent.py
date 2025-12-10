@@ -163,7 +163,7 @@ def test_invalid_consent(
     child = children[Programme.HPV][0]
 
     SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.select_needs_consent()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).click_record_a_new_consent_response()
@@ -172,7 +172,7 @@ def test_invalid_consent(
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_no_response()
 
-    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.select_needs_consent()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -181,8 +181,8 @@ def test_invalid_consent(
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    SessionsChildrenPage(page).select_has_a_refusal()
-    SessionsChildrenPage(page).select_parent_refused()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
+    SessionsChildrenPage(page).search.select_parent_refused()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).invalidate_parent_refusal(child.parents[1])
@@ -221,7 +221,7 @@ def test_parent_provides_consent_twice(
     child = children[Programme.HPV][0]
 
     SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.select_needs_consent()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -231,7 +231,7 @@ def test_parent_provides_consent_twice(
     NurseConsentWizardPage(page).record_parent_positive_consent(
         yes_to_health_questions=True
     )
-    SessionsChildrenPage(page).select_due_vaccination()
+    SessionsChildrenPage(page).search.select_due_vaccination()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -240,8 +240,8 @@ def test_parent_provides_consent_twice(
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    SessionsChildrenPage(page).select_has_a_refusal()
-    SessionsChildrenPage(page).select_parent_refused()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
+    SessionsChildrenPage(page).search.select_parent_refused()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -282,7 +282,7 @@ def test_conflicting_consent_with_gillick_consent(
     child = children[Programme.HPV][0]
 
     SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.select_needs_consent()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).click_record_a_new_consent_response()
@@ -291,7 +291,7 @@ def test_conflicting_consent_with_gillick_consent(
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_positive_consent()
 
-    SessionsChildrenPage(page).select_due_vaccination()
+    SessionsChildrenPage(page).search.select_due_vaccination()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).click_record_a_new_consent_response()
@@ -300,9 +300,9 @@ def test_conflicting_consent_with_gillick_consent(
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_refuse_consent()
 
-    SessionsChildrenPage(page).select_has_a_refusal()
-    SessionsChildrenPage(page).select_parent_refused()
-    SessionsChildrenPage(page).select_conflicting_consent()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
+    SessionsChildrenPage(page).search.select_parent_refused()
+    SessionsChildrenPage(page).search.select_conflicting_consent()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -318,7 +318,7 @@ def test_conflicting_consent_with_gillick_consent(
     NurseConsentWizardPage(page).record_child_positive_consent()
     expect_alert_text(page, f"Consent recorded for {child!s}")
 
-    SessionsChildrenPage(page).select_due_vaccination()
+    SessionsChildrenPage(page).search.select_due_vaccination()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent given")
@@ -344,7 +344,7 @@ def test_accessibility(
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).select_needs_consent()
+    SessionsChildrenPage(page).search.select_needs_consent()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)

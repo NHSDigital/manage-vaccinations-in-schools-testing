@@ -85,8 +85,8 @@ def setup_confirm_and_ignore(
     upload_class_list()
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_for_a_child_name(str(children[0]))
-    ChildrenSearchPage(page).click_record_for_child(children[0])
+    ChildrenSearchPage(page).search.search_for_a_child_name(str(children[0]))
+    ChildrenSearchPage(page).search.click_child(children[0])
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).expect_activity_log_header(
         f"Added to the session at {schools[0]}"

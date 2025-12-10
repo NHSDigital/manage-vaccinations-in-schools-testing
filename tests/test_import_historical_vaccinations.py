@@ -113,8 +113,8 @@ def test_historical_vaccination_file_upload_creates_child(
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
 
-    ChildrenSearchPage(page).click_advanced_filters()
-    ChildrenSearchPage(page).check_children_aged_out_of_programmes()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.click_advanced_filters()
+    ChildrenSearchPage(page).search.check_children_aged_out_of_programmes()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_vaccination_details(school)

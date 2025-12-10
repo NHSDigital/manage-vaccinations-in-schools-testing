@@ -73,8 +73,8 @@ def test_report_view(
 
     ReportsVaccinationsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_vaccination_details(school)
     VaccinationRecordPage(page).click_edit_vaccination_record()
     EditVaccinationRecordPage(page).click_change_outcome()

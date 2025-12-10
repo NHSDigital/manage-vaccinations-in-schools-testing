@@ -3,7 +3,7 @@ from playwright.sync_api import Page
 from mavis.test.annotations import step
 from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.pages.sessions.search_component import SearchComponent
+from mavis.test.pages.search_components import PatientSearchComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
     reload_until_element_is_visible,
@@ -13,7 +13,7 @@ from mavis.test.utils import (
 class SessionsPsdPage:
     def __init__(self, page: Page) -> None:
         self.page = page
-        self.search = SearchComponent(page)
+        self.search = PatientSearchComponent(page)
         self.tabs = SessionsTabs(page)
         self.header = HeaderComponent(page)
 

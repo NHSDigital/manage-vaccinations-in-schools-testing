@@ -154,8 +154,8 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
 
     UnmatchedConsentResponsesPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
 
@@ -190,8 +190,8 @@ def test_create_child_record_from_consent_with_nhs_number(
 
     UnmatchedConsentResponsesPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
 
@@ -226,8 +226,8 @@ def test_create_child_record_from_consent_without_nhs_number(
 
     UnmatchedConsentResponsesPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
 
@@ -267,7 +267,10 @@ def test_accessibility(
     ConsentResponsePage(page).click_match()
     AccessibilityHelper(page).check_accessibility()
 
-    MatchConsentResponsePage(page).search_for_child_with_all_filters(child)
+    MatchConsentResponsePage(page).search.search_for_child_name_with_all_filters(
+        str(child)
+    )
+    MatchConsentResponsePage(page).search.click_child(child)
     AccessibilityHelper(page).check_accessibility()
 
 
@@ -329,9 +332,10 @@ def test_match_consent_with_vaccination_record_no_service_error(
     expect(ServiceErrorPage(page).page_heading).not_to_be_visible()
 
     # Search for child who has vaccination record - should not cause service error
-    MatchConsentResponsePage(page).search_for_child_with_all_filters(
-        child_with_vaccination
+    MatchConsentResponsePage(page).search.search_for_child_name_with_all_filters(
+        str(child_with_vaccination)
     )
+    MatchConsentResponsePage(page).search.click_child(child_with_vaccination)
 
     # Final verification that no error pages appeared during the search process
     expect(ServiceErrorPage(page).page_heading).not_to_be_visible()

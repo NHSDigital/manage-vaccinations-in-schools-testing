@@ -150,8 +150,8 @@ def test_patient_details_load_with_missing_vaccine_info(
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
 
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     # Verify activity log
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).expect_activity_log_header(
@@ -182,8 +182,8 @@ def test_invalid_nhs_number_change_is_rejected(
     """
     child = children[Programme.HPV][0]
 
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_edit_child_record()
     ChildEditPage(page).click_change_nhs_no()
     ChildEditPage(page).fill_nhs_no_for_child(child, "9123456789")
@@ -212,8 +212,8 @@ def test_merge_child_records_does_not_crash(
     """
     child1 = children[Programme.HPV][0]
     child2 = children[Programme.HPV][1]
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child1))
-    ChildrenSearchPage(page).click_record_for_child(child1)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child1))
+    ChildrenSearchPage(page).search.click_child(child1)
     ChildRecordPage(page).click_archive_child_record()
     ChildArchivePage(page).click_its_a_duplicate(child2.nhs_number)
     ChildArchivePage(page).click_archive_record()
@@ -234,12 +234,12 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the children page.
     """
-    ChildrenSearchPage(page).click_advanced_filters()
+    ChildrenSearchPage(page).search.click_advanced_filters()
     AccessibilityHelper(page).check_accessibility()
 
     child = children[Programme.HPV][0]
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     AccessibilityHelper(page).check_accessibility()
 
     ChildRecordPage(page).tabs.click_activity_log()

@@ -261,7 +261,7 @@ def test_flu_consent_method_displayed_correctly(
         schools[0], Programme.FLU
     )
     SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).select_due_vaccination()
+    SessionsChildrenPage(page).search.select_due_vaccination()
 
     SessionsChildrenPage(page).search.search_for(str(child))
     SessionsChildrenPage(page).verify_child_shows_correct_flu_consent_method(
