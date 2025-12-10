@@ -14,8 +14,6 @@ from mavis.test.pages import (
     ImportsPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsSearchPage,
@@ -43,7 +41,7 @@ def setup_confirm_and_ignore(
     )
 
     def upload_class_list():
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SessionsOverviewPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, file_generator).select_year_groups(year_group)
         ImportRecordsWizardPage(page, file_generator).set_input_file(input_file_path)
         ImportRecordsWizardPage(page, file_generator).click_continue()
@@ -80,8 +78,10 @@ def setup_confirm_and_ignore(
             offset_days=7, skip_weekends=False
         )
     SessionsOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(schools[0])
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.HPV
+    )
     upload_class_list()
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
@@ -92,8 +92,10 @@ def setup_confirm_and_ignore(
         f"Added to the session at {schools[0]}"
     )
     ChildActivityLogPage(page).header.click_mavis_header()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(schools[1])
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[1], Programme.HPV
+    )
     upload_class_list()
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_school_moves()

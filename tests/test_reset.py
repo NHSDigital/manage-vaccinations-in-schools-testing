@@ -14,15 +14,13 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
+    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
-    VaccinesPage,
 )
 from mavis.test.utils import (
     generate_random_string,
@@ -47,17 +45,6 @@ def setup_all_programmes(
         Programme.TD_IPV: add_vaccine_batch(Vaccine.REVAXIS),
         Programme.FLU: add_vaccine_batch(Vaccine.FLUENZ),
     }
-
-    VaccinesPage(page).header.click_mavis_header()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        ClassFileMapping.FIXED_CHILD,
-        child.year_group,
-        "doubles",
-    )
-
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
         DashboardPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
@@ -69,6 +56,12 @@ def setup_all_programmes(
             SessionsEditPage(page).schedule_a_valid_session(
                 offset_days=0, skip_weekends=False
             )
+    SessionsOverviewPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ClassFileMapping.FIXED_CHILD,
+        child.year_group,
+        "doubles",
+    )
     return batch_names
 
 
@@ -110,9 +103,9 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             school, programme_group
         )
         if programme_group is Programme.HPV:
-            SessionsOverviewPage(page).tabs.click_children_tab()
-            SessionsChildrenPage(page).register_child_as_attending(child)
-        SessionsChildrenPage(page).tabs.click_children_tab()
+            SessionsOverviewPage(page).tabs.click_register_tab()
+            SessionsRegisterPage(page).register_child_as_attending(child)
+        SessionsRegisterPage(page).tabs.click_children_tab()
         SessionsChildrenPage(page).search.search_and_click_child(child)
         programmes = (
             [Programme.MENACWY, Programme.TD_IPV]

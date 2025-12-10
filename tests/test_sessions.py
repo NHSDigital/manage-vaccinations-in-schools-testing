@@ -13,14 +13,13 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsPatientSessionActivityPage,
     SessionsRecordVaccinationsPage,
+    SessionsRegisterPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
@@ -30,13 +29,13 @@ pytestmark = pytest.mark.sessions
 
 
 @pytest.fixture
-def go_to_sessions(log_in_as_nurse, page):
+def setup_tests(log_in_as_nurse, page):
     DashboardPage(page).click_sessions()
 
 
 @pytest.fixture
 def setup_session_with_file_upload(
-    log_in_as_nurse,
+    setup_tests,
     schools,
     page,
     file_generator,
@@ -45,10 +44,16 @@ def setup_session_with_file_upload(
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
-    def _setup(class_list_file, offset_days: int = 0):
-        DashboardPage(page).click_schools()
-        SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+    def _setup(class_list_file):
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, Programme.HPV.group
+        )
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
+                offset_days=0, skip_weekends=False
+            )
+        SessionsOverviewPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group
         )
@@ -57,13 +62,6 @@ def setup_session_with_file_upload(
         SessionsSearchPage(page).click_session_for_programme_group(
             school, Programme.HPV
         )
-        if not SessionsOverviewPage(page).is_date_scheduled(
-            get_offset_date(offset_days)
-        ):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=offset_days, skip_weekends=False
-            )
         yield
 
     return _setup
@@ -84,15 +82,8 @@ def setup_fixed_child(setup_session_with_file_upload):
     yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
 
 
-@pytest.fixture
-def setup_fixed_child_future_date(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(
-        ClassFileMapping.FIXED_CHILD, offset_days=7
-    )
-
-
 def test_session_lifecycle(
-    go_to_sessions,
+    setup_tests,
     schools,
     page,
 ):
@@ -118,7 +109,7 @@ def test_session_lifecycle(
 
 
 def test_create_invalid_session(
-    go_to_sessions,
+    setup_tests,
     schools,
     page,
 ):
@@ -151,7 +142,7 @@ def test_attendance_filters_functionality(
     """
     Test: Verify attendance filters on the register tab work as expected.
     Steps:
-    1. Open the children tab in a session.
+    1. Open the register tab in a session.
     2. Check and uncheck year group checkboxes and update results.
     3. Use advanced filters to include archived records.
     Verification:
@@ -159,18 +150,18 @@ def test_attendance_filters_functionality(
     """
     year_group = year_groups[Programme.HPV]
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    search_summary = SessionsChildrenPage(page).page.get_by_text("Showing 1 to")
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    search_summary = SessionsRegisterPage(page).page.get_by_text("Showing 1 to")
 
     expect(search_summary).not_to_have_text("Showing 1 to 1 of 1 children")
-    SessionsChildrenPage(page).search.check_year_checkbox(year_group)
-    SessionsChildrenPage(page).search.click_on_update_results()
+    SessionsRegisterPage(page).search.check_year_checkbox(year_group)
+    SessionsRegisterPage(page).search.click_on_update_results()
     expect(search_summary).to_contain_text("Showing 1 to")
 
-    SessionsChildrenPage(page).search.uncheck_year_checkbox(year_group)
-    SessionsChildrenPage(page).search.click_advanced_filters()
-    SessionsChildrenPage(page).search.check_archived_records_checkbox()
-    SessionsChildrenPage(page).search.click_on_update_results()
+    SessionsRegisterPage(page).search.uncheck_year_checkbox(year_group)
+    SessionsRegisterPage(page).search.click_advanced_filters()
+    SessionsRegisterPage(page).search.check_archived_records_checkbox()
+    SessionsRegisterPage(page).search.click_on_update_results()
     expect(search_summary).not_to_be_visible()
 
 
@@ -297,7 +288,7 @@ def test_triage_consent_given_and_triage_outcome(
 
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsOverviewPage(page).tabs.click_register_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).click_update_triage_outcome()
@@ -392,9 +383,9 @@ def test_verify_excel_export_and_clinic_invitation(
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_positive_consent()
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).register_child_as_attending(child)
-    SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
+    SessionsOverviewPage(page).tabs.click_register_tab()
+    SessionsRegisterPage(page).register_child_as_attending(child)
+    SessionsRegisterPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
     vaccination_record = VaccinationRecord(child, Programme.HPV, batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
@@ -414,8 +405,9 @@ def test_verify_excel_export_and_clinic_invitation(
 
 @issue("MAV-2023")
 def test_session_verify_consent_reminders_and_pdf_downloads(
-    setup_fixed_child_future_date,
+    setup_fixed_child,
     page,
+    schools,
 ):
     """
     Test: Click the 'Send reminders' link and PDF download links in sessions and
@@ -427,8 +419,9 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
     Verification:
     - No errors occur when sending reminders or downloading PDFs.
     """
+    school = schools[Programme.HPV][0]
 
-    SessionsOverviewPage(page).send_consent_reminders()
+    SessionsOverviewPage(page).click_send_reminders(school)
     SessionsOverviewPage(page).download_consent_form(Programme.HPV)
 
 
@@ -500,7 +493,10 @@ def test_accessibility(
     SessionsOverviewPage(page).tabs.click_children_tab()
     AccessibilityHelper(page).check_accessibility()
 
-    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsChildrenPage(page).tabs.click_register_tab()
+    AccessibilityHelper(page).check_accessibility()
+
+    SessionsRegisterPage(page).search.search_and_click_child(child)
     AccessibilityHelper(page).check_accessibility()
 
     SessionsPatientPage(page).click_session_activity_and_notes()

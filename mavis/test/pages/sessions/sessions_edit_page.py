@@ -132,9 +132,7 @@ class SessionsEditPage:
 
     def expect_session_to_have_programmes(self, programmes: list[Programme]) -> None:
         for programme in programmes:
-            expect(
-                self.page.get_by_role("heading", name=programme).first
-            ).to_be_visible()
+            expect(self.page.get_by_role("heading", name=programme)).to_be_visible()
 
     @step("Click on Change session dates")
     def click_change_session_dates(self) -> None:

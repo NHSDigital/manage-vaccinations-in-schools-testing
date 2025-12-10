@@ -17,8 +17,6 @@ from mavis.test.pages import (
     ProgrammeChildrenPage,
     ProgrammeOverviewPage,
     ProgrammesListPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsSearchPage,
@@ -165,9 +163,16 @@ def upload_offline_vaccination(
             raise ValueError(msg)
 
         DashboardPage(page).navigate()
-        DashboardPage(page).click_schools()
-        SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(
+            school, programme.group
+        )
+        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+            SessionsOverviewPage(page).schedule_or_edit_session()
+            SessionsEditPage(page).schedule_a_valid_session(
+                offset_days=0, skip_weekends=False
+            )
+        SessionsOverviewPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, file_generator).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
@@ -176,11 +181,6 @@ def upload_offline_vaccination(
         ImportsPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
         SessionsSearchPage(page).click_session_for_programme_group(school, programme)
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
         session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
         SessionsOverviewPage(page).header.click_mavis_header()
         DashboardPage(page).click_imports()
@@ -227,10 +227,11 @@ def setup_session_and_batches_with_fixed_child(
                 for vaccine in Vaccine
                 if vaccine.programme.group == programme_group
             }
-            VaccinesPage(page).header.click_mavis_header()
-            DashboardPage(page).click_schools()
-            SchoolsSearchPage(page).click_school(school)
-            SchoolsChildrenPage(page).click_import_class_lists()
+            ImportsPage(page).header.click_sessions_header()
+            SessionsSearchPage(page).click_session_for_programme_group(
+                school, programme_group
+            )
+            SessionsOverviewPage(page).click_import_class_lists()
             ImportRecordsWizardPage(page, file_generator).import_class_list(
                 ClassFileMapping.FIXED_CHILD,
                 child.year_group,

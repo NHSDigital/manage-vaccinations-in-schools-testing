@@ -9,8 +9,6 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    SchoolsChildrenPage,
-    SchoolsSearchPage,
     SessionsEditPage,
     SessionsOverviewPage,
     SessionsSearchPage,
@@ -30,13 +28,6 @@ def setup_vaccs(
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
 
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        ClassFileMapping.RANDOM_CHILD, year_group
-    )
-    ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         school, Programme.HPV.group
@@ -46,6 +37,13 @@ def setup_vaccs(
         SessionsEditPage(page).schedule_a_valid_session(
             offset_days=0, skip_weekends=False
         )
+    SessionsOverviewPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ClassFileMapping.RANDOM_CHILD, year_group
+    )
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
