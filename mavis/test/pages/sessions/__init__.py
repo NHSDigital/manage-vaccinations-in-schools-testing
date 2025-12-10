@@ -1,4 +1,3 @@
-# Automatically generated
 from .gillick_competence_page import GillickCompetencePage
 from .nurse_consent_wizard_page import NurseConsentWizardPage
 from .sessions_children_page import SessionsChildrenPage
