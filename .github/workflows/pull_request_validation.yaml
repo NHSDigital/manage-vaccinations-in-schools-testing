@@ -36,17 +36,9 @@ jobs:
     permissions:
       contents: write
     with:
-      tests: ''
       cross_service_tests: false
       github_ref: ${{ github.ref }}
       endpoint: 'https://qa.mavistesting.com'
-      device: 'Desktop Chrome'
-      programmes: 'FLU,HPV,MENACWY,MMR,TD_IPV'
-      screenshot_all_steps: false
-      enable_reruns: false
-      test_workers: '4'
-      set_feature_flags: false
-      additional_feature_flags: ''
     secrets:
       HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
   run-tests-against-container:
