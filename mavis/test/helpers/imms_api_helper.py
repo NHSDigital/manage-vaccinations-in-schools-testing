@@ -239,7 +239,19 @@ class ImmsApiHelper:
         )
         response.raise_for_status()
 
-        return response.status_code in [200, 201]
+        success = response.status_code in [200, 201]
+
+        # If creation was successful, verify the record exists in the API
+        if success:
+            self.check_record_in_imms_api(
+                vaccine=vaccine,
+                child=child,
+                school=school,
+                delivery_site=delivery_site,
+                vaccination_time=vaccination_time,
+            )
+
+        return success
 
     def _create_fhir_immunization_payload(
         self,
