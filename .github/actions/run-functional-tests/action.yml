@@ -85,7 +85,7 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: uv run pytest --maxfail 5 -n ${{ inputs.test_workers }} ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: uv run pytest -n ${{ inputs.test_workers }} ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}
