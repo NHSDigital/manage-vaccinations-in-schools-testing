@@ -1,16 +1,14 @@
+import json
 import time
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import NamedTuple
 
 import dateutil.parser
 import requests
 
-from mavis.test.constants import (
-    DeliverySite,
-    ImmsEndpoints,
-    Vaccine,
-)
+from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data_models import Child, School
 
 
@@ -196,3 +194,100 @@ class ImmsApiHelper:
         response.raise_for_status()
 
         return ImmsApiVaccinationRecord.from_response(response)
+
+    def create_vaccination_record(
+        self,
+        vaccine: Vaccine,
+        child: Child,
+        school: School,
+        delivery_site: DeliverySite,
+        vaccination_time: datetime,
+    ) -> bool:
+        """Create a vaccination record in the IMMS API.
+
+        Args:
+            vaccine: The vaccine that was administered
+            child: The child who received the vaccination
+            school: The school where vaccination took place
+            delivery_site: Anatomical site of delivery
+            vaccination_time: When the vaccination occurred
+
+        Returns:
+            True if record was created successfully
+
+        Raises:
+            requests.HTTPError: If the API request fails
+        """
+        # Create FHIR Immunization resource payload
+        immunization_payload = self._create_fhir_immunization_payload(
+            vaccine=vaccine,
+            child=child,
+            school=school,
+            delivery_site=delivery_site,
+            vaccination_time=vaccination_time,
+        )
+
+        # Create headers for POST request
+        create_headers = self.headers.copy()
+        create_headers["content-type"] = "application/fhir+json"
+
+        response = requests.post(
+            url=ImmsEndpoints.CREATE.to_url,
+            headers=create_headers,
+            json=immunization_payload,
+            timeout=30,
+        )
+        response.raise_for_status()
+
+        return response.status_code in [200, 201]
+
+    def _create_fhir_immunization_payload(
+        self,
+        vaccine: Vaccine,
+        child: Child,
+        school: School,
+        delivery_site: DeliverySite,
+        vaccination_time: datetime,
+    ) -> dict:
+        """Create a FHIR Immunization resource payload using FileGenerator pattern.
+
+        This loads a FHIR R4 Immunization template and substitutes placeholders
+        using the same pattern as FileGenerator for consistency.
+        """
+        # Load template file
+        template_path = (
+            Path(__file__).parent.parent
+            / "data"
+            / "fhir_immunization_template.json.template"
+        )
+
+        with template_path.open("r") as f:
+            template_content = f.read()
+
+        # Generate unique IDs for this immunization
+        immunization_id = str(uuid.uuid4())
+
+        # Create replacements dictionary using FileGenerator pattern
+        replacements = {
+            "<<IMMUNIZATION_ID>>": immunization_id,
+            "<<VACCINE_CODE>>": vaccine.imms_api_code,
+            "<<VACCINE_NAME>>": vaccine.name,
+            "<<PATIENT_NHS_NUMBER>>": child.nhs_number,
+            "<<PATIENT_FAMILY_NAME>>": child.last_name,
+            "<<PATIENT_GIVEN_NAME>>": child.first_name,
+            "<<PATIENT_GENDER>>": "unknown",  # Child model doesn't have gender
+            "<<PATIENT_BIRTH_DATE>>": child.date_of_birth.strftime("%Y-%m-%d"),
+            "<<PATIENT_POSTAL_CODE>>": child.address[3],  # postcode from address tuple
+            "<<VACCINATION_TIME>>": vaccination_time.isoformat(),
+            "<<RECORDED_TIME>>": datetime.now(tz=UTC).isoformat(),
+            "<<SCHOOL_URN>>": school.urn,
+            "<<DELIVERY_SITE_CODE>>": delivery_site.imms_api_code,
+            "<<DELIVERY_SITE_DISPLAY>>": delivery_site.value,
+        }
+
+        # Apply replacements using FileGenerator pattern
+        payload_content = template_content
+        for placeholder, value in replacements.items():
+            payload_content = payload_content.replace(placeholder, value)
+
+        return json.loads(payload_content)
