@@ -2,10 +2,10 @@ from urllib.parse import urljoin, urlparse
 
 from playwright.sync_api import Page
 
-from mavis.test.pages.error_pages import BadRequestPage
+from mavis.test.pages.error_pages import BadRequestPage, ServiceErrorPage
 
-HTTP_NOT_FOUND = 404
-HTTP_CLIENT_ERROR = 400
+# HTTP status code threshold for broken links
+HTTP_CLIENT_ERROR_THRESHOLD = 400
 
 
 class PageHealthHelper:
@@ -30,8 +30,11 @@ class PageHealthHelper:
 
         # Use BadRequestPage to check for error page
         bad_request_page = BadRequestPage(self.page)
+        service_error_page = ServiceErrorPage(self.page)
         if bad_request_page.page_heading.count() > 0:
             errors.append("Error page detected: 'Error: page not available'")
+        if service_error_page.page_heading.count() > 0:
+            errors.append("Error page detected: 'Service has encountered a problem'")
 
         return errors
 
@@ -73,13 +76,10 @@ class PageHealthHelper:
                 # Skip if we've already checked this URL
                 if full_url in self.checked_urls:
                     continue
-
-                self.checked_urls.add(full_url)
-
                 # Check the link
                 try:
                     response = self.page.request.get(full_url, timeout=10000)
-                    if response.status >= HTTP_CLIENT_ERROR:
+                    if response.status >= HTTP_CLIENT_ERROR_THRESHOLD:
                         link_text = link.inner_text()[:50] or href[:50]
                         broken_links.append(
                             (
