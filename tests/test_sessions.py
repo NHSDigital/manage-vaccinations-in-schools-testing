@@ -219,7 +219,7 @@ def test_consent_filters(
 
     SessionsChildrenPage(page).tabs.click_overview_tab()
     SessionsOverviewPage(page).click_has_a_refusal()
-    SessionsChildrenPage(page).expect_has_a_refusal_to_be_selected()
+    SessionsChildrenPage(page).search.expect_has_a_refusal_to_be_selected()
 
 
 @issue("MAV-1265")
@@ -254,7 +254,7 @@ def test_session_activity_notes_order(
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_for(str(child))
-    SessionsChildrenPage(page).search.check_note_appears_in_search(child, note_2)
+    SessionsChildrenPage(page).check_note_appears_in_search(child, note_2)
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_session_activity_and_notes()
     SessionsPatientSessionActivityPage(page).check_notes_appear_in_order(
@@ -333,7 +333,7 @@ def test_consent_refused_and_activity_log(
     NurseConsentWizardPage(page).record_parent_refuse_consent()
     expect_alert_text(page, str(child))
 
-    SessionsChildrenPage(page).select_has_a_refusal()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_session_activity_and_notes()
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
@@ -380,8 +380,8 @@ def test_verify_excel_export_and_clinic_invitation(
 
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_for_a_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_a_child_name(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_invite_to_community_clinic()
     ChildRecordPage(page).click_session_for_programme(
         generic_clinic,

@@ -122,8 +122,7 @@ def test_recording_flu_vaccination_e2e(
     # MAV-1831
     SessionsPatientPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_for_a_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_and_click_child(child)
     ChildRecordPage(page).click_vaccination_details(schools[0])
     VaccinationRecordPage(page).click_edit_vaccination_record()
     EditVaccinationRecordPage(page).expect_text_to_not_be_visible(

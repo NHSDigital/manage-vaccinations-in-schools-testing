@@ -6,13 +6,13 @@ from mavis.test.constants import (
 )
 from mavis.test.data_models import Location
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.pages.sessions.search_component import SearchComponent
+from mavis.test.pages.search_components import BaseSearchComponent
 
 
 class SessionsSearchPage:
     def __init__(self, page: Page) -> None:
         self.page = page
-        self.search = SearchComponent(page)
+        self.search = BaseSearchComponent(page)
         self.header = HeaderComponent(page)
 
     @step("Click on {2} session at {1}")
@@ -26,8 +26,7 @@ class SessionsSearchPage:
                 else:
                     self.page.get_by_role("checkbox", name=str(programme)).uncheck()
 
-        self.search.search_textbox.fill(str(location))
-        self.search.search_button.click()
+        self.search.search_for(str(location))
 
         self.page.get_by_role("link", name=str(location)).first.click()
 

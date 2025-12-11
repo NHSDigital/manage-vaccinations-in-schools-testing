@@ -1,9 +1,9 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
-from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.programmes.programme_tabs import ProgrammeTabs
+from mavis.test.pages.search_components import PatientSearchComponent
 
 
 class ProgrammeChildrenPage:
@@ -11,10 +11,9 @@ class ProgrammeChildrenPage:
         self.page = page
         self.tabs = ProgrammeTabs(page)
         self.header = HeaderComponent(page)
+        self.search = PatientSearchComponent(page)
 
         self.import_child_records_link = page.get_by_text("Import child records")
-        self.search_textbox = page.get_by_role("searchbox", name="Search")
-        self.search_button = page.get_by_role("button", name="Search")
         self.continue_button = page.get_by_role("button", name="Continue")
         self.use_duplicate_radio_button = page.get_by_role(
             "radio",
@@ -37,15 +36,6 @@ class ProgrammeChildrenPage:
     @step("Click on Continue")
     def click_continue(self) -> None:
         self.continue_button.click()
-
-    @step("Click on {1}")
-    def click_child(self, child: Child) -> None:
-        self.page.get_by_role("link", name=str(child)).click()
-
-    @step("Click on {1}")
-    def search_for_child(self, child: Child) -> None:
-        self.search_textbox.fill(str(child))
-        self.search_button.click()
 
     @step("Click on Use duplicate record")
     def click_use_duplicate(self) -> None:

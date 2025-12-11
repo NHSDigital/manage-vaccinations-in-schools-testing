@@ -197,8 +197,7 @@ def upload_offline_vaccination(
         DashboardPage(page).click_programmes()
         ProgrammesListPage(page).click_programme_for_current_year(programme)
         ProgrammeOverviewPage(page).tabs.click_children_tab()
-        ProgrammeChildrenPage(page).search_for_child(child)
-        ProgrammeChildrenPage(page).click_child(child)
+        ProgrammeChildrenPage(page).search.search_and_click_child(child)
         ChildRecordPage(page).click_vaccination_details(school)
         yield
 

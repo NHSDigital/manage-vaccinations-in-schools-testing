@@ -141,8 +141,8 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_archive_child_record()
     ChildArchivePage(page).archive_child_record()
 
@@ -158,8 +158,8 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search_with_all_filters_for_child_name(str(child))
-    ChildrenSearchPage(page).click_record_for_child(child)
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).check_child_is_unarchived()
 
 

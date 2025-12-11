@@ -3,14 +3,13 @@ from playwright.sync_api import Page
 from mavis.test.annotations import step
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.schools.schools_tabs import SchoolsTabs
-from mavis.test.pages.sessions.search_component import SearchComponent
+from mavis.test.pages.search_components import PatientStatusSearchComponent
 
 
 class SchoolsChildrenPage:
     def __init__(self, page: Page) -> None:
         self.page = page
-        # will use non-sessions search component later
-        self.search = SearchComponent(page)
+        self.search = PatientStatusSearchComponent(page)
         self.header = HeaderComponent(page)
         self.tabs = SchoolsTabs(page)
 
