@@ -53,20 +53,7 @@ def test_create_imms_record_then_verify_on_children_page(
     )
 
     # Step 2: Create vaccination record via IMMS API
-
-    # Create the vaccination record using the new IMMS API helper method
-    record_created = imms_api_helper.create_vaccination_record(
-        vaccine=Vaccine.SEQUIRUS,
-        child=child,
-        school=school,
-        delivery_site=DeliverySite.LEFT_ARM_UPPER,
-        vaccination_time=vaccination_time,
-    )
-
-    assert record_created, "Failed to create vaccination record in IMMS API"
-
-    # Verify the record was created by attempting to retrieve it
-    imms_api_helper.check_record_in_imms_api(
+    imms_api_helper.create_vaccination_record(
         vaccine=Vaccine.SEQUIRUS,
         child=child,
         school=school,

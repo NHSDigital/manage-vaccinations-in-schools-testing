@@ -6,6 +6,7 @@ import pytest
 from mavis.test.constants import ConsentOption, Programme, Vaccine
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data_models import School
+from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import (
     AddBatchPage,
     ChildRecordPage,
@@ -241,3 +242,15 @@ def setup_session_and_batches_with_fixed_child(
             LogInPage(page).log_out()
 
     return _setup
+
+
+@pytest.fixture(scope="session")
+def sidekiq_helper():
+    """Create a SidekiqHelper instance for managing Sidekiq jobs.
+
+    The base URL is automatically read from the BASE_URL environment variable.
+
+    Returns:
+        SidekiqHelper: An instance configured with the application's base URL
+    """
+    return SidekiqHelper()
