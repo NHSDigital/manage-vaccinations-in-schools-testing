@@ -326,6 +326,18 @@ class DeliverySite(StrEnum):
         }
         return sites[code]
 
+    @property
+    def imms_api_code(self) -> str:
+        """Get the IMMS API code for this delivery site."""
+        codes = {
+            DeliverySite.LEFT_ARM_UPPER: "368208006",
+            DeliverySite.RIGHT_ARM_UPPER: "368209003",
+            DeliverySite.LEFT_ARM_LOWER: "368208006",  # Use same as upper for lower
+            DeliverySite.RIGHT_ARM_LOWER: "368209003",  # Use same as upper for lower
+            DeliverySite.NOSE: "279549004",
+        }
+        return codes[self]
+
 
 class ConsentRefusalReason(StrEnum):
     VACCINE_ALREADY_RECEIVED = "Vaccine already received"
@@ -434,6 +446,7 @@ class Relationship(StrEnum):
 
 class ImmsEndpoints(StrEnum):
     READ = "/immunisation-fhir-api/FHIR/R4/Immunization"
+    CREATE = "/immunisation-fhir-api/FHIR/R4/Immunization"
 
     @property
     def to_url(self) -> str:

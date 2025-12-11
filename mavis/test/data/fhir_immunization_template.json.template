@@ -1,0 +1,123 @@
+{
+  "resourceType": "Immunization",
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "<<IMMUNIZATION_ID>>"
+    }
+  ],
+  "extension": [
+    {
+      "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-VaccinationProcedure",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "<<VACCINE_CODE>>",
+            "display": "<<VACCINE_NAME>>"
+          }
+        ]
+      }
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Patient",
+      "id": "Patient1",
+      "identifier": [
+        {
+          "system": "https://fhir.nhs.uk/Id/nhs-number",
+          "value": "<<PATIENT_NHS_NUMBER>>"
+        }
+      ],
+      "name": [
+        {
+          "family": "<<PATIENT_FAMILY_NAME>>",
+          "given": [
+            "<<PATIENT_GIVEN_NAME>>"
+          ]
+        }
+      ],
+      "gender": "<<PATIENT_GENDER>>",
+      "birthDate": "<<PATIENT_BIRTH_DATE>>",
+      "address": [
+        {
+          "postalCode": "<<PATIENT_POSTAL_CODE>>"
+        }
+      ]
+    }
+  ],
+  "status": "completed",
+  "vaccineCode": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "<<VACCINE_CODE>>",
+        "display": "<<VACCINE_NAME>>"
+      }
+    ]
+  },
+  "patient": {
+    "reference": "#Patient1"
+  },
+  "occurrenceDateTime": "<<VACCINATION_TIME>>",
+  "recorded": "<<RECORDED_TIME>>",
+  "primarySource": true,
+  "location": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": "<<SCHOOL_URN>>"
+    }
+  },
+  "site": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "<<DELIVERY_SITE_CODE>>",
+        "display": "<<DELIVERY_SITE_DISPLAY>>"
+      }
+    ]
+  },
+  "performer": [
+    {
+      "function": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0443",
+            "code": "AP",
+            "display": "Administering Provider"
+          }
+        ]
+      },
+      "actor": {
+        "display": "Test Nurse"
+      }
+    },
+    {
+      "actor": {
+        "type": "Organization",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "<<SCHOOL_URN>>"
+        },
+        "display": "School Organization"
+      }
+    }
+  ],
+  "protocolApplied": [
+    {
+      "targetDisease": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "6142004",
+              "display": "Influenza"
+            }
+          ]
+        }
+      ],
+      "doseNumberPositiveInt": 1
+    }
+  ]
+}

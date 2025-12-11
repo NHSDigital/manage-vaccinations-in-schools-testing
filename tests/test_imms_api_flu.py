@@ -1,15 +1,15 @@
 import pytest
+from playwright.sync_api import expect
 
-from mavis.test.constants import (
-    ConsentOption,
-    DeliverySite,
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import ConsentOption, DeliverySite, Programme, Vaccine
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.pages import (
+    ChildrenSearchPage,
+    DashboardPage,
     EditVaccinationRecordPage,
+    LogInPage,
     SessionsPatientPage,
+    StartPage,
     VaccinationRecordPage,
 )
 from mavis.test.utils import get_current_datetime, random_datetime_earlier_today
@@ -30,6 +30,80 @@ def upload_offline_vaccination_injected_flu(upload_offline_vaccination):
 @pytest.fixture
 def upload_offline_vaccination_nasal_flu(upload_offline_vaccination):
     yield from upload_offline_vaccination(Programme.FLU, ConsentOption.NASAL_SPRAY)
+
+
+def test_create_imms_record_then_verify_on_children_page(
+    imms_api_helper, page, children, schools, nurse, team
+):
+    """
+    Test: Create a vaccination record via IMMS API, then log into MAVIS as a nurse.
+
+    Steps:
+    1. Create a vaccination record directly via IMMS API
+    2. Verify the record was created successfully
+    3. Navigate to MAVIS login page
+    4. Log in as a nurse
+    5. Verify the child created via IMMS API is visible in MAVIS children page
+    """
+    # Step 1: Prepare test data
+    child = children[Programme.FLU][0]
+    school = schools[Programme.FLU][0]
+    vaccination_time = get_current_datetime().replace(
+        hour=9, minute=30, second=0, microsecond=0
+    )
+
+    # Step 2: Create vaccination record via IMMS API
+
+    # Create the vaccination record using the new IMMS API helper method
+    record_created = imms_api_helper.create_vaccination_record(
+        vaccine=Vaccine.SEQUIRUS,
+        child=child,
+        school=school,
+        delivery_site=DeliverySite.LEFT_ARM_UPPER,
+        vaccination_time=vaccination_time,
+    )
+
+    assert record_created, "Failed to create vaccination record in IMMS API"
+
+    # Verify the record was created by attempting to retrieve it
+    imms_api_helper.check_record_in_imms_api(
+        vaccine=Vaccine.SEQUIRUS,
+        child=child,
+        school=school,
+        delivery_site=DeliverySite.LEFT_ARM_UPPER,
+        vaccination_time=vaccination_time,
+    )
+
+    # Step 3: Navigate to MAVIS and log in as nurse
+    StartPage(page).navigate()
+    StartPage(page).start()
+
+    # Step 4: Log in as nurse
+    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+
+    # Go to dashboard
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_children()
+
+    # Step 5: Verify the child created via IMMS API is visible in MAVIS children page
+    children_search_page = ChildrenSearchPage(page)
+
+    # Search for the child by their details
+    children_search_page.search.search_for(str(child))
+
+    # Verify the child appears in search results
+    child_card_locator = children_search_page.search.get_patient_card_locator(child)
+    expect(child_card_locator).to_be_visible()
+
+    # Verify we can click on the child to access their record
+    child_link = child_card_locator.get_by_role("link", name=str(child))
+    expect(child_link).to_be_visible()
+
+    # Click on the child to verify access to their detailed record
+    children_search_page.search.click_child(child)
+
+    # Verify we're now on the child's record page
+    expect(page.get_by_text(f"NHS number: {child.nhs_number}")).to_be_visible()
 
 
 def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
