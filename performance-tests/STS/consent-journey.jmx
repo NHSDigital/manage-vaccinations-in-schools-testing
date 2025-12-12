@@ -96,7 +96,7 @@
 URN	${__P(URN, 137390)}	</stringProp>
       </Arguments>
       <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
         <stringProp name="HTTPSampler.domain">${BaseURL}</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -172,7 +172,7 @@ log.info(vars.get(&quot;AddNewSession&quot;))
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Add New Session" enabled="true">
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Add New Session">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="764597751">Test Plan</stringProp>
               <stringProp name="764597751">Test Plan</stringProp>
@@ -665,7 +665,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           </BoundaryExtractor>
           <hashTree/>
         </hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reset session ID list">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Reset session ID list" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
@@ -677,7 +677,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           <stringProp name="LoopController.loops">4</stringProp>
         </LoopController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move page range">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move page range" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -711,7 +711,7 @@ vars.put(&quot;SessionPage&quot;,(vars.get(&quot;__jm__SessionPageLoop__idx&quot
               <stringProp name="script">prev.setIgnore()</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">PageSessionID</stringProp>
               <stringProp name="RegexExtractor.regex">sessions\/(.*?)&quot;[\s\S]{1,500}&gt;\d*? children[\s\S]{1,400}nhsuk-tag nhsuk-tag--white&quot;&gt;(.*?)&lt;</stringProp>
@@ -748,15 +748,18 @@ if(PageIDCount&gt;0){
 	//Get each pageSessionID 
 	for(IDLoop=1;IDLoop&lt;=PageIDCount;IDLoop++){
 		//and add it to the sessionID list
-		sessionIDCount++;
-		vars.put(&quot;SessionID_&quot; + sessionIDCount.toString(),vars.get(&quot;PageSessionID_&quot;+IDLoop.toString()))
-		vars.put(&quot;SessionID_matchNr&quot;,sessionIDCount.toString());
+		//Exclude community clinic
+		if(vars.get(&quot;PageSessionID_&quot;+IDLoop.toString())!=&quot;nQiCIknnwF&quot;){
+			sessionIDCount++;
+			vars.put(&quot;SessionID_&quot; + sessionIDCount.toString(),vars.get(&quot;PageSessionID_&quot;+IDLoop.toString()))
+			vars.put(&quot;SessionID_matchNr&quot;,sessionIDCount.toString());
+		}
 	}
 }
 </stringProp>
           </JSR223Sampler>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -791,14 +794,14 @@ without actual network activity. This helps debugging tests.</stringProp>
           </JSR223PreProcessor>
           <hashTree/>
         </hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
           <stringProp name="ForeachController.inputVal">SessionID</stringProp>
           <stringProp name="ForeachController.returnVal">CurrentSessionID</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
           <stringProp name="TestPlan.comments">Go through each session, but only set sessions active and download offline files if the vaccination count is still positive</stringProp>
         </ForeachController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -866,7 +869,7 @@ without actual network activity. This helps debugging tests.</stringProp>
               <intProp name="Assertion.test_type">16</intProp>
             </ResponseAssertion>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Programme">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Programme" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Programme</stringProp>
               <stringProp name="RegexExtractor.regex">&lt;h3 class=&quot;nhsuk-heading-m nhsuk-u-margin-bottom-2&quot;&gt;\n *(.*?)\n *&lt;\/h3&gt;</stringProp>
@@ -882,7 +885,7 @@ JSR223 Sampler: HPV
 </stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Consent Counts">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get Consent Counts" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">ConsentCount</stringProp>
               <stringProp name="RegexExtractor.regex">no_response&quot;&gt;(\d*?) </stringProp>
@@ -892,7 +895,7 @@ JSR223 Sampler: HPV
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Check for &apos;no sessions scheduled&apos;">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Check for &apos;no sessions scheduled&apos;" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">noSessions</stringProp>
               <stringProp name="RegexExtractor.regex">&lt;strong class=&quot;nhsuk-tag nhsuk-tag--purple&quot;&gt;(.*?)&lt;/strong&gt;&lt;/p&gt;</stringProp>
@@ -1013,7 +1016,7 @@ JSR223 Sampler: HPV
             <boolProp name="displaySystemProperties">false</boolProp>
           </DebugSampler>
           <hashTree/>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Determine whether the session is needed">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Determine whether the session is needed" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1040,7 +1043,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
 }</stringProp>
           </JSR223Sampler>
           <hashTree>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Set Ignore" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -1055,7 +1058,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Set session date and in progress">
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Set session date and in progress" enabled="true">
               <collectionProp name="ModuleController.node_path">
                 <stringProp name="764597751">Test Plan</stringProp>
                 <stringProp name="764597751">Test Plan</stringProp>
@@ -1063,7 +1066,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
               </collectionProp>
             </ModuleController>
             <hashTree/>
-            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get offline file and load into STS">
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get offline file and load into STS" enabled="true">
               <collectionProp name="ModuleController.node_path">
                 <stringProp name="764597751">Test Plan</stringProp>
                 <stringProp name="764597751">Test Plan</stringProp>
@@ -1073,7 +1076,7 @@ if(props.get(&quot;VaccineCount_&quot; + vars.get(&quot;Programme&quot;).toLower
             <hashTree/>
           </hashTree>
         </hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Check and alert for sufficient data">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Check and alert for sufficient data" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
