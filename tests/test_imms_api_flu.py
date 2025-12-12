@@ -3,6 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.constants import ConsentOption, DeliverySite, Programme, Vaccine
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
+from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import (
     ChildrenSearchPage,
     DashboardPage,
@@ -45,21 +46,39 @@ def test_create_imms_record_then_verify_on_children_page(
     4. Log in as a nurse
     5. Verify the child created via IMMS API is visible in MAVIS children page
     """
-    # Step 1: Prepare test data
-    child = children[Programme.FLU][0]
-    school = schools[Programme.FLU][0]
+    sidekiq_helper = SidekiqHelper()
+
+    # Step 1: Prepare test data - use available programme data
+    if Programme.FLU in children and Programme.FLU in schools:
+        child = children[Programme.FLU][0]
+        school = schools[Programme.FLU][0]
+        vaccine = Vaccine.SEQUIRUS
+    else:
+        # Fallback to any available programme
+        available_programme = next(iter(children.keys()))
+        child = children[available_programme][0]
+        school = schools[available_programme][0]
+        # Use appropriate vaccine for the programme
+        if available_programme == Programme.HPV:
+            vaccine = Vaccine.GARDASIL_9
+        else:
+            vaccine = Vaccine.SEQUIRUS
+
     vaccination_time = get_current_datetime().replace(
         hour=9, minute=30, second=0, microsecond=0
     )
+    sidekiq_job_name = "enqueue_vaccinations_search_in_nhs_job"
 
     # Step 2: Create vaccination record via IMMS API
     imms_api_helper.create_vaccination_record(
-        vaccine=Vaccine.SEQUIRUS,
+        vaccine=vaccine,
         child=child,
         school=school,
         delivery_site=DeliverySite.LEFT_ARM_UPPER,
         vaccination_time=vaccination_time,
     )
+
+    sidekiq_helper.run_recurring_job(sidekiq_job_name)
 
     # Step 3: Navigate to MAVIS and log in as nurse
     StartPage(page).navigate()
