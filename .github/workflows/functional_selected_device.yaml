@@ -208,7 +208,7 @@ jobs:
           ref: ${{ inputs.github_ref || github.head_ref }}
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: playwright-cache
         with:
           path: /home/runner/.cache/ms-playwright

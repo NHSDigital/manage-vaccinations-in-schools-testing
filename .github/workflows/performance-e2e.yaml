@@ -70,7 +70,7 @@ jobs:
       
       - name: Cache jmeter
         id: cache-jmeter
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         env:
           cache-name: cache-jmeter
         with:
