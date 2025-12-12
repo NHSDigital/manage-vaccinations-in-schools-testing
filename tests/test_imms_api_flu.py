@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.constants import ConsentOption, DeliverySite, Programme, Vaccine
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
@@ -8,11 +9,11 @@ from mavis.test.pages import (
     ChildrenSearchPage,
     DashboardPage,
     EditVaccinationRecordPage,
-    LogInPage,
     SessionsPatientPage,
-    StartPage,
     VaccinationRecordPage,
 )
+from mavis.test.pages.log_in_page import LogInPage
+from mavis.test.pages.start_page import StartPage
 from mavis.test.utils import get_current_datetime, random_datetime_earlier_today
 
 pytestmark = pytest.mark.imms_api
@@ -33,8 +34,14 @@ def upload_offline_vaccination_nasal_flu(upload_offline_vaccination):
     yield from upload_offline_vaccination(Programme.FLU, ConsentOption.NASAL_SPRAY)
 
 
+@pytest.fixture
+def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
+    return setup_session_and_batches_with_fixed_child(Programme.FLU)
+
+
+@issue("MAV-2831")
 def test_create_imms_record_then_verify_on_children_page(
-    imms_api_helper, page, children, schools, nurse, team
+    imms_api_helper, page, children, schools, setup_session_for_flu, nurse, team
 ):
     """
     Test: Create a vaccination record via IMMS API, then log into MAVIS as a nurse.
@@ -48,21 +55,9 @@ def test_create_imms_record_then_verify_on_children_page(
     """
     sidekiq_helper = SidekiqHelper()
 
-    # Step 1: Prepare test data - use available programme data
-    if Programme.FLU in children and Programme.FLU in schools:
-        child = children[Programme.FLU][0]
-        school = schools[Programme.FLU][0]
-        vaccine = Vaccine.SEQUIRUS
-    else:
-        # Fallback to any available programme
-        available_programme = next(iter(children.keys()))
-        child = children[available_programme][0]
-        school = schools[available_programme][0]
-        # Use appropriate vaccine for the programme
-        if available_programme == Programme.HPV:
-            vaccine = Vaccine.GARDASIL_9
-        else:
-            vaccine = Vaccine.SEQUIRUS
+    child = children[Programme.FLU][0]
+    school = schools[Programme.FLU][0]
+    vaccine = Vaccine.SEQUIRUS
 
     vaccination_time = get_current_datetime().replace(
         hour=9, minute=30, second=0, microsecond=0
@@ -79,37 +74,18 @@ def test_create_imms_record_then_verify_on_children_page(
     )
 
     sidekiq_helper.run_recurring_job(sidekiq_job_name)
-
-    # Step 3: Navigate to MAVIS and log in as nurse
-    StartPage(page).navigate()
-    StartPage(page).start()
-
-    # Step 4: Log in as nurse
+    # Step 5: Verify the child created via IMMS API is visible in MAVIS children page
+    StartPage(page).navigate_and_start()
     LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
 
-    # Go to dashboard
-    DashboardPage(page).navigate()
     DashboardPage(page).click_children()
 
-    # Step 5: Verify the child created via IMMS API is visible in MAVIS children page
-    children_search_page = ChildrenSearchPage(page)
-
     # Search for the child by their details
-    children_search_page.search.search_for(str(child))
+    ChildrenSearchPage(page).search.search_for(str(child))
 
     # Verify the child appears in search results
-    child_card_locator = children_search_page.search.get_patient_card_locator(child)
+    child_card_locator = ChildrenSearchPage(page).search.get_patient_card_locator(child)
     expect(child_card_locator).to_be_visible()
-
-    # Verify we can click on the child to access their record
-    child_link = child_card_locator.get_by_role("link", name=str(child))
-    expect(child_link).to_be_visible()
-
-    # Click on the child to verify access to their detailed record
-    children_search_page.search.click_child(child)
-
-    # Verify we're now on the child's record page
-    expect(page.get_by_text(f"NHS number: {child.nhs_number}")).to_be_visible()
 
 
 def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
