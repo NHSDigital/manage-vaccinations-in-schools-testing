@@ -1,0 +1,978 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","464","test_batch_name_too_long[Priorix]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","8076","test_consent_given_for_flu_vaccination[yes_to_health_questions: False-consent_option: Nasal spray]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Log in with valid credentials for each user role and verify dashboard links
+   and team information.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Log in as the specified user role and select team if necessary.
+3. Verify that all expected dashboard links are visible.
+4. Verify that team information is visible in Team page.
+5. Log out.
+Verification:
+- Log out button and all dashboard navigation links are visible after login.
+- Team name and email are visible in the Team page.
+","1530","test_login_with_valid_credentials[role: nurse]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","9497","test_consent_given_for_flu_vaccination[yes_to_health_questions: True-consent_option: Nasal spray]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","618","test_batch_name_too_short[MenQuadfi]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","469","test_batch_name_too_short[MMR VaxPro]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload an empty class list file and verify error handling.
+Steps:
+1. Navigate to class list import page for the correct school and year group.
+2. Upload an empty file.
+Verification:
+- Output indicates error or no records imported.
+","312","test_class_list_file_upload_empty_file","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Generate and verify CarePlus report for MMR programme.
+Steps:
+1. Navigate to reports page.
+2. Generate CarePlus report for MMR.
+Verification:
+- Report is generated in CarePlus format for MMR.
+","1549","test_verify_careplus_report_for_mmr","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","2401","test_batch_add_change_archive[Fluenz]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload an invalid cohort (class list) file and verify error handling.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a cohort file with invalid data.
+Verification:
+- Import fails and error is shown.
+","976","test_cohort_upload_with_invalid_file","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Upload an invalid vaccination records file and verify error handling.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a vaccination file with invalid data.
+Verification:
+- Output lists errors as expected for each record
+Scenarios covered:
+
+HPV_InvalidODSCode, HPV_EmptyOrgCode, HPV_EmptySchoolURN, HPV_NotKnownSchoolEmpty,
+HPV_LongNHSNumber, HPV_ShortNHSNumber, HPV_EmptyForename, HPV_EmptyLastname,
+HPV_EmptyDOB, HPV_InvalidFormatDOB, HPV_FutureDOB, HPV_NonLeapYearDOB,
+HPV_EmptyGender, HPV_InvalidGender, HPV_EmptyPostCode, HPV_InvalidPostCode,
+HPV_EmptyVaccDate, HPV_FutureVaccDate, HPV_EmptyVaccGiven, HPV_EmptyBatchNumber,
+HPV_EmptyExpiryDate, HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite,
+HPV_EmptyDoseSeq, HPV_InvalidDoseSeq, HPV_EmptyCareSetting, HPV_InvalidProfFName,
+HPV_InvalidProfSName, HPV_InvalidProfEmail, HPV_InvalidClinic, HPV_InvalidTime,
+HPV_InvalidReason, HPV_InvalidVaccinatedFlag, HPV_InvalidCareSetting,
+HPV_TimeInFuture, HPV_VaccinatedFlagEmpty, TDIPV_EmptyDoseSeq, TDIPV_InvalidDoseSeq,
+MenACWY_EmptyDoseSeq, MenACWY_InvalidDoseSeq, MenACWY_LongBatchNumber, MMR_DoseSeq3
+","0","test_vaccination_file_upload_invalid_data","tests","2025-12-10","broken","2025-12-10","","test_import_offline_vaccinations","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","494","test_batch_name_too_long[Fluenz]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Record a paper refusal and verify the consent refused checkbox is checked.
+Steps:
+1. Open a session with a fixed child.
+2. Review a child with no response and record a paper refusal.
+3. Go to the overview tab and review consent refused.
+Verification:
+- Consent refused checkbox is checked for the child.
+","0","test_consent_filters","tests","2025-12-10","broken","2025-12-10","","test_sessions","",""
+"
+Test: Log in with valid credentials for each user role and verify dashboard links
+   and team information.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Log in as the specified user role and select team if necessary.
+3. Verify that all expected dashboard links are visible.
+4. Verify that team information is visible in Team page.
+5. Log out.
+Verification:
+- Log out button and all dashboard navigation links are visible after login.
+- Team name and email are visible in the Team page.
+","1624","test_login_with_valid_credentials[role: healthcare_assistant]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Submit an online consent form refusing flu vaccination and
+   verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Select 'do not agree' to vaccination.
+3. Choose refusal reason and provide details.
+4. Submit the consent form.
+Verification:
+- Confirmation text indicates consent was refused for flu vaccination.
+","4628","test_consent_refused_for_flu_vaccination","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","517","test_batch_name_too_short[Priorix]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload a class list file with invalid structure and verify error handling.
+Steps:
+1. Navigate to class list import page for the correct school and year group.
+2. Upload a file with incorrect structure.
+Verification:
+- Output indicates structural errors.
+","688","test_class_list_file_upload_invalid_structure","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Generate and verify SystmOne report for HPV programme.
+Steps:
+1. Navigate to reports page.
+2. Generate SystmOne report for HPV.
+Verification:
+- Report is generated in SystmOne format for HPV.
+","1595","test_verify_systmone_report_for_hpv","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Archive a child via cohort upload and then unarchive by re-uploading.
+Steps:
+1. Import a fixed child cohort file.
+2. Archive the child from the children page.
+3. Re-import the same cohort file.
+4. Verify the child is unarchived.
+Verification:
+- Child is archived after first import and unarchived after second import.
+","9376","test_archive_and_unarchive_child_via_cohort_upload","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Verify the log out page functionality.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Log in as a nurse and choose team if necessary.
+3. Navigate to the log out page.
+4. Verify the log out page is displayed correctly.
+5. Click the log out button and verify redirection to the start page.
+Verification:
+- Log out page is displayed with the correct heading.
+- After logging out, the start page link is visible.
+","1413","test_logout_page","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Generate and verify SystmOne report for MMR programme.
+Steps:
+1. Navigate to reports page.
+2. Generate SystmOne report for MMR.
+Verification:
+- Report is generated in SystmOne format for MMR.
+","1697","test_verify_systmone_report_for_mmr","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Submit multiple online flu consent forms with different methods and
+   verify the correct method is displayed in the session.
+Steps:
+1. Fill in child and parent details and submit consent with the first method.
+2. Submit a second consent for the same child with the
+   second method (different parent).
+3. Navigate to the session and consent tab.
+4. Search for the child and verify the correct consent method is shown.
+5. Verify the pattern of consent details text in the offline excel.
+Verification:
+- The consent method displayed in the session matches the expected method
+  from the last consent.
+- The consent details in the excel download match the expected pattern.
+","0","test_flu_consent_method_displayed_correctly[consents: (<ConsentOption.NASAL_SPRAY_OR_INJECTION: ''>, <ConsentOption.NASAL_SPRAY_OR_INJECTION: ''>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>)]","tests","2025-12-10","broken","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","499","test_batch_name_too_short[Gardasil 9]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","5699","test_consent_given_for_flu_vaccination[yes_to_health_questions: False-consent_option: Injection]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Upload a cohort file with only headers and verify no records are imported.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a header-only file.
+Verification:
+- No records are imported and appropriate message is shown.
+","346","test_cohort_upload_with_header_only_file","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","8320","test_consent_given_for_flu_vaccination[yes_to_health_questions: False-consent_option: ]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","1924","test_batch_add_change_archive[Nimenrix]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Submit an online consent form giving consent for one or both
+   doubles vaccinations and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page, optionally changing school.
+2. Agree to one or both doubles vaccinations as specified by parameter.
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. If not both vaccines, select a reason for not giving consent to the other.
+6. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, vaccines,
+   and health question status.
+","5702","test_consent_given_for_doubles_vaccination[yes_to_health_questions: False-programmes: [<Programme.TD_IPV: 'Td/IPV'>]]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Generate and verify CSV report for HPV programme.
+Steps:
+1. Navigate to reports page.
+2. Generate CSV report for HPV.
+Verification:
+- Report is generated in CSV format for HPV.
+","1598","test_verify_csv_report_for_hpv","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Submit an online consent form giving consent for one or both
+   doubles vaccinations and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page, optionally changing school.
+2. Agree to one or both doubles vaccinations as specified by parameter.
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. If not both vaccines, select a reason for not giving consent to the other.
+6. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, vaccines,
+   and health question status.
+","5658","test_consent_given_for_doubles_vaccination[yes_to_health_questions: False-programmes: [<Programme.MENACWY: 'MenACWY'>]]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","489","test_batch_name_too_short[Menveo]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload a cohort file with invalid structure and verify error handling.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a file with incorrect structure.
+Verification:
+- Import fails and structural error is shown.
+","896","test_cohort_upload_with_invalid_structure","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Generate and verify CSV report for MenACWY and Td/IPV programmes.
+Steps:
+1. Navigate to reports page.
+2. Generate CSV report for MenACWY.
+3. Generate CSV report for Td/IPV.
+Verification:
+- Reports are generated in CSV format for both MenACWY and Td/IPV.
+","3503","test_verify_csv_report_for_doubles","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Log in with valid credentials for each user role and verify dashboard links
+   and team information.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Log in as the specified user role and select team if necessary.
+3. Verify that all expected dashboard links are visible.
+4. Verify that team information is visible in Team page.
+5. Log out.
+Verification:
+- Log out button and all dashboard navigation links are visible after login.
+- Team name and email are visible in the Team page.
+","1921","test_login_with_valid_credentials[role: medical_secretary]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","491","test_batch_name_too_long[Menveo]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","1885","test_batch_add_change_archive[MMR VaxPro]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload a valid class list file and verify successful import.
+Steps:
+1. Navigate to class list import page for the correct school and year group.
+2. Upload a valid class list file.
+Verification:
+- Output indicates successful import of records.
+Scenarios covered:
+AllValidValues, YearGroupOverride, SameYearGroup, EmptyPostCode, EmptyYearGroup,
+UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail,
+PostcodeNFA, PostcodeAddressNotKnown, PostcodeAddressNotSpecified
+","8407","test_class_list_file_upload_valid_data","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","1976","test_batch_add_change_archive[Menveo]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Submit an online consent form giving consent for one or both
+   doubles vaccinations and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page, optionally changing school.
+2. Agree to one or both doubles vaccinations as specified by parameter.
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. If not both vaccines, select a reason for not giving consent to the other.
+6. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, vaccines,
+   and health question status.
+","5649","test_consent_given_for_doubles_vaccination[yes_to_health_questions: False-programmes: [<Programme.MENACWY: 'MenACWY'>, <Programme.TD_IPV: 'Td/IPV'>]]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Submit multiple online flu consent forms with different methods and
+   verify the correct method is displayed in the session.
+Steps:
+1. Fill in child and parent details and submit consent with the first method.
+2. Submit a second consent for the same child with the
+   second method (different parent).
+3. Navigate to the session and consent tab.
+4. Search for the child and verify the correct consent method is shown.
+5. Verify the pattern of consent details text in the offline excel.
+Verification:
+- The consent method displayed in the session matches the expected method
+  from the last consent.
+- The consent details in the excel download match the expected pattern.
+","0","test_flu_consent_method_displayed_correctly[consents: (<ConsentOption.NASAL_SPRAY_OR_INJECTION: ''>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>)]","tests","2025-12-10","broken","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","471","test_batch_name_too_long[Gardasil 9]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload an empty cohort file and verify error handling.
+Steps:
+1. Navigate to cohort import page.
+2. Upload an empty file.
+Verification:
+- Import fails and error is shown.
+","342","test_cohort_upload_with_empty_file","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","491","test_batch_name_too_long[MenQuadfi]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload a class list file with the wrong year group and verify error handling.
+Steps:
+1. Navigate to class list import page for the correct school and year group.
+2. Upload a file with an incorrect year group.
+Verification:
+- Output indicates year group mismatch or error.
+","803","test_class_list_file_upload_wrong_year_group","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","1837","test_batch_add_change_archive[Priorix]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload an empty vaccination records file and verify error handling.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload an empty file.
+Verification:
+- Output indicates error or no records imported.
+","0","test_vaccination_file_upload_empty_file","tests","2025-12-10","broken","2025-12-10","","test_import_offline_vaccinations","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","9029","test_consent_given_for_flu_vaccination[yes_to_health_questions: True-consent_option: ]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","2040","test_batch_add_change_archive[MenQuadfi]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Record verbal consent and triage outcome for a child in a session.
+Steps:
+1. Schedule session and import class list.
+2. Record verbal consent for the child.
+3. Update triage outcome to 'safe to vaccinate'.
+Verification:
+- Triage outcome is updated and reflected for the child.
+","0","test_triage_consent_given_and_triage_outcome","tests","2025-12-10","broken","2025-12-10","","test_sessions","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","460","test_batch_name_too_short[Revaxis]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Upload duplicate vaccination records and verify duplicate handling.
+Steps:
+1. Upload a vaccination file with duplicate records.
+2. Upload a second file with more duplicates.
+Verification:
+- Output indicates duplicates are detected and handled.
+Scenarios covered:
+1. Duplicate records within the same file, and
+2. Duplicate records across 2 different files
+","0","test_vaccination_file_upload_duplicate_records","tests","2025-12-10","skipped","2025-12-10","","test_import_offline_vaccinations","",""
+"
+Test: Generate and verify CarePlus report for MenACWY and Td/IPV programmes.
+Steps:
+1. Navigate to reports page.
+2. Generate CarePlus report for MenACWY.
+3. Generate CarePlus report for Td/IPV.
+Verification:
+- Reports are generated in CarePlus format for both MenACWY and Td/IPV.
+","3673","test_verify_careplus_report_for_doubles","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Upload an invalid class list file and verify error handling.
+Steps:
+1. Navigate to class list import page for the correct school and year group.
+2. Upload a class list file with invalid data.
+Verification:
+- Output lists errors as expected for each record
+Scenarios covered:
+EmptyFirstName, EmptyLastName, EmptyDOB, LongNHSNo, InvalidPostCode,
+InvalidParent1Email, InvalidParent2Email, InvalidYearGroup, InvalidFirstName,
+InvalidLastName, InvalidPrefFirstName, InvalidPrefLastName, InvalidParent1Name,
+InvalidParent2Name
+","767","test_class_list_file_upload_invalid_data","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","446","test_batch_name_too_long[MMR VaxPro]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Attempt to log in with invalid or empty credentials and verify error message.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Attempt to log in with the given username and password.
+Verification:
+- Error message is displayed indicating invalid credentials.
+","646","test_login_with_invalid_credentials[password: invalid-username: ]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Generate and verify CSV report for MMR programme.
+Steps:
+1. Navigate to reports page.
+2. Generate CSV report for MMR.
+Verification:
+- Report is generated in CSV format for MMR.
+","1554","test_verify_csv_report_for_mmr","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","537","test_batch_name_too_short[Cell-based Trivalent Influenza Vaccine Seqirus]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Verify that the flu vaccine is not available for selection if not enabled
+   in onboarding.
+Steps:
+1. Retrieve the list of enabled programmes from onboarding.
+2. Check the vaccines page for flu vaccine availability.
+Verification:
+- Flu vaccine is not available for selection if not present in the
+  enabled programmes.
+","0","test_verify_flu_not_available","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Submit multiple online flu consent forms with different methods and
+   verify the correct method is displayed in the session.
+Steps:
+1. Fill in child and parent details and submit consent with the first method.
+2. Submit a second consent for the same child with the
+   second method (different parent).
+3. Navigate to the session and consent tab.
+4. Search for the child and verify the correct consent method is shown.
+5. Verify the pattern of consent details text in the offline excel.
+Verification:
+- The consent method displayed in the session matches the expected method
+  from the last consent.
+- The consent details in the excel download match the expected pattern.
+","0","test_flu_consent_method_displayed_correctly[consents: (<ConsentOption.NASAL_SPRAY: 'Nasal spray'>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>, <ConsentOption.NASAL_SPRAY: 'Nasal spray'>)]","tests","2025-12-10","broken","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to log in with invalid or empty credentials and verify error message.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Attempt to log in with the given username and password.
+Verification:
+- Error message is displayed indicating invalid credentials.
+","739","test_login_with_invalid_credentials[password: invalid-username: invalid]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","3065","test_batch_add_change_archive[Cell-based Trivalent Influenza Vaccine Seqirus]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Add multiple notes to a session and verify their order in the activity log.
+Steps:
+1. Open a session with a fixed child.
+2. Add two notes in sequence.
+3. Refresh and search for the child in the session.
+4. Verify the most recent note appears first in the list.
+Verification:
+- Notes appear in reverse chronological order in the activity log.
+","0","test_session_activity_notes_order","tests","2025-12-10","broken","2025-12-10","","test_sessions","",""
+"
+Test: Edit a vaccination dose to 'not given' and verify outcome.
+Steps:
+1. Navigate to the child in the programme.
+2. Edit the vaccination record and change outcome to 'they refused it'.
+3. Save changes.
+Verification:
+- Alert confirms vaccination outcome recorded as refused.
+","0","test_edit_vaccination_dose_to_not_given","tests","2025-12-10","broken","2025-12-10","","test_programmes","",""
+"
+Test: Upload a vaccination records file with only headers and verify no records are
+   imported.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a header-only file.
+Verification:
+- Output indicates no records imported.
+","0","test_vaccination_file_upload_header_only","tests","2025-12-10","broken","2025-12-10","","test_import_offline_vaccinations","",""
+"
+Test: Upload a valid cohort (class list) file and verify successful import.
+Steps:
+1. Navigate to cohort import page.
+2. Upload a valid cohort file.
+Verification:
+- Import completes successfully with expected records.
+","13088","test_cohort_upload_with_valid_file","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Upload a class list file with extra whitespace and verify normalization.
+Steps:
+1. Upload a file with whitespace issues.
+2. Navigate to children page.
+3. Verify the list is normalized and imported correctly.
+Verification:
+- Imported list matches expected normalized data.
+","6200","test_class_list_file_upload_whitespace_normalization","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Upload a valid vaccination records file and verify successful import.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a valid vaccination file.
+Verification:
+- Output indicates successful import of records.
+Scenarios covered:
+HPV:
+HPV_Optional, HPV_Gardasil9, HPV_Gardasil, HPV_Cervarix, HPV_NFA, HPV_Add_Not_Known,
+HPV_AllowPastExpiryDate, HPV_SiteRAU, HPV_SiteRAL, HPV_NotVaccinated,
+HPV_AddressNFA, HPV_AddressNotKnown, HPV_AddressNotSpecified
+Doubles:
+TDIPV_Optional, TDIPV_NFA, TDIPV_Add_Not_Known, TDIPV_AllowPastExpiryDate,
+TDIPV_SiteRAU, TDIPV_SiteRAL, TDIPV_NotVaccinated, MenACWY_Optional, MenACWY_NFA,
+MenACWY_Add_Not_Known, MenACWY_AllowPastExpiryDate, MenACWY_SiteRAU,MenACWY_SiteRAL,
+MenACWY_NotVaccinated, MenACWY_BatchName100Chars,
+Flu:
+Flu_Optional, Flu_NFA,
+Flu_Add_Not_Known, Flu_AllowPastExpiryDate, Flu_SiteRAU, Flu_SiteRAL,
+Flu_NotVaccinated, Flu_BatchName100Chars,
+MMR:
+MMR_Optional, MMR_NFA, MMR_Add_Not_Known,
+MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL, MMR_NotVaccinated,
+MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
+MMR_UnknownDoseSeq, MMRNoDelayDose1, MMRNoDelayDose2, MMR_NoDelayDoseUnknown
+","0","test_vaccination_file_upload_valid_data","tests","2025-12-10","broken","2025-12-10","","test_import_offline_vaccinations","",""
+"
+Test: Log in with valid credentials for each user role and verify dashboard links
+   and team information.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Log in as the specified user role and select team if necessary.
+3. Verify that all expected dashboard links are visible.
+4. Verify that team information is visible in Team page.
+5. Log out.
+Verification:
+- Log out button and all dashboard navigation links are visible after login.
+- Team name and email are visible in the Team page.
+","1479","test_login_with_valid_credentials[role: superuser]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Upload a class list file with only headers and verify no
+   records are imported.
+Steps:
+1. Navigate to class list import page for the correct school and year group.
+2. Upload a header-only file.
+Verification:
+- Output indicates no records imported.
+","424","test_class_list_file_upload_header_only","tests","2025-12-10","passed","2025-12-10","","test_import_class_lists","",""
+"
+Test: Verify the search functionality within a session.
+Steps:
+1. Open a session with a random child.
+2. Use the search feature to look for children.
+Verification:
+- Search returns expected results for the session.
+","0","test_session_search_functionality","tests","2025-12-10","broken","2025-12-10","","test_sessions","",""
+"
+Test: Submit an online consent form giving consent for one or both
+   doubles vaccinations and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page, optionally changing school.
+2. Agree to one or both doubles vaccinations as specified by parameter.
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. If not both vaccines, select a reason for not giving consent to the other.
+6. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, vaccines,
+   and health question status.
+","5520","test_consent_given_for_doubles_vaccination[yes_to_health_questions: True-programmes: [<Programme.TD_IPV: 'Td/IPV'>]]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Submit an online consent form giving consent for flu vaccination
+   (nasal spray, injection, or both) and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Agree to flu vaccination, selecting the consent option
+   (nasal spray, injection, or both).
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, consent option,
+  and health question status.
+","5236","test_consent_given_for_flu_vaccination[yes_to_health_questions: True-consent_option: Injection]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","477","test_batch_name_too_long[Nimenrix]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Verify attendance filters on the register tab work as expected.
+Steps:
+1. Open the children tab in a session.
+2. Check and uncheck year group checkboxes and update results.
+3. Use advanced filters to include archived records.
+Verification:
+- Search summary updates correctly as filters are applied and removed.
+","0","test_attendance_filters_functionality","tests","2025-12-10","broken","2025-12-10","","test_sessions","",""
+"
+Test: Attempt to create an invalid session and verify error handling.
+Steps:
+1. Navigate to sessions page.
+2. Attempt to create a session with invalid data for the school and programme.
+3. Attempt to create sessions in previous and next academic years.
+Verification:
+- Error is shown or invalid session is not created.
+","5748","test_create_invalid_session","tests","2025-12-10","passed","2025-12-10","","test_sessions","",""
+"
+Test: Log in with valid credentials for each user role and verify dashboard links
+   and team information.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Log in as the specified user role and select team if necessary.
+3. Verify that all expected dashboard links are visible.
+4. Verify that team information is visible in Team page.
+5. Log out.
+Verification:
+- Log out button and all dashboard navigation links are visible after login.
+- Team name and email are visible in the Team page.
+","1533","test_login_with_valid_credentials[role: prescriber]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
+"
+Test: Create, edit, and delete a session for a school and verify lifecycle actions.
+Steps:
+1. Navigate to sessions page.
+2. Create a new session for the school and programme.
+3. Edit the session to set the date to today.
+4. Delete all sessions for the school.
+Verification:
+- Session is created, edited, and deleted without errors.
+","11781","test_session_lifecycle","tests","2025-12-10","passed","2025-12-10","","test_sessions","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","2923","test_batch_add_change_archive[Gardasil 9]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","525","test_batch_name_too_short[Nimenrix]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","478","test_batch_name_too_long[Cell-based Trivalent Influenza Vaccine Seqirus]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Submit multiple online flu consent forms with different methods and
+   verify the correct method is displayed in the session.
+Steps:
+1. Fill in child and parent details and submit consent with the first method.
+2. Submit a second consent for the same child with the
+   second method (different parent).
+3. Navigate to the session and consent tab.
+4. Search for the child and verify the correct consent method is shown.
+5. Verify the pattern of consent details text in the offline excel.
+Verification:
+- The consent method displayed in the session matches the expected method
+  from the last consent.
+- The consent details in the excel download match the expected pattern.
+","0","test_flu_consent_method_displayed_correctly[consents: (<ConsentOption.NASAL_SPRAY_OR_INJECTION: ''>, <ConsentOption.INJECTION: 'Injection'>, <ConsentOption.INJECTION: 'Injection'>)]","tests","2025-12-10","broken","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Upload a vaccination records file with invalid structure and
+   verify error handling.
+Steps:
+1. Navigate to vaccination records import page.
+2. Upload a file with incorrect structure.
+Verification:
+- Output indicates structural errors.
+","0","test_vaccination_file_upload_invalid_structure","tests","2025-12-10","broken","2025-12-10","","test_import_offline_vaccinations","",""
+"
+Test: Submit an online consent form giving consent for one or both
+   doubles vaccinations and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page, optionally changing school.
+2. Agree to one or both doubles vaccinations as specified by parameter.
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. If not both vaccines, select a reason for not giving consent to the other.
+6. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, vaccines,
+   and health question status.
+","5794","test_consent_given_for_doubles_vaccination[yes_to_health_questions: True-programmes: [<Programme.MENACWY: 'MenACWY'>, <Programme.TD_IPV: 'Td/IPV'>]]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Submit an online consent form giving consent for one or both
+   doubles vaccinations and verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page, optionally changing school.
+2. Agree to one or both doubles vaccinations as specified by parameter.
+3. Fill in address details.
+4. Answer the required number of health questions, optionally marking one as 'yes'.
+5. If not both vaccines, select a reason for not giving consent to the other.
+6. Submit the consent form.
+Verification:
+- Confirmation message is shown for the correct child, vaccines,
+   and health question status.
+","5588","test_consent_given_for_doubles_vaccination[yes_to_health_questions: True-programmes: [<Programme.MENACWY: 'MenACWY'>]]","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Add, edit, and archive a vaccine batch and verify success alerts.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Fill in batch name and expiry date, then confirm.
+3. Edit the batch expiry date and confirm.
+4. Archive the batch and confirm.
+Verification:
+- Success alerts are visible after each operation (add, edit, archive).
+","1936","test_batch_add_change_archive[Revaxis]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Attempt to add a batch with a name that is too long and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with more than 100 characters.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be less than 100 characters.
+","508","test_batch_name_too_long[Revaxis]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Generate and verify SystmOne report for MenACWY programme.
+Steps:
+1. Navigate to reports page.
+2. Generate SystmOne report for MenACWY.
+Verification:
+- Report is generated in SystmOne format for MenACWY.
+","1917","test_verify_systmone_report_for_menacwy","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Submit an online consent form refusing doubles vaccination and
+   verify confirmation.
+Steps:
+1. Fill in child and parent details on the consent page.
+2. Select 'do not agree' to vaccination.
+3. Choose refusal reason and provide details.
+4. Submit the consent form.
+Verification:
+- Confirmation text indicates consent was refused for MenACWY and Td/IPV.
+","3328","test_consent_refused_for_doubles_vaccination","tests","2025-12-10","passed","2025-12-10","","test_online_consent_doubles","",""
+"
+Test: Generate and verify CarePlus report for HPV programme.
+Steps:
+1. Navigate to reports page.
+2. Generate CarePlus report for HPV.
+Verification:
+- Report is generated in CarePlus format for HPV.
+","1712","test_verify_careplus_report_for_hpv","tests","2025-12-10","passed","2025-12-10","","test_programmes","",""
+"
+Test: Submit multiple online flu consent forms with different methods and
+   verify the correct method is displayed in the session.
+Steps:
+1. Fill in child and parent details and submit consent with the first method.
+2. Submit a second consent for the same child with the
+   second method (different parent).
+3. Navigate to the session and consent tab.
+4. Search for the child and verify the correct consent method is shown.
+5. Verify the pattern of consent details text in the offline excel.
+Verification:
+- The consent method displayed in the session matches the expected method
+  from the last consent.
+- The consent details in the excel download match the expected pattern.
+","0","test_flu_consent_method_displayed_correctly[consents: (<ConsentOption.INJECTION: 'Injection'>, <ConsentOption.INJECTION: 'Injection'>, <ConsentOption.INJECTION: 'Injection'>)]","tests","2025-12-10","broken","2025-12-10","","test_online_consent_flu","",""
+"
+Test: Attempt to add a batch with a name that is too short and verify error message.
+Steps:
+1. Click to add a new batch for the given vaccine.
+2. Enter a batch name with only one character.
+3. Fill in expiry date and confirm.
+Verification:
+- Error message is shown indicating the batch name must be more than 2 characters.
+","478","test_batch_name_too_short[Fluenz]","tests","2025-12-10","passed","2025-12-10","","test_vaccines","",""
+"
+Test: Attempt to log in with invalid or empty credentials and verify error message.
+Steps:
+1. Navigate to the log in page (autouse fixture).
+2. Attempt to log in with the given username and password.
+Verification:
+- Error message is displayed indicating invalid credentials.
+","254","test_login_with_invalid_credentials[password: -username: ]","tests","2025-12-10","passed","2025-12-10","","test_log_in","",""
