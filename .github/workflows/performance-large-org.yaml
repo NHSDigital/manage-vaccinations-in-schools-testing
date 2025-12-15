@@ -113,7 +113,7 @@ jobs:
           gzip -c ${{ env.large-org-home }}/vaccination.csv  > ${{ env.large-org-home }}/vaccination.csv.gz       
 
       - name: Upload JMeter output
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jmeter-large-org-output-${{ env.timestamp }}
           path: large-org-output
