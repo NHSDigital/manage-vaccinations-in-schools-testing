@@ -3,6 +3,7 @@ from datetime import timedelta
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.constants import DeliverySite, Programme, Vaccine
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
@@ -29,6 +30,7 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
     return setup_session_and_batches_with_fixed_child(Programme.FLU)
 
 
+@issue("MAV-2831")
 def test_create_imms_record_then_verify_on_children_page(
     imms_api_helper,
     page,
