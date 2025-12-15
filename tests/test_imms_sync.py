@@ -53,7 +53,11 @@ def test_create_imms_record_then_verify_on_children_page(
     2. Verify the record was created successfully
     3. Navigate to MAVIS login page
     4. Log in as a nurse
-    5. Verify the child created via IMMS API is visible in MAVIS children page
+    5. Navigate to the children page
+    6. Search for the child associated with the vaccination record
+    Verification:
+    - The child appears in the search results on the children page
+    - The vaccination record details match those created via the IMMS API
     """
     child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
