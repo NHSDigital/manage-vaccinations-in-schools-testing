@@ -44,7 +44,7 @@ jobs:
   run-tests-against-container:
     needs: identify-target-environment
     if: needs.identify-target-environment.outputs.environment == 'container'
-    uses: nhsuk/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests.yml@containerized_regression_tests_for_PRs #TODO: Change once this is in main
+    uses: nhsuk/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests.yml@next
     permissions:
       id-token: write
       contents: write
