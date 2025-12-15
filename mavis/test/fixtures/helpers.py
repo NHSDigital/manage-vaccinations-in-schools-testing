@@ -19,11 +19,10 @@ from mavis.test.pages import (
     ProgrammesListPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
-    SessionsEditPage,
     SessionsOverviewPage,
-    SessionsSearchPage,
     VaccinesPage,
 )
+from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import get_offset_date
 
 
@@ -57,23 +56,16 @@ def add_vaccine_batch(page):
 
 @pytest.fixture
 def schedule_session_and_get_consent_url(
-    set_feature_flags,
-    nurse,
-    team,
-    page,
+    set_feature_flags, nurse, team, page, year_groups
 ):
     def wrapper(school: School, *programmes: Programme):
+        year_group = year_groups[programmes[0].group]
+
         LogInPage(page).navigate()
         LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, programmes[0].group
+        schedule_school_session_if_needed(
+            page, school, list(programmes), [year_group], date_offset=7
         )
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=7, skip_weekends=False
-            )
         url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
         LogInPage(page).log_out()
         yield url
@@ -83,21 +75,17 @@ def schedule_session_and_get_consent_url(
 
 @pytest.fixture
 def schedule_mmr_session_and_get_consent_url(
-    set_feature_flags,
-    nurse,
-    team,
-    page,
+    set_feature_flags, nurse, team, page, year_groups
 ):
     def wrapper(school: School, *programmes: Programme):
         try:
+            year_group = year_groups[programmes[0].group]
+
             LogInPage(page).navigate()
             LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-            DashboardPage(page).click_sessions()
-            SessionsSearchPage(page).click_session_for_programme_group(
-                school, programmes[0].group
+            schedule_school_session_if_needed(
+                page, school, list(programmes), [year_group], date_offset=7
             )
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_mmr_session()
             url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
             LogInPage(page).log_out()
             yield url
@@ -173,14 +161,7 @@ def upload_offline_vaccination(
             child.year_group,
             programme.group,
         )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(school, programme)
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
+        schedule_school_session_if_needed(page, school, [programme], [child.year_group])
         session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
         SessionsOverviewPage(page).header.click_mavis_header()
         DashboardPage(page).click_imports()
@@ -228,14 +209,14 @@ def setup_session_and_batches_with_fixed_child(
             }
             VaccinesPage(page).header.click_mavis_header()
             DashboardPage(page).click_sessions()
-            SessionsSearchPage(page).click_session_for_programme_group(
-                school, programme_group
+            session_programmes = [
+                programme
+                for programme in Programme
+                if programme.group == programme_group
+            ]
+            schedule_school_session_if_needed(
+                page, school, session_programmes, [child.year_group]
             )
-            if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-                SessionsOverviewPage(page).schedule_or_edit_session()
-                SessionsEditPage(page).schedule_a_valid_session(
-                    offset_days=0, skip_weekends=False
-                )
             SessionsOverviewPage(page).header.click_mavis_header()
             DashboardPage(page).click_schools()
             SchoolsSearchPage(page).click_school(school)

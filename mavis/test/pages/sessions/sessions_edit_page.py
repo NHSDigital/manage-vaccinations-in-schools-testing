@@ -245,3 +245,7 @@ class SessionsEditPage:
                 " using a patient specific direction (PSD)?"
             ),
         ).get_by_label(answer).check()
+
+    def continue_if_warning_appears(self) -> None:
+        if self.page.get_by_role("button", name="Continue").is_visible():
+            self.click_continue_button()

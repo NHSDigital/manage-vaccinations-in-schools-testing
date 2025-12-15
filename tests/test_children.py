@@ -18,12 +18,11 @@ from mavis.test.pages import (
     ProgrammesListPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
-    SessionsEditPage,
     SessionsOverviewPage,
-    SessionsSearchPage,
     VaccinationRecordPage,
 )
-from mavis.test.utils import expect_alert_text, get_offset_date
+from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import expect_alert_text
 
 pytestmark = pytest.mark.children
 
@@ -46,16 +45,7 @@ def setup_children_session(
         ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group
         )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, Programme.HPV.group
-        )
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
+        schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
         SessionsOverviewPage(page).header.click_mavis_header()
         DashboardPage(page).click_children()
         yield
@@ -90,16 +80,7 @@ def setup_mav_853(
     ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    ImportsPage(page).header.click_mavis_header()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(
-        school, Programme.HPV.group
-    )
-    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-        SessionsOverviewPage(page).schedule_or_edit_session()
-        SessionsEditPage(page).schedule_a_valid_session(
-            offset_days=0, skip_weekends=False
-        )
+    schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
     SessionsOverviewPage(page).header.click_mavis_header()

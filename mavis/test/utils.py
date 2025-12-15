@@ -9,8 +9,6 @@ from playwright.sync_api import Locator, Page, expect
 
 faker = Faker()
 
-DEFAULT_TIMEOUT_SECONDS = 30
-
 
 def format_datetime_for_upload_link(now: datetime) -> str:
     am_or_pm = now.strftime(format="%p").lower()
@@ -40,6 +38,15 @@ def get_formatted_date_for_session_dates(date: date) -> str:
     except ValueError:
         # Windows (Dev VDI)
         return date.strftime(format="%#d %B %Y")
+
+
+def get_formatted_date_without_year(date: date) -> str:
+    try:
+        # Linux (Github Action)
+        return date.strftime(format="%-d %B")
+    except ValueError:
+        # Windows (Dev VDI)
+        return date.strftime(format="%#d %B")
 
 
 def get_day_month_year_from_compact_date(compact_date: str) -> tuple[int, int, int]:
@@ -162,6 +169,9 @@ def normalize_postcode(postcode: str) -> str:
     district = district.replace("O", "0").replace("I", "1")
 
     return f"{area}{district} {sector}{unit}"
+
+
+DEFAULT_TIMEOUT_SECONDS = 30
 
 
 def reload_until_element_is_visible(

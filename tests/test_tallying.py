@@ -14,20 +14,17 @@ from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
-    ImportsPage,
     NurseConsentWizardPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
-    SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
-    SessionsSearchPage,
     SessionsVaccinationWizardPage,
     VaccinesPage,
 )
-from mavis.test.utils import get_offset_date
+from mavis.test.pages.utils import schedule_school_session_if_needed
 
 pytestmark = pytest.mark.tallying
 
@@ -61,16 +58,7 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, Programme.FLU.group
-        )
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
+        schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
         yield batch_names
 
     return _setup

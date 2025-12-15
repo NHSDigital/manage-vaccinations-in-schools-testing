@@ -7,11 +7,9 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    SessionsEditPage,
     SessionsOverviewPage,
-    SessionsSearchPage,
 )
-from mavis.test.utils import get_offset_date
+from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
 @pytest.fixture
@@ -24,13 +22,8 @@ def setup_class_list_import(
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
-    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
-        SessionsOverviewPage(page).schedule_or_edit_session()
-        SessionsEditPage(page).schedule_a_valid_session(
-            offset_days=7, skip_weekends=False
-        )
+
+    schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()

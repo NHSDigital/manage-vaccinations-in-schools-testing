@@ -16,11 +16,10 @@ from mavis.test.pages import (
     SchoolMovesPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
-    SessionsEditPage,
     SessionsOverviewPage,
-    SessionsSearchPage,
 )
-from mavis.test.utils import get_current_datetime, get_offset_date
+from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import get_current_datetime
 
 pytestmark = pytest.mark.school_moves
 
@@ -60,25 +59,8 @@ def setup_confirm_and_ignore(
             file_path=output_file_path
         )
 
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.HPV
-    )
-    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
-        SessionsOverviewPage(page).schedule_or_edit_session()
-        SessionsEditPage(page).schedule_a_valid_session(
-            offset_days=7, skip_weekends=False
-        )
-    SessionsOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(
-        schools[1], Programme.HPV
-    )
-    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
-        SessionsOverviewPage(page).schedule_or_edit_session()
-        SessionsEditPage(page).schedule_a_valid_session(
-            offset_days=7, skip_weekends=False
-        )
+    for school in schools:
+        schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(schools[0])
