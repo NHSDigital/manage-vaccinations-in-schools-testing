@@ -26,7 +26,6 @@ from .helpers import (
     schedule_session_and_get_consent_url,
     set_feature_flags,
     setup_session_and_batches_with_fixed_child,
-    sidekiq_helper,
     upload_offline_vaccination,
 )
 from .imms_api import authenticate_api
@@ -66,7 +65,6 @@ __all__ = [
     "schools",
     "set_feature_flags",
     "setup_session_and_batches_with_fixed_child",
-    "sidekiq_helper",
     "subteam",
     "superuser",
     "team",

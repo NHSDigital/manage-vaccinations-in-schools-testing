@@ -1,16 +1,14 @@
-import json
 import time
 import uuid
 from datetime import datetime
-from pathlib import Path
 from typing import NamedTuple
 
 import dateutil.parser
 import requests
 
 from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
+from mavis.test.data.file_utils import create_fhir_immunization_payload
 from mavis.test.data_models import Child, School
-from mavis.test.utils import get_current_datetime
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -220,7 +218,7 @@ class ImmsApiHelper:
             requests.HTTPError: If the API request fails
         """
         # Create FHIR Immunization resource payload
-        immunization_payload = self._create_fhir_immunization_payload(
+        immunization_payload = create_fhir_immunization_payload(
             vaccine=vaccine,
             child=child,
             school=school,
@@ -248,58 +246,3 @@ class ImmsApiHelper:
             delivery_site=delivery_site,
             vaccination_time=vaccination_time,
         )
-
-    def _create_fhir_immunization_payload(
-        self,
-        vaccine: Vaccine,
-        child: Child,
-        school: School,
-        delivery_site: DeliverySite,
-        vaccination_time: datetime,
-    ) -> dict:
-        """Create a FHIR Immunization resource payload using FileGenerator pattern.
-
-        This loads a FHIR R4 Immunization template and substitutes placeholders
-        using the same pattern as FileGenerator for consistency.
-        """
-        # Load template file
-        template_path = (
-            Path(__file__).parent.parent
-            / "data"
-            / "fhir_immunization_template.json.template"
-        )
-
-        with template_path.open("r") as f:
-            template_content = f.read()
-
-        # Generate unique IDs for this immunization
-        immunization_id = str(uuid.uuid4())
-
-        # Create replacements dictionary using FileGenerator pattern
-        replacements = {
-            "<<IMMUNIZATION_ID>>": immunization_id,
-            "<<VACCINE_CODE>>": vaccine.imms_api_code,
-            "<<VACCINE_NAME>>": vaccine.name,
-            "<<PATIENT_NHS_NUMBER>>": child.nhs_number,
-            "<<PATIENT_FAMILY_NAME>>": child.last_name,
-            "<<PATIENT_GIVEN_NAME>>": child.first_name,
-            "<<PATIENT_GENDER>>": "unknown",  # Child model doesn't have gender
-            "<<PATIENT_BIRTH_DATE>>": child.date_of_birth.strftime("%Y-%m-%d"),
-            "<<PATIENT_POSTAL_CODE>>": child.address[3],  # postcode from address tuple
-            "<<VACCINATION_TIME>>": vaccination_time.strftime(
-                "%Y-%m-%dT%H:%M:%S+00:00"
-            ),
-            "<<RECORDED_TIME>>": get_current_datetime(),
-            "<<SCHOOL_URN>>": school.urn,
-            "<<DELIVERY_SITE_CODE>>": delivery_site.imms_api_code,
-            "<<DELIVERY_SITE_DISPLAY>>": delivery_site.value,
-            "<<TARGET_DISEASE_CODE>>": vaccine.target_disease_code,
-            "<<TARGET_DISEASE_DISPLAY>>": vaccine.target_disease_display,
-        }
-
-        # Apply replacements using FileGenerator pattern
-        payload_content = template_content
-        for placeholder, value in replacements.items():
-            payload_content = payload_content.replace(placeholder, value)
-
-        return json.loads(payload_content)
