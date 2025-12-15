@@ -19,3 +19,8 @@ class ProgrammesListPage:
     @step("Click on {1}")
     def click_programme_for_current_year(self, programme: Programme) -> None:
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
+
+    def verify_programme_is_visible(self, programme: Programme) -> None:
+        assert self.current_year_programmes_card.get_by_role(
+            "link", name=programme
+        ).is_visible(), f"{programme} is not visible on the programmes list page"
