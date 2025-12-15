@@ -111,8 +111,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "6142004",
-              "display": "Influenza"
+              "code": "<<TARGET_DISEASE_CODE>>",
+              "display": "<<TARGET_DISEASE_DISPLAY>>"
             }
           ]
         }
