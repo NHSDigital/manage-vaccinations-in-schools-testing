@@ -1,7 +1,7 @@
 import json
 import time
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import NamedTuple
 
@@ -10,6 +10,7 @@ import requests
 
 from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data_models import Child, School
+from mavis.test.utils import get_current_datetime
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -202,7 +203,7 @@ class ImmsApiHelper:
         school: School,
         delivery_site: DeliverySite,
         vaccination_time: datetime,
-    ) -> bool:
+    ) -> None:
         """Create a vaccination record in the IMMS API.
 
         Args:
@@ -239,19 +240,14 @@ class ImmsApiHelper:
         )
         response.raise_for_status()
 
-        success = response.status_code in [200, 201]
-
         # If creation was successful, verify the record exists in the API
-        if success:
-            self.check_record_in_imms_api(
-                vaccine=vaccine,
-                child=child,
-                school=school,
-                delivery_site=delivery_site,
-                vaccination_time=vaccination_time,
-            )
-
-        return success
+        self.check_record_in_imms_api(
+            vaccine=vaccine,
+            child=child,
+            school=school,
+            delivery_site=delivery_site,
+            vaccination_time=vaccination_time,
+        )
 
     def _create_fhir_immunization_payload(
         self,
@@ -293,9 +289,7 @@ class ImmsApiHelper:
             "<<VACCINATION_TIME>>": vaccination_time.strftime(
                 "%Y-%m-%dT%H:%M:%S+00:00"
             ),
-            "<<RECORDED_TIME>>": datetime.now(tz=UTC).strftime(
-                "%Y-%m-%dT%H:%M:%S+00:00"
-            ),
+            "<<RECORDED_TIME>>": get_current_datetime(),
             "<<SCHOOL_URN>>": school.urn,
             "<<DELIVERY_SITE_CODE>>": delivery_site.imms_api_code,
             "<<DELIVERY_SITE_DISPLAY>>": delivery_site.value,

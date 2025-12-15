@@ -85,7 +85,7 @@ class SidekiqHelper:
 
     def run_recurring_job(
         self, job_name: str, timeout: int = 300, poll_interval: int = 5
-    ) -> dict[str, Any]:
+    ) -> None:
         """Run a recurring Sidekiq job by name and wait for completion.
 
         This method triggers a recurring job to run immediately and then polls
@@ -107,8 +107,6 @@ class SidekiqHelper:
         # Get initial stats to track job execution
         initial_stats = self._get_sidekiq_stats()
         initial_enqueued = initial_stats.get("enqueued", 0)
-        initial_processed = initial_stats.get("processed", 0)
-        initial_failed = initial_stats.get("failed", 0)
 
         # Get authenticity token for POST request
         authenticity_token = self._get_authenticity_token()
@@ -167,27 +165,14 @@ class SidekiqHelper:
 
             # Job completed when it was enqueued and count is back to initial level
             if job_was_enqueued and current_enqueued <= initial_enqueued:
-                return {
-                    "status": "completed",
-                    "job_name": job_name,
-                    "enqueue_status_code": enqueue_response.status_code,
-                    "execution_time": round(time.time() - start_time, 2),
-                    "stats": {
-                        "initial_enqueued": initial_enqueued,
-                        "max_enqueued": max(current_enqueued, initial_enqueued + 1),
-                        "final_enqueued": current_enqueued,
-                        "initial_processed": initial_processed,
-                        "initial_failed": initial_failed,
-                    },
-                    "message": f"Recurring job '{job_name}' completed",
-                }
+                break
 
             # Wait before next check
             time.sleep(poll_interval)
-
-        # Job didn't complete within timeout
-        msg = f"Job '{job_name}' did not complete within {timeout} seconds"
-        raise TimeoutError(msg)
+        else:
+            # Job didn't complete within timeout
+            msg = f"Job '{job_name}' did not complete within {timeout} seconds"
+            raise TimeoutError(msg)
 
     def _get_sidekiq_stats(self) -> dict[str, Any]:
         """Internal method to get Sidekiq stats.
@@ -203,62 +188,3 @@ class SidekiqHelper:
         response = self.session.get(url, headers=request_headers, timeout=30)
         response.raise_for_status()
         return response.json() if response.content else {}
-
-    def get_job_status(self, job_name: str) -> dict[str, Any]:
-        """Get the status of a recurring job.
-
-        Args:
-            job_name: The name of the job to check
-
-        Returns:
-            Dict containing job status information
-
-        Raises:
-            requests.HTTPError: If the API request fails
-        """
-        url = f"{self.sidekiq_url}/recurring/{job_name}"
-
-        # Prepare request headers
-        request_headers = {"Accept": "application/json"}
-
-        response = self.session.get(url, headers=request_headers, timeout=30)
-        response.raise_for_status()
-
-        return {
-            "status_code": response.status_code,
-            "job_name": job_name,
-            "data": response.json() if response.content else {},
-        }
-
-    def list_recurring_jobs(self) -> dict[str, Any]:
-        """List all recurring jobs in Sidekiq.
-
-        Returns:
-            Dict containing list of all recurring jobs
-
-        Raises:
-            requests.HTTPError: If the API request fails
-        """
-        url = f"{self.sidekiq_url}/recurring"
-
-        # Prepare request headers
-        request_headers = {"Accept": "application/json"}
-
-        response = self.session.get(url, headers=request_headers, timeout=30)
-        response.raise_for_status()
-
-        return {
-            "status_code": response.status_code,
-            "jobs": response.json() if response.content else [],
-        }
-
-    def get_sidekiq_stats(self) -> dict[str, Any]:
-        """Get general Sidekiq statistics.
-
-        Returns:
-            Dict containing Sidekiq stats (processed, failed, busy, etc.)
-
-        Raises:
-            requests.HTTPError: If the API request fails
-        """
-        return self._get_sidekiq_stats()

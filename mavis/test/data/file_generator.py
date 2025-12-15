@@ -214,27 +214,6 @@ class FileGenerator:
             df[col] = df[col].map(replace_substrings)
         return df
 
-    def replace_placeholders_in_text(
-        self, text: str, replacements: dict[str, str]
-    ) -> str:
-        """Replace placeholders in text using the FileGenerator pattern.
-
-        This method provides a consistent way to replace placeholders
-        that matches the pattern used throughout the test framework.
-
-        Args:
-            text: The text containing placeholders to replace
-            replacements: Dictionary mapping placeholders to replacement values
-
-        Returns:
-            Text with all placeholders replaced
-        """
-        result = text
-        for placeholder, value in replacements.items():
-            if placeholder and value:
-                result = result.replace(placeholder, value)
-        return result
-
     def get_new_nhs_no(self, *, valid: bool = True) -> str:
         nhs_numbers = nhs_number.generate(
             valid=valid,
