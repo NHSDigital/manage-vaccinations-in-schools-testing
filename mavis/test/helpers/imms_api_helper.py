@@ -290,11 +290,17 @@ class ImmsApiHelper:
             "<<PATIENT_GENDER>>": "unknown",  # Child model doesn't have gender
             "<<PATIENT_BIRTH_DATE>>": child.date_of_birth.strftime("%Y-%m-%d"),
             "<<PATIENT_POSTAL_CODE>>": child.address[3],  # postcode from address tuple
-            "<<VACCINATION_TIME>>": vaccination_time.isoformat(),
-            "<<RECORDED_TIME>>": datetime.now(tz=UTC).isoformat(),
+            "<<VACCINATION_TIME>>": vaccination_time.strftime(
+                "%Y-%m-%dT%H:%M:%S+00:00"
+            ),
+            "<<RECORDED_TIME>>": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S+00:00"
+            ),
             "<<SCHOOL_URN>>": school.urn,
             "<<DELIVERY_SITE_CODE>>": delivery_site.imms_api_code,
             "<<DELIVERY_SITE_DISPLAY>>": delivery_site.value,
+            "<<TARGET_DISEASE_CODE>>": vaccine.target_disease_code,
+            "<<TARGET_DISEASE_DISPLAY>>": vaccine.target_disease_display,
         }
 
         # Apply replacements using FileGenerator pattern

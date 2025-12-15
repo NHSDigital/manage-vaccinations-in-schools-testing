@@ -309,6 +309,30 @@ class Vaccine(StrEnum):
         }
         return programme_mapping[self]
 
+    @property
+    def target_disease_code(self) -> str:
+        """Get the SNOMED code for the target disease of this vaccine."""
+        target_disease_mapping = {
+            # Flu vaccines target influenza
+            Vaccine.FLUENZ: "6142004",
+            Vaccine.SEQUIRUS: "6142004",
+            # HPV vaccine targets human papillomavirus infection
+            Vaccine.GARDASIL_9: "240532009",
+        }
+        return target_disease_mapping[self]
+
+    @property
+    def target_disease_display(self) -> str:
+        """Get the display name for the target disease of this vaccine."""
+        target_disease_display_mapping = {
+            # Flu vaccines target influenza
+            Vaccine.FLUENZ: "Influenza",
+            Vaccine.SEQUIRUS: "Influenza",
+            # HPV vaccine targets human papillomavirus infection
+            Vaccine.GARDASIL_9: "Human papillomavirus infection",
+        }
+        return target_disease_display_mapping[self]
+
 
 class DeliverySite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
