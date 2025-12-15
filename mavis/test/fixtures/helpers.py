@@ -227,6 +227,16 @@ def setup_session_and_batches_with_fixed_child(
                 if vaccine.programme.group == programme_group
             }
             VaccinesPage(page).header.click_mavis_header()
+            DashboardPage(page).click_sessions()
+            SessionsSearchPage(page).click_session_for_programme_group(
+                school, programme_group
+            )
+            if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
+                SessionsOverviewPage(page).schedule_or_edit_session()
+                SessionsEditPage(page).schedule_a_valid_session(
+                    offset_days=0, skip_weekends=False
+                )
+            SessionsOverviewPage(page).header.click_mavis_header()
             DashboardPage(page).click_schools()
             SchoolsSearchPage(page).click_school(school)
             SchoolsChildrenPage(page).click_import_class_lists()

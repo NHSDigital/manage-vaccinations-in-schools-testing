@@ -8,13 +8,7 @@ from faker import Faker
 
 from mavis.test.constants import Programme
 from mavis.test.data.file_mappings import FileMapping
-from mavis.test.data_models import (
-    Child,
-    Clinic,
-    Organisation,
-    School,
-    User,
-)
+from mavis.test.data_models import Child, Clinic, Organisation, School, User
 from mavis.test.utils import (
     get_current_datetime_compact,
     get_current_time_hms_format,

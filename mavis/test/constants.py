@@ -309,6 +309,24 @@ class Vaccine(StrEnum):
         }
         return programme_mapping[self]
 
+    @property
+    def target_disease_code(self) -> str:
+        target_disease_mapping = {
+            Vaccine.FLUENZ: "6142004",
+            Vaccine.SEQUIRUS: "6142004",
+            Vaccine.GARDASIL_9: "240532009",
+        }
+        return target_disease_mapping[self]
+
+    @property
+    def target_disease_display(self) -> str:
+        target_disease_display_mapping = {
+            Vaccine.FLUENZ: "Influenza",
+            Vaccine.SEQUIRUS: "Influenza",
+            Vaccine.GARDASIL_9: "Human papillomavirus infection",
+        }
+        return target_disease_display_mapping[self]
+
 
 class DeliverySite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
@@ -325,6 +343,18 @@ class DeliverySite(StrEnum):
             "279549004": DeliverySite.NOSE,
         }
         return sites[code]
+
+    @property
+    def imms_api_code(self) -> str:
+        """Get the IMMS API code for this delivery site."""
+        codes = {
+            DeliverySite.LEFT_ARM_UPPER: "368208006",
+            DeliverySite.RIGHT_ARM_UPPER: "368209003",
+            DeliverySite.LEFT_ARM_LOWER: "368208006",  # Use same as upper for lower
+            DeliverySite.RIGHT_ARM_LOWER: "368209003",  # Use same as upper for lower
+            DeliverySite.NOSE: "279549004",
+        }
+        return codes[self]
 
 
 class ConsentRefusalReason(StrEnum):
@@ -434,6 +464,7 @@ class Relationship(StrEnum):
 
 class ImmsEndpoints(StrEnum):
     READ = "/immunisation-fhir-api/FHIR/R4/Immunization"
+    CREATE = "/immunisation-fhir-api/FHIR/R4/Immunization"
 
     @property
     def to_url(self) -> str:
