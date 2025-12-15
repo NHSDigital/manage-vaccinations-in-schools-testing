@@ -1,4 +1,5 @@
 import time
+from datetime import timedelta
 
 from playwright.sync_api import Page, expect
 
@@ -31,6 +32,10 @@ class ChildRecordPage:
         )
         self.archive_child_record_link = self.page.get_by_role(
             "link", name="Archive child record"
+        )
+        self.vaccination_record_link = self.page.get_by_role(
+            "link",
+            name=(get_current_datetime() - timedelta(days=1)).strftime("%-d %B %Y"),
         )
 
     @step("Click on {2} session for programme")
@@ -87,3 +92,7 @@ class ChildRecordPage:
 
     def check_child_is_unarchived(self) -> None:
         expect(self.archive_child_record_link).to_be_visible()
+
+    @step("Click on Vaccination record link")
+    def click_vaccination_record_link(self) -> None:
+        self.vaccination_record_link.click()

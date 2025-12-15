@@ -90,6 +90,10 @@
         ]
       },
       "actor": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "R1L"
+        },
         "display": "Test Nurse"
       }
     },
