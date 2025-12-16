@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.constants import ConsentMethod, ConsentOption, Programme, Vaccine
 from mavis.test.data import ClassFileMapping
 from mavis.test.data_models import VaccinationRecord
@@ -254,57 +255,38 @@ def test_accessibility(
     AccessibilityHelper(page).check_accessibility()
 
 
+@issue("MAV-2775")
 @pytest.mark.parametrize("programme", list(Programme))
 def test_healthcare_assistant_can_see_programmes_list(
-    log_in_as_medical_secretary, page, programme
+    log_in_as_medical_secretary, page, programme, schools
 ):
     """
-    Test: A healthcare assistant (Medical Secretary role with Personal
-    Medication Administration activity)
-    can see a list of all the team's programmes on the /programmes page.
+    Test: A healthcare assistant can see programmes and access sessions for
+    non-delegation programmes.
 
     Steps:
     1. Log in as a healthcare assistant user
-    2. Navigate to the programmes page
-    3. Verify that all programmes are visible
+    2. Navigate to programmes page and verify programme visibility
+    3. Navigate to sessions page and verify access to programme sessions
+    4. Verify session overview is accessible
 
     Verification:
     - Healthcare assistant can access the programmes page
     - All team programmes are displayed (FLU, HPV, MenACWY, MMR, Td/IPV)
+    - Healthcare assistant can access sessions for all programmes
+    - Session overview page is accessible for each programme
     """
+    # AC1 A user with the roles and activity codes of a healthcare assistant
+    # (Medical Secretary role with Personal Medication Administration activity) can see
+    # a list of all the team's programmes on the /programmes page.
     DashboardPage(page).click_programmes()
-
-    # Verify all programmes are visible
     ProgrammesListPage(page).verify_programme_is_visible(programme)
+    ProgrammesListPage(page).header.click_mavis_header()
 
-
-@pytest.mark.parametrize("programme", [Programme.HPV, Programme.MMR, Programme.TD_IPV])
-def test_healthcare_assistant_can_see_non_delegation_sessions(
-    log_in_as_medical_secretary,
-    page,
-    schools,
-    programme,
-):
-    """
-    Test: A healthcare assistant can see sessions managed by their team for programmes
-    which do not support delegation (HPV, MMR, TD_IPV).
-
-    Steps:
-    1. Log in as a healthcare assistant user
-    2. Navigate to sessions page
-    3. Verify that sessions for non-delegation programmes are visible
-
-    Verification:
-    - Healthcare assistant can access sessions for HPV, MMR, TD_IPV programmes
-    - Sessions managed by their team are visible
-    """
+    # AC2 A user with the roles and activity codes of a healthcare assistant can see
+    # sessions managed by their team for programmes which do not support delegation (HPV
+    # ,MenACWY, Td/IPV )
     DashboardPage(page).click_sessions()
-
-    # Test access to non-delegation programme sessions
     school = schools[programme][0]
-
-    # Click on the session to verify access
     SessionsSearchPage(page).click_session_for_programme_group(school, programme.group)
-
-    # Verify we can access the session overview by checking for the edit session link
     expect(SessionsOverviewPage(page).edit_session_link).to_be_visible()
