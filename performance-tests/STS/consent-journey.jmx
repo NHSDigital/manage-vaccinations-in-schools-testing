@@ -42,7 +42,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -96,7 +96,7 @@
 URN	${__P(URN, 137390)}	</stringProp>
       </Arguments>
       <hashTree/>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
         <stringProp name="HTTPSampler.domain">${BaseURL}</stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -181,7 +181,7 @@ log.info(vars.get(&quot;AddNewSession&quot;))
           </ModuleController>
           <hashTree/>
         </hashTree>
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients">
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Get patients" enabled="true">
           <collectionProp name="ModuleController.node_path">
             <stringProp name="764597751">Test Plan</stringProp>
             <stringProp name="764597751">Test Plan</stringProp>
@@ -673,7 +673,7 @@ log.info(&quot;number of patients per Vaccine required: &quot; + props.get(&quot
           <stringProp name="script">vars.put(&quot;SessionID_matchNr&quot;,&quot;0&quot;)</stringProp>
         </JSR223Sampler>
         <hashTree/>
-        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="SessionPageLoop">
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="SessionPageLoop" enabled="true">
           <stringProp name="LoopController.loops">4</stringProp>
         </LoopController>
         <hashTree>
@@ -692,7 +692,7 @@ vars.put(&quot;SessionPage&quot;,(vars.get(&quot;__jm__SessionPageLoop__idx&quot
 </stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions page">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sessions page" enabled="true">
             <stringProp name="HTTPSampler.path">sessions?page=${SessionPage}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -733,7 +733,7 @@ vars.put(&quot;SessionPage&quot;,(vars.get(&quot;__jm__SessionPageLoop__idx&quot
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Copy all page session IDs to main list">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Copy all page session IDs to main list" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1185,9 +1185,9 @@ log.info(&quot;MENACWY count: &quot; + props.get(&quot;VaccineCount_menacwy&quot
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
           <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="-546414053">&lt;title&gt;When will sessions be held? – Manage vaccinations in schools&lt;/title&gt;</stringProp>
+              <stringProp name="-1966272558">&lt;title&gt;When will this session be held? – Manage vaccinations in schools&lt;/title&gt;</stringProp>
             </collectionProp>
             <stringProp name="Assertion.custom_message"></stringProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -1281,9 +1281,9 @@ vars.put(&quot;sessionDatesArray&quot;,fullArray)
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="-546414053">&lt;title&gt;When will sessions be held? – Manage vaccinations in schools&lt;/title&gt;</stringProp>
+              <stringProp name="-1966272558">&lt;title&gt;When will this session be held? – Manage vaccinations in schools&lt;/title&gt;</stringProp>
             </collectionProp>
             <stringProp name="Assertion.custom_message"></stringProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -1312,7 +1312,7 @@ vars.put(&quot;sessionDatesArray&quot;,fullArray)
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates (new date)" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST draft-session/dates (new date)">
           <stringProp name="TestPlan.comments">This adds tomorrow as a session date, if it already exists then it will intentionally fail</stringProp>
           <boolProp name="HTTPSampler.image_parser">true</boolProp>
           <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
