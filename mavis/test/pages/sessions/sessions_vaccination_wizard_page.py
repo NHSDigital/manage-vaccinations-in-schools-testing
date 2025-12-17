@@ -10,6 +10,7 @@ from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     expect_alert_text,
     expect_details,
+    reload_until_element_is_visible,
 )
 
 
@@ -47,7 +48,13 @@ class SessionsVaccinationWizardPage:
 
     @step("Choose batch {1}")
     def choose_batch(self, batch_name: str) -> None:
-        self.page.get_by_role("radio", name=batch_name).check()
+        batch_radio = self.page.get_by_role("radio", name=batch_name)
+
+        reload_until_element_is_visible(
+            self.page,
+            batch_radio,
+        )
+        batch_radio.check()
         self.click_continue_button()
 
     def record_vaccination(

@@ -63,6 +63,7 @@ def schedule_session_and_get_consent_url(
 
         LogInPage(page).navigate()
         LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+
         schedule_school_session_if_needed(
             page, school, list(programmes), [year_group], date_offset=7
         )

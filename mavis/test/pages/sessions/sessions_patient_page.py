@@ -218,7 +218,11 @@ class SessionsPatientPage:
             locator = self.pre_screening_listitem.get_by_text(check)
             expect(locator).to_be_visible()
         self.page.wait_for_load_state()
+        expect(self.pre_screening_checkbox).to_be_editable()
         self.pre_screening_checkbox.check()
+
+        self.page.wait_for_load_state()
+        expect(self.pre_screening_checkbox).to_be_checked()
 
     def expect_conflicting_consent_text(self) -> None:
         expect(

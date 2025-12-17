@@ -30,13 +30,8 @@ pytestmark = pytest.mark.tallying
 
 
 @pytest.fixture
-def setup_tests(log_in_as_nurse, page):
-    DashboardPage(page).click_sessions()
-
-
-@pytest.fixture
-def setup_session_with_file_upload(
-    setup_tests,
+def setup_flu_vaccination(
+    log_in_as_nurse,
     add_vaccine_batch,
     schools,
     page,
@@ -47,6 +42,7 @@ def setup_session_with_file_upload(
     year_group = year_groups[Programme.FLU]
 
     def _setup(class_list_file):
+        DashboardPage(page).click_sessions()
         batch_names = {
             vaccine: add_vaccine_batch(vaccine)
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
@@ -65,8 +61,8 @@ def setup_session_with_file_upload(
 
 
 @pytest.fixture
-def setup_fixed_child(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
+def setup_fixed_child(setup_flu_vaccination):
+    yield from setup_flu_vaccination(ClassFileMapping.FIXED_CHILD)
 
 
 @issue("MAV-1669")
@@ -170,9 +166,12 @@ def test_tallying(  # noqa: PLR0915
     "programme", list(Programme), ids=lambda p: f"Programme: {p.value}"
 )
 def test_tallying_totals_match_eligible_patients(
-    setup_fixed_child,
+    log_in_as_nurse,
     page,
     programme,
+    year_groups,
+    schools,
+    file_generator,
 ):
     """
     Test: Verify that tallying totals match the number of eligible patients.
@@ -183,6 +182,17 @@ def test_tallying_totals_match_eligible_patients(
     - Sum of tally totals should equal the number of eligible children shown
       on the children tab.
     """
+    school = schools[programme.group][0]
+    year_group = year_groups[programme.group]
+
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(school)
+    SchoolsChildrenPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ClassFileMapping.FIXED_CHILD, year_group, programme.group
+    )
+    schedule_school_session_if_needed(page, school, [programme], [year_group])
+
     # Get tally totals for the programme
     tally_totals = SessionsOverviewPage(page).get_all_totals(programme)
     sum_of_tally_totals = sum(tally_totals.values())

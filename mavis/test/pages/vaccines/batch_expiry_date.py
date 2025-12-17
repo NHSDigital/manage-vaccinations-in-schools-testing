@@ -7,6 +7,7 @@ from mavis.test.annotations import step
 
 class BatchExpiryDate:
     def __init__(self, page: Page) -> None:
+        self.page = page
         self.expiry_day_textbox = page.get_by_role("textbox", name="Day")
         self.expiry_month_textbox = page.get_by_role("textbox", name="Month")
         self.expiry_year_textbox = page.get_by_role("textbox", name="Year")
