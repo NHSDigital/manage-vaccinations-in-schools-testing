@@ -107,11 +107,9 @@ def test_pre_screening_questions_prefilled_for_multiple_vaccinations(
             SessionsChildrenPage(page).register_child_as_attending(child)
         SessionsChildrenPage(page).tabs.click_children_tab()
         SessionsChildrenPage(page).search.search_and_click_child(child)
-        programmes = (
-            [Programme.MENACWY, Programme.TD_IPV]
-            if programme_group == "doubles"
-            else [programme_group]
-        )
+        programmes = [
+            programme for programme in Programme if programme.group == programme_group
+        ]
         for programme in programmes:
             consent_option = (
                 ConsentOption.NASAL_SPRAY_OR_INJECTION

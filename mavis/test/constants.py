@@ -237,15 +237,14 @@ class Programme(StrEnum):
 
     @property
     def year_groups(self) -> list[int]:
-        match self:
-            case self.FLU:
-                return list(range(12))
-            case self.HPV:
-                return list(range(8, 12))
-            case self.MMR:
-                return list(range(12))
-            case self.MENACWY | self.TD_IPV:
-                return list(range(9, 12))
+        year_group_map = {
+            self.FLU: list(range(12)),
+            self.HPV: list(range(8, 12)),
+            self.MMR: list(range(12)),
+            self.MENACWY: list(range(9, 12)),
+            self.TD_IPV: list(range(9, 12)),
+        }
+        return year_group_map[self]
 
     @property
     def tally_categories(self) -> list[str]:
