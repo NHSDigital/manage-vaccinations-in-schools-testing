@@ -31,7 +31,7 @@ pytestmark = pytest.mark.tallying
 
 @pytest.fixture
 def setup_flu_vaccination(
-    setup_tests,
+    log_in_as_nurse,
     add_vaccine_batch,
     schools,
     page,
@@ -182,8 +182,8 @@ def test_tallying_totals_match_eligible_patients(
     - Sum of tally totals should equal the number of eligible children shown
       on the children tab.
     """
-    school = schools[programme][0]
-    year_group = year_groups[programme]
+    school = schools[programme.group][0]
+    year_group = year_groups[programme.group]
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
