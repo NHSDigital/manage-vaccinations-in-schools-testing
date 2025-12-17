@@ -17,16 +17,15 @@ from mavis.test.pages import (
     SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
-    SessionsEditPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
     VaccinesPage,
 )
+from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import (
     generate_random_string,
-    get_offset_date,
 )
 
 
@@ -59,16 +58,10 @@ def setup_all_programmes(
     )
 
     for programme_group in [Programme.HPV, "doubles", Programme.FLU]:
-        DashboardPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, programme_group
-        )
-        if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
+        programmes = [
+            programme for programme in Programme if programme.group == programme_group
+        ]
+        schedule_school_session_if_needed(page, school, programmes, [child.year_group])
     return batch_names
 
 

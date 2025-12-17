@@ -11,7 +11,6 @@ from mavis.test.pages import (
     ChildrenSearchPage,
     DashboardPage,
     ImportRecordsWizardPage,
-    ImportsPage,
     NurseConsentWizardPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
@@ -24,14 +23,16 @@ from mavis.test.pages import (
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
-from mavis.test.utils import expect_alert_text, expect_details, get_offset_date
+from mavis.test.pages.utils import (
+    schedule_community_clinic_session_if_needed,
+    schedule_school_session_if_needed,
+)
+from mavis.test.utils import (
+    expect_alert_text,
+    expect_details,
+)
 
 pytestmark = pytest.mark.sessions
-
-
-@pytest.fixture
-def go_to_sessions(log_in_as_nurse, page):
-    DashboardPage(page).click_sessions()
 
 
 @pytest.fixture
@@ -52,18 +53,9 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_list_file, year_group
         )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, Programme.HPV
+        schedule_school_session_if_needed(
+            page, school, [Programme.HPV], [year_group], offset_days
         )
-        if not SessionsOverviewPage(page).is_date_scheduled(
-            get_offset_date(offset_days)
-        ):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=offset_days, skip_weekends=False
-            )
         yield
 
     return _setup
@@ -92,9 +84,10 @@ def setup_fixed_child_future_date(setup_session_with_file_upload):
 
 
 def test_session_lifecycle(
-    go_to_sessions,
+    log_in_as_nurse,
     schools,
     page,
+    year_groups,
 ):
     """
     Test: Create, edit, and delete a session for a school and verify lifecycle actions.
@@ -107,10 +100,12 @@ def test_session_lifecycle(
     - Session is created, edited, and deleted without errors.
     """
     school = schools[Programme.HPV][0]
+    year_group = year_groups[Programme.HPV]
 
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
-    SessionsOverviewPage(page).schedule_or_edit_session()
-    SessionsEditPage(page).schedule_a_valid_session(offset_days=14)
+    schedule_school_session_if_needed(
+        page, school, [Programme.HPV], [year_group], date_offset=14
+    )
+
     SessionsOverviewPage(page).schedule_or_edit_session()
     SessionsEditPage(page).schedule_a_valid_session(offset_days=1)
     SessionsOverviewPage(page).click_edit_session()
@@ -118,8 +113,9 @@ def test_session_lifecycle(
 
 
 def test_create_invalid_session(
-    go_to_sessions,
+    log_in_as_nurse,
     schools,
+    year_groups,
     page,
 ):
     """
@@ -132,7 +128,11 @@ def test_create_invalid_session(
     - Error is shown or invalid session is not created.
     """
     school = schools[Programme.HPV][0]
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    year_group = year_groups[Programme.HPV]
+
+    schedule_school_session_if_needed(
+        page, school, [Programme.HPV], [year_group], date_offset=14
+    )
     SessionsOverviewPage(page).schedule_or_edit_session()
 
     SessionsEditPage(page).create_invalid_session()
@@ -251,7 +251,7 @@ def test_session_activity_notes_order(
     SessionsPatientSessionActivityPage(page).add_note(note_2)
     SessionsPatientSessionActivityPage(page).header.click_mavis_header()
     DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    schedule_school_session_if_needed(page, school, [Programme.HPV], [child.year_group])
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_for(str(child))
     SessionsChildrenPage(page).check_note_appears_in_search(child, note_2)
@@ -367,16 +367,7 @@ def test_verify_excel_export_and_clinic_invitation(
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     generic_clinic = Clinic(name="Community clinic")
 
-    SessionsOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(
-        generic_clinic, Programme.HPV.group
-    )
-    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(0)):
-        SessionsOverviewPage(page).schedule_or_edit_session()
-        SessionsEditPage(page).schedule_a_valid_session(
-            offset_days=0, skip_weekends=False
-        )
+    schedule_community_clinic_session_if_needed(page, [Programme.HPV])
 
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
@@ -453,6 +444,7 @@ def test_editing_session_programmes(
     SessionsEditPage(page).click_change_programmes()
     SessionsEditPage(page).add_programme(Programme.FLU)
     SessionsEditPage(page).click_continue_button()
+    SessionsEditPage(page).continue_if_warning_appears()
     expect_details(page, "Programmes", "Flu HPV")
     SessionsEditPage(page).click_save_changes()
     SessionsEditPage(page).expect_session_to_have_programmes(

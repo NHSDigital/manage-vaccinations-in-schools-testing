@@ -43,9 +43,9 @@ class ImportRecordsWizardPage:
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.file_input = self.page.locator('input[type="file"]')
         self.location_combobox = self.page.get_by_role("combobox")
-        self.imported_records_tab = self.page.get_by_role(
+        self.completed_imports_tab = self.page.get_by_role(
             "link",
-            name="Imported records",
+            name="Completed imports",
         )
 
         # Pattern to match dynamic text (s is optional for records)
@@ -217,7 +217,7 @@ class ImportRecordsWizardPage:
         if first_link.or_(second_link).first.is_visible():
             first_link.or_(second_link).first.click()
         else:
-            self.imported_records_tab.click()
+            self.completed_imports_tab.click()
             first_link.or_(second_link).first.click()
 
     @step("Verify upload output for {file_path}")

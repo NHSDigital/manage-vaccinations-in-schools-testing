@@ -7,7 +7,6 @@ from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
-    ImportsPage,
     LogInPage,
     NurseConsentWizardPage,
     OnlineConsentWizardPage,
@@ -24,7 +23,7 @@ from mavis.test.pages import (
     StartPage,
     VaccinesPage,
 )
-from mavis.test.utils import get_offset_date
+from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
 @pytest.fixture
@@ -50,18 +49,11 @@ def setup_session_with_file_upload(
         ImportRecordsWizardPage(page, file_generator).import_class_list(
             class_file_mapping, year_group, Programme.FLU.group
         )
-        ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_sessions()
-        SessionsSearchPage(page).click_session_for_programme_group(
-            school, Programme.FLU.group
+
+        offset_days = 0 if schedule_session_for_today else 7
+        schedule_school_session_if_needed(
+            page, school, [Programme.FLU], [year_group], offset_days
         )
-        if schedule_session_for_today and not SessionsOverviewPage(
-            page
-        ).is_date_scheduled(get_offset_date(0)):
-            SessionsOverviewPage(page).schedule_or_edit_session()
-            SessionsEditPage(page).schedule_a_valid_session(
-                offset_days=0, skip_weekends=False
-            )
         return batch_name
 
     return _factory
@@ -243,11 +235,6 @@ def test_accessibility(
     - No accessibility issues are found.
     """
 
-    if not SessionsOverviewPage(page).is_date_scheduled(get_offset_date(7)):
-        SessionsOverviewPage(page).schedule_or_edit_session()
-        SessionsEditPage(page).schedule_a_valid_session(
-            offset_days=7, skip_weekends=False
-        )
     SessionsOverviewPage(page).click_edit_session()
     SessionsEditPage(page).click_change_psd()
     AccessibilityHelper(page).check_accessibility()

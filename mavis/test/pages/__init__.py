@@ -1,3 +1,4 @@
+from .add_session_wizard_page import AddSessionWizardPage
 from .children import (
     ChildActivityLogPage,
     ChildArchivePage,
@@ -48,6 +49,7 @@ from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPag
 
 __all__ = [
     "AddBatchPage",
+    "AddSessionWizardPage",
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
     "BadRequestPage",
