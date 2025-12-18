@@ -25,8 +25,6 @@ from mavis.test.pages import (
     StartPage,
     VaccinesPage,
 )
-from mavis.test.pages.programmes.programmes_list_page import ProgrammesListPage
-from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
 @pytest.fixture
