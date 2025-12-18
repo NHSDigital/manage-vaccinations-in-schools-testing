@@ -127,5 +127,6 @@ class AddSessionWizardPage:
 
     @step("Keep session dates if necessary")
     def keep_session_dates_if_necessary(self) -> None:
+        self.page.wait_for_load_state()
         if self.keep_session_dates_button.is_visible():
             self.click_keep_session_dates()

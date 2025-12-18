@@ -55,8 +55,10 @@ class SessionsOverviewPage:
             "button", name="Send manual consent reminders"
         )
 
-    def get_total_for_category(self, category: str) -> int:
-        category_locator = self.page.locator(
+    def get_total_for_category(self, programme: Programme, category: str) -> int:
+        programme_section = self.page.locator(f'section:has(h3:text("{programme}"))')
+
+        category_locator = programme_section.locator(
             ".nhsuk-card__heading.nhsuk-heading-xs", has_text=category
         )
         total_locator = category_locator.locator("xpath=following-sibling::*[1]")
@@ -64,14 +66,14 @@ class SessionsOverviewPage:
 
     def get_all_totals(self, programme: Programme) -> dict[str, int]:
         return {
-            category: self.get_total_for_category(category)
+            category: self.get_total_for_category(programme, category)
             for category in programme.tally_categories
         }
 
-    def check_all_totals(self, totals: dict[str, int]) -> None:
+    def check_all_totals(self, programme: Programme, totals: dict[str, int]) -> None:
         self.tabs.click_overview_tab()
         for category, expected_total in totals.items():
-            actual_total = self.get_total_for_category(category)
+            actual_total = self.get_total_for_category(programme, category)
             assert actual_total == expected_total, (
                 f"Expected {expected_total} for {category}, but got {actual_total}"
             )
