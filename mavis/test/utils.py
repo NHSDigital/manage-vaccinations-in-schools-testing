@@ -101,6 +101,32 @@ def get_date_of_birth_for_year_group(year_group: int) -> date:
     return faker.date_between(start_date, end_date)
 
 
+def get_date_of_birth_before_2020(year_group: int) -> date:
+    """Generate birth dates before 2020 for MMR testing."""
+    base_year = 2019  # Use 2019 as base to ensure birth before 2020
+    academic_year = base_year - year_group - 6
+
+    start_date = date(academic_year, 9, 1)
+    end_date = date(academic_year + 1, 8, 31)
+
+    # Ensure end_date is before 2020
+    if end_date >= date(2020, 1, 1):
+        end_date = date(2019, 12, 31)
+
+    return faker.date_between(start_date, end_date)
+
+
+def get_date_of_birth_after_2020(year_group: int) -> date:
+    """Generate birth dates after 2020-01-01 for MMRV testing."""
+    base_year = 2020  # Start from 2020 to ensure birth after 2020-01-01
+    academic_year = base_year + year_group
+
+    start_date = date(academic_year, 1, 2)  # Start after 2020-01-01
+    end_date = date(academic_year, 12, 31)
+
+    return faker.date_between(start_date, end_date)
+
+
 def random_datetime_earlier_today(input_time: datetime) -> datetime:
     midnight = input_time.replace(hour=0, minute=0, second=0, microsecond=0)
     delta_minutes = int((input_time - midnight).total_seconds() // 60)

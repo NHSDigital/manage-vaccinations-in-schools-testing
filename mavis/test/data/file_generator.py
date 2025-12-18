@@ -12,6 +12,7 @@ from mavis.test.data_models import Child, Clinic, Organisation, School, User
 from mavis.test.utils import (
     get_current_datetime_compact,
     get_current_time_hms_format,
+    get_date_of_birth_after_2020,
     get_date_of_birth_for_year_group,
     get_offset_date_compact_format,
 )
@@ -148,6 +149,10 @@ class FileGenerator:
                 replacements[f"<<CHILD_{index}_POSTCODE>>"] = child.address[3]
                 replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
                     child.date_of_birth.strftime("%Y%m%d")
+                )
+                # MMRV-specific date of birth for children born after 2020
+                replacements[f"<<CHILD_{index}_MMRV_DATE_OF_BIRTH>>"] = (
+                    get_date_of_birth_after_2020(child.year_group).strftime("%Y%m%d")
                 )
                 replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(child.year_group)
                 replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[

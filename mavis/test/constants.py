@@ -141,6 +141,7 @@ class Programme(StrEnum):
     HPV = "HPV"
     MENACWY = "MenACWY"
     MMR = "MMR"
+    MMRV = "MMR(V)"
     TD_IPV = "Td/IPV"
 
     @property
@@ -211,6 +212,7 @@ class Programme(StrEnum):
             ],
             Programme.FLU: flu_questions,
             Programme.MMR: mmr_questions,
+            Programme.MMRV: mmr_questions,  # MMRV uses same health questions as MMR
         }
         return programme_specific_questions[self]
 
@@ -241,6 +243,7 @@ class Programme(StrEnum):
             self.FLU: list(range(12)),
             self.HPV: list(range(8, 12)),
             self.MMR: list(range(12)),
+            self.MMRV: list(range(12)),  # MMRV uses same year groups as MMR
             self.MENACWY: list(range(9, 12)),
             self.TD_IPV: list(range(9, 12)),
         }
@@ -281,6 +284,9 @@ class Vaccine(StrEnum):
     MMR_VAXPRO = "MMR VaxPro"
     PRIORIX = "Priorix"
 
+    # MMRV
+    # PRIORIX_TETRA = "Priorix-Tetra"
+
     # Td/IPV
     REVAXIS = "Revaxis"
 
@@ -305,6 +311,7 @@ class Vaccine(StrEnum):
             Vaccine.REVAXIS: Programme.TD_IPV,
             Vaccine.MMR_VAXPRO: Programme.MMR,
             Vaccine.PRIORIX: Programme.MMR,
+            Vaccine.MMR_VAXPRO: Programme.MMRV,
         }
         return programme_mapping[self]
 
