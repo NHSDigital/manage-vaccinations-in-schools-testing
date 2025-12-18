@@ -101,7 +101,7 @@ def test_tallying(  # noqa: PLR0915
 
     tally_totals[TallyCategory.NEEDS_CONSENT] -= 1
     tally_totals[TallyCategory.DUE_INJECTION] += 1
-    SessionsOverviewPage(page).check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(Programme.FLU, tally_totals)
 
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -117,7 +117,7 @@ def test_tallying(  # noqa: PLR0915
 
     tally_totals[TallyCategory.DUE_INJECTION] -= 1
     tally_totals[TallyCategory.HAS_A_REFUSAL] += 1
-    SessionsOverviewPage(page).check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(Programme.FLU, tally_totals)
 
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -126,7 +126,7 @@ def test_tallying(  # noqa: PLR0915
 
     tally_totals[TallyCategory.HAS_A_REFUSAL] -= 1
     tally_totals[TallyCategory.NEEDS_CONSENT] += 1
-    SessionsOverviewPage(page).check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(Programme.FLU, tally_totals)
 
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -142,7 +142,7 @@ def test_tallying(  # noqa: PLR0915
 
     tally_totals[TallyCategory.NEEDS_CONSENT] -= 1
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] += 1
-    SessionsOverviewPage(page).check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(Programme.FLU, tally_totals)
 
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).register_child_as_attending(child)
@@ -158,7 +158,7 @@ def test_tallying(  # noqa: PLR0915
 
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] -= 1
     tally_totals[TallyCategory.VACCINATED] += 1
-    SessionsOverviewPage(page).check_all_totals(tally_totals)
+    SessionsOverviewPage(page).check_all_totals(Programme.FLU, tally_totals)
 
 
 @issue("MAV-2689")
