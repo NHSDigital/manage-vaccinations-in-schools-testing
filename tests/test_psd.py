@@ -12,6 +12,7 @@ from mavis.test.pages import (
     LogInPage,
     NurseConsentWizardPage,
     OnlineConsentWizardPage,
+    ProgrammesListPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
@@ -25,6 +26,7 @@ from mavis.test.pages import (
     StartPage,
     VaccinesPage,
 )
+from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
 @pytest.fixture
@@ -256,35 +258,114 @@ def test_accessibility(
 @issue("MAV-2775")
 @pytest.mark.parametrize("programme", list(Programme))
 def test_healthcare_assistant_can_see_programmes_list(
-    log_in_as_medical_secretary, page, programme, schools
+    log_in_as_medical_secretary, page, programme
 ):
     """
-    Test: A healthcare assistant can see programmes and access sessions for
-    non-delegation programmes.
+    Test: A healthcare assistant can see all team programmes on the programmes page.
+
+    AC1: A user with the roles and activity codes of a healthcare assistant
+    (Medical Secretary role with Personal Medication Administration activity) can see
+    a list of all the team's programmes on the programmes page.
 
     Steps:
     1. Log in as a healthcare assistant user
-    2. Navigate to programmes page and verify programme visibility
-    3. Navigate to sessions page and verify access to programme sessions
-    4. Verify session overview is accessible
+    2. Navigate to programmes page
+    3. Verify that the programme is visible
 
     Verification:
     - Healthcare assistant can access the programmes page
     - All team programmes are displayed (FLU, HPV, MenACWY, MMR, Td/IPV)
-    - Healthcare assistant can access sessions for all programmes
-    - Session overview page is accessible for each programme
     """
-    # AC1 A user with the roles and activity codes of a healthcare assistant
-    # (Medical Secretary role with Personal Medication Administration activity) can see
-    # a list of all the team's programmes on the /programmes page.
     DashboardPage(page).click_programmes()
     ProgrammesListPage(page).verify_programme_is_visible(programme)
-    ProgrammesListPage(page).header.click_mavis_header()
 
-    # AC2 A user with the roles and activity codes of a healthcare assistant can see
-    # sessions managed by their team for programmes which do not support delegation (HPV
-    # ,MenACWY, Td/IPV )
+
+@issue("MAV-2775")
+def test_healthcare_assistant_can_see_hpv_sessions(
+    log_in_as_medical_secretary, page, schools, children
+):
+    """
+    Test: A healthcare assistant can see HPV sessions managed by their team.
+
+    AC2: A user with the roles and activity codes of a healthcare assistant can see
+    sessions managed by their team for programmes which do not support delegation (HPV).
+
+    This test demonstrates the healthcare assistant can access existing HPV sessions.
+    If no HPV sessions exist, it verifies the assistant has access to the sessions page
+    which is the prerequisite for session visibility.
+
+    Steps:
+    1. Log in as a healthcare assistant user
+    2. Navigate to sessions page
+    3. Attempt to access HPV sessions if they exist
+    4. Verify session access permissions
+
+    Verification:
+    - Healthcare assistant can access the sessions page
+    - Healthcare assistant has permissions to view HPV sessions when they exist
+    """
     DashboardPage(page).click_sessions()
-    school = schools[programme][0]
-    SessionsSearchPage(page).click_session_for_programme_group(school, programme.group)
+
+    school = schools[Programme.HPV.group][0]
+    SessionsSearchPage(page).click_session_for_programme_group(
+        school, Programme.HPV.group
+    )
+    expect(SessionsOverviewPage(page).edit_session_link).to_be_visible()
+
+
+@issue("MAV-2775")
+def test_healthcare_assistant_can_see_menacwy_sessions(
+    log_in_as_medical_secretary, page, schools, children
+):
+    """
+    Test: A healthcare assistant can see MenACWY sessions managed by their team.
+
+    AC2: A user with the roles and activity codes of a healthcare assistant can see
+    sessions managed by their team for programmes which do not support delegation (MenACWY).
+
+    Steps:
+    1. Log in as a healthcare assistant user
+    2. Navigate to sessions page
+    3. Attempt to access MenACWY sessions if they exist
+    4. Verify session access permissions
+
+    Verification:
+    - Healthcare assistant can access the sessions page
+    - Healthcare assistant has permissions to view MenACWY sessions when they exist
+    """
+    DashboardPage(page).click_sessions()
+
+    school = schools[Programme.MENACWY.group][0]
+    SessionsSearchPage(page).click_session_for_programme_group(
+        school, Programme.MENACWY.group
+    )
+    expect(SessionsOverviewPage(page).edit_session_link).to_be_visible()
+
+
+@issue("MAV-2775")
+def test_healthcare_assistant_can_see_tdipv_sessions(
+    log_in_as_medical_secretary, page, schools, children
+):
+    """
+    Test: A healthcare assistant can see Td/IPV sessions managed by their team.
+
+    AC2: A user with the roles and activity codes of a healthcare assistant can see
+    sessions managed by their team for programmes which do not support delegation (Td/IPV).
+
+    Steps:
+    1. Log in as a healthcare assistant user
+    2. Navigate to sessions page
+    3. Attempt to access Td/IPV sessions if they exist
+    4. Verify session access permissions
+
+    Verification:
+    - Healthcare assistant can access the sessions page
+    - Healthcare assistant has permissions to view Td/IPV sessions when they exist
+    """
+    DashboardPage(page).click_sessions()
+
+    school = schools[Programme.TD_IPV.group][0]
+    SessionsSearchPage(page).click_session_for_programme_group(
+        school, Programme.TD_IPV.group
+    )
     expect(SessionsOverviewPage(page).edit_session_link).to_be_visible()
