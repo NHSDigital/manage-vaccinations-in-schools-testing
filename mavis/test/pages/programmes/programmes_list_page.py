@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
@@ -21,6 +21,6 @@ class ProgrammesListPage:
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
 
     def verify_programme_is_visible(self, programme: Programme) -> None:
-        assert self.current_year_programmes_card.get_by_role(
-            "link", name=programme
-        ).is_visible(), f"{programme} is not visible on the programmes list page"
+        expect(
+            self.current_year_programmes_card.get_by_role("link", name=programme)
+        ).to_be_visible()
