@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
@@ -19,3 +19,8 @@ class ProgrammesListPage:
     @step("Click on {1}")
     def click_programme_for_current_year(self, programme: Programme) -> None:
         self.current_year_programmes_card.get_by_role("link", name=programme).click()
+
+    def verify_programme_is_visible(self, programme: Programme) -> None:
+        expect(
+            self.current_year_programmes_card.get_by_role("link", name=programme)
+        ).to_be_visible()
