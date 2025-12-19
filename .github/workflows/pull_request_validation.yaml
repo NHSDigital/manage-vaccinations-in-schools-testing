@@ -49,7 +49,7 @@ jobs:
       id-token: write
       contents: write
     with:
-      github_ref: ${{ needs.identify-target-environment.outputs.mavis_branch }}
+      git_reference_for_application_image: ${{ needs.identify-target-environment.outputs.mavis_branch }}
     secrets:
       HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
       MAVIS_TESTING_REPO_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
