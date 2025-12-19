@@ -140,7 +140,7 @@ class Programme(StrEnum):
     FLU = "flu"
     HPV = "HPV"
     MENACWY = "MenACWY"
-    MMR = "MMR"
+    MMR = "MMR(V)"
     TD_IPV = "Td/IPV"
 
     @property

@@ -379,12 +379,14 @@ class OnlineConsentWizardPage:
         def programme_display(
             programme: Programme, consent_option: ConsentOption
         ) -> str:
-            if programme == Programme.FLU:
+            if programme is Programme.FLU:
                 return (
                     "injected flu"
                     if consent_option is ConsentOption.INJECTION
                     else "nasal spray flu"
                 )
+            if programme is Programme.MMR:
+                return "MMR"
             return str(programme)
 
         programmes_str = " and ".join(
