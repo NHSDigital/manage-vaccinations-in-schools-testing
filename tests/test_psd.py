@@ -255,9 +255,8 @@ def test_accessibility(
 
 
 @issue("MAV-2775")
-@pytest.mark.parametrize("programme", list(Programme))
 def test_healthcare_assistant_can_see_programmes_list(
-    log_in_as_medical_secretary, page, programme
+    log_in_as_medical_secretary, page
 ):
     """
     Test: A healthcare assistant can see all team programmes on the programmes page.
@@ -276,4 +275,5 @@ def test_healthcare_assistant_can_see_programmes_list(
     - All team programmes are displayed (FLU, HPV, MenACWY, MMR, Td/IPV)
     """
     DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).verify_programme_is_visible(programme)
+    for programme in Programme:
+        ProgrammesListPage(page).verify_programme_is_visible(programme)
