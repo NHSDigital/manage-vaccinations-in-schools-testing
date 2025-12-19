@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.constants import MAVIS_NOTE_LENGTH_LIMIT
+from mavis.test.constants import MAVIS_NOTE_LENGTH_LIMIT, Programme
 from mavis.test.data_models import (
     Parent,
     VaccinationRecord,
@@ -81,7 +81,13 @@ class SessionsVaccinationWizardPage:
                 self.vaccination_notes.fill("Confirmation notes")
                 self.click_confirm_button()
 
+            expected_outcome = (
+                "MMR"
+                if vaccination_record.programme is Programme.MMR
+                else str(vaccination_record.programme)
+            )
+
             expect_alert_text(
                 self.page,
-                f"Vaccination outcome recorded for {vaccination_record.programme}",
+                f"Vaccination outcome recorded for {expected_outcome}",
             )

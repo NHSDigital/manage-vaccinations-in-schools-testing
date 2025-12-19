@@ -111,7 +111,8 @@ class SessionsPatientPage:
 
     @step("Click on {1} tab")
     def click_programme_tab(self, programme: Programme) -> None:
-        self._select_tab(str(programme))
+        tab_name = "MMR" if programme is Programme.MMR else str(programme)
+        self._select_tab(tab_name)
 
     @step("Click on Update triage outcome")
     def click_update_triage_outcome(self) -> None:
