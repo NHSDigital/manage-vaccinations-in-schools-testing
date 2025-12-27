@@ -1,0 +1,22 @@
+Row 5 SCHOOL_NAME or School is required
+Row 6 NHS_NUMBER: should be a valid NHS number with 10 characters
+Row 7 NHS_NUMBER: should be a valid NHS number with 10 characters
+Row 8 PERSON_FORENAME or First name is required
+Row 9 PERSON_SURNAME or Surname is required
+Row 10 PERSON_DOB or Date of birth is required
+Row 11 PERSON_DOB: Enter a date of birth in the correct format.
+Row 12 DATE_OF_VACCINATION: The vaccination date is before the date of birth. PERSON_DOB: Enter a date of birth in the past.
+Row 13 PERSON_DOB: Enter a date of birth in the correct format.
+Row 14 PERSON_GENDER_CODE, PERSON_GENDER or Sex is required
+Row 15 PERSON_GENDER_CODE: Enter a valid gender or gender code.
+Row 16 PERSON_POSTCODE or Postcode is required
+Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
+Row 18 DATE_OF_VACCINATION or Event date is required
+Row 19 DATE_OF_VACCINATION: The vaccination date is in the future.
+Row 28 DOSE_SEQUENCE: must be less than or equal to 3
+Row 32 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address
+Row 34 TIME_OF_VACCINATION: Enter a time in the correct format.
+Row 35 REASON_NOT_VACCINATED: must be blank
+Row 36 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: must be blank BATCH_NUMBER: must be blank ANATOMICAL_SITE: must be blank REASON_NOT_VACCINATED: Enter a valid reason
+Row 37 CARE_SETTING: Enter a valid care setting.
+Row 39 BATCH_NUMBER: must be at most 100 characters long
