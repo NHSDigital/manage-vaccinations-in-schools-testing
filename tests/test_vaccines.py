@@ -42,16 +42,16 @@ def test_batch_add_change_archive(
     AddBatchPage(page).fill_name(batch_name)
     AddBatchPage(page).date.fill_expiry_date(get_offset_date(1))
     AddBatchPage(page).confirm()
-    expect(AddBatchPage(page).success_alert).to_be_visible()
+    AddBatchPage(page).verify_batch_added(batch_name)
 
     VaccinesPage(page).click_change_batch(vaccine, batch_name)
     EditBatchPage(page).date.fill_expiry_date(get_offset_date(2))
     EditBatchPage(page).confirm()
-    expect(EditBatchPage(page).success_alert).to_be_visible()
+    EditBatchPage(page).verify_batch_updated(batch_name)
 
     VaccinesPage(page).click_archive_batch(vaccine, batch_name)
     ArchiveBatchPage(page).confirm()
-    expect(ArchiveBatchPage(page).success_alert).to_be_visible()
+    ArchiveBatchPage(page).verify_batch_archived(batch_name)
 
 
 @issue("MAV-955")
