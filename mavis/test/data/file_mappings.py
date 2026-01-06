@@ -41,6 +41,7 @@ class VaccsFileMapping(FileMapping):
     SYSTMONE_POSITIVE = "systmone_positive"
     SYSTMONE_WHITESPACE = "systmone_whitespace"
     WHITESPACE = "whitespace"
+    CLINIC_REPORT = "clinic_report"
 
     @property
     def folder(self) -> Path:

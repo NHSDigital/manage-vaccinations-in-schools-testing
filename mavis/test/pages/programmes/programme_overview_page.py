@@ -95,12 +95,14 @@ class ProgrammeOverviewPage:
         self,
         report_format: ReportFormat,
     ) -> None:
+        self._download_and_verify_report_headers(
+            expected_headers=report_format.headers, report_format=report_format
+        )
+
+    def download_report(self, report_format: ReportFormat) -> pd.DataFrame:
         self.click_download_report()
         self.click_continue()
         self.click_report_format(report_format)
-        self._download_and_verify_report_headers(expected_headers=report_format.headers)
-
-    def _download_and_verify_report_headers(self, expected_headers: str) -> None:
         _file_path = f"working/rpt_{get_current_datetime_compact()}.csv"
 
         browser = getattr(self.page.context, "browser", None)
@@ -121,6 +123,12 @@ class ProgrammeOverviewPage:
             download = download_info.value
             download.save_as(_file_path)
             _actual_df = pd.read_csv(_file_path)
+        return _actual_df
+
+    def _download_and_verify_report_headers(
+        self, expected_headers: str, report_format: ReportFormat
+    ) -> None:
+        _actual_df = self.download_report(report_format)
 
         actual_headers = ",".join(_actual_df.columns.tolist())
         _e_not_a = [
