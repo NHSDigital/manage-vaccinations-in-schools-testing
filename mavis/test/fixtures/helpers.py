@@ -49,6 +49,7 @@ def add_vaccine_batch(page):
         AddBatchPage(page).fill_name(batch_name)
         AddBatchPage(page).date.fill_expiry_date(get_offset_date(14))
         AddBatchPage(page).confirm()
+        AddBatchPage(page).verify_batch_added(batch_name)
         return batch_name
 
     return wrapper
