@@ -218,7 +218,10 @@ class SessionsPatientPage:
         for check in programme.pre_screening_checks(consent_option):
             locator = self.pre_screening_listitem.get_by_text(check)
             expect(locator).to_be_visible()
-        self.page.wait_for_load_state()
+
+        # need to wait for checkbox to load properly
+        self.page.wait_for_load_state("networkidle")
+
         expect(self.pre_screening_checkbox).to_be_editable()
         self.pre_screening_checkbox.check()
 

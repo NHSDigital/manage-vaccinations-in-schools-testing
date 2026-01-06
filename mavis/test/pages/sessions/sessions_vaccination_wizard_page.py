@@ -50,6 +50,8 @@ class SessionsVaccinationWizardPage:
     def choose_batch(self, batch_name: str) -> None:
         batch_radio = self.page.get_by_role("radio", name=batch_name)
 
+        self.page.wait_for_load_state()
+
         reload_until_element_is_visible(
             self.page,
             batch_radio,

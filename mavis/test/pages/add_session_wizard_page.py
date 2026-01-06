@@ -58,7 +58,9 @@ class AddSessionWizardPage:
 
     @step("Fill school name")
     def fill_school_name(self, school: School) -> None:
+        self.page.wait_for_load_state()
         self.page.reload()  # to allow combobox to be interactable
+
         self.select_a_school_combobox.fill(str(school))
         self.page.get_by_role("option", name=str(school)).click()
 
