@@ -7,9 +7,7 @@ import pandas as pd
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.constants import (
-    Programme,
-)
+from mavis.test.constants import Programme
 from mavis.test.data import get_session_id
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
@@ -54,6 +52,13 @@ class SessionsOverviewPage:
         self.send_manual_consent_reminders_button = self.page.get_by_role(
             "button", name="Send manual consent reminders"
         )
+        self.community_clinic_link = self.page.get_by_role(
+            "link", name="Community clinic", exact=True
+        )
+
+    @step("Click Community clinic session")
+    def click_community_clinic(self) -> None:
+        self.community_clinic_link.first.click()
 
     def get_total_for_category(self, programme: Programme, category: str) -> int:
         programme_section = self.page.locator(f'section:has(h3:text("{programme}"))')

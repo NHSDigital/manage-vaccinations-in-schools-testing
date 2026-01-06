@@ -1,4 +1,8 @@
+import logging
+
 import pytest
+
+logger = logging.getLogger(__name__)
 
 from mavis.test.annotations import issue
 from mavis.test.constants import ConsentMethod, Programme, ReportFormat, Vaccine
@@ -450,18 +454,30 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
     child = children[Programme.HPV][0]  # Use HPV always
     generic_clinic = Clinic(name="Community clinic")
 
-    for programme in Programme:
-        batch_name = add_vaccine_batch(programme_to_vaccine[programme])
+    first_iteration = True
+    for programme, vaccine in programme_to_vaccine.items():
+        batch_name = add_vaccine_batch(vaccine)
 
         schedule_community_clinic_session_if_needed(page, [programme])
 
-        SessionsOverviewPage(page).header.click_mavis_header()
-        DashboardPage(page).click_children()
-        ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(
-            str(child)
-        )
-        ChildrenSearchPage(page).search.click_child(child)
-        ChildRecordPage(page).click_invite_to_community_clinic()
+        if first_iteration:
+            SessionsOverviewPage(page).header.click_mavis_header()
+            DashboardPage(page).click_children()
+            ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(
+                str(child)
+            )
+            ChildrenSearchPage(page).search.click_child(child)
+            ChildRecordPage(page).click_invite_to_community_clinic()
+            first_iteration = False
+        else:
+            # Navigate back to child record for subsequent programmes
+            SessionsOverviewPage(page).header.click_mavis_header()
+            DashboardPage(page).click_children()
+            ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(
+                str(child)
+            )
+            ChildrenSearchPage(page).search.click_child(child)
+
         ChildRecordPage(page).click_session_for_programme(
             generic_clinic,
             programme,
@@ -471,8 +487,12 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
         NurseConsentWizardPage(page).select_parent(child.parents[0])
         NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
         NurseConsentWizardPage(page).record_parent_positive_consent(programme=programme)
+        NurseConsentWizardPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
+        SessionsOverviewPage(page).click_community_clinic()
         SessionsOverviewPage(page).tabs.click_children_tab()
-        SessionsChildrenPage(page).register_child_as_attending(child)
+        ChildrenSearchPage(page).search.click_child(child)
+        # SessionsChildrenPage(page).register_child_as_attending(child)
         SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
         SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
         vaccination_record = VaccinationRecord(child, programme, batch_name)
@@ -480,7 +500,6 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
         SessionsVaccinationWizardPage(page).record_vaccination(
             vaccination_record, at_school=False
         )
-
         SessionsVaccinationWizardPage(page).check_location_radio(clinics[0])
         SessionsVaccinationWizardPage(page).click_continue_button()
         SessionsVaccinationWizardPage(page).click_confirm_button()
