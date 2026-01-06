@@ -87,9 +87,7 @@ def test_recording_flu_vaccination_e2e(
     )
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-            consent_option
-        ),
+        len(Programme.health_questions(Programme.FLU, consent_option)),
         yes_to_health_questions=False,
     )
     OnlineConsentWizardPage(page).click_confirm()

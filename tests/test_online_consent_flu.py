@@ -219,9 +219,7 @@ def test_flu_consent_method_displayed_correctly(
     OnlineConsentWizardPage(page).agree_to_flu_vaccination(consent_option=consents[0])
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-            consents[0]
-        ),
+        len(Programme.health_questions(Programme.FLU, consents[0])),
         yes_to_health_questions=False,
     )
     OnlineConsentWizardPage(page).click_confirm()
@@ -240,9 +238,7 @@ def test_flu_consent_method_displayed_correctly(
     OnlineConsentWizardPage(page).agree_to_flu_vaccination(consent_option=consents[1])
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-            consents[1]
-        ),
+        len(Programme.health_questions(Programme.FLU, consents[1])),
         yes_to_health_questions=False,
     )
     OnlineConsentWizardPage(page).click_confirm()

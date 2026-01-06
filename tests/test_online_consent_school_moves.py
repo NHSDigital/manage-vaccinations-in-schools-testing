@@ -91,8 +91,10 @@ def test_online_consent_school_moves_with_existing_patient(
     )
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-            ConsentOption.NASAL_SPRAY_OR_INJECTION
+        len(
+            Programme.health_questions(
+                Programme.FLU, ConsentOption.NASAL_SPRAY_OR_INJECTION
+            )
         ),
         yes_to_health_questions=False,
     )
@@ -152,8 +154,10 @@ def test_online_consent_school_moves_with_new_patient(
     )
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-            ConsentOption.NASAL_SPRAY_OR_INJECTION
+        len(
+            Programme.health_questions(
+                Programme.FLU, ConsentOption.NASAL_SPRAY_OR_INJECTION
+            )
         ),
         yes_to_health_questions=False,
     )
@@ -235,11 +239,12 @@ def test_accessibility(
     AccessibilityHelper(page).check_accessibility()
 
     OnlineConsentWizardPage(page).answer_health_questions(
-        OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-            ConsentOption.NASAL_SPRAY_OR_INJECTION
-        )
-        + 1,
-        yes_to_health_questions=True,
+        len(
+            Programme.health_questions(
+                Programme.FLU, ConsentOption.NASAL_SPRAY_OR_INJECTION
+            )
+        ),
+        yes_to_health_questions=False,
     )
     AccessibilityHelper(page).check_accessibility()
 

@@ -349,25 +349,6 @@ class OnlineConsentWizardPage:
             else:
                 self.answer_no()
 
-    def get_number_of_health_questions_for_flu(
-        self,
-        consent_option: ConsentOption,
-    ) -> int:
-        number_of_health_questions = len(
-            Programme.health_questions(Programme.FLU, consent_option),
-        )
-        if consent_option is not ConsentOption.INJECTION:
-            number_of_health_questions -= 1
-        return number_of_health_questions
-
-    def get_number_of_health_questions_for_mmr(
-        self,
-        consent_option: ConsentOption,
-    ) -> int:
-        return len(
-            Programme.health_questions(Programme.MMR, consent_option),
-        )
-
     def check_final_consent_message(
         self,
         child: Child,
