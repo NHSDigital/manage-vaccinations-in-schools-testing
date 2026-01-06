@@ -5,7 +5,13 @@ import pytest
 logger = logging.getLogger(__name__)
 
 from mavis.test.annotations import issue
-from mavis.test.constants import ConsentMethod, Programme, ReportFormat, Vaccine
+from mavis.test.constants import (
+    ConsentMethod,
+    ConsentOption,
+    Programme,
+    ReportFormat,
+    Vaccine,
+)
 from mavis.test.data import ClassFileMapping, CohortsFileMapping
 from mavis.test.data_models import Clinic, VaccinationRecord
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
@@ -444,11 +450,8 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
     """
     # Map programmes to their default vaccines
     programme_to_vaccine = {
-        Programme.HPV: Vaccine.GARDASIL_9,
-        Programme.MENACWY: Vaccine.MENQUADFI,
-        Programme.TD_IPV: Vaccine.REVAXIS,
         Programme.FLU: Vaccine.SEQUIRUS,
-        Programme.MMR: Vaccine.MMR_VAXPRO,
+        Programme.MMRV: Vaccine.MMR_VAXPRO,
     }
 
     child = children[Programme.HPV][0]  # Use HPV always
@@ -468,9 +471,7 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
             )
             ChildrenSearchPage(page).search.click_child(child)
             ChildRecordPage(page).click_invite_to_community_clinic()
-            first_iteration = False
         else:
-            # Navigate back to child record for subsequent programmes
             SessionsOverviewPage(page).header.click_mavis_header()
             DashboardPage(page).click_children()
             ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(
@@ -486,13 +487,20 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
         SessionsPatientPage(page).click_record_a_new_consent_response()
         NurseConsentWizardPage(page).select_parent(child.parents[0])
         NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
-        NurseConsentWizardPage(page).record_parent_positive_consent(programme=programme)
+        if programme is Programme.MMR:
+            NurseConsentWizardPage(page).record_parent_positive_consent(
+                programme=programme, consent_option=ConsentOption.MMR_EITHER
+            )
+        else:
+            NurseConsentWizardPage(page).record_parent_positive_consent(
+                programme=programme
+            )
         NurseConsentWizardPage(page).header.click_mavis_header()
         DashboardPage(page).click_sessions()
         SessionsOverviewPage(page).click_community_clinic()
         SessionsOverviewPage(page).tabs.click_children_tab()
-        ChildrenSearchPage(page).search.click_child(child)
-        # SessionsChildrenPage(page).register_child_as_attending(child)
+        if first_iteration:
+            SessionsChildrenPage(page).register_child_as_attending(child)
         SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
         SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
         vaccination_record = VaccinationRecord(child, programme, batch_name)
@@ -515,10 +523,10 @@ def test_record_vaccination_at_community_clinic_and_verify_report(
             & (_df["NHS_NUMBER"].astype(str) == str(child.nhs_number))
         ]
 
-        # Check if clinic name is present in the clinic name field
-        # assert child_rows["CLINIC_NAME"].iloc[0] == clinics[0].name, (
-        #     f"Clinic name '{clinics[0].name}' not found in report for child"
-        # )
+        assert child_rows["CLINIC_NAME"].iloc[0] == clinics[0].name, (
+            f"Clinic name '{clinics[0].name}' not found in report for child"
+        )
+        first_iteration = False
 
 
 @pytest.mark.accessibility

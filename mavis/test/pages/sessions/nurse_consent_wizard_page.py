@@ -74,6 +74,14 @@ class NurseConsentWizardPage:
         self.withdraw_consent_notes_textbox = self.page.get_by_role(
             "textbox", name="Notes"
         )
+        self.mmr_agree_without_gelatine_radio = self.page.get_by_role(
+            "radio",
+            name="Yes, they want their child to have a vaccine that does not contain gelatine",
+        )
+        self.mmr_agree_either_radio = self.page.get_by_role(
+            "radio",
+            name="Their child can have either type of vaccine",
+        )
 
     @step("Click Continue")
     def click_continue(self) -> None:
@@ -245,6 +253,12 @@ class NurseConsentWizardPage:
                     self.select_yes()
                 else:
                     self.select_no()
+        elif programme is Programme.MMR:
+            self.click_yes_they_agree()
+            if consent_option is ConsentOption.MMR_WITHOUT_GELATINE:
+                self.mmr_agree_without_gelatine_radio.check()
+            elif consent_option is ConsentOption.MMR_EITHER:
+                self.mmr_agree_either_radio.check()
         else:
             self.click_yes_they_agree()
         self.click_continue()
