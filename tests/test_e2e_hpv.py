@@ -91,5 +91,14 @@ def test_recording_hpv_vaccination_e2e(
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
-    DashboardPage(page).navigate()
-    LogInPage(page).log_out()
+    SessionsChildrenPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.HPV
+    )
+    SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
+        vaccination_record,
+        Vaccine.GARDASIL_9,
+        nurse,
+        schools[0],
+    )

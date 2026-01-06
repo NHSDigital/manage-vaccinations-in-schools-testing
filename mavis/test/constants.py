@@ -272,6 +272,17 @@ class Programme(StrEnum):
             ]
         return [*common_categories]
 
+    @property
+    def offline_sheet_name(self) -> str:
+        offline_name_map = {
+            self.MENACWY: "ACWYX4",
+            self.TD_IPV: "3-in-1",
+            self.FLU: "Flu",
+            self.HPV: self.HPV,
+            self.MMR: self.MMR,
+        }
+        return offline_name_map[self]
+
 
 class Vaccine(StrEnum):
     # Flu
@@ -334,6 +345,21 @@ class Vaccine(StrEnum):
             Vaccine.GARDASIL_9: "Human papillomavirus infection",
         }
         return target_disease_display_mapping[self]
+
+    @property
+    def offline_sheet_name(self) -> str:
+        offline_sheet_map = {
+            Vaccine.FLUENZ: "AstraZeneca Fluenz",
+            Vaccine.SEQUIRUS: "Sequirus Cell-based Trivalent",
+            Vaccine.GARDASIL_9: "Gardasil9",
+            Vaccine.MENQUADFI: Vaccine.MENQUADFI,
+            Vaccine.MENVEO: Vaccine.MENVEO,
+            Vaccine.NIMENRIX: Vaccine.NIMENRIX,
+            Vaccine.REVAXIS: Vaccine.REVAXIS,
+            Vaccine.MMR_VAXPRO: Vaccine.MMR_VAXPRO,
+            Vaccine.PRIORIX: Vaccine.PRIORIX,
+        }
+        return offline_sheet_map[self]
 
 
 class DeliverySite(StrEnum):
