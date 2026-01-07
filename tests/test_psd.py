@@ -179,8 +179,10 @@ def test_bulk_adding_psd(
         )
         OnlineConsentWizardPage(page).fill_address_details(*child.address)
         OnlineConsentWizardPage(page).answer_health_questions(
-            OnlineConsentWizardPage(page).get_number_of_health_questions_for_flu(
-                ConsentOption.NASAL_SPRAY_OR_INJECTION
+            len(
+                Programme.health_questions(
+                    Programme.FLU, ConsentOption.NASAL_SPRAY_OR_INJECTION
+                )
             ),
             yes_to_health_questions=False,
         )

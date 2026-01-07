@@ -93,7 +93,9 @@ class NurseConsentWizardPage:
         consent_option: ConsentOption = ConsentOption.INJECTION,
         answer: str = "No",
     ) -> None:
-        for locator_text in programme.health_questions(consent_option):
+        for locator_text in programme.health_questions(
+            consent_option, nurse_consent=True
+        ):
             self.select_answer_for_health_question(locator_text, answer)
 
     @step("Select {2} for health question {1}")

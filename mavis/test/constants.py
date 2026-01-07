@@ -54,6 +54,7 @@ class HealthQuestion(StrEnum):
     )
 
     # flu
+    ASTHMA = "Has your child been diagnosed with asthma?"
     ASTHMA_STEROIDS = "Does your child take oral steroids for their asthma?"
     ASTHMA_INTENSIVE_CARE = (
         "Has your child ever been admitted to intensive care because of their asthma?"
@@ -150,15 +151,23 @@ class Programme(StrEnum):
         return self.value
 
     def health_questions(
-        self, consent_option: ConsentOption = ConsentOption.INJECTION
+        self,
+        consent_option: ConsentOption = ConsentOption.INJECTION,
+        *,
+        nurse_consent: bool = False,
     ) -> list[HealthQuestion]:
         includes_nasal = consent_option is not ConsentOption.INJECTION
         includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
         mmr_either = consent_option is ConsentOption.MMR_EITHER
 
         flu_questions = [
-            HealthQuestion.ASTHMA_STEROIDS if includes_nasal else None,
-            HealthQuestion.ASTHMA_INTENSIVE_CARE if includes_nasal else None,
+            HealthQuestion.ASTHMA if includes_nasal and not nurse_consent else None,
+            HealthQuestion.ASTHMA_STEROIDS
+            if includes_nasal and nurse_consent
+            else None,
+            HealthQuestion.ASTHMA_INTENSIVE_CARE
+            if includes_nasal and nurse_consent
+            else None,
             HealthQuestion.IMMUNE_SYSTEM if includes_nasal else None,
             HealthQuestion.HOUSEHOLD_IMMUNE_SYSTEM if includes_nasal else None,
             HealthQuestion.BLEEDING_DISORDER_FLU if includes_injection else None,
