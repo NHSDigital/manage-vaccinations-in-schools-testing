@@ -105,7 +105,10 @@ class SessionsOverviewPage:
         self.send_manual_consent_reminders_button.click()
 
     def get_online_consent_url(self, *programmes: Programme) -> str:
-        programme_names = [str(programme) for programme in programmes]
+        programme_names = [
+            "MMR" if programme is Programme.MMR else str(programme)
+            for programme in programmes
+        ]
         link_text = f"View the {' and '.join(programme_names)} online consent form"
         return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
 
