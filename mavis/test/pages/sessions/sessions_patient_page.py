@@ -220,7 +220,7 @@ class SessionsPatientPage:
             expect(locator).to_be_visible()
 
         # need to wait for checkbox to load properly
-        self.page.wait_for_load_state("networkidle")
+        time.sleep(1)
 
         expect(self.pre_screening_checkbox).to_be_editable()
         self.pre_screening_checkbox.check()
