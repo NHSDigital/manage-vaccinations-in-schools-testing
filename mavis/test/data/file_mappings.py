@@ -32,6 +32,7 @@ class VaccsFileMapping(FileMapping):
     HPV_DOSE_TWO = "hpv_dose_two"
     INVALID_STRUCTURE = "invalid_structure"
     MMR_DOSE_ONE = "mmr_dose_one"
+    MMRV_DOSE_ONE = "mmrv_dose_one"
     NEGATIVE = "negative"
     NO_CARE_SETTING = "no_care_setting"
     NOT_GIVEN = "not_given"

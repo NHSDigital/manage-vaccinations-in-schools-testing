@@ -171,6 +171,8 @@ def upload_offline_vaccination(
             )
         elif programme is Programme.MMR:
             vaccs_file = VaccsFileMapping.MMR_DOSE_ONE
+        elif programme is Programme.MMRV:
+            vaccs_file = VaccsFileMapping.MMRV_DOSE_ONE
         else:
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
