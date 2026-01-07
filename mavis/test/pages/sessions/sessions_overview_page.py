@@ -9,13 +9,16 @@ from playwright.sync_api import Page, expect
 from mavis.test.annotations import step
 from mavis.test.constants import (
     Programme,
+    Vaccine,
 )
 from mavis.test.data import get_session_id
+from mavis.test.data_models import School, User, VaccinationRecord
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
     get_current_datetime_compact,
     get_formatted_date_for_session_dates,
+    get_todays_date,
 )
 
 
@@ -137,10 +140,65 @@ class SessionsOverviewPage:
 
         return _file_path
 
+    def get_offline_recording_dataframe(self) -> pd.DataFrame:
+        file_path = self.download_offline_recording_excel()
+        return pd.read_excel(file_path, sheet_name="Vaccinations", dtype=str)
+
+    @step("Download the offline recording excel and verify consent message pattern")
+    def verify_offline_sheet_vaccination_row(
+        self,
+        vaccination_record: VaccinationRecord,
+        vaccine: Vaccine,
+        nurse: User,
+        school: School,
+        *,
+        nurse_consent: bool = False,
+    ) -> None:
+        child = vaccination_record.child
+        programme = vaccination_record.programme
+
+        _data_frame = self.get_offline_recording_dataframe()
+        row = _data_frame[
+            (_data_frame["PERSON_FORENAME"] == child.first_name)
+            & (_data_frame["PERSON_SURNAME"] == child.last_name)
+            & (_data_frame["VACCINATED"] == "Y")
+            & (_data_frame["PROGRAMME"] == programme.offline_sheet_name)
+        ]
+        if row.empty:
+            msg = (
+                f"No matching row found for {child!s} "
+                f"and programme {programme} in offline recording excel."
+            )
+            raise ValueError(msg)
+
+        row = row.iloc[0]
+
+        assert row["ORGANISATION_CODE"]
+        assert row["SCHOOL_NAME"] == school.name
+        assert row["PERSON_DOB"] == child.date_of_birth.strftime("%Y-%m-%d %H:%M:%S")
+        assert row["YEAR_GROUP"] == str(child.year_group)
+        assert row["PERSON_ADDRESS_LINE_1"] == child.address[0]
+        assert row["PERSON_POSTCODE"] == child.address[3]
+        assert row["NHS_NUMBER"] == child.nhs_number
+        assert "GIVEN by" in row["CONSENT_DETAILS"]
+
+        for question in Programme.health_questions(
+            programme, vaccination_record.consent_option, nurse_consent=nurse_consent
+        ):
+            assert f"{question} No" in row["HEALTH_QUESTION_ANSWERS"]
+
+        assert row["DATE_OF_VACCINATION"] == get_todays_date().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        assert row["VACCINE_GIVEN"] == vaccine.offline_sheet_name
+        assert row["PROGRAMME"] == programme.offline_sheet_name
+        assert row["PERFORMING_PROFESSIONAL_EMAIL"] == nurse.username
+        assert row["BATCH_NUMBER"] == vaccination_record.batch_name
+        assert row["UUID"]
+
     @step("Download the offline recording excel and verify consent message pattern")
     def verify_consent_message_in_excel(self) -> None:
-        _file_path = self.download_offline_recording_excel()
-        _data_frame = pd.read_excel(_file_path, sheet_name="Vaccinations", dtype=str)
+        _data_frame = self.get_offline_recording_dataframe()
         _consent_details_pattern = (
             r"On \d{4}-\d{2}-\d{2} at \d{2}:\d{2} (GIVEN|REFUSED) by "
             r"[A-Z][a-z]+(?: [A-Z][a-z]+)*"

@@ -70,13 +70,14 @@ def test_recording_flu_vaccination_e2e(
     """
     child = children[Programme.FLU][0]
     schools = schools[Programme.FLU]
+    vaccine = (
+        Vaccine.SEQUIRUS
+        if consent_option is ConsentOption.INJECTION
+        else Vaccine.FLUENZ
+    )
 
     batch_names = setup_session_for_flu
-    batch_name = (
-        batch_names[Vaccine.SEQUIRUS]
-        if consent_option is ConsentOption.INJECTION
-        else batch_names[Vaccine.FLUENZ]
-    )
+    batch_name = batch_names[vaccine]
 
     OnlineConsentWizardPage(page).go_to_url(flu_consent_url)
     StartPage(page).start()
@@ -127,5 +128,14 @@ def test_recording_flu_vaccination_e2e(
         "Incorrect vaccine given"
     )
 
-    DashboardPage(page).navigate()
-    LogInPage(page).log_out()
+    SessionsChildrenPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(
+        schools[0], Programme.FLU
+    )
+    SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
+        vaccination_record,
+        vaccine,
+        nurse,
+        schools[0],
+    )

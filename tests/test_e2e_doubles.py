@@ -97,15 +97,30 @@ def test_recording_doubles_vaccination_e2e(
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
-    vaccination_record = VaccinationRecord(
+    menacwy_vaccination_record = VaccinationRecord(
         child, Programme.MENACWY, menquadfi_batch_name
     )
-    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    SessionsPatientPage(page).set_up_vaccination(menacwy_vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(menacwy_vaccination_record)
 
-    vaccination_record = VaccinationRecord(child, Programme.TD_IPV, revaxis_batch_name)
-    SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    td_ipv_vaccination_record = VaccinationRecord(
+        child, Programme.TD_IPV, revaxis_batch_name
+    )
+    SessionsPatientPage(page).set_up_vaccination(td_ipv_vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(td_ipv_vaccination_record)
 
-    DashboardPage(page).navigate()
-    LogInPage(page).log_out()
+    SessionsChildrenPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(schools[0], "doubles")
+    SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
+        menacwy_vaccination_record,
+        Vaccine.MENQUADFI,
+        nurse,
+        schools[0],
+    )
+    SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
+        td_ipv_vaccination_record,
+        Vaccine.REVAXIS,
+        nurse,
+        schools[0],
+    )
