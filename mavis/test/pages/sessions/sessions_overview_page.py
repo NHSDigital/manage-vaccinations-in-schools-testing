@@ -12,7 +12,7 @@ from mavis.test.constants import (
     Vaccine,
 )
 from mavis.test.data import get_session_id
-from mavis.test.data_models import School, User, VaccinationRecord
+from mavis.test.data_models import Child, School, User, VaccinationRecord
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
@@ -195,6 +195,36 @@ class SessionsOverviewPage:
         assert row["PERFORMING_PROFESSIONAL_EMAIL"] == nurse.username
         assert row["BATCH_NUMBER"] == vaccination_record.batch_name
         assert row["UUID"]
+
+    @step("Download the offline recording excel and verify gillick competence row")
+    def verify_offline_sheet_gillick_competence(
+        self,
+        child: Child,
+        *,
+        competent: bool,
+    ) -> None:
+        _data_frame = self.get_offline_recording_dataframe()
+        competence_status = (
+            "Gillick competent" if competent else "Not Gillick competent"
+        )
+        row = _data_frame[
+            (_data_frame["PERSON_FORENAME"] == child.first_name)
+            & (_data_frame["PERSON_SURNAME"] == child.last_name)
+            & (_data_frame["GILLICK_STATUS"] == competence_status)
+        ]
+        if row.empty:
+            msg = (
+                f"No corresponding Gillick competence found for {child!s} "
+                "in offline recording excel."
+            )
+            raise ValueError(msg)
+
+        row = row.iloc[0]
+
+        assert row["GILLICK_ASSESSMENT_DATE"].split(" ")[
+            0
+        ] == get_todays_date().strftime("%Y-%m-%d")
+        assert row["GILLICK_ASSESSED_BY"] == "NURSE, Nurse"
 
     @step("Download the offline recording excel and verify consent message pattern")
     def verify_consent_message_in_excel(self) -> None:
