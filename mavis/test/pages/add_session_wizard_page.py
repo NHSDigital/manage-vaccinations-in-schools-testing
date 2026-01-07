@@ -93,26 +93,27 @@ class AddSessionWizardPage:
         self.month_textbox.last.fill(str(month))
         self.year_textbox.last.fill(str(year))
 
-        self.click_continue()
-
     @step("Click Keep session dates")
     def click_keep_session_dates(self) -> None:
         self.keep_session_dates_button.click()
 
     def schedule_school_session(
         self,
-        school: School,
+        school: School | None,
         programmes: list[Programme],
         year_groups: list[int],
         date_offset: int | None,
     ) -> None:
-        self.select_school_session()
-        self.select_school(school)
+        if school is not None:
+            self.select_school_session()
+            self.select_school(school)
+
         self.choose_programmes(programmes)
         self.select_year_groups(year_groups)
 
         if date_offset is not None:
             self.fill_date_fields(get_offset_date_compact_format(date_offset))
+        self.click_continue()
 
         self.keep_session_dates_if_necessary()
 
@@ -125,7 +126,9 @@ class AddSessionWizardPage:
     ) -> None:
         self.select_community_clinic()
         self.choose_programmes(programmes)
+
         self.fill_date_fields(get_offset_date_compact_format(date_offset))
+        self.click_continue()
 
         self.click_continue()
 

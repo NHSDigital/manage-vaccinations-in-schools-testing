@@ -47,6 +47,7 @@ markers = [
   "reporting",
   "reports",
   "school_moves",
+  "schools",
   "sessions",
   "smoke",
   "tallying",

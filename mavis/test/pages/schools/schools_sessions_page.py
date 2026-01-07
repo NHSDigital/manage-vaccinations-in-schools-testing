@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
+from mavis.test.constants import Programme
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.schools.schools_tabs import SchoolsTabs
 
@@ -23,13 +24,15 @@ class SchoolsSessionsPage:
         self.add_a_new_session_link.click()
 
     @step("Verify session exists")
-    def verify_session_exists_for_category(
+    def verify_session_exists(
         self,
         programmes: list[str],
         year_groups: list[int],
         *,
         scheduled: bool = True,
     ) -> None:
+        self.page.wait_for_load_state()
+
         heading_locator = (
             self.scheduled_sessions_heading
             if scheduled
@@ -39,7 +42,12 @@ class SchoolsSessionsPage:
         session_card_locators = sessions_locator.locator(".nhsuk-card__content")
         for session_card_locator in session_card_locators.all():
             session_card_text = session_card_locator.inner_text()
-            if all(str(programme) in session_card_text for programme in programmes) and all(
+            if all(
+                "Flu"
+                if programme is Programme.FLU
+                else str(programme) in session_card_text
+                for programme in programmes
+            ) and all(
                 "Reception" if year_group == 0 else str(year_group) in session_card_text
                 for year_group in year_groups
             ):
