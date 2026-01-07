@@ -104,13 +104,15 @@ class AddSessionWizardPage:
         school: School,
         programmes: list[Programme],
         year_groups: list[int],
-        date_offset: int,
+        date_offset: int | None,
     ) -> None:
         self.select_school_session()
         self.select_school(school)
         self.choose_programmes(programmes)
         self.select_year_groups(year_groups)
-        self.fill_date_fields(get_offset_date_compact_format(date_offset))
+
+        if date_offset is not None:
+            self.fill_date_fields(get_offset_date_compact_format(date_offset))
 
         self.keep_session_dates_if_necessary()
 
