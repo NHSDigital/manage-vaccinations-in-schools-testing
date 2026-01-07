@@ -226,6 +226,49 @@ class SessionsOverviewPage:
         ] == get_todays_date().strftime("%Y-%m-%d")
         assert row["GILLICK_ASSESSED_BY"] == "NURSE, Nurse"
 
+    @step("Download the offline recording excel and verify triage")
+    def verify_offline_sheet_triage(
+        self,
+        child: Child,
+    ) -> None:
+        _data_frame = self.get_offline_recording_dataframe()
+        row = _data_frame[
+            (_data_frame["PERSON_FORENAME"] == child.first_name)
+            & (_data_frame["PERSON_SURNAME"] == child.last_name)
+            & (_data_frame["TRIAGE_STATUS"] == "Safe to vaccinate")
+        ]
+        if row.empty:
+            msg = (
+                f"No corresponding triage status found for {child!s} "
+                "in offline recording excel."
+            )
+            raise ValueError(msg)
+
+        row = row.iloc[0]
+
+        assert row["TRIAGE_DATE"].split(" ")[0] == get_todays_date().strftime(
+            "%Y-%m-%d"
+        )
+        assert row["TRIAGED_BY"] == "NURSE, Nurse"
+
+    @step("Download the offline recording excel and verify psd status")
+    def verify_offline_sheet_psd(
+        self,
+        child: Child,
+    ) -> None:
+        _data_frame = self.get_offline_recording_dataframe()
+        row = _data_frame[
+            (_data_frame["PERSON_FORENAME"] == child.first_name)
+            & (_data_frame["PERSON_SURNAME"] == child.last_name)
+            & (_data_frame["PSD_STATUS"] == "PSD added")
+        ]
+        if row.empty:
+            msg = (
+                f"No corresponding psd status found for {child!s} "
+                "in offline recording excel."
+            )
+            raise ValueError(msg)
+
     @step("Download the offline recording excel and verify consent message pattern")
     def verify_consent_message_in_excel(self) -> None:
         _data_frame = self.get_offline_recording_dataframe()

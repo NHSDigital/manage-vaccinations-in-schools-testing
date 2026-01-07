@@ -129,6 +129,9 @@ def test_delivering_vaccination_after_psd(
     SessionsPsdPage(page).search.search_for(str(child))
     SessionsPsdPage(page).check_child_has_psd(child)
 
+    SessionsPsdPage(page).tabs.click_overview_tab()
+    SessionsOverviewPage(page).verify_offline_sheet_psd(child)
+
     LogInPage(page).log_out()
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(healthcare_assistant, team)
