@@ -65,6 +65,7 @@ def test_gillick_competence(
     setup_fixed_child,
     page,
     children,
+    schools,
 ):
     """
     Test: Add and edit Gillick competence assessment for a child.
@@ -77,6 +78,7 @@ def test_gillick_competence(
     - Gillick competence status is updated and reflected for the child.
     """
     child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
 
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -84,8 +86,26 @@ def test_gillick_competence(
     SessionsPatientPage(page).click_assess_gillick_competence()
 
     GillickCompetencePage(page).add_gillick_competence(is_competent=True)
+
+    SessionsChildrenPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).verify_offline_sheet_gillick_competence(
+        child, competent=True
+    )
+
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).click_edit_gillick_competence()
     GillickCompetencePage(page).edit_gillick_competence(is_competent=False)
+
+    SessionsChildrenPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).verify_offline_sheet_gillick_competence(
+        child, competent=False
+    )
 
 
 @issue("MAV-955")
