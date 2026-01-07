@@ -305,6 +305,11 @@ def test_triage_consent_given_and_triage_outcome(
     SessionsPatientPage(page).click_save_triage()
     SessionsPatientPage(page).verify_triage_updated_for_child()
 
+    SessionsPatientPage(page).header.click_mavis_header()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
+    SessionsOverviewPage(page).verify_offline_sheet_triage(child)
+
 
 @pytest.mark.rav
 def test_consent_refused_and_activity_log(
