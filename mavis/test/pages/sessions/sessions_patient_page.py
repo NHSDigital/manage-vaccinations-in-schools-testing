@@ -282,6 +282,7 @@ class SessionsPatientPage:
         self.select_ready_for_vaccination(vaccination_record.consent_option)
         if vaccination_record.consent_option is ConsentOption.INJECTION:
             self.select_delivery_site(vaccination_record.delivery_site)
+
         self.click_continue_button()
 
         if len(notes) > MAVIS_NOTE_LENGTH_LIMIT:
