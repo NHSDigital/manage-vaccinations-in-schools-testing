@@ -56,9 +56,16 @@ class SessionsOverviewPage:
             "link", name="Community clinic", exact=True
         )
 
-    @step("Click Community clinic session")
-    def click_community_clinic(self) -> None:
-        self.community_clinic_link.first.click()
+    @step("Click Community clinic session for {1}")
+    def click_community_clinic(self, programme: Programme) -> None:
+        # Find the "Community clinic" link in the same container as the programme name
+        locator = (
+            self.page.locator("*")
+            .filter(has_text=str(programme))
+            .get_by_role("link", name="Community clinic")
+            .first
+        )
+        locator.click()
 
     def get_total_for_category(self, programme: Programme, category: str) -> int:
         programme_section = self.page.locator(f'section:has(h3:text("{programme}"))')

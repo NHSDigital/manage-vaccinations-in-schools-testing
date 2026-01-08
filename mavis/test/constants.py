@@ -115,7 +115,7 @@ class HealthQuestion(StrEnum):
         " yellow fever vaccine?"
     )
     MMR_OTHER_MEDICAL_CONDITIONS = (
-        "Does the child have any other medical conditions we should know about?"
+        "Does your child have any other medical conditions we should know about?"
     )
     MMR_EXTRA_SUPPORT = (
         "Does your child need extra support during vaccination sessions?"
