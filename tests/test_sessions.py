@@ -177,19 +177,31 @@ def test_attendance_filters_functionality(
 @issue("MAV-1018")
 @pytest.mark.bug
 def test_session_search_functionality(
-    setup_random_child,
+    setup_fixed_child,
+    children,
     page,
 ):
     """
     Test: Verify the search functionality within a session.
     Steps:
-    1. Open a session with a random child.
-    2. Use the search feature to look for children.
+    1. Open a session with a child.
+    2. Use the search feature to look for the child by name and NHS number
+    3. Use the search features with the year group filter
     Verification:
     - Search returns expected results for the session.
     """
+    child = children[Programme.HPV][0]
+
     SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.verify_search()
+    SessionsChildrenPage(page).search.check_no_patients_found_when_expected()
+
+    SessionsChildrenPage(page).search.search_for_a_child_name(str(child))
+    SessionsChildrenPage(page).search.search_for_a_child_by_nhs_number(child)
+
+    SessionsChildrenPage(page).search.check_year_checkbox(child.year_group)
+
+    SessionsChildrenPage(page).search.search_for_a_child_name(str(child))
+    SessionsChildrenPage(page).search.search_for_a_child_by_nhs_number(child)
 
 
 @issue("MAV-1381")

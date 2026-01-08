@@ -35,7 +35,7 @@ class PatientSearchComponent(BaseSearchComponent):
             f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
         )
 
-    def verify_search(self) -> None:
+    def check_no_patients_found_when_expected(self) -> None:
         self.search_for("a very long string that won't match any names")
         expect(
             self.page.get_by_text("No children matching search criteria found"),
@@ -69,6 +69,18 @@ class PatientSearchComponent(BaseSearchComponent):
         reload_until_element_is_visible(
             self.page,
             self.page.get_by_role("link", name=child_name),
+        )
+
+    @step("Search for child {1}")
+    def search_for_a_child_by_nhs_number(self, child: Child) -> None:
+        self.search_textbox.fill(child.nhs_number)
+
+        with self.page.expect_navigation():
+            self.search_button.click()
+
+        reload_until_element_is_visible(
+            self.page,
+            self.page.get_by_role("link", name=str(child)),
         )
 
     @step("Click Advanced filters")
