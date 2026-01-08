@@ -28,6 +28,9 @@ class SessionsVaccinationWizardPage:
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
+        self.select_batch_heading = self.page.get_by_role(
+            "heading", name="Which batch did you use?"
+        )
 
     @step("Click on Confirm")
     def click_confirm_button(self) -> None:
@@ -51,6 +54,10 @@ class SessionsVaccinationWizardPage:
         batch_radio = self.page.get_by_role("radio", name=batch_name)
 
         self.page.wait_for_load_state()
+
+        expect(
+            self.page.get_by_role("heading", name="Which batch did you use?")
+        ).to_be_visible()
 
         reload_until_element_is_visible(
             self.page,
