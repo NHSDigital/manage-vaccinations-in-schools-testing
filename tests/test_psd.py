@@ -138,6 +138,13 @@ def test_delivering_vaccination_after_psd(
 
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
+
+    SessionsOverviewPage(page).click_edit_session()
+    SessionsEditPage(page).click_change_psd()
+    SessionsEditPage(page).answer_whether_psd_should_be_enabled("Yes")
+    SessionsEditPage(page).click_continue_button()
+    SessionsEditPage(page).click_save_changes()
+
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).register_child_as_attending(child)
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
