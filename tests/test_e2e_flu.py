@@ -232,4 +232,9 @@ def test_cannot_mark_vaccinated_child_as_absent(
     expect(child_card.get_by_role("button", name="Attending")).not_to_be_visible()
     SessionsChildrenPage(page).search.click_child(child)
     SessionsPatientPage(page).click_session_activity_and_notes()
-    expect(SessionsPatientPage(page).page.get_by_text("Vaccinated")).to_be_visible()
+    expect(
+        SessionsPatientPage(page).page.get_by_text(f"Attended session at {schools[0]}")
+    ).to_be_visible()
+    expect(
+        SessionsPatientPage(page).page.get_by_text(f"Vaccinated with {vaccine.name}")
+    ).to_be_visible()
