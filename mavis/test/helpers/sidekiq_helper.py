@@ -36,9 +36,7 @@ class SidekiqHelper:
             }
         )
 
-    def run_recurring_job(
-        self, job_name: str, timeout: int = 300, poll_interval: int = 5
-    ) -> None:
+    def run_recurring_job(self, job_name: str, timeout: int = 300) -> None:
         """Run a recurring Sidekiq job by name and wait for completion.
 
         This method triggers a recurring job to run immediately and then waits
@@ -113,8 +111,73 @@ class SidekiqHelper:
         enqueue_response = response
         enqueue_response.raise_for_status()
 
-        # Most Sidekiq jobs complete within 30 seconds
-        time.sleep(30)
+        # Use timeout-based waiting strategy
+        if stats_available:
+            # Try polling for a short period, then fall back to time-based wait
+            try:
+                self._poll_for_completion(initial_enqueued, min(60, timeout // 5))
+            except TimeoutError:
+                # Polling failed, fall back to time-based wait for remaining time
+                remaining_time = max(30, min(timeout - 60, 120))
+                time.sleep(remaining_time)
+        else:
+            # If stats unavailable, wait for reasonable portion of timeout
+            wait_time = min(
+                timeout, 60
+            )  # Wait up to 60 seconds or timeout, whichever is less
+            time.sleep(wait_time)
+
+    def _poll_for_completion(self, initial_enqueued: int, timeout: int) -> None:
+        """Poll Sidekiq stats for job completion within timeout period."""
+        start_time = time.time()
+        job_was_enqueued = False
+        poll_interval = 2  # Check every 2 seconds
+
+        # Give some time for the job to be enqueued initially
+        time.sleep(1)
+
+        while time.time() - start_time < timeout:
+            try:
+                current_stats = self._get_sidekiq_stats()
+
+                # Try different ways to access the enqueued count
+                if isinstance(current_stats, dict):
+                    if (
+                        "sidekiq" in current_stats
+                        and "enqueued" in current_stats["sidekiq"]
+                    ):
+                        current_enqueued = current_stats["sidekiq"]["enqueued"]
+                    elif "enqueued" in current_stats:
+                        current_enqueued = current_stats["enqueued"]
+                    else:
+                        current_enqueued = 0
+                else:
+                    current_enqueued = 0
+
+                if current_enqueued > initial_enqueued and not job_was_enqueued:
+                    job_was_enqueued = True
+
+                if job_was_enqueued and current_enqueued <= initial_enqueued:
+                    return  # Job completed successfully
+
+                if job_was_enqueued and current_enqueued == 0:
+                    return  # Job completed successfully
+
+            except (
+                requests.HTTPError,
+                requests.RequestException,
+                ValueError,
+                KeyError,
+            ):
+                # Continue trying rather than failing immediately on stat errors
+                pass
+
+            # Wait before next check
+            time.sleep(poll_interval)
+
+        # If we reach here, job didn't complete within timeout
+        msg = f"Job did not complete within {timeout} seconds"
+        raise TimeoutError(msg)
 
     def _get_sidekiq_stats(self) -> dict[str, Any]:
         """Internal method to get Sidekiq stats.
