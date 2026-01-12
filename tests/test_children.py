@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
-from mavis.test.data import ClassFileMapping, CohortsFileMapping, VaccsFileMapping
+from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ChildActivityLogPage,
@@ -88,8 +88,8 @@ def setup_mav_853(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
 
     ImportsPage(page).header.click_mavis_header()
@@ -200,6 +200,54 @@ def test_merge_child_records_does_not_crash(
     ChildArchivePage(page).click_archive_record()
     expect_alert_text(page, "This record has been archived")
 
+@issue("MAV-909")
+@issue("MAV-1716")
+@pytest.mark.cohorts
+@pytest.mark.bug
+def test_archive_and_unarchive_child_via_cohort_upload(
+    setup_cohort_upload,
+    page,
+    file_generator,
+    children,
+):
+    """
+    Test: Archive a child via cohort upload and then unarchive by re-uploading.
+    Steps:
+    1. Import a fixed child cohort file.
+    2. Archive the child from the children page.
+    3. Re-import the same cohort file.
+    4. Verify the child is unarchived.
+    Verification:
+    - Child is archived after first import and unarchived after second import.
+    """
+    child = children[Programme.HPV][0]
+
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
+    )
+
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
+    ChildRecordPage(page).click_archive_child_record()
+    ChildArchivePage(page).archive_child_record()
+
+    ChildRecordPage(page).header.click_mavis_header()
+    DashboardPage(page).click_programmes()
+    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
+    ProgrammeOverviewPage(page).tabs.click_children_tab()
+    ProgrammeChildrenPage(page).click_import_child_records()
+
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
+    )
+
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
+    ChildRecordPage(page).check_child_is_unarchived()
 
 @pytest.mark.accessibility
 def test_accessibility(

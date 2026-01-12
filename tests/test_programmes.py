@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme, ReportFormat
-from mavis.test.data import CohortsFileMapping
+from mavis.test.data import ChildFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ChildArchivePage,
@@ -135,8 +135,8 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     """
     child = children[Programme.HPV][0]
 
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
 
     ImportsPage(page).header.click_mavis_header()
@@ -152,8 +152,8 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
 
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
 
     ImportsPage(page).header.click_mavis_header()

@@ -3,7 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
-from mavis.test.data import ClassFileMapping, CohortsFileMapping, pds
+from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
@@ -138,8 +138,8 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_unmatched_consent_responses()
@@ -254,8 +254,8 @@ def test_accessibility(
     ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
     ProgrammeOverviewPage(page).tabs.click_children_tab()
     ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_unmatched_consent_responses()
