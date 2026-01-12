@@ -9,14 +9,12 @@ from mavis.test.data_models import School
 from mavis.test.pages import (
     AddBatchPage,
     ChildRecordPage,
+    ChildrenSearchPage,
     DashboardPage,
     FlipperPage,
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
-    ProgrammeChildrenPage,
-    ProgrammeOverviewPage,
-    ProgrammesListPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
@@ -177,10 +175,8 @@ def upload_offline_vaccination(
             programme_group=programme.group,
         )
         ImportsPage(page).header.click_mavis_header()
-        DashboardPage(page).click_programmes()
-        ProgrammesListPage(page).click_programme_for_current_year(programme)
-        ProgrammeOverviewPage(page).tabs.click_children_tab()
-        ProgrammeChildrenPage(page).search.search_and_click_child(child)
+        DashboardPage(page).click_children()
+        ChildrenSearchPage(page).search.search_and_click_child(child)
         ChildRecordPage(page).click_vaccination_details(school)
         yield
 

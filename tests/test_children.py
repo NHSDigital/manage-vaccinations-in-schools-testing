@@ -13,9 +13,6 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    ProgrammeChildrenPage,
-    ProgrammeOverviewPage,
-    ProgrammesListPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
@@ -84,10 +81,9 @@ def setup_mav_853(
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
     SessionsOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ChildFileMapping.FIXED_CHILD
     )

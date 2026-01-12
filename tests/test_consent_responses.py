@@ -17,9 +17,6 @@ from mavis.test.pages import (
     ImportsPage,
     MatchConsentResponsePage,
     OnlineConsentWizardPage,
-    ProgrammeChildrenPage,
-    ProgrammeOverviewPage,
-    ProgrammesListPage,
     ServiceErrorPage,
     StartPage,
     UnmatchedConsentResponsesPage,
@@ -134,10 +131,9 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     """
     child = children[Programme.HPV][0]
 
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ChildFileMapping.FIXED_CHILD
     )
@@ -250,10 +246,9 @@ def test_accessibility(
     """
     child = children[Programme.HPV][0]
 
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ChildFileMapping.FIXED_CHILD
     )
@@ -282,6 +277,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     children,
     page,
     file_generator,
+    schools,
 ):
     """
     Test: Submit a consent form that won't match automatically, find a patient
@@ -302,12 +298,15 @@ def test_match_consent_with_vaccination_record_no_service_error(
     - The matching process completes without server errors.
     """
     child_with_consent = children[Programme.HPV][0]
+    year_group = child_with_consent.year_group
+    school = schools[Programme.HPV][0]
 
     # Step 2: Import a class list to create searchable child records for both children
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
+        school, year_group
+    )
     ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.TWO_FIXED_CHILDREN
     )

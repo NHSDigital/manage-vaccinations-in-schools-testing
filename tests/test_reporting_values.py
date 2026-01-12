@@ -47,7 +47,8 @@ def test_report_view(
     child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
 
-    ReportsVaccinationsPage(page).navigate()
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_reports()
     ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
 
     vaccinated_count = ReportsVaccinationsPage(page).get_children_count("Vaccinated")
