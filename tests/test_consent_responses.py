@@ -305,7 +305,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
-        school, year_group
+        str(school), year_group
     )
     ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.TWO_FIXED_CHILDREN
