@@ -32,11 +32,27 @@ class PreScreeningCheck(StrEnum):
 
 
 class HealthQuestion(StrEnum):
+    EXTRA_SUPPORT = "Does your child need extra support during vaccination sessions?"
+    SEVERE_ALLERGIES = "Does your child have any severe allergies?"
+    IMMUNE_SYSTEM = (
+        "Does your child have a disease or treatment that severely affects their"
+        " immune system?"
+    )
     BLEEDING_DISORDER = (
         "Does your child have a bleeding disorder or another medical condition they"
         " receive treatment for?"
     )
-    SEVERE_ALLERGIES = "Does your child have any severe allergies?"
+
+    # hpv
+    BLEEDING_DISORDER_HPV = "Does your child have a bleeding disorder?"
+    BLOOD_THINNING_MEDICINE = (
+        "Does your child take blood-thinning medicine (anticoagulants)?"
+    )
+    MEDICAL_CONDITIONS_HPV = (
+        "Does your child have any other medical conditions we should know about?"
+    )
+
+    # doubles
     MEDICAL_CONDITIONS = (
         "Does your child have any medical conditions for which they receive treatment?"
     )
@@ -44,7 +60,6 @@ class HealthQuestion(StrEnum):
         "Has your child ever had a severe reaction to any medicines,"
         " including vaccines?"
     )
-    EXTRA_SUPPORT = "Does your child need extra support during vaccination sessions?"
     PAST_MENACWY_VACCINE = (
         "Has your child had a meningitis (MenACWY) vaccination in the last 5 years?"
     )
@@ -58,10 +73,6 @@ class HealthQuestion(StrEnum):
     ASTHMA_STEROIDS = "Does your child take oral steroids for their asthma?"
     ASTHMA_INTENSIVE_CARE = (
         "Has your child ever been admitted to intensive care because of their asthma?"
-    )
-    IMMUNE_SYSTEM = (
-        "Does your child have a disease or treatment that severely affects"
-        " their immune system?"
     )
     HOUSEHOLD_IMMUNE_SYSTEM = (
         "Is your child in regular close contact with anyone currently having treatment"
@@ -91,7 +102,6 @@ class HealthQuestion(StrEnum):
     FLU_PREVIOUSLY = "Has your child had a flu vaccination in the last 3 months?"
 
     # MMR
-    MMR_BLEEDING_DISORDER = "Does your child have a bleeding disorder"
     MMR_ANTICOAGULANTS = (
         "Does your child take blood-thinning medicine (anticoagulants)?"
     )
@@ -106,10 +116,6 @@ class HealthQuestion(StrEnum):
     MMR_ALLERGIC_REACTION_NEOMYCIN = (
         "Has your child ever had a severe allergic reaction (anaphylaxis) to neomycin?"
     )
-    MMR_TREATMENT = (
-        "Does your child have a disease or treatment that severely affects"
-        " their immune system?"
-    )
     MMR_TB_TEST = (
         "Has your child had any of the following in the last 4 weeks, or are they due"
         " to have them in the next 4 weeks: TB skin test, chickenpox vaccine, or"
@@ -117,9 +123,6 @@ class HealthQuestion(StrEnum):
     )
     MMR_OTHER_MEDICAL_CONDITIONS = (
         "Does the child have any other medical conditions we should know about?"
-    )
-    MMR_EXTRA_SUPPORT = (
-        "Does your child need extra support during vaccination sessions?"
     )
     MMR_EITHER_GELATINE = (
         "Has your child ever had a severe allergic reaction (anaphylaxis) to gelatine?"
@@ -184,15 +187,15 @@ class Programme(StrEnum):
         flu_questions = [q for q in flu_questions if q is not None]
 
         mmr_questions = [
-            HealthQuestion.MMR_BLEEDING_DISORDER,
+            HealthQuestion.BLEEDING_DISORDER,
             HealthQuestion.MMR_ANTICOAGULANTS,
             HealthQuestion.MMR_TRANSFUSION,
             HealthQuestion.MMR_ALLERGIC_REACTION,
             HealthQuestion.MMR_ALLERGIC_REACTION_NEOMYCIN,
-            HealthQuestion.MMR_TREATMENT,
+            HealthQuestion.IMMUNE_SYSTEM,
             HealthQuestion.MMR_TB_TEST,
             HealthQuestion.MMR_OTHER_MEDICAL_CONDITIONS,
-            HealthQuestion.MMR_EXTRA_SUPPORT,
+            HealthQuestion.EXTRA_SUPPORT,
             HealthQuestion.MMR_EITHER_GELATINE if mmr_either else None,
         ]
         mmr_questions = [q for q in mmr_questions if q is not None]
@@ -214,8 +217,10 @@ class Programme(StrEnum):
             ],
             Programme.HPV: [
                 HealthQuestion.SEVERE_ALLERGIES,
-                HealthQuestion.MEDICAL_CONDITIONS,
-                HealthQuestion.REACTION,
+                HealthQuestion.BLEEDING_DISORDER_HPV,
+                HealthQuestion.BLOOD_THINNING_MEDICINE,
+                HealthQuestion.IMMUNE_SYSTEM,
+                HealthQuestion.MEDICAL_CONDITIONS_HPV,
                 HealthQuestion.EXTRA_SUPPORT,
             ],
             Programme.FLU: flu_questions,
