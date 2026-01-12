@@ -109,7 +109,7 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables standalone" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="AuthToken" elementType="Argument">
             <stringProp name="Argument.name">AuthToken</stringProp>
@@ -306,7 +306,7 @@ log.info(vars.get(&quot;BaseURL&quot;))</stringProp>
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server">
+      <org.jmeterplugins.protocol.http.control.HttpSimpleTableControl guiclass="org.jmeterplugins.protocol.http.control.gui.HttpSimpleTableControlGui" testclass="org.jmeterplugins.protocol.http.control.HttpSimpleTableControl" testname="jp@gc - HTTP Simple Table Server" enabled="true">
         <stringProp name="HttpSimpleTableControlGui.port">9191</stringProp>
         <boolProp name="HttpSimpleTableControlGui.timestamp">true</boolProp>
         <stringProp name="HttpSimpleTableControlGui.dir">C:\apache-jmeter-5.6.3\bin</stringProp>
@@ -1178,7 +1178,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <hashTree/>
             </hashTree>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1 Open session" enabled="true">
             <stringProp name="HTTPSampler.path">sessions/${SessionId}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1194,7 +1194,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
             </ConstantTimer>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.2 Session register">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.2 Session register" enabled="true">
             <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1210,7 +1210,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
             </ConstantTimer>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3 Search by first/last name">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3 Search by first/last name" enabled="true">
             <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients?q=${CHILD_FIRST_NAME}+${CHILD_LAST_NAME}&amp;registration_status=&amp;programme_status_group=&amp;%5Bprogramme_statuses%5D%5B%5D=&amp;%5Bvaccine_criteria%5D%5B%5D=&amp;%5Bprogramme_statuses%5D%5B%5D=&amp;%5Bprogramme_statuses%5D%5B%5D=&amp;%5Byear_groups%5D%5B%5D=&amp;date_of_birth_day=&amp;date_of_birth_month=&amp;date_of_birth_year=&amp;archived=0&amp;missing_nhs_number=0</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1225,7 +1225,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="ConstantTimer.delay">${__Random(3000,5000,)}</stringProp>
             </ConstantTimer>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Authenticity_Token Regular Expression Extractor" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">Authenticity_Token</stringProp>
               <stringProp name="RegexExtractor.regex">type=&quot;submit&quot;&gt;Attending&lt;\/button&gt;&lt;input type=&quot;hidden&quot; name=&quot;authenticity_token&quot; value=&quot;(.*?)&quot;</stringProp>
@@ -1235,7 +1235,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get PatientID">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get PatientID" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">PatientId</stringProp>
               <stringProp name="RegexExtractor.regex">href=&quot;\/sessions\/.*?\/patients\/(.*?)\/(.*?)\?return_to=patients&quot;&gt;(.*?)&lt;</stringProp>
@@ -1245,7 +1245,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="RegexExtractor.match_number">-1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get PatientNames">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get PatientNames" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">PatientName</stringProp>
               <stringProp name="RegexExtractor.regex">href=&quot;\/sessions\/.*?\/patients\/(.*?)\/(.*?)\?return_to=patients&quot;&gt;(.*?)&lt;</stringProp>
@@ -1255,7 +1255,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <stringProp name="RegexExtractor.match_number">-1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get SessionStatus">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get SessionStatus" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">SessionStatus</stringProp>
               <stringProp name="RegexExtractor.regex">Registration status&lt;\/dt&gt;&lt;dd class=&quot;nhsuk-summary-list__value&quot;&gt;&lt;strong class=&quot;nhsuk-tag .*?&quot;&gt;(.*?)&lt;\/strong</stringProp>
@@ -1266,13 +1266,13 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler">
+          <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
             <boolProp name="displayJMeterProperties">false</boolProp>
             <boolProp name="displayJMeterVariables">true</boolProp>
             <boolProp name="displaySystemProperties">false</boolProp>
           </DebugSampler>
           <hashTree/>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (No further patients)">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (No further patients)" enabled="true">
             <stringProp name="IfController.condition">${__jexl3(&quot;${PatientName_matchNr}&quot; == &quot;0&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
@@ -1309,7 +1309,7 @@ log.info(&quot;for thread &quot; + Threadnum.toString() + &quot; &amp; VaccineNa
               <hashTree/>
             </hashTree>
           </hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get correct patient name">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Get correct patient name" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -1343,19 +1343,19 @@ for(loop=1;loop&lt;=PatientCount;loop++){
             </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (Fuzzy search failed)">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If PatientId_NotFound (Fuzzy search failed)" enabled="true">
             <stringProp name="IfController.condition">${__jexl3(&quot;${PatientId}&quot; == &quot;PatientSearchFailed&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Go to next thread as patient isn&apos;t found">
+            <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Go to next thread as patient isn&apos;t found" enabled="true">
               <intProp name="ActionProcessor.action">3</intProp>
               <intProp name="ActionProcessor.target">0</intProp>
               <stringProp name="ActionProcessor.duration">0</stringProp>
             </TestAction>
             <hashTree>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Search failed">
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Search failed" enabled="true">
                 <stringProp name="cacheKey">true</stringProp>
                 <stringProp name="filename"></stringProp>
                 <stringProp name="parameters"></stringProp>
@@ -1365,7 +1365,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <hashTree/>
             </hashTree>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Already vaccinated" enabled="true">
             <stringProp name="IfController.condition">${__jexl3(&quot;${SessionStatus}&quot; == &quot;green Completed session&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
@@ -1459,13 +1459,13 @@ for(loop=1;loop&lt;=PatientCount;loop++){
               <hashTree/>
             </hashTree>
           </hashTree>
-          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Check for session attendance">
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Check for session attendance" enabled="true">
             <stringProp name="IfController.condition">${__jexl3(&quot;${SessionStatus}&quot; != &quot;Attending session&quot;)}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4 Patient attending session">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4 Patient attending session" enabled="true">
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/register/present</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1506,7 +1506,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
             <boolProp name="displaySystemProperties">false</boolProp>
           </DebugSampler>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.5 Select patient">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.5 Select patient" enabled="true">
             <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccineName}?return_to=consent</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1517,7 +1517,7 @@ for(loop=1;loop&lt;=PatientCount;loop++){
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager">
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="Content-Type" elementType="Header">
                   <stringProp name="Header.name">Content-Type</stringProp>
@@ -1632,11 +1632,11 @@ ${__jexl3(&quot;${ConsentGiven}&quot;!^&quot;Consent given&quot;)}</stringProp>
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5.0 Consent for ${VaccineName}">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="5.0 Consent for ${VaccineName}" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.1 Consent start">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.1 Consent start" enabled="true">
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccineName}/consents</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1689,7 +1689,7 @@ ${__jexl3(&quot;${ConsentGiven}&quot;!^&quot;Consent given&quot;)}</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.2 Consent who">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.2 Consent who" enabled="true">
               <stringProp name="HTTPSampler.path">draft-consent/who</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1746,7 +1746,7 @@ ${__jexl3(&quot;${ConsentGiven}&quot;!^&quot;Consent given&quot;)}</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.3 Consent parent details">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.3 Consent parent details" enabled="true">
               <stringProp name="HTTPSampler.path">draft-consent/parent-details</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1851,7 +1851,7 @@ vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,relationship)</stringProp>
               </JSR223PreProcessor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.4 Consent route">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.4 Consent route" enabled="true">
               <stringProp name="HTTPSampler.path">draft-consent/route</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1915,7 +1915,7 @@ vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,relationship)</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.5 Consent agree">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.5 Consent agree" enabled="true">
               <stringProp name="HTTPSampler.path">draft-consent/agree</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1972,7 +1972,7 @@ vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,relationship)</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.6 Consent questions">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5.6 Consent questions" enabled="true">
               <stringProp name="HTTPSampler.path">draft-consent/questions</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2433,11 +2433,11 @@ vars.put(&quot;PARENT_1_RELATIONSHIP&quot;,relationship)</stringProp>
           <boolProp name="IfController.useExpression">true</boolProp>
         </IfController>
         <hashTree>
-          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4.0 Vaccination for ${VaccineName}">
+          <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="4.0 Vaccination for ${VaccineName}" enabled="true">
             <boolProp name="TransactionController.includeTimers">false</boolProp>
           </TransactionController>
           <hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate site depending on vaccination">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Calculate site depending on vaccination" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2463,7 +2463,7 @@ if(vars.get(&quot;VaccineName&quot;)==&quot;flu&quot;){
               </JSR223PostProcessor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.1 Vaccination questions" enabled="true">
               <stringProp name="HTTPSampler.path">sessions/${SessionId}/patients/${PatientId}/${VaccineName}/vaccinations</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2603,7 +2603,7 @@ if(vars.get(&quot;VaccineName&quot;)==&quot;flu&quot;){
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Check for no vaccine batch">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Check for no vaccine batch" enabled="true">
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
@@ -2616,7 +2616,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
 </stringProp>
             </JSR223Sampler>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.2 Vaccination batch" enabled="true">
               <stringProp name="HTTPSampler.path">draft-vaccination-record/batch</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2683,7 +2683,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.3 Vaccination confirm">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="4.3 Vaccination confirm" enabled="true">
               <stringProp name="HTTPSampler.path">draft-vaccination-record/confirm</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -2761,7 +2761,7 @@ if(vars.get(&quot;BatchId&quot;)==&quot;BatchId_NotFound&quot;){
           </hashTree>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Children Searches" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Children Searches">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
