@@ -50,9 +50,10 @@ class ImportRecordsWizardPage:
 
         # Pattern to match dynamic text (s is optional for records)
         self.records_pattern = re.compile(
-            r"\d+ new records?"
-            r"|\d+ school moves?"
-            r"|\d+ records? already in Mavis"
+            r"\d+ new record(?:s)?"
+            r"|\d+ school move(?:s)?"
+            r"|\d+ record(?:s)? already in Mavis"
+            r"|\d+ close match(?:es)? to existing record(?:s)?",
         )
         self.approve_import_button = self.page.get_by_role(
             "button", name="Approve and import records"

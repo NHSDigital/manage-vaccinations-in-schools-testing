@@ -1,6 +1,5 @@
 import pytest
 
-from mavis.test.annotations import issue
 from mavis.test.constants import ConsentMethod, ConsentOption, Programme, Vaccine
 from mavis.test.data import ClassFileMapping
 from mavis.test.data_models import VaccinationRecord
@@ -11,7 +10,6 @@ from mavis.test.pages import (
     LogInPage,
     NurseConsentWizardPage,
     OnlineConsentWizardPage,
-    ProgrammesListPage,
     SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
@@ -264,28 +262,3 @@ def test_accessibility(
 
     SessionsPsdPage(page).click_yes_add_psds()
     AccessibilityHelper(page).check_accessibility()
-
-
-@issue("MAV-2775")
-def test_healthcare_assistant_can_see_programmes_list(
-    log_in_as_medical_secretary, page
-):
-    """
-    Test: A healthcare assistant can see all team programmes on the programmes page.
-
-    AC1: A user with the roles and activity codes of a healthcare assistant
-    (Medical Secretary role with Personal Medication Administration activity) can see
-    a list of all the team's programmes on the programmes page.
-
-    Steps:
-    1. Log in as a healthcare assistant user
-    2. Navigate to programmes page
-    3. Verify that the programme is visible
-
-    Verification:
-    - Healthcare assistant can access the programmes page
-    - All team programmes are displayed (FLU, HPV, MenACWY, MMR, Td/IPV)
-    """
-    DashboardPage(page).click_programmes()
-    for programme in Programme:
-        ProgrammesListPage(page).verify_programme_is_visible(programme)

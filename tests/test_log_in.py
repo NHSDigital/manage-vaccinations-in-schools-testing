@@ -75,7 +75,7 @@ def test_login_with_valid_credentials(
     expect(LogInPage(page).log_out_button).to_be_visible()
 
     expect(DashboardPage(page).header.mavis_link).to_be_visible()
-    expect(DashboardPage(page).programmes_link).to_be_visible()
+    expect(DashboardPage(page).reports_link).to_be_visible()
     expect(DashboardPage(page).sessions_link).to_be_visible()
     expect(DashboardPage(page).children_link).to_be_visible()
     expect(DashboardPage(page).vaccines_link).to_be_visible()

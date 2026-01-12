@@ -11,7 +11,7 @@ class DashboardPage:
 
         links = page.get_by_role("main").get_by_role("listitem").get_by_role("link")
 
-        self.programmes_link = links.get_by_text("Programmes")
+        self.reports_link = links.get_by_text("Reports")
         self.sessions_link = links.get_by_text("Sessions")
         self.children_link = links.get_by_text("Children")
         self.vaccines_link = links.get_by_text("Vaccines")
@@ -28,9 +28,9 @@ class DashboardPage:
     def click_schools(self) -> None:
         self.schools_link.click()
 
-    @step("Click on Programmes")
-    def click_programmes(self) -> None:
-        self.programmes_link.click()
+    @step("Click on Reports")
+    def click_reports(self) -> None:
+        self.reports_link.click()
 
     @step("Click on Sessions")
     def click_sessions(self) -> None:

@@ -3,7 +3,7 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
-from mavis.test.data import ClassFileMapping, CohortsFileMapping, pds
+from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
@@ -17,9 +17,6 @@ from mavis.test.pages import (
     ImportsPage,
     MatchConsentResponsePage,
     OnlineConsentWizardPage,
-    ProgrammeChildrenPage,
-    ProgrammeOverviewPage,
-    ProgrammesListPage,
     ServiceErrorPage,
     StartPage,
     UnmatchedConsentResponsesPage,
@@ -134,12 +131,11 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     """
     child = children[Programme.HPV][0]
 
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_unmatched_consent_responses()
@@ -250,12 +246,11 @@ def test_accessibility(
     """
     child = children[Programme.HPV][0]
 
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ChildFileMapping.FIXED_CHILD
     )
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_unmatched_consent_responses()
@@ -282,6 +277,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     children,
     page,
     file_generator,
+    schools,
 ):
     """
     Test: Submit a consent form that won't match automatically, find a patient
@@ -302,12 +298,15 @@ def test_match_consent_with_vaccination_record_no_service_error(
     - The matching process completes without server errors.
     """
     child_with_consent = children[Programme.HPV][0]
+    year_group = child_with_consent.year_group
+    school = schools[Programme.HPV][0]
 
     # Step 2: Import a class list to create searchable child records for both children
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
+        str(school), year_group
+    )
     ImportRecordsWizardPage(page, file_generator).import_class_list(
         ClassFileMapping.TWO_FIXED_CHILDREN
     )
