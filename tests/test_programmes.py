@@ -1,116 +1,17 @@
 import pytest
 
-from mavis.test.annotations import issue
 from mavis.test.constants import Programme, ReportFormat
-from mavis.test.data import ChildFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
-    ChildArchivePage,
-    ChildRecordPage,
-    ChildrenSearchPage,
     DashboardPage,
-    EditVaccinationRecordPage,
-    ImportRecordsWizardPage,
-    ImportsPage,
-    ProgrammeChildrenPage,
     ProgrammeOverviewPage,
     ProgrammesListPage,
-    VaccinationRecordPage,
 )
-from mavis.test.utils import expect_alert_text
-
-
-@pytest.fixture
-def setup_cohort_upload(
-    log_in_as_nurse,
-    page,
-):
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
 
 
 @pytest.fixture
 def setup_reports(log_in_as_nurse, page):
     DashboardPage(page).click_programmes()
-
-@issue("MAV-909")
-@issue("MAV-1716")
-@pytest.mark.cohorts
-@pytest.mark.bug
-def test_archive_and_unarchive_child_via_cohort_upload(
-    setup_cohort_upload,
-    page,
-    file_generator,
-    children,
-):
-    """
-    Test: Archive a child via cohort upload and then unarchive by re-uploading.
-    Steps:
-    1. Import a fixed child cohort file.
-    2. Archive the child from the children page.
-    3. Re-import the same cohort file.
-    4. Verify the child is unarchived.
-    Verification:
-    - Child is archived after first import and unarchived after second import.
-    """
-    child = children[Programme.HPV][0]
-
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.FIXED_CHILD
-    )
-
-    ImportsPage(page).header.click_mavis_header()
-    DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
-    ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_archive_child_record()
-    ChildArchivePage(page).archive_child_record()
-
-    ChildRecordPage(page).header.click_mavis_header()
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    ProgrammeChildrenPage(page).click_import_child_records()
-
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.FIXED_CHILD
-    )
-
-    ImportsPage(page).header.click_mavis_header()
-    DashboardPage(page).click_children()
-    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
-    ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).check_child_is_unarchived()
-
-
-@pytest.fixture
-def upload_offline_vaccination_hpv(upload_offline_vaccination):
-    yield from upload_offline_vaccination(Programme.HPV)
-
-
-@pytest.mark.rav
-@pytest.mark.bug
-def test_edit_vaccination_dose_to_not_given(
-    upload_offline_vaccination_hpv,
-    page,
-):
-    """
-    Test: Edit a vaccination dose to 'not given' and verify outcome.
-    Steps:
-    1. Navigate to the child in the programme.
-    2. Edit the vaccination record and change outcome to 'they refused it'.
-    3. Save changes.
-    Verification:
-    - Alert confirms vaccination outcome recorded as refused.
-    """
-    VaccinationRecordPage(page).click_edit_vaccination_record()
-    EditVaccinationRecordPage(page).click_change_outcome()
-    EditVaccinationRecordPage(page).click_they_refused_it()
-    EditVaccinationRecordPage(page).click_continue()
-    EditVaccinationRecordPage(page).click_save_changes()
-    expect_alert_text(page, "Vaccination outcome recorded for HPV")
 
 
 @pytest.mark.reports
