@@ -53,7 +53,7 @@ def give_online_consent(
     OnlineConsentWizardPage(page).agree_to_hpv_vaccination()
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        4, yes_to_health_questions=False
+        len(Programme.health_questions(Programme.HPV)), yes_to_health_questions=False
     )
     OnlineConsentWizardPage(page).click_confirm()
 
@@ -74,7 +74,7 @@ def give_online_consent_pds_child(
     OnlineConsentWizardPage(page).agree_to_hpv_vaccination()
     OnlineConsentWizardPage(page).fill_address_details(*child.address)
     OnlineConsentWizardPage(page).answer_health_questions(
-        4, yes_to_health_questions=False
+        len(Programme.health_questions(Programme.HPV)), yes_to_health_questions=False
     )
     OnlineConsentWizardPage(page).click_confirm()
 
