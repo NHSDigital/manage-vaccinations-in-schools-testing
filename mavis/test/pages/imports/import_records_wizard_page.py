@@ -192,7 +192,6 @@ class ImportRecordsWizardPage:
             .or_(self.invalid_file_problem)
         )
         reload_until_element_is_visible(self.page, status_text, seconds=60)
-        self.page.pause()
         if self.is_preview_page_link_visible():
             self.approve_preview_if_shown(upload_time)
 
