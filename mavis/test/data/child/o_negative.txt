@@ -15,3 +15,6 @@ Row 15 PARENT_1_NAME: includes invalid character(s)
 Row 16 PARENT_2_NAME: includes invalid character(s)
 Row 17 CHILD_PREFERRED_FIRST_NAME: includes invalid character(s)
 Row 18 CHILD_PREFERRED_LAST_NAME: includes invalid character(s)
+Row 19 CHILD_SCHOOL_URN: The school URN is not recognised. If you’ve checked the URN, and you believe it’s valid, contact our support team.
+Row 20 CHILD_POSTCODE: is required but missing
+Row 21 CHILD_DATE_OF_BIRTH: is not part of this programme
