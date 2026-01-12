@@ -49,7 +49,6 @@ class VaccsFileMapping(FileMapping):
 
 class CohortsFileMapping(FileMapping):
     EMPTY_FILE = "empty"
-    FIXED_CHILD = "fixed_child"
     HEADER_ONLY = "header_only"
     INVALID_STRUCTURE = "invalid_structure"
     NEGATIVE = "negative"
@@ -67,6 +66,7 @@ class ChildFileMapping(FileMapping):
     NEGATIVE = "negative"
     POSITIVE = "positive"
     WHITESPACE = "whitespace"
+    FIXED_CHILD = "fixed_child"
 
     @property
     def folder(self) -> Path:

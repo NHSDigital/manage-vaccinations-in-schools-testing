@@ -8,7 +8,7 @@ from mavis.test.constants import (
     Programme,
     Vaccine,
 )
-from mavis.test.data import CohortsFileMapping
+from mavis.test.data import ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     DashboardPage,
@@ -58,7 +58,7 @@ def setup_session_with_file_upload(
 
 @pytest.fixture
 def setup_fixed_child(setup_session_with_file_upload):
-    yield from setup_session_with_file_upload(CohortsFileMapping.FIXED_CHILD)
+    yield from setup_session_with_file_upload(ClassFileMapping.FIXED_CHILD)
 
 
 def test_gillick_competence(

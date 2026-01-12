@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.constants import ConsentOption, Programme
-from mavis.test.data import CohortsFileMapping
+from mavis.test.data import ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ConsentResponsePage,
@@ -54,7 +54,7 @@ def setup_session_with_file_upload(
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD,
+        ClassFileMapping.FIXED_CHILD,
         year_group,
         Programme.FLU.group,
     )

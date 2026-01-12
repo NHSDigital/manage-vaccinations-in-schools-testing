@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
-from mavis.test.data import CohortsFileMapping
+from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
@@ -48,7 +48,7 @@ def setup_session_with_file_upload(
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, file_generator).import_class_list(
-        CohortsFileMapping.FIXED_CHILD,
+        ClassFileMapping.FIXED_CHILD,
         year_group,
         Programme.FLU.group,
     )
