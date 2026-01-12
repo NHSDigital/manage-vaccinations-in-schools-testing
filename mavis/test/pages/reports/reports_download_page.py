@@ -18,15 +18,8 @@ class ReportsDownloadPage:
         self.tabs = ReportsTabs(page)
         self.header = HeaderComponent(page)
 
-        self.aggregate_data_radio = self.page.get_by_role(
-            "radio", name="Aggregate vaccination data"
-        )
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.download_button = self.page.get_by_role("button", name="Download")
-
-    @step("Check Aggregate vaccination data radio")
-    def check_aggregate_data_radio(self) -> None:
-        self.aggregate_data_radio.check()
 
     @step("Click Continue")
     def click_continue(self) -> None:

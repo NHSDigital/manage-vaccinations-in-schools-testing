@@ -19,7 +19,7 @@ from .programmes import (
     ProgrammeSessionsPage,
     ProgrammesListPage,
 )
-from .reports import ReportsDownloadPage, ReportsVaccinationsPage
+from .reports import ReportsDownloadPage, ReportsVaccinationsPage, VaccinationReportPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
 from .schools import SchoolsChildrenPage, SchoolsSearchPage, SchoolsSessionsPage
 from .sessions import (
@@ -98,5 +98,6 @@ __all__ = [
     "TeamPage",
     "UnmatchedConsentResponsesPage",
     "VaccinationRecordPage",
+    "VaccinationReportPage",
     "VaccinesPage",
 ]

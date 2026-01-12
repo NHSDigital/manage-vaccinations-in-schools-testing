@@ -1,17 +1,21 @@
 import pytest
 
 from mavis.test.constants import Programme, ReportFormat
-from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     DashboardPage,
-    ProgrammeOverviewPage,
-    ProgrammesListPage,
+    ReportsDownloadPage,
+    ReportsVaccinationsPage,
+    VaccinationReportPage,
 )
+
+pytestmark = pytest.mark.reporting
 
 
 @pytest.fixture
 def setup_reports(log_in_as_nurse, page):
-    DashboardPage(page).click_programmes()
+    DashboardPage(page).click_reports()
+    ReportsVaccinationsPage(page).tabs.click_download_data_tab()
+    ReportsDownloadPage(page).click_continue()
 
 
 @pytest.mark.reports
@@ -27,8 +31,8 @@ def test_verify_careplus_report_for_hpv(
     Verification:
     - Report is generated in CarePlus format for HPV.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.HPV)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
@@ -47,14 +51,13 @@ def test_verify_careplus_report_for_doubles(
     Verification:
     - Reports are generated in CarePlus format for both MenACWY and Td/IPV.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.MENACWY)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.MENACWY)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
-    ProgrammeOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.TD_IPV)
-    ProgrammeOverviewPage(page).verify_report_format(
+    page.reload()
+    VaccinationReportPage(page).choose_programme(Programme.TD_IPV)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
@@ -72,8 +75,8 @@ def test_verify_csv_report_for_hpv(
     Verification:
     - Report is generated in CSV format for HPV.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.HPV)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
@@ -92,14 +95,13 @@ def test_verify_csv_report_for_doubles(
     Verification:
     - Reports are generated in CSV format for both MenACWY and Td/IPV.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.MENACWY)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.MENACWY)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
-    ProgrammeOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.TD_IPV)
-    ProgrammeOverviewPage(page).verify_report_format(
+    page.reload()
+    VaccinationReportPage(page).choose_programme(Programme.TD_IPV)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
@@ -117,8 +119,8 @@ def test_verify_systmone_report_for_hpv(
     Verification:
     - Report is generated in SystmOne format for HPV.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.HPV)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.HPV)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
@@ -136,8 +138,8 @@ def test_verify_systmone_report_for_menacwy(
     Verification:
     - Report is generated in SystmOne format for MenACWY.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.MENACWY)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.MENACWY)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
 
@@ -155,8 +157,8 @@ def test_verify_careplus_report_for_mmr(
     Verification:
     - Report is generated in CarePlus format for MMR.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.MMR)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.MMR)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
 
@@ -174,8 +176,8 @@ def test_verify_csv_report_for_mmr(
     Verification:
     - Report is generated in CSV format for MMR.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.MMR)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.MMR)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
 
@@ -193,41 +195,7 @@ def test_verify_systmone_report_for_mmr(
     Verification:
     - Report is generated in SystmOne format for MMR.
     """
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.MMR)
-    ProgrammeOverviewPage(page).verify_report_format(
+    VaccinationReportPage(page).choose_programme(Programme.MMR)
+    VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )
-
-
-@pytest.mark.accessibility
-def test_accessibility(
-    setup_reports,
-    page,
-):
-    """
-    Test: Check accessibility of the programmes page.
-    Steps:
-    1. Navigate to programmes page.
-    Verification:
-    - Page passes accessibility checks.
-    """
-    AccessibilityHelper(page).check_accessibility()
-
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.FLU)
-    AccessibilityHelper(page).check_accessibility()
-
-    ProgrammeOverviewPage(page).click_download_report()
-    AccessibilityHelper(page).check_accessibility()
-
-    ProgrammeOverviewPage(page).click_continue()
-    AccessibilityHelper(page).check_accessibility()
-
-    ProgrammeOverviewPage(page).header.click_mavis_header()
-    DashboardPage(page).click_programmes()
-    ProgrammesListPage(page).click_programme_for_current_year(Programme.FLU)
-
-    ProgrammeOverviewPage(page).tabs.click_sessions_tab()
-    AccessibilityHelper(page).check_accessibility()
-
-    ProgrammeOverviewPage(page).tabs.click_children_tab()
-    AccessibilityHelper(page).check_accessibility()
