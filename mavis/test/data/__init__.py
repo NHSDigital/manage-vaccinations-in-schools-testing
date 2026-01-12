@@ -2,7 +2,6 @@ from .file_generator import FileGenerator
 from .file_mappings import (
     ChildFileMapping,
     ClassFileMapping,
-    CohortsFileMapping,
     FileMapping,
     VaccsFileMapping,
 )
@@ -16,7 +15,6 @@ from .file_utils import (
 __all__ = [
     "ChildFileMapping",
     "ClassFileMapping",
-    "CohortsFileMapping",
     "FileGenerator",
     "FileMapping",
     "VaccsFileMapping",

@@ -202,7 +202,6 @@ def test_merge_child_records_does_not_crash(
 
 @issue("MAV-909")
 @issue("MAV-1716")
-@pytest.mark.cohorts
 @pytest.mark.bug
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_cohort_upload,

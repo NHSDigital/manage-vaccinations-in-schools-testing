@@ -47,18 +47,6 @@ class VaccsFileMapping(FileMapping):
         return Path("vaccs")
 
 
-class CohortsFileMapping(FileMapping):
-    EMPTY_FILE = "empty"
-    HEADER_ONLY = "header_only"
-    INVALID_STRUCTURE = "invalid_structure"
-    NEGATIVE = "negative"
-    POSITIVE = "positive"
-
-    @property
-    def folder(self) -> Path:
-        return Path("cohorts")
-
-
 class ChildFileMapping(FileMapping):
     EMPTY_FILE = "empty"
     HEADER_ONLY = "header_only"
