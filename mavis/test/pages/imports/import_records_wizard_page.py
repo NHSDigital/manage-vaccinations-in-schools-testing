@@ -194,7 +194,7 @@ class ImportRecordsWizardPage:
             self.review_and_approve_tag.or_(self.completed_tag)
             .or_(self.invalid_tag)
             .or_(self.invalid_file_problem)
-        )
+        ).first
         reload_until_element_is_visible(self.page, status_text, seconds=60)
         if self.is_preview_page_link_visible():
             self.approve_preview_if_shown(upload_time)
