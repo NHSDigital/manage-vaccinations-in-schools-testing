@@ -112,6 +112,7 @@ class LogInPage:
         if self.select_a_team_heading.is_visible():
             self.page.get_by_role("radio", name=team.name).check()
             self.continue_button.click()
+        expect(self.log_out_button).to_be_visible()
 
 
 class LogOutPage:

@@ -52,6 +52,7 @@ class PatientSearchComponent(BaseSearchComponent):
         )
         expect(child_locator).not_to_be_visible()
 
+    @step("Click on child {1}")
     def click_child(self, child: Child) -> None:
         child_locator = self.get_patient_card_locator(child).get_by_role(
             "link", name=str(child)
