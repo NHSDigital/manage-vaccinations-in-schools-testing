@@ -175,7 +175,8 @@ def normalize_postcode(postcode: str) -> str:
 
 DEFAULT_TIMEOUT_SECONDS = 30
 
-@step("Reload page until {2} is visible")
+
+@step("Reload page until {1} is visible")
 def reload_until_element_is_visible(
     page: Page, tag: Locator, seconds: int = DEFAULT_TIMEOUT_SECONDS
 ) -> None:
@@ -190,7 +191,7 @@ def reload_until_element_is_visible(
         expect(tag).to_be_visible()
 
 
-@step("Reload page until {2} is not visible")
+@step("Reload page until {1} is not visible")
 def reload_until_element_is_not_visible(
     page: Page, tag: Locator, seconds: int = DEFAULT_TIMEOUT_SECONDS
 ) -> None:
