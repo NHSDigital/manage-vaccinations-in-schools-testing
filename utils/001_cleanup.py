@@ -1,15 +1,15 @@
 import os
+import shutil
 
-#  This script is designed to be run manually to clear down the 'working', 'reports' and 'screenshots' directories.
-folders_to_clean = ["working", "allure-results"]  # "reports"
+#  This script is designed to be run manually to clear down directories.
+folders_to_clean = ["working", "allure-results"]
 
 
 def cleanup() -> None:
-    for _folder in folders_to_clean:
-        _all_files = os.listdir(_folder)
-        for _file in _all_files:
-            if _file != ".gitkeep":
-                os.remove(os.path.join(_folder, _file))
+    for entry in os.listdir("."):
+        for folder in folders_to_clean:
+            if entry.startswith(folder) and os.path.isdir(entry):
+                shutil.rmtree(entry)
 
 
 if __name__ == "__main__":
