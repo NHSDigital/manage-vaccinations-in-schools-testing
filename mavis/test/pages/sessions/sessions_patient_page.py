@@ -102,6 +102,9 @@ class SessionsPatientPage:
         self.notes_length_error = (
             page.locator("div").filter(has_text="There is a problemEnter").nth(3)
         )
+        self.triage_notes_textbox = self.page.get_by_role(
+            "textbox", name="Triage notes"
+        )
 
     def _select_tab(self, name: str) -> None:
         link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
@@ -263,6 +266,7 @@ class SessionsPatientPage:
     @step("Triage MMR patient")
     def triage_mmr_patient(self, consent_option: ConsentOption) -> None:
         reload_until_element_is_visible(self.page, self.triage_safe_mmr_either_radio)
+        self.triage_notes_textbox.fill("Triage notes for MMR")
         if consent_option is ConsentOption.MMR_EITHER:
             self.triage_safe_mmr_either_radio.check()
         else:

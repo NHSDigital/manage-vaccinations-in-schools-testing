@@ -294,12 +294,14 @@ class OnlineConsentWizardPage:
         )
 
     def answer_yes(self, details: str | None = None) -> None:
+        self.page.wait_for_load_state()
         self.select_yes()
         if details:
             self.give_details(details)
         self.click_continue()
 
     def answer_no(self) -> None:
+        self.page.wait_for_load_state()
         self.select_no()
         self.click_continue()
 
