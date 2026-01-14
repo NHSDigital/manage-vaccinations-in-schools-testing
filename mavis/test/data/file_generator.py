@@ -1,4 +1,5 @@
 import csv
+import os
 from collections.abc import Callable
 from pathlib import Path
 
@@ -19,7 +20,6 @@ from mavis.test.utils import (
 
 class FileGenerator:
     template_path = Path(__file__).parent
-    working_path = Path("working")
 
     def __init__(  # noqa: PLR0913
         self,
@@ -38,6 +38,12 @@ class FileGenerator:
         self.year_groups = year_groups
 
         self.faker = Faker(locale="en_GB")
+
+        self.create_working_directory()
+
+    def create_working_directory(self) -> None:
+        worker_id = os.environ.get("PYTEST_XDIST_WORKER", "main")
+        self.working_path = Path("working") / f"working_{worker_id}"
 
         self.working_path.mkdir(parents=True, exist_ok=True)
 
