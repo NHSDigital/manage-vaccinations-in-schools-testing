@@ -5,6 +5,7 @@ from io import BytesIO
 import allure
 from PIL import Image
 from PIL.Image import Palette
+from playwright.sync_api import Page
 
 
 def _reduce_colors(image_bytes: bytes) -> bytes:
@@ -26,15 +27,29 @@ def _add_screenshot(page, name: str) -> None:
     )
 
 
-def step(title: str):
+def _get_page_object(args, *, page_object: bool):
+    if page_object:
+        return args[0].page
+
+    for arg in args:
+        if isinstance(arg, Page):
+            return arg
+
+    msg = "No Page instance found for screenshot capture."
+    raise ValueError(msg)
+
+
+def step(title: str, *, page_object: bool = True):
     def decorator(func):
         @wraps(func)
-        def wrapper(self, *args, **kwargs):
+        def wrapper(*args, **kwargs):
             with allure.step(title):
+                page = _get_page_object(args, page_object=page_object)
+
                 try:
-                    return_value = func(self, *args, **kwargs)
+                    return_value = func(*args, **kwargs)
                 except Exception:
-                    _add_screenshot(self.page, name="Screenshot on failure")
+                    _add_screenshot(page, name="Screenshot on failure")
                     raise
 
                 coverage = kwargs.get("coverage")
@@ -46,7 +61,7 @@ def step(title: str):
                     )
 
                 if os.getenv("SCREENSHOT_ALL_STEPS", "false").lower() == "true":
-                    _add_screenshot(self.page, name="Screenshot")
+                    _add_screenshot(page, name="Screenshot")
 
                 return return_value
 
