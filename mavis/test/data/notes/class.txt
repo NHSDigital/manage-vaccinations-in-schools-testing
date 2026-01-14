@@ -1,0 +1,21 @@
+CHILD_FIRST_NAME	Required, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
+CHILD_LAST_NAME	Required, must use alphabetical characters (you can include accents like Jiménez, hyphens like Burne-Jones or apostrophes like O'Hare but no other special characters).
+CHILD_PREFERRED_FIRST_NAME	Optional, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
+CHILD_PREFERRED_LAST_NAME	Optional, must use alphabetical characters (you can include accents like Jiménez, hyphens like Burne-Jones or apostrophes like O'Hare but no other special characters).
+CHILD_DATE_OF_BIRTH	Required, must use DD/MM/YYYY or YYYY-MM-DD format.
+CHILD_YEAR_GROUP	Optional, numeric, the child’s year group, for example 8. If present, and when the child’s date of birth would place them in a different year, this value can be used to override the cohort the child will be placed in.
+CHILD_REGISTRATION	Optional, the child’s registration group, for example 8T5.
+CHILD_NHS_NUMBER	Optional, must be 10 digits and numeric.
+CHILD_GENDER	Optional, must be one of: female, male, not known or not specified.
+CHILD_ADDRESS_LINE_1	Optional
+CHILD_ADDRESS_LINE_2	Optional
+CHILD_TOWN	Optional
+CHILD_POSTCODE	Optional, must be formatted as a valid postcode, for example SW1A 1AA.
+PARENT_1_NAME	Optional, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
+PARENT_1_RELATIONSHIP	Optional, must be one of: Mum, Dad or Guardian.
+PARENT_1_EMAIL	Optional, must be formatted as a valid email address.
+PARENT_1_PHONE	Optional, must be formatted as a valid phone number.
+PARENT_2_NAME	Optional, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
+PARENT_2_RELATIONSHIP	Optional, must be one of: Mum, Dad or Guardian.
+PARENT_2_EMAIL	Optional, must be formatted as a valid email address.
+PARENT_2_PHONE	Optional, must be formatted as a valid phone number.
