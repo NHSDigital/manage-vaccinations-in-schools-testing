@@ -77,3 +77,18 @@ class ClassFileMapping(FileMapping):
     @property
     def folder(self) -> Path:
         return Path("class_list")
+
+
+class NotesFileMapping(FileMapping):
+    CLASS = "class"
+    CHILD = "child"
+    VACCS = "vaccs"
+
+    @property
+    def notes_file_path(self) -> Path:
+        """Direct path to the notes specification file."""
+        return self.folder / f"{self.value}.txt"
+
+    @property
+    def folder(self) -> Path:
+        return Path("notes")

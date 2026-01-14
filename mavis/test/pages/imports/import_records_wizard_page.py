@@ -7,10 +7,12 @@ from playwright.sync_api import Page, expect
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
 from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
+from mavis.test.data.file_mappings import NotesFileMapping
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     format_datetime_for_upload_link,
     get_current_datetime,
+    normalize_whitespace,
     reload_until_element_is_visible,
 )
 
@@ -61,6 +63,7 @@ class ImportRecordsWizardPage:
         self.review_and_approve_tag = self.page.get_by_role("strong").get_by_text(
             "Review and approve"
         )
+        self.notes_link = self.page.get_by_text("How to format your Mavis CSV")
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -145,6 +148,7 @@ class ImportRecordsWizardPage:
     def navigate_to_child_record_import(self) -> None:
         self.select_child_records()
         self.click_continue()
+        self.read_and_verify_file_specification(NotesFileMapping.CHILD)
 
     def navigate_to_class_list_record_import(
         self, location: str, *year_groups: int
@@ -159,10 +163,12 @@ class ImportRecordsWizardPage:
         self.click_continue()
 
         self.select_year_groups(*year_groups)
+        self.read_and_verify_file_specification(NotesFileMapping.CLASS)
 
     def navigate_to_vaccination_records_import(self) -> None:
         self.select_vaccination_records()
         self.click_continue()
+        self.read_and_verify_file_specification(NotesFileMapping.VACCS)
 
     def upload_and_verify_output(
         self,
@@ -248,3 +254,79 @@ class ImportRecordsWizardPage:
             self.select_year_groups(year_group)
 
         self.upload_and_verify_output(class_list_file, programme_group=programme_group)
+
+    def read_and_verify_file_specification(
+        self, notes_mapping: NotesFileMapping
+    ) -> dict[str, dict[str, str]]:
+        # Use NotesFileMapping to get file path
+        data_dir = Path(__file__).resolve().parents[2] / "data"
+        spec_file_path = data_dir / notes_mapping.notes_file_path
+
+        notes_specs = {}
+
+        try:
+            with spec_file_path.open("r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            content_lines = [line.strip() for line in lines]
+
+            for line in content_lines:
+                if "\t" in line:
+                    parts = line.split("\t", 1)
+                    column_name = normalize_whitespace(parts[0])
+                    notes = normalize_whitespace(parts[1]) if len(parts) > 1 else ""
+
+                    requirement = "Optional"  # default
+                    description = notes
+
+                    requirement_prefix_length = 9
+
+                    # Check if notes starts with "Required" or "Optional"
+                    if notes.lower().startswith("required"):
+                        requirement = "Required"
+                        description = (
+                            notes[requirement_prefix_length:].strip()
+                            if len(notes) > requirement_prefix_length
+                            else ""
+                        )
+                    elif notes.lower().startswith("optional"):
+                        requirement = "Optional"
+                        description = (
+                            notes[requirement_prefix_length:].strip()
+                            if len(notes) > requirement_prefix_length
+                            else ""
+                        )
+
+                    notes_specs[column_name] = {
+                        "requirement": requirement,
+                        "description": description,
+                    }
+
+        except Exception as e:
+            error_msg = f"Error reading specification file {spec_file_path}: {e!s}"
+            raise RuntimeError(error_msg) from e
+
+        self._verify_notes_specifications_on_page(notes_specs)
+
+        return notes_specs
+
+    def _verify_notes_specifications_on_page(
+        self, specifications: dict[str, dict[str, str]]
+    ) -> None:
+        self.page.wait_for_load_state()
+
+        main_content = self.page.get_by_role("main")
+        self.notes_link.click()
+
+        # Verify that key column names are present on the page
+        for column_name in specifications:
+            expect(main_content).to_contain_text(column_name)
+
+        # Verify table structure
+        table_headers = ["Column name", "Notes"]
+        for header in table_headers:
+            if main_content.get_by_text(header).is_visible():
+                break
+        else:
+            error_msg = "Notes table headers are inconsistent or missing."
+            raise AssertionError(error_msg)
