@@ -19,6 +19,7 @@ from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     expect_alert_text,
     expect_details,
+    reload_until_element_is_visible,
 )
 
 
@@ -261,6 +262,7 @@ class SessionsPatientPage:
 
     @step("Triage MMR patient")
     def triage_mmr_patient(self, consent_option: ConsentOption) -> None:
+        reload_until_element_is_visible(self.page, self.triage_safe_mmr_either_radio)
         if consent_option is ConsentOption.MMR_EITHER:
             self.triage_safe_mmr_either_radio.check()
         else:
