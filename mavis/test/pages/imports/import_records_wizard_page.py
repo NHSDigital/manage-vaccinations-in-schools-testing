@@ -25,7 +25,6 @@ class ImportRecordsWizardPage:
         self.file_generator = file_generator
         self.header = HeaderComponent(page)
 
-        self.alert_success = self.page.get_by_text("Import processing started")
         self.completed_tag = self.page.get_by_role("strong").get_by_text("Completed")
         self.invalid_tag = self.page.get_by_role("strong").get_by_text("Invalid")
         self.child_records_radio_button = self.page.get_by_role(
@@ -88,10 +87,6 @@ class ImportRecordsWizardPage:
     @step("Fill location combobox with {1}")
     def fill_location(self, location: str) -> None:
         self.location_combobox.fill(location)
-
-    def is_processing_in_background(self) -> bool:
-        self.page.wait_for_load_state()
-        return self.alert_success.is_visible()
 
     def get_preview_page_link(self):  # noqa: ANN201
         """Get the preview page link using multiple selector strategies."""
@@ -185,11 +180,12 @@ class ImportRecordsWizardPage:
         self.set_input_file(_input_file_path)
         upload_time = get_current_datetime()
         self.click_continue(_coverage=_scenario_list)
-
-        if self.is_processing_in_background():
-            self.click_uploaded_file_datetime(upload_time)
-
         self.page.wait_for_load_state()
+
+        if self.completed_imports_tab.is_visible():
+            self.click_uploaded_file_datetime(upload_time)
+            self.page.wait_for_load_state()
+
         status_text = (
             self.review_and_approve_tag.or_(self.completed_tag)
             .or_(self.invalid_tag)

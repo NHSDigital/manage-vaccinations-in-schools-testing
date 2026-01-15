@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
@@ -41,15 +41,26 @@ class AddSessionWizardPage:
         self.keep_session_dates_button = self.page.get_by_role(
             "button", name="Keep session dates"
         )
+        self.session_type_heading = self.page.get_by_role(
+            "heading", name="What type of session is this?"
+        )
 
     @step("Select School session")
     def select_school_session(self) -> None:
+        expect(self.session_type_heading).to_be_visible()
+
         self.school_session_radio.check()
+        self.page.wait_for_load_state()
+
         self.click_continue()
 
     @step("Select Community clinic")
     def select_community_clinic(self) -> None:
+        expect(self.session_type_heading).to_be_visible()
+
         self.community_clinic_radio.check()
+        self.page.wait_for_load_state()
+
         self.click_continue()
 
     def select_school(self, school: School) -> None:
