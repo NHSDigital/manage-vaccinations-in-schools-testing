@@ -79,16 +79,16 @@ class ClassFileMapping(FileMapping):
         return Path("class_list")
 
 
-class NotesFileMapping(FileMapping):
+class ImportFormatDetailsMapping(FileMapping):
     CLASS = "class"
     CHILD = "child"
     VACCS = "vaccs"
 
     @property
-    def notes_file_path(self) -> Path:
-        """Direct path to the notes specification file."""
+    def import_format_details_path(self) -> Path:
+        """Direct path to the import format details specification file."""
         return self.folder / f"{self.value}.txt"
 
     @property
     def folder(self) -> Path:
-        return Path("notes")
+        return Path("import_format_details")

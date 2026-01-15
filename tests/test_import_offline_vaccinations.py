@@ -3,7 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
-from mavis.test.data.file_mappings import NotesFileMapping
+from mavis.test.data.file_mappings import ImportFormatDetailsMapping
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -76,8 +76,8 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, page, file_generator):
     MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
     MMR_UnknownDoseSeq, MMRNoDelayDose1, MMRNoDelayDose2, MMR_NoDelayDoseUnknown
     """
-    ImportRecordsWizardPage(page, file_generator).read_and_verify_file_specification(
-        NotesFileMapping.VACCS
+    ImportRecordsWizardPage(page, file_generator).read_and_verify_import_format_details(
+        ImportFormatDetailsMapping.VACCS
     )
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         file_mapping=VaccsFileMapping.POSITIVE,

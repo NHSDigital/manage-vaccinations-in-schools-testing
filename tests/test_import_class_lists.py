@@ -2,7 +2,7 @@ import pytest
 
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping
-from mavis.test.data.file_mappings import NotesFileMapping
+from mavis.test.data.file_mappings import ImportFormatDetailsMapping
 from mavis.test.pages import (
     ChildrenSearchPage,
     DashboardPage,
@@ -52,8 +52,8 @@ def test_class_list_file_upload_valid_data(
     UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail,
     PostcodeNFA, PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
-    ImportRecordsWizardPage(page, file_generator).read_and_verify_file_specification(
-        NotesFileMapping.CLASS
+    ImportRecordsWizardPage(page, file_generator).read_and_verify_import_format_details(
+        ImportFormatDetailsMapping.CLASS
     )
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.POSITIVE
