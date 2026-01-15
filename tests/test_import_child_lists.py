@@ -1,6 +1,7 @@
 import pytest
 
 from mavis.test.data import ChildFileMapping
+from mavis.test.data.file_mappings import NotesFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ChildrenSearchPage,
@@ -31,7 +32,8 @@ def test_child_list_file_upload_valid_data(
     Test: Upload a valid child list file and verify successful import.
     Steps:
     1. Navigate to child record import page.
-    2. Upload a valid child list file.
+    2. Read and verify the file specification for child records.
+    3. Upload a valid child list file.
     Verification:
     - Output indicates successful import of records.
     Scenarios covered:
@@ -39,6 +41,9 @@ def test_child_list_file_upload_valid_data(
     UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail, PostcodeNFA,
     PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
+    ImportRecordsWizardPage(page, file_generator).read_and_verify_file_specification(
+        NotesFileMapping.CHILD
+    )
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ChildFileMapping.POSITIVE
     )

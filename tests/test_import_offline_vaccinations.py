@@ -3,6 +3,7 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
+from mavis.test.data.file_mappings import NotesFileMapping
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -51,7 +52,8 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, page, file_generator):
     Test: Upload a valid vaccination records file and verify successful import.
     Steps:
     1. Navigate to vaccination records import page.
-    2. Upload a valid vaccination file.
+    2. Read and verify the file specification for vaccination records.
+    3. Upload a valid vaccination file.
     Verification:
     - Output indicates successful import of records.
     Scenarios covered:
@@ -74,6 +76,9 @@ def test_vaccination_file_upload_valid_data(setup_vaccs, page, file_generator):
     MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
     MMR_UnknownDoseSeq, MMRNoDelayDose1, MMRNoDelayDose2, MMR_NoDelayDoseUnknown
     """
+    ImportRecordsWizardPage(page, file_generator).read_and_verify_file_specification(
+        NotesFileMapping.VACCS
+    )
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         file_mapping=VaccsFileMapping.POSITIVE,
         session_id=setup_vaccs,
