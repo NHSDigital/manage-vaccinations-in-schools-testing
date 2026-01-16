@@ -1,7 +1,7 @@
 import pytest
 
 from mavis.test.data import ChildFileMapping
-from mavis.test.data.file_mappings import ImportFormatDetailsMapping
+from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ChildrenSearchPage,
@@ -42,7 +42,7 @@ def test_child_list_file_upload_valid_data(
     PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
     ImportRecordsWizardPage(page, file_generator).read_and_verify_import_format_details(
-        ImportFormatDetailsMapping.CHILD
+        ImportFormatDetails.CHILD
     )
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ChildFileMapping.POSITIVE

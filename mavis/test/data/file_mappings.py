@@ -79,7 +79,7 @@ class ClassFileMapping(FileMapping):
         return Path("class_list")
 
 
-class ImportFormatDetailsMapping(FileMapping):
+class ImportFormatDetails(Enum):
     CLASS = "class"
     CHILD = "child"
     VACCS = "vaccs"
