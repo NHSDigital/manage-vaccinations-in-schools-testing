@@ -7,6 +7,7 @@ from playwright.sync_api import Page, expect
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
 from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
+from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     format_datetime_for_upload_link,
@@ -60,6 +61,9 @@ class ImportRecordsWizardPage:
         self.invalid_file_problem = self.page.get_by_text("There is a problem")
         self.review_and_approve_tag = self.page.get_by_role("strong").get_by_text(
             "Review and approve"
+        )
+        self.import_format_details_link = self.page.get_by_text(
+            "How to format your Mavis CSV"
         )
 
     @step("Select Child Records")
@@ -248,3 +252,27 @@ class ImportRecordsWizardPage:
             self.select_year_groups(year_group)
 
         self.upload_and_verify_output(class_list_file, programme_group=programme_group)
+
+    def read_and_verify_import_format_details(
+        self, import_format_details_mapping: ImportFormatDetails
+    ) -> None:
+        # Use ImportFormatDetails to get file path
+        data_dir = Path(__file__).resolve().parents[2] / "data"
+        spec_file_path = (
+            data_dir / import_format_details_mapping.import_format_details_path
+        )
+        with spec_file_path.open("r", encoding="utf-8") as file:
+            lines = file.readlines()
+
+        spec_lines = [
+            line.strip().replace("\r\n", "\n").replace("\r", "\n").replace("\n\n", "\n")
+            for line in lines
+        ]
+
+        self.page.wait_for_load_state()
+        self.import_format_details_link.click()
+        main_content = self.page.get_by_role("main").inner_text()
+        for line in spec_lines:
+            if line not in main_content:
+                missing_line_msg = f"Inconsistent import format details: {line}"
+                raise AssertionError(missing_line_msg)

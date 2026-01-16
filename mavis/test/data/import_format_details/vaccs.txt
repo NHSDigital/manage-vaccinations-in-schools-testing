@@ -1,0 +1,25 @@
+ORGANISATION_CODE	Optional, must be a valid ODS code.
+SCHOOL_URN	Optional, must be 6 digits and numeric. Use 888888 for school unknown and 999999 for homeschooled.
+SCHOOL_NAME	Required if SCHOOL_URN is 888888.
+NHS_NUMBER	Optional, must be a valid NHS number.
+PERSON_FORENAME	Required
+PERSON_SURNAME	Required
+PERSON_DOB	Required, must use either YYYYMMDD or DD/MM/YYYY format.
+PERSON_GENDER_CODE	Required, must be one of: female, male, not known or not specified.
+PERSON_POSTCODE	Required, must be formatted as a valid postcode, for example SW1A 1AA.
+DATE_OF_VACCINATION	Required, must use either YYYYMMDD or DD/MM/YYYY format.
+TIME_OF_VACCINATION	Optional, must use HH:MM:SS format.
+VACCINATED	Required, must be Y or N. Can be omitted if VACCINE_GIVEN is provided.
+VACCINE_GIVEN	Optional, must be one of: Cervarix, Gardasil, Gardasil9, Sequirus Cell-based Trivalent, AstraZeneca Fluenz, Viatris, Sanofi Vaxigrip, MenQuadfi, Menveo, Nimenrix, Priorix, VaxPro, Revaxis, ProQuad or Priorix-Tetra.
+BATCH_NUMBER	Required if BATCH_EXPIRY_DATE is provided.
+BATCH_EXPIRY_DATE	Required if BATCH_NUMBER is provided, must use either YYYYMMDD or DD/MM/YYYY format.
+PROGRAMME	Required, must be Flu, HPV, ACWYX4, MenACWY, MMR, MMRV, 3-in-1 or Td/IPV.
+ANATOMICAL_SITE	Optional, if provided must be appropriate for the vaccine delivery method and be one of: left arm (lower position), left arm (upper position), left buttock, left deltoid, left thigh, left upper arm, nasal, right arm (lower position), right arm (upper position), right buttock, right deltoid, right thigh or right upper arm.
+REASON_NOT_VACCINATED	Required if VACCINATED is N, must be already had elsewhere, refused, unwell or vaccination contraindicated.
+NOTES	Optional
+DOSE_SEQUENCE	Optional, must be a number or 1B, 1P, 1st Scheduled Booster, 2B, 2P, 2nd Scheduled Booster or 3P.
+CARE_SETTING	Optional, must be 1 (school) or 2 (clinic).
+CLINIC_NAME	Required if CARE_SETTING is 2, must be the name of a community clinic location.
+PERFORMING_PROFESSIONAL_EMAIL	Required if uploading offline vaccination records.
+PERFORMING_PROFESSIONAL_FORENAME	Optional
+PERFORMING_PROFESSIONAL_SURNAME	Optional

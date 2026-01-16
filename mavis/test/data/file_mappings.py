@@ -77,3 +77,18 @@ class ClassFileMapping(FileMapping):
     @property
     def folder(self) -> Path:
         return Path("class_list")
+
+
+class ImportFormatDetails(Enum):
+    CLASS = "class"
+    CHILD = "child"
+    VACCS = "vaccs"
+
+    @property
+    def import_format_details_path(self) -> Path:
+        """Direct path to the import format details specification file."""
+        return self.folder / f"{self.value}.txt"
+
+    @property
+    def folder(self) -> Path:
+        return Path("import_format_details")

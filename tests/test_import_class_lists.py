@@ -2,6 +2,7 @@ import pytest
 
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping
+from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages import (
     ChildrenSearchPage,
     DashboardPage,
@@ -42,7 +43,8 @@ def test_class_list_file_upload_valid_data(
     Test: Upload a valid class list file and verify successful import.
     Steps:
     1. Navigate to class list import page for the correct school and year group.
-    2. Upload a valid class list file.
+    2. Read and verify the file specification for class lists.
+    3. Upload a valid class list file.
     Verification:
     - Output indicates successful import of records.
     Scenarios covered:
@@ -50,6 +52,9 @@ def test_class_list_file_upload_valid_data(
     UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail,
     PostcodeNFA, PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
+    ImportRecordsWizardPage(page, file_generator).read_and_verify_import_format_details(
+        ImportFormatDetails.CLASS
+    )
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         ClassFileMapping.POSITIVE
     )
