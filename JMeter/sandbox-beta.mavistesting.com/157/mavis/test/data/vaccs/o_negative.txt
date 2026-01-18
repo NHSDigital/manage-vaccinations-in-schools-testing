@@ -1,0 +1,42 @@
+Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current team.
+Row 3 ORGANISATION_CODE: Enter an organisation code.
+Row 5 SCHOOL_NAME or School is required
+Row 6 NHS_NUMBER: should be a valid NHS number with 10 characters
+Row 7 NHS_NUMBER: should be a valid NHS number with 10 characters
+Row 8 PERSON_FORENAME or First name is required
+Row 9 PERSON_SURNAME or Surname is required
+Row 10 PERSON_DOB or Date of birth is required
+Row 11 PERSON_DOB: Enter a date of birth in the correct format.
+Row 12 DATE_OF_VACCINATION: The vaccination date is before the date of birth. PERSON_DOB: Enter a date of birth in the past.
+Row 13 PERSON_DOB: Enter a date of birth in the correct format.
+Row 14 PERSON_GENDER_CODE, PERSON_GENDER or Sex is required
+Row 15 PERSON_GENDER_CODE: Enter a valid gender or gender code.
+Row 16 PERSON_POSTCODE or Postcode is required
+Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
+Row 18 DATE_OF_VACCINATION or Event date is required
+Row 19 DATE_OF_VACCINATION: The vaccination date is in the future. DATE_OF_VACCINATION: Enter a date that matches when the vaccination session took place.
+Row 20 PROGRAMME or Vaccination type is required VACCINE_GIVEN: is required
+Row 21 BATCH_NUMBER or Vaccination batch number is required
+Row 22 BATCH_EXPIRY_DATE: Enter a batch expiry date.
+Row 23 ANATOMICAL_SITE: Enter an anatomical site.
+Row 24 ANATOMICAL_SITE: Enter a anatomical site that is appropriate for the vaccine.
+Row 25 DOSE_SEQUENCE or Vaccination type is required
+Row 26 DOSE_SEQUENCE: must be less than or equal to 3
+!Row 27 DATE_OF_VACCINATION: Enter a date for a current session
+Row 28 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
+Row 29 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
+Row 30 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
+!Row 31 DATE_OF_VACCINATION: Enter a date for a current session
+Row 31 CLINIC_NAME: is not recognised
+Row 32 TIME_OF_VACCINATION: Enter a time in the correct format.
+!Row 32 TIME_OF_VACCINATION: Enter a time in the correct format.TIME_OF_VACCINATION: Enter a time in the correct format.
+Row 33 REASON_NOT_VACCINATED: must be blank
+Row 34 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘vaccinated’ column. BATCH_EXPIRY_DATE: must be blank BATCH_NUMBER: must be blank ANATOMICAL_SITE: must be blank REASON_NOT_VACCINATED: Enter a valid reason
+!Row 35 DATE_OF_VACCINATION: Enter a date for a current session
+Row 35 CARE_SETTING: Enter a valid care setting.
+Row 36 TIME_OF_VACCINATION: Enter a time in the past.
+Row 37 REASON_NOT_VACCINATED: must be blank
+Row 39 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
+Row 41 DOSE_SEQUENCE: Do not provide a dose sequence for this programme (leave blank).
+Row 42 BATCH_NUMBER: must be at most 100 characters long
+Row 43 DOSE_SEQUENCE: must be less than or equal to 2
