@@ -36,6 +36,7 @@ class VaccsFileMapping(FileMapping):
     NO_CARE_SETTING = "no_care_setting"
     NOT_GIVEN = "not_given"
     POSITIVE = "positive"
+    SNOMED_VERIFICATION = "snomed_verification"
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
     SYSTMONE_NEGATIVE = "systmone_negative"
     SYSTMONE_POSITIVE = "systmone_positive"
