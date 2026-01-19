@@ -276,3 +276,27 @@ class ImportRecordsWizardPage:
             if line not in main_content:
                 missing_line_msg = f"Inconsistent import format details: {line}"
                 raise AssertionError(missing_line_msg)
+
+        if import_format_details_mapping is ImportFormatDetails.VACCS:
+            for vaccine in self.EXPECTED_VACCINES:
+                if vaccine not in main_content:
+                    missing_line_msg = f"VACCINE_GIVEN: missing {vaccine}"
+                    raise AssertionError(missing_line_msg)
+
+    EXPECTED_VACCINES: list[str] = [  # noqa: RUF012
+        "Cervarix",
+        "Gardasil",
+        "Gardasil9",
+        "Sequirus Cell-based Trivalent",
+        "AstraZeneca Fluenz",
+        "Viatris",
+        "Sanofi Vaxigrip",
+        "MenQuadfi",
+        "Menveo",
+        "Nimenrix",
+        "Priorix",
+        "VaxPro",
+        "Revaxis",
+        "ProQuad",
+        "Priorix-Tetra",
+    ]
