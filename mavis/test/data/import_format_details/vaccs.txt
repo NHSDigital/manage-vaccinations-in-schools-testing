@@ -10,7 +10,6 @@ PERSON_POSTCODE	Required, must be formatted as a valid postcode, for example SW1
 DATE_OF_VACCINATION	Required, must use either YYYYMMDD or DD/MM/YYYY format.
 TIME_OF_VACCINATION	Optional, must use HH:MM:SS format.
 VACCINATED	Required, must be Y or N. Can be omitted if VACCINE_GIVEN is provided.
-VACCINE_GIVEN	Optional, must be one of: Cervarix, Gardasil, Gardasil9, Sequirus Cell-based Trivalent, AstraZeneca Fluenz, Viatris, Sanofi Vaxigrip, MenQuadfi, Menveo, Nimenrix, Priorix, VaxPro, Revaxis, ProQuad or Priorix-Tetra.
 BATCH_NUMBER	Required if BATCH_EXPIRY_DATE is provided.
 BATCH_EXPIRY_DATE	Required if BATCH_NUMBER is provided, must use either YYYYMMDD or DD/MM/YYYY format.
 PROGRAMME	Required, must be Flu, HPV, ACWYX4, MenACWY, MMR, MMRV, 3-in-1 or Td/IPV.
