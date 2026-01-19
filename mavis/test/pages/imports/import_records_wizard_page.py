@@ -1,5 +1,4 @@
 import re
-from datetime import datetime, timedelta
 from pathlib import Path
 
 from playwright.sync_api import Page, expect
@@ -10,8 +9,6 @@ from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
-    format_datetime_for_upload_link,
-    get_current_datetime,
     reload_until_element_is_visible,
 )
 
@@ -123,7 +120,7 @@ class ImportRecordsWizardPage:
                 return True
         return False
 
-    def approve_preview_if_shown(self, date_time: datetime) -> None:
+    def approve_preview_if_shown(self, file_path: Path) -> None:
         self.get_preview_page_link().click()
         expect(self.review_and_approve_tag).to_be_visible()
         self.approve_import_button.click()
@@ -132,7 +129,7 @@ class ImportRecordsWizardPage:
             .locator("div")
             .filter(has_text="Import started")
         ).to_be_visible()
-        self.click_uploaded_file_datetime(date_time)
+        self.click_import_link(file_path)
         self.wait_for_processed()
 
     def wait_for_processed(self) -> None:
@@ -182,13 +179,11 @@ class ImportRecordsWizardPage:
         _scenario_list = read_scenario_list_from_file(_input_file_path)
 
         self.set_input_file(_input_file_path)
-        upload_time = get_current_datetime()
         self.click_continue(_coverage=_scenario_list)
         self.page.wait_for_load_state()
 
         if self.completed_imports_tab.is_visible():
-            self.click_uploaded_file_datetime(upload_time)
-            self.page.wait_for_load_state()
+            self.click_import_link(_input_file_path)
 
         status_text = (
             self.review_and_approve_tag.or_(self.completed_tag)
@@ -197,33 +192,15 @@ class ImportRecordsWizardPage:
         ).first
         reload_until_element_is_visible(self.page, status_text, seconds=60)
         if self.is_preview_page_link_visible():
-            self.approve_preview_if_shown(upload_time)
+            self.approve_preview_if_shown(_input_file_path)
 
         self.verify_upload_output(file_path=_output_file_path)
         return _input_file_path, _output_file_path
 
-    @step("Click link with uploaded datetime")
-    def click_uploaded_file_datetime(self, date_time: datetime) -> None:
-        first_link = self.page.get_by_role(
-            "link",
-            name=format_datetime_for_upload_link(date_time),
-        )
-        second_link = self.page.get_by_role(
-            "link",
-            name=format_datetime_for_upload_link(
-                date_time + timedelta(minutes=1),
-            ),
-        )
-
+    @step("Click import link for {1}")
+    def click_import_link(self, file_path: Path) -> None:
+        self.page.get_by_role("cell", name=file_path.name).get_by_role("link").click()
         self.page.wait_for_load_state()
-
-        # This handles when an upload occurs across the minute tick over, for
-        # example the file is uploaded at 10:00:59 but finishes at 10:01:01.
-        if first_link.or_(second_link).first.is_visible():
-            first_link.or_(second_link).first.click()
-        else:
-            self.completed_imports_tab.click()
-            first_link.or_(second_link).first.click()
 
     @step("Verify upload output for {file_path}")
     def verify_upload_output(self, file_path: Path) -> None:
