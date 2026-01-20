@@ -9,8 +9,6 @@ from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import ChildrenSearchPage, DashboardPage
 from mavis.test.pages.children.child_record_page import ChildRecordPage
-from mavis.test.pages.log_in_page import LogInPage
-from mavis.test.pages.start_page import StartPage
 from mavis.test.pages.vaccination_record.vaccination_record_page import (
     VaccinationRecordPage,
 )
@@ -41,8 +39,6 @@ def test_create_imms_record_then_verify_on_children_page(
     children,
     schools,
     setup_session_for_flu,
-    nurse,
-    team,
     sidekiq_helper,
 ):
     """

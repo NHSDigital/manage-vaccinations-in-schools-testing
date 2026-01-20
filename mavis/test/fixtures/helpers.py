@@ -78,19 +78,16 @@ def schedule_mmr_session_and_get_consent_url(
     set_feature_flags, nurse, team, page, year_groups
 ):
     def wrapper(school: School, *programmes: Programme):
-        try:
-            year_group = year_groups[programmes[0].group]
+        year_group = year_groups[programmes[0].group]
 
-            LogInPage(page).navigate()
-            LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-            schedule_school_session_if_needed(
-                page, school, list(programmes), [year_group], date_offset=7
-            )
-            url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
-            LogInPage(page).log_out()
-            yield url
-        finally:
-            LogInPage(page).log_out()
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        schedule_school_session_if_needed(
+            page, school, list(programmes), [year_group], date_offset=7
+        )
+        url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
+        LogInPage(page).log_out()
+        yield url
 
     return wrapper
 
@@ -126,7 +123,6 @@ def log_in_as_prescriber(set_feature_flags, prescriber, team, page):
 
 @pytest.fixture
 def upload_offline_vaccination(
-    log_in_as_nurse,
     schools,
     page,
     children,

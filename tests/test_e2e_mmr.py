@@ -37,8 +37,6 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     page,
     schools,
     children,
-    nurse,
-    team,
 ):
     """
     Test: End-to-end test for recording an MMR vaccination for a child.
@@ -260,6 +258,3 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
-
-    DashboardPage(page).navigate()
-    LogInPage(page).log_out()

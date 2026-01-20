@@ -26,6 +26,7 @@ def upload_offline_vaccination_injected_flu(
 
 
 def test_report_view(
+    log_in_as_nurse,
     upload_offline_vaccination_injected_flu,
     schools,
     page,
