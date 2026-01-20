@@ -64,7 +64,7 @@ def test_create_imms_record_then_verify_on_children_page(
     )
     sidekiq_job_name = "enqueue_vaccinations_search_in_nhs_job"
 
-    # Step 2: Create vaccination record via IMMS API
+    # Create vaccination record via IMMS API
     imms_api_helper.create_vaccination_record(
         vaccine=vaccine,
         child=child,
@@ -74,10 +74,9 @@ def test_create_imms_record_then_verify_on_children_page(
     )
 
     sidekiq_helper.run_recurring_job(sidekiq_job_name)
-    # Step 5: Verify the child created via IMMS API is visible in MAVIS children page
-    StartPage(page).navigate_and_start()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
 
+    # Verify the child created via IMMS API is visible in MAVIS children page
+    DashboardPage(page).navigate()
     DashboardPage(page).click_children()
 
     # Search for the child by their details
