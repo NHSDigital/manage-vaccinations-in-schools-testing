@@ -203,7 +203,7 @@ class ImportRecordsWizardPage:
             self.page.get_by_role("cell", name=file_path.name).get_by_role("link").first
         )
 
-        self.page.reload()
+        self.page.wait_for_load_state()
 
         if not import_link.is_visible():
             self.completed_imports_tab.click()
