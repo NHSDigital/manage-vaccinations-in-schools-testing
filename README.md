@@ -1,18 +1,18 @@
 # Testing for Manage vaccinations in schools
 
-This repository contains automated functional, performance and security tests for the [Manage vaccinations in schools][mavis] application.
+This repository contains automated end-to-end, performance and security tests for the [Manage vaccinations in schools][mavis] application.
 
 [mavis]: https://github.com/nhsuk/manage-vaccinations-in-schools/
 
-[![Functional tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional_selected_device.yaml/badge.svg?branch=main)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/functional_selected_device.yaml?branch=main)
+[![End-to-End tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/end-to-end-tests.yaml/badge.svg?branch=main)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/end-to-end-tests.yaml?branch=main)
 
 [![Performance (end to end) tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance-e2e.yaml)
 
 [![Run full OWASP ZAP scan against QA](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp_zap.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp_zap.yaml)
 
-## Functional tests
+## End-to-End tests
 
-The functional tests are written using [Playwright] with [Pytest].
+The end-to-end tests are written using [Playwright] with [Pytest].
 
 [Playwright]: https://playwright.dev/python/
 [Pytest]: https://docs.pytest.org/en/stable/

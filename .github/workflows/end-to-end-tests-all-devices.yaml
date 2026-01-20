@@ -1,4 +1,4 @@
-name: Functional tests (all devices on QA)
+name: End-to-End tests (all devices on QA)
 
 on:
   schedule:
@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
 
-    name: Functional tests
+    name: End-to-End tests
     strategy:
       fail-fast: false
       matrix:
@@ -40,7 +40,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
 
       - name: Run tests
-        uses: ./.github/actions/run-functional-tests
+        uses: ./.github/actions/run-end-to-end-tests
         with:
           device: ${{ matrix.device }}
           base_url: ${{ vars.BASE_URL }}

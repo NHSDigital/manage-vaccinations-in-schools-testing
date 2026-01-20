@@ -32,7 +32,7 @@ jobs:
   run-tests-against-staging:
     needs: identify-target-environment
     if: needs.identify-target-environment.outputs.environment != 'container'
-    uses: ./.github/workflows/functional_selected_device.yaml
+    uses: ./.github/workflows/end-to-end-tests.yaml
     permissions:
       contents: write
     with:
