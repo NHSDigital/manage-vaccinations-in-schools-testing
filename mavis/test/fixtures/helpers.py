@@ -197,36 +197,30 @@ def setup_session_and_batches_with_fixed_child(
         school = schools[programme_group][0]
         child = children[programme_group][0]
 
-        try:
-            LogInPage(page).navigate()
-            LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-            batch_names = {
-                vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
-                for vaccine in Vaccine
-                if vaccine.programme.group == programme_group
-            }
-            VaccinesPage(page).header.click_mavis_header()
-            DashboardPage(page).click_sessions()
-            session_programmes = [
-                programme
-                for programme in Programme
-                if programme.group == programme_group
-            ]
-            schedule_school_session_if_needed(
-                page, school, session_programmes, [child.year_group]
-            )
-            SessionsOverviewPage(page).header.click_mavis_header()
-            DashboardPage(page).click_schools()
-            SchoolsSearchPage(page).click_school(school)
-            SchoolsChildrenPage(page).click_import_class_lists()
-            ImportRecordsWizardPage(page, file_generator).import_class_list(
-                ClassFileMapping.FIXED_CHILD,
-                child.year_group,
-                programme_group,
-            )
-            return batch_names
-        finally:
-            DashboardPage(page).navigate()
-            LogInPage(page).log_out()
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        batch_names = {
+            vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
+            for vaccine in Vaccine
+            if vaccine.programme.group == programme_group
+        }
+        VaccinesPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
+        session_programmes = [
+            programme for programme in Programme if programme.group == programme_group
+        ]
+        schedule_school_session_if_needed(
+            page, school, session_programmes, [child.year_group]
+        )
+        SessionsOverviewPage(page).header.click_mavis_header()
+        DashboardPage(page).click_schools()
+        SchoolsSearchPage(page).click_school(school)
+        SchoolsChildrenPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
+            ClassFileMapping.FIXED_CHILD,
+            child.year_group,
+            programme_group,
+        )
+        return batch_names
 
     return _setup

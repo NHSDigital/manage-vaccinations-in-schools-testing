@@ -8,7 +8,6 @@ from mavis.test.pages import (
     ChildrenSearchPage,
     DashboardPage,
     EditVaccinationRecordPage,
-    LogInPage,
     OnlineConsentWizardPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
@@ -52,7 +51,6 @@ def test_recording_flu_vaccination_e2e(
     schools,
     children,
     nurse,
-    team,
     consent_option,
 ):
     """
@@ -99,8 +97,7 @@ def test_recording_flu_vaccination_e2e(
         consent_option=consent_option,
     )
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).navigate()
     DashboardPage(page).click_sessions()
 
     SessionsSearchPage(page).click_session_for_programme_group(

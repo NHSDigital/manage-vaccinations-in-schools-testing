@@ -4,7 +4,6 @@ from mavis.test.constants import Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
-    LogInPage,
     OnlineConsentWizardPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
@@ -39,7 +38,6 @@ def test_recording_doubles_vaccination_e2e(
     schools,
     children,
     nurse,
-    team,
 ):
     """
     Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations
@@ -86,8 +84,7 @@ def test_recording_doubles_vaccination_e2e(
         yes_to_health_questions=False,
     )
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).navigate()
     DashboardPage(page).click_sessions()
 
     SessionsSearchPage(page).click_session_for_programme_group(schools[0], "doubles")

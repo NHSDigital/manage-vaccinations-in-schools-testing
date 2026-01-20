@@ -77,8 +77,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
         yes_to_health_questions=True,
     )
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).navigate()
     DashboardPage(page).click_sessions()
 
     # Triage step added for MMR
@@ -106,9 +105,6 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
-    DashboardPage(page).navigate()
-    LogInPage(page).log_out()
-
 
 def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     url_with_mmr_session_scheduled,
@@ -116,8 +112,6 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     page,
     schools,
     children,
-    nurse,
-    team,
 ):
     """
     Test: End-to-end test for recording an MMR vaccination for a child.
@@ -160,8 +154,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
         yes_to_health_questions=False,
     )
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).navigate()
     DashboardPage(page).click_sessions()
 
     # Dose 1 flow
@@ -189,9 +182,6 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
         child
     )
 
-    DashboardPage(page).navigate()
-    LogInPage(page).log_out()
-
 
 def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     url_with_mmr_session_scheduled,
@@ -199,8 +189,6 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     page,
     schools,
     children,
-    nurse,
-    team,
     upload_offline_vaccination,
 ):
     """
@@ -227,7 +215,6 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
 
     # Import vaccination file with MMR dose 1
     list(upload_offline_vaccination(Programme.MMR))
-    LogInPage(page).log_out()
 
     # Proceed with consent and vaccination process
     OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
@@ -247,8 +234,7 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
         yes_to_health_questions=True,
     )
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    DashboardPage(page).navigate()
     DashboardPage(page).click_sessions()
 
     # Triage step added for MMR
