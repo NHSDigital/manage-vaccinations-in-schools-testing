@@ -199,7 +199,17 @@ class ImportRecordsWizardPage:
 
     @step("Click import link for {1}")
     def click_import_link(self, file_path: Path) -> None:
-        self.page.get_by_role("cell", name=file_path.name).get_by_role("link").click()
+        import_link = (
+            self.page.get_by_role("cell", name=file_path.name).get_by_role("link").first
+        )
+
+        self.page.wait_for_load_state()
+
+        if not import_link.is_visible():
+            self.completed_imports_tab.click()
+            self.completed_imports_tab.get_by_role("strong").wait_for()
+
+        import_link.click()
         self.page.wait_for_load_state()
 
     @step("Verify upload output for {file_path}")
