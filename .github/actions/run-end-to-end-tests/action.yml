@@ -1,4 +1,4 @@
-name: 'Run Tests'
+name: 'Run End-to-End tests'
 description: 'Execute tests'
 inputs:
   tests:

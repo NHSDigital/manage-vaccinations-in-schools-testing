@@ -63,7 +63,7 @@ jobs:
     permissions:
       contents: write
     
-    name: Functional tests
+    name: End-to-End tests
     runs-on: ubuntu-latest
 
     env:
@@ -113,7 +113,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
 
       - name: Run tests
-        uses: ./.github/actions/run-functional-tests
+        uses: ./.github/actions/run-end-to-end-tests
         with:
           tests: ${{ steps.set-variables.outputs.tests }}
           accessibility_tests: 'true'
