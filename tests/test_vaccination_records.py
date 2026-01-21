@@ -16,6 +16,7 @@ def upload_offline_vaccination_hpv(upload_offline_vaccination):
 @pytest.mark.rav
 @pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given(
+    log_in_as_nurse,
     upload_offline_vaccination_hpv,
     page,
 ):

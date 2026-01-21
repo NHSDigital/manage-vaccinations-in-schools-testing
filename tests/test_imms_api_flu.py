@@ -68,6 +68,7 @@ def upload_offline_vaccination_nasal_flu(upload_offline_vaccination):
 
 
 def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
+    log_in_as_nurse,
     upload_offline_vaccination_injected_flu,
     schools,
     children,
@@ -148,6 +149,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
 
 
 def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
+    log_in_as_nurse,
     upload_offline_vaccination_nasal_flu,
     schools,
     imms_api_helper,

@@ -78,19 +78,16 @@ def schedule_mmr_session_and_get_consent_url(
     set_feature_flags, nurse, team, page, year_groups
 ):
     def wrapper(school: School, *programmes: Programme):
-        try:
-            year_group = year_groups[programmes[0].group]
+        year_group = year_groups[programmes[0].group]
 
-            LogInPage(page).navigate()
-            LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-            schedule_school_session_if_needed(
-                page, school, list(programmes), [year_group], date_offset=7
-            )
-            url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
-            LogInPage(page).log_out()
-            yield url
-        finally:
-            LogInPage(page).log_out()
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        schedule_school_session_if_needed(
+            page, school, list(programmes), [year_group], date_offset=7
+        )
+        url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
+        LogInPage(page).log_out()
+        yield url
 
     return wrapper
 
@@ -126,7 +123,6 @@ def log_in_as_prescriber(set_feature_flags, prescriber, team, page):
 
 @pytest.fixture
 def upload_offline_vaccination(
-    log_in_as_nurse,
     schools,
     page,
     children,
@@ -197,36 +193,30 @@ def setup_session_and_batches_with_fixed_child(
         school = schools[programme_group][0]
         child = children[programme_group][0]
 
-        try:
-            LogInPage(page).navigate()
-            LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-            batch_names = {
-                vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
-                for vaccine in Vaccine
-                if vaccine.programme.group == programme_group
-            }
-            VaccinesPage(page).header.click_mavis_header()
-            DashboardPage(page).click_sessions()
-            session_programmes = [
-                programme
-                for programme in Programme
-                if programme.group == programme_group
-            ]
-            schedule_school_session_if_needed(
-                page, school, session_programmes, [child.year_group]
-            )
-            SessionsOverviewPage(page).header.click_mavis_header()
-            DashboardPage(page).click_schools()
-            SchoolsSearchPage(page).click_school(school)
-            SchoolsChildrenPage(page).click_import_class_lists()
-            ImportRecordsWizardPage(page, file_generator).import_class_list(
-                ClassFileMapping.FIXED_CHILD,
-                child.year_group,
-                programme_group,
-            )
-            return batch_names
-        finally:
-            DashboardPage(page).navigate()
-            LogInPage(page).log_out()
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        batch_names = {
+            vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
+            for vaccine in Vaccine
+            if vaccine.programme.group == programme_group
+        }
+        VaccinesPage(page).header.click_mavis_header()
+        DashboardPage(page).click_sessions()
+        session_programmes = [
+            programme for programme in Programme if programme.group == programme_group
+        ]
+        schedule_school_session_if_needed(
+            page, school, session_programmes, [child.year_group]
+        )
+        SessionsOverviewPage(page).header.click_mavis_header()
+        DashboardPage(page).click_schools()
+        SchoolsSearchPage(page).click_school(school)
+        SchoolsChildrenPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, file_generator).import_class_list(
+            ClassFileMapping.FIXED_CHILD,
+            child.year_group,
+            programme_group,
+        )
+        return batch_names
 
     return _setup
