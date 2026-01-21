@@ -2,6 +2,7 @@ import pytest
 
 from mavis.test.annotations import issue
 from mavis.test.constants import (
+    MMRV_ELIGIBILITY_CUTOFF_DOB,
     ConsentOption,
     Programme,
     Vaccine,
@@ -50,11 +51,23 @@ def test_e2e_nurse_consent_mmr(
     """
     batch_names = setup_session_for_mmr
     programme_group = Programme.MMR
-    vaccine = (
-        Vaccine.PRIORIX
-        if consent_option is ConsentOption.MMR_WITHOUT_GELATINE
-        else Vaccine.MMR_VAXPRO
-    )
+
+    child = children[programme_group][0]
+    school = schools[programme_group][0]
+
+    mmrv_eligibility = child.date_of_birth > MMRV_ELIGIBILITY_CUTOFF_DOB
+    if mmrv_eligibility:
+        vaccine = (
+            Vaccine.PRIORIX_TETRA
+            if consent_option is ConsentOption.MMR_WITHOUT_GELATINE
+            else Vaccine.PROQUAD
+        )
+    else:
+        vaccine = (
+            Vaccine.PRIORIX
+            if consent_option is ConsentOption.MMR_WITHOUT_GELATINE
+            else Vaccine.MMR_VAXPRO
+        )
 
     child = children[programme_group][0]
     school = schools[programme_group][0]
@@ -76,4 +89,5 @@ def test_e2e_nurse_consent_mmr(
     record_nurse_consent_and_vaccination(
         page,
         mmr_vaccination_record,
+        mmrv_eligibility=mmrv_eligibility,
     )
