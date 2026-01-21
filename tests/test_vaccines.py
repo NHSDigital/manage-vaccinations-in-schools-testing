@@ -72,7 +72,7 @@ def test_batch_name_too_short(vaccine, page):
     AddBatchPage(page).confirm()
     expect(
         AddBatchPage(page).error_listitem.filter(
-            has_text="Enter a batch that is more than 2 characters long",
+            has_text="Enter a batch number that is more than 2 characters long",
         ),
     ).to_be_visible()
 
@@ -95,7 +95,7 @@ def test_batch_name_too_long(vaccine, page):
     AddBatchPage(page).confirm()
     expect(
         AddBatchPage(page).error_listitem.filter(
-            has_text="Enter a batch that is less than 100 characters long",
+            has_text="Enter a batch number that is less than 100 characters long",
         ),
     ).to_be_visible()
 
