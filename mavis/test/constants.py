@@ -38,13 +38,9 @@ class HealthQuestion(StrEnum):
         "Does your child have a disease or treatment that severely affects their"
         " immune system?"
     )
-    BLEEDING_DISORDER = (
-        "Does your child have a bleeding disorder or another medical condition they"
-        " receive treatment for?"
-    )
+    BLEEDING_DISORDER = "Does your child have a bleeding disorder?"
 
     # hpv
-    BLEEDING_DISORDER_HPV = "Does your child have a bleeding disorder?"
     BLOOD_THINNING_MEDICINE = (
         "Does your child take blood-thinning medicine (anticoagulants)?"
     )
@@ -53,6 +49,10 @@ class HealthQuestion(StrEnum):
     )
 
     # doubles
+    BLEEDING_DISORDER_DOUBLES = (
+        "Does your child have a bleeding disorder or another medical condition they"
+        " receive treatment for?"
+    )
     MEDICAL_CONDITIONS = (
         "Does your child have any medical conditions for which they receive treatment?"
     )
@@ -122,7 +122,7 @@ class HealthQuestion(StrEnum):
         " yellow fever vaccine?"
     )
     MMR_OTHER_MEDICAL_CONDITIONS = (
-        "Does the child have any other medical conditions we should know about?"
+        "Does your child have any other medical conditions we should know about?"
     )
     MMR_EITHER_GELATINE = (
         "Has your child ever had a severe allergic reaction (anaphylaxis) to gelatine?"
@@ -201,7 +201,7 @@ class Programme(StrEnum):
         mmr_questions = [q for q in mmr_questions if q is not None]
 
         common_doubles_questions = [
-            HealthQuestion.BLEEDING_DISORDER,
+            HealthQuestion.BLEEDING_DISORDER_DOUBLES,
             HealthQuestion.SEVERE_ALLERGIES,
             HealthQuestion.REACTION,
             HealthQuestion.EXTRA_SUPPORT,
@@ -217,7 +217,7 @@ class Programme(StrEnum):
             ],
             Programme.HPV: [
                 HealthQuestion.SEVERE_ALLERGIES,
-                HealthQuestion.BLEEDING_DISORDER_HPV,
+                HealthQuestion.BLEEDING_DISORDER,
                 HealthQuestion.BLOOD_THINNING_MEDICINE,
                 HealthQuestion.IMMUNE_SYSTEM,
                 HealthQuestion.MEDICAL_CONDITIONS_HPV,
