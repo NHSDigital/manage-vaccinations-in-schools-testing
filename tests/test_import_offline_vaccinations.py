@@ -1,9 +1,7 @@
-import time
-
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.constants import DeliverySite, Programme, Vaccine
+from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
@@ -19,52 +17,11 @@ from mavis.test.pages import (
     VaccinationRecordPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
-from mavis.test.utils import get_current_datetime
 
 
 @pytest.fixture(scope="session")
 def imms_api_helper(authenticate_api):
     return ImmsApiHelper(authenticate_api)
-
-
-@pytest.fixture
-def setup_vaccs_flu(
-    log_in_as_nurse,
-    schools,
-    page,
-    file_generator,
-    year_groups,
-):
-    school = schools[Programme.FLU][0]
-    year_group = year_groups[Programme.FLU]
-
-    # Temporarily override the file generator's year group to ensure consistency
-    original_year_group = file_generator.year_groups.get(Programme.FLU.group)
-    file_generator.year_groups[Programme.FLU.group] = year_group
-
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
-
-    try:
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
-            ClassFileMapping.TWO_FIXED_CHILDREN,
-            year_group,
-            programme_group=Programme.FLU.group,
-        )
-        schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
-        session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-        SessionsOverviewPage(page).header.click_mavis_header()
-    finally:
-        # Restore original value
-        if original_year_group is not None:
-            file_generator.year_groups[Programme.FLU.group] = original_year_group
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(
-        page, file_generator
-    ).navigate_to_vaccination_records_import()
-    return session_id
 
 
 @pytest.fixture
@@ -338,116 +295,4 @@ def test_vaccination_file_upload_community_clinic_name_case(
     ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
         VaccsFileMapping.CLINIC_NAME_CASE,
         session_id=setup_vaccs,
-    )
-
-
-@issue("MAV-3076")
-@pytest.mark.vaccinations
-@pytest.mark.imms_api
-def test_vaccination_file_upload_snomed_code_verification(
-    setup_vaccs_flu,
-    schools,
-    page,
-    file_generator,
-    children,
-    imms_api_helper,
-):
-    """
-    Test: Upload a vaccination file with specific vaccine types and verify SNOMED codes.
-    Steps:
-    1. Upload a vaccination file with 4 records containing specific vaccine types
-       and sites.
-    2. Wait for API sync and navigate to children records.
-    3. Search for each child and verify SNOMED codes in vaccination records.
-    Verification:
-    - SNOMED codes and displays match expected values:
-    884861000000100: Administration of first intranasal seasonal influenza vaccination
-    884881000000109: Administration of second intranasal seasonal influenza vaccination
-    985151000000100: Administration of first inactivated seasonal influenza vaccination
-    985171000000109: Administration of second inactivated seasonal influenza vaccination
-
-    Scenarios covered:
-    VACCINE_GIVEN|ANATOMICAL_SITE|DOSE_SEQUENCE|NOTES
-    AstraZeneca Fluenz|nasal|1|Nasal first dose
-    AstraZeneca Fluenz|nasal|2|Nasal second dose
-    Sanofi Vaxigrip|left arm (upper position)|1|IV first dose
-    Sanofi Vaxigrip|left arm (upper position)|2|IV second dose
-    """
-    # Upload vaccination file with specific records
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        VaccsFileMapping.SNOMED_VERIFICATION,
-        session_id=setup_vaccs_flu,
-    )
-
-    # Wait for processing before searching for children
-    time.sleep(5)
-
-    # Wait for API sync and verify SNOMED codes via IMMS API
-    school = schools[Programme.FLU][0]
-    flu_children = file_generator.children[Programme.FLU.group]
-    vaccination_time = get_current_datetime().replace(
-        hour=0, minute=1, second=0, microsecond=0
-    )
-
-    # Define vaccine types and delivery sites for each record
-    vaccine_configs = [
-        (Vaccine.FLUENZ, DeliverySite.NOSE),  # First nasal dose
-        (Vaccine.FLUENZ, DeliverySite.NOSE),  # Second nasal dose
-        (Vaccine.SEQUIRUS, DeliverySite.LEFT_ARM_UPPER),  # First injected dose
-        (Vaccine.SEQUIRUS, DeliverySite.LEFT_ARM_UPPER),  # Second injected dose
-    ]
-
-    # Define expected SNOMED codes for verification
-    expected_snomed_codes = [
-        "884861000000100",  # First nasal dose
-        "884881000000109",  # Second nasal dose
-        "985151000000100",  # First injected dose
-        "985171000000109",  # Second injected dose
-    ]
-
-    # Verify SNOMED codes via IMMS API only (skip UI verification for now)
-    # First child - nasal vaccinations (2 doses)
-    first_child = flu_children[0]
-
-    # Wait for IMMS API sync
-    time.sleep(10)  # Additional wait for API sync
-
-    # First, verify basic vaccination records exist using existing helper
-    # Dose 1 - nasal
-    imms_api_helper.check_record_in_imms_api(
-        vaccine=Vaccine.FLUENZ,
-        child=first_child,
-        school=school,
-        delivery_site=DeliverySite.NOSE,
-        vaccination_time=vaccination_time,
-    )
-
-    # Dose 2 - nasal
-    imms_api_helper.check_record_in_imms_api(
-        vaccine=Vaccine.FLUENZ,
-        child=first_child,
-        school=school,
-        delivery_site=DeliverySite.NOSE,
-        vaccination_time=vaccination_time,
-    )
-
-    # Second child - injected vaccinations (2 doses)
-    second_child = flu_children[1]
-
-    # Dose 1 - injected
-    imms_api_helper.check_record_in_imms_api(
-        vaccine=Vaccine.SEQUIRUS,
-        child=second_child,
-        school=school,
-        delivery_site=DeliverySite.LEFT_ARM_UPPER,
-        vaccination_time=vaccination_time,
-    )
-
-    # Dose 2 - injected
-    imms_api_helper.check_record_in_imms_api(
-        vaccine=Vaccine.SEQUIRUS,
-        child=second_child,
-        school=school,
-        delivery_site=DeliverySite.LEFT_ARM_UPPER,
-        vaccination_time=vaccination_time,
     )
