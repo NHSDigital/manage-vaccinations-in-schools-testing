@@ -173,11 +173,9 @@ class ImmsApiHelper:
                 raise AssertionError(msg)
             time.sleep(3)
 
-    def _get_imms_api_record_for_child(
-        self,
-        vaccine: Vaccine,
-        child: Child,
-    ) -> ImmsApiVaccinationRecord | None:
+    def get_raw_api_response_for_child(
+        self, vaccine: Vaccine, child: Child
+    ) -> requests.Response:
         _params = {
             "_include": "Immunization:patient",
             "-immunization.target": vaccine.programme.upper(),
@@ -192,6 +190,14 @@ class ImmsApiHelper:
         )
         response.raise_for_status()
 
+        return response
+
+    def _get_imms_api_record_for_child(
+        self,
+        vaccine: Vaccine,
+        child: Child,
+    ) -> ImmsApiVaccinationRecord | None:
+        response = self.get_raw_api_response_for_child(vaccine, child)
         return ImmsApiVaccinationRecord.from_response(response)
 
     def create_vaccination_record(
