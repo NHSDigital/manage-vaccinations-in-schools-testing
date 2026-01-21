@@ -269,12 +269,7 @@ def test_vaccination_file_upload_snomed_code_verification(
         programme_group=Programme.FLU.group,
     )
 
-    school = schools[Programme.FLU][0]
     flu_children = file_generator.children[Programme.FLU.group]
-    vaccination_time = get_current_datetime().replace(
-        hour=0, minute=1, second=0, microsecond=0
-    )
-
     vaccine_configs = [
         (Vaccine.FLUENZ, DeliverySite.NOSE),
         (
@@ -297,7 +292,6 @@ def test_vaccination_file_upload_snomed_code_verification(
         vaccine_configs[0][0], first_child
     ).text
 
-    # API should return one of the valid nasal flu SNOMED codes
     assert expected_nasal_first_dose_code in actual_record, (
         f"First nasal flu SNOMED code not found {actual_record}"
     )
