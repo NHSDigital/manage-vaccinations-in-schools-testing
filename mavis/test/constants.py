@@ -1,5 +1,6 @@
 import os
 import urllib.parse
+from datetime import date
 from enum import StrEnum
 
 from faker import Faker
@@ -7,6 +8,8 @@ from faker import Faker
 faker = Faker("en_GB")
 
 MAVIS_NOTE_LENGTH_LIMIT = 1000
+
+MMRV_ELIGIBILITY_CUTOFF_DOB = date(2020, 1, 1)
 
 
 class ConsentOption(StrEnum):
@@ -109,6 +112,10 @@ class HealthQuestion(StrEnum):
         "Has your child received a blood or plasma transfusion,"
         " or immunoglobulin in the last 3 months?"
     )
+    MMRV_ALLERGIC_REACTION = (
+        "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
+        " of MMRV or any other vaccine?"
+    )
     MMR_ALLERGIC_REACTION = (
         "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
         " of MMR or any other vaccine?"
@@ -158,6 +165,7 @@ class Programme(StrEnum):
         consent_option: ConsentOption = ConsentOption.INJECTION,
         *,
         nurse_consent: bool = False,
+        mmrv_eligibility: bool = False,
     ) -> list[HealthQuestion]:
         includes_nasal = consent_option is not ConsentOption.INJECTION
         includes_injection = consent_option is not ConsentOption.NASAL_SPRAY
@@ -190,7 +198,9 @@ class Programme(StrEnum):
             HealthQuestion.BLEEDING_DISORDER,
             HealthQuestion.MMR_ANTICOAGULANTS,
             HealthQuestion.MMR_TRANSFUSION,
-            HealthQuestion.MMR_ALLERGIC_REACTION,
+            HealthQuestion.MMRV_ALLERGIC_REACTION
+            if mmrv_eligibility
+            else HealthQuestion.MMR_ALLERGIC_REACTION,
             HealthQuestion.MMR_ALLERGIC_REACTION_NEOMYCIN,
             HealthQuestion.IMMUNE_SYSTEM,
             HealthQuestion.MMR_TB_TEST,
@@ -306,6 +316,10 @@ class Vaccine(StrEnum):
     MMR_VAXPRO = "MMR VaxPro"
     PRIORIX = "Priorix"
 
+    # MMRV
+    PROQUAD = "ProQuad"
+    PRIORIX_TETRA = "Priorix-Tetra"
+
     # Td/IPV
     REVAXIS = "Revaxis"
 
@@ -330,6 +344,8 @@ class Vaccine(StrEnum):
             Vaccine.REVAXIS: Programme.TD_IPV,
             Vaccine.MMR_VAXPRO: Programme.MMR,
             Vaccine.PRIORIX: Programme.MMR,
+            Vaccine.PROQUAD: Programme.MMR,
+            Vaccine.PRIORIX_TETRA: Programme.MMR,
         }
         return programme_mapping[self]
 
@@ -363,6 +379,8 @@ class Vaccine(StrEnum):
             Vaccine.REVAXIS: Vaccine.REVAXIS,
             Vaccine.MMR_VAXPRO: Vaccine.MMR_VAXPRO,
             Vaccine.PRIORIX: Vaccine.PRIORIX,
+            Vaccine.PROQUAD: Vaccine.PROQUAD,
+            Vaccine.PRIORIX_TETRA: Vaccine.PRIORIX_TETRA,
         }
         return offline_sheet_map[self]
 

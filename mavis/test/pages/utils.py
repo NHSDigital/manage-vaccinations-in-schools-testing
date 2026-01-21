@@ -69,6 +69,8 @@ def prepare_child_for_vaccination(
 def record_nurse_consent_and_vaccination(
     page: Page,
     vaccination_record: VaccinationRecord,
+    *,
+    mmrv_eligibility: bool = False,
 ) -> None:
     child = vaccination_record.child
     programme = vaccination_record.programme
@@ -78,10 +80,14 @@ def record_nurse_consent_and_vaccination(
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
-    NurseConsentWizardPage(page).select_mmrv_eligibility_for_child()
+
+    if mmrv_eligibility:
+        NurseConsentWizardPage(page).select_mmrv_eligibility_for_child()
+
     NurseConsentWizardPage(page).record_parent_positive_consent(
         programme=programme,
         consent_option=consent_option,
+        mmrv_eligibility=mmrv_eligibility,
     )
     notes = generate_random_string(
         target_length=MAVIS_NOTE_LENGTH_LIMIT + 1,

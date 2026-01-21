@@ -111,9 +111,11 @@ class NurseConsentWizardPage:
         programme: Programme,
         consent_option: ConsentOption = ConsentOption.INJECTION,
         answer: str = "No",
+        *,
+        mmrv_eligibility: bool = False,
     ) -> None:
         for locator_text in programme.health_questions(
-            consent_option, nurse_consent=True
+            consent_option, nurse_consent=True, mmrv_eligibility=mmrv_eligibility
         ):
             self.select_answer_for_health_question(locator_text, answer)
 
@@ -198,12 +200,14 @@ class NurseConsentWizardPage:
         *,
         psd_option: bool | None = None,
         yes_to_health_questions: bool = False,
+        mmrv_eligibility: bool = False,
     ) -> None:
         self._process_consent_confirmation(
             programme=programme,
             consent_option=consent_option,
             psd_option=psd_option,
             yes_to_health_questions=yes_to_health_questions,
+            mmrv_eligibility=mmrv_eligibility,
         )
 
     def record_parent_no_response(self) -> None:
@@ -224,6 +228,7 @@ class NurseConsentWizardPage:
         *,
         psd_option: bool | None = None,
         yes_to_health_questions: bool = False,
+        mmrv_eligibility: bool = False,
     ) -> None:
         self._process_consent_confirmation(
             programme=programme,
@@ -231,6 +236,7 @@ class NurseConsentWizardPage:
             psd_option=psd_option,
             yes_to_health_questions=yes_to_health_questions,
             child_consent=True,
+            mmrv_eligibility=mmrv_eligibility,
         )
 
     def _handle_refusal_of_consent(self, reason: ConsentRefusalReason) -> None:
@@ -249,13 +255,10 @@ class NurseConsentWizardPage:
         self.click_continue()
 
     def select_mmrv_eligibility_for_child(self) -> None:
-        # MMRV test is todo
-        self.page.wait_for_load_state()
-        if self.mmrv_question_text.is_visible():
-            self.select_no()
-            self.click_continue()
+        self.select_yes()
+        self.click_continue()
 
-    def _process_consent_confirmation(
+    def _process_consent_confirmation(  # noqa: PLR0913
         self,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,
@@ -263,6 +266,7 @@ class NurseConsentWizardPage:
         child_consent: bool = False,
         psd_option: bool | None = None,
         yes_to_health_questions: bool = False,
+        mmrv_eligibility: bool = False,
     ) -> None:
         self.agree_to_vaccination(programme, consent_option)
 
@@ -272,7 +276,7 @@ class NurseConsentWizardPage:
 
         answer = "Yes" if yes_to_health_questions else "No"
         self.answer_all_health_questions(
-            programme=programme, consent_option=consent_option, answer=answer
+            programme, consent_option, answer, mmrv_eligibility=mmrv_eligibility
         )
 
         self.click_continue()
