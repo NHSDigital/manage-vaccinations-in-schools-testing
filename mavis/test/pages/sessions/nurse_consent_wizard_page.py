@@ -74,6 +74,25 @@ class NurseConsentWizardPage:
         self.withdraw_consent_notes_textbox = self.page.get_by_role(
             "textbox", name="Notes"
         )
+        self.gelatine_free_radio = self.page.get_by_role(
+            "radio",
+            name="that does not contain gelatine",
+        )
+        self.either_vaccine_radio = self.page.get_by_role(
+            "radio",
+            name="Their child can have either type of vaccine",
+        )
+        self.mmrv_question_text = self.page.get_by_text(
+            "is eligible for the new MMRV vaccine"
+        )
+
+    @step("Select either vaccine option")
+    def select_either_vaccine_option(self) -> None:
+        self.either_vaccine_radio.check()
+
+    @step("Select gelatine free vaccine option")
+    def select_gelatine_free_vaccine_option(self) -> None:
+        self.gelatine_free_radio.check()
 
     @step("Click Continue")
     def click_continue(self) -> None:
@@ -229,6 +248,13 @@ class NurseConsentWizardPage:
         self.click_consent_method(method)
         self.click_continue()
 
+    def select_mmrv_eligibility_for_child(self) -> None:
+        # MMRV test is todo
+        self.page.wait_for_load_state()
+        if self.mmrv_question_text.is_visible():
+            self.select_no()
+            self.click_continue()
+
     def _process_consent_confirmation(
         self,
         programme: Programme = Programme.HPV,
@@ -238,18 +264,7 @@ class NurseConsentWizardPage:
         psd_option: bool | None = None,
         yes_to_health_questions: bool = False,
     ) -> None:
-        if programme is Programme.FLU:
-            if consent_option is ConsentOption.INJECTION:
-                self.click_yes_for_injected_vaccine()
-            else:
-                self.click_yes_for_nasal_spray()
-                if consent_option is ConsentOption.NASAL_SPRAY_OR_INJECTION:
-                    self.select_yes()
-                else:
-                    self.select_no()
-        else:
-            self.click_yes_they_agree()
-        self.click_continue()
+        self.agree_to_vaccination(programme, consent_option)
 
         if child_consent:
             self.select_yes()
@@ -271,6 +286,29 @@ class NurseConsentWizardPage:
             self.click_continue()
 
         self.click_confirm()
+
+    def agree_to_vaccination(
+        self, programme: Programme, consent_option: ConsentOption
+    ) -> None:
+        if programme is Programme.FLU:
+            if consent_option is ConsentOption.INJECTION:
+                self.click_yes_for_injected_vaccine()
+            else:
+                self.click_yes_for_nasal_spray()
+                if consent_option is ConsentOption.NASAL_SPRAY_OR_INJECTION:
+                    self.select_yes()
+                else:
+                    self.select_no()
+        else:
+            self.click_yes_they_agree()
+
+        if programme is Programme.MMR:
+            if consent_option is ConsentOption.MMR_WITHOUT_GELATINE:
+                self.select_gelatine_free_vaccine_option()
+            else:
+                self.select_either_vaccine_option()
+
+        self.click_continue()
 
     def update_triage_outcome_positive(self) -> None:
         self.click_safe_to_vaccinate()

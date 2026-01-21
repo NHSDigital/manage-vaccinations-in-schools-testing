@@ -187,10 +187,13 @@ class SessionsPatientPage:
         self,
         consent_option: ConsentOption = ConsentOption.INJECTION,
     ) -> None:
-        if consent_option is ConsentOption.INJECTION:
-            self.ready_for_injection_radio.check()
-        else:
+        if consent_option in (
+            ConsentOption.NASAL_SPRAY,
+            ConsentOption.NASAL_SPRAY_OR_INJECTION,
+        ):
             self.ready_for_nasal_spray_radio.check()
+        else:
+            self.ready_for_injection_radio.check()
 
     @step("Select vaccination site {1}")
     def select_delivery_site(self, site: DeliverySite) -> None:
@@ -286,7 +289,10 @@ class SessionsPatientPage:
         self.select_identity_confirmed_by_child(vaccination_record.child)
 
         self.select_ready_for_vaccination(vaccination_record.consent_option)
-        if vaccination_record.consent_option is ConsentOption.INJECTION:
+        if vaccination_record.consent_option not in (
+            ConsentOption.NASAL_SPRAY_OR_INJECTION,
+            ConsentOption.NASAL_SPRAY,
+        ):
             self.select_delivery_site(vaccination_record.delivery_site)
 
         self.click_continue_button()

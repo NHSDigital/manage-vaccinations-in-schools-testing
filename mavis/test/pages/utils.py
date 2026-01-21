@@ -78,6 +78,7 @@ def record_nurse_consent_and_vaccination(
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).select_mmrv_eligibility_for_child()
     NurseConsentWizardPage(page).record_parent_positive_consent(
         programme=programme,
         consent_option=consent_option,
