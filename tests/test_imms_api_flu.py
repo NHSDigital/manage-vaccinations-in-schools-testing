@@ -1,12 +1,21 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.constants import ConsentOption, DeliverySite, Programme, Vaccine
+from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.pages import (
+    DashboardPage,
     EditVaccinationRecordPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
+    SchoolsChildrenPage,
+    SchoolsSearchPage,
+    SessionsOverviewPage,
     SessionsPatientPage,
     VaccinationRecordPage,
 )
+from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import get_current_datetime, random_datetime_earlier_today
 
 pytestmark = pytest.mark.imms_api
@@ -15,6 +24,37 @@ pytestmark = pytest.mark.imms_api
 @pytest.fixture(scope="session")
 def imms_api_helper(authenticate_api):
     return ImmsApiHelper(authenticate_api)
+
+
+@pytest.fixture
+def setup_vaccs_flu(
+    log_in_as_nurse,
+    schools,
+    page,
+    file_generator,
+    year_groups,
+):
+    school = schools[Programme.FLU][0]
+    year_group = year_groups[Programme.FLU]
+
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(school)
+    SchoolsChildrenPage(page).click_import_class_lists()
+
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ClassFileMapping.TWO_FIXED_CHILDREN,
+        year_group,
+        programme_group=Programme.FLU.group,
+    )
+    schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
+    session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, file_generator
+    ).navigate_to_vaccination_records_import()
+    return session_id
 
 
 @pytest.fixture
@@ -185,4 +225,98 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     SessionsPatientPage(page).click_vaccination_details(school)
     VaccinationRecordPage(page).expect_vaccination_details(
         "Synced with NHS England?", "Not synced"
+    )
+
+
+@issue("MAV-3076")
+@pytest.mark.vaccinations
+@pytest.mark.imms_api
+def test_vaccination_file_upload_snomed_code_verification(
+    setup_vaccs_flu,
+    page,
+    children,
+    file_generator,
+    imms_api_helper,
+):
+    """
+    Test: Upload a vaccination file with flu vaccines and verify SNOMED procedure codes.
+    Steps:
+    1. Upload a vaccination file with nasal and injected flu vaccination records.
+    2. Wait for API sync and verify SNOMED procedure codes via IMMS API.
+
+    Verification:
+    - SNOMED procedure codes for flu vaccinations are correctly returned by API
+    - Display text matches the returned SNOMED codes
+    - Both nasal (Fluenz) and injected (Sequirus) vaccines have proper SNOMED codes
+
+    Scenarios covered:
+    - Nasal flu vaccination (AstraZeneca Fluenz) - dose 1 & 2 for a child
+    - Injected flu vaccination (Sequirus Cell-based Trivalent) - dose 1 & 2 for a child
+    """
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        VaccsFileMapping.SNOMED_VERIFICATION,
+        session_id=setup_vaccs_flu,
+        programme_group=Programme.FLU.group,
+    )
+
+    flu_children = children[Programme.FLU]
+    vaccine_configs = [
+        Vaccine.FLUENZ,
+        Vaccine.SEQUIRUS,
+    ]
+
+    # First child - nasal vaccinations
+    first_child = flu_children[0]
+    expected_nasal_first_dose_code = "884861000000100"
+    expected_nasal_second_dose_code = "884881000000109"
+    expected_nasal_first_dose_display = (
+        "Administration of first intranasal seasonal influenza vaccination"
+    )
+    expected_nasal_second_dose_display = (
+        "Administration of second intranasal seasonal influenza vaccination"
+    )
+    actual_record = imms_api_helper.get_raw_api_response_for_child(
+        vaccine_configs[0], first_child
+    ).text
+
+    assert expected_nasal_first_dose_code in actual_record, (
+        f"First nasal flu SNOMED code not found {actual_record}"
+    )
+    assert expected_nasal_second_dose_code in actual_record, (
+        f"Second nasal flu SNOMED code not found {actual_record}"
+    )
+
+    assert expected_nasal_first_dose_display in actual_record, (
+        f"First nasal flu SNOMED display not found {actual_record}"
+    )
+    assert expected_nasal_second_dose_display in actual_record, (
+        f"Second nasal flu SNOMED display not found {actual_record}"
+    )
+
+    # Second child - injected vaccinations
+    second_child = flu_children[1]
+    expected_injected_first_dose_code = "985151000000100"
+    expected_injected_second_dose_code = "985171000000109"
+    expected_injected_first_dose_display = (
+        "Administration of first inactivated seasonal influenza vaccination"
+    )
+    expected_injected_second_dose_display = (
+        "Administration of second inactivated seasonal influenza vaccination"
+    )
+    actual_record_injected = imms_api_helper.get_raw_api_response_for_child(
+        vaccine_configs[1], second_child
+    ).text
+
+    assert expected_injected_first_dose_code in actual_record_injected, (
+        f"First injected flu SNOMED code not found {actual_record_injected}"
+    )
+    assert expected_injected_second_dose_code in actual_record_injected, (
+        f"Second injected flu SNOMED code not found {actual_record_injected}"
+    )
+
+    assert expected_injected_first_dose_display in actual_record_injected, (
+        f"First injected flu SNOMED display not found {actual_record_injected}"
+    )
+    assert expected_injected_second_dose_display in actual_record_injected, (
+        f"Second injected flu SNOMED display not found {actual_record_injected}"
     )
