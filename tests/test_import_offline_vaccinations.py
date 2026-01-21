@@ -4,7 +4,6 @@ from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
-from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -17,11 +16,6 @@ from mavis.test.pages import (
     VaccinationRecordPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
-
-
-@pytest.fixture(scope="session")
-def imms_api_helper(authenticate_api):
-    return ImmsApiHelper(authenticate_api)
 
 
 @pytest.fixture

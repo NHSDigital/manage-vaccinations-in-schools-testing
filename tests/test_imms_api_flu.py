@@ -37,27 +37,18 @@ def setup_vaccs_flu(
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
 
-    # Temporarily override the file generator's year group to ensure consistency
-    original_year_group = file_generator.year_groups.get(Programme.FLU.group)
-    file_generator.year_groups[Programme.FLU.group] = year_group
-
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
 
-    try:
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
-            ClassFileMapping.TWO_FIXED_CHILDREN,
-            year_group,
-            programme_group=Programme.FLU.group,
-        )
-        schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
-        session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-        SessionsOverviewPage(page).header.click_mavis_header()
-    finally:
-        # Restore original value
-        if original_year_group is not None:
-            file_generator.year_groups[Programme.FLU.group] = original_year_group
+    ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ClassFileMapping.TWO_FIXED_CHILDREN,
+        year_group,
+        programme_group=Programme.FLU.group,
+    )
+    schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
+    session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+    SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -242,10 +233,9 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
 @pytest.mark.imms_api
 def test_vaccination_file_upload_snomed_code_verification(
     setup_vaccs_flu,
-    schools,
     page,
-    file_generator,
     children,
+    file_generator,
     imms_api_helper,
 ):
     """
@@ -269,13 +259,10 @@ def test_vaccination_file_upload_snomed_code_verification(
         programme_group=Programme.FLU.group,
     )
 
-    flu_children = file_generator.children[Programme.FLU.group]
+    flu_children = children[Programme.FLU]
     vaccine_configs = [
-        (Vaccine.FLUENZ, DeliverySite.NOSE),
-        (
-            Vaccine.SEQUIRUS,
-            DeliverySite.LEFT_ARM_UPPER,
-        ),
+        Vaccine.FLUENZ,
+        Vaccine.SEQUIRUS,
     ]
 
     # First child - nasal vaccinations
@@ -289,7 +276,7 @@ def test_vaccination_file_upload_snomed_code_verification(
         "Administration of second intranasal seasonal influenza vaccination"
     )
     actual_record = imms_api_helper.get_raw_api_response_for_child(
-        vaccine_configs[0][0], first_child
+        vaccine_configs[0], first_child
     ).text
 
     assert expected_nasal_first_dose_code in actual_record, (
@@ -317,7 +304,7 @@ def test_vaccination_file_upload_snomed_code_verification(
         "Administration of second inactivated seasonal influenza vaccination"
     )
     actual_record_injected = imms_api_helper.get_raw_api_response_for_child(
-        vaccine_configs[1][0], second_child
+        vaccine_configs[1], second_child
     ).text
 
     assert expected_injected_first_dose_code in actual_record_injected, (
