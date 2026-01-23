@@ -120,7 +120,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    timeout-minutes: 180
+    timeout-minutes: 300
     env:
       RESULT_PATH: ${{ github.run_number }}
     steps:
