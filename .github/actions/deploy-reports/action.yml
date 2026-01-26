@@ -29,7 +29,8 @@ runs:
       id: set-pages-dir
       run: |
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
-        echo "dir=${{ github.head_ref }}/${{ inputs.environment }}/$sanitized_device" >> $GITHUB_OUTPUT
+        timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
+        echo "dir=${{ github.head_ref }}/${{ inputs.environment }}/$sanitized_device/$timestamp" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Upload report to S3
