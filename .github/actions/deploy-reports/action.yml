@@ -1,10 +1,16 @@
 name: "Generate and Deploy Report"
-description: "Generates Allure report and deploys to GitHub Pages"
+description: "Generates Allure report and uploads to S3"
 inputs:
   device:
     required: true
   environment:
     required: true
+  s3-bucket:
+    required: true
+    default: 'endtoendtest-reports'
+  report-base-url:
+    required: true
+    default: 'd2h72ta68jwsgq.cloudfront.net'
 runs:
   using: composite
   steps:
@@ -19,44 +25,23 @@ runs:
       shell: bash
       continue-on-error: true
 
-    - name: Set GitHub Pages directory
+    - name: Set S3 prefix
       id: set-pages-dir
       run: |
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
         echo "dir=${{ github.head_ref }}/${{ inputs.environment }}/$sanitized_device" >> $GITHUB_OUTPUT
       shell: bash
 
-    - name: Checkout gh-pages branch
-      uses: actions/checkout@v6
-      with:
-        repository: NHSDigital/manage-vaccinations-in-schools-testing
-        ref: gh-pages
-        path: gh-pages
-        token: ${{ env.GITHUB_TOKEN }}
-
-    - name: Replace existing report
+    - name: Upload report to S3
       run: |
-        rm -rf gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-        mkdir -p gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-        cp -r allure-report/* gh-pages/${{ steps.set-pages-dir.outputs.dir }}
-      shell: bash
-
-    - name: Commit and force-push
-      run: |
-        cd gh-pages
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git checkout --orphan temp-pages
-        git add --all
-        git commit -m "Deployment: $(date +%Y-%m-%d)"
-        git checkout gh-pages
-        git pull origin gh-pages --rebase
-        git reset --hard temp-pages
-        git push origin gh-pages --force
-        git branch -D temp-pages
+        aws s3 sync \
+          allure-report \
+          s3://${{ inputs.s3-bucket }}/${{ steps.set-pages-dir.outputs.dir }} \
+          --delete
       shell: bash
 
     - name: Set Job Summary
       run: |
-        echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/${{ steps.set-pages-dir.outputs.dir }}" >> $GITHUB_STEP_SUMMARY
+        REPORT_URL="${{ inputs.report-base-url }}/${{ steps.set-pages-dir.outputs.dir }}/index.html"
+        echo "[View test report](${REPORT_URL})" >> "$GITHUB_STEP_SUMMARY"
       shell: bash
