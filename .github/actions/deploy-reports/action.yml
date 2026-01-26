@@ -10,7 +10,7 @@ inputs:
     default: 'endtoendtest-reports'
   report-base-url:
     required: true
-    default: 'd2h72ta68jwsgq.cloudfront.net'
+    default: 'https://d2h72ta68jwsgq.cloudfront.net'
 runs:
   using: composite
   steps:
@@ -37,12 +37,12 @@ runs:
       run: |
         aws s3 sync \
           allure-report \
-          s3://${{ inputs.s3-bucket }}/${{ steps.set-pages-dir.outputs.dir }} \
+          s3://${{ inputs.s3-bucket }}${{ steps.set-pages-dir.outputs.dir }} \
           --delete
       shell: bash
 
     - name: Set Job Summary
       run: |
-        REPORT_URL="${{ inputs.report-base-url }}/${{ steps.set-pages-dir.outputs.dir }}/index.html"
-        echo "[View test report](${REPORT_URL})" >> "$GITHUB_STEP_SUMMARY"
+        REPORT_URL="${{ inputs.report-base-url }}${{ steps.set-pages-dir.outputs.dir }}/index.html"
+        echo "View test report: ${REPORT_URL}" >> "$GITHUB_STEP_SUMMARY"
       shell: bash
