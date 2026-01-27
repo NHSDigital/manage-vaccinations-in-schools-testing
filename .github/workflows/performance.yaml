@@ -120,7 +120,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    timeout-minutes: 180
+    timeout-minutes: 540
     env:
       RESULT_PATH: ${{ github.run_number }}
     steps:
@@ -132,7 +132,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
-          role-duration-seconds: 14400 # 4 hours
+          role-duration-seconds: 32400 # 9 hours
       - name: Create task definition
         id: create-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
