@@ -67,7 +67,6 @@ def schedule_session_and_get_consent_url(
             page, school, list(programmes), [year_group], date_offset=7
         )
         url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
-        LogInPage(page).log_out()
         yield url
 
     return wrapper
@@ -86,7 +85,6 @@ def schedule_mmr_session_and_get_consent_url(
             page, school, list(programmes), [year_group], date_offset=7
         )
         url = SessionsOverviewPage(page).get_online_consent_url(*programmes)
-        LogInPage(page).log_out()
         yield url
 
     return wrapper
@@ -101,24 +99,18 @@ def log_in_as_medical_secretary(
 ):
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(medical_secretary, team)
-    yield
-    LogInPage(page).log_out()
 
 
 @pytest.fixture
 def log_in_as_nurse(set_feature_flags, nurse, team, page):
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-    yield
-    LogInPage(page).log_out()
 
 
 @pytest.fixture
 def log_in_as_prescriber(set_feature_flags, prescriber, team, page):
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(prescriber, team)
-    yield
-    LogInPage(page).log_out()
 
 
 @pytest.fixture
@@ -186,15 +178,12 @@ def setup_session_and_batches_with_fixed_child(
     children,
     page,
     file_generator,
-    nurse,
-    team,
 ):
     def _setup(programme_group):
         school = schools[programme_group][0]
         child = children[programme_group][0]
 
-        LogInPage(page).navigate()
-        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        DashboardPage(page).navigate()
         batch_names = {
             vaccine: add_vaccine_batch(vaccine, re.sub(r"\W+", "", vaccine) + "123")
             for vaccine in Vaccine

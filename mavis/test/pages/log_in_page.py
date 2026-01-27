@@ -83,24 +83,11 @@ class LogInPage:
 
     @step("Log out")
     def log_out(self) -> None:
-        if self.log_out_button.is_visible():
-            # Write logout to audit log
-            if self.current_user:
-                self._write_audit_log(
-                    "LOGOUT", self.current_user, self.current_org_code
-                )
-                self.current_user = None  # Clear current user
-
-            self.log_out_button.click()
-            expect(self.start_page_link).to_be_visible()
+        self.log_out_button.click()
+        expect(self.start_page_link).to_be_visible()
 
     @step("Log out")
     def log_out_via_reporting_component(self) -> None:
-        # Write logout to audit log
-        if self.current_user:
-            self._write_audit_log("LOGOUT", self.current_user, self.current_org_code)
-            self.current_user = None  # Clear current user
-
         self.log_out_link.click()
 
     @step("Log in as {1} and choose team {2}")
