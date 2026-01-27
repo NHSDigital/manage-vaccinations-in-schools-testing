@@ -7,10 +7,10 @@ inputs:
     required: true
   s3-bucket:
     required: true
-    default: 'endtoendtest-reports'
+    default: 'mavis-end-to-end-test-reports'
   report-base-url:
     required: true
-    default: 'https://d2h72ta68jwsgq.cloudfront.net'
+    default: 'https://d118d9btirztbi.cloudfront.net'
 runs:
   using: composite
   steps:
