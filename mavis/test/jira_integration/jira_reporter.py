@@ -5,44 +5,73 @@ JIRA test reporter for pytest integration.
 import logging
 import os
 import re
-from datetime import datetime
+import time
+from datetime import datetime, timezone
+from functools import wraps
 from pathlib import Path
+from typing import Optional
 
 from playwright.sync_api import Page
 
+from .config import JiraConfig
 from .jira_client import JiraClient
 from .models import JiraTestCase, JiraTestExecution, TestResult, TestStep
 
 logger = logging.getLogger(__name__)
 
 
+def retry_on_failure(max_retries: int = 3, delay: float = 1.0):
+    """Decorator to retry operations on failure."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    if attempt < max_retries - 1:
+                        logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay}s...")
+                        time.sleep(delay)
+                    else:
+                        logger.error(f"All {max_retries} attempts failed. Last error: {e}")
+            if last_exception is not None:
+                raise last_exception
+            else:
+                raise RuntimeError("Function failed without raising an exception")
+        return wrapper
+    return decorator
+
+
 class JiraTestReporter:
     """Handles JIRA test reporting integration."""
 
-    def __init__(self) -> None:
-        """Initialize JIRA reporter with configuration from environment variables."""
-        self.jira_url = os.getenv("JIRA_URL")
-        self.jira_username = os.getenv("JIRA_USERNAME")
-        self.jira_api_token = os.getenv("JIRA_API_TOKEN")
-        self.jira_project_key = os.getenv("JIRA_PROJECT_KEY", "TEST")
-
+    def __init__(self, config: Optional[JiraConfig] = None) -> None:
+        """Initialize JIRA reporter with configuration."""
+        self.config = config or JiraConfig.from_env()
         self.client = None
-        self.screenshots_dir = Path("screenshots")
-        self.screenshots_dir.mkdir(exist_ok=True)
+        
+        # Create screenshots directory
+        self.config.screenshots_dir.mkdir(exist_ok=True)
 
-        # Initialize JIRA client if credentials are available
-        if self.jira_url and self.jira_username and self.jira_api_token:
-            self.client = JiraClient(
-                self.jira_url,
-                self.jira_username,
-                self.jira_api_token,
-                self.jira_project_key,
-            )
+        # Initialize JIRA client if configuration is valid
+        if (self.config.is_valid() and 
+            self.config.url is not None and 
+            self.config.username is not None and 
+            self.config.api_token is not None):
+            try:
+                self.client = JiraClient(
+                    self.config.url,
+                    self.config.username,
+                    self.config.api_token,
+                    self.config.project_key,
+                )
+                logger.info("JIRA integration enabled")
+            except Exception as e:
+                logger.error("Failed to initialize JIRA client: %s", e)
         else:
-            logger.warning(
-                "JIRA integration disabled: Missing credentials in environment"
-            )
-            logger.warning("Required: JIRA_URL, JIRA_USERNAME, JIRA_API_TOKEN")
+            logger.info("JIRA integration disabled: Invalid configuration")
 
     def is_enabled(self) -> bool:
         """Check if JIRA integration is enabled."""
@@ -208,77 +237,65 @@ class JiraTestReporter:
             summary=summary,
             description=description,
             test_steps=test_steps,
-            project_key=self.jira_project_key,
+            project_key=self.config.project_key,
             labels=["automation", "pytest"],
         )
 
     def take_screenshot(
         self, page: Page, test_name: str, step_name: str = ""
-    ) -> str | None:
-        """
-        Take screenshot and save to file.
-
-        Args:
-            page: Playwright page object
-            test_name: Name of the test
-            step_name: Optional step name
-
-        Returns:
-            Path to screenshot file if successful, None otherwise
-        """
+    ) -> Optional[str]:
+        """Take screenshot with better error handling and cleanup."""
         if not page:
             return None
 
         try:
-            timestamp = datetime.now(tz=datetime.UTC).strftime("%Y%m%d_%H%M%S")
-            step_suffix = f"_{step_name}" if step_name else ""
-            filename = f"{test_name}{step_suffix}_{timestamp}.png"
-            filepath = self.screenshots_dir / filename
+            # Clean test name for filename
+            safe_test_name = "".join(c for c in test_name if c.isalnum() or c in "._-")
+            safe_step_name = "".join(c for c in step_name if c.isalnum() or c in "._-") if step_name else ""
+            
+            timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
+            step_suffix = f"_{safe_step_name}" if safe_step_name else ""
+            filename = f"{safe_test_name}{step_suffix}_{timestamp}.png"
+            filepath = self.config.screenshots_dir / filename
 
             page.screenshot(path=str(filepath), full_page=True)
-            return str(filepath)
+            
+            # Verify file was created and has reasonable size
+            if filepath.exists() and filepath.stat().st_size > 0:
+                logger.debug("Screenshot saved: %s", filepath)
+                return str(filepath)
+            else:
+                logger.warning("Screenshot file is empty or missing: %s", filepath)
+                return None
 
-        except OSError as e:
+        except Exception as e:
             logger.warning("Error taking screenshot: %s", e)
             return None
 
+    @retry_on_failure(max_retries=3)
     def create_or_update_test_case(
         self, test_name: str, test_docstring: str
-    ) -> str | None:
-        """
-        Create or find existing test case in JIRA.
-
-        Args:
-            test_name: Name of the test function
-            test_docstring: Test function docstring
-
-        Returns:
-            JIRA issue key if successful, None otherwise
-        """
-        if not self.is_enabled():
+    ) -> Optional[str]:
+        """Create or find existing test case in JIRA with retry logic."""
+        if not self.is_enabled() or self.client is None:
             return None
 
-        try:
-            test_case = self.extract_test_info(test_name, test_docstring)
+        test_case = self.extract_test_info(test_name, test_docstring)
 
-            # First, try to find existing test case
-            existing_key = self.client.find_test_case_by_summary(test_case.summary)
-            if existing_key:
-                logger.info("Found existing test case: %s", existing_key)
-                return existing_key
+        # First, try to find existing test case
+        existing_key = self.client.find_test_case_by_summary(test_case.summary)
+        if existing_key:
+            logger.debug("Found existing test case: %s", existing_key)
+            return existing_key
 
-            # Create new test case
-            logger.info("Creating new test case: %s", test_case.summary)
-            issue_key = self.client.create_test_case(test_case)
-            if issue_key:
-                logger.info("Created test case: %s", issue_key)
-                return issue_key
+        # Create new test case
+        logger.info("Creating new test case: %s", test_case.summary)
+        issue_key = self.client.create_test_case(test_case)
+        if issue_key:
+            logger.info("Created test case: %s", issue_key)
+            return issue_key
 
-            logger.warning("Failed to create test case")
-
-        except (ValueError, TypeError) as e:
-            logger.warning("Error creating/updating test case: %s", e)
-            return None
+        raise ValueError("Failed to create test case")
 
     def report_test_result(
         self,
@@ -297,7 +314,7 @@ class JiraTestReporter:
             error_message: Error message if test failed
             screenshots: List of screenshot file paths
         """
-        if not self.is_enabled() or not test_case_key:
+        if not self.is_enabled() or not test_case_key or self.client is None:
             return
 
         try:
@@ -305,7 +322,7 @@ class JiraTestReporter:
                 test_case_key=test_case_key,
                 execution_status=result,
                 executed_by=os.getenv("USER", "automation"),
-                execution_date=datetime.now(tz=datetime.UTC),
+                execution_date=datetime.now(tz=timezone.utc),
                 comment=error_message if error_message else None,
             )
 
@@ -338,3 +355,25 @@ class JiraTestReporter:
             "error": TestResult.BLOCKED,
         }
         return mapping.get(pytest_outcome.lower(), TestResult.BLOCKED)
+
+    def _generate_test_summary(self, test_name: str) -> str:
+        """Generate a more readable test summary from test name."""
+        # Remove common prefixes
+        name = test_name
+        for prefix in ["test_", "Test"]:
+            if name.startswith(prefix):
+                name = name[len(prefix):]
+        
+        # Split on underscores and convert to title case
+        words = name.split("_")
+        # Handle common abbreviations
+        abbreviations = {"ui": "UI", "api": "API", "url": "URL", "http": "HTTP"}
+        
+        processed_words = []
+        for word in words:
+            if word.lower() in abbreviations:
+                processed_words.append(abbreviations[word.lower()])
+            else:
+                processed_words.append(word.capitalize())
+        
+        return " ".join(processed_words)
