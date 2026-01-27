@@ -33,14 +33,17 @@ from .fixtures import (
     year_groups,
 )
 from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
-from .jira_integration.auto_fixtures import auto_jira_integration, jira_reporter_session
+from .jira_integration.auto_fixtures import (
+    auto_zephyr_integration,
+    zephyr_reporter_session,
+)
 from .jira_integration.fixtures import jira_reporter
 from .jira_integration.jira_hooks import pytest_configure, pytest_runtest_makereport
 
 __all__ = [
     "add_vaccine_batch",
     "authenticate_api",
-    "auto_jira_integration",
+    "auto_zephyr_integration",
     "base_url",
     "basic_auth_credentials",
     "basic_auth_token",
@@ -52,7 +55,6 @@ __all__ = [
     "file_generator",
     "healthcare_assistant",
     "jira_reporter",
-    "jira_reporter_session",
     "log_in_as_medical_secretary",
     "log_in_as_nurse",
     "log_in_as_prescriber",
@@ -78,4 +80,5 @@ __all__ = [
     "team",
     "upload_offline_vaccination",
     "year_groups",
+    "zephyr_reporter_session",
 ]

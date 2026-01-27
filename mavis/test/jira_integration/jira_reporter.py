@@ -6,22 +6,21 @@ import logging
 import os
 import re
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import wraps
 from pathlib import Path
-from typing import Optional
 
 from playwright.sync_api import Page
 
 from .config import JiraConfig
-from .jira_client import JiraClient
-from .models import JiraTestCase, JiraTestExecution, TestResult, TestStep
+from .models import TestResult, TestStep, ZephyrTestCase
 
 logger = logging.getLogger(__name__)
 
 
 def retry_on_failure(max_retries: int = 3, delay: float = 1.0):
     """Decorator to retry operations on failure."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -32,34 +31,41 @@ def retry_on_failure(max_retries: int = 3, delay: float = 1.0):
                 except Exception as e:
                     last_exception = e
                     if attempt < max_retries - 1:
-                        logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay}s...")
+                        logger.warning(
+                            f"Attempt {attempt + 1} failed: {e}. Retrying in {delay}s..."
+                        )
                         time.sleep(delay)
                     else:
-                        logger.error(f"All {max_retries} attempts failed. Last error: {e}")
+                        logger.error(
+                            f"All {max_retries} attempts failed. Last error: {e}"
+                        )
             if last_exception is not None:
                 raise last_exception
-            else:
-                raise RuntimeError("Function failed without raising an exception")
+            raise RuntimeError("Function failed without raising an exception")
+
         return wrapper
+
     return decorator
 
 
 class JiraTestReporter:
     """Handles JIRA test reporting integration."""
 
-    def __init__(self, config: Optional[JiraConfig] = None) -> None:
+    def __init__(self, config: JiraConfig | None = None) -> None:
         """Initialize JIRA reporter with configuration."""
         self.config = config or JiraConfig.from_env()
         self.client = None
-        
+
         # Create screenshots directory
         self.config.screenshots_dir.mkdir(exist_ok=True)
 
         # Initialize JIRA client if configuration is valid
-        if (self.config.is_valid() and 
-            self.config.url is not None and 
-            self.config.username is not None and 
-            self.config.api_token is not None):
+        if (
+            self.config.is_valid()
+            and self.config.url is not None
+            and self.config.username is not None
+            and self.config.api_token is not None
+        ):
             try:
                 self.client = JiraClient(
                     self.config.url,
@@ -191,7 +197,7 @@ class JiraTestReporter:
 
         return steps
 
-    def extract_test_info(self, test_name: str, test_docstring: str) -> JiraTestCase:
+    def extract_test_info(self, test_name: str, test_docstring: str) -> ZephyrTestCase:
         """
         Extract test information to create JIRA test case.
 
@@ -200,7 +206,7 @@ class JiraTestReporter:
             test_docstring: Test function docstring
 
         Returns:
-            JiraTestCase object
+            ZephyrTestCase object
         """
         # Clean test name for summary
         summary = test_name.replace("test_", "").replace("_", " ").title()
@@ -233,7 +239,7 @@ class JiraTestReporter:
                 )
             ]
 
-        return JiraTestCase(
+        return ZephyrTestCase(
             summary=summary,
             description=description,
             test_steps=test_steps,
@@ -243,7 +249,7 @@ class JiraTestReporter:
 
     def take_screenshot(
         self, page: Page, test_name: str, step_name: str = ""
-    ) -> Optional[str]:
+    ) -> str | None:
         """Take screenshot with better error handling and cleanup."""
         if not page:
             return None
@@ -251,22 +257,25 @@ class JiraTestReporter:
         try:
             # Clean test name for filename
             safe_test_name = "".join(c for c in test_name if c.isalnum() or c in "._-")
-            safe_step_name = "".join(c for c in step_name if c.isalnum() or c in "._-") if step_name else ""
-            
-            timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
+            safe_step_name = (
+                "".join(c for c in step_name if c.isalnum() or c in "._-")
+                if step_name
+                else ""
+            )
+
+            timestamp = datetime.now(tz=UTC).strftime("%Y%m%d_%H%M%S")
             step_suffix = f"_{safe_step_name}" if safe_step_name else ""
             filename = f"{safe_test_name}{step_suffix}_{timestamp}.png"
             filepath = self.config.screenshots_dir / filename
 
             page.screenshot(path=str(filepath), full_page=True)
-            
+
             # Verify file was created and has reasonable size
             if filepath.exists() and filepath.stat().st_size > 0:
                 logger.debug("Screenshot saved: %s", filepath)
                 return str(filepath)
-            else:
-                logger.warning("Screenshot file is empty or missing: %s", filepath)
-                return None
+            logger.warning("Screenshot file is empty or missing: %s", filepath)
+            return None
 
         except Exception as e:
             logger.warning("Error taking screenshot: %s", e)
@@ -275,7 +284,7 @@ class JiraTestReporter:
     @retry_on_failure(max_retries=3)
     def create_or_update_test_case(
         self, test_name: str, test_docstring: str
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create or find existing test case in JIRA with retry logic."""
         if not self.is_enabled() or self.client is None:
             return None
@@ -322,7 +331,7 @@ class JiraTestReporter:
                 test_case_key=test_case_key,
                 execution_status=result,
                 executed_by=os.getenv("USER", "automation"),
-                execution_date=datetime.now(tz=timezone.utc),
+                execution_date=datetime.now(tz=UTC),
                 comment=error_message if error_message else None,
             )
 
@@ -361,19 +370,18 @@ class JiraTestReporter:
         # Remove common prefixes
         name = test_name
         for prefix in ["test_", "Test"]:
-            if name.startswith(prefix):
-                name = name[len(prefix):]
-        
+            name = name.removeprefix(prefix)
+
         # Split on underscores and convert to title case
         words = name.split("_")
         # Handle common abbreviations
         abbreviations = {"ui": "UI", "api": "API", "url": "URL", "http": "HTTP"}
-        
+
         processed_words = []
         for word in words:
             if word.lower() in abbreviations:
                 processed_words.append(abbreviations[word.lower()])
             else:
                 processed_words.append(word.capitalize())
-        
+
         return " ".join(processed_words)

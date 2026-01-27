@@ -9,25 +9,25 @@ from _pytest.config import Config
 from _pytest.reports import TestReport
 
 from .auto_fixtures import cleanup_test_data, get_test_case_key, get_test_screenshots
-from .jira_reporter import JiraTestReporter
+from .zephyr_reporter import ZephyrTestReporter
 
 logger = logging.getLogger(__name__)
 
-# Global JIRA reporter instance
-_jira_reporter = None
+# Global Zephyr Scale reporter instance
+_zephyr_reporter = None
 
 
 def pytest_configure(config: Config) -> None:  # noqa: ARG001
-    """Configure JIRA reporter at the start of test session."""
-    global _jira_reporter  # noqa: PLW0603  # pylint: disable=global-statement
-    _jira_reporter = JiraTestReporter()
+    """Configure Zephyr Scale reporter at the start of test session."""
+    global _zephyr_reporter  # noqa: PLW0603  # pylint: disable=global-statement
+    _zephyr_reporter = ZephyrTestReporter()
 
-    if _jira_reporter.is_enabled():
+    if _zephyr_reporter.is_enabled():
         logger.info(
-            "JIRA integration enabled - all tests will be automatically tracked"
+            "Zephyr Scale integration enabled - all tests will be automatically tracked"
         )
     else:
-        logger.warning("JIRA integration disabled (missing configuration)")
+        logger.debug("Zephyr Scale integration disabled (missing configuration)")
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -42,7 +42,7 @@ def pytest_runtest_makereport(item: object, call: object) -> object:  # noqa: AR
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_logreport(report: TestReport) -> object:
-    """Enhanced log reporting with automatic JIRA integration."""
+    """Enhanced log reporting with automatic Zephyr Scale integration."""
     # Call the existing hook first
     yield
 
@@ -50,7 +50,7 @@ def pytest_runtest_logreport(report: TestReport) -> object:
     if report.when != "call":
         return
 
-    if not _jira_reporter or not _jira_reporter.is_enabled():
+    if not _zephyr_reporter or not _zephyr_reporter.is_enabled():
         return
 
     # Extract test information
@@ -65,18 +65,20 @@ def pytest_runtest_logreport(report: TestReport) -> object:
     if test_case_key:
         try:
             # Report test result with screenshots
-            jira_result = _jira_reporter.pytest_result_to_jira_result(report.outcome)
+            zephyr_result = _zephyr_reporter.pytest_result_to_zephyr_result(
+                report.outcome
+            )
             error_message = str(report.longrepr) if report.failed else None
 
-            _jira_reporter.report_test_result(
-                test_case_key=test_case_key,
-                result=jira_result,
+            _zephyr_reporter.report_test_result(
+                test_case_id=test_case_key,
+                result=zephyr_result,
                 error_message=error_message,
                 screenshots=screenshots,
             )
         except (ValueError, TypeError, AttributeError) as e:
             logger.warning(
-                "Failed to report test results to JIRA for %s: %s", test_name, e
+                "Failed to report test results to Zephyr Scale for %s: %s", test_name, e
             )
         finally:
             # Clean up test data regardless of success/failure
