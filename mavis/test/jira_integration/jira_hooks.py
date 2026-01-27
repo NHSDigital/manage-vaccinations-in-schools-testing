@@ -71,7 +71,6 @@ def pytest_runtest_logreport(report: TestReport) -> object:
             _jira_reporter.report_test_result(
                 test_case_key=test_case_key,
                 result=jira_result,
-                test_name=test_name,
                 error_message=error_message,
                 screenshots=screenshots,
             )

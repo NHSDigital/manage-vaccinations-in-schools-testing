@@ -4,6 +4,7 @@ JIRA REST API client for test management.
 
 import logging
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -19,15 +20,6 @@ class JiraClient:
     def __init__(
         self, jira_url: str, username: str, api_token: str, project_key: str
     ) -> None:
-        """
-        Initialize JIRA client.
-
-        Args:
-            jira_url: JIRA instance URL (e.g., https://yourcompany.atlassian.net)
-            username: JIRA username/email
-            api_token: JIRA API token
-            project_key: JIRA project key
-        """
         self.jira_url = jira_url.rstrip("/")
         self.username = username
         self.api_token = api_token
@@ -127,7 +119,7 @@ class JiraClient:
 
         try:
             response = self._make_request(
-                "GET", f"search?jql={requests.utils.quote(jql)}"
+                "GET", f"search?jql={quote(jql)}"
             )
             issues = response.get("issues", [])
             return issues[0]["key"] if issues else None
