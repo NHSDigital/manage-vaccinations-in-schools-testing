@@ -28,21 +28,22 @@ runs:
     - name: Set S3 prefix
       id: set-pages-dir
       run: |
+        branch_ref="${{ github.head_ref || github.ref_name }}"
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
         timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
-        echo "dir=${{ github.head_ref }}/${{ inputs.environment }}/$sanitized_device/$timestamp" >> $GITHUB_OUTPUT
+        echo "dir=$branch_ref/${{ inputs.environment }}/$sanitized_device/$timestamp" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Upload report to S3
       run: |
         aws s3 sync \
           allure-report \
-          s3://${{ inputs.s3-bucket }}${{ steps.set-pages-dir.outputs.dir }} \
+          s3://${{ inputs.s3-bucket }}/${{ steps.set-pages-dir.outputs.dir }} \
           --delete
       shell: bash
 
     - name: Set Job Summary
       run: |
-        REPORT_URL="${{ inputs.report-base-url }}${{ steps.set-pages-dir.outputs.dir }}/index.html"
+        REPORT_URL="${{ inputs.report-base-url }}/${{ steps.set-pages-dir.outputs.dir }}/index.html"
         echo "View test report: ${REPORT_URL}" >> "$GITHUB_STEP_SUMMARY"
       shell: bash
