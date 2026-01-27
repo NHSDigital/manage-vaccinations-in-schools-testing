@@ -8,12 +8,13 @@ from enum import Enum
 
 
 class TestResult(Enum):
-    """Test result enumeration."""
+    """Test result enumeration for Zephyr Scale."""
 
-    PASS = "PASSED"  # noqa: S105
-    FAIL = "FAILED"
-    BLOCKED = "BLOCKED"
-    SKIPPED = "SKIPPED"
+    PASS = "Pass"  # noqa: S105
+    FAIL = "Fail"
+    BLOCKED = "Blocked"
+    SKIPPED = "Not Executed"
+    IN_PROGRESS = "In Progress"
 
 
 @dataclass
@@ -27,8 +28,8 @@ class TestStep:
 
 
 @dataclass
-class JiraTestCase:
-    """Represents a test case in JIRA."""
+class ZephyrTestCase:
+    """Represents a test case in Zephyr Scale."""
 
     summary: str
     description: str
@@ -36,17 +37,22 @@ class JiraTestCase:
     project_key: str
     priority: str = "Medium"
     labels: list[str] | None = None
+    folder: str | None = None
+    objective: str | None = None
+    test_case_id: int | None = None
     jira_key: str | None = None
 
 
 @dataclass
-class JiraTestExecution:
-    """Represents a test execution in JIRA."""
+class ZephyrTestExecution:
+    """Represents a test execution in Zephyr Scale."""
 
-    test_case_key: str
-    execution_status: TestResult
-    executed_by: str
-    execution_date: datetime
+    test_case_id: int
+    test_cycle_id: int | None = None
+    execution_status: TestResult = TestResult.IN_PROGRESS
+    executed_by: str | None = None
+    execution_date: datetime | None = None
     comment: str | None = None
     attachments: list[str] | None = None  # File paths to attachments
-    execution_key: str | None = None
+    execution_id: int | None = None
+    environment: str | None = None
