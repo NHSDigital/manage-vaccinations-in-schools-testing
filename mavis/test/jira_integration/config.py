@@ -3,16 +3,16 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
 class JiraConfig:
     """Configuration for Zephyr Scale integration."""
-    url: Optional[str]
-    username: Optional[str] 
-    api_token: Optional[str]
-    zephyr_token: Optional[str]
+
+    url: str | None
+    username: str | None
+    api_token: str | None
+    zephyr_token: str | None
     project_key: str = "TEST"
     screenshots_dir: Path = Path("screenshots")
     max_retries: int = 3
@@ -20,7 +20,7 @@ class JiraConfig:
     enabled: bool = True
 
     @classmethod
-    def from_env(cls) -> 'JiraConfig':
+    def from_env(cls) -> "JiraConfig":
         """Create configuration from environment variables."""
         return cls(
             url=os.getenv("JIRA_URL"),
@@ -37,9 +37,9 @@ class JiraConfig:
     def is_valid(self) -> bool:
         """Check if configuration is valid for Zephyr Scale integration."""
         return (
-            self.enabled and
-            all([self.url, self.username, self.api_token]) and
-            self.url.strip() != "" and
-            self.username.strip() != "" and
-            self.api_token.strip() != ""
+            self.enabled
+            and all([self.url, self.username, self.api_token])
+            and self.url.strip() != ""
+            and self.username.strip() != ""
+            and self.api_token.strip() != ""
         )

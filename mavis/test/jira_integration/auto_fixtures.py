@@ -1,12 +1,12 @@
 """
-Auto-use fixtures for automatic Zephyr Scale integration.
+Auto-use fixtures for automatic Jira integration.
 """
 
 import logging
 
 import pytest
 
-from .zephyr_reporter import ZephyrTestReporter
+from .jira_reporter import JiraTestReporter
 
 logger = logging.getLogger(__name__)
 
@@ -15,25 +15,25 @@ _test_data = {}
 
 
 @pytest.fixture(scope="session")
-def zephyr_reporter_session() -> ZephyrTestReporter:
-    """Session-scoped Zephyr Scale reporter."""
-    return ZephyrTestReporter()
+def jira_reporter_session() -> JiraTestReporter:
+    """Session-scoped Jira reporter."""
+    return JiraTestReporter()
 
 
 @pytest.fixture(autouse=True)
-def auto_zephyr_integration(
-    request: pytest.FixtureRequest, zephyr_reporter_session: ZephyrTestReporter
+def auto_jira_integration(
+    request: pytest.FixtureRequest, jira_reporter_session: JiraTestReporter
 ) -> None:
     """
-    Automatic Zephyr Scale integration fixture that runs for every test.
+    Automatic Jira integration fixture that runs for every test.
 
     This fixture:
     - Runs automatically for all tests (autouse=True)
-    - Creates test cases in Zephyr Scale from test docstrings
+    - Creates test cases in Jira from test docstrings
     - Captures screenshots at key points
     - Stores data for pytest hooks to use
     """
-    if not zephyr_reporter_session.is_enabled():
+    if not jira_reporter_session.is_enabled():
         yield
         return
 
@@ -43,19 +43,19 @@ def auto_zephyr_integration(
     # Initialize test data storage
     _test_data[test_name] = {
         "screenshots": [],
-        "test_case_id": None,
+        "test_case_key": None,
         "page": None,
-        "zephyr_reporter": zephyr_reporter_session,
+        "jira_reporter": jira_reporter_session,
     }
 
-    # Create or find test case in Zephyr Scale
+    # Create or find test case in Jira
     try:
-        test_case_id = zephyr_reporter_session.get_or_create_test_case(
+        test_case_key = jira_reporter_session.get_or_create_test_case(
             test_name, test_docstring
         )
-        _test_data[test_name]["test_case_id"] = test_case_id
+        _test_data[test_name]["test_case_key"] = test_case_key
     except (ValueError, TypeError) as e:
-        logger.warning("Failed to create Zephyr Scale test case for %s: %s", test_name, e)
+        logger.warning("Failed to create Jira test case for %s: %s", test_name, e)
 
     # Try to get the page fixture if it exists
     page = None
@@ -75,24 +75,24 @@ def auto_zephyr_integration(
     yield
 
     # After test execution - handle screenshots
-    _handle_post_test_screenshots(request, test_name, zephyr_reporter_session)
+    _handle_post_test_screenshots(request, test_name, jira_reporter_session)
 
 
 def _handle_post_test_screenshots(
     request: pytest.FixtureRequest,
     test_name: str,
-    zephyr_reporter_session: ZephyrTestReporter,
+    jira_reporter_session: JiraTestReporter,
 ) -> None:
     """Handle screenshot capture after test execution."""
     test_data = _test_data.get(test_name, {})
     page = test_data.get("page")
-    test_case_id = test_data.get("test_case_id")
+    test_case_key = test_data.get("test_case_key")
 
     # Take screenshots based on test outcome
-    if page and test_case_id:
+    if page and test_case_key:
         try:
             # Take start screenshot
-            screenshot_path = zephyr_reporter_session.take_screenshot(
+            screenshot_path = jira_reporter_session.take_screenshot(
                 page, test_name, "test_start"
             )
             if screenshot_path:
@@ -102,15 +102,15 @@ def _handle_post_test_screenshots(
             if hasattr(request.node, "rep_call"):
                 rep = request.node.rep_call
                 if rep.passed:
-                    screenshot_path = zephyr_reporter_session.take_screenshot(
+                    screenshot_path = jira_reporter_session.take_screenshot(
                         page, test_name, "test_passed"
                     )
                 elif rep.failed:
-                    screenshot_path = zephyr_reporter_session.take_screenshot(
+                    screenshot_path = jira_reporter_session.take_screenshot(
                         page, test_name, "test_failed"
                     )
                 else:
-                    screenshot_path = zephyr_reporter_session.take_screenshot(
+                    screenshot_path = jira_reporter_session.take_screenshot(
                         page, test_name, "test_completed"
                     )
 
@@ -125,9 +125,9 @@ def get_test_screenshots(test_name: str) -> list[str]:
     return _test_data.get(test_name, {}).get("screenshots", [])
 
 
-def get_test_case_key(test_name: str) -> int | None:
-    """Get Zephyr Scale test case ID for a specific test (used by hooks)."""
-    return _test_data.get(test_name, {}).get("test_case_id")
+def get_test_case_key(test_name: str) -> str | None:
+    """Get Jira test case key for a specific test (used by hooks)."""
+    return _test_data.get(test_name, {}).get("test_case_key")
 
 
 def cleanup_test_data(test_name: str) -> None:
