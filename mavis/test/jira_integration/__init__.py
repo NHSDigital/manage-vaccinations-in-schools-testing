@@ -1,15 +1,15 @@
-from .auto_fixtures import auto_zephyr_integration, zephyr_reporter_session
-from .models import TestResult, TestStep, ZephyrTestCase, ZephyrTestExecution
-from .zephyr_client import ZephyrClient
-from .zephyr_reporter import ZephyrTestReporter
+from .auto_fixtures import auto_jira_integration, jira_reporter_session
+from .jira_client import JiraClient
+from .jira_reporter import JiraTestReporter
+from .models import JiraTestCase, JiraTestExecution, TestResult, TestStep
 
 __all__ = [
-    "ZephyrClient",
-    "ZephyrTestCase",
-    "ZephyrTestExecution",
-    "ZephyrTestReporter",
+    "JiraClient",
+    "JiraTestCase",
+    "JiraTestExecution",
+    "JiraTestReporter",
     "TestResult",
     "TestStep",
-    "auto_zephyr_integration",
-    "zephyr_reporter_session",
+    "auto_jira_integration",
+    "jira_reporter_session",
 ]

@@ -8,12 +8,12 @@ from enum import Enum
 
 
 class TestResult(Enum):
-    """Test result enumeration for Zephyr Scale."""
+    """Test result enumeration for Jira."""
 
     PASS = "Pass"  # noqa: S105
     FAIL = "Fail"
     BLOCKED = "Blocked"
-    SKIPPED = "Not Executed"
+    SKIPPED = "To Do"
     IN_PROGRESS = "In Progress"
 
 
@@ -28,8 +28,8 @@ class TestStep:
 
 
 @dataclass
-class ZephyrTestCase:
-    """Represents a test case in Zephyr Scale."""
+class JiraTestCase:
+    """Represents a test case in Jira."""
 
     summary: str
     description: str
@@ -39,20 +39,20 @@ class ZephyrTestCase:
     labels: list[str] | None = None
     folder: str | None = None
     objective: str | None = None
-    test_case_id: int | None = None
-    jira_key: str | None = None
+    issue_key: str | None = None
+    issue_id: int | None = None
 
 
 @dataclass
-class ZephyrTestExecution:
-    """Represents a test execution in Zephyr Scale."""
+class JiraTestExecution:
+    """Represents a test execution in Jira."""
 
-    test_case_id: int
-    test_cycle_id: int | None = None
+    test_case_key: str
+    test_plan_key: str | None = None
     execution_status: TestResult = TestResult.IN_PROGRESS
     executed_by: str | None = None
     execution_date: datetime | None = None
     comment: str | None = None
     attachments: list[str] | None = None  # File paths to attachments
-    execution_id: int | None = None
+    execution_key: str | None = None
     environment: str | None = None
