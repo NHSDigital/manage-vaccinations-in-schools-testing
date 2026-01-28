@@ -31,6 +31,7 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
     ids=lambda v: f"consent_option: {v}",
 )
 def test_e2e_nurse_consent_flu(
+    log_in_as_nurse,
     setup_session_for_flu,
     schools,
     page,

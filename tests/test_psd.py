@@ -27,8 +27,17 @@ from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
 @pytest.fixture
+def flu_consent_url(schedule_session_and_get_consent_url, schools):
+    yield from schedule_session_and_get_consent_url(
+        schools[Programme.FLU][0], Programme.FLU
+    )
+
+
+@pytest.fixture
 def setup_session_with_file_upload(
-    log_in_as_prescriber,
+    flu_consent_url,
+    prescriber,
+    team,
     schools,
     page,
     file_generator,
@@ -37,10 +46,14 @@ def setup_session_with_file_upload(
 ):
     def _factory(
         class_file_mapping: ClassFileMapping, *, schedule_session_for_today: bool = True
-    ) -> str:
+    ):
         school = schools[Programme.FLU][0]
         year_group = year_groups[Programme.FLU]
         batch_name = add_vaccine_batch(Vaccine.FLUENZ)
+
+        LogInPage(page).log_out()
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(prescriber, team)
 
         VaccinesPage(page).header.click_mavis_header()
         DashboardPage(page).click_schools()
@@ -54,7 +67,7 @@ def setup_session_with_file_upload(
         schedule_school_session_if_needed(
             page, school, [Programme.FLU], [year_group], offset_days
         )
-        return batch_name
+        return batch_name, flu_consent_url
 
     return _factory
 
@@ -72,13 +85,6 @@ def setup_session_with_two_children(
 ):
     return setup_session_with_file_upload(
         ClassFileMapping.TWO_FIXED_CHILDREN, schedule_session_for_today=False
-    )
-
-
-@pytest.fixture
-def flu_consent_url(schedule_session_and_get_consent_url, schools):
-    yield from schedule_session_and_get_consent_url(
-        schools[Programme.FLU][0], Programme.FLU
     )
 
 
@@ -103,7 +109,7 @@ def test_delivering_vaccination_after_psd(
     """
     child = children[Programme.FLU][0]
     school = schools[Programme.FLU][0]
-    fluenz_batch_name = setup_session_with_one_child
+    fluenz_batch_name, _ = setup_session_with_one_child
 
     SessionsOverviewPage(page).click_edit_session()
     SessionsEditPage(page).click_change_psd()
@@ -158,7 +164,6 @@ def test_delivering_vaccination_after_psd(
 
 
 def test_bulk_adding_psd(
-    flu_consent_url,
     setup_session_with_two_children,
     page,
     schools,
@@ -174,6 +179,7 @@ def test_bulk_adding_psd(
     - The PSDs appear for each child.
     """
     school = schools[Programme.FLU][0]
+    _, flu_consent_url = setup_session_with_two_children
 
     for child in children[Programme.FLU]:
         OnlineConsentWizardPage(page).go_to_url(flu_consent_url)

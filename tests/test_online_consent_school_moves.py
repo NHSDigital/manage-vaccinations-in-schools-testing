@@ -8,7 +8,6 @@ from mavis.test.pages import (
     CreateNewRecordConsentResponsePage,
     DashboardPage,
     ImportRecordsWizardPage,
-    LogInPage,
     OnlineConsentWizardPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
@@ -41,7 +40,6 @@ def start_consent_with_session_scheduled(url_with_session_scheduled, page):
 @pytest.fixture
 def setup_session_with_file_upload(
     url_with_session_scheduled,
-    log_in_as_nurse,
     schools,
     page,
     file_generator,
@@ -49,6 +47,8 @@ def setup_session_with_file_upload(
 ):
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
+
+    DashboardPage(page).navigate()
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
@@ -169,9 +169,6 @@ def test_online_consent_school_moves_with_new_patient(
         consent_option=ConsentOption.NASAL_SPRAY_OR_INJECTION,
     )
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
-
     DashboardPage(page).navigate()
     DashboardPage(page).click_unmatched_consent_responses()
     UnmatchedConsentResponsesPage(page).click_parent_on_consent_record_for_child(child)
@@ -189,8 +186,6 @@ def test_online_consent_school_moves_with_new_patient(
     SessionsChildrenPage(page).verify_child_shows_correct_flu_consent_method(
         child, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
-
-    LogInPage(page).log_out()
 
 
 @pytest.mark.accessibility

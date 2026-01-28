@@ -35,7 +35,6 @@ def start_consent_with_session_scheduled(url_with_session_scheduled, page):
 @pytest.fixture
 def setup_session_with_file_upload(
     url_with_session_scheduled,
-    log_in_as_nurse,
     schools,
     page,
     file_generator,
@@ -44,6 +43,7 @@ def setup_session_with_file_upload(
     school = schools[Programme.FLU][0]
     year_group = year_groups[Programme.FLU]
 
+    DashboardPage(page).navigate()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()

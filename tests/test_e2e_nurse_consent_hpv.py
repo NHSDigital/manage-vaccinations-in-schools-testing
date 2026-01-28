@@ -21,6 +21,7 @@ def setup_session_for_hpv(setup_session_and_batches_with_fixed_child):
 @pytest.mark.rav
 @pytest.mark.bug
 def test_e2e_nurse_consent_hpv(
+    log_in_as_nurse,
     setup_session_for_hpv,
     schools,
     page,

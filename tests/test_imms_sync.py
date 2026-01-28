@@ -23,11 +23,6 @@ def imms_api_helper(authenticate_api):
 
 
 @pytest.fixture
-def sidekiq_helper():
-    return SidekiqHelper()
-
-
-@pytest.fixture
 def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
     return setup_session_and_batches_with_fixed_child(Programme.FLU)
 
@@ -35,11 +30,11 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
 @issue("MAV-2831")
 def test_create_imms_record_then_verify_on_children_page(
     imms_api_helper,
+    log_in_as_nurse,
+    setup_session_for_flu,
     page,
     children,
     schools,
-    setup_session_for_flu,
-    sidekiq_helper,
 ):
     """
     Test: Create a vaccination record via IMMS API, then log into MAVIS as a nurse.
@@ -73,7 +68,7 @@ def test_create_imms_record_then_verify_on_children_page(
         vaccination_time=vaccination_time,
     )
 
-    sidekiq_helper.run_recurring_job(sidekiq_job_name)
+    SidekiqHelper().run_recurring_job(sidekiq_job_name)
 
     # Verify the child created via IMMS API is visible in MAVIS children page
     DashboardPage(page).navigate()

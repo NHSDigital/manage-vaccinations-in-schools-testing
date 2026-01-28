@@ -79,14 +79,8 @@ def give_online_consent_pds_child(
     OnlineConsentWizardPage(page).click_confirm()
 
 
-@pytest.fixture
-def go_to_unmatched_consent_responses(log_in_as_nurse, page):
-    DashboardPage(page).click_unmatched_consent_responses()
-
-
 def test_archive_unmatched_consent_response_removes_from_list(
     give_online_consent,
-    go_to_unmatched_consent_responses,
     page,
     children,
 ):
@@ -100,6 +94,10 @@ def test_archive_unmatched_consent_response_removes_from_list(
     - The consent response for the child is no longer visible in the unmatched list.
     """
     child = children[Programme.HPV][0]
+
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_unmatched_consent_responses()
+
     UnmatchedConsentResponsesPage(page).click_parent_on_consent_record_for_child(child)
 
     ConsentResponsePage(page).click_archive()
@@ -111,7 +109,6 @@ def test_archive_unmatched_consent_response_removes_from_list(
 
 def test_match_unmatched_consent_response_and_verify_activity_log(
     give_online_consent,
-    log_in_as_nurse,
     children,
     page,
     file_generator,
@@ -131,6 +128,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     """
     child = children[Programme.HPV][0]
 
+    DashboardPage(page).navigate()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
@@ -158,7 +156,6 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
 
 def test_create_child_record_from_consent_with_nhs_number(
     give_online_consent_pds_child,
-    go_to_unmatched_consent_responses,
     pds_child,
     page,
 ):
@@ -175,6 +172,9 @@ def test_create_child_record_from_consent_with_nhs_number(
     - Activity log for the child shows the creation event.
     """
     child = pds_child
+
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_unmatched_consent_responses()
 
     UnmatchedConsentResponsesPage(page).click_parent_on_consent_record_for_child(child)
 
@@ -194,7 +194,6 @@ def test_create_child_record_from_consent_with_nhs_number(
 
 def test_create_child_record_from_consent_without_nhs_number(
     give_online_consent,
-    go_to_unmatched_consent_responses,
     children,
     page,
 ):
@@ -212,6 +211,10 @@ def test_create_child_record_from_consent_without_nhs_number(
     - Activity log for the child shows the creation event.
     """
     child = children[Programme.HPV][0]
+
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_unmatched_consent_responses()
+
     UnmatchedConsentResponsesPage(page).click_parent_on_consent_record_for_child(child)
 
     ConsentResponsePage(page).click_create_new_record()
@@ -231,7 +234,6 @@ def test_create_child_record_from_consent_without_nhs_number(
 @pytest.mark.accessibility
 def test_accessibility(
     give_online_consent,
-    log_in_as_nurse,
     children,
     page,
     file_generator,
@@ -246,6 +248,7 @@ def test_accessibility(
     """
     child = children[Programme.HPV][0]
 
+    DashboardPage(page).navigate()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
@@ -272,7 +275,6 @@ def test_accessibility(
 @issue("MAV-2681")
 def test_match_consent_with_vaccination_record_no_service_error(
     give_online_consent,
-    log_in_as_nurse,
     upload_offline_vaccination,
     children,
     page,
@@ -302,6 +304,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     school = schools[Programme.HPV][0]
 
     # Step 2: Import a class list to create searchable child records for both children
+    DashboardPage(page).navigate()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
