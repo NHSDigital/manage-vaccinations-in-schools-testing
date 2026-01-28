@@ -50,6 +50,7 @@ markers = [
   "sessions",
   "smoke",
   "tallying",
+  "team",
   "vaccinations",
   "vaccines",
 ]
