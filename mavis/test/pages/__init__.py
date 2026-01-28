@@ -30,7 +30,7 @@ from .sessions import (
     SessionsVaccinationWizardPage,
 )
 from .start_page import StartPage
-from .team_page import TeamPage
+from .team import TeamContactDetailsPage, TeamSchoolsPage
 from .unmatched_responses import (
     ArchiveConsentResponsePage,
     ConsentResponsePage,
@@ -85,7 +85,8 @@ __all__ = [
     "SessionsSearchPage",
     "SessionsVaccinationWizardPage",
     "StartPage",
-    "TeamPage",
+    "TeamContactDetailsPage",
+    "TeamSchoolsPage",
     "UnmatchedConsentResponsesPage",
     "VaccinationRecordPage",
     "VaccinationReportPage",

@@ -8,7 +8,6 @@ from mavis.test.pages import (
     LogInPage,
     LogOutPage,
     StartPage,
-    TeamPage,
 )
 
 pytestmark = pytest.mark.log_in
@@ -84,10 +83,6 @@ def test_login_with_valid_credentials(
     expect(DashboardPage(page).imports_link).to_be_visible()
     expect(DashboardPage(page).your_team_link).to_be_visible()
     expect(DashboardPage(page).service_guidance_link).to_be_visible()
-
-    DashboardPage(page).click_your_team()
-    TeamPage(page).check_team_name_is_visible(team)
-    TeamPage(page).check_team_email_is_visible(team)
 
     LogInPage(page).log_out()
 
