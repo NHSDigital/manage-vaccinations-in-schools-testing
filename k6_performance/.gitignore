@@ -1,0 +1,4 @@
+node_modules/*
+dist/*
+k6
+data/*

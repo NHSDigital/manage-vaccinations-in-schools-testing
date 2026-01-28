@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+    "target": "es2020",
+        "module": "esnext",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "moduleResolution": "node"
+},
+    "include": ["src/**/*.ts"], // Glob for all .ts files in src/
+    "exclude": ["node_modules"]
+}
