@@ -1,5 +1,6 @@
 import pytest
 
+from mavis.test.constants import Programme
 from mavis.test.pages import (
     DashboardPage,
     TeamContactDetailsPage,
@@ -34,3 +35,36 @@ def test_team_page_lists_correct_schools(page, log_in_as_nurse, schools):
     DashboardPage(page).click_your_team()
     TeamContactDetailsPage(page).links.click_schools()
     TeamSchoolsPage(page).check_only_expected_schools_visible(schools)
+
+
+def test_team_page_add_school_site(page, log_in_as_nurse, schools):
+    """
+    Test: Verify that the user can add a new school site to the team.
+    Steps:
+    1. Navigate to the team page.
+    2. Click on the 'Schools' link.
+    3. Click on the 'Add new school site' button.
+    4. Select the school from the dropdown.
+    5. Fill in the school site details.
+    6. Confirm the details are correct.
+    Verification:
+    - The dropdown only shows schools associated with the team.
+    - The new school site form is pre-filled with the school's address, but not the name.
+    - Name of the site must be different from original school name and cannot be blank.
+    - Address of the site can be edited.
+    - The confirm screen shows the correct name and address details.
+    - The new school site is listed on the Schools page.
+    - The URNs of the new and original schools are updated with site identifiers.
+    """
+    school = schools[Programme.HPV.group][0]
+
+    DashboardPage(page).click_your_team()
+    TeamContactDetailsPage(page).links.click_schools()
+    TeamSchoolsPage(page).click_add_new_school_site()
+    TeamSchoolsPage(page).check_only_expected_schools_visible_in_dropdown(schools)
+    TeamSchoolsPage(page).select_school(school)
+    TeamSchoolsPage(page).check_site_details_form(school)
+    TeamSchoolsPage(page).fill_in_site_details(school)
+    TeamSchoolsPage(page).check_confirm_screen_shows_right_details(school)
+    TeamSchoolsPage(page).confirm_site()
+    TeamSchoolsPage(page).check_new_site_is_listed(school)
