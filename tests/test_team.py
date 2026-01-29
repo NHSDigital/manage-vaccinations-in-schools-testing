@@ -1,11 +1,18 @@
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.constants import Programme
+from mavis.test.data.file_mappings import ChildFileMapping
+from mavis.test.data.file_utils import set_site_for_child_list
 from mavis.test.pages import (
     DashboardPage,
+    ImportRecordsWizardPage,
+    ImportsPage,
     TeamContactDetailsPage,
     TeamSchoolsPage,
 )
+from mavis.test.pages.schools.schools_children_page import SchoolsChildrenPage
+from mavis.test.pages.schools.schools_search_page import SchoolsSearchPage
 
 pytestmark = pytest.mark.team
 
@@ -78,3 +85,71 @@ def test_team_page_add_school_site(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_new_site_is_listed(
         new_site_name, new_site_urn, old_school_urn
     )
+
+
+def test_site_child_record_import(
+    page, log_in_as_nurse, file_generator, schools, children
+):
+    """
+    Test: Importing child records for a school that has been split into sites.
+    Steps:
+    1. From the team page, create a new school site (Site B) for an existing school.
+    2. Attempt to import child records using the original school URN.
+    3. Update the input file to use a site-specific URN (with an A/B identifier).
+    4. Re-run the import and complete the wizard.
+    5. Navigate to the original school and the new site Children pages.
+    Verification:
+    - An error message is shown when using the original URN, instructing the user
+      to use URNs with site identifiers (e.g. {URN}A or {URN}B).
+    - The import succeeds when the child record uses a valid site identifier.
+    - The imported child appears under the original school site (A).
+    - The imported child does not appear under the new school site (B).
+    """
+    school = schools[Programme.HPV.group][0]
+    child = children[Programme.HPV][0]
+
+    new_site_name = f"{school} (Site B)"
+
+    DashboardPage(page).click_your_team()
+    TeamContactDetailsPage(page).links.click_schools()
+    TeamSchoolsPage(page).click_add_new_school_site()
+    TeamSchoolsPage(page).select_school(school)
+    TeamSchoolsPage(page).fill_site_name(new_site_name)
+    TeamSchoolsPage(page).click_continue()
+    TeamSchoolsPage(page).confirm_site()
+
+    input_file_path, output_file_path = file_generator.get_file_paths(
+        file_mapping=ChildFileMapping.FIXED_CHILD,
+    )
+
+    TeamSchoolsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
+    ImportRecordsWizardPage(page, file_generator).upload_input_file(input_file_path)
+    expect(
+        page.get_by_text(
+            f"The URN {school.urn} has been split into sites. "
+            f"Use {school.urn}A or {school.urn}B instead."
+        )
+    ).to_be_visible()
+
+    set_site_for_child_list(input_file_path, "A")
+
+    TeamSchoolsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, file_generator
+    ).upload_and_verify_output_for_input_output_files(input_file_path, output_file_path)
+
+    ImportRecordsWizardPage(page, file_generator).header.click_mavis_header()
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(school)
+    SchoolsChildrenPage(page).search.search_for_a_child_name(str(child))
+
+    SchoolsChildrenPage(page).header.click_mavis_header()
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(new_site_name)
+    SchoolsChildrenPage(page).search.search_for_child_that_should_not_exist(child)

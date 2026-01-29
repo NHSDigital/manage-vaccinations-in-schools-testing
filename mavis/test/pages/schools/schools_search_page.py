@@ -13,13 +13,14 @@ class SchoolsSearchPage:
         self.header = HeaderComponent(page)
 
     @step("Click on {1}")
-    def click_school(self, school: School) -> None:
-        self.search.search_for(str(school))
+    def click_school(self, school: School | str) -> None:
+        school_name = str(school)
+        self.search.search_for(school_name)
 
-        self.page.get_by_role("link", name=str(school)).first.click()
+        self.page.get_by_role("link", name=school_name).first.click()
 
         ten_seconds_ms = 10000
 
-        expect(self.page.locator("h1", has_text=str(school))).to_be_visible(
+        expect(self.page.locator("h1", has_text=school_name)).to_be_visible(
             timeout=ten_seconds_ms,
         )
