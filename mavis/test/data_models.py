@@ -74,10 +74,6 @@ class School(Location):
                 "status": "open",
                 "is_attached_to_team": "false",
                 "gias_year_groups[]": [str(year_group)],
-                "address_line_1": "123 Test Street",
-                "address_line_2": "Unit 4",
-                "address_town": "Testington",
-                "address_postcode": "TE1 1ST",
             }
 
             response = requests.get(url, params=params, timeout=30)
