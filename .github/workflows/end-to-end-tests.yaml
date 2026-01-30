@@ -240,7 +240,7 @@ jobs:
 
       - name: Configure AWS credentials
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: eu-west-2
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
