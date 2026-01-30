@@ -191,6 +191,14 @@ class TestReporter:
             current_step.description += f" {line}"
         return current_step, steps
 
+    def _extract_issue_key(self, text: str) -> str | None:
+        """Extract a Jira issue key from text when present."""
+        if not text:
+            return None
+        pattern = re.compile(rf"\b{re.escape(self.config.project_key)}-\d+\b")
+        match = pattern.search(text)
+        return match.group(0) if match else None
+
     @retry_on_failure(max_retries=3, delay=1.0)
     def get_or_create_test_case(
         self, test_name: str, docstring: str = ""
@@ -214,7 +222,15 @@ class TestReporter:
             logger.warning("No integration client initialized")
             return None
 
-        # First, try to find existing test case
+        # First, try to use a Jira issue key if provided
+        issue_key = self._extract_issue_key(test_name) or self._extract_issue_key(
+            docstring
+        )
+        if issue_key and self.client.issue_exists(issue_key):
+            logger.info("Using existing test case by key: %s", issue_key)
+            return issue_key
+
+        # Next, try to find existing test case
         test_case_key = self.client.find_test_case_by_name(test_name)
         if test_case_key:
             logger.info("Found existing test case: %s", test_case_key)
@@ -310,7 +326,6 @@ class TestReporter:
         }
         return mapping.get(pytest_outcome.lower(), TestResult.FAIL)
 
-    @retry_on_failure(max_retries=3, delay=1.0)
     def report_test_result(
         self,
         test_case_key: str,

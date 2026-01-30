@@ -3,6 +3,7 @@ Jira REST API client for test management.
 """
 
 import logging
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -22,11 +23,17 @@ class JiraClient:
         username: str,
         api_token: str,
         project_key: str,
+        zephyr_api_token: str | None = None,
+        zephyr_project_id: str | None = None,
+        zephyr_url: str | None = None,
     ) -> None:
         self.jira_url = jira_url.rstrip("/")
         self.username = username
         self.api_token = api_token
         self.project_key = project_key
+        self.zephyr_api_token = zephyr_api_token
+        self.zephyr_project_id = zephyr_project_id
+        self.zephyr_url = zephyr_url
 
         self.session = requests.Session()
 
@@ -41,6 +48,7 @@ class JiraClient:
         self.required_fields: dict[str, object] = {}
 
         self._field_id_cache: dict[str, str | None] = {}
+        self._zephyr_status_cache: dict[str, int] = {}
 
     def _make_jira_request(
         self,
@@ -125,6 +133,82 @@ class JiraClient:
             logger.debug("ATM API request failed: %s", e)
             if hasattr(e, "response") and e.response is not None:
                 logger.debug("ATM response: %s", e.response.text)
+            raise
+
+    def _make_zephyr_request(
+        self,
+        method: str,
+        endpoint: str,
+        data: dict | None = None,
+        params: dict | None = None,
+        files: dict | None = None,
+    ) -> dict:
+        """Make authenticated request to Zephyr Essential DC API."""
+        token = self.zephyr_api_token or self.api_token
+        if not token:
+            msg = "Zephyr API token not configured"
+            raise ValueError(msg)
+
+        url_base = (self.zephyr_url or self.jira_url).rstrip("/")
+        if url_base.startswith("/"):
+            url_base = f"{self.jira_url.rstrip('/')}{url_base}"
+        elif not url_base.startswith("http://") and not url_base.startswith("https://"):
+            url_base = f"{self.jira_url.rstrip('/')}/{url_base}"
+
+        if url_base.endswith("/rest/zapi/latest"):
+            url = f"{url_base}/{endpoint}"
+        else:
+            url = f"{url_base}/rest/zapi/latest/{endpoint}"
+
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
+        try:
+            if method == "GET":
+                response = requests.get(url, headers=headers, params=params, timeout=30)
+            elif method == "POST":
+                if files:
+                    headers.pop("Content-Type", None)
+                    response = requests.post(
+                        url,
+                        headers=headers,
+                        params=params,
+                        data=data,
+                        files=files,
+                        timeout=30,
+                    )
+                else:
+                    response = requests.post(
+                        url, headers=headers, params=params, json=data, timeout=30
+                    )
+            elif method == "PUT":
+                response = requests.put(
+                    url, headers=headers, params=params, json=data, timeout=30
+                )
+            elif method == "DELETE":
+                response = requests.delete(
+                    url, headers=headers, params=params, timeout=30
+                )
+            else:
+                msg = f"Unsupported method: {method}"
+                raise ValueError(msg)
+
+            response.raise_for_status()
+            if not response.content:
+                return {}
+            try:
+                return response.json() if response.content else {}
+            except ValueError as e:
+                logger.debug("Failed to parse Zephyr JSON response: %s", e)
+                return {}
+
+        except requests.exceptions.RequestException as e:
+            logger.debug("Zephyr API request failed: %s", e)
+            if hasattr(e, "response") and e.response is not None:
+                logger.debug("Zephyr response: %s", e.response.text)
             raise
 
     def create_atm_test_execution(
@@ -265,6 +349,439 @@ class JiraClient:
             except (OSError, requests.exceptions.RequestException) as e:
                 logger.warning("Error attaching file %s: %s", file_path, e)
 
+    def get_zephyr_test_cycles(self, version_id: int | None = None) -> list[dict]:
+        """Get all test cycles from Zephyr Essential DC for the project."""
+        project_id = self.zephyr_project_id or self.get_project_id()
+        if not project_id:
+            logger.warning("Zephyr project id not configured")
+            return []
+
+        params: dict[str, object] = {"projectId": int(project_id)}
+        if version_id is not None:
+            params["versionId"] = int(version_id)
+
+        try:
+            response = self._make_zephyr_request("GET", "cycle", params=params)
+
+            if isinstance(response, list):
+                cycles = response
+            elif isinstance(response, dict):
+                if "records" in response and isinstance(response["records"], list):
+                    cycles = response["records"]
+                else:
+                    cycles = [
+                        value for value in response.values() if isinstance(value, dict)
+                    ]
+            else:
+                cycles = []
+
+            logger.info("Retrieved %d test cycles from Zephyr", len(cycles))
+            return cycles
+        except requests.exceptions.RequestException as e:
+            logger.warning("Failed to get Zephyr test cycles: %s", e)
+            return []
+
+    def _get_issue_id(self, issue_key: str) -> str | None:
+        """Resolve Jira issue id from issue key."""
+        try:
+            response = self._make_jira_request(
+                "GET", f"issue/{issue_key}", params={"fields": "id"}
+            )
+            return response.get("id")
+        except requests.exceptions.RequestException:
+            logger.exception("Failed to resolve issue id for %s", issue_key)
+            return None
+
+    def _get_version_id_by_name(self, version_name: str) -> int | None:
+        """Resolve Jira version id from version name."""
+        try:
+            response = self._make_jira_request(
+                "GET", f"project/{self.project_key}/versions"
+            )
+            if not isinstance(response, list):
+                return None
+            for version in response:
+                if (
+                    isinstance(version, dict)
+                    and version.get("name", "").lower() == version_name.lower()
+                ):
+                    version_id = version.get("id")
+                    return int(version_id) if version_id is not None else None
+            return None
+        except requests.exceptions.RequestException:
+            logger.exception("Failed to resolve version id for %s", version_name)
+            return None
+
+    def _get_zephyr_status_id(self, result: TestResult) -> int:
+        """Resolve Zephyr execution status id for a result."""
+        cache_key = result.value
+        if cache_key in self._zephyr_status_cache:
+            return self._zephyr_status_cache[cache_key]
+
+        desired_name = {
+            TestResult.PASS: "PASS",
+            TestResult.FAIL: "FAIL",
+            TestResult.BLOCKED: "BLOCKED",
+            TestResult.SKIPPED: "UNEXECUTED",
+            TestResult.NOT_EXECUTED: "UNEXECUTED",
+        }.get(result, "FAIL")
+
+        try:
+            response = self._make_zephyr_request("GET", "util/teststatus")
+            if isinstance(response, list):
+                for status in response:
+                    if not isinstance(status, dict):
+                        continue
+                    name = str(status.get("name", "")).upper()
+                    if name == desired_name:
+                        status_id_value = status.get("id")
+                        if status_id_value is not None:
+                            status_id = int(status_id_value)
+                            self._zephyr_status_cache[cache_key] = status_id
+                            return status_id
+        except requests.exceptions.RequestException:
+            logger.debug("Failed to load Zephyr status list")
+
+        fallback_map = {
+            TestResult.PASS: 2,
+            TestResult.FAIL: 3,
+            TestResult.BLOCKED: 5,
+            TestResult.SKIPPED: 1,
+            TestResult.NOT_EXECUTED: 1,
+        }
+        status_id = fallback_map.get(result, 3)
+        self._zephyr_status_cache[cache_key] = status_id
+        return status_id
+
+    def create_zephyr_test_execution(
+        self,
+        test_case_key: str,
+        test_cycle_key: str | None = None,
+        version_name: str | None = None,
+        environment: str | None = None,
+        initial_status: TestResult | None = None,
+    ) -> str | None:
+        """Create a test execution in Zephyr Essential DC with optional initial status."""
+        project_id = self.zephyr_project_id or self.get_project_id()
+        if not project_id:
+            logger.warning("Zephyr project id not configured")
+            return None
+
+        issue_id = self._get_issue_id(test_case_key)
+        if not issue_id:
+            logger.warning("Unable to resolve issue id for %s", test_case_key)
+            return None
+
+        version_id = (
+            self._get_version_id_by_name(version_name) if version_name else None
+        )
+        cycle_id: int | None = None
+        if test_cycle_key:
+            cycle_id = self._get_zephyr_cycle_id(test_cycle_key, version_id)
+            if cycle_id is None:
+                logger.warning(
+                    "Unable to resolve Zephyr cycle id for %s", test_cycle_key
+                )
+
+        # Set initial status - use provided status or default to NOT_EXECUTED
+        status_to_use = initial_status if initial_status else TestResult.NOT_EXECUTED
+        status_id = self._get_zephyr_status_id(status_to_use)
+
+        logger.info(
+            "Creating Zephyr execution for %s with status %s (ID: %s)",
+            test_case_key,
+            status_to_use.value,
+            status_id,
+        )
+
+        base_payload: dict[str, object] = {
+            "issueId": int(issue_id),
+            "projectId": int(project_id),
+            "cycleId": cycle_id if cycle_id is not None else -1,
+            "versionId": version_id if version_id is not None else -1,
+            "status": str(status_id),
+            "executionStatus": str(status_id),  # Some Zephyr instances use this field
+        }
+
+        if environment:
+            base_payload["environment"] = environment
+
+        payloads = [
+            base_payload,
+            {
+                **base_payload,
+                "testCycleId": base_payload["cycleId"],
+            },
+            # Try with integer status as well
+            {
+                "issueId": int(issue_id),
+                "projectId": int(project_id),
+                "cycleId": cycle_id if cycle_id is not None else -1,
+                "versionId": version_id if version_id is not None else -1,
+                "status": int(status_id),
+                "executionStatus": int(status_id),
+            },
+        ]
+
+        params_list = [
+            {
+                "issueId": base_payload["issueId"],
+                "projectId": base_payload["projectId"],
+                "cycleId": base_payload["cycleId"],
+                "versionId": base_payload["versionId"],
+            }
+        ]
+
+        for payload in payloads:
+            try:
+                logger.info(
+                    "Attempting Zephyr execution creation with payload: %s", payload
+                )
+                response = self._make_zephyr_request("POST", "execution", data=payload)
+
+                # Extract execution ID - Zephyr returns it as the dictionary key
+                execution_id = None
+                if isinstance(response, dict):
+                    # Try standard fields first
+                    execution_id = (
+                        response.get("executionId")
+                        or response.get("id")
+                        or response.get("key")
+                    )
+
+                    # If not found, check if response has nested execution object
+                    if not execution_id and isinstance(response.get("execution"), dict):
+                        execution_id = response["execution"].get("id")
+
+                    # If still not found, the execution ID might be the dictionary key itself
+                    if not execution_id and response:
+                        # Get the first key which should be the execution ID
+                        for key, value in response.items():
+                            if isinstance(value, dict) and value.get("id"):
+                                execution_id = value.get("id") or key
+                                break
+
+                if execution_id:
+                    logger.info(
+                        "Created Zephyr test execution: %s for test case %s",
+                        execution_id,
+                        test_case_key,
+                    )
+                    return str(execution_id)
+                logger.warning(
+                    "Zephyr API returned success but no execution ID in response: %s",
+                    response,
+                )
+            except requests.exceptions.RequestException as e:
+                logger.warning(
+                    "Zephyr execution create failed with payload %s: %s", payload, e
+                )
+                continue
+
+        for params in params_list:
+            try:
+                logger.info(
+                    "Attempting Zephyr execution creation with params: %s", params
+                )
+                response = self._make_zephyr_request(
+                    "POST", "execution", data=base_payload, params=params
+                )
+
+                # Extract execution ID - Zephyr returns it as the dictionary key
+                execution_id = None
+                if isinstance(response, dict):
+                    # Try standard fields first
+                    execution_id = (
+                        response.get("executionId")
+                        or response.get("id")
+                        or response.get("key")
+                    )
+
+                    # If not found, check if response has nested execution object
+                    if not execution_id and isinstance(response.get("execution"), dict):
+                        execution_id = response["execution"].get("id")
+
+                    # If still not found, the execution ID might be the dictionary key itself
+                    if not execution_id and response:
+                        # Get the first key which should be the execution ID
+                        for key, value in response.items():
+                            if isinstance(value, dict) and value.get("id"):
+                                execution_id = value.get("id") or key
+                                break
+
+                if execution_id:
+                    logger.info(
+                        "Created Zephyr test execution: %s for test case %s",
+                        execution_id,
+                        test_case_key,
+                    )
+                    return str(execution_id)
+                logger.warning(
+                    "Zephyr API returned success but no execution ID in response: %s",
+                    response,
+                )
+            except requests.exceptions.RequestException as e:
+                logger.warning(
+                    "Zephyr execution create failed with params %s: %s", params, e
+                )
+                continue
+
+        logger.warning("Failed to create Zephyr test execution for %s", test_case_key)
+        return None
+
+    def update_zephyr_test_execution(
+        self,
+        execution_id: str,
+        result: TestResult,
+        comment: str | None = None,
+        environment: str | None = None,
+    ) -> bool:
+        """Update a Zephyr Essential DC test execution status."""
+        status_id = self._get_zephyr_status_id(result)
+        logger.info(
+            "Updating Zephyr execution %s with status ID %s (result: %s)",
+            execution_id,
+            status_id,
+            result.value,
+        )
+        base_payload: dict[str, object] = {
+            "status": str(status_id),
+            "executionStatus": str(status_id),
+        }
+
+        if comment:
+            base_payload["comment"] = comment
+
+        if environment:
+            base_payload["environment"] = environment
+
+        payloads = [
+            base_payload,
+            {**base_payload, "statusId": str(status_id)},
+            {**base_payload, "status": {"id": str(status_id)}},
+        ]
+
+        # Try different methods and endpoints
+        # Note: Some Zephyr Essential DC instances have limited API support
+        attempts = [
+            # Try PUT with just status in path param
+            ("PUT", f"execution/{execution_id}", {"status": str(status_id)}, {}),
+            # Try PUT with payload
+            (
+                "PUT",
+                f"execution/{execution_id}",
+                None,
+                {
+                    "status": str(status_id),
+                },
+            ),
+            # Try PUT with executionStatus field
+            (
+                "PUT",
+                f"execution/{execution_id}",
+                None,
+                {
+                    "executionStatus": str(status_id),
+                },
+            ),
+            # Try POST (create/update)
+            ("POST", f"execution/{execution_id}", None, base_payload),
+            # Try with id in body
+            (
+                "PUT",
+                f"execution/{execution_id}",
+                None,
+                {
+                    "id": int(execution_id),
+                    "status": str(status_id),
+                },
+            ),
+        ]
+
+        last_error: Exception | None = None
+        for method, endpoint, params, payload in attempts:
+            try:
+                response = self._make_zephyr_request(
+                    method, endpoint, data=payload, params=params
+                )
+                logger.info(
+                    "Successfully updated Zephyr execution %s with %s %s (payload: %s) -> Response: %s",
+                    execution_id,
+                    method,
+                    endpoint,
+                    payload,
+                    response,
+                )
+                return True
+            except requests.exceptions.RequestException as e:
+                logger.debug(
+                    "Failed to update with %s %s (params: %s, payload: %s): %s",
+                    method,
+                    endpoint,
+                    params,
+                    payload,
+                    e,
+                )
+                last_error = e
+                continue
+
+        if last_error:
+            logger.warning("Failed to update Zephyr test execution: %s", last_error)
+        return False
+
+    def add_zephyr_execution_comment(
+        self,
+        execution_id: str,
+        comment: str,
+    ) -> bool:
+        """Add a comment to a Zephyr execution to indicate result (workaround for status update limitations)."""
+        try:
+            response = self._make_zephyr_request(
+                "PUT",
+                f"execution/{execution_id}",
+                data={"comment": comment},
+            )
+            logger.info("Added comment to Zephyr execution %s", execution_id)
+            return True
+        except requests.exceptions.RequestException as e:
+            logger.debug("Failed to add comment to Zephyr execution: %s", e)
+            return False
+
+    def attach_zephyr_execution_files(
+        self, execution_id: str, file_paths: list[str]
+    ) -> None:
+        """Attach files to a Zephyr Essential DC test execution."""
+
+        for file_path in file_paths:
+            try:
+                file_path_obj = Path(file_path)
+                if not file_path_obj.exists():
+                    logger.warning("File not found for attachment: %s", file_path)
+                    continue
+
+                with file_path_obj.open("rb") as file:
+                    content_type = (
+                        "image/png"
+                        if file_path_obj.suffix.lower() == ".png"
+                        else "application/octet-stream"
+                    )
+                    files = {"file": (file_path_obj.name, file, content_type)}
+
+                    self._make_zephyr_request(
+                        "POST",
+                        "attachment",
+                        files=files,
+                        params={"entityId": execution_id, "entityType": "EXECUTION"},
+                    )
+                    logger.info(
+                        "Attached file %s to Zephyr execution %s",
+                        file_path_obj.name,
+                        execution_id,
+                    )
+
+            except (OSError, requests.exceptions.RequestException) as e:
+                logger.warning("Error attaching file %s to Zephyr: %s", file_path, e)
+
     def _get_field_id_by_name(self, field_name: str) -> str | None:
         """Resolve a Jira custom field id by its display name."""
         if field_name in self._field_id_cache:
@@ -358,9 +875,9 @@ class JiraClient:
                 return []
             issue_types = projects[0].get("issuetypes", [])
             return issue_types if isinstance(issue_types, list) else []
-        except requests.exceptions.RequestException:
-            logger.exception(
-                "Failed to fetch issue types for project %s", self.project_key
+        except requests.exceptions.RequestException as e:
+            logger.debug(
+                "Failed to fetch issue types for project %s: %s", self.project_key, e
             )
             return []
 
@@ -399,6 +916,50 @@ class JiraClient:
             logger.debug("Error getting project ID: %s", e)
             return None
 
+    def issue_exists(self, issue_key: str) -> bool:
+        """Check if a Jira issue exists by key."""
+        try:
+            self._make_jira_request(
+                "GET",
+                f"issue/{issue_key}",
+                params={"fields": "key"},
+            )
+            return True
+        except requests.exceptions.RequestException as e:
+            if hasattr(e, "response") and e.response is not None:
+                if e.response.status_code == 404:
+                    return False
+            logger.debug("Failed to resolve issue %s: %s", issue_key, e)
+            return False
+
+    def _escape_jql(self, value: str) -> str:
+        """Escape a string value for JQL usage."""
+        return value.replace("\\", "\\\\").replace('"', '\\"')
+
+    def _get_zephyr_cycle_id(
+        self, cycle_ref: str, version_id: int | None
+    ) -> int | None:
+        """Resolve Zephyr cycle id from numeric id or name."""
+        try:
+            return int(cycle_ref)
+        except ValueError:
+            pass
+
+        cycles = self.get_zephyr_test_cycles(version_id=version_id)
+        for cycle in cycles:
+            if not isinstance(cycle, dict):
+                continue
+            name = str(cycle.get("name") or cycle.get("cycleName") or "")
+            key = str(cycle.get("key") or "")
+            if name.lower() == cycle_ref.lower() or key.lower() == cycle_ref.lower():
+                cycle_id = cycle.get("id")
+                if cycle_id is not None:
+                    try:
+                        return int(cycle_id)
+                    except (TypeError, ValueError):
+                        continue
+        return None
+
     def create_test_case(self, test_case: JiraTestCase) -> str | None:
         """
         Create a test case in Jira as an issue with Test issue type.
@@ -411,6 +972,21 @@ class JiraClient:
         """
         issuetype_candidates = ["Test", "Test Case", "Task"]
         try:
+            issue_key_match = None
+            key_pattern = re.compile(rf"\b{re.escape(self.project_key)}-\d+\b")
+            if test_case.name:
+                issue_key_match = key_pattern.search(test_case.name)
+            if issue_key_match:
+                issue_key = issue_key_match.group(0)
+                if self.issue_exists(issue_key):
+                    logger.info("Test case already exists: %s", issue_key)
+                    return issue_key
+
+            existing_key = self.find_test_case_by_name(test_case.name)
+            if existing_key:
+                logger.info("Test case already exists: %s", existing_key)
+                return existing_key
+
             issue_data = {
                 "fields": {
                     "project": {"key": self.project_key},
@@ -646,17 +1222,50 @@ class JiraClient:
             Issue key of found test case, None if not found
         """
         try:
-            # Search for issues with matching summary in the project
-            jql = (
-                f'project = "{self.project_key}" AND summary ~ "{test_name}" '
-                'AND issuetype = "Test"'
+            issuetype_candidates = ["Test", "Test Case", "Task"]
+            issuetype_filter = ", ".join(
+                f'"{candidate}"' for candidate in issuetype_candidates
+            )
+            escaped_name = self._escape_jql(test_name)
+
+            # Prefer exact summary match
+            exact_jql = (
+                f'project = "{self.project_key}" '
+                f"AND issuetype in ({issuetype_filter}) "
+                f'AND summary = "{escaped_name}"'
             )
 
-            params = {"jql": jql, "maxResults": 1, "fields": "key,summary"}
+            params = {"jql": exact_jql, "maxResults": 1, "fields": "key,summary"}
+            response = self._make_jira_request("GET", "search", params=params)
+            issues = response.get("issues", [])
+            if issues:
+                issue_key = issues[0]["key"]
+                logger.info("Found existing test case: %s", issue_key)
+                return issue_key
 
+            # Fallback to fuzzy match
+            fuzzy_jql = (
+                f'project = "{self.project_key}" '
+                f"AND issuetype in ({issuetype_filter}) "
+                f'AND summary ~ "{escaped_name}"'
+            )
+
+            params = {"jql": fuzzy_jql, "maxResults": 1, "fields": "key,summary"}
             response = self._make_jira_request("GET", "search", params=params)
             issues = response.get("issues", [])
 
+            if issues:
+                issue_key = issues[0]["key"]
+                logger.info("Found existing test case: %s", issue_key)
+                return issue_key
+
+            # Final fallback: search without issuetype filter
+            any_type_jql = (
+                f'project = "{self.project_key}" AND summary = "{escaped_name}"'
+            )
+            params = {"jql": any_type_jql, "maxResults": 1, "fields": "key,summary"}
+            response = self._make_jira_request("GET", "search", params=params)
+            issues = response.get("issues", [])
             if issues:
                 issue_key = issues[0]["key"]
                 logger.info("Found existing test case: %s", issue_key)

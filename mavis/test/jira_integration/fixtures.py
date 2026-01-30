@@ -8,6 +8,7 @@ from collections.abc import Callable, Generator
 import pytest
 from playwright.sync_api import Page
 
+from .auto_fixtures import mark_reported, was_reported
 from .config import JiraConfig
 from .test_reporter import TestReporter
 
@@ -68,7 +69,7 @@ def jira_test_tracker(
         yield None
         return
 
-    test_name = request.node.name
+    test_name = request.node.nodeid
     test_docstring = request.node.function.__doc__ if request.node.function else None
 
     # Create or find test case in JIRA
@@ -120,6 +121,10 @@ def _report_test_results(
     if not (test_case_key and tracker):
         return
 
+    test_name = request.node.name
+    if was_reported(test_name):
+        return
+
     try:
         # Get test result with better error handling
         outcome = "passed"
@@ -140,6 +145,7 @@ def _report_test_results(
             error_message=error_message,
             screenshots=screenshots,
         )
+        mark_reported(test_name)
     except RuntimeError as e:
         warnings.warn(f"Failed to report test result to JIRA: {e}")
 
