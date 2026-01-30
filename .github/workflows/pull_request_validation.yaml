@@ -51,7 +51,6 @@ jobs:
       contents: write
     with:
       git_reference_for_application_image: ${{ needs.identify-target-environment.outputs.mavis_branch }}
-      force_test_suite_run: true
     secrets:
       HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
       MAVIS_TESTING_REPO_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
