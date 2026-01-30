@@ -9,7 +9,13 @@ import pytest
 from _pytest.config import Config
 from _pytest.reports import TestReport
 
-from .auto_fixtures import cleanup_test_data, get_test_case_key, get_test_screenshots
+from .auto_fixtures import (
+    cleanup_test_data,
+    get_test_case_key,
+    get_test_screenshots,
+    mark_reported,
+    was_reported,
+)
 from .jira_reporter import JiraTestReporter
 
 logger = logging.getLogger(__name__)
@@ -73,10 +79,8 @@ def pytest_runtest_logreport(report: TestReport) -> object:
         logger.info("Jira reporter not available or not enabled")
         return
 
-    # Extract test information
-    test_name = (
-        report.nodeid.split("::")[-1] if "::" in report.nodeid else report.nodeid
-    )
+    # Extract test information - use full nodeid for consistency
+    test_name = report.nodeid
 
     # Get test case key and screenshots from the auto-fixture
     test_case_key = get_test_case_key(test_name)
@@ -116,11 +120,19 @@ def pytest_runtest_logreport(report: TestReport) -> object:
 @pytest.hookimpl(trylast=True)
 def pytest_runtest_teardown(item, nextitem):
     """Run after test teardown to report results with screenshots."""
-    if not _jira_reporter or not _jira_reporter.is_enabled():
+    # Extract test information first
+    test_name = item.nodeid
+
+    # CHECK IMMEDIATELY if already reported to avoid any duplicate processing
+    if was_reported(test_name):
+        logger.info(
+            "Test %s already reported at teardown entry, skipping entirely", test_name
+        )
+        cleanup_test_data(test_name)
         return
 
-    # Extract test information
-    test_name = item.nodeid.split("::")[-1] if "::" in item.nodeid else item.nodeid
+    if not _jira_reporter or not _jira_reporter.is_enabled():
+        return
 
     # Get the test result from the stored report
     test_report = getattr(item, "rep_call", None)
@@ -141,6 +153,10 @@ def pytest_runtest_teardown(item, nextitem):
     )
 
     if test_case_key:
+        if was_reported(test_name):
+            logger.info("Test %s already reported, skipping duplicate", test_name)
+            cleanup_test_data(test_name)
+            return
         try:
             # Report test result with screenshots
             jira_result = _jira_reporter.pytest_result_to_jira_result(
@@ -161,6 +177,7 @@ def pytest_runtest_teardown(item, nextitem):
                 error_message=error_message,
                 screenshots=screenshots,
             )
+            mark_reported(test_name)
 
         except Exception as e:
             logger.warning(

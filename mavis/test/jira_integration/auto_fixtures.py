@@ -3,6 +3,7 @@ Auto-use fixtures for automatic Jira integration.
 """
 
 import logging
+import os
 
 import pytest
 
@@ -11,7 +12,36 @@ from .test_reporter import TestReporter
 logger = logging.getLogger(__name__)
 
 # Global storage for test data
-_test_data = {}
+_test_data: dict[str, dict] = {}
+# Track execution IDs to prevent duplicate executions
+_execution_ids: dict[str, str] = {}
+
+
+def get_execution_id(test_case_key: str) -> str | None:
+    """Get the execution ID for a test case if already created."""
+    return _execution_ids.get(test_case_key)
+
+
+def set_execution_id(test_case_key: str, execution_id: str) -> None:
+    """Store execution ID to prevent duplicate creation."""
+    _execution_ids[test_case_key] = execution_id
+
+
+def _get_test_keys(request: pytest.FixtureRequest) -> tuple[str, str]:
+    """Return normalized (nodeid, name) keys for storage/lookup."""
+    nodeid = request.node.nodeid
+    name = request.node.name
+    return nodeid, name
+
+
+def _get_test_data(test_key: str) -> dict:
+    """Get stored test data by nodeid or name."""
+    if test_key in _test_data:
+        return _test_data[test_key]
+    if "::" in test_key:
+        short_name = test_key.split("::")[-1]
+        return _test_data.get(short_name, {})
+    return {}
 
 
 @pytest.fixture(scope="session")
@@ -32,12 +62,11 @@ def jira_reporter_session() -> TestReporter:
 @pytest.fixture(autouse=True)
 def auto_jira_integration(
     request: pytest.FixtureRequest, jira_reporter_session: TestReporter
-) -> None:
+):
     """
     Automatic Jira integration fixture that runs for every test.
     Only activates when proper environment variables are configured.
     """
-    import os
 
     # Skip entirely if no JIRA environment variables are set
     if not any(
@@ -54,23 +83,25 @@ def auto_jira_integration(
         yield
         return
 
-    test_name = request.node.name
+    nodeid, test_name = _get_test_keys(request)
     test_docstring = request.node.function.__doc__ if request.node.function else None
 
     # Check if we've already processed this test in this run
-    if test_name in _test_data:
+    if nodeid in _test_data or test_name in _test_data:
         logger.info(
             "Test case %s already processed, skipping duplicate creation", test_name
         )
         # Still need to continue with fixture setup for pytest
     else:
         # Initialize test data storage
-        _test_data[test_name] = {
+        test_data = {
             "screenshots": [],
             "test_case_key": None,
             "page": None,
             "jira_reporter": jira_reporter_session,
         }
+        _test_data[nodeid] = test_data
+        _test_data[test_name] = test_data
 
         # Create test case in Jira for tracking
         try:
@@ -78,7 +109,7 @@ def auto_jira_integration(
             test_case_key = jira_reporter_session.get_or_create_test_case(
                 test_name, test_docstring or ""
             )
-            _test_data[test_name]["test_case_key"] = test_case_key
+            test_data["test_case_key"] = test_case_key
             logger.info("Created test case %s for %s", test_case_key, test_name)
         except Exception as e:
             logger.warning("Failed to create test case for %s: %s", test_name, e)
@@ -90,9 +121,10 @@ def auto_jira_integration(
     page = None
     try:
         page = request.getfixturevalue("page")
-        _test_data[test_name]["page"] = page
+        test_data = _test_data.get(nodeid) or _test_data.get(test_name)
+        if test_data is not None:
+            test_data["page"] = page
     except pytest.FixtureNotAvailable:
-        # Test doesn't use page fixture - that's fine
         pass
     except Exception as e:
         # Other error getting page - log but don't fail the test
@@ -105,7 +137,7 @@ def auto_jira_integration(
 
     # After test execution - handle screenshots with timeout protection
     try:
-        _handle_post_test_screenshots(request, test_name, jira_reporter_session)
+        _handle_post_test_screenshots(request, nodeid, jira_reporter_session)
     except Exception as e:
         logger.info("Error in post-test screenshot handling for %s: %s", test_name, e)
 
@@ -120,7 +152,7 @@ def _handle_post_test_screenshots(
     jira_reporter_session: TestReporter,
 ) -> None:
     """Handle screenshot capture after test execution with proper timeout and error handling."""
-    test_data = _test_data.get(test_name, {})
+    test_data = _get_test_data(test_name)
     page = test_data.get("page")
     test_case_key = test_data.get("test_case_key")
 
@@ -163,14 +195,32 @@ def _handle_post_test_screenshots(
 
 def get_test_screenshots(test_name: str) -> list[str]:
     """Get screenshots for a specific test (used by hooks)."""
-    return _test_data.get(test_name, {}).get("screenshots", [])
+    return _get_test_data(test_name).get("screenshots", [])
 
 
 def get_test_case_key(test_name: str) -> str | None:
     """Get JIRA test case key for a specific test (used by hooks)."""
-    return _test_data.get(test_name, {}).get("test_case_key")
+    return _get_test_data(test_name).get("test_case_key")
+
+
+def was_reported(test_name: str) -> bool:
+    """Check if a test has already been reported."""
+    return bool(_get_test_data(test_name).get("reported"))
+
+
+def mark_reported(test_name: str) -> None:
+    """Mark a test as reported to avoid duplicate executions."""
+    test_data = _get_test_data(test_name)
+    if not test_data:
+        _test_data[test_name] = {"reported": True}
+        return
+    test_data["reported"] = True
 
 
 def cleanup_test_data(test_name: str) -> None:
     """Clean up test data after reporting."""
     _test_data.pop(test_name, None)
+    # Also clean up execution ID tracking
+    test_case_key = get_test_case_key(test_name)
+    if test_case_key:
+        _execution_ids.pop(test_case_key, None)

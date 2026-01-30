@@ -83,6 +83,9 @@ class JiraTestReporter:
                 self.config.jira_username or "",
                 self.config.jira_api_token or "",
                 self.config.project_key,
+                zephyr_api_token=self.config.zephyr_api_token,
+                zephyr_project_id=self.config.zephyr_project_id,
+                zephyr_url=self.config.zephyr_url,
             )
 
             # Create or get test plan for current session
@@ -237,6 +240,14 @@ class JiraTestReporter:
 
         return "".join(parts)
 
+    def _extract_issue_key(self, text: str) -> str | None:
+        """Extract a Jira issue key from text when present."""
+        if not text:
+            return None
+        pattern = re.compile(rf"\b{re.escape(self.config.project_key)}-\d+\b")
+        match = pattern.search(text)
+        return match.group(0) if match else None
+
     @retry_on_failure(max_retries=3, delay=1.0)
     def get_or_create_test_case(
         self, test_name: str, docstring: str = ""
@@ -255,7 +266,15 @@ class JiraTestReporter:
             logger.warning("Jira client not initialized")
             return None
 
-        # First, try to find existing test case
+        # First, try to use a Jira issue key if provided
+        issue_key = self._extract_issue_key(test_name) or self._extract_issue_key(
+            docstring
+        )
+        if issue_key and self.client.issue_exists(issue_key):
+            logger.info("Using existing test case by key: %s", issue_key)
+            return issue_key
+
+        # Next, try to find existing test case by name
         test_case_key = self.client.find_test_case_by_name(test_name)
         if test_case_key:
             logger.info("Found existing test case: %s", test_case_key)
@@ -326,7 +345,6 @@ class JiraTestReporter:
         }
         return mapping.get(pytest_outcome.lower(), TestResult.FAIL)
 
-    @retry_on_failure(max_retries=3, delay=1.0)
     def report_test_result(
         self,
         test_case_key: str,
@@ -352,21 +370,73 @@ class JiraTestReporter:
             logger.warning("Jira client not initialized")
             return
 
-        try:
-            # Step 1: Create ATM test execution (Tests module)
-            execution_key = self.client.create_atm_test_execution(
-                test_case_key=test_case_key,
-                test_cycle_version=self.config.test_cycle_version,
-                test_cycle_key=self.config.test_cycle_key,
-                environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
-            )
+        # Import here to avoid circular dependency
+        from .auto_fixtures import get_execution_id, set_execution_id
 
-            # Fallback to Jira issue-based execution if ATM is unavailable
-            if not execution_key:
+        # Check if we already created an execution for this test case
+        existing_execution_id = get_execution_id(test_case_key)
+        if existing_execution_id:
+            logger.info(
+                "Execution %s already exists for %s, skipping duplicate creation",
+                existing_execution_id,
+                test_case_key,
+            )
+            # Don't try to update, Zephyr Essential DC doesn't support status updates
+            logger.warning(
+                "Zephyr Essential DC does not support execution status updates via API. "
+                "Status will remain as initially created."
+            )
+            return
+
+        zephyr_enabled = bool(self.config.zephyr_url or self.config.zephyr_api_token)
+
+        # Step 1: Create Zephyr test execution WITH the final status
+        # (Zephyr Essential DC doesn't support updates, so we set status at creation)
+        execution_key = self.client.create_zephyr_test_execution(
+            test_case_key=test_case_key,
+            test_cycle_key=self.config.test_cycle_key,
+            version_name=self.config.test_cycle_version,
+            environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
+            initial_status=result,  # Set the status at creation time
+        )
+
+        # Store execution ID to prevent duplicates
+        if execution_key:
+            set_execution_id(test_case_key, execution_key)
+            logger.info(
+                "Created and stored execution %s for %s with status %s",
+                execution_key,
+                test_case_key,
+                result.value,
+            )
+        else:
+            # Fallback to ATM test execution if Zephyr is unavailable
+            if not zephyr_enabled:
+                logger.info(
+                    "Zephyr execution failed, falling back to ATM for %s",
+                    test_case_key,
+                )
+                execution_key = self.client.create_atm_test_execution(
+                    test_case_key=test_case_key,
+                    test_cycle_version=self.config.test_cycle_version,
+                    test_cycle_key=self.config.test_cycle_key,
+                    environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
+                )
+                if execution_key:
+                    set_execution_id(test_case_key, execution_key)
+
+            # Final fallback to Jira issue-based execution
+            if not execution_key and not zephyr_enabled:
+                logger.info(
+                    "ATM execution failed, falling back to Jira issue-based for %s",
+                    test_case_key,
+                )
                 execution_key = self.client.start_test_execution(
                     test_case_key=test_case_key,
                     test_cycle_key=self.current_test_plan_key,
                 )
+                if execution_key:
+                    set_execution_id(test_case_key, execution_key)
 
             if not execution_key:
                 logger.warning("Failed to start test execution for %s", test_case_key)
@@ -374,43 +444,58 @@ class JiraTestReporter:
 
             logger.info("Started test execution: %s", execution_key)
 
-            # Step 2: Update test execution with results
-            screenshots_to_attach = (
-                screenshots
-                if result != TestResult.PASS or self.config.attach_passed_screenshots
-                else []
-            )
+        # Step 2: Add result as comment on the Jira test case issue
+        # (Zephyr execution API is too limited, but Jira issue comments work)
+        result_comment = f"*Automated Test Execution {execution_key}*\n\n"
+        result_comment += f"Result: *{result.value}*\n"
+        result_comment += (
+            f"Timestamp: {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')} UTC\n"
+        )
+        if error_message:
+            result_comment += f"\nError details:\n{{code}}\n{error_message}\n{{code}}"
 
-            update_success = self.client.update_atm_test_execution(
-                execution_key=execution_key,
-                result=result,
-                comment=error_message,
-                environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
-            )
+        comment_added = self.client._add_comment(test_case_key, result_comment)
 
-            if update_success and screenshots_to_attach:
-                self.client.attach_atm_execution_files(
-                    execution_key, screenshots_to_attach
-                )
-
-            # Fallback for Jira issue-based execution if ATM update fails
-            if not update_success:
-                update_success = self.client.update_test_execution(
-                    execution_key=execution_key,
-                    result=result,
-                    error_message=error_message,
-                    screenshots=screenshots_to_attach,
-                    environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
-                    test_cycle_version=self.config.test_cycle_version,
-                )
-
+        if comment_added:
             logger.info(
-                "Updated test execution %s with result: %s",
+                "Added result comment to test case %s: %s", test_case_key, result.value
+            )
+        else:
+            logger.warning(
+                "Could not add comment to execution %s - result is %s",
                 execution_key,
                 result.value,
             )
 
-            logger.info("Ended test execution: %s", execution_key)
+        # Step 3: Attach screenshots
+        screenshots_to_attach = (
+            screenshots
+            if result != TestResult.PASS or self.config.attach_passed_screenshots
+            else []
+        )
+
+        # Attach screenshots if any
+        if screenshots_to_attach:
+            logger.info(
+                "Attaching %d screenshots to execution %s",
+                len(screenshots_to_attach),
+                execution_key,
+            )
+            self.client.attach_zephyr_execution_files(
+                execution_key, screenshots_to_attach
+            )
+        else:
+            logger.info("No screenshots to attach for execution %s", execution_key)
+
+        logger.info(
+            "Completed test execution %s with result: %s",
+            execution_key,
+            result.value,
+        )
+
+        # End execution (only for non-Zephyr executions)
+        # Zephyr executions don't need explicit ending
+        if not zephyr_enabled:
             end_success = self.client.end_test_execution(
                 execution_key=execution_key,
                 result=result,
@@ -420,10 +505,6 @@ class JiraTestReporter:
                 logger.warning("Failed to end test execution %s", execution_key)
             else:
                 logger.info("Ended test execution: %s", execution_key)
-
-        except RuntimeError:
-            logger.exception("Error reporting test result")
-            raise
 
     def take_screenshot(
         self, page: Page, test_name: str, suffix: str = ""
