@@ -1,5 +1,5 @@
 """
-Data models for JIRA integration.
+Data models for JIRA test management integration.
 """
 
 from dataclasses import dataclass
@@ -8,20 +8,21 @@ from enum import Enum
 
 
 class TestResult(Enum):
-    """Test result enumeration for Jira."""
+    """Test result enumeration for test management."""
 
     PASS = "Pass"  # noqa: S105
     FAIL = "Fail"
     BLOCKED = "Blocked"
-    SKIPPED = "To Do"
+    NOT_EXECUTED = "Not Executed"
     IN_PROGRESS = "In Progress"
+    SKIPPED = "Skipped"
 
 
 @dataclass
 class TestStep:
-    """Represents a test step in JIRA."""
+    """Represents a test step."""
 
-    step: str
+    description: str
     expected_result: str
     actual_result: str | None = None
     status: TestResult | None = None
@@ -29,30 +30,47 @@ class TestStep:
 
 @dataclass
 class JiraTestCase:
-    """Represents a test case in Jira."""
+    """Represents a JIRA test case."""
 
-    summary: str
+    name: str
     description: str
-    test_steps: list[TestStep]
-    project_key: str
-    priority: str = "Medium"
+    precondition: str | None = None
+    test_steps: list[TestStep] | None = None
+    project_id: int | None = None
+    priority: str = "Normal"
     labels: list[str] | None = None
-    folder: str | None = None
+    folder_id: int | None = None
     objective: str | None = None
-    issue_key: str | None = None
-    issue_id: int | None = None
+    test_case_id: int | None = None
+    key: str | None = None
+
+
+@dataclass
+class JiraTestCycle:
+    """Represents a JIRA test cycle."""
+
+    name: str
+    description: str | None = None
+    project_id: int | None = None
+    planned_start_date: datetime | None = None
+    planned_end_date: datetime | None = None
+    folder_id: int | None = None
+    cycle_id: int | None = None
+    key: str | None = None
 
 
 @dataclass
 class JiraTestExecution:
-    """Represents a test execution in Jira."""
+    """Represents a JIRA test execution."""
 
     test_case_key: str
-    test_plan_key: str | None = None
-    execution_status: TestResult = TestResult.IN_PROGRESS
+    test_cycle_key: str | None = None
+    execution_status: TestResult = TestResult.NOT_EXECUTED
     executed_by: str | None = None
     execution_date: datetime | None = None
     comment: str | None = None
-    attachments: list[str] | None = None  # File paths to attachments
-    execution_key: str | None = None
+    attachments: list[str] | None = None
+    execution_id: int | None = None
     environment: str | None = None
+    actual_end_date: datetime | None = None
+    execution_time: int | None = None

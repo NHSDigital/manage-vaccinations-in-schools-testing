@@ -2,13 +2,14 @@
 Pytest fixtures for JIRA integration.
 """
 
+import warnings
 from collections.abc import Callable, Generator
 
 import pytest
 from playwright.sync_api import Page
 
 from .config import JiraConfig
-from .jira_reporter import JiraTestReporter
+from .test_reporter import TestReporter
 
 
 class JiraTestTracker:
@@ -18,7 +19,7 @@ class JiraTestTracker:
         self,
         test_case_key: str,
         screenshots: list[str],
-        jira_reporter: JiraTestReporter,
+        jira_reporter: TestReporter,
     ) -> None:
         self.test_case_key = test_case_key
         self.screenshots = screenshots
@@ -37,9 +38,9 @@ def jira_config() -> JiraConfig:
 
 
 @pytest.fixture(scope="session")
-def jira_reporter(jira_config: JiraConfig) -> JiraTestReporter:
-    """Session-scoped JIRA reporter fixture."""
-    return JiraTestReporter(jira_config)
+def jira_reporter(jira_config: JiraConfig) -> TestReporter:
+    """Session-scoped JIRA test reporter fixture."""
+    return TestReporter(jira_config)
 
 
 # Add pytest hook to capture test results properly
@@ -52,7 +53,7 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
 @pytest.fixture
 def jira_test_tracker(
     request: pytest.FixtureRequest,
-    jira_reporter: JiraTestReporter,
+    jira_reporter: TestReporter,
     page: Page,
 ) -> Generator[JiraTestTracker | None]:
     """
@@ -77,7 +78,7 @@ def jira_test_tracker(
             test_name, test_docstring or ""
         )
     except RuntimeError as e:
-        pytest.warnings.warn(f"Failed to create/update JIRA test case: {e}")
+        warnings.warn(f"Failed to create/update JIRA test case: {e}")
 
     screenshots = []
 
@@ -93,7 +94,7 @@ def jira_test_tracker(
                         self.screenshots.append(screenshot_path)
                         return screenshot_path
             except RuntimeError as e:
-                pytest.warnings.warn(f"Failed to take screenshot: {e}")
+                warnings.warn(f"Failed to take screenshot: {e}")
             return None
 
     tracker = (
@@ -113,7 +114,7 @@ def _report_test_results(
     test_case_key: str | None,
     tracker: JiraTestTracker | None,
     screenshots: list[str],
-    jira_reporter: JiraTestReporter,
+    jira_reporter: TestReporter,
 ) -> None:
     """Report test results to JIRA."""
     if not (test_case_key and tracker):
@@ -140,7 +141,7 @@ def _report_test_results(
             screenshots=screenshots,
         )
     except RuntimeError as e:
-        pytest.warnings.warn(f"Failed to report test result to JIRA: {e}")
+        warnings.warn(f"Failed to report test result to JIRA: {e}")
 
 
 @pytest.fixture
@@ -148,7 +149,8 @@ def jira_screenshot(
     jira_test_tracker: JiraTestTracker | None,
 ) -> Callable[[str], str | None]:
     """
-    Convenience fixture for taking screenshots that are automatically attached to JIRA.
+    Convenience fixture for taking screenshots that are automatically
+    attached to JIRA.
 
     Returns:
         A callable that takes an optional step name and returns the screenshot path

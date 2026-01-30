@@ -1,7 +1,3 @@
-"""
-Jira test reporter for pytest integration.
-"""
-
 import logging
 import os
 import re
@@ -14,7 +10,6 @@ from typing import TypeVar
 from playwright.sync_api import Page
 
 from .config import JiraConfig
-from .jira_client import JiraClient
 from .models import JiraTestCase, TestResult, TestStep
 
 logger = logging.getLogger(__name__)
@@ -57,71 +52,52 @@ def retry_on_failure(
     return decorator
 
 
-class JiraTestReporter:
-    """Handles Jira test reporting integration."""
+class TestReporter:
+    """Handles test reporting integration with JIRA."""
 
     def __init__(self, config: JiraConfig | None = None) -> None:
-        """Initialize Jira reporter with configuration."""
+        """Initialize test reporter with JIRA configuration."""
         self.config = config or JiraConfig.from_env()
         self.client = None
-        self.current_test_plan_key = None
+        self.jira_reporter = None
+        self.current_test_cycle_key = None
 
         # Create screenshots directory
         self.config.screenshots_dir.mkdir(exist_ok=True)
 
         # Only initialize if configuration is valid and enabled
         if not self.config.is_valid():
-            logger.debug("Jira integration disabled: Invalid or disabled configuration")
+            logger.debug("Integration disabled: Invalid or disabled configuration")
             return
 
-        # Initialize Jira client
-        try:
-            self.client = JiraClient(
-                self.config.jira_url.removesuffix("/rest/api/2/")
-                if self.config.jira_url
-                else "",
-                self.config.jira_username or "",
-                self.config.jira_api_token or "",
-                self.config.project_key,
+        if not any(
+            [
+                os.getenv("JIRA_URL"),
+                os.getenv("JIRA_API_TOKEN"),
+            ]
+        ):
+            logger.debug(
+                "Integration disabled: No JIRA environment variables configured"
             )
-
-            # Create or get test plan for current session
-            self._initialize_test_plan()
-        except RuntimeError as e:
-            logger.info("Failed to initialize Jira client: %s", e)
-            self.client = None
-
-    def _initialize_test_plan(self) -> None:
-        """Initialize test plan for current test session."""
-        if not self.client:
             return
 
-        plan_name = (
-            f"Automated Test Plan - "
-            f"{datetime.now(tz=UTC).strftime('%Y-%m-%d %H:%M:%S')}"
-        )
-        plan_description = "Automated test execution plan created by pytest integration"
+        # Check if we should use JIRA integration
+        if self.config.use_jira_integration():
+            logger.info("Using JIRA integration")
+            try:
+                # Avoid circular dependency
+                from .jira_reporter import JiraTestReporter  # noqa: PLC0415
 
-        try:
-            self.current_test_plan_key = self.client.create_test_plan(
-                plan_name, plan_description
-            )
-            if not self.current_test_plan_key:
-                logger.warning("Failed to create test plan - continuing without plan")
-                # Don't disable client, just continue without test plan
-            else:
-                logger.info(
-                    "Created test plan with key: %s", self.current_test_plan_key
-                )
-        except RuntimeError as e:
-            logger.warning(
-                "Failed to initialize test plan: %s - continuing without plan", e
-            )
-            # Don't disable client, just continue without test plan
+                self.jira_reporter = JiraTestReporter(self.config)
+                logger.info("JIRA integration enabled")
+                return
+            except Exception as e:
+                logger.info("Failed to initialize JIRA client: %s", e)
+                self.client = None
 
     def is_enabled(self) -> bool:
-        """Check if Jira integration is enabled."""
-        return self.client is not None
+        """Check if integration is enabled."""
+        return self.jira_reporter is not None or self.client is not None
 
     def parse_test_steps_from_docstring(self, docstring: str) -> list[TestStep]:
         """
@@ -200,7 +176,10 @@ class JiraTestReporter:
         return current_step, steps
 
     def _process_step_line(
-        self, line: str, current_step: TestStep | None, steps: list[TestStep]
+        self,
+        line: str,
+        current_step: TestStep | None,
+        steps: list[TestStep],
     ) -> tuple[TestStep | None, list[TestStep]]:
         """Process a line in the steps section."""
         if re.match(r"^\d+\.", line):
@@ -212,47 +191,27 @@ class JiraTestReporter:
             current_step.description += f" {line}"
         return current_step, steps
 
-    def _format_test_steps_as_description(
-        self, description: str, test_steps: list[TestStep]
-    ) -> str:
-        """Format test steps as text to include in the description field."""
-        if not test_steps:
-            return description
-
-        # Build the full description with test steps
-        parts = []
-
-        # Add the original description if present
-        if description:
-            parts.append(description)
-            parts.append("\n\n")
-
-        # Add test steps section
-        parts.append("h3. Test Steps\n\n")
-        for i, step in enumerate(test_steps, 1):
-            parts.append(f"{i}. {step.description}\n")
-            if step.expected_result:
-                parts.append(f"   *Expected:* {step.expected_result}\n")
-            parts.append("\n")
-
-        return "".join(parts)
-
     @retry_on_failure(max_retries=3, delay=1.0)
     def get_or_create_test_case(
         self, test_name: str, docstring: str = ""
     ) -> str | None:
         """
-        Get existing test case or create a new one in Jira.
+        Get existing test case or create a new one.
 
         Args:
             test_name: Name of the test
             docstring: Test docstring containing steps
 
         Returns:
-            Test case issue key if successful, None otherwise
+            Test case key if successful, None otherwise
         """
+        # Use JIRA reporter if available
+        if self.jira_reporter:
+            return self.jira_reporter.get_or_create_test_case(test_name, docstring)
+
+        # Legacy fallback (deprecated)
         if not self.client:
-            logger.warning("Jira client not initialized")
+            logger.warning("No integration client initialized")
             return None
 
         # First, try to find existing test case
@@ -271,8 +230,8 @@ class JiraTestReporter:
         test_case = JiraTestCase(
             name=test_name,
             description=full_description,
-            test_steps=(full_description and test_steps) or None,
-            objective=base_description,
+            test_steps=None,  # Don't use separate test_steps field, include in description
+            precondition=base_description,
         )
 
         try:
@@ -308,9 +267,34 @@ class JiraTestReporter:
 
         return " ".join(description_lines)
 
+    def _format_test_steps_as_description(
+        self, description: str, test_steps: list[TestStep]
+    ) -> str:
+        """Format test steps as text to include in the description field."""
+        if not test_steps:
+            return description
+
+        # Build the full description with test steps
+        parts = []
+
+        # Add the original description if present
+        if description:
+            parts.append(description)
+            parts.append("\n\n")
+
+        # Add test steps section
+        parts.append("h3. Test Steps\n\n")
+        for i, step in enumerate(test_steps, 1):
+            parts.append(f"{i}. {step.description}\n")
+            if step.expected_result:
+                parts.append(f"   *Expected:* {step.expected_result}\n")
+            parts.append("\n")
+
+        return "".join(parts)
+
     def pytest_result_to_jira_result(self, pytest_outcome: str) -> TestResult:
         """
-        Convert pytest result to Jira result.
+        Convert pytest result to JIRA test execution result.
 
         Args:
             pytest_outcome: pytest test outcome
@@ -321,7 +305,7 @@ class JiraTestReporter:
         mapping = {
             "passed": TestResult.PASS,
             "failed": TestResult.FAIL,
-            "skipped": TestResult.SKIPPED,
+            "skipped": TestResult.NOT_EXECUTED,
             "blocked": TestResult.BLOCKED,
         }
         return mapping.get(pytest_outcome.lower(), TestResult.FAIL)
@@ -335,7 +319,7 @@ class JiraTestReporter:
         screenshots: list[str] | None = None,
     ) -> None:
         """
-        Report test execution result to Jira.
+        Report test execution result.
 
         This method follows the workflow:
         1. Start test execution
@@ -343,13 +327,21 @@ class JiraTestReporter:
         3. End test execution
 
         Args:
-            test_case_key: Test case issue key in Jira
+            test_case_key: Test case key
             result: Test execution result
             error_message: Error message if test failed
             screenshots: List of screenshot file paths
         """
+        # Use JIRA reporter if available
+        if self.jira_reporter:
+            self.jira_reporter.report_test_result(
+                test_case_key, result, error_message, screenshots
+            )
+            return
+
+        # Legacy fallback (deprecated)
         if not self.client:
-            logger.warning("Jira client not initialized")
+            logger.warning("No integration client initialized")
             return
 
         try:
@@ -358,14 +350,14 @@ class JiraTestReporter:
                 test_case_key=test_case_key,
                 test_cycle_version=self.config.test_cycle_version,
                 test_cycle_key=self.config.test_cycle_key,
-                environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
+                environment=os.getenv("TEST_ENVIRONMENT", "local"),
             )
 
             # Fallback to Jira issue-based execution if ATM is unavailable
             if not execution_key:
                 execution_key = self.client.start_test_execution(
                     test_case_key=test_case_key,
-                    test_cycle_key=self.current_test_plan_key,
+                    test_cycle_key=self.current_test_cycle_key,
                 )
 
             if not execution_key:
@@ -380,12 +372,11 @@ class JiraTestReporter:
                 if result != TestResult.PASS or self.config.attach_passed_screenshots
                 else []
             )
-
             update_success = self.client.update_atm_test_execution(
                 execution_key=execution_key,
                 result=result,
                 comment=error_message,
-                environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
+                environment=os.getenv("TEST_ENVIRONMENT", "local"),
             )
 
             if update_success and screenshots_to_attach:
@@ -393,24 +384,27 @@ class JiraTestReporter:
                     execution_key, screenshots_to_attach
                 )
 
-            # Fallback for Jira issue-based execution if ATM update fails
             if not update_success:
                 update_success = self.client.update_test_execution(
                     execution_key=execution_key,
                     result=result,
                     error_message=error_message,
                     screenshots=screenshots_to_attach,
-                    environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
+                    executed_by="Automated Tester",
+                    environment=os.getenv("TEST_ENVIRONMENT", "local"),
                     test_cycle_version=self.config.test_cycle_version,
                 )
 
-            logger.info(
-                "Updated test execution %s with result: %s",
-                execution_key,
-                result.value,
-            )
+            if not update_success:
+                logger.warning("Failed to update test execution %s", execution_key)
+            else:
+                logger.info(
+                    "Updated test execution %s with result: %s",
+                    execution_key,
+                    result.value,
+                )
 
-            logger.info("Ended test execution: %s", execution_key)
+            # Step 3: End test execution
             end_success = self.client.end_test_execution(
                 execution_key=execution_key,
                 result=result,
@@ -429,7 +423,7 @@ class JiraTestReporter:
         self, page: Page, test_name: str, suffix: str = ""
     ) -> str | None:
         """
-        Take a screenshot and save it.
+        Take a screenshot and save it with timeout protection.
 
         Args:
             page: Playwright page object
@@ -440,6 +434,15 @@ class JiraTestReporter:
             Screenshot file path if successful, None otherwise
         """
         try:
+            # Check if page is still available with timeout
+            try:
+                page.wait_for_load_state(
+                    "domcontentloaded", timeout=1000
+                )  # 1 second timeout
+            except Exception:
+                logger.info("Page not responsive for screenshot, skipping")
+                return None
+
             timestamp = datetime.now(tz=UTC).strftime("%Y%m%d_%H%M%S")
             filename = (
                 f"{test_name}_{suffix}_{timestamp}.png"
@@ -448,10 +451,20 @@ class JiraTestReporter:
             )
             screenshot_path = self.config.screenshots_dir / filename
 
-            page.screenshot(path=str(screenshot_path), full_page=True)
+            # Take screenshot with timeout
+            page.screenshot(
+                path=str(screenshot_path), full_page=True, timeout=3000
+            )  # 3 second timeout
             logger.info("Screenshot saved: %s", screenshot_path)
             return str(screenshot_path)
 
-        except RuntimeError as e:
-            logger.warning("Failed to take screenshot: %s", e)
+        except Exception as e:
+            logger.warning("Failed to take screenshot for %s: %s", test_name, e)
             return None
+
+    # Backward compatibility methods
+    def create_or_update_test_case(
+        self, test_name: str, docstring: str = ""
+    ) -> str | None:
+        """Backward compatibility alias for get_or_create_test_case."""
+        return self.get_or_create_test_case(test_name, docstring)
