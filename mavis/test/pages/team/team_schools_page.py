@@ -72,6 +72,7 @@ class TeamSchoolsPage:
             school.name for school_list in schools.values() for school in school_list
         }
 
+        self.page.wait_for_load_state()
         hidden_select = self.page.locator("#draft-school-site-urn-field-select")
         options = hidden_select.locator("option[value]").all()
 
@@ -134,7 +135,6 @@ class TeamSchoolsPage:
         table = self.page.locator("table.nhsuk-table")
         expect(table).to_contain_text(new_site_name)
         expect(table).to_contain_text(new_site_urn)
-        self.page.pause()
         expect(table).to_contain_text(old_school_urn)
 
     def click_continue(self) -> None:

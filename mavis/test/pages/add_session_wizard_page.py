@@ -72,8 +72,22 @@ class AddSessionWizardPage:
         self.page.wait_for_load_state()
         self.page.reload()  # to allow combobox to be interactable
 
-        self.select_a_school_combobox.fill(str(school))
-        self.page.get_by_role("option", name=str(school)).click()
+        school_name = str(school)
+        self.select_a_school_combobox.fill(school_name)
+
+        options = self.page.locator('[class*="app-autocomplete__option"]')
+        count = options.count()
+
+        for i in range(count):
+            option = options.nth(i)
+            text = option.inner_text().strip()
+            first_line = text.split("\n", 1)[0].strip()
+            if first_line == school_name:
+                option.click()
+                break
+        else:
+            msg = f"No autocomplete option found for school: {school_name}"
+            raise AssertionError(msg)
 
     @step("Click Continue")
     def click_continue(self) -> None:

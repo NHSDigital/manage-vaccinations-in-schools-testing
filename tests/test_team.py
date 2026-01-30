@@ -105,8 +105,8 @@ def test_site_child_record_import(
     - The imported child appears under the original school site (A).
     - The imported child does not appear under the new school site (B).
     """
-    school = schools[Programme.HPV.group][0]
-    child = children[Programme.HPV][0]
+    school = schools[Programme.FLU][0]
+    child = children[Programme.FLU][0]
 
     new_site_name = f"{school} (Site B)"
 
@@ -119,7 +119,7 @@ def test_site_child_record_import(
     TeamSchoolsPage(page).confirm_site()
 
     input_file_path, output_file_path = file_generator.get_file_paths(
-        file_mapping=ChildFileMapping.FIXED_CHILD,
+        file_mapping=ChildFileMapping.FIXED_CHILD, programme_group=Programme.FLU.group
     )
 
     TeamSchoolsPage(page).header.click_mavis_header()
