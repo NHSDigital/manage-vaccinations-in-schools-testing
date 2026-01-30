@@ -33,9 +33,7 @@ class TeamSchoolsPage:
             "textbox", name="Postcode"
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
-        self.confirm_site_button = self.page.get_by_role(
-            "button", name="Add school site"
-        )
+        self.confirm_site_button = self.page.get_by_role("button", name="Add site")
         self.name_error_summary = self.page.locator("#draft-school-site-name-error")
         self.confirm_school_name = self.page.locator("#confirm-school-site-name")
 
