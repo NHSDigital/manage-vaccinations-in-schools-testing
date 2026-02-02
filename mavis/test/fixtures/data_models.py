@@ -43,6 +43,12 @@ def reset_before_each_module(base_url, team) -> None:
     response = requests.delete(url, params={"keep_itself": "true"}, timeout=30)
     _check_response_status(response)
 
+    url = urllib.parse.urljoin(
+        base_url, f"api/testing/teams/{team.workgroup}/locations"
+    )
+    response = requests.delete(url, params={"keep_base_locations": "true"}, timeout=30)
+    _check_response_status(response)
+
 
 @pytest.fixture(scope="session")
 def year_groups() -> dict[str, int]:
