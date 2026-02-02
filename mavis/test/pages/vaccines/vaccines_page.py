@@ -18,11 +18,6 @@ class VaccinesPage:
     def click_add_batch(self, vaccine: Vaccine) -> None:
         self.page.get_by_role("link", name=f"Add a new {vaccine} batch").click()
 
-    @step("Change {2} batch for {1}")
-    def click_change_batch(self, vaccine: Vaccine, batch_name: str) -> None:
-        name = f"Change {batch_name} batch of {vaccine}"
-        self.page.get_by_role("link", name=name).click()
-
     @step("Archive {2} batch for {1}")
     def click_archive_batch(self, vaccine: Vaccine, batch_name: str) -> None:
         name = f"Archive {batch_name} batch of {vaccine}"

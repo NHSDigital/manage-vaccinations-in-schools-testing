@@ -39,7 +39,7 @@ from .unmatched_responses import (
     UnmatchedConsentResponsesPage,
 )
 from .vaccination_record import EditVaccinationRecordPage, VaccinationRecordPage
-from .vaccines import AddBatchPage, ArchiveBatchPage, EditBatchPage, VaccinesPage
+from .vaccines import AddBatchPage, ArchiveBatchPage, VaccinesPage
 
 __all__ = [
     "AddBatchPage",
@@ -56,7 +56,6 @@ __all__ = [
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",
     "DownloadSchoolMovesPage",
-    "EditBatchPage",
     "EditVaccinationRecordPage",
     "FlipperPage",
     "GillickCompetencePage",
