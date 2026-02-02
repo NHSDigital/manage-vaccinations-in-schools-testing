@@ -44,8 +44,10 @@ class JiraConfig:
                 "JIRA_ATTACH_PASSED_SCREENSHOTS", "false"
             ).lower()
             == "true",
-            test_cycle_version=os.getenv("JIRA_TEST_CYCLE_VERSION"),
-            test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY"),
+            test_cycle_version=os.getenv(
+                "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
+            ),
+            test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
             zephyr_api_token=os.getenv("ZEPHYR_API_TOKEN"),
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
             zephyr_url=os.getenv("ZEPHYR_URL"),
@@ -113,8 +115,10 @@ class JiraIntegrationConfig:
                 "JIRA_ATTACH_PASSED_SCREENSHOTS", "false"
             ).lower()
             == "true",
-            test_cycle_version=os.getenv("JIRA_TEST_CYCLE_VERSION"),
-            test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY"),
+            test_cycle_version=os.getenv(
+                "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
+            ),
+            test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
             zephyr_api_token=os.getenv("ZEPHYR_API_TOKEN"),
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
             zephyr_url=os.getenv("ZEPHYR_URL"),

@@ -4,12 +4,34 @@ Jira REST API client for test management.
 
 import logging
 import re
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import NamedTuple
 
 import requests
 
 from .models import JiraTestCase, JiraTestExecution, TestResult
+
+
+class TestExecutionUpdate(NamedTuple):
+    """Parameters for updating a test execution."""
+
+    result: TestResult
+    error_message: str | None = None
+    screenshots: list[str] | None = None
+    environment: str | None = None
+    test_cycle_version: str | None = None
+
+
+@dataclass
+class ZephyrConfig:
+    """Configuration for Zephyr integration."""
+
+    api_token: str | None = None
+    project_id: str | None = None
+    url: str | None = None
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,17 +45,20 @@ class JiraClient:
         username: str,
         api_token: str,
         project_key: str,
-        zephyr_api_token: str | None = None,
-        zephyr_project_id: str | None = None,
-        zephyr_url: str | None = None,
+        zephyr_config: ZephyrConfig | None = None,
     ) -> None:
         self.jira_url = jira_url.rstrip("/")
         self.username = username
         self.api_token = api_token
         self.project_key = project_key
-        self.zephyr_api_token = zephyr_api_token
-        self.zephyr_project_id = zephyr_project_id
-        self.zephyr_url = zephyr_url
+
+        # Handle Zephyr configuration
+        if zephyr_config is None:
+            zephyr_config = ZephyrConfig()
+
+        self.zephyr_api_token = zephyr_config.api_token
+        self.zephyr_project_id = zephyr_config.project_id
+        self.zephyr_url = zephyr_config.url
 
         self.session = requests.Session()
 
@@ -144,72 +169,110 @@ class JiraClient:
         files: dict | None = None,
     ) -> dict:
         """Make authenticated request to Zephyr Essential DC API."""
+        token = self._get_zephyr_token()
+        url = self._build_zephyr_url(endpoint)
+        headers = self._build_zephyr_headers(token, files)
+
+        try:
+            request_data = {"data": data, "params": params, "files": files}
+            response = self._execute_zephyr_request(method, url, headers, request_data)
+            response.raise_for_status()
+            return self._parse_zephyr_response(response)
+        except requests.exceptions.RequestException as e:
+            self._log_zephyr_error(e)
+            raise
+
+    def _get_zephyr_token(self) -> str:
+        """Get Zephyr API token."""
         token = self.zephyr_api_token or self.api_token
         if not token:
             msg = "Zephyr API token not configured"
             raise ValueError(msg)
+        return token
 
+    def _build_zephyr_url(self, endpoint: str) -> str:
+        """Build complete Zephyr API URL."""
         url_base = (self.zephyr_url or self.jira_url).rstrip("/")
-        if url_base.startswith("/"):
-            url_base = f"{self.jira_url.rstrip('/')}{url_base}"
-        elif not url_base.startswith("http://") and not url_base.startswith("https://"):
-            url_base = f"{self.jira_url.rstrip('/')}/{url_base}"
+        url_base = self._normalize_url_base(url_base)
 
         if url_base.endswith("/rest/zapi/latest"):
-            url = f"{url_base}/{endpoint}"
-        else:
-            url = f"{url_base}/rest/zapi/latest/{endpoint}"
+            return f"{url_base}/{endpoint}"
+        return f"{url_base}/rest/zapi/latest/{endpoint}"
 
+    def _normalize_url_base(self, url_base: str) -> str:
+        """Normalize URL base for Zephyr requests."""
+        if url_base.startswith("/"):
+            return f"{self.jira_url.rstrip('/')}{url_base}"
+        if not url_base.startswith(("http://", "https://")):
+            return f"{self.jira_url.rstrip('/')}/{url_base}"
+        return url_base
+
+    def _build_zephyr_headers(self, token: str, files: dict | None) -> dict:
+        """Build headers for Zephyr API request."""
         headers = {
             "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
             "Accept": "application/json",
         }
+        if not files:
+            headers["Content-Type"] = "application/json"
+        return headers
 
+    def _execute_zephyr_request(
+        self,
+        method: str,
+        url: str,
+        headers: dict,
+        request_data: dict[str, dict | None],
+    ) -> requests.Response:
+        """Execute the actual HTTP request to Zephyr API."""
+        data = request_data.get("data")
+        params = request_data.get("params")
+        files = request_data.get("files")
+        request_kwargs = {"headers": headers, "params": params}
+
+        if method == "GET":
+            return requests.get(url, timeout=30, **request_kwargs)
+        if method == "POST":
+            return self._execute_post_request(
+                url,
+                request_kwargs,
+                data if isinstance(data, dict) else None,
+                files if isinstance(files, dict) else None,
+            )
+        if method == "PUT":
+            request_kwargs["json"] = data
+            return requests.put(url, timeout=30, **request_kwargs)
+        if method == "DELETE":
+            return requests.delete(url, timeout=30, **request_kwargs)
+        msg = f"Unsupported method: {method}"
+        raise ValueError(msg)
+
+    def _execute_post_request(
+        self, url: str, request_kwargs: dict, data: dict | None, files: dict | None
+    ) -> requests.Response:
+        """Execute POST request with appropriate data format."""
+        if files:
+            request_kwargs["data"] = data
+            request_kwargs["files"] = files
+        else:
+            request_kwargs["json"] = data
+        return requests.post(url, timeout=30, **request_kwargs)
+
+    def _parse_zephyr_response(self, response: requests.Response) -> dict:
+        """Parse Zephyr API response."""
+        if not response.content:
+            return {}
         try:
-            if method == "GET":
-                response = requests.get(url, headers=headers, params=params, timeout=30)
-            elif method == "POST":
-                if files:
-                    headers.pop("Content-Type", None)
-                    response = requests.post(
-                        url,
-                        headers=headers,
-                        params=params,
-                        data=data,
-                        files=files,
-                        timeout=30,
-                    )
-                else:
-                    response = requests.post(
-                        url, headers=headers, params=params, json=data, timeout=30
-                    )
-            elif method == "PUT":
-                response = requests.put(
-                    url, headers=headers, params=params, json=data, timeout=30
-                )
-            elif method == "DELETE":
-                response = requests.delete(
-                    url, headers=headers, params=params, timeout=30
-                )
-            else:
-                msg = f"Unsupported method: {method}"
-                raise ValueError(msg)
+            return response.json()
+        except ValueError as e:
+            logger.debug("Failed to parse Zephyr JSON response: %s", e)
+            return {}
 
-            response.raise_for_status()
-            if not response.content:
-                return {}
-            try:
-                return response.json() if response.content else {}
-            except ValueError as e:
-                logger.debug("Failed to parse Zephyr JSON response: %s", e)
-                return {}
-
-        except requests.exceptions.RequestException as e:
-            logger.debug("Zephyr API request failed: %s", e)
-            if hasattr(e, "response") and e.response is not None:
-                logger.debug("Zephyr response: %s", e.response.text)
-            raise
+    def _log_zephyr_error(self, error: requests.exceptions.RequestException) -> None:
+        """Log Zephyr API errors."""
+        logger.debug("Zephyr API request failed: %s", error)
+        if hasattr(error, "response") and error.response is not None:
+            logger.debug("Zephyr response: %s", error.response.text)
 
     def create_atm_test_execution(
         self,
@@ -311,44 +374,6 @@ class JiraClient:
             logger.warning("Failed to update ATM test execution: %s", last_error)
         return False
 
-    def attach_atm_execution_files(
-        self, execution_key: str, file_paths: list[str]
-    ) -> None:
-        """Attach files to a Jira Tests (ATM) execution."""
-        for file_path in file_paths:
-            try:
-                file_path_obj = Path(file_path)
-                if not file_path_obj.exists():
-                    logger.warning("File not found for attachment: %s", file_path)
-                    continue
-
-                with file_path_obj.open("rb") as file:
-                    content_type = (
-                        "image/png"
-                        if file_path_obj.suffix.lower() == ".png"
-                        else "application/octet-stream"
-                    )
-                    files = {"file": (file_path_obj.name, file, content_type)}
-
-                    # Try common ATM attachment endpoints
-                    for endpoint in (
-                        f"testexecution/{execution_key}/attachments",
-                        f"testexecution/{execution_key}/attachment",
-                    ):
-                        try:
-                            self._make_atm_request("POST", endpoint, files=files)
-                            logger.info(
-                                "Attached file %s to ATM execution %s",
-                                file_path_obj.name,
-                                execution_key,
-                            )
-                            break
-                        except requests.exceptions.RequestException:
-                            continue
-
-            except (OSError, requests.exceptions.RequestException) as e:
-                logger.warning("Error attaching file %s: %s", file_path, e)
-
     def get_zephyr_test_cycles(self, version_id: int | None = None) -> list[dict]:
         """Get all test cycles from Zephyr Essential DC for the project."""
         project_id = self.zephyr_project_id or self.get_project_id()
@@ -362,6 +387,8 @@ class JiraClient:
 
         try:
             response = self._make_zephyr_request("GET", "cycle", params=params)
+            logger.debug("Zephyr cycles API response type: %s", type(response))
+            logger.debug("Zephyr cycles API response: %s", response)
 
             if isinstance(response, list):
                 cycles = response
@@ -369,9 +396,15 @@ class JiraClient:
                 if "records" in response and isinstance(response["records"], list):
                     cycles = response["records"]
                 else:
-                    cycles = [
-                        value for value in response.values() if isinstance(value, dict)
-                    ]
+                    # Response format: {cycle_id: {cycle_data}, recordsCount: n}
+                    # Extract cycles and add the ID from the key
+                    cycles = []
+                    for key, value in response.items():
+                        if isinstance(value, dict) and "name" in value:
+                            # Add the cycle ID from the dictionary key
+                            cycle_data = dict(value)
+                            cycle_data["id"] = key
+                            cycles.append(cycle_data)
             else:
                 cycles = []
 
@@ -392,7 +425,7 @@ class JiraClient:
             logger.exception("Failed to resolve issue id for %s", issue_key)
             return None
 
-    def _get_version_id_by_name(self, version_name: str) -> int | None:
+    def get_version_id_by_name(self, version_name: str) -> int | None:
         """Resolve Jira version id from version name."""
         try:
             response = self._make_jira_request(
@@ -412,7 +445,7 @@ class JiraClient:
             logger.exception("Failed to resolve version id for %s", version_name)
             return None
 
-    def _get_zephyr_status_id(self, result: TestResult) -> int:
+    def get_zephyr_status_id(self, result: TestResult) -> int:
         """Resolve Zephyr execution status id for a result."""
         cache_key = result.value
         if cache_key in self._zephyr_status_cache:
@@ -427,7 +460,7 @@ class JiraClient:
         }.get(result, "FAIL")
 
         try:
-            response = self._make_zephyr_request("GET", "util/teststatus")
+            response = self._make_zephyr_request("GET", "util/testExecutionStatus")
             if isinstance(response, list):
                 for status in response:
                     if not isinstance(status, dict):
@@ -442,16 +475,171 @@ class JiraClient:
         except requests.exceptions.RequestException:
             logger.debug("Failed to load Zephyr status list")
 
+        # Fallback map based on Zephyr Squad default statuses
         fallback_map = {
-            TestResult.PASS: 2,
-            TestResult.FAIL: 3,
-            TestResult.BLOCKED: 5,
-            TestResult.SKIPPED: 1,
-            TestResult.NOT_EXECUTED: 1,
+            TestResult.PASS: 1,  # PASS
+            TestResult.FAIL: 2,  # FAIL
+            TestResult.BLOCKED: 4,  # BLOCKED
+            TestResult.SKIPPED: -1,  # UNEXECUTED
+            TestResult.NOT_EXECUTED: -1,  # UNEXECUTED
         }
-        status_id = fallback_map.get(result, 3)
+        status_id = fallback_map.get(result, 2)
         self._zephyr_status_cache[cache_key] = status_id
         return status_id
+
+    def add_test_to_cycle(
+        self,
+        test_case_key: str,
+        cycle_id: int,
+        version_id: int = -1,
+        project_id: int | None = None,
+    ) -> str | None:
+        """
+        Add a test case to a Zephyr cycle, creating a test execution.
+
+        This follows the Zephyr Squad API workflow for creating executions:
+        1. Add test to cycle (creates execution with UNEXECUTED status)
+        2. Later update execution status using update_zephyr_execution_status()
+
+        Args:
+            test_case_key: The issue key of the test case
+            cycle_id: The ID of the test cycle
+            version_id: The version ID (defaults to -1 for "Unscheduled")
+            project_id: The project ID (will be looked up if not provided)
+
+        Returns:
+            Execution ID as string if successful, None otherwise
+        """
+        project_id = self._resolve_project_id(project_id)
+        if not project_id:
+            return None
+
+        issue_id = self._get_issue_id(test_case_key)
+        if not issue_id:
+            logger.warning("Unable to resolve issue id for %s", test_case_key)
+            return None
+
+        payload = {
+            "issues": [issue_id],
+            "versionId": version_id,
+            "cycleId": str(cycle_id),
+            "projectId": str(project_id),
+        }
+
+        return self._execute_add_test_to_cycle(test_case_key, cycle_id, payload)
+
+    def _resolve_project_id(self, project_id: int | None) -> int | None:
+        """Resolve project ID for Zephyr operations."""
+        if project_id is not None:
+            return project_id
+
+        resolved_id = self.zephyr_project_id or self.get_project_id()
+        if not resolved_id:
+            logger.warning("Zephyr project id not configured")
+            return None
+        # Ensure we return an integer
+        if isinstance(resolved_id, str):
+            try:
+                return int(resolved_id)
+            except (ValueError, TypeError):
+                logger.warning("Invalid project id format: %s", resolved_id)
+                return None
+        return resolved_id
+
+    def _execute_add_test_to_cycle(
+        self, test_case_key: str, cycle_id: int, payload: dict
+    ) -> str | None:
+        """Execute the API call to add test to cycle and extract execution ID."""
+        try:
+            logger.info("Adding test %s to cycle %s", test_case_key, cycle_id)
+
+            # For Ad hoc cycle or direct execution creation, use POST /execution
+            # This is more reliable than addTestsToCycle which uses async processing
+            issue_id = self._get_issue_id(test_case_key)
+            if not issue_id:
+                return None
+
+            project_id = payload.get("projectId")
+            version_id = payload.get("versionId", -1)
+
+            # Create execution directly
+            execution_payload = {
+                "issueId": issue_id,
+                "cycleId": str(cycle_id),
+                "projectId": str(project_id),
+                "versionId": version_id,
+                "status": {"id": "-1"},  # UNEXECUTED
+            }
+
+            response = self._make_zephyr_request(
+                "POST", "execution", data=execution_payload
+            )
+
+            # Extract execution ID from response
+            if isinstance(response, dict):
+                # Try to get execution ID from response
+                # It could be: {"id": 123} or {"123": {exec_data}}
+                exec_id = response.get("id") or response.get("executionId")
+                if exec_id:
+                    logger.info(
+                        "Created execution %s for test %s in cycle %s",
+                        exec_id,
+                        test_case_key,
+                        cycle_id,
+                    )
+                    return str(exec_id)
+
+                # Check if response is {execution_id: {execution_data}}
+                for key, value in response.items():
+                    if isinstance(value, dict) and (
+                        "id" in value or "issueId" in value
+                    ):
+                        # The key is the execution ID
+                        logger.info(
+                            "Created execution %s for test %s in cycle %s",
+                            key,
+                            test_case_key,
+                            cycle_id,
+                        )
+                        return str(key)
+
+            elif isinstance(response, (int, str)):
+                logger.info(
+                    "Created execution %s for test %s in cycle %s",
+                    response,
+                    test_case_key,
+                    cycle_id,
+                )
+                return str(response)
+
+            logger.warning("Failed to extract execution ID from response: %s", response)
+            return None
+
+        except requests.exceptions.RequestException as e:
+            logger.warning("Failed to add test to cycle: %s", e)
+            return None
+
+    def _extract_execution_id_from_response(self, response: dict) -> str | None:
+        """Extract execution ID from Zephyr API response."""
+        if not isinstance(response, dict):
+            return None
+
+        # Try to find execution ID in nested structure
+        for value in response.items():
+            if isinstance(value, dict):
+                execution_id = self._find_execution_id_in_nested_dict(value)
+                if execution_id:
+                    return execution_id
+            elif isinstance(value, (int, str)):
+                return str(value)
+        return None
+
+    def _find_execution_id_in_nested_dict(self, nested_dict: dict) -> str | None:
+        """Find execution ID within a nested dictionary structure."""
+        for exec_key, exec_value in nested_dict.items():
+            if exec_key.isdigit() or isinstance(exec_value, (int, str)):
+                return str(exec_key) if exec_key.isdigit() else str(exec_value)
+        return None
 
     def create_zephyr_test_execution(
         self,
@@ -461,7 +649,35 @@ class JiraClient:
         environment: str | None = None,
         initial_status: TestResult | None = None,
     ) -> str | None:
-        """Create a test execution in Zephyr Essential DC with optional initial status."""
+        """Create a test execution in Zephyr Essential DC."""
+        execution_config = self._prepare_zephyr_execution_config(
+            test_case_key, test_cycle_key, version_name, environment, initial_status
+        )
+        if not execution_config:
+            return None
+
+        # Try creating execution with different payload variations
+        execution_id = self._attempt_zephyr_execution_creation(execution_config)
+        if execution_id:
+            logger.info(
+                "Created Zephyr test execution: %s for test case %s",
+                execution_id,
+                test_case_key,
+            )
+            return execution_id
+
+        logger.warning("Failed to create Zephyr test execution for %s", test_case_key)
+        return None
+
+    def _prepare_zephyr_execution_config(
+        self,
+        test_case_key: str,
+        test_cycle_key: str | None,
+        version_name: str | None,
+        environment: str | None,
+        initial_status: TestResult | None,
+    ) -> dict | None:
+        """Prepare configuration for Zephyr execution creation."""
         project_id = self.zephyr_project_id or self.get_project_id()
         if not project_id:
             logger.warning("Zephyr project id not configured")
@@ -472,20 +688,11 @@ class JiraClient:
             logger.warning("Unable to resolve issue id for %s", test_case_key)
             return None
 
-        version_id = (
-            self._get_version_id_by_name(version_name) if version_name else None
-        )
-        cycle_id: int | None = None
-        if test_cycle_key:
-            cycle_id = self._get_zephyr_cycle_id(test_cycle_key, version_id)
-            if cycle_id is None:
-                logger.warning(
-                    "Unable to resolve Zephyr cycle id for %s", test_cycle_key
-                )
+        version_id = self.get_version_id_by_name(version_name) if version_name else None
+        cycle_id = self._resolve_cycle_id(test_cycle_key, version_id)
 
-        # Set initial status - use provided status or default to NOT_EXECUTED
         status_to_use = initial_status if initial_status else TestResult.NOT_EXECUTED
-        status_id = self._get_zephyr_status_id(status_to_use)
+        status_id = self.get_zephyr_status_id(status_to_use)
 
         logger.info(
             "Creating Zephyr execution for %s with status %s (ID: %s)",
@@ -494,249 +701,217 @@ class JiraClient:
             status_id,
         )
 
-        base_payload: dict[str, object] = {
-            "issueId": int(issue_id),
-            "projectId": int(project_id),
-            "cycleId": cycle_id if cycle_id is not None else -1,
-            "versionId": version_id if version_id is not None else -1,
-            "status": str(status_id),
-            "executionStatus": str(status_id),  # Some Zephyr instances use this field
+        return {
+            "issue_id": int(issue_id),
+            "project_id": int(project_id),
+            "cycle_id": cycle_id if cycle_id is not None else -1,
+            "version_id": version_id if version_id is not None else -1,
+            "status_id": status_id,
+            "environment": environment,
+            "test_case_key": test_case_key,
         }
 
-        if environment:
-            base_payload["environment"] = environment
+    def _resolve_cycle_id(
+        self, test_cycle_key: str | None, version_id: int | None
+    ) -> int | None:
+        """Resolve cycle ID from test cycle key."""
+        if not test_cycle_key:
+            return None
 
-        payloads = [
+        cycle_id = self.get_zephyr_cycle_id(test_cycle_key, version_id)
+        if cycle_id is None:
+            logger.warning("Unable to resolve Zephyr cycle id for %s", test_cycle_key)
+        return cycle_id
+
+    def _attempt_zephyr_execution_creation(self, config: dict) -> str | None:
+        """Attempt to create Zephyr execution with different approaches."""
+        payloads = self._build_execution_payloads(config)
+
+        # Try payload variations first
+        for payload in payloads:
+            execution_id = self._try_create_execution_with_payload(payload)
+            if execution_id:
+                return execution_id
+
+        # Try with params approach
+        return self._try_create_execution_with_params(config)
+
+    def _build_execution_payloads(self, config: dict) -> list[dict]:
+        """Build different payload variations for execution creation."""
+        base_payload = {
+            "issueId": config["issue_id"],
+            "projectId": config["project_id"],
+            "cycleId": config["cycle_id"],
+            "versionId": config["version_id"],
+            "status": str(config["status_id"]),
+            "executionStatus": str(config["status_id"]),
+        }
+
+        if config["environment"]:
+            base_payload["environment"] = config["environment"]
+
+        return [
             base_payload,
+            {**base_payload, "testCycleId": base_payload["cycleId"]},
             {
                 **base_payload,
-                "testCycleId": base_payload["cycleId"],
-            },
-            # Try with integer status as well
-            {
-                "issueId": int(issue_id),
-                "projectId": int(project_id),
-                "cycleId": cycle_id if cycle_id is not None else -1,
-                "versionId": version_id if version_id is not None else -1,
-                "status": int(status_id),
-                "executionStatus": int(status_id),
+                "status": int(config["status_id"]),
+                "executionStatus": int(config["status_id"]),
             },
         ]
 
-        params_list = [
-            {
-                "issueId": base_payload["issueId"],
-                "projectId": base_payload["projectId"],
-                "cycleId": base_payload["cycleId"],
-                "versionId": base_payload["versionId"],
-            }
-        ]
+    def _try_create_execution_with_payload(self, payload: dict) -> str | None:
+        """Try to create execution with a specific payload."""
+        try:
+            logger.info(
+                "Attempting Zephyr execution creation with payload: %s", payload
+            )
+            response = self._make_zephyr_request("POST", "execution", data=payload)
+            return self._extract_execution_id_from_zephyr_response(response)
+        except requests.exceptions.RequestException as e:
+            logger.warning(
+                "Zephyr execution create failed with payload %s: %s", payload, e
+            )
+            return None
 
-        for payload in payloads:
-            try:
-                logger.info(
-                    "Attempting Zephyr execution creation with payload: %s", payload
-                )
-                response = self._make_zephyr_request("POST", "execution", data=payload)
+    def _try_create_execution_with_params(self, config: dict) -> str | None:
+        """Try to create execution using params approach."""
+        base_payload = {
+            "issueId": config["issue_id"],
+            "projectId": config["project_id"],
+            "cycleId": config["cycle_id"],
+            "versionId": config["version_id"],
+            "status": str(config["status_id"]),
+            "executionStatus": str(config["status_id"]),
+        }
 
-                # Extract execution ID - Zephyr returns it as the dictionary key
-                execution_id = None
-                if isinstance(response, dict):
-                    # Try standard fields first
-                    execution_id = (
-                        response.get("executionId")
-                        or response.get("id")
-                        or response.get("key")
-                    )
+        if config["environment"]:
+            base_payload["environment"] = config["environment"]
 
-                    # If not found, check if response has nested execution object
-                    if not execution_id and isinstance(response.get("execution"), dict):
-                        execution_id = response["execution"].get("id")
+        params = {
+            "issueId": config["issue_id"],
+            "projectId": config["project_id"],
+            "cycleId": config["cycle_id"],
+            "versionId": config["version_id"],
+        }
 
-                    # If still not found, the execution ID might be the dictionary key itself
-                    if not execution_id and response:
-                        # Get the first key which should be the execution ID
-                        for key, value in response.items():
-                            if isinstance(value, dict) and value.get("id"):
-                                execution_id = value.get("id") or key
-                                break
+        try:
+            logger.info("Attempting Zephyr execution creation with params: %s", params)
+            response = self._make_zephyr_request(
+                "POST", "execution", data=base_payload, params=params
+            )
+            return self._extract_execution_id_from_zephyr_response(response)
+        except requests.exceptions.RequestException as e:
+            logger.warning(
+                "Zephyr execution create failed with params %s: %s", params, e
+            )
+            return None
 
-                if execution_id:
-                    logger.info(
-                        "Created Zephyr test execution: %s for test case %s",
-                        execution_id,
-                        test_case_key,
-                    )
-                    return str(execution_id)
-                logger.warning(
-                    "Zephyr API returned success but no execution ID in response: %s",
-                    response,
-                )
-            except requests.exceptions.RequestException as e:
-                logger.warning(
-                    "Zephyr execution create failed with payload %s: %s", payload, e
-                )
-                continue
+    def _extract_execution_id_from_zephyr_response(self, response: dict) -> str | None:
+        """Extract execution ID from Zephyr API response."""
+        if not isinstance(response, dict):
+            logger.warning(
+                "Zephyr API returned success but no execution ID in response: %s",
+                response,
+            )
+            return None
 
-        for params in params_list:
-            try:
-                logger.info(
-                    "Attempting Zephyr execution creation with params: %s", params
-                )
-                response = self._make_zephyr_request(
-                    "POST", "execution", data=base_payload, params=params
-                )
+        # Try standard fields first
+        execution_id = (
+            response.get("executionId") or response.get("id") or response.get("key")
+        )
+        if execution_id:
+            return str(execution_id)
 
-                # Extract execution ID - Zephyr returns it as the dictionary key
-                execution_id = None
-                if isinstance(response, dict):
-                    # Try standard fields first
-                    execution_id = (
-                        response.get("executionId")
-                        or response.get("id")
-                        or response.get("key")
-                    )
+        # Check nested execution object
+        if isinstance(response.get("execution"), dict):
+            execution_id = response["execution"].get("id")
+            if execution_id:
+                return str(execution_id)
 
-                    # If not found, check if response has nested execution object
-                    if not execution_id and isinstance(response.get("execution"), dict):
-                        execution_id = response["execution"].get("id")
+        # Check if execution ID is a dictionary key
+        for key, value in response.items():
+            if isinstance(value, dict) and value.get("id"):
+                return str(value.get("id") or key)
 
-                    # If still not found, the execution ID might be the dictionary key itself
-                    if not execution_id and response:
-                        # Get the first key which should be the execution ID
-                        for key, value in response.items():
-                            if isinstance(value, dict) and value.get("id"):
-                                execution_id = value.get("id") or key
-                                break
-
-                if execution_id:
-                    logger.info(
-                        "Created Zephyr test execution: %s for test case %s",
-                        execution_id,
-                        test_case_key,
-                    )
-                    return str(execution_id)
-                logger.warning(
-                    "Zephyr API returned success but no execution ID in response: %s",
-                    response,
-                )
-            except requests.exceptions.RequestException as e:
-                logger.warning(
-                    "Zephyr execution create failed with params %s: %s", params, e
-                )
-                continue
-
-        logger.warning("Failed to create Zephyr test execution for %s", test_case_key)
+        logger.warning(
+            "Zephyr API returned success but no execution ID in response: %s", response
+        )
         return None
 
-    def update_zephyr_test_execution(
+    def update_zephyr_execution_status(
         self,
         execution_id: str,
         result: TestResult,
         comment: str | None = None,
-        environment: str | None = None,
     ) -> bool:
-        """Update a Zephyr Essential DC test execution status."""
-        status_id = self._get_zephyr_status_id(result)
+        """
+        Update a Zephyr Squad test execution status.
+
+        Follows the Zephyr Squad API specification:
+        PUT /rest/zapi/latest/execution/{id}/execute
+
+        Args:
+            execution_id: The execution ID
+            result: The test result
+            comment: Optional comment for the execution
+
+        Returns:
+            True if successful, False otherwise
+        """
+        status_id = self.get_zephyr_status_id(result)
         logger.info(
-            "Updating Zephyr execution %s with status ID %s (result: %s)",
+            "Updating Zephyr execution %s with status %s (ID: %s)",
             execution_id,
-            status_id,
             result.value,
+            status_id,
         )
-        base_payload: dict[str, object] = {
-            "status": str(status_id),
-            "executionStatus": str(status_id),
-        }
 
-        if comment:
-            base_payload["comment"] = comment
+        # Use the official Zephyr Squad API endpoint for updating execution status
+        payload = {"status": status_id}
 
-        if environment:
-            base_payload["environment"] = environment
-
-        payloads = [
-            base_payload,
-            {**base_payload, "statusId": str(status_id)},
-            {**base_payload, "status": {"id": str(status_id)}},
-        ]
-
-        # Try different methods and endpoints
-        # Note: Some Zephyr Essential DC instances have limited API support
-        attempts = [
-            # Try PUT with just status in path param
-            ("PUT", f"execution/{execution_id}", {"status": str(status_id)}, {}),
-            # Try PUT with payload
-            (
+        try:
+            _ = self._make_zephyr_request(
                 "PUT",
-                f"execution/{execution_id}",
-                None,
-                {
-                    "status": str(status_id),
-                },
-            ),
-            # Try PUT with executionStatus field
-            (
-                "PUT",
-                f"execution/{execution_id}",
-                None,
-                {
-                    "executionStatus": str(status_id),
-                },
-            ),
-            # Try POST (create/update)
-            ("POST", f"execution/{execution_id}", None, base_payload),
-            # Try with id in body
-            (
-                "PUT",
-                f"execution/{execution_id}",
-                None,
-                {
-                    "id": int(execution_id),
-                    "status": str(status_id),
-                },
-            ),
-        ]
+                f"execution/{execution_id}/execute",
+                data=payload,
+            )
+            logger.info(
+                "Successfully updated Zephyr execution %s to status %s",
+                execution_id,
+                result.value,
+            )
 
-        last_error: Exception | None = None
-        for method, endpoint, params, payload in attempts:
-            try:
-                response = self._make_zephyr_request(
-                    method, endpoint, data=payload, params=params
-                )
-                logger.info(
-                    "Successfully updated Zephyr execution %s with %s %s (payload: %s) -> Response: %s",
-                    execution_id,
-                    method,
-                    endpoint,
-                    payload,
-                    response,
-                )
-                return True
-            except requests.exceptions.RequestException as e:
-                logger.debug(
-                    "Failed to update with %s %s (params: %s, payload: %s): %s",
-                    method,
-                    endpoint,
-                    params,
-                    payload,
-                    e,
-                )
-                last_error = e
-                continue
+            # Optionally add comment if provided
+            if comment:
+                try:
+                    self.add_zephyr_execution_comment(execution_id, comment)
+                except requests.exceptions.RequestException as e:
+                    logger.warning(
+                        "Failed to add comment to execution %s: %s",
+                        execution_id,
+                        e,
+                    )
 
-        if last_error:
-            logger.warning("Failed to update Zephyr test execution: %s", last_error)
-        return False
+            return True
+
+        except requests.exceptions.RequestException as e:
+            logger.warning(
+                "Failed to update Zephyr execution %s: %s",
+                execution_id,
+                e,
+            )
+            return False
 
     def add_zephyr_execution_comment(
         self,
         execution_id: str,
         comment: str,
     ) -> bool:
-        """Add a comment to a Zephyr execution to indicate result (workaround for status update limitations)."""
+        """Add a comment to a Zephyr execution to indicate result
+        (workaround for status update limitations)."""
         try:
-            response = self._make_zephyr_request(
+            self._make_zephyr_request(
                 "PUT",
                 f"execution/{execution_id}",
                 data={"comment": comment},
@@ -926,9 +1101,13 @@ class JiraClient:
             )
             return True
         except requests.exceptions.RequestException as e:
-            if hasattr(e, "response") and e.response is not None:
-                if e.response.status_code == 404:
-                    return False
+            http_not_found = 404
+            if (
+                hasattr(e, "response")
+                and e.response is not None
+                and e.response.status_code == http_not_found
+            ):
+                return False
             logger.debug("Failed to resolve issue %s: %s", issue_key, e)
             return False
 
@@ -936,9 +1115,7 @@ class JiraClient:
         """Escape a string value for JQL usage."""
         return value.replace("\\", "\\\\").replace('"', '\\"')
 
-    def _get_zephyr_cycle_id(
-        self, cycle_ref: str, version_id: int | None
-    ) -> int | None:
+    def get_zephyr_cycle_id(self, cycle_ref: str, version_id: int | None) -> int | None:
         """Resolve Zephyr cycle id from numeric id or name."""
         try:
             return int(cycle_ref)
@@ -946,18 +1123,26 @@ class JiraClient:
             pass
 
         cycles = self.get_zephyr_test_cycles(version_id=version_id)
+        logger.debug("Looking for cycle '%s' in %d cycles", cycle_ref, len(cycles))
         for cycle in cycles:
             if not isinstance(cycle, dict):
                 continue
             name = str(cycle.get("name") or cycle.get("cycleName") or "")
             key = str(cycle.get("key") or "")
+            logger.debug(
+                "Checking cycle: name='%s', key='%s', id=%s", name, key, cycle.get("id")
+            )
             if name.lower() == cycle_ref.lower() or key.lower() == cycle_ref.lower():
                 cycle_id = cycle.get("id")
                 if cycle_id is not None:
                     try:
+                        logger.info(
+                            "Found cycle match: '%s' -> ID %s", cycle_ref, cycle_id
+                        )
                         return int(cycle_id)
                     except (TypeError, ValueError):
                         continue
+        logger.warning("Cycle '%s' not found among %d cycles", cycle_ref, len(cycles))
         return None
 
     def create_test_case(self, test_case: JiraTestCase) -> str | None:
@@ -970,120 +1155,150 @@ class JiraClient:
         Returns:
             Issue key of created test case, None if failed
         """
-        issuetype_candidates = ["Test", "Test Case", "Task"]
         try:
-            issue_key_match = None
+            # Check for existing test case
+            existing_key = self._find_existing_test_case(test_case)
+            if existing_key:
+                return existing_key
+
+            # Create new test case
+            issue_data = self._build_test_case_issue_data(test_case)
+            issue_key = self._create_issue_with_fallback_types(issue_data)
+
+            if issue_key:
+                self._add_test_steps_if_provided(issue_key, test_case.test_steps)
+                return issue_key
+
+            logger.warning("Failed to create test case")
+            return None
+
+        except requests.exceptions.RequestException:
+            logger.exception("Failed to create test case")
+            return None
+
+    def _find_existing_test_case(self, test_case: JiraTestCase) -> str | None:
+        """Check if test case already exists by key pattern or name."""
+        # Check for issue key pattern in name
+        if test_case.name:
             key_pattern = re.compile(rf"\b{re.escape(self.project_key)}-\d+\b")
-            if test_case.name:
-                issue_key_match = key_pattern.search(test_case.name)
+            issue_key_match = key_pattern.search(test_case.name)
             if issue_key_match:
                 issue_key = issue_key_match.group(0)
                 if self.issue_exists(issue_key):
                     logger.info("Test case already exists: %s", issue_key)
                     return issue_key
 
-            existing_key = self.find_test_case_by_name(test_case.name)
-            if existing_key:
-                logger.info("Test case already exists: %s", existing_key)
-                return existing_key
+        # Check by name
+        existing_key = self.find_test_case_by_name(test_case.name)
+        if existing_key:
+            logger.info("Test case already exists: %s", existing_key)
+            return existing_key
 
-            issue_data = {
-                "fields": {
-                    "project": {"key": self.project_key},
-                    "summary": test_case.name,
-                    "description": test_case.description or "",
-                    "issuetype": {"name": "Test"},  # default, may not exist
-                    "priority": {"name": "Medium"},  # Use default priority
-                }
+        return None
+
+    def _build_test_case_issue_data(self, test_case: JiraTestCase) -> dict:
+        """Build issue data dictionary for test case creation."""
+        issue_data = {
+            "fields": {
+                "project": {"key": self.project_key},
+                "summary": test_case.name,
+                "description": test_case.description or "",
+                "issuetype": {"name": "Test"},
+                "priority": {"name": "Medium"},
             }
+        }
 
-            # Apply required field overrides if provided
-            if self.required_fields:
-                issue_data["fields"].update(self.required_fields)
+        # Apply required field overrides if provided
+        if self.required_fields:
+            issue_data["fields"].update(self.required_fields)
 
-            # Add test steps as structured data if available
-            if test_case.test_steps:
-                # First try to create the issue without custom test step fields
-                # We'll add test steps after creation using a separate API call if supported
-                pass
+        # Add labels if provided
+        if test_case.labels:
+            issue_data["fields"]["labels"] = test_case.labels
 
-            # Add labels if provided
-            if test_case.labels:
-                issue_data["fields"]["labels"] = test_case.labels
+        return issue_data
 
-            # Add components if folder is specified - ZephyrTestCase doesn't have folder
-            # if test_case.folder:
-            #     issue_data["fields"]["components"] = [{"name": test_case.folder}]
+    def _get_issue_type_candidates(self) -> list[dict]:
+        """Get available issue type candidates for test case creation."""
+        issuetype_candidates = ["Test", "Test Case", "Task"]
+        issue_types = self._get_project_issue_types()
+        available_types = {
+            issue_type.get("name", ""): issue_type for issue_type in issue_types
+        }
 
-            issue_key = None
-            issue_types = self._get_project_issue_types()
-            available_types = {
-                issue_type.get("name", ""): issue_type for issue_type in issue_types
-            }
+        # Preferred candidates first if available in project
+        resolved_candidates = []
+        for name in issuetype_candidates:
+            issue_type = available_types.get(name)
+            if issue_type:
+                resolved_candidates.append(issue_type)
 
-            # Preferred candidates first if available in project
-            resolved_candidates: list[dict] = []
-            for name in issuetype_candidates:
-                issue_type = available_types.get(name)
-                if issue_type:
-                    resolved_candidates.append(issue_type)
+        # Fallback to any available issue type
+        if not resolved_candidates and issue_types:
+            resolved_candidates = issue_types
 
-            # Fallback to any available issue type
-            if not resolved_candidates and issue_types:
-                resolved_candidates = issue_types
+        # Last resort: use provided names
+        if not resolved_candidates:
+            resolved_candidates = [{"name": name} for name in issuetype_candidates]
 
-            # Last resort: use provided names
-            if not resolved_candidates:
-                resolved_candidates = [{"name": name} for name in issuetype_candidates]
+        return resolved_candidates
 
-            last_error: Exception | None = None
-            for issue_type in resolved_candidates:
-                issuetype_payload = (
-                    {"id": issue_type["id"]}
-                    if issue_type.get("id")
-                    else {"name": issue_type.get("name", "Test")}
+    def _create_issue_with_fallback_types(self, issue_data: dict) -> str | None:
+        """Try to create issue with different issue types as fallback."""
+        resolved_candidates = self._get_issue_type_candidates()
+        last_error = None
+
+        for issue_type in resolved_candidates:
+            issuetype_payload = (
+                {"id": issue_type["id"]}
+                if issue_type.get("id")
+                else {"name": issue_type.get("name", "Test")}
+            )
+            issue_data["fields"]["issuetype"] = issuetype_payload
+            self._apply_required_field_defaults(issue_data, issue_type)
+
+            try:
+                response = self._make_jira_request("POST", "issue", data=issue_data)
+                issue_key = response.get("key")
+                if issue_key:
+                    logger.info("Created test case issue: %s", issue_key)
+                    return issue_key
+            except requests.exceptions.RequestException as e:
+                last_error = e
+                logger.debug(
+                    "Failed to create test case with issuetype %s: %s",
+                    issue_type.get("name"),
+                    e,
                 )
-                issue_data["fields"]["issuetype"] = issuetype_payload
-                self._apply_required_field_defaults(issue_data, issue_type)
-                try:
-                    response = self._make_jira_request("POST", "issue", data=issue_data)
-                    issue_key = response.get("key")
-                    if issue_key:
-                        break
-                except requests.exceptions.RequestException as e:
-                    last_error = e
-                    logger.debug(
-                        "Failed to create test case with issuetype %s: %s",
-                        issue_type.get("name"),
-                        e,
-                    )
-                    continue
+                continue
 
-            if issue_key:
-                logger.info("Created test case issue: %s", issue_key)
+        self._log_creation_failure(last_error)
+        return None
 
-                # Try to add test steps after issue creation
-                if test_case.test_steps:
-                    self._add_test_steps_to_issue(issue_key, test_case.test_steps)
+    def _add_test_steps_if_provided(
+        self, issue_key: str, test_steps: list | None
+    ) -> None:
+        """Add test steps to issue if they are provided."""
+        if test_steps:
+            self._add_test_steps_to_issue(issue_key, test_steps)
 
-                return issue_key
-
-            if last_error:
-                if hasattr(last_error, "response") and last_error.response is not None:
-                    logger.warning(
-                        "Failed to create test case: %s | %s",
-                        last_error,
-                        last_error.response.text,
-                    )
-                else:
-                    logger.warning("Failed to create test case: %s", last_error)
+    def _log_creation_failure(self, last_error: Exception | None) -> None:
+        """Log test case creation failure with appropriate message."""
+        if last_error:
+            if (
+                isinstance(last_error, requests.exceptions.RequestException)
+                and hasattr(last_error, "response")
+                and last_error.response is not None
+            ):
+                logger.warning(
+                    "Failed to create test case: %s | %s",
+                    last_error,
+                    last_error.response.text,
+                )
             else:
-                logger.warning("Failed to get issue key from response")
-            return None
-
-        except requests.exceptions.RequestException:
-            logger.exception("Failed to create test case")
-            return None
+                logger.warning("Failed to create test case: %s", last_error)
+        else:
+            logger.warning("Failed to get issue key from response")
 
     def _format_test_steps_for_jira(self, test_steps: list) -> list[dict]:
         """Format test steps as structured data for Jira API."""
@@ -1095,8 +1310,7 @@ class JiraClient:
             step_data = {
                 "index": i,
                 "step": step.description,
-                "result": step.expected_result
-                or step.description,  # Use description as expected result if none provided
+                "result": step.expected_result or step.description,
             }
             formatted_steps.append(step_data)
 
@@ -1154,7 +1368,11 @@ class JiraClient:
                         )
                         return True
 
-                except Exception as e:
+                except (
+                    requests.exceptions.RequestException,
+                    ValueError,
+                    KeyError,
+                ) as e:
                     logger.debug(
                         "Failed to add test steps with field %s: %s", field_name, e
                     )
@@ -1167,7 +1385,7 @@ class JiraClient:
             )
             return self._add_test_steps_as_comment(issue_key, test_steps)
 
-        except Exception as e:
+        except (requests.exceptions.RequestException, ValueError, KeyError) as e:
             logger.warning("Failed to add test steps to issue %s: %s", issue_key, e)
             return False
 
@@ -1193,7 +1411,7 @@ class JiraClient:
                 return True
             return False
 
-        except Exception as e:
+        except (requests.exceptions.RequestException, ValueError, KeyError) as e:
             logger.warning("Failed to add test steps as comment: %s", e)
             return False
 
@@ -1311,7 +1529,7 @@ class JiraClient:
             logger.exception("Failed to create test plan")
             return None
 
-    def _add_comment(self, issue_key: str, body: str) -> bool:
+    def add_comment(self, issue_key: str, body: str) -> bool:
         """Add a comment to a Jira issue."""
         try:
             self._make_jira_request(
@@ -1326,20 +1544,14 @@ class JiraClient:
         self, issue_key: str, statuses: list[str]
     ) -> bool:
         """Update issue status to the first available transition in statuses."""
-        for status in statuses:
-            if self.update_issue_status(issue_key, status):
-                return True
-        return False
+        return any(self.update_issue_status(issue_key, status) for status in statuses)
 
-    def start_test_execution(
-        self, test_case_key: str, test_cycle_key: str | None = None
-    ) -> str | None:
+    def start_test_execution(self, test_case_key: str) -> str | None:
         """
         Start a test execution by commenting and transitioning the test case.
 
         Args:
             test_case_key: Test case issue key
-            test_cycle_key: Optional test cycle/plan key
 
         Returns:
             Issue key of the started execution, None if failed
@@ -1355,7 +1567,7 @@ class JiraClient:
 
             start_time = datetime.now(tz=UTC).strftime("%Y-%m-%d %H:%M:%S")
             comment = f"Test execution started at {start_time}\n\nStatus: *In Progress*"
-            self._add_comment(test_case_key, comment)
+            self.add_comment(test_case_key, comment)
 
             # Transition status if possible
             self._update_status_first_available(
@@ -1372,51 +1584,44 @@ class JiraClient:
     def update_test_execution(
         self,
         execution_key: str,
-        result: TestResult,
-        error_message: str | None = None,
-        screenshots: list[str] | None = None,
-        environment: str | None = None,
-        test_cycle_version: str | None = None,
+        update: TestExecutionUpdate,
     ) -> bool:
         """
         Update an existing test execution with results on the test case.
 
         Args:
             execution_key: Test case issue key
-            result: Test execution result
-            error_message: Error message if test failed
-            screenshots: List of screenshot file paths
-            environment: Test environment
+            update: TestExecutionUpdate containing result and optional parameters
 
         Returns:
             True if successful, False otherwise
         """
         try:
-            desc = f"Test execution result: *{result.value}*\n\n"
+            desc = f"Test execution result: *{update.result.value}*\n\n"
             desc += (
                 f"Updated at: {datetime.now(tz=UTC).strftime('%Y-%m-%d %H:%M:%S')}\n"
             )
-            desc += f"Status: *{result.value}*\n"
+            desc += f"Status: *{update.result.value}*\n"
             desc += "Executed by: automated\n"
 
-            if environment:
-                desc += f"Environment: {environment}\n"
+            if update.environment:
+                desc += f"Environment: {update.environment}\n"
 
-            if test_cycle_version:
-                desc += f"Test cycle version: {test_cycle_version}\n"
+            if update.test_cycle_version:
+                desc += f"Test cycle version: {update.test_cycle_version}\n"
 
-            if error_message:
-                desc += f"\nComments:\n{error_message}\n"
+            if update.error_message:
+                desc += f"\nComments:\n{update.error_message}\n"
 
-            self._add_comment(execution_key, desc)
+            self.add_comment(execution_key, desc)
             logger.info("Updated test execution (commented on %s)", execution_key)
 
             # Set execution status field when available
-            self._set_execution_status_field(execution_key, result)
+            self._set_execution_status_field(execution_key, update.result)
 
             # Attach screenshots if provided
-            if screenshots:
-                self._attach_files(execution_key, screenshots)
+            if update.screenshots:
+                self._attach_files(execution_key, update.screenshots)
 
             return True
 
@@ -1445,7 +1650,7 @@ class JiraClient:
                 f"Test execution completed at {end_time}\n\n"
                 f"Final status: *{result.value}*"
             )
-            self._add_comment(execution_key, comment)
+            self.add_comment(execution_key, comment)
 
             # Set execution status field when available
             self._set_execution_status_field(execution_key, result)
@@ -1558,7 +1763,8 @@ class JiraClient:
 
                     url = f"{self.jira_url}/rest/api/2/issue/{issue_key}/attachments"
 
-                    # For attachments, we need to remove Content-Type header and use special X-Atlassian-Token
+                    # For attachments, we need to remove Content-Type header and
+                    # use special X-Atlassian-Token
                     # Create a new session for this request without Content-Type
                     attachment_session = requests.Session()
 

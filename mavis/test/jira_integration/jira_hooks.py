@@ -48,7 +48,7 @@ def pytest_configure(config: Config) -> None:  # noqa: ARG001
             )
         else:
             logger.debug("Jira integration disabled (invalid configuration)")
-    except Exception as e:
+    except (ConnectionError, TimeoutError, ValueError, KeyError, AttributeError) as e:
         logger.warning("Failed to initialize Jira reporter: %s", e)
         _jira_reporter = None
 
@@ -82,9 +82,8 @@ def pytest_runtest_logreport(report: TestReport) -> object:
     # Extract test information - use full nodeid for consistency
     test_name = report.nodeid
 
-    # Get test case key and screenshots from the auto-fixture
+    # Get test case key from the auto-fixture
     test_case_key = get_test_case_key(test_name)
-    screenshots = get_test_screenshots(test_name)
 
     # If no test case key, try to create one now
     if not test_case_key and _jira_reporter:
@@ -101,7 +100,13 @@ def pytest_runtest_logreport(report: TestReport) -> object:
             logger.info(
                 "Created on-demand test case %s for %s", test_case_key, test_name
             )
-        except Exception as e:
+        except (
+            ConnectionError,
+            TimeoutError,
+            ValueError,
+            KeyError,
+            AttributeError,
+        ) as e:
             logger.warning(
                 "Failed to create on-demand test case for %s: %s", test_name, e
             )
@@ -118,13 +123,13 @@ def pytest_runtest_logreport(report: TestReport) -> object:
 
 
 @pytest.hookimpl(trylast=True)
-def pytest_runtest_teardown(item, nextitem):
+def pytest_runtest_teardown(item: pytest.Item) -> None:
     """Run after test teardown to report results with screenshots."""
     # Extract test information first
     test_name = item.nodeid
 
     # CHECK IMMEDIATELY if already reported to avoid any duplicate processing
-    if was_reported(test_name):
+    if was_reported(test_name, item):
         logger.info(
             "Test %s already reported at teardown entry, skipping entirely", test_name
         )
@@ -132,6 +137,7 @@ def pytest_runtest_teardown(item, nextitem):
         return
 
     if not _jira_reporter or not _jira_reporter.is_enabled():
+        logger.debug("Jira reporter not available or disabled for %s", test_name)
         return
 
     # Get the test result from the stored report
@@ -145,15 +151,17 @@ def pytest_runtest_teardown(item, nextitem):
     )
 
     # Get test case key and screenshots (should be available now after teardown)
-    test_case_key = get_test_case_key(test_name)
-    screenshots = get_test_screenshots(test_name)
+    test_case_key = get_test_case_key(test_name, item)
+    screenshots = get_test_screenshots(test_name, item)
 
     logger.info(
-        "Teardown - Test case key: %s, Screenshots: %s", test_case_key, len(screenshots)
+        "Teardown - Test case key: %s, Screenshots: %d",
+        test_case_key,
+        len(screenshots) if screenshots else 0,
     )
 
     if test_case_key:
-        if was_reported(test_name):
+        if was_reported(test_name, item):
             logger.info("Test %s already reported, skipping duplicate", test_name)
             cleanup_test_data(test_name)
             return
@@ -165,10 +173,10 @@ def pytest_runtest_teardown(item, nextitem):
             error_message = str(test_report.longrepr) if test_report.failed else None
 
             logger.info(
-                "Teardown reporting test result %s for test case %s with %d screenshots",
+                "Reporting test result %s for test case %s with %d screenshots",
                 jira_result.value,
                 test_case_key,
-                len(screenshots),
+                len(screenshots) if screenshots else 0,
             )
 
             _jira_reporter.report_test_result(
@@ -177,12 +185,21 @@ def pytest_runtest_teardown(item, nextitem):
                 error_message=error_message,
                 screenshots=screenshots,
             )
-            mark_reported(test_name)
+            mark_reported(test_name, item)
+            logger.info("Successfully reported test %s to Jira", test_name)
 
-        except Exception as e:
-            logger.warning(
-                "Failed to report test results to Jira for %s: %s", test_name, e
-            )
+        except (
+            ConnectionError,
+            TimeoutError,
+            ValueError,
+            KeyError,
+            AttributeError,
+        ):
+            logger.exception("Failed to report test results to Jira for %s", test_name)
         finally:
             # Clean up test data
             cleanup_test_data(test_name)
+    else:
+        logger.warning(
+            "No test case key found for %s - cannot report to Jira", test_name
+        )
