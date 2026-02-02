@@ -156,7 +156,7 @@ class Team:
             "careplus_staff_type": self.careplus_staff_type,
             "privacy_notice_url": "https://example.com/privacy",
             "privacy_policy_url": "https://example.com/privacy",
-            "type": "poc_only",
+            "type": "point_of_care",
         }
 
     @classmethod
