@@ -4,14 +4,16 @@ Auto-use fixtures for automatic Jira integration.
 
 import logging
 import os
+from collections.abc import Generator
 
 import pytest
 
+from .config import JiraConfig
 from .test_reporter import TestReporter
 
 logger = logging.getLogger(__name__)
 
-# Global storage for test data
+# Global storage for test data (per-test item storage for xdist compatibility)
 _test_data: dict[str, dict] = {}
 # Track execution IDs to prevent duplicate executions
 _execution_ids: dict[str, str] = {}
@@ -25,6 +27,17 @@ def get_execution_id(test_case_key: str) -> str | None:
 def set_execution_id(test_case_key: str, execution_id: str) -> None:
     """Store execution ID to prevent duplicate creation."""
     _execution_ids[test_case_key] = execution_id
+
+
+# Item-level storage accessors (xdist-compatible)
+def _get_item_attr(item: pytest.Item, attr: str, default: object = None) -> object:
+    """Get attribute from pytest item (works with xdist)."""
+    return getattr(item, f"_jira_{attr}", default)
+
+
+def _set_item_attr(item: pytest.Item, attr: str, value: object) -> None:
+    """Set attribute on pytest item (works with xdist)."""
+    setattr(item, f"_jira_{attr}", value)
 
 
 def _get_test_keys(request: pytest.FixtureRequest) -> tuple[str, str]:
@@ -49,11 +62,9 @@ def jira_reporter_session() -> TestReporter:
     """Session-scoped Jira integration reporter."""
     try:
         return TestReporter()
-    except Exception as e:
+    except (ValueError, ConnectionError, OSError, ImportError) as e:
         logger.warning("Failed to initialize Jira reporter: %s", e)
         # Return a disabled reporter
-        from .config import JiraConfig
-
         config = JiraConfig.from_env()
         config.enabled = False
         return TestReporter(config)
@@ -62,7 +73,7 @@ def jira_reporter_session() -> TestReporter:
 @pytest.fixture(autouse=True)
 def auto_jira_integration(
     request: pytest.FixtureRequest, jira_reporter_session: TestReporter
-):
+) -> Generator[None]:
     """
     Automatic Jira integration fixture that runs for every test.
     Only activates when proper environment variables are configured.
@@ -110,8 +121,17 @@ def auto_jira_integration(
                 test_name, test_docstring or ""
             )
             test_data["test_case_key"] = test_case_key
-            logger.info("Created test case %s for %s", test_case_key, test_name)
-        except Exception as e:
+
+            # Also store on the item for xdist compatibility
+            _set_item_attr(request.node, "test_case_key", test_case_key)
+            _set_item_attr(request.node, "screenshots", [])
+            _set_item_attr(request.node, "reported", value=False)
+
+            if test_case_key:
+                logger.info("Created test case %s for %s", test_case_key, test_name)
+            else:
+                logger.warning("Test case creation returned None for %s", test_name)
+        except (RuntimeError, ValueError, KeyError, AttributeError, TypeError) as e:
             logger.warning("Failed to create test case for %s: %s", test_name, e)
             # Continue with test execution even if Jira creation fails
 
@@ -124,10 +144,8 @@ def auto_jira_integration(
         test_data = _test_data.get(nodeid) or _test_data.get(test_name)
         if test_data is not None:
             test_data["page"] = page
-    except pytest.FixtureNotAvailable:
-        pass
-    except Exception as e:
-        # Other error getting page - log but don't fail the test
+    except (LookupError, AttributeError) as e:
+        # Fixture not available (not a UI test) or other lookup error
         logger.info(
             "No page fixture available for %s (not a UI test): %s", test_name, e
         )
@@ -138,7 +156,7 @@ def auto_jira_integration(
     # After test execution - handle screenshots with timeout protection
     try:
         _handle_post_test_screenshots(request, nodeid, jira_reporter_session)
-    except Exception as e:
+    except (RuntimeError, TimeoutError, OSError) as e:
         logger.info("Error in post-test screenshot handling for %s: %s", test_name, e)
 
 
@@ -151,7 +169,11 @@ def _handle_post_test_screenshots(
     test_name: str,
     jira_reporter_session: TestReporter,
 ) -> None:
-    """Handle screenshot capture after test execution with proper timeout and error handling."""
+    """
+    Handle screenshot capture after test execution.
+
+    Includes proper timeout and error handling.
+    """
     test_data = _get_test_data(test_name)
     page = test_data.get("page")
     test_case_key = test_data.get("test_case_key")
@@ -164,7 +186,7 @@ def _handle_post_test_screenshots(
                 page.wait_for_load_state(
                     "domcontentloaded", timeout=1000
                 )  # 1 second timeout
-            except Exception:
+            except (TimeoutError, RuntimeError):
                 logger.info(
                     "Page not responsive for screenshots in %s, skipping", test_name
                 )
@@ -186,30 +208,44 @@ def _handle_post_test_screenshots(
                 )
                 if screenshot_path:
                     test_data["screenshots"].append(screenshot_path)
-            except Exception as screenshot_error:
+                    # Also store on item for xdist
+                    screenshots = _get_item_attr(request.node, "screenshots", [])
+                    _set_item_attr(request.node, "screenshots", screenshots)
+            except (RuntimeError, OSError, TimeoutError) as screenshot_error:
                 logger.info("Screenshot failed for %s: %s", test_name, screenshot_error)
 
-        except Exception as e:
+        except (RuntimeError, TimeoutError, OSError) as e:
             logger.info("Screenshot capture failed for %s: %s", test_name, e)
 
 
-def get_test_screenshots(test_name: str) -> list[str]:
+def get_test_screenshots(test_name: str, item: pytest.Item | None = None) -> list[str]:
     """Get screenshots for a specific test (used by hooks)."""
+    if item:
+        screenshots = _get_item_attr(item, "screenshots", [])
+        return screenshots if isinstance(screenshots, list) else []
     return _get_test_data(test_name).get("screenshots", [])
 
 
-def get_test_case_key(test_name: str) -> str | None:
+def get_test_case_key(test_name: str, item: pytest.Item | None = None) -> str | None:
     """Get JIRA test case key for a specific test (used by hooks)."""
+    if item:
+        result = _get_item_attr(item, "test_case_key")
+        return result if isinstance(result, str) else None
     return _get_test_data(test_name).get("test_case_key")
 
 
-def was_reported(test_name: str) -> bool:
+def was_reported(test_name: str, item: pytest.Item | None = None) -> bool:
     """Check if a test has already been reported."""
+    if item:
+        return bool(_get_item_attr(item, "reported", default=False))
     return bool(_get_test_data(test_name).get("reported"))
 
 
-def mark_reported(test_name: str) -> None:
+def mark_reported(test_name: str, item: pytest.Item | None = None) -> None:
     """Mark a test as reported to avoid duplicate executions."""
+    if item:
+        _set_item_attr(item, "reported", value=True)
+        return
     test_data = _get_test_data(test_name)
     if not test_data:
         _test_data[test_name] = {"reported": True}

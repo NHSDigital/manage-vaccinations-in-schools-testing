@@ -91,7 +91,7 @@ class TestReporter:
                 self.jira_reporter = JiraTestReporter(self.config)
                 logger.info("JIRA integration enabled")
                 return
-            except Exception as e:
+            except (RuntimeError, ImportError, AttributeError) as e:
                 logger.info("Failed to initialize JIRA client: %s", e)
                 self.client = None
 
@@ -246,21 +246,21 @@ class TestReporter:
         test_case = JiraTestCase(
             name=test_name,
             description=full_description,
-            test_steps=None,  # Don't use separate test_steps field, include in description
+            test_steps=None,
             precondition=base_description,
+            labels=["Automated"],
         )
 
         try:
             test_case_key = self.client.create_test_case(test_case)
+            if test_case_key:
+                logger.info("Created new test case: %s", test_case_key)
+            else:
+                logger.warning("Failed to create test case")
+            return test_case_key
         except RuntimeError:
             logger.exception("Failed to create test case")
             return None
-        else:
-            if not test_case_key:
-                logger.warning("Failed to create test case")
-                return None
-            logger.info("Created new test case: %s", test_case_key)
-            return test_case_key
 
     def _extract_description_from_docstring(self, docstring: str) -> str:
         """Extract description from docstring."""
@@ -326,114 +326,6 @@ class TestReporter:
         }
         return mapping.get(pytest_outcome.lower(), TestResult.FAIL)
 
-    def report_test_result(
-        self,
-        test_case_key: str,
-        result: TestResult,
-        error_message: str | None = None,
-        screenshots: list[str] | None = None,
-    ) -> None:
-        """
-        Report test execution result.
-
-        This method follows the workflow:
-        1. Start test execution
-        2. Update with results
-        3. End test execution
-
-        Args:
-            test_case_key: Test case key
-            result: Test execution result
-            error_message: Error message if test failed
-            screenshots: List of screenshot file paths
-        """
-        # Use JIRA reporter if available
-        if self.jira_reporter:
-            self.jira_reporter.report_test_result(
-                test_case_key, result, error_message, screenshots
-            )
-            return
-
-        # Legacy fallback (deprecated)
-        if not self.client:
-            logger.warning("No integration client initialized")
-            return
-
-        try:
-            # Step 1: Create ATM test execution (Tests module)
-            execution_key = self.client.create_atm_test_execution(
-                test_case_key=test_case_key,
-                test_cycle_version=self.config.test_cycle_version,
-                test_cycle_key=self.config.test_cycle_key,
-                environment=os.getenv("TEST_ENVIRONMENT", "local"),
-            )
-
-            # Fallback to Jira issue-based execution if ATM is unavailable
-            if not execution_key:
-                execution_key = self.client.start_test_execution(
-                    test_case_key=test_case_key,
-                    test_cycle_key=self.current_test_cycle_key,
-                )
-
-            if not execution_key:
-                logger.warning("Failed to start test execution for %s", test_case_key)
-                return
-
-            logger.info("Started test execution: %s", execution_key)
-
-            # Step 2: Update test execution with results
-            screenshots_to_attach = (
-                screenshots
-                if result != TestResult.PASS or self.config.attach_passed_screenshots
-                else []
-            )
-            update_success = self.client.update_atm_test_execution(
-                execution_key=execution_key,
-                result=result,
-                comment=error_message,
-                environment=os.getenv("TEST_ENVIRONMENT", "local"),
-            )
-
-            if update_success and screenshots_to_attach:
-                self.client.attach_atm_execution_files(
-                    execution_key, screenshots_to_attach
-                )
-
-            if not update_success:
-                update_success = self.client.update_test_execution(
-                    execution_key=execution_key,
-                    result=result,
-                    error_message=error_message,
-                    screenshots=screenshots_to_attach,
-                    executed_by="Automated Tester",
-                    environment=os.getenv("TEST_ENVIRONMENT", "local"),
-                    test_cycle_version=self.config.test_cycle_version,
-                )
-
-            if not update_success:
-                logger.warning("Failed to update test execution %s", execution_key)
-            else:
-                logger.info(
-                    "Updated test execution %s with result: %s",
-                    execution_key,
-                    result.value,
-                )
-
-            # Step 3: End test execution
-            end_success = self.client.end_test_execution(
-                execution_key=execution_key,
-                result=result,
-            )
-
-            if not end_success:
-                logger.warning("Failed to end test execution %s", execution_key)
-            else:
-                logger.info("Ended test execution: %s", execution_key)
-
-        except RuntimeError:
-            logger.exception("Error reporting test result")
-            raise
-
     def take_screenshot(
         self, page: Page, test_name: str, suffix: str = ""
     ) -> str | None:
@@ -454,7 +346,7 @@ class TestReporter:
                 page.wait_for_load_state(
                     "domcontentloaded", timeout=1000
                 )  # 1 second timeout
-            except Exception:
+            except (TimeoutError, RuntimeError):
                 logger.info("Page not responsive for screenshot, skipping")
                 return None
 
@@ -473,7 +365,7 @@ class TestReporter:
             logger.info("Screenshot saved: %s", screenshot_path)
             return str(screenshot_path)
 
-        except Exception as e:
+        except (RuntimeError, OSError, TimeoutError) as e:
             logger.warning("Failed to take screenshot for %s: %s", test_name, e)
             return None
 

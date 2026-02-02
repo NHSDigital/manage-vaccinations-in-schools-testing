@@ -32,32 +32,19 @@ from .fixtures import (
     upload_offline_vaccination,
     year_groups,
 )
-from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
-
-# Import jira integration conditionally to avoid blocking
-try:
-    from .jira_integration.auto_fixtures import (
-        auto_jira_integration,
-        jira_reporter_session,
-    )
-    from .jira_integration.fixtures import jira_reporter
-    from .jira_integration.jira_hooks import (
-        pytest_configure,
-        pytest_runtest_logreport,
-        pytest_runtest_makereport,
-        pytest_runtest_teardown,
-    )
-
-    _JIRA_AVAILABLE = True
-except Exception as e:
-    import logging
-
-    logging.getLogger(__name__).warning("Failed to import jira integration: %s", e)
-    _JIRA_AVAILABLE = False
+from .hooks import pytest_sessionfinish, pytest_sessionstart
+from .jira_integration.auto_fixtures import auto_jira_integration, jira_reporter_session
+from .jira_integration.fixtures import jira_reporter
+from .jira_integration.jira_hooks import (
+    pytest_configure,
+    pytest_runtest_makereport,
+    pytest_runtest_teardown,
+)
 
 __all__ = [
     "add_vaccine_batch",
     "authenticate_api",
+    "auto_jira_integration",
     "base_url",
     "basic_auth_credentials",
     "basic_auth_token",
@@ -68,6 +55,8 @@ __all__ = [
     "delete_team_after_tests",
     "file_generator",
     "healthcare_assistant",
+    "jira_reporter",
+    "jira_reporter_session",
     "log_in_as_medical_secretary",
     "log_in_as_nurse",
     "log_in_as_prescriber",
@@ -77,7 +66,9 @@ __all__ = [
     "organisation",
     "prescriber",
     "programmes_enabled",
-    "pytest_runtest_logreport",
+    "pytest_configure",
+    "pytest_runtest_makereport",
+    "pytest_runtest_teardown",
     "pytest_sessionfinish",
     "pytest_sessionstart",
     "reset_before_each_module",
@@ -92,17 +83,3 @@ __all__ = [
     "upload_offline_vaccination",
     "year_groups",
 ]
-
-# Add jira integration exports only if available
-if _JIRA_AVAILABLE:
-    __all__.extend(
-        [
-            "auto_jira_integration",
-            "jira_reporter",
-            "jira_reporter_session",
-            "pytest_configure",
-            "pytest_runtest_logreport",
-            "pytest_runtest_makereport",
-            "pytest_runtest_teardown",
-        ]
-    )

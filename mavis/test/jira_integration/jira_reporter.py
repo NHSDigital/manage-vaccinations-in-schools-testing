@@ -3,7 +3,6 @@ Jira test reporter for pytest integration.
 """
 
 import logging
-import os
 import re
 import time
 from collections.abc import Callable
@@ -13,8 +12,9 @@ from typing import TypeVar
 
 from playwright.sync_api import Page
 
+from .auto_fixtures import get_execution_id, set_execution_id
 from .config import JiraConfig
-from .jira_client import JiraClient
+from .jira_client import JiraClient, ZephyrConfig
 from .models import JiraTestCase, TestResult, TestStep
 
 logger = logging.getLogger(__name__)
@@ -76,6 +76,11 @@ class JiraTestReporter:
 
         # Initialize Jira client
         try:
+            zephyr_config = ZephyrConfig(
+                api_token=self.config.zephyr_api_token,
+                project_id=self.config.zephyr_project_id,
+                url=self.config.zephyr_url,
+            )
             self.client = JiraClient(
                 self.config.jira_url.removesuffix("/rest/api/2/")
                 if self.config.jira_url
@@ -83,9 +88,7 @@ class JiraTestReporter:
                 self.config.jira_username or "",
                 self.config.jira_api_token or "",
                 self.config.project_key,
-                zephyr_api_token=self.config.zephyr_api_token,
-                zephyr_project_id=self.config.zephyr_project_id,
-                zephyr_url=self.config.zephyr_url,
+                zephyr_config=zephyr_config,
             )
 
             # Create or get test plan for current session
@@ -292,6 +295,7 @@ class JiraTestReporter:
             description=full_description,
             test_steps=(full_description and test_steps) or None,
             objective=base_description,
+            labels=["Automated"],
         )
 
         try:
@@ -353,12 +357,12 @@ class JiraTestReporter:
         screenshots: list[str] | None = None,
     ) -> None:
         """
-        Report test execution result to Jira.
+        Report test execution result to Jira using Zephyr Squad API.
 
-        This method follows the workflow:
-        1. Start test execution
-        2. Update with results
-        3. End test execution
+        This method follows the Zephyr Squad API workflow:
+        1. Add test to cycle (creates execution with UNEXECUTED status)
+        2. Update execution status
+        3. Attach screenshots and comments
 
         Args:
             test_case_key: Test case issue key in Jira
@@ -370,83 +374,187 @@ class JiraTestReporter:
             logger.warning("Jira client not initialized")
             return
 
-        # Import here to avoid circular dependency
-        from .auto_fixtures import get_execution_id, set_execution_id
-
-        # Check if we already created an execution for this test case
+        # Handle existing executions
         existing_execution_id = get_execution_id(test_case_key)
         if existing_execution_id:
-            logger.info(
-                "Execution %s already exists for %s, skipping duplicate creation",
-                existing_execution_id,
-                test_case_key,
-            )
-            # Don't try to update, Zephyr Essential DC doesn't support status updates
-            logger.warning(
-                "Zephyr Essential DC does not support execution status updates via API. "
-                "Status will remain as initially created."
+            self._handle_existing_execution(
+                test_case_key, existing_execution_id, result, error_message, screenshots
             )
             return
 
-        zephyr_enabled = bool(self.config.zephyr_url or self.config.zephyr_api_token)
+        # Create new execution
+        execution_id = self._create_new_execution(test_case_key, result, error_message)
 
-        # Step 1: Create Zephyr test execution WITH the final status
-        # (Zephyr Essential DC doesn't support updates, so we set status at creation)
-        execution_key = self.client.create_zephyr_test_execution(
-            test_case_key=test_case_key,
-            test_cycle_key=self.config.test_cycle_key,
-            version_name=self.config.test_cycle_version,
-            environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
-            initial_status=result,  # Set the status at creation time
+        # Add result comment and attach screenshots
+        self._add_result_comment(test_case_key, execution_id, result, error_message)
+        self._attach_screenshots(execution_id, result, screenshots)
+
+        logger.info(
+            "Completed test execution %s with result: %s",
+            execution_id,
+            result.value,
         )
 
-        # Store execution ID to prevent duplicates
-        if execution_key:
-            set_execution_id(test_case_key, execution_key)
-            logger.info(
-                "Created and stored execution %s for %s with status %s",
-                execution_key,
-                test_case_key,
-                result.value,
-            )
+    def _handle_existing_execution(
+        self,
+        test_case_key: str,
+        execution_id: str,
+        result: TestResult,
+        error_message: str | None,
+        screenshots: list[str] | None,
+    ) -> None:
+        """Handle updating an existing test execution."""
+        logger.info(
+            "Execution %s already exists for %s, updating status",
+            execution_id,
+            test_case_key,
+        )
+
+        zephyr_enabled = bool(self.config.zephyr_url or self.config.zephyr_api_token)
+        if zephyr_enabled:
+            self._update_zephyr_execution(execution_id, result, error_message)
+
+        self._add_result_comment(test_case_key, execution_id, result, error_message)
+        self._attach_screenshots(execution_id, result, screenshots)
+
+    def _update_zephyr_execution(
+        self, execution_id: str, result: TestResult, error_message: str | None
+    ) -> None:
+        """Update Zephyr execution status."""
+        if not self.client:
+            logger.warning("Jira client not initialized for Zephyr execution update")
+            return
+
+        success = self.client.update_zephyr_execution_status(
+            execution_id, result, comment=error_message
+        )
+        if success:
+            logger.info("Updated execution %s status to %s", execution_id, result.value)
         else:
-            # Fallback to ATM test execution if Zephyr is unavailable
-            if not zephyr_enabled:
-                logger.info(
-                    "Zephyr execution failed, falling back to ATM for %s",
-                    test_case_key,
-                )
-                execution_key = self.client.create_atm_test_execution(
-                    test_case_key=test_case_key,
-                    test_cycle_version=self.config.test_cycle_version,
-                    test_cycle_key=self.config.test_cycle_key,
-                    environment=os.getenv("TEST_ENVIRONMENT", "unknown"),
-                )
-                if execution_key:
-                    set_execution_id(test_case_key, execution_key)
+            logger.warning("Failed to update execution %s status", execution_id)
 
-            # Final fallback to Jira issue-based execution
-            if not execution_key and not zephyr_enabled:
-                logger.info(
-                    "ATM execution failed, falling back to Jira issue-based for %s",
-                    test_case_key,
+    def _create_new_execution(
+        self, test_case_key: str, result: TestResult, error_message: str | None
+    ) -> str:
+        """Create a new test execution and return the execution ID."""
+        zephyr_enabled = bool(self.config.zephyr_url or self.config.zephyr_api_token)
+
+        if zephyr_enabled:
+            execution_id = self._create_zephyr_execution(
+                test_case_key, result, error_message
+            )
+            if execution_id:
+                return execution_id
+
+        execution_id = self._create_atm_execution(test_case_key, result, error_message)
+        if execution_id:
+            return execution_id
+
+        return self._create_fallback_execution(test_case_key)
+
+    def _create_zephyr_execution(
+        self, test_case_key: str, result: TestResult, error_message: str | None
+    ) -> str | None:
+        """Create Zephyr test execution."""
+        logger.info("Attempting Zephyr execution creation for %s", test_case_key)
+
+        if not self.client:
+            logger.warning("Jira client not initialized for Zephyr execution creation")
+            return None
+
+        cycle_id, version_id = self._resolve_cycle_and_version()
+        if not cycle_id:
+            return None
+
+        execution_id = self.client.add_test_to_cycle(
+            test_case_key=test_case_key, cycle_id=int(cycle_id), version_id=version_id
+        )
+
+        if execution_id:
+            set_execution_id(test_case_key, execution_id)
+            logger.info("Created execution %s for test %s", execution_id, test_case_key)
+            self._update_zephyr_execution(execution_id, result, error_message)
+            return execution_id
+
+        logger.warning("Failed to add test %s to cycle %s", test_case_key, cycle_id)
+        return None
+
+    def _resolve_cycle_and_version(self) -> tuple[str | None, int]:
+        """Resolve cycle ID and version ID from configuration."""
+        version_id = -1  # Default to "Unscheduled"
+
+        if not self.config.test_cycle_key:
+            logger.info("No test cycle configured")
+            return None, version_id
+
+        if not self.client:
+            logger.warning("Jira client not initialized")
+            return None, version_id
+
+        if self.config.test_cycle_version:
+            resolved_version_id = self.client.get_version_id_by_name(
+                self.config.test_cycle_version
+            )
+            if resolved_version_id:
+                version_id = resolved_version_id
+                logger.info("Resolved version ID %s", version_id)
+
+        cycle_id = self.client.get_zephyr_cycle_id(
+            self.config.test_cycle_key, version_id
+        )
+        if cycle_id:
+            logger.info("Resolved cycle ID %s", cycle_id)
+        else:
+            logger.warning(
+                "Could not resolve cycle ID for %s", self.config.test_cycle_key
+            )
+
+        return str(cycle_id) if cycle_id is not None else None, version_id
+
+    def _create_atm_execution(
+        self, test_case_key: str, result: TestResult, error_message: str | None
+    ) -> str | None:
+        """Create ATM test execution as fallback."""
+        logger.info("Zephyr not enabled, falling back to ATM for %s", test_case_key)
+
+        if not self.client:
+            logger.warning("Jira client not initialized for ATM execution creation")
+            return None
+
+        try:
+            execution_id = self.client.create_atm_test_execution(
+                test_case_key=test_case_key,
+                test_cycle_version=self.config.test_cycle_version,
+                test_cycle_key=self.config.test_cycle_key,
+                environment="unknown",
+            )
+            if execution_id:
+                set_execution_id(test_case_key, execution_id)
+                self.client.update_atm_test_execution(
+                    execution_id, result, comment=error_message
                 )
-                execution_key = self.client.start_test_execution(
-                    test_case_key=test_case_key,
-                    test_cycle_key=self.current_test_plan_key,
-                )
-                if execution_key:
-                    set_execution_id(test_case_key, execution_key)
+                logger.info("Created ATM test execution: %s", execution_id)
+                return execution_id
+        except RuntimeError as e:
+            logger.info("ATM execution creation failed: %s", e)
+        return None
 
-            if not execution_key:
-                logger.warning("Failed to start test execution for %s", test_case_key)
-                return
+    def _create_fallback_execution(self, test_case_key: str) -> str:
+        """Create fallback execution using test case key."""
+        logger.info("Using test case as execution: %s", test_case_key)
+        execution_id = test_case_key
+        set_execution_id(test_case_key, execution_id)
+        return execution_id
 
-            logger.info("Started test execution: %s", execution_key)
-
-        # Step 2: Add result as comment on the Jira test case issue
-        # (Zephyr execution API is too limited, but Jira issue comments work)
-        result_comment = f"*Automated Test Execution {execution_key}*\n\n"
+    def _add_result_comment(
+        self,
+        test_case_key: str,
+        execution_id: str,
+        result: TestResult,
+        error_message: str | None,
+    ) -> None:
+        """Add a result comment to the test case."""
+        result_comment = f"*Automated Test Execution {execution_id}*\n\n"
         result_comment += f"Result: *{result.value}*\n"
         result_comment += (
             f"Timestamp: {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')} UTC\n"
@@ -454,7 +562,11 @@ class JiraTestReporter:
         if error_message:
             result_comment += f"\nError details:\n{{code}}\n{error_message}\n{{code}}"
 
-        comment_added = self.client._add_comment(test_case_key, result_comment)
+        if not self.client:
+            logger.warning("Jira client not initialized")
+            return
+
+        comment_added = self.client.add_comment(test_case_key, result_comment)
 
         if comment_added:
             logger.info(
@@ -462,12 +574,18 @@ class JiraTestReporter:
             )
         else:
             logger.warning(
-                "Could not add comment to execution %s - result is %s",
-                execution_key,
-                result.value,
+                "Could not add comment to test case %s for execution %s",
+                test_case_key,
+                execution_id,
             )
 
-        # Step 3: Attach screenshots
+    def _attach_screenshots(
+        self,
+        execution_id: str,
+        result: TestResult,
+        screenshots: list[str] | None,
+    ) -> None:
+        """Attach screenshots to the execution."""
         screenshots_to_attach = (
             screenshots
             if result != TestResult.PASS or self.config.attach_passed_screenshots
@@ -476,35 +594,19 @@ class JiraTestReporter:
 
         # Attach screenshots if any
         if screenshots_to_attach:
+            if not self.client:
+                logger.warning("Jira client not initialized for attachments")
+                return
             logger.info(
                 "Attaching %d screenshots to execution %s",
                 len(screenshots_to_attach),
-                execution_key,
+                execution_id,
             )
             self.client.attach_zephyr_execution_files(
-                execution_key, screenshots_to_attach
+                execution_id, screenshots_to_attach
             )
         else:
-            logger.info("No screenshots to attach for execution %s", execution_key)
-
-        logger.info(
-            "Completed test execution %s with result: %s",
-            execution_key,
-            result.value,
-        )
-
-        # End execution (only for non-Zephyr executions)
-        # Zephyr executions don't need explicit ending
-        if not zephyr_enabled:
-            end_success = self.client.end_test_execution(
-                execution_key=execution_key,
-                result=result,
-            )
-
-            if not end_success:
-                logger.warning("Failed to end test execution %s", execution_key)
-            else:
-                logger.info("Ended test execution: %s", execution_key)
+            logger.info("No screenshots to attach for execution %s", execution_id)
 
     def take_screenshot(
         self, page: Page, test_name: str, suffix: str = ""
