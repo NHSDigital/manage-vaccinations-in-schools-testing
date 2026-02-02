@@ -9,6 +9,7 @@ jobs:
   test:
     permissions:
       contents: write
+      id-token: write
 
     name: End-to-End tests
     strategy:
@@ -53,6 +54,13 @@ jobs:
           IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
           IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
+
+      - name: Configure AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
 
       - name: Process reports
         if: always()
