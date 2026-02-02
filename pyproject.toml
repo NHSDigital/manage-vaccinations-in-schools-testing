@@ -15,7 +15,7 @@ dependencies = [
     "pandas==3.0.0",
     "pillow==12.1.0",
     "playwright==1.58.0",
-    "pyjwt==2.10.1",
+    "pyjwt==2.11.0",
     "pytest==9.0.2",
     "pytest-dotenv==0.5.2",
     "pytest-playwright==0.7.2",
