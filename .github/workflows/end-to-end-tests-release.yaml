@@ -1,0 +1,272 @@
+name: End-to-End tests
+
+on:
+  workflow_call:
+    inputs:
+      tests:
+        description: 'Tests to run (leave blank to run all tests!)'
+        required: false
+        default: ''
+        type: string
+      cross_service_tests:
+        description: 'Include imms api and reporting tests'
+        required: false
+        default: false
+        type: boolean
+      github_ref:
+        description: 'Github reference to get tests from'
+        required: false
+        default: 'main'
+        type: string
+      device:
+        description: 'Device to test'
+        required: false
+        default: 'Desktop Chrome'
+        type: string
+      programmes:
+        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
+        required: false
+        default: FLU,HPV,MENACWY,MMR,TD_IPV
+        type: string
+      endpoint:
+        description: 'Environment to run tests against'
+        required: false
+        default: 'https://qa.mavistesting.com'
+        type: string
+      screenshot_all_steps:
+        description: 'Take screenshots for all steps (in addition to failures)'
+        required: false
+        default: false
+        type: boolean
+      enable_reruns:
+        description: 'Enable test reruns on failure (up to 3 attempts)'
+        required: false
+        default: true
+        type: boolean
+      test_workers:
+        description: 'Number of parallel test workers to use'
+        required: false
+        default: '4'
+        type: string
+      set_feature_flags:
+        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        required: false
+        default: false
+        type: boolean
+      additional_feature_flags:
+        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        required: false
+        default: ''
+        type: string
+      jira_test_cycle_version:
+        description: 'JIRA test cycle version for test management integration'
+        required: false
+        default: 'Unscheduled'
+        type: string
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS:
+        description: 'HTTP Basic Auth token for the environment under test'
+        required: true
+      MAVIS_TESTING_REPO_ACCESS_TOKEN:
+        description: 'Git token with access to the mavis testing repo'
+        required: false
+  workflow_dispatch:
+    inputs:
+      tests:
+        description: 'Tests to run (leave blank to run all tests!)'
+        required: false
+        default: ''
+      cross_service_tests:
+        description: 'Include imms api and reporting tests'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
+      device:
+        description: 'Device to test'
+        required: true
+        default: 'Desktop Chrome'
+        type: choice
+        options:
+          - Desktop Chrome
+          - Desktop Edge
+          - Desktop Firefox
+          - Desktop Safari
+          - Galaxy S9+
+          - Pixel 7
+          - iPad (gen 7) landscape
+          - iPhone 15
+      programmes:
+        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
+        required: true
+        default: FLU,HPV,MENACWY,MMR,TD_IPV
+      environment:
+        description: 'Environment to run tests on'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - qa
+          - training
+          - sandbox-alpha
+          - sandbox-beta
+      screenshot_all_steps:
+        description: 'Take screenshots for all steps (in addition to failures)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      enable_reruns:
+        description: 'Enable test reruns on failure (up to 3 attempts)'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
+      test_workers:
+        description: 'Number of parallel test workers to use'
+        required: true
+        default: '4'
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+      set_feature_flags:
+        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      additional_feature_flags:
+        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        required: false
+        default: ''
+      jira_test_cycle_version:
+        description: 'JIRA test cycle version for test management integration'
+        required: false
+        default: 'Unscheduled'
+
+jobs:
+  test:
+    permissions:
+      contents: write
+    
+    name: End-to-End tests
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: "Europe/London"
+
+    steps:
+      - name: Set variables
+        id: set-variables
+        run: |
+          declare -A env_map=(
+            [qa]="https://qa.mavistesting.com"
+            [training]="https://training.manage-vaccinations-in-schools.nhs.uk"
+            [sandbox-alpha]="https://sandbox-alpha.mavistesting.com"
+            [sandbox-beta]="https://sandbox-beta.mavistesting.com"
+          )
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "tests=" >> $GITHUB_OUTPUT
+            echo "cross_service_tests=true" >> $GITHUB_OUTPUT
+            echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
+            echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
+            echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=false" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=" >> $GITHUB_OUTPUT
+            echo "deploy_report=false" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
+            echo "enable_reruns=true" >> $GITHUB_OUTPUT
+            echo "test_workers=4" >> $GITHUB_OUTPUT
+            echo "jira_test_cycle_version=Unscheduled" >> $GITHUB_OUTPUT
+          else
+            echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
+            echo "cross_service_tests=${{ inputs.cross_service_tests }}" >> $GITHUB_OUTPUT
+            echo "device=${{ inputs.device }}" >> $GITHUB_OUTPUT
+          
+            input_env="${{ inputs.environment }}"
+            if [ -n "$input_env" ]; then
+              url="${env_map[$input_env]:-${env_map[qa]}}"
+              echo "environment=$url" >> $GITHUB_OUTPUT
+            else
+              echo "environment=${{ inputs.endpoint }}" >> $GITHUB_OUTPUT
+            fi
+
+            echo "programmes=${{ inputs.programmes }}" >> $GITHUB_OUTPUT
+            echo "set_feature_flags=${{ inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "additional_feature_flags=${{ inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
+            echo "deploy_report=true" >> $GITHUB_OUTPUT
+            echo "screenshot_all_steps=${{ inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
+            echo "enable_reruns=${{ inputs.enable_reruns }}" >> $GITHUB_OUTPUT
+            echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
+            echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          repository: NHSDigital/manage-vaccinations-in-schools-testing
+          ref: ${{ inputs.github_ref || github.head_ref }}
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: /home/runner/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+
+      - name: Run tests
+        uses: ./.github/actions/run-end-to-end-tests
+        with:
+          tests: ${{ steps.set-variables.outputs.tests }}
+          imms_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          reporting_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          github_ref: ${{ inputs.github_ref || github.head_ref }}
+          device: ${{ steps.set-variables.outputs.device }}
+          base_url: ${{ steps.set-variables.outputs.environment }}
+          programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
+          screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          enable_reruns: ${{ steps.set-variables.outputs.enable_reruns }}
+          test_workers: ${{ steps.set-variables.outputs.test_workers }}
+          set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
+          additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
+        env:
+          BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+          IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
+          IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
+          IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
+          IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
+          # JIRA Integration Environment Variables
+          JIRA_INTEGRATION_ENABLED: ${{ vars.JIRA_INTEGRATION_ENABLED }}
+          JIRA_REPORTING_URL: ${{ vars.JIRA_REPORTING_URL }}
+          JIRA_USERNAME: ${{ vars.JIRA_USERNAME }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY: ${{ vars.JIRA_PROJECT_KEY }}
+          JIRA_ATTACH_PASSED_SCREENSHOTS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
+          JIRA_TEST_CYCLE_KEY: ${{ vars.JIRA_TEST_CYCLE_KEY }}
+          ZEPHYR_API_TOKEN: ${{ secrets.ZEPHYR_API_TOKEN }}
+          ZEPHYR_PROJECT_ID: ${{ vars.ZEPHYR_PROJECT_ID }}
+          ZEPHYR_URL: ${{ vars.ZEPHYR_URL }}
+
+      - name: Process reports
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        continue-on-error: true
+        uses: ./.github/actions/deploy-reports
+        with:
+          device: ${{ steps.set-variables.outputs.device }}
+          environment: ${{ github.event.inputs.environment }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+

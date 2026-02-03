@@ -80,7 +80,7 @@ class TestReporter:
 
         if not any(
             [
-                os.getenv("JIRA_URL"),
+                os.getenv("JIRA_REPORTING_URL"),
                 os.getenv("JIRA_API_TOKEN"),
             ]
         ):
