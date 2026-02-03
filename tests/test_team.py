@@ -134,7 +134,7 @@ def test_site_child_record_import(
         )
     ).to_be_visible()
 
-    set_site_for_child_list(input_file_path, "A")
+    file_with_site = set_site_for_child_list(input_file_path, "A")
 
     TeamSchoolsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
@@ -142,7 +142,7 @@ def test_site_child_record_import(
     ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
     ImportRecordsWizardPage(
         page, file_generator
-    ).upload_and_verify_output_for_input_output_files(input_file_path, output_file_path)
+    ).upload_and_verify_output_for_input_output_files(file_with_site, output_file_path)
 
     ImportRecordsWizardPage(page, file_generator).header.click_mavis_header()
     DashboardPage(page).click_schools()
