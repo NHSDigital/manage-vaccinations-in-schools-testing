@@ -1,0 +1,95 @@
+[project]
+name = "manage-vaccinations-in-schools-testing"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "allure-pytest==2.15.0",
+    "allure-python-commons==2.15.0",
+    "axe-playwright-python==0.1.6",
+    "cryptography==46.0.3",
+    "faker==37.12.0",
+    "nhs-number==1.3.6",
+    "oauthlib==3.3.1",
+    "openpyxl==3.1.5",
+    "pandas==2.3.3",
+    "pillow==12.0.0",
+    "playwright==1.55.0",
+    "pyjwt==2.10.1",
+    "pytest==8.4.2",
+    "pytest-dotenv==0.5.2",
+    "pytest-playwright==0.7.1",
+    "pytest-rerunfailures==16.1",
+    "pytest-xdist==3.8.0",
+    "requests==2.32.5",
+    "requests-oauthlib==2.0.0",
+    "ruff==0.14.4",
+]
+
+[tool.pytest.ini_options]
+log_file = "logs/pytest.log"
+log_file_date_format = "%Y-%m-%d %H:%M:%S"
+log_file_format = "%(asctime)s - %(name)s %(levelname)s %(message)s"
+addopts = "-vs -rf --alluredir allure-results -n auto --dist=loadscope"
+markers = [
+  "accessibility",
+  "bug",
+  "childlist",
+  "children",
+  "classlist",
+  "cohorts",
+  "consent",
+  "consent_responses",
+  "e2e",
+  "log_in",
+  "rav",
+  "reports",
+  "school_moves",
+  "sessions",
+  "smoke",
+  "tallying",
+  "vaccinations",
+  "vaccines",
+]
+
+[tool.ruff]
+output-format = "github"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812",   # should be disabled when using ruff formatter
+  "D",        # docstrings should not be necessary
+  "RUF001",   # mavis uses the ambiguous ’ character
+  "S311",     # no cryptography warnings needed
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = [
+  "ANN",      # tests/fixtures don't need type annotations
+  "ARG",      # fixtures are unused arguments
+  "S101",     # assertions should be used in tests
+  "PLR0913",  # fixtures cause many parameters to be given to tests
+]
+"mavis/test/fixtures/*.py" = [
+  "ANN",      # fixtures don't need type annotations
+  "ARG",      # fixtures are unused arguments
+  "PLR0913",  # fixtures take many parameters
+]
+"mavis/test/pages/*.py" = [
+  "PLR0915",  # page object model causes many statements in __init__
+  "S101",     # assertions should be used in test functions
+]
+"mavis/test/hooks.py" = [
+  "ANN",      # hooks don't need type annotations
+  "ARG",      # fixtures are unused arguments
+]
+"mavis/test/annotations.py" = [
+  "ANN",      # annotations don't need type annotations
+]
+"mavis/test/imms_api.py" = [
+  "S101",     # assertions are used here, though perhaps this file could be moved
+]
+"utils/*" = [
+  "ALL",      # small utilities can be safely ignored
+]

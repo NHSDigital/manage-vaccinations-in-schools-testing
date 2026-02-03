@@ -1,0 +1,92 @@
+{
+  "containerDefinitions": [
+    {
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "RUN_IMPORT",
+          "value": "true"
+        },
+        {
+          "name": "RUN_CONSENT",
+          "value": "true"
+        },
+        {
+          "name": "RUN_NURSE",
+          "value": "true"
+        },
+        {
+          "name": "RESULT_PATH",
+          "value": "sandbox-beta.mavistesting.com/157"
+        },
+        {
+          "name": "URN",
+          "value": "sandbox-beta.mavistesting.com"
+        },
+        {
+          "name": "BASE_URL",
+          "value": "sandbox-beta.mavistesting.com"
+        },
+        {
+          "name": "USER",
+          "value": "nurse.perftest@example.com"
+        },
+        {
+          "name": "DURATION",
+          "value": "300"
+        },
+        {
+          "name": "THREADS",
+          "value": "10"
+        },
+        {
+          "name": "RAMP_UP",
+          "value": "30"
+        },
+        {
+          "name": "ROW_COUNT",
+          "value": "10"
+        }
+      ],
+      "essential": true,
+      "image": "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:550c051a22195c85677fc8b4930818525545be6a",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "performancetest-ecs",
+          "awslogs-region": "eu-west-2",
+          "awslogs-stream-prefix": "performancetest-logs"
+        }
+      },
+      "mountPoints": [],
+      "name": "performancetest-container",
+      "portMappings": [],
+      "readonlyRootFilesystem": true,
+      "systemControls": [],
+      "volumesFrom": [],
+      "secrets": [
+        {
+          "name": "AUTH_TOKEN",
+          "valueFrom": "arn:aws:secretsmanager:eu-west-2:393416225559:secret:performancetest/auth-token"
+        }
+      ]
+    }
+  ],
+  "cpu": "2048",
+  "executionRoleArn": "arn:aws:iam::393416225559:role/ecsTaskExecutionRole-performancetest",
+  "family": "performancetest-task-definition",
+  "memory": "4096",
+  "networkMode": "awsvpc",
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "taskRoleArn": "arn:aws:iam::393416225559:role/EcsTaskRole-performancetest",
+  "volumes": [],
+  "tags": [
+    {
+      "key": "Name",
+      "value": "performancetest"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+2025-11-11 11:58:35,594 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2025-11-11 11:58:35,619 INFO o.a.j.JMeter: Loading user properties from: /opt/jmeter/bin/user.properties
+2025-11-11 11:58:35,619 INFO o.a.j.JMeter: Loading system properties from: /opt/jmeter/bin/system.properties
+2025-11-11 11:58:35,619 INFO o.a.j.JMeter: Setting JMeter property: AuthToken=bWFuYWdlOnZhY2NpbmF0aW9ucwo=
+2025-11-11 11:58:35,619 INFO o.a.j.JMeter: Setting JMeter property: URN=sandbox-beta.mavistesting.com
+2025-11-11 11:58:35,619 INFO o.a.j.JMeter: Setting JMeter property: BaseURL=sandbox-beta.mavistesting.com
+2025-11-11 11:58:35,620 INFO o.a.j.JMeter: Setting JMeter property: RowCount=10
+2025-11-11 11:58:35,628 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2025-11-11 11:58:35,628 INFO o.a.j.JMeter: Version 5.6.3
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: java.version=25.0.1
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: os.name=Linux
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: os.arch=amd64
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: os.version=5.10.245-241.976.amzn2.x86_64
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: file.encoding=UTF-8
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: java.awt.headless=true
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: Max memory     =1073741824
+2025-11-11 11:58:35,629 INFO o.a.j.JMeter: Available Processors =2
+2025-11-11 11:58:35,649 INFO o.a.j.JMeter: Default Locale=English (EN)
+2025-11-11 11:58:35,649 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2025-11-11 11:58:35,650 INFO o.a.j.JMeter: JMeterHome=/opt/jmeter
+2025-11-11 11:58:35,650 INFO o.a.j.JMeter: user.dir  =/performance-tests
+2025-11-11 11:58:35,650 INFO o.a.j.JMeter: PWD       =/performance-tests
+2025-11-11 11:58:35,650 INFO o.a.j.JMeter: IP: 10.0.0.45 Name: ip-10-0-0-45.eu-west-2.compute.internal FullName: ip-10-0-0-45.eu-west-2.compute.internal
+2025-11-11 11:58:35,660 INFO o.a.j.JMeter: Setting property 'jmeter.reportgenerator.outputdir' to:'/output/generate-cohort/report'
+2025-11-11 11:58:35,663 INFO o.a.j.s.FileServer: Default base='/performance-tests'
+2025-11-11 11:58:35,664 INFO o.a.j.s.FileServer: Set new base='/performance-tests/STS'
+2025-11-11 11:58:36,068 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2025-11-11 11:58:36,095 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2025-11-11 11:58:36,098 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2025-11-11 11:58:36,114 INFO o.a.j.s.SaveService: Loading file: STS/generate-cohort.jmx
+2025-11-11 11:58:36,185 INFO o.a.j.JMeter: Creating summariser <summary>
+2025-11-11 11:58:36,187 INFO o.a.j.r.d.ReportGenerator: ReportGenerator will use for Parsing the separator: ','
+2025-11-11 11:58:36,187 INFO o.a.j.r.d.ReportGenerator: Will generate report at end of test from  results file: /output/generate-cohort/samples.jtl
+2025-11-11 11:58:36,187 INFO o.a.j.r.d.ReportGenerator: Reading report generator properties from: /opt/jmeter/bin/reportgenerator.properties
+2025-11-11 11:58:36,187 INFO o.a.j.r.d.ReportGenerator: Merging with JMeter properties
+2025-11-11 11:58:36,190 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.temp_dir' not found, using default value 'temp' instead.
+2025-11-11 11:58:36,191 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.apdex_per_transaction' not found, using default value 'null' instead.
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: apdex_per_transaction is empty, not APDEX per transaction customization
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.sample_filter' not found, using default value 'null' instead.
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.report_title' not found, using default value 'null' instead.
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.start_date' not found, using default value 'null' instead.
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.end_date' not found, using default value 'null' instead.
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.date_format' not found, using default value 'null' instead.
+2025-11-11 11:58:36,196 INFO o.a.j.r.c.ReportGeneratorConfiguration: Will use date range start date: null, end date: null
+2025-11-11 11:58:36,199 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.totalTPS.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.activeThreadsOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.timeVsThreads.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimeDistribution.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.transactionsPerSecond.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentiles.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentilesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,200 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.connectTimeOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,201 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.latenciesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2025-11-11 11:58:36,201 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.filters_only_sample_series' not found, using default value 'true' instead.
+2025-11-11 11:58:36,201 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.series_filter' not found, using default value '' instead.
+2025-11-11 11:58:36,201 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.show_controllers_only' not found, using default value 'false' instead.
+2025-11-11 11:58:36,202 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.filters_only_sample_series' not found, using default value 'true' instead.
+2025-11-11 11:58:36,202 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.series_filter' not found, using default value '' instead.
+2025-11-11 11:58:36,202 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.show_controllers_only' not found, using default value 'false' instead.
+2025-11-11 11:58:36,215 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-11-11 11:58:36,216 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-11-11 11:58:36,216 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-11-11 11:58:36,223 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2025-11-11 11:58:36,223 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2025-11-11 11:58:36,262 INFO o.a.j.r.ClassFinder: Will scan jar /opt/jmeter/lib/ext/jmeter-plugins-udp-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-11-11 11:58:36,265 INFO o.a.j.r.ClassFinder: Will scan jar /opt/jmeter/lib/ext/jmeter-plugins-dummy-0.4.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-11-11 11:58:36,267 INFO o.a.j.r.ClassFinder: Will scan jar /opt/jmeter/lib/ext/jmeter-plugins-graphs-basic-2.0.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-11-11 11:58:36,270 INFO o.a.j.r.ClassFinder: Will scan jar /opt/jmeter/lib/ext/jmeter-plugins-table-server-5.0.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-11-11 11:58:36,273 INFO o.a.j.r.ClassFinder: Will scan jar /opt/jmeter/lib/ext/jmeter-plugins-manager-1.7.0.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-11-11 11:58:36,359 INFO o.a.j.r.ClassFinder: Will scan jar /opt/jmeter/lib/ext/jmeter-plugins-random-csv-data-set-0.8.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
