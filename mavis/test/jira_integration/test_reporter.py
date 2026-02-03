@@ -67,7 +67,14 @@ class TestReporter:
 
         # Only initialize if configuration is valid and enabled
         if not self.config.is_valid():
-            logger.debug("Integration disabled: Invalid or disabled configuration")
+            if not self.config.enabled:
+                logger.info(
+                    "Integration explicitly disabled via JIRA_INTEGRATION_ENABLED=false"
+                )
+            else:
+                logger.debug(
+                    "Integration disabled: Invalid configuration - missing required fields"
+                )
             return
 
         if not any(

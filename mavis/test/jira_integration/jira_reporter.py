@@ -71,7 +71,14 @@ class JiraTestReporter:
 
         # Only initialize if configuration is valid and enabled
         if not self.config.is_valid():
-            logger.debug("Jira integration disabled: Invalid or disabled configuration")
+            if not self.config.enabled:
+                logger.info(
+                    "Jira integration explicitly disabled via JIRA_INTEGRATION_ENABLED=false"
+                )
+            else:
+                logger.debug(
+                    "Jira integration disabled: Invalid configuration - missing required fields"
+                )
             return
 
         # Initialize Jira client
@@ -265,8 +272,9 @@ class JiraTestReporter:
         Returns:
             Test case issue key if successful, None otherwise
         """
-        if not self.client:
-            logger.warning("Jira client not initialized")
+        # Early return if integration is disabled or client not initialized
+        if not self.is_enabled() or not self.client:
+            logger.debug("Jira integration disabled or client not initialized")
             return None
 
         # First, try to use a Jira issue key if provided
@@ -370,8 +378,9 @@ class JiraTestReporter:
             error_message: Error message if test failed
             screenshots: List of screenshot file paths
         """
-        if not self.client:
-            logger.warning("Jira client not initialized")
+        # Early return if integration is disabled or client not initialized
+        if not self.is_enabled() or not self.client:
+            logger.debug("Jira integration disabled or client not initialized")
             return
 
         # Handle existing executions

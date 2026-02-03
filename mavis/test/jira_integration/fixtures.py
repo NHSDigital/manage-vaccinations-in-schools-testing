@@ -79,7 +79,7 @@ def jira_test_tracker(
             test_name, test_docstring or ""
         )
     except RuntimeError as e:
-        warnings.warn(f"Failed to create/update JIRA test case: {e}")
+        warnings.warn(f"Failed to create/update JIRA test case: {e}", stacklevel=2)
 
     screenshots = []
 
@@ -95,7 +95,7 @@ def jira_test_tracker(
                         self.screenshots.append(screenshot_path)
                         return screenshot_path
             except RuntimeError as e:
-                warnings.warn(f"Failed to take screenshot: {e}")
+                warnings.warn(f"Failed to take screenshot: {e}", stacklevel=2)
             return None
 
     tracker = (
@@ -147,7 +147,7 @@ def _report_test_results(
         )
         mark_reported(test_name)
     except RuntimeError as e:
-        warnings.warn(f"Failed to report test result to JIRA: {e}")
+        warnings.warn(f"Failed to report test result to JIRA: {e}", stacklevel=2)
 
 
 @pytest.fixture
