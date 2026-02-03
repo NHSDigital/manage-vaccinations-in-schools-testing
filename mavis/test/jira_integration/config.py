@@ -15,7 +15,7 @@ class JiraConfig:
     integration regardless of other configuration.
 
     Environment Variables:
-        JIRA_INTEGRATION_ENABLED: Set to 'false' to disable integration (default: 'true')
+        JIRA_INTEGRATION_ENABLED: Set to 'false' to disable integration (default: true)
         JIRA_URL: JIRA instance URL
         JIRA_USERNAME: JIRA username (optional if using API token)
         JIRA_API_TOKEN: JIRA API token for authentication

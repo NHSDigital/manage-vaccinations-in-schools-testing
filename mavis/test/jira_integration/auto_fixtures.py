@@ -76,7 +76,8 @@ def auto_jira_integration(
 ) -> Generator[None]:
     """
     Automatic Jira integration fixture that runs for every test.
-    Only activates when proper environment variables are configured and integration is enabled.
+    Only activates when proper environment variables are configured
+    and integration is enabled.
     """
 
     # Check if JIRA integration is explicitly disabled
