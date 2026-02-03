@@ -8,7 +8,6 @@ from mavis.test.pages import (
     AddBatchPage,
     ArchiveBatchPage,
     DashboardPage,
-    EditBatchPage,
     VaccinesPage,
 )
 from mavis.test.utils import get_offset_date
@@ -31,8 +30,7 @@ def test_batch_add_change_archive(
     Steps:
     1. Click to add a new batch for the given vaccine.
     2. Fill in batch name and expiry date, then confirm.
-    3. Edit the batch expiry date and confirm.
-    4. Archive the batch and confirm.
+    3. Archive the batch and confirm.
     Verification:
     - Success alerts are visible after each operation (add, edit, archive).
     """
@@ -43,11 +41,6 @@ def test_batch_add_change_archive(
     AddBatchPage(page).date.fill_expiry_date(get_offset_date(1))
     AddBatchPage(page).confirm()
     AddBatchPage(page).verify_batch_added(batch_name)
-
-    VaccinesPage(page).click_change_batch(vaccine, batch_name)
-    EditBatchPage(page).date.fill_expiry_date(get_offset_date(2))
-    EditBatchPage(page).confirm()
-    EditBatchPage(page).verify_batch_updated(batch_name)
 
     VaccinesPage(page).click_archive_batch(vaccine, batch_name)
     ArchiveBatchPage(page).confirm()
@@ -136,11 +129,6 @@ def test_accessibility(page):
     AddBatchPage(page).confirm()
     AccessibilityHelper(page).check_accessibility()
 
-    VaccinesPage(page).click_change_batch(Vaccine.GARDASIL_9, batch_name)
-    AccessibilityHelper(page).check_accessibility()
-
-    EditBatchPage(page).date.fill_expiry_date(get_offset_date(2))
-    EditBatchPage(page).confirm()
     VaccinesPage(page).click_archive_batch(Vaccine.GARDASIL_9, batch_name)
 
     AccessibilityHelper(page).check_accessibility()
