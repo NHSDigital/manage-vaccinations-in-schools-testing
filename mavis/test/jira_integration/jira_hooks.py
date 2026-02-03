@@ -28,6 +28,13 @@ def pytest_configure(config: Config) -> None:  # noqa: ARG001
     """Configure Jira reporter at the start of test session."""
     global _jira_reporter  # noqa: PLW0603  # pylint: disable=global-statement
 
+    # Check if JIRA integration is explicitly disabled
+    jira_enabled = os.getenv("JIRA_INTEGRATION_ENABLED", "true").lower() == "true"
+    if not jira_enabled:
+        logger.debug("Jira integration disabled via JIRA_INTEGRATION_ENABLED=false")
+        _jira_reporter = None
+        return
+
     # Only initialize if environment variables are set
     if not any(
         [

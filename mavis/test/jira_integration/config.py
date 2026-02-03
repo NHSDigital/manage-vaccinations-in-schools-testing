@@ -7,7 +7,21 @@ from pathlib import Path
 
 @dataclass
 class JiraConfig:
-    """Configuration for JIRA integration."""
+    """Configuration for JIRA integration.
+
+    This class manages all settings for JIRA test management integration.
+    The integration can be controlled using the JIRA_INTEGRATION_ENABLED
+    environment variable - set to 'false' to completely disable JIRA
+    integration regardless of other configuration.
+
+    Environment Variables:
+        JIRA_INTEGRATION_ENABLED: Set to 'false' to disable integration (default: 'true')
+        JIRA_URL: JIRA instance URL
+        JIRA_USERNAME: JIRA username (optional if using API token)
+        JIRA_API_TOKEN: JIRA API token for authentication
+        JIRA_PROJECT_KEY: Project key for test cases (default: 'MAV')
+        ... (other JIRA-specific variables)
+    """
 
     jira_url: str | None
     jira_username: str | None
@@ -76,7 +90,12 @@ class JiraConfig:
 
 @dataclass
 class JiraIntegrationConfig:
-    """Configuration for pure JIRA integration."""
+    """Configuration for pure JIRA integration.
+
+    Alternative configuration class for JIRA integration.
+    Like JiraConfig, this respects the JIRA_INTEGRATION_ENABLED flag.
+    Set JIRA_INTEGRATION_ENABLED=false to completely disable integration.
+    """
 
     jira_url: str
     jira_username: str

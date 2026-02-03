@@ -76,8 +76,14 @@ def auto_jira_integration(
 ) -> Generator[None]:
     """
     Automatic Jira integration fixture that runs for every test.
-    Only activates when proper environment variables are configured.
+    Only activates when proper environment variables are configured and integration is enabled.
     """
+
+    # Check if JIRA integration is explicitly disabled
+    jira_enabled = os.getenv("JIRA_INTEGRATION_ENABLED", "true").lower() == "true"
+    if not jira_enabled:
+        yield
+        return
 
     # Skip entirely if no JIRA environment variables are set
     if not any(
