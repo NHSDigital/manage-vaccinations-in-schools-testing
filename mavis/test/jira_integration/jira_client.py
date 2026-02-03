@@ -39,6 +39,7 @@ class JiraClient:
         self.username = username
         self.api_token = api_token
         self.project_key = project_key
+        self.timeout = 30
 
         # Handle Zephyr configuration
         if zephyr_config is None:
@@ -76,18 +77,18 @@ class JiraClient:
 
         try:
             if method == "GET":
-                response = self.session.get(url, params=params, timeout=30)
+                response = self.session.get(url, params=params, timeout=self.timeout)
             elif method == "POST":
                 if files:
                     response = self.session.post(
-                        url, data=data, files=files, timeout=30
+                        url, data=data, files=files, timeout=self.timeout
                     )
                 else:
-                    response = self.session.post(url, json=data, timeout=30)
+                    response = self.session.post(url, json=data, timeout=self.timeout)
             elif method == "PUT":
-                response = self.session.put(url, json=data, timeout=30)
+                response = self.session.put(url, json=data, timeout=self.timeout)
             elif method == "DELETE":
-                response = self.session.delete(url, timeout=30)
+                response = self.session.delete(url, timeout=self.timeout)
             else:
                 msg = f"Unsupported method: {method}"
                 raise ValueError(msg)
@@ -119,18 +120,18 @@ class JiraClient:
 
         try:
             if method == "GET":
-                response = self.session.get(url, params=params, timeout=30)
+                response = self.session.get(url, params=params, timeout=self.timeout)
             elif method == "POST":
                 if files:
                     response = self.session.post(
-                        url, data=data, files=files, timeout=30
+                        url, data=data, files=files, timeout=self.timeout
                     )
                 else:
-                    response = self.session.post(url, json=data, timeout=30)
+                    response = self.session.post(url, json=data, timeout=self.timeout)
             elif method == "PUT":
-                response = self.session.put(url, json=data, timeout=30)
+                response = self.session.put(url, json=data, timeout=self.timeout)
             elif method == "DELETE":
-                response = self.session.delete(url, timeout=30)
+                response = self.session.delete(url, timeout=self.timeout)
             else:
                 msg = f"Unsupported method: {method}"
                 raise ValueError(msg)
@@ -219,7 +220,7 @@ class JiraClient:
         request_kwargs = {"headers": headers, "params": params}
 
         if method == "GET":
-            return requests.get(url, timeout=30, **request_kwargs)
+            return requests.get(url, timeout=self.timeout, **request_kwargs)
         if method == "POST":
             return self._execute_post_request(
                 url,
@@ -229,9 +230,9 @@ class JiraClient:
             )
         if method == "PUT":
             request_kwargs["json"] = data
-            return requests.put(url, timeout=30, **request_kwargs)
+            return requests.put(url, timeout=self.timeout, **request_kwargs)
         if method == "DELETE":
-            return requests.delete(url, timeout=30, **request_kwargs)
+            return requests.delete(url, timeout=self.timeout, **request_kwargs)
         msg = f"Unsupported method: {method}"
         raise ValueError(msg)
 
@@ -244,7 +245,7 @@ class JiraClient:
             request_kwargs["files"] = files
         else:
             request_kwargs["json"] = data
-        return requests.post(url, timeout=30, **request_kwargs)
+        return requests.post(url, timeout=self.timeout, **request_kwargs)
 
     def _parse_zephyr_response(self, response: requests.Response) -> dict:
         """Parse Zephyr API response."""
@@ -422,9 +423,8 @@ class JiraClient:
             if not isinstance(response, list):
                 return None
             for version in response:
-                if (
-                    isinstance(version, dict)
-                    and version.get("name", "").lower() == version_name.lower()
+                if isinstance(version, dict) and (
+                    version.get("name", "").lower() == version_name.lower()
                 ):
                     version_id = version.get("id")
                     return int(version_id) if version_id is not None else None
@@ -607,28 +607,6 @@ class JiraClient:
             logger.warning("Failed to add test to cycle: %s", e)
             return None
 
-    def _extract_execution_id_from_response(self, response: dict) -> str | None:
-        """Extract execution ID from Zephyr API response."""
-        if not isinstance(response, dict):
-            return None
-
-        # Try to find execution ID in nested structure
-        for value in response.items():
-            if isinstance(value, dict):
-                execution_id = self._find_execution_id_in_nested_dict(value)
-                if execution_id:
-                    return execution_id
-            elif isinstance(value, (int, str)):
-                return str(value)
-        return None
-
-    def _find_execution_id_in_nested_dict(self, nested_dict: dict) -> str | None:
-        """Find execution ID within a nested dictionary structure."""
-        for exec_key, exec_value in nested_dict.items():
-            if exec_key.isdigit() or isinstance(exec_value, (int, str)):
-                return str(exec_key) if exec_key.isdigit() else str(exec_value)
-        return None
-
     def update_zephyr_execution_status(
         self,
         execution_id: str,
@@ -765,7 +743,9 @@ class JiraClient:
             return issue_types if isinstance(issue_types, list) else []
         except requests.exceptions.RequestException as e:
             logger.debug(
-                "Failed to fetch issue types for project %s: %s", self.project_key, e
+                "Failed to fetch issue types for project %s: %s",
+                self.project_key,
+                e,
             )
             return []
 
@@ -843,7 +823,10 @@ class JiraClient:
             name = str(cycle.get("name") or cycle.get("cycleName") or "")
             key = str(cycle.get("key") or "")
             logger.debug(
-                "Checking cycle: name='%s', key='%s', id=%s", name, key, cycle.get("id")
+                "Checking cycle: name='%s', key='%s', id=%s",
+                name,
+                key,
+                cycle.get("id"),
             )
             if name.lower() == cycle_ref.lower() or key.lower() == cycle_ref.lower():
                 cycle_id = cycle.get("id")
@@ -1268,54 +1251,60 @@ class JiraClient:
 
     def _attach_files(self, issue_key: str, file_paths: list[str]) -> None:
         """Attach files to a Jira issue."""
-        for file_path in file_paths:
-            try:
-                file_path_obj = Path(file_path)
-                if not file_path_obj.exists():
-                    logger.warning("File not found for attachment: %s", file_path)
-                    continue
+        if not file_paths:
+            return
 
-                with file_path_obj.open("rb") as file:
-                    # Determine content type based on file extension
-                    content_type = (
-                        "image/png"
-                        if file_path_obj.suffix.lower() == ".png"
-                        else "application/octet-stream"
-                    )
+        url = f"{self.jira_reporting_url}/rest/api/2/issue/{issue_key}/attachments"
 
-                    files = {"file": (file_path_obj.name, file, content_type)}
+        # Temporarily modify headers for attachment (reuse session)
+        original_headers = dict(self.session.headers)
+        self.session.headers.update(
+            {
+                "X-Atlassian-Token": "no-check",
+            }
+        )
+        # Remove Content-Type for file upload
+        self.session.headers.pop("Content-Type", None)
 
-                    url = (
-                        f"{self.jira_reporting_url}/rest/api/2/issue/"
-                        f"{issue_key}/attachments"
-                    )
+        try:
+            for file_path in file_paths:
+                try:
+                    file_path_obj = Path(file_path)
+                    if not file_path_obj.exists():
+                        logger.warning("File not found for attachment: %s", file_path)
+                        continue
 
-                    # For attachments, we remove Content-Type header and
-                    # use special X-Atlassian-Token
-                    # Create a new session for this request without Content-Type
-                    attachment_session = requests.Session()
-
-                    # Copy auth from main session
-                    attachment_session.headers.update(
-                        {
-                            "Authorization": f"Bearer {self.api_token}",
-                            "X-Atlassian-Token": "no-check",
-                        }
-                    )
-
-                    http_ok = 200
-                    response = attachment_session.post(url, files=files, timeout=30)
-
-                    if response.status_code == http_ok:
-                        logger.info(
-                            "Attached file %s to issue %s",
-                            file_path_obj.name,
-                            issue_key,
-                        )
-                    else:
-                        logger.warning(
-                            "Failed to attach file %s: %s", file_path, response.text
+                    with file_path_obj.open("rb") as file:
+                        # Determine content type based on file extension
+                        content_type = (
+                            "image/png"
+                            if file_path_obj.suffix.lower() == ".png"
+                            else "application/octet-stream"
                         )
 
-            except (OSError, requests.exceptions.RequestException) as e:
-                logger.warning("Error attaching file %s: %s", file_path, e)
+                        files = {"file": (file_path_obj.name, file, content_type)}
+
+                        http_ok = 200
+                        response = self.session.post(
+                            url, files=files, timeout=self.timeout
+                        )
+
+                        if response.status_code == http_ok:
+                            logger.info(
+                                "Attached file %s to issue %s",
+                                file_path_obj.name,
+                                issue_key,
+                            )
+                        else:
+                            logger.warning(
+                                "Failed to attach file %s: %s",
+                                file_path,
+                                response.text,
+                            )
+
+                except (OSError, requests.exceptions.RequestException) as e:
+                    logger.warning("Error attaching file %s: %s", file_path, e)
+        finally:
+            # Restore original headers
+            self.session.headers.clear()
+            self.session.headers.update(original_headers)

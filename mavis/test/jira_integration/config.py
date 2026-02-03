@@ -38,13 +38,8 @@ class JiraConfig:
             max_retries=int(os.getenv("JIRA_MAX_RETRIES", "3")),
             timeout=int(os.getenv("JIRA_TIMEOUT", "30")),
             enabled=os.getenv("JIRA_INTEGRATION_ENABLED", "true").lower() == "true",
-            attach_passed_screenshots=os.getenv(
-                "JIRA_ATTACH_PASSED_SCREENSHOTS", "false"
-            ).lower()
-            == "true",
-            test_cycle_version=os.getenv(
-                "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
-            ),
+            attach_passed_screenshots=os.getenv("JIRA_ATTACH_PASSED_SCREENSHOTS", "false").lower() == "true",
+            test_cycle_version=os.getenv("JIRA_TEST_CYCLE_VERSION", default="Unscheduled"),
             test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
             zephyr_api_token=os.getenv("ZEPHYR_API_TOKEN"),
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
@@ -61,15 +56,13 @@ class JiraConfig:
             and self.jira_api_token.strip() != ""
         )
 
+    def is_enabled_and_configured(self) -> bool:
+        """Centralized check for enabled and properly configured JIRA integration."""
+        return self.is_valid()
+
     def use_jira_integration(self) -> bool:
         """Check if JIRA integration is properly configured."""
-        return (
-            self.enabled
-            and self.jira_reporting_url is not None
-            and self.jira_api_token is not None
-            and self.jira_reporting_url.strip() != ""
-            and self.jira_api_token.strip() != ""
-        )
+        return self.is_enabled_and_configured()
 
 
 @dataclass
