@@ -10,8 +10,6 @@ from datetime import UTC, datetime
 from functools import wraps
 from typing import TypeVar
 
-from playwright.sync_api import Page
-
 from .auto_fixtures import get_execution_id, set_execution_id
 from .config import JiraConfig
 from .jira_client import JiraClient, ZephyrConfig
@@ -641,34 +639,3 @@ class JiraTestReporter:
                         logger.exception("Failed to attach to issue %s", test_case_key)
         else:
             logger.info("No screenshots to attach for execution %s", execution_id)
-
-    def take_screenshot(
-        self, page: Page, test_name: str, suffix: str = ""
-    ) -> str | None:
-        """
-        Take a screenshot and save it.
-
-        Args:
-            page: Playwright page object
-            test_name: Name of the test
-            suffix: Optional suffix for screenshot filename
-
-        Returns:
-            Screenshot file path if successful, None otherwise
-        """
-        try:
-            timestamp = datetime.now(tz=UTC).strftime("%Y%m%d_%H%M%S")
-            filename = (
-                f"{test_name}_{suffix}_{timestamp}.png"
-                if suffix
-                else f"{test_name}_{timestamp}.png"
-            )
-            screenshot_path = self.config.screenshots_dir / filename
-
-            page.screenshot(path=str(screenshot_path), full_page=True)
-            logger.info("Screenshot saved: %s", screenshot_path)
-            return str(screenshot_path)
-
-        except RuntimeError as e:
-            logger.warning("Failed to take screenshot: %s", e)
-            return None
