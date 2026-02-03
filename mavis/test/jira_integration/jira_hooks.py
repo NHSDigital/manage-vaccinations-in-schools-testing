@@ -38,7 +38,7 @@ def pytest_configure(config: Config) -> None:  # noqa: ARG001
     # Only initialize if environment variables are set
     if not any(
         [
-            os.getenv("JIRA_URL"),
+            os.getenv("JIRA_REPORTING_URL"),
             os.getenv("JIRA_API_TOKEN"),
         ]
     ):

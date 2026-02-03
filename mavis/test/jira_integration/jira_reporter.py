@@ -91,8 +91,8 @@ class JiraTestReporter:
                 url=self.config.zephyr_url,
             )
             self.client = JiraClient(
-                self.config.jira_url.removesuffix("/rest/api/2/")
-                if self.config.jira_url
+                self.config.jira_reporting_url.removesuffix("/rest/api/2/")
+                if self.config.jira_reporting_url
                 else "",
                 self.config.jira_username or "",
                 self.config.jira_api_token or "",

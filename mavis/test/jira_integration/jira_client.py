@@ -41,13 +41,13 @@ class JiraClient:
 
     def __init__(
         self,
-        jira_url: str,
+        jira_reporting_url: str,
         username: str,
         api_token: str,
         project_key: str,
         zephyr_config: ZephyrConfig | None = None,
     ) -> None:
-        self.jira_url = jira_url.rstrip("/")
+        self.jira_reporting_url = jira_reporting_url.rstrip("/")
         self.username = username
         self.api_token = api_token
         self.project_key = project_key
@@ -84,7 +84,7 @@ class JiraClient:
         files: dict | None = None,
     ) -> dict:
         """Make authenticated request to Jira API."""
-        url = f"{self.jira_url}/rest/api/2/{endpoint}"
+        url = f"{self.jira_reporting_url}/rest/api/2/{endpoint}"
 
         try:
             if method == "GET":
@@ -127,7 +127,7 @@ class JiraClient:
         files: dict | None = None,
     ) -> dict:
         """Make authenticated request to Jira Tests (ATM) API."""
-        url = f"{self.jira_url}/rest/atm/1.0/{endpoint}"
+        url = f"{self.jira_reporting_url}/rest/atm/1.0/{endpoint}"
 
         try:
             if method == "GET":
@@ -192,7 +192,7 @@ class JiraClient:
 
     def _build_zephyr_url(self, endpoint: str) -> str:
         """Build complete Zephyr API URL."""
-        url_base = (self.zephyr_url or self.jira_url).rstrip("/")
+        url_base = (self.zephyr_url or self.jira_reporting_url).rstrip("/")
         url_base = self._normalize_url_base(url_base)
 
         if url_base.endswith("/rest/zapi/latest"):
@@ -202,9 +202,9 @@ class JiraClient:
     def _normalize_url_base(self, url_base: str) -> str:
         """Normalize URL base for Zephyr requests."""
         if url_base.startswith("/"):
-            return f"{self.jira_url.rstrip('/')}{url_base}"
+            return f"{self.jira_reporting_url.rstrip('/')}{url_base}"
         if not url_base.startswith(("http://", "https://")):
-            return f"{self.jira_url.rstrip('/')}/{url_base}"
+            return f"{self.jira_reporting_url.rstrip('/')}/{url_base}"
         return url_base
 
     def _build_zephyr_headers(self, token: str, files: dict | None) -> dict:
@@ -1774,9 +1774,12 @@ class JiraClient:
 
                     files = {"file": (file_path_obj.name, file, content_type)}
 
-                    url = f"{self.jira_url}/rest/api/2/issue/{issue_key}/attachments"
+                    url = (
+                        f"{self.jira_reporting_url}/rest/api/2/issue/"
+                        f"{issue_key}/attachments"
+                    )
 
-                    # For attachments, we need to remove Content-Type header and
+                    # For attachments, we remove Content-Type header and
                     # use special X-Atlassian-Token
                     # Create a new session for this request without Content-Type
                     attachment_session = requests.Session()

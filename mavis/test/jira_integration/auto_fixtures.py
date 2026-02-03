@@ -89,7 +89,7 @@ def auto_jira_integration(
     # Skip entirely if no JIRA environment variables are set
     if not any(
         [
-            os.getenv("JIRA_URL"),
+            os.getenv("JIRA_REPORTING_URL"),
             os.getenv("JIRA_API_TOKEN"),
         ]
     ):

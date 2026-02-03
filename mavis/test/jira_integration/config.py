@@ -7,23 +7,7 @@ from pathlib import Path
 
 @dataclass
 class JiraConfig:
-    """Configuration for JIRA integration.
-
-    This class manages all settings for JIRA test management integration.
-    The integration can be controlled using the JIRA_INTEGRATION_ENABLED
-    environment variable - set to 'false' to completely disable JIRA
-    integration regardless of other configuration.
-
-    Environment Variables:
-        JIRA_INTEGRATION_ENABLED: Set to 'false' to disable integration (default: true)
-        JIRA_URL: JIRA instance URL
-        JIRA_USERNAME: JIRA username (optional if using API token)
-        JIRA_API_TOKEN: JIRA API token for authentication
-        JIRA_PROJECT_KEY: Project key for test cases (default: 'MAV')
-        ... (other JIRA-specific variables)
-    """
-
-    jira_url: str | None
+    jira_reporting_url: str | None
     jira_username: str | None
     jira_api_token: str | None
     project_key: str
@@ -41,12 +25,12 @@ class JiraConfig:
     @classmethod
     def from_env(cls) -> "JiraConfig":
         """Create JIRA configuration from environment variables."""
-        jira_url = os.getenv("JIRA_URL")
-        if jira_url and not jira_url.endswith("/rest/api/2/"):
-            jira_url = f"{jira_url.rstrip('/')}/rest/api/2/"
+        jira_reporting_url = os.getenv("JIRA_REPORTING_URL")
+        if jira_reporting_url and not jira_reporting_url.endswith("/rest/api/2/"):
+            jira_reporting_url = f"{jira_reporting_url.rstrip('/')}/rest/api/2/"
 
         return cls(
-            jira_url=jira_url,
+            jira_reporting_url=jira_reporting_url,
             jira_username=os.getenv("JIRA_USERNAME"),
             jira_api_token=os.getenv("JIRA_API_TOKEN"),
             project_key=os.getenv("JIRA_PROJECT_KEY", "MAV"),
@@ -71,9 +55,9 @@ class JiraConfig:
         """Check if configuration is valid for JIRA integration."""
         return (
             self.enabled
-            and self.jira_url is not None
+            and self.jira_reporting_url is not None
             and self.jira_api_token is not None
-            and self.jira_url.strip() != ""
+            and self.jira_reporting_url.strip() != ""
             and self.jira_api_token.strip() != ""
         )
 
@@ -81,9 +65,9 @@ class JiraConfig:
         """Check if JIRA integration is properly configured."""
         return (
             self.enabled
-            and self.jira_url is not None
+            and self.jira_reporting_url is not None
             and self.jira_api_token is not None
-            and self.jira_url.strip() != ""
+            and self.jira_reporting_url.strip() != ""
             and self.jira_api_token.strip() != ""
         )
 
@@ -97,7 +81,7 @@ class JiraIntegrationConfig:
     Set JIRA_INTEGRATION_ENABLED=false to completely disable integration.
     """
 
-    jira_url: str
+    jira_reporting_url: str
     jira_username: str
     jira_api_token: str
     project_key: str
@@ -116,12 +100,12 @@ class JiraIntegrationConfig:
     @classmethod
     def from_env(cls) -> "JiraIntegrationConfig":
         """Create configuration from environment variables."""
-        jira_url = os.getenv("JIRA_URL", "")
-        if jira_url and not jira_url.endswith("/"):
-            jira_url = jira_url.rstrip("/")
+        jira_reporting_url = os.getenv("JIRA_REPORTING_URL", "")
+        if jira_reporting_url and not jira_reporting_url.endswith("/"):
+            jira_reporting_url = jira_reporting_url.rstrip("/")
 
         return cls(
-            jira_url=jira_url,
+            jira_reporting_url=jira_reporting_url,
             jira_username=os.getenv("JIRA_USERNAME", ""),
             jira_api_token=os.getenv("JIRA_API_TOKEN", ""),
             project_key=os.getenv("JIRA_PROJECT_KEY", "MAV"),
@@ -147,10 +131,10 @@ class JiraIntegrationConfig:
         """Check if configuration is valid for JIRA integration."""
         return (
             self.enabled
-            and bool(self.jira_url)
+            and bool(self.jira_reporting_url)
             and bool(self.jira_api_token)
             and bool(self.project_key)
-            and len(self.jira_url.strip()) > 0
+            and len(self.jira_reporting_url.strip()) > 0
             and len(self.jira_api_token.strip()) > 0
             and len(self.project_key.strip()) > 0
         )
