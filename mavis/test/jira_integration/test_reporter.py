@@ -73,7 +73,8 @@ class TestReporter:
                 )
             else:
                 logger.debug(
-                    "Integration disabled: Invalid configuration - missing required fields"
+                    "Integration disabled: Invalid configuration -"
+                    " missing required fields"
                 )
             return
 

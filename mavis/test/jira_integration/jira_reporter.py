@@ -73,11 +73,13 @@ class JiraTestReporter:
         if not self.config.is_valid():
             if not self.config.enabled:
                 logger.info(
-                    "Jira integration explicitly disabled via JIRA_INTEGRATION_ENABLED=false"
+                    "Jira integration explicitly disabled via "
+                    "JIRA_INTEGRATION_ENABLED=false"
                 )
             else:
                 logger.debug(
-                    "Jira integration disabled: Invalid configuration - missing required fields"
+                    "Jira integration disabled: Invalid configuration -"
+                    " missing required fields"
                 )
             return
 
@@ -396,7 +398,7 @@ class JiraTestReporter:
 
         # Add result comment and attach screenshots
         self._add_result_comment(test_case_key, execution_id, result, error_message)
-        self._attach_screenshots(execution_id, result, screenshots)
+        self._attach_screenshots(execution_id, result, screenshots, test_case_key)
 
         logger.info(
             "Completed test execution %s with result: %s",
@@ -424,7 +426,7 @@ class JiraTestReporter:
             self._update_zephyr_execution(execution_id, result, error_message)
 
         self._add_result_comment(test_case_key, execution_id, result, error_message)
-        self._attach_screenshots(execution_id, result, screenshots)
+        self._attach_screenshots(execution_id, result, screenshots, test_case_key)
 
     def _update_zephyr_execution(
         self, execution_id: str, result: TestResult, error_message: str | None
@@ -593,8 +595,9 @@ class JiraTestReporter:
         execution_id: str,
         result: TestResult,
         screenshots: list[str] | None,
+        test_case_key: str | None = None,
     ) -> None:
-        """Attach screenshots to the execution."""
+        """Attach screenshots to the execution and/or test case issue."""
         screenshots_to_attach = (
             screenshots
             if result != TestResult.PASS or self.config.attach_passed_screenshots
@@ -606,14 +609,36 @@ class JiraTestReporter:
             if not self.client:
                 logger.warning("Jira client not initialized for attachments")
                 return
+
             logger.info(
                 "Attaching %d screenshots to execution %s",
                 len(screenshots_to_attach),
                 execution_id,
             )
-            self.client.attach_zephyr_execution_files(
-                execution_id, screenshots_to_attach
-            )
+
+            # Try Zephyr execution attachment first
+            try:
+                self.client.attach_zephyr_execution_files(
+                    execution_id, screenshots_to_attach
+                )
+            except (RuntimeError, ConnectionError, TimeoutError) as e:
+                logger.warning("Failed to attach to Zephyr execution: %s", e)
+
+                # Fallback: attach directly to test case issue if provided
+                if test_case_key:
+                    logger.info(
+                        "Falling back to direct issue attachment for %s", test_case_key
+                    )
+                    try:
+                        self.client.attach_files_to_issue(
+                            test_case_key, screenshots_to_attach
+                        )
+                        logger.info(
+                            "Successfully attached screenshots to test case %s",
+                            test_case_key,
+                        )
+                    except Exception:
+                        logger.exception("Failed to attach to issue %s", test_case_key)
         else:
             logger.info("No screenshots to attach for execution %s", execution_id)
 

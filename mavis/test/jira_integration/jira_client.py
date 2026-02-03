@@ -1742,6 +1742,19 @@ class JiraClient:
 
         return desc
 
+    def attach_files_to_issue(self, issue_key: str, file_paths: list[str]) -> None:
+        """
+        Attach files to a JIRA issue using the REST API.
+
+        Uses the endpoint: POST /rest/api/2/issue/{issueKey}/attachments
+
+        Args:
+            issue_key: JIRA issue key (e.g., 'TESTEXEC-789')
+            file_paths: List of file paths to attach
+        """
+        logger.info("Attaching %d files to JIRA issue %s", len(file_paths), issue_key)
+        self._attach_files(issue_key, file_paths)
+
     def _attach_files(self, issue_key: str, file_paths: list[str]) -> None:
         """Attach files to a Jira issue."""
         for file_path in file_paths:
