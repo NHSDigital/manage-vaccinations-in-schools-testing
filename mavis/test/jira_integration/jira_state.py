@@ -49,7 +49,7 @@ def _get_test_data(test_key: str) -> dict:
     if test_key in _test_data:
         return _test_data[test_key]
     if "::" in test_key:
-        short_name = test_key.split("::")[-1]
+        short_name = test_key.rsplit("::", 1)[-1]
         return _test_data.get(short_name, {})
     return {}
 
@@ -168,7 +168,7 @@ def cleanup_test_data(test_name: str) -> None:
     """Clean up test data after reporting."""
     _test_data.pop(test_name, None)
     if "::" in test_name:
-        short_name = test_name.split("::")[-1]
+        short_name = test_name.rsplit("::", 1)[-1]
         _test_data.pop(short_name, None)
     # Also clean up execution ID tracking
     test_case_key = get_test_case_key(test_name)
