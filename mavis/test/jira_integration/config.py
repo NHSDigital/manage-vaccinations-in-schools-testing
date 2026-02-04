@@ -15,7 +15,7 @@ class JiraConfig:
     max_retries: int = 3
     timeout: int = 30
     enabled: bool = True
-    attach_passed_screenshots: bool = False
+    screenshot_all_steps: bool = False
     test_cycle_version: str | None = None
     test_cycle_key: str | None = None
     zephyr_api_token: str | None = None
@@ -29,6 +29,10 @@ class JiraConfig:
         if jira_reporting_url and not jira_reporting_url.endswith("/rest/api/2/"):
             jira_reporting_url = f"{jira_reporting_url.rstrip('/')}/rest/api/2/"
 
+        screenshot_all_steps = (
+            os.getenv("SCREENSHOT_ALL_STEPS", "false").lower() == "true"
+        )
+
         return cls(
             jira_reporting_url=jira_reporting_url,
             jira_username=os.getenv("JIRA_USERNAME"),
@@ -38,10 +42,7 @@ class JiraConfig:
             max_retries=int(os.getenv("JIRA_MAX_RETRIES", "3")),
             timeout=int(os.getenv("JIRA_TIMEOUT", "30")),
             enabled=os.getenv("JIRA_INTEGRATION_ENABLED", "true").lower() == "true",
-            attach_passed_screenshots=os.getenv(
-                "JIRA_ATTACH_PASSED_SCREENSHOTS", "false"
-            ).lower()
-            == "true",
+            screenshot_all_steps=screenshot_all_steps,
             test_cycle_version=os.getenv(
                 "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
             ),
@@ -88,7 +89,7 @@ class JiraIntegrationConfig:
     timeout: int = 30
     enabled: bool = True
     use_bearer_auth: bool = True
-    attach_passed_screenshots: bool = False
+    screenshot_all_steps: bool = False
     test_cycle_version: str | None = None
     test_cycle_key: str | None = None
     zephyr_api_token: str | None = None

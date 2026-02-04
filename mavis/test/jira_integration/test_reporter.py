@@ -55,6 +55,8 @@ def retry_on_failure(
 class TestReporter:
     """Handles test reporting integration with JIRA."""
 
+    __test__ = False
+
     def __init__(self, config: JiraConfig | None = None) -> None:
         """Initialize test reporter with JIRA configuration."""
         self.config = config or JiraConfig.from_env()

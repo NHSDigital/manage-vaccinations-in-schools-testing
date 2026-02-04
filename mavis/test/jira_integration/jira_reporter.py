@@ -10,9 +10,9 @@ from datetime import UTC, datetime
 from functools import wraps
 from typing import TypeVar
 
-from .auto_fixtures import get_execution_id, set_execution_id
 from .config import JiraConfig
 from .jira_client import JiraClient, ZephyrConfig
+from .jira_state import get_execution_id, get_execution_type, set_execution_id
 from .models import JiraTestCase, TestResult, TestStep
 
 logger = logging.getLogger(__name__)
@@ -446,16 +446,9 @@ class JiraTestReporter:
         self, test_case_key: str, result: TestResult, error_message: str | None
     ) -> str:
         """Create a new test execution and return the execution ID."""
-        zephyr_enabled = bool(self.config.zephyr_url or self.config.zephyr_api_token)
-
-        if zephyr_enabled:
-            execution_id = self._create_zephyr_execution(
-                test_case_key, result, error_message
-            )
-            if execution_id:
-                return execution_id
-
-        execution_id = self._create_atm_execution(test_case_key, result, error_message)
+        execution_id = self._create_zephyr_execution(
+            test_case_key, result, error_message
+        )
         if execution_id:
             return execution_id
 
@@ -480,7 +473,7 @@ class JiraTestReporter:
         )
 
         if execution_id:
-            set_execution_id(test_case_key, execution_id)
+            set_execution_id(test_case_key, execution_id, "zephyr")
             logger.info("Created execution %s for test %s", execution_id, test_case_key)
             self._update_zephyr_execution(execution_id, result, error_message)
             return execution_id
@@ -538,7 +531,7 @@ class JiraTestReporter:
                 environment="unknown",
             )
             if execution_id:
-                set_execution_id(test_case_key, execution_id)
+                set_execution_id(test_case_key, execution_id, "atm")
                 self.client.update_atm_test_execution(
                     execution_id, result, comment=error_message
                 )
@@ -552,7 +545,7 @@ class JiraTestReporter:
         """Create fallback execution using test case key."""
         logger.info("Using test case as execution: %s", test_case_key)
         execution_id = test_case_key
-        set_execution_id(test_case_key, execution_id)
+        set_execution_id(test_case_key, execution_id, "fallback")
         return execution_id
 
     def _add_result_comment(
@@ -596,10 +589,9 @@ class JiraTestReporter:
         test_case_key: str | None = None,
     ) -> None:
         """Attach screenshots to the execution and/or test case issue."""
+        attach_all_steps = self.config.screenshot_all_steps
         screenshots_to_attach = (
-            screenshots
-            if result != TestResult.PASS or self.config.attach_passed_screenshots
-            else []
+            screenshots if result != TestResult.PASS or attach_all_steps else []
         )
 
         # Attach screenshots if any
@@ -614,28 +606,48 @@ class JiraTestReporter:
                 execution_id,
             )
 
-            # Try Zephyr execution attachment first
-            try:
-                self.client.attach_zephyr_execution_files(
-                    execution_id, screenshots_to_attach
-                )
-            except (RuntimeError, ConnectionError, TimeoutError) as e:
-                logger.warning("Failed to attach to Zephyr execution: %s", e)
+            # Determine execution type and use appropriate attachment method
+            execution_type = (
+                get_execution_type(test_case_key) if test_case_key else "fallback"
+            )
 
-                # Fallback: attach directly to test case issue if provided
-                if test_case_key:
-                    logger.info(
-                        "Falling back to direct issue attachment for %s", test_case_key
+            attached = False
+            if execution_type == "zephyr":
+                try:
+                    self.client.attach_zephyr_execution_files(
+                        execution_id, screenshots_to_attach
                     )
-                    try:
-                        self.client.attach_files_to_issue(
-                            test_case_key, screenshots_to_attach
-                        )
-                        logger.info(
-                            "Successfully attached screenshots to test case %s",
-                            test_case_key,
-                        )
-                    except Exception:
-                        logger.exception("Failed to attach to issue %s", test_case_key)
+                    logger.info(
+                        "Successfully attached screenshots to Zephyr execution %s",
+                        execution_id,
+                    )
+                    attached = True
+                except (RuntimeError, ConnectionError, TimeoutError) as e:
+                    logger.warning("Failed to attach to Zephyr execution: %s", e)
+            elif execution_type == "atm":
+                try:
+                    self.client.attach_atm_execution_files(
+                        execution_id, screenshots_to_attach
+                    )
+                    logger.info(
+                        "Successfully attached screenshots to ATM execution %s",
+                        execution_id,
+                    )
+                    attached = True
+                except (RuntimeError, ConnectionError, TimeoutError) as e:
+                    logger.warning("Failed to attach to ATM execution: %s", e)
+
+            # Fallback to test case if execution attachment failed
+            if not attached and test_case_key:
+                try:
+                    self.client.attach_files_to_issue(
+                        test_case_key, screenshots_to_attach
+                    )
+                    logger.info(
+                        "Successfully attached screenshots to test case %s",
+                        test_case_key,
+                    )
+                except Exception:
+                    logger.exception("Failed to attach to test case %s", test_case_key)
         else:
             logger.info("No screenshots to attach for execution %s", execution_id)

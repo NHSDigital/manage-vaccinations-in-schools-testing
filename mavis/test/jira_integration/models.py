@@ -10,6 +10,8 @@ from enum import Enum
 class TestResult(Enum):
     """Test result enumeration for test management."""
 
+    __test__ = False
+
     PASS = "Pass"  # noqa: S105
     FAIL = "Fail"
     BLOCKED = "Blocked"
@@ -21,6 +23,8 @@ class TestResult(Enum):
 @dataclass
 class TestStep:
     """Represents a test step."""
+
+    __test__ = False
 
     description: str
     expected_result: str

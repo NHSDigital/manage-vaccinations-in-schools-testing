@@ -694,6 +694,8 @@ class JiraClient:
         self, execution_id: str, file_paths: list[str]
     ) -> None:
         """Attach files to a Zephyr Essential DC test execution."""
+        attached_count = 0
+        errors = []
 
         for file_path in file_paths:
             try:
@@ -721,9 +723,82 @@ class JiraClient:
                         file_path_obj.name,
                         execution_id,
                     )
+                    attached_count += 1
 
             except (OSError, requests.exceptions.RequestException) as e:
-                logger.warning("Error attaching file %s to Zephyr: %s", file_path, e)
+                error_msg = f"Error attaching {file_path}: {e}"
+                logger.warning(error_msg)
+                errors.append(error_msg)
+
+        if errors and attached_count == 0:
+            msg = f"Failed to attach any files to Zephyr execution: {'; '.join(errors)}"
+            raise RuntimeError(msg)
+
+    def attach_atm_execution_files(
+        self, execution_key: str, file_paths: list[str]
+    ) -> None:
+        """Attach files to a Jira Tests (ATM) execution."""
+        attached_count = 0
+        errors = []
+
+        for file_path in file_paths:
+            try:
+                file_path_obj = Path(file_path)
+                if not file_path_obj.exists():
+                    logger.warning("File not found for attachment: %s", file_path)
+                    continue
+
+                with file_path_obj.open("rb") as file:
+                    content_type = (
+                        "image/png"
+                        if file_path_obj.suffix.lower() == ".png"
+                        else "application/octet-stream"
+                    )
+                    files = {"file": (file_path_obj.name, file, content_type)}
+
+                    # ATM uses the same endpoint as regular Jira issues
+                    url = (
+                        f"{self.jira_reporting_url}/rest/api/2/issue/"
+                        f"{execution_key}/attachments"
+                    )
+
+                    # Temporarily modify headers for attachment
+                    original_headers = dict(self.session.headers)
+                    self.session.headers.update({"X-Atlassian-Token": "no-check"})
+                    self.session.headers.pop("Content-Type", None)
+
+                    try:
+                        response = self.session.post(
+                            url, files=files, timeout=self.timeout
+                        )
+                        http_ok = 200
+                        if response.status_code == http_ok:
+                            logger.info(
+                                "Attached file %s to ATM execution %s",
+                                file_path_obj.name,
+                                execution_key,
+                            )
+                            attached_count += 1
+                        else:
+                            error_msg = (
+                                f"Failed to attach {file_path}: "
+                                f"HTTP {response.status_code}"
+                            )
+                            logger.warning(error_msg)
+                            errors.append(error_msg)
+                    finally:
+                        # Restore original headers
+                        self.session.headers.clear()
+                        self.session.headers.update(original_headers)
+
+            except (OSError, requests.exceptions.RequestException) as e:
+                error_msg = f"Error attaching {file_path}: {e}"
+                logger.warning(error_msg)
+                errors.append(error_msg)
+
+        if errors and attached_count == 0:
+            msg = f"Failed to attach any files to ATM execution: {'; '.join(errors)}"
+            raise RuntimeError(msg)
 
     def _get_project_issue_types(self) -> list[dict]:
         """Fetch available issue types for the project from createmeta."""

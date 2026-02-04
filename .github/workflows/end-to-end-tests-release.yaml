@@ -257,7 +257,7 @@ jobs:
           ZEPHYR_API_TOKEN: ${{ secrets.ZEPHYR_API_TOKEN }}
           ZEPHYR_PROJECT_ID: ${{ vars.ZEPHYR_PROJECT_ID }}
           ZEPHYR_URL: ${{ vars.ZEPHYR_URL }}
-          JIRA_ATTACH_PASSED_SCREENSHOTS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          SCREENSHOT_ALL_STEPS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
 
       - name: Process reports
