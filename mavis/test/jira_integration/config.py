@@ -38,8 +38,13 @@ class JiraConfig:
             max_retries=int(os.getenv("JIRA_MAX_RETRIES", "3")),
             timeout=int(os.getenv("JIRA_TIMEOUT", "30")),
             enabled=os.getenv("JIRA_INTEGRATION_ENABLED", "true").lower() == "true",
-            attach_passed_screenshots=os.getenv("JIRA_ATTACH_PASSED_SCREENSHOTS", "false").lower() == "true",
-            test_cycle_version=os.getenv("JIRA_TEST_CYCLE_VERSION", default="Unscheduled"),
+            attach_passed_screenshots=os.getenv(
+                "JIRA_ATTACH_PASSED_SCREENSHOTS", "false"
+            ).lower()
+            == "true",
+            test_cycle_version=os.getenv(
+                "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
+            ),
             test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
             zephyr_api_token=os.getenv("ZEPHYR_API_TOKEN"),
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
