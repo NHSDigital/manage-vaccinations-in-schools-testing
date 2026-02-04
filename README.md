@@ -33,6 +33,18 @@ To execute the tests from your system, follow the steps below:
    $ cp .env.generic .env
    ```
 
+1. Install browsers for Playwright
+
+   ``` shell
+   $ uv run playwright install
+   ```
+
+1. **Optional:** if running tests against a local version of Mavis, ensure GIAS locations are loaded. Run this from your Mavis repository:
+
+   ```shell
+   $ bin/mavis gias import
+   ```
+
 1. Check the setup is working by running a smoke test
 
    ```shell
