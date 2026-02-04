@@ -188,7 +188,7 @@ jobs:
             echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
             echo "enable_reruns=true" >> $GITHUB_OUTPUT
             echo "test_workers=4" >> $GITHUB_OUTPUT
-            echo "jira_test_cycle_version=Unscheduled" >> $GITHUB_OUTPUT
+            echo "jira_test_cycle_version=${{ vars.JIRA_TEST_CYCLE_VERSION || 'Unscheduled' }}" >> $GITHUB_OUTPUT
           else
             echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
             echo "cross_service_tests=${{ inputs.cross_service_tests }}" >> $GITHUB_OUTPUT
@@ -209,7 +209,7 @@ jobs:
             echo "screenshot_all_steps=${{ inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
             echo "enable_reruns=${{ inputs.enable_reruns }}" >> $GITHUB_OUTPUT
             echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
-            echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version }}" >> $GITHUB_OUTPUT
+            echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version || vars.JIRA_TEST_CYCLE_VERSION}}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout repository
@@ -253,12 +253,12 @@ jobs:
           JIRA_USERNAME: ${{ vars.JIRA_USERNAME }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_PROJECT_KEY: ${{ vars.JIRA_PROJECT_KEY }}
-          JIRA_ATTACH_PASSED_SCREENSHOTS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
-          JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
           JIRA_TEST_CYCLE_KEY: ${{ vars.JIRA_TEST_CYCLE_KEY }}
           ZEPHYR_API_TOKEN: ${{ secrets.ZEPHYR_API_TOKEN }}
           ZEPHYR_PROJECT_ID: ${{ vars.ZEPHYR_PROJECT_ID }}
           ZEPHYR_URL: ${{ vars.ZEPHYR_URL }}
+          JIRA_ATTACH_PASSED_SCREENSHOTS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
 
       - name: Process reports
         if: always() && steps.set-variables.outputs.deploy_report == 'true'

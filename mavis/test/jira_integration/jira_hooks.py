@@ -7,7 +7,6 @@ import os
 
 import pytest
 from _pytest.config import Config
-from _pytest.reports import TestReport
 
 from .auto_fixtures import (
     cleanup_test_data,
@@ -68,65 +67,6 @@ def pytest_runtest_makereport(item: object, call: object) -> object:  # noqa: AR
 
     # Store reports on the test item for access in fixtures
     setattr(item, f"rep_{rep.when}", rep)
-
-
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_logreport(report: TestReport) -> object:
-    """Enhanced log reporting with automatic Jira integration."""
-    # Call the existing hook first
-    yield
-
-    # Only process actual test results (not setup/teardown)
-    if report.when != "call":
-        return
-
-    logger.info("Processing test report for %s", report.nodeid)
-
-    if not _jira_reporter or not _jira_reporter.is_enabled():
-        logger.info("Jira reporter not available or not enabled")
-        return
-
-    # Extract test information - use full nodeid for consistency
-    test_name = report.nodeid
-
-    # Get test case key from the auto-fixture
-    test_case_key = get_test_case_key(test_name)
-
-    # If no test case key, try to create one now
-    if not test_case_key and _jira_reporter:
-        try:
-            logger.info("Creating test case on-demand for %s", test_name)
-            # Try to get test docstring from the test item
-            test_docstring = None
-            if hasattr(report, "item") and hasattr(report.item, "function"):
-                test_docstring = report.item.function.__doc__
-
-            test_case_key = _jira_reporter.get_or_create_test_case(
-                test_name, test_docstring or ""
-            )
-            logger.info(
-                "Created on-demand test case %s for %s", test_case_key, test_name
-            )
-        except (
-            ConnectionError,
-            TimeoutError,
-            ValueError,
-            KeyError,
-            AttributeError,
-        ) as e:
-            logger.warning(
-                "Failed to create on-demand test case for %s: %s", test_name, e
-            )
-
-    if test_case_key:
-        logger.info(
-            "Found test case key %s for test %s - deferring to teardown",
-            test_case_key,
-            test_name,
-        )
-        # Skip immediate reporting, let pytest_runtest_teardown handle it
-        # This ensures screenshots are captured first
-        return
 
 
 @pytest.hookimpl(trylast=True)

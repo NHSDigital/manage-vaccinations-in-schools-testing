@@ -34,7 +34,6 @@ from .fixtures import (
 )
 from .hooks import pytest_sessionfinish, pytest_sessionstart
 from .jira_integration.auto_fixtures import auto_jira_integration, jira_reporter_session
-from .jira_integration.fixtures import jira_reporter
 from .jira_integration.jira_hooks import (
     pytest_configure,
     pytest_runtest_makereport,
@@ -55,7 +54,6 @@ __all__ = [
     "delete_team_after_tests",
     "file_generator",
     "healthcare_assistant",
-    "jira_reporter",
     "jira_reporter_session",
     "log_in_as_medical_secretary",
     "log_in_as_nurse",
