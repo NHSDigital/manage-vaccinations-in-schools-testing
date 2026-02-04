@@ -72,6 +72,25 @@ class ChildRecordPage:
         with self.page.expect_navigation(url="**/vaccination-records/**"):
             vaccination_details_locator.click()
 
+    @step("Verify one vaccination appears for {1} + {2}")
+    def verify_one_vaccination_appears(
+        self, school: School, programme: Programme
+    ) -> None:
+        self.page.wait_for_load_state()
+        vaccination_details_locator = (
+            self.vaccinations_card_row.filter(has_text=str(school))
+            .filter(has_text=str(programme))
+            .get_by_role(
+                "link",
+            )
+        )
+        if vaccination_details_locator.count() != 1:
+            msg = (
+                f"Expected one vaccination record for {school} and {programme}, "
+                f"but found {vaccination_details_locator.count()}"
+            )
+            raise AssertionError(msg)
+
     @step("Click on Child record")
     def click_child_record(self) -> None:
         self.child_record_link.click()
