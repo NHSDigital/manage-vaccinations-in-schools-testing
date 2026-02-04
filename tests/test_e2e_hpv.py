@@ -3,6 +3,8 @@ import pytest
 from mavis.test.constants import Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
+    ChildRecordPage,
+    ChildrenSearchPage,
     DashboardPage,
     OnlineConsentWizardPage,
     SessionsChildrenPage,
@@ -86,7 +88,15 @@ def test_recording_hpv_vaccination_e2e(
 
     vaccination_record = VaccinationRecord(child, Programme.HPV, gardasil_9_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    SessionsVaccinationWizardPage(page).record_vaccination(
+        vaccination_record, test_recording_twice=True
+    )
+
+    SessionsVaccinationWizardPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
+    ChildRecordPage(page).verify_one_vaccination_appears(schools[0], Programme.HPV)
 
     SessionsChildrenPage(page).header.click_mavis_header()
     DashboardPage(page).click_sessions()

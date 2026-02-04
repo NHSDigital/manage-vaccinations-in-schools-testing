@@ -36,6 +36,18 @@ class SessionsVaccinationWizardPage:
     def click_confirm_button(self) -> None:
         self.confirm_button.click()
 
+    @step("Click on Confirm in two tabs simultaneously")
+    def click_confirm_button_in_two_tabs(self) -> None:
+        current_url = self.page.url
+
+        new_page = self.page.context.new_page()
+        new_page.goto(current_url)
+
+        new_confirm_button = new_page.get_by_role("button", name="Confirm")
+
+        self.confirm_button.click(force=True, no_wait_after=True)
+        new_confirm_button.click(force=True, no_wait_after=True)
+
     @step("Click on location radio {1}")
     def check_location_radio(self, location: str) -> None:
         self.page.get_by_role("radio", name=str(location)).check()
@@ -73,6 +85,7 @@ class SessionsVaccinationWizardPage:
         notes: str = "",
         at_school: bool = True,
         psd_option: bool = False,
+        test_recording_twice: bool = False,
     ) -> None:
         self.choose_batch(vaccination_record.batch_name)
 
@@ -83,7 +96,11 @@ class SessionsVaccinationWizardPage:
                 expect_details(self.page, "Protocol", "Patient Group Direction (PGD)")
 
             self.vaccination_notes.fill(notes)
-            self.click_confirm_button()
+
+            if test_recording_twice:
+                self.click_confirm_button_in_two_tabs()
+            else:
+                self.click_confirm_button()
 
             if len(notes) > MAVIS_NOTE_LENGTH_LIMIT:
                 expect(self.notes_length_error).to_be_visible()
