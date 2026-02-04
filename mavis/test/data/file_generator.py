@@ -110,7 +110,7 @@ class FileGenerator:
             "<<HIST_VACCS_DATE>>": get_offset_date_compact_format(
                 offset_days=-(365 * 2)
             ),
-            "<<SESSION_ID>>": session_id if session_id else "",
+            "<<SESSION_ID>>": session_id or "",
         }
 
     def _organisation_replacements(self) -> dict[str, str]:
@@ -190,6 +190,7 @@ class FileGenerator:
     def create_line_replacements_dict(
         self, programme_group: str
     ) -> dict[str, Callable[[], str]]:
+        # ruff: disable[PLW0108]
         line_replacements = {
             "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
             "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
@@ -197,6 +198,7 @@ class FileGenerator:
             "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
             "<<RANDOM_POSTCODE>>": lambda: self.faker.postcode(),
         }
+        # ruff: enable[PLW0108]
 
         if self.year_groups:
             fixed_year_group = self.year_groups[programme_group]
