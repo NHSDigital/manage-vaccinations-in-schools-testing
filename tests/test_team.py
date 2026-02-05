@@ -45,16 +45,16 @@ def test_team_page_lists_correct_schools(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_only_expected_schools_visible(schools)
 
 
-def test_team_page_add_school_site(page, log_in_as_nurse, schools):
+def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     """
-    Test: Verify that the user can add a new school site to the team.
+    Test: Verify that the user can add multiple school sites to the team.
     Steps:
     1. Navigate to the team page.
     2. Click on the 'Schools' link.
-    3. Click on the 'Add new school site' button.
-    4. Select the school from the dropdown.
-    5. Fill in the school site details.
-    6. Confirm the details are correct.
+    3. Create first site (Site B) for a school.
+    4. Start creating a site for a different school,
+       then change parent school back to original.
+    5. Create second site (Site C) for the original school.
     Verification:
     - The dropdown only shows schools associated with the team.
     - The new school site form is pre-filled with the school's address,
@@ -62,13 +62,16 @@ def test_team_page_add_school_site(page, log_in_as_nurse, schools):
     - Name of the site must be different from original school name and cannot be blank.
     - Address of the site can be edited.
     - The confirm screen shows the correct name and address details.
-    - The new school site is listed on the Schools page.
-    - The URNs of the new and original schools are updated with site identifiers.
+    - Both new school sites are listed on the Schools page.
+    - The URNs of the sites and original school are
+      updated with site identifiers (A, B, C).
+    - The "Change parent school" link allows switching schools during site creation.
     """
     school = schools[Programme.HPV.group][0]
+    school_to_not_use = schools[Programme.HPV.group][1]
 
-    new_site_name = f"{school} (Site B)"
-    new_site_urn = f"{school.urn}B"
+    new_site_name_1 = f"{school} (Site B)"
+    new_site_urn_1 = f"{school.urn}B"
     old_school_urn = f"{school.urn}A"
 
     DashboardPage(page).click_your_team()
@@ -77,14 +80,36 @@ def test_team_page_add_school_site(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_only_expected_schools_visible_in_dropdown(schools)
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).check_site_details_form(school)
-    TeamSchoolsPage(page).fill_site_name(new_site_name)
+    TeamSchoolsPage(page).fill_site_name(new_site_name_1)
     TeamSchoolsPage(page).add_new_site_details()
     TeamSchoolsPage(page).check_confirm_screen_shows_right_details(
-        new_site_urn, new_site_name, "New Address Line 1"
+        new_site_urn_1, new_site_name_1, "New Address Line 1"
     )
     TeamSchoolsPage(page).confirm_site()
     TeamSchoolsPage(page).check_new_site_is_listed(
-        new_site_name, new_site_urn, old_school_urn
+        new_site_name_1, new_site_urn_1, old_school_urn
+    )
+
+    TeamSchoolsPage(page).click_add_new_school_site()
+    TeamSchoolsPage(page).select_school(school_to_not_use)
+    TeamSchoolsPage(page).fill_site_name(f"{school_to_not_use} (Site 0)")
+    TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).click_change_parent_school()
+
+    new_site_name_2 = f"{school} (Site C)"
+    new_site_urn_2 = f"{school.urn}C"
+
+    TeamSchoolsPage(page).check_only_expected_schools_visible_in_dropdown(schools)
+    TeamSchoolsPage(page).select_school(school)
+    TeamSchoolsPage(page).check_site_details_form(school)
+    TeamSchoolsPage(page).fill_site_name(new_site_name_2)
+    TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).check_confirm_screen_shows_right_details(
+        new_site_urn_2, new_site_name_2, "New Address Line 1"
+    )
+    TeamSchoolsPage(page).confirm_site()
+    TeamSchoolsPage(page).check_new_site_is_listed(
+        new_site_name_2, new_site_urn_2, old_school_urn
     )
 
 
