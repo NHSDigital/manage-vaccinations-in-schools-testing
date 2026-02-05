@@ -156,9 +156,22 @@ class ImportRecordsWizardPage:
         self.page.wait_for_load_state()
 
         self.fill_location(location)
-        self.page.get_by_role("option", name=str(location)).first.click()
-        self.click_continue()
+        options = self.page.locator('[class*="app-autocomplete__option"]')
+        count = options.count()
 
+        for i in range(count):
+            option = options.nth(i)
+            text = option.inner_text().strip()
+            first_line = text.split("\n", 1)[0].strip()
+            location_name = first_line.split(" (URN:", 1)[0]
+            if location_name == location:
+                option.click()
+                break
+        else:
+            msg = f"No autocomplete option found for location: {location}"
+            raise AssertionError(msg)
+
+        self.click_continue()
         self.select_year_groups(*year_groups)
 
     def navigate_to_vaccination_records_import(self) -> None:
@@ -176,26 +189,43 @@ class ImportRecordsWizardPage:
             session_id=session_id,
             programme_group=programme_group,
         )
-        _scenario_list = read_scenario_list_from_file(_input_file_path)
+        self.upload_and_verify_output_for_input_output_files(
+            _input_file_path,
+            _output_file_path,
+        )
+        return _input_file_path, _output_file_path
 
-        self.set_input_file(_input_file_path)
+    def upload_and_verify_output_for_input_output_files(
+        self,
+        input_file_path: Path,
+        output_file_path: Path,
+    ) -> None:
+        self.upload_input_file(input_file_path)
+        self.verify_upload_output(file_path=output_file_path)
+
+    def upload_input_file(self, input_file_path: Path) -> None:
+        _scenario_list = read_scenario_list_from_file(input_file_path)
+
+        self.set_input_file(input_file_path)
         self.click_continue(_coverage=_scenario_list)
         self.page.wait_for_load_state()
 
         if self.completed_imports_tab.is_visible():
-            self.click_import_link(_input_file_path)
+            self.click_import_link(input_file_path)
 
+        self.wait_for_completed_status()
+
+        if self.is_preview_page_link_visible():
+            self.approve_preview_if_shown(input_file_path)
+
+    @step("Reload until completed status appears")
+    def wait_for_completed_status(self) -> None:
         status_text = (
             self.review_and_approve_tag.or_(self.completed_tag)
             .or_(self.invalid_tag)
             .or_(self.invalid_file_problem)
         ).first
         reload_until_element_is_visible(self.page, status_text, seconds=60)
-        if self.is_preview_page_link_visible():
-            self.approve_preview_if_shown(_input_file_path)
-
-        self.verify_upload_output(file_path=_output_file_path)
-        return _input_file_path, _output_file_path
 
     @step("Click import link for {1}")
     def click_import_link(self, file_path: Path) -> None:

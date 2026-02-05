@@ -46,6 +46,10 @@ class Clinic(Location):
 class School(Location):
     urn: str
     site: str
+    address_line_1: str
+    address_line_2: str
+    address_town: str
+    address_postcode: str
 
     def __str__(self) -> str:
         return self.name
@@ -83,6 +87,10 @@ class School(Location):
                     name=normalize_whitespace(school_data["name"]),
                     urn=school_data["urn"],
                     site=school_data["site"],
+                    address_line_1=school_data["address_line_1"],
+                    address_line_2=school_data["address_line_2"],
+                    address_town=school_data["address_town"],
+                    address_postcode=school_data["address_postcode"],
                 )
                 for school_data in schools_data
             ]

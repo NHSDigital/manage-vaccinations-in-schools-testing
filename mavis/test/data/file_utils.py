@@ -105,3 +105,16 @@ def create_fhir_immunization_payload(
         payload_content = payload_content.replace(placeholder, value)
 
     return json.loads(payload_content)
+
+
+def set_site_for_child_list(file_path: Path, site_identifier: str) -> Path:
+    _file_df = pd.read_csv(file_path)
+    _file_df["CHILD_SCHOOL_URN"] = (
+        _file_df["CHILD_SCHOOL_URN"]
+        .astype(str)
+        .str.cat([site_identifier] * len(_file_df), na_rep="")
+    )
+
+    new_file_path = file_path.with_stem(file_path.stem + f"withsite{site_identifier}")
+    _file_df.to_csv(new_file_path, index=False)
+    return new_file_path
