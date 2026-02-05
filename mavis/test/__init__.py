@@ -32,7 +32,13 @@ from .fixtures import (
     upload_offline_vaccination,
     year_groups,
 )
-from .hooks import pytest_runtest_logreport, pytest_sessionfinish, pytest_sessionstart
+from .hooks import pytest_sessionfinish, pytest_sessionstart
+from .jira_integration.jira_hooks import (
+    pytest_configure,
+    pytest_runtest_makereport,
+    pytest_runtest_setup,
+    pytest_runtest_teardown,
+)
 
 __all__ = [
     "add_vaccine_batch",
@@ -56,7 +62,10 @@ __all__ = [
     "organisation",
     "prescriber",
     "programmes_enabled",
-    "pytest_runtest_logreport",
+    "pytest_configure",
+    "pytest_runtest_makereport",
+    "pytest_runtest_setup",
+    "pytest_runtest_teardown",
     "pytest_sessionfinish",
     "pytest_sessionstart",
     "reset_before_each_module",
