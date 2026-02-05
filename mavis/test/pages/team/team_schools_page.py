@@ -36,6 +36,9 @@ class TeamSchoolsPage:
         self.confirm_site_button = self.page.get_by_role("button", name="Add site")
         self.name_error_summary = self.page.locator("#draft-school-site-name-error")
         self.confirm_school_name = self.page.locator("#confirm-school-site-name")
+        self.change_parent_school_link = self.page.get_by_role(
+            "link", name="Change parent school"
+        )
 
     @step("Check only schools associated with the team are visible")
     def check_only_expected_schools_visible(
@@ -106,6 +109,10 @@ class TeamSchoolsPage:
         self.address_town_textbox.fill("New Town")
         self.address_postcode_textbox.fill("SW1A 1AA")
         self.click_continue()
+
+    @step("Click Change parent school")
+    def click_change_parent_school(self) -> None:
+        self.change_parent_school_link.click()
 
     @step("Fill site name {1}")
     def fill_site_name(self, site_name: str) -> None:
