@@ -101,6 +101,7 @@ class TeamSchoolsPage:
         self._check_name_is_blank()
         self._check_validation_error_if_same_name_used(school)
         self._check_validation_error_if_empty_string_used()
+        self._check_validation_error_if_invalid_characters_used()
 
     @step("Add new site details")
     def add_new_site_details(self) -> None:
@@ -180,3 +181,17 @@ class TeamSchoolsPage:
 
         expect(self.name_error_summary).to_be_visible()
         expect(self.name_error_summary).to_contain_text("can't be blank")
+
+    @step("Check validation error if invalid characters used")
+    def _check_validation_error_if_invalid_characters_used(self) -> None:
+        self.name_textbox.fill("𒐫")
+        self.click_continue()
+
+        expect(self.name_error_summary).to_be_visible()
+        expect(self.name_error_summary).to_contain_text("invalid character")
+
+        self.name_textbox.fill("😭")
+        self.click_continue()
+
+        expect(self.name_error_summary).to_be_visible()
+        expect(self.name_error_summary).to_contain_text("invalid character")
