@@ -2,12 +2,13 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.constants import Programme
-from mavis.test.data.file_mappings import ChildFileMapping
+from mavis.test.data.file_mappings import ChildFileMapping, ClassFileMapping
 from mavis.test.data.file_utils import set_site_for_child_list
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
+    SchoolMovesPage,
     TeamContactDetailsPage,
     TeamSchoolsPage,
 )
@@ -153,3 +154,54 @@ def test_site_child_record_import(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(new_site_name)
     SchoolsChildrenPage(page).search.search_for_child_that_should_not_exist(child)
+
+
+def test_site_class_list_import(
+    page, log_in_as_nurse, file_generator, schools, children
+):
+    """
+    Test: Importing class list records for a school that has been split into sites.
+    Steps:
+    1. From the team page, create a new school site (Site B) for an existing school.
+    2. Import a class list for the original school.
+    3. Import a class list for the new school site.
+    4. Navigate to the School Moves page and verify the child appears.
+    Verification:
+    - The import succeeds for the original school site.
+    - The import succeeds for the new school site (B).
+    - The child is visible on the School Moves page.
+    """
+    school = schools[Programme.MMR][0]
+    child = children[Programme.MMR][0]
+
+    new_site_name = f"{school} (Site B)"
+
+    DashboardPage(page).click_your_team()
+    TeamContactDetailsPage(page).links.click_schools()
+    TeamSchoolsPage(page).click_add_new_school_site()
+    TeamSchoolsPage(page).select_school(school)
+    TeamSchoolsPage(page).fill_site_name(new_site_name)
+    TeamSchoolsPage(page).click_continue()
+    TeamSchoolsPage(page).confirm_site()
+
+    TeamSchoolsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
+        str(school), child.year_group
+    )
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
+    )
+    TeamSchoolsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
+        new_site_name, child.year_group
+    )
+    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
+    )
+    TeamSchoolsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_school_moves()
+    SchoolMovesPage(page).click_child(child)

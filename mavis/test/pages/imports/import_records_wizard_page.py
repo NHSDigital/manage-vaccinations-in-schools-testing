@@ -156,9 +156,22 @@ class ImportRecordsWizardPage:
         self.page.wait_for_load_state()
 
         self.fill_location(location)
-        self.page.get_by_role("option", name=str(location)).first.click()
-        self.click_continue()
+        options = self.page.locator('[class*="app-autocomplete__option"]')
+        count = options.count()
 
+        for i in range(count):
+            option = options.nth(i)
+            text = option.inner_text().strip()
+            first_line = text.split("\n", 1)[0].strip()
+            location_name = first_line.split(" (URN:", 1)[0]
+            if location_name == location:
+                option.click()
+                break
+        else:
+            msg = f"No autocomplete option found for location: {location}"
+            raise AssertionError(msg)
+
+        self.click_continue()
         self.select_year_groups(*year_groups)
 
     def navigate_to_vaccination_records_import(self) -> None:
