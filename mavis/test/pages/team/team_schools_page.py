@@ -135,18 +135,22 @@ class TeamSchoolsPage:
         expect(table).to_contain_text(new_site_urn)
         expect(table).to_contain_text(old_school_urn)
 
+    @step("Click continue")
     def click_continue(self) -> None:
         self.continue_button.click()
 
+    @step("Check address is pre-filled")
     def _check_address_is_pre_filled(self, school: School) -> None:
         expect(self.address_line_1_textbox).to_have_value(school.address_line_1)
         expect(self.address_line_2_textbox).to_have_value(school.address_line_2 or "")
         expect(self.address_town_textbox).to_have_value(school.address_town)
         expect(self.address_postcode_textbox).to_have_value(school.address_postcode)
 
+    @step("Check name is blank")
     def _check_name_is_blank(self) -> None:
         expect(self.name_textbox).to_have_value("")
 
+    @step("Check validation error if same name used")
     def _check_validation_error_if_same_name_used(self, school: School) -> None:
         self.name_textbox.fill(str(school))
         self.click_continue()
@@ -156,6 +160,7 @@ class TeamSchoolsPage:
             "This site name is already in use. Enter a different name."
         )
 
+    @step("Check validation error if empty string used")
     def _check_validation_error_if_empty_string_used(self) -> None:
         self.name_textbox.fill("")
         self.click_continue()
