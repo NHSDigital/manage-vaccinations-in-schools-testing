@@ -1,4 +1,4 @@
-name: End-to-End tests
+name: End-to-End tests (Jira integration)
 
 on:
   workflow_call:
