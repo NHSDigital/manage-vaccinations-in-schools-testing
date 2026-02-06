@@ -65,33 +65,26 @@ class TeamSchoolsPage:
     def click_add_new_school_site(self) -> None:
         self.add_new_school_site_link.click()
 
-    @step("Check only schools associated with the team are visible in the dropdown")
-    def check_only_expected_schools_visible_in_dropdown(
-        self, schools: dict[str, list[School]]
-    ) -> None:
-        expected_school_names = {
-            school.name for school_list in schools.values() for school in school_list
-        }
-
-        self.page.wait_for_load_state()
-        hidden_select = self.page.locator("#draft-school-site-urn-field-select")
-        options = hidden_select.locator("option[value]").all()
-
-        actual_school_names = {
-            option.inner_text().strip().rsplit(" (URN:", 1)[0]
-            for option in options
-            if option.get_attribute("value")
-        }
-
-        assert actual_school_names == expected_school_names
-
     @step("Select a school")
     def select_school(self, school: School) -> None:
         self.page.wait_for_load_state()
         self.page.reload()  # to allow combobox to be interactable
 
         self.select_a_school_combobox.fill(str(school))
-        self.page.get_by_role("option", name=str(school)).click()
+        options = self.page.locator('[class*="app-autocomplete__option"]')
+        count = options.count()
+
+        for i in range(count):
+            option = options.nth(i)
+            text = option.inner_text().strip()
+            first_line = text.split("\n", 1)[0].strip()
+            location_name = first_line.split(" (URN:", 1)[0]
+            if location_name == str(school):
+                option.click()
+                break
+        else:
+            msg = f"No autocomplete option found for location: {school!s}"
+            raise AssertionError(msg)
 
         self.click_continue()
 

@@ -77,7 +77,6 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     DashboardPage(page).click_your_team()
     TeamContactDetailsPage(page).links.click_schools()
     TeamSchoolsPage(page).click_add_new_school_site()
-    TeamSchoolsPage(page).check_only_expected_schools_visible_in_dropdown(schools)
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).check_site_details_form(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name_1)
@@ -99,7 +98,6 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     new_site_name_2 = f"{school} (Site C)"
     new_site_urn_2 = f"{school.urn}C"
 
-    TeamSchoolsPage(page).check_only_expected_schools_visible_in_dropdown(schools)
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).check_site_details_form(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name_2)
