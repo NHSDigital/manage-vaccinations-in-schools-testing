@@ -33,11 +33,9 @@ from .fixtures import (
     year_groups,
 )
 from .hooks import pytest_sessionfinish, pytest_sessionstart
-from .jira_integration.jira_hooks import (
+from .jira_integration.hooks import (
     pytest_configure,
     pytest_runtest_makereport,
-    pytest_runtest_setup,
-    pytest_runtest_teardown,
 )
 
 __all__ = [
@@ -64,8 +62,6 @@ __all__ = [
     "programmes_enabled",
     "pytest_configure",
     "pytest_runtest_makereport",
-    "pytest_runtest_setup",
-    "pytest_runtest_teardown",
     "pytest_sessionfinish",
     "pytest_sessionstart",
     "reset_before_each_module",
