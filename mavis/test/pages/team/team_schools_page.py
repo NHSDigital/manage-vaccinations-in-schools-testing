@@ -36,6 +36,9 @@ class TeamSchoolsPage:
         self.confirm_site_button = self.page.get_by_role("button", name="Add site")
         self.name_error_summary = self.page.locator("#draft-school-site-name-error")
         self.confirm_school_name = self.page.locator("#confirm-school-site-name")
+        self.change_parent_school_link = self.page.get_by_role(
+            "link", name="Change parent school"
+        )
 
     @step("Check only schools associated with the team are visible")
     def check_only_expected_schools_visible(
@@ -62,33 +65,26 @@ class TeamSchoolsPage:
     def click_add_new_school_site(self) -> None:
         self.add_new_school_site_link.click()
 
-    @step("Check only schools associated with the team are visible in the dropdown")
-    def check_only_expected_schools_visible_in_dropdown(
-        self, schools: dict[str, list[School]]
-    ) -> None:
-        expected_school_names = {
-            school.name for school_list in schools.values() for school in school_list
-        }
-
-        self.page.wait_for_load_state()
-        hidden_select = self.page.locator("#draft-school-site-urn-field-select")
-        options = hidden_select.locator("option[value]").all()
-
-        actual_school_names = {
-            option.inner_text().strip().rsplit(" (URN:", 1)[0]
-            for option in options
-            if option.get_attribute("value")
-        }
-
-        assert actual_school_names == expected_school_names
-
     @step("Select a school")
     def select_school(self, school: School) -> None:
         self.page.wait_for_load_state()
         self.page.reload()  # to allow combobox to be interactable
 
         self.select_a_school_combobox.fill(str(school))
-        self.page.get_by_role("option", name=str(school)).click()
+        options = self.page.locator('[class*="app-autocomplete__option"]')
+        count = options.count()
+
+        for i in range(count):
+            option = options.nth(i)
+            text = option.inner_text().strip()
+            first_line = text.split("\n", 1)[0].strip()
+            location_name = first_line.split(" (URN:", 1)[0]
+            if location_name == str(school):
+                option.click()
+                break
+        else:
+            msg = f"No autocomplete option found for location: {school!s}"
+            raise AssertionError(msg)
 
         self.click_continue()
 
@@ -98,6 +94,7 @@ class TeamSchoolsPage:
         self._check_name_is_blank()
         self._check_validation_error_if_same_name_used(school)
         self._check_validation_error_if_empty_string_used()
+        self._check_validation_error_if_invalid_characters_used()
 
     @step("Add new site details")
     def add_new_site_details(self) -> None:
@@ -106,6 +103,10 @@ class TeamSchoolsPage:
         self.address_town_textbox.fill("New Town")
         self.address_postcode_textbox.fill("SW1A 1AA")
         self.click_continue()
+
+    @step("Click Change parent school")
+    def click_change_parent_school(self) -> None:
+        self.change_parent_school_link.click()
 
     @step("Fill site name {1}")
     def fill_site_name(self, site_name: str) -> None:
@@ -173,3 +174,17 @@ class TeamSchoolsPage:
 
         expect(self.name_error_summary).to_be_visible()
         expect(self.name_error_summary).to_contain_text("can't be blank")
+
+    @step("Check validation error if invalid characters used")
+    def _check_validation_error_if_invalid_characters_used(self) -> None:
+        self.name_textbox.fill("𒐫")
+        self.click_continue()
+
+        expect(self.name_error_summary).to_be_visible()
+        expect(self.name_error_summary).to_contain_text("invalid character")
+
+        self.name_textbox.fill("😭")
+        self.click_continue()
+
+        expect(self.name_error_summary).to_be_visible()
+        expect(self.name_error_summary).to_contain_text("invalid character")
