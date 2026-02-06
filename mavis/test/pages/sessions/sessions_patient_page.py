@@ -9,12 +9,7 @@ from mavis.test.constants import (
     DeliverySite,
     Programme,
 )
-from mavis.test.data_models import (
-    Child,
-    Parent,
-    School,
-    VaccinationRecord,
-)
+from mavis.test.data_models import Child, Parent, School, VaccinationRecord
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     expect_alert_text,
@@ -105,6 +100,9 @@ class SessionsPatientPage:
         self.triage_notes_textbox = self.page.get_by_role(
             "textbox", name="Triage notes"
         )
+        self.first_dose_already_given_link = self.page.get_by_role(
+            "link", name="Record 1st dose as already given"
+        )
 
     def _select_tab(self, name: str) -> None:
         link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
@@ -121,6 +119,10 @@ class SessionsPatientPage:
     @step("Click on Update triage outcome")
     def click_update_triage_outcome(self) -> None:
         self.update_triage_outcome_link.click()
+
+    @step("Click 1st dose already given")
+    def click_first_dose_already_given(self) -> None:
+        self.first_dose_already_given_link.click()
 
     @step("Click on Yes, it’s safe to vaccinate")
     def select_yes_safe_to_vaccinate(self) -> None:
