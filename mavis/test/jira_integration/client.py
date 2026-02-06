@@ -91,7 +91,7 @@ class JiraClient:
             f'project = "{self.project_key}" '
             f'AND issuetype = "Test" '
             f'AND summary ~ "{escaped_name}" '
-            f'ORDER BY key DESC'
+            f"ORDER BY key DESC"
         )
 
         params = {"jql": jql, "maxResults": 1, "fields": "key,summary"}
