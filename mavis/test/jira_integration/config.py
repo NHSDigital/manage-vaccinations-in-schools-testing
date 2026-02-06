@@ -19,7 +19,7 @@ class JiraConfig:
         """Create configuration from environment variables."""
         enabled = os.getenv("JIRA_INTEGRATION_ENABLED", "true").lower() == "true"
 
-        url = os.getenv("JIRA_URL", "")
+        url = os.getenv("JIRA_REPORTING_URL", "")
         api_token = os.getenv("JIRA_API_TOKEN", "")
         project_key = os.getenv("JIRA_PROJECT_KEY", "")
         project_id = os.getenv("JIRA_PROJECT_ID", "")

@@ -16,8 +16,7 @@ All environment variables below are **required** for the integration to work. If
 
 ```bash
 export JIRA_INTEGRATION_ENABLED=true
-export JIRA_URL=https://your-jira-instance.atlassian.net
-export JIRA_USERNAME=your.email@example.com
+export JIRA_REPORTING_URL=https://your-jira-instance.atlassian.net
 export JIRA_API_TOKEN=your-api-token
 export JIRA_PROJECT_KEY=MAV
 export JIRA_PROJECT_ID=10001
@@ -28,8 +27,7 @@ export JIRA_TEST_CYCLE_VERSION="1.0.0"
 ### Environment Variables
 
 - `JIRA_INTEGRATION_ENABLED` - Enable/disable integration (default: `true`)
-- `JIRA_URL` - **Required**. Base URL of your Jira instance
-- `JIRA_USERNAME` - **Required**. Jira username/email
+- `JIRA_REPORTING_URL` - **Required**. Base URL of your Jira instance
 - `JIRA_API_TOKEN` - **Required**. Jira API token
 - `JIRA_PROJECT_KEY` - **Required**. Project key (e.g., MAV)
 - `JIRA_PROJECT_ID` - **Required**. Numeric project ID
