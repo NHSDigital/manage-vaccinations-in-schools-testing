@@ -139,6 +139,7 @@ def test_site_child_record_import(
     TeamSchoolsPage(page).click_add_new_school_site()
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name)
+    TeamSchoolsPage(page).fill_missing_details()
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).confirm_site()
 
@@ -204,6 +205,7 @@ def test_site_class_list_import(
     TeamSchoolsPage(page).click_add_new_school_site()
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name)
+    TeamSchoolsPage(page).fill_missing_details()
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).confirm_site()
 
