@@ -74,6 +74,7 @@ class School(Location):
                 "status": "open",
                 "is_attached_to_team": "false",
                 "gias_year_groups[]": [str(year_group)],
+                "site": "",
             }
 
             response = requests.get(url, params=params, timeout=30)
