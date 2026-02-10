@@ -115,10 +115,6 @@ class OnlineConsentWizardPage:
             name="My child can have either type of vaccine",
         )
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
-        self.ethnicity_skip_radio = self.page.get_by_role(
-            "radio",
-            name="No, skip the ethnicity questions",
-        )
 
     @step("Click Continue")
     def click_continue(self) -> None:
@@ -127,12 +123,6 @@ class OnlineConsentWizardPage:
     @step("Click Confirm")
     def click_confirm(self) -> None:
         self.confirm_button.click()
-        self.skip_ethnicity_questions()
-
-    @step("Skip ethnicity questions")
-    def skip_ethnicity_questions(self) -> None:
-        self.ethnicity_skip_radio.check()
-        self.click_continue()
 
     @step("Fill phone number {1} and receive text alerts")
     def fill_phone_number_and_receive_text_alerts(self, phone: str) -> None:
