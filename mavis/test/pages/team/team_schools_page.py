@@ -124,6 +124,17 @@ class TeamSchoolsPage:
     def confirm_site(self) -> None:
         self.confirm_site_button.click()
 
+    @step("Fill any missing required details")
+    def fill_missing_details(self) -> None:
+        if not self.address_line_1_textbox.input_value():
+            self.address_line_1_textbox.fill("New Address Line 1")
+
+        if not self.address_town_textbox.input_value():
+            self.address_town_textbox.fill("New Town")
+
+        if not self.address_postcode_textbox.input_value():
+            self.address_postcode_textbox.fill("SW1A 1AA")
+
     @step("Check new site success flash and site is listed in the table")
     def check_new_site_is_listed(
         self, new_site_name: str, new_site_urn: str, old_school_urn: str
