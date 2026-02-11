@@ -28,7 +28,7 @@ def programmes_enabled() -> list[str]:
 
 
 @pytest.fixture(scope="session")
-def onboarding(
+def point_of_care_onboarding(
     base_url,
     year_groups,
     programmes_enabled,

@@ -40,7 +40,7 @@ def setup_session_with_file_upload(
     log_in_as_nurse,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -50,7 +50,7 @@ def setup_session_with_file_upload(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )
         schedule_school_session_if_needed(
@@ -365,7 +365,7 @@ def test_verify_excel_export_and_clinic_invitation(
     add_vaccine_batch,
     schools,
     page,
-    clinics,
+    point_of_care_clinics,
     children,
 ):
     """
@@ -410,7 +410,7 @@ def test_verify_excel_export_and_clinic_invitation(
         vaccination_record, at_school=False
     )
 
-    SessionsVaccinationWizardPage(page).check_location_radio(clinics[0])
+    SessionsVaccinationWizardPage(page).check_location_radio(point_of_care_clinics[0])
     SessionsVaccinationWizardPage(page).click_continue_button()
     SessionsVaccinationWizardPage(page).click_confirm_button()
     expect_alert_text(page, "Vaccination outcome recorded for HPV")

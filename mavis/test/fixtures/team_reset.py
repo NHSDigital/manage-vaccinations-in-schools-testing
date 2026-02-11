@@ -10,17 +10,19 @@ logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def delete_teams_after_tests(base_url, team, national_reporting_team):
+def delete_teams_after_tests(base_url, point_of_care_team, national_reporting_team):
     yield
 
-    _delete_team(base_url, team)
+    _delete_team(base_url, point_of_care_team)
     _delete_team(base_url, national_reporting_team)
 
 
 @pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, team, national_reporting_team) -> None:
-    _delete_team(base_url, team, keep_itself=True)
-    _delete_team_locations(base_url, team, keep_base_locations=True)
+def reset_before_each_module(
+    base_url, point_of_care_team, national_reporting_team
+) -> None:
+    _delete_team(base_url, point_of_care_team, keep_itself=True)
+    _delete_team_locations(base_url, point_of_care_team, keep_base_locations=True)
 
     _delete_team(base_url, national_reporting_team, keep_itself=True)
     _delete_team_locations(base_url, national_reporting_team, keep_base_locations=True)

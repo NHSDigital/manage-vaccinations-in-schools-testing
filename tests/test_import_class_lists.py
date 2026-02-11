@@ -18,7 +18,7 @@ def setup_class_list_import(
     log_in_as_nurse,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -28,16 +28,16 @@ def setup_class_list_import(
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
-        str(school), year_group
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(str(school), year_group)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_valid_data(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a valid class list file and verify successful import.
@@ -52,19 +52,19 @@ def test_class_list_file_upload_valid_data(
     UnicodeApostrophe1, UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail,
     PostcodeNFA, PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
-    ImportRecordsWizardPage(page, file_generator).read_and_verify_import_format_details(
-        ImportFormatDetails.CLASS
-    )
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ClassFileMapping.POSITIVE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).read_and_verify_import_format_details(ImportFormatDetails.CLASS)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_invalid_data(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload an invalid class list file and verify error handling.
@@ -79,16 +79,16 @@ def test_class_list_file_upload_invalid_data(
     InvalidLastName, InvalidPrefFirstName, InvalidPrefLastName, InvalidParent1Name,
     InvalidParent2Name
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ClassFileMapping.NEGATIVE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.NEGATIVE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_invalid_structure(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a class list file with invalid structure and verify error handling.
@@ -98,16 +98,16 @@ def test_class_list_file_upload_invalid_structure(
     Verification:
     - Output indicates structural errors.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ClassFileMapping.INVALID_STRUCTURE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_header_only(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a class list file with only headers and verify no
@@ -118,16 +118,16 @@ def test_class_list_file_upload_header_only(
     Verification:
     - Output indicates no records imported.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ClassFileMapping.HEADER_ONLY
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_empty_file(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload an empty class list file and verify error handling.
@@ -137,16 +137,16 @@ def test_class_list_file_upload_empty_file(
     Verification:
     - Output indicates error or no records imported.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ClassFileMapping.EMPTY_FILE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.classlist
 def test_class_list_file_upload_wrong_year_group(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a class list file with the wrong year group and verify error handling.
@@ -156,9 +156,9 @@ def test_class_list_file_upload_wrong_year_group(
     Verification:
     - Output indicates year group mismatch or error.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ClassFileMapping.WRONG_YEAR_GROUP
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.WRONG_YEAR_GROUP)
 
 
 @pytest.mark.classlist
@@ -166,7 +166,7 @@ def test_class_list_file_upload_wrong_year_group(
 def test_class_list_file_upload_whitespace_normalization(
     setup_class_list_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a class list file with extra whitespace and verify normalization.
@@ -178,7 +178,7 @@ def test_class_list_file_upload_whitespace_normalization(
     - Imported list matches expected normalized data.
     """
     input_file, _ = ImportRecordsWizardPage(
-        page, file_generator
+        page, point_of_care_file_generator
     ).upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
     )

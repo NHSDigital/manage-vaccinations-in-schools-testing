@@ -37,7 +37,7 @@ def setup_session_with_file_upload(
     url_with_session_scheduled,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -47,7 +47,7 @@ def setup_session_with_file_upload(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
+    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.FIXED_CHILD,
         year_group,
         Programme.FLU.group,

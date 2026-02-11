@@ -36,11 +36,11 @@ def flu_consent_url(schedule_session_and_get_consent_url, schools):
 @pytest.fixture
 def setup_session_with_file_upload(
     flu_consent_url,
-    prescriber,
-    team,
+    point_of_care_prescriber,
+    point_of_care_team,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
     add_vaccine_batch,
 ):
@@ -53,13 +53,15 @@ def setup_session_with_file_upload(
 
         LogInPage(page).log_out()
         LogInPage(page).navigate()
-        LogInPage(page).log_in_and_choose_team_if_necessary(prescriber, team)
+        LogInPage(page).log_in_and_choose_team_if_necessary(
+            point_of_care_prescriber, point_of_care_team
+        )
 
         VaccinesPage(page).header.click_mavis_header()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_file_mapping, year_group, Programme.FLU.group
         )
 
@@ -93,8 +95,8 @@ def test_delivering_vaccination_after_psd(
     page,
     schools,
     children,
-    healthcare_assistant,
-    team,
+    point_of_care_healthcare_assistant,
+    point_of_care_team,
 ):
     """
     Test: A PSD can be created for a child and the vaccination can be
@@ -138,7 +140,9 @@ def test_delivering_vaccination_after_psd(
 
     LogInPage(page).log_out()
     LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(healthcare_assistant, team)
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        point_of_care_healthcare_assistant, point_of_care_team
+    )
 
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)

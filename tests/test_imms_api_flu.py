@@ -31,7 +31,7 @@ def setup_vaccs_flu(
     log_in_as_nurse,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -41,7 +41,7 @@ def setup_vaccs_flu(
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
 
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
+    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.TWO_FIXED_CHILDREN,
         year_group,
         programme_group=Programme.FLU.group,
@@ -52,7 +52,7 @@ def setup_vaccs_flu(
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
-        page, file_generator
+        page, point_of_care_file_generator
     ).navigate_to_vaccination_records_import()
     return session_id
 
@@ -237,7 +237,7 @@ def test_vaccination_file_upload_snomed_code_verification(
     setup_vaccs_flu,
     page,
     children,
-    file_generator,
+    point_of_care_file_generator,
     imms_api_helper,
 ):
     """
@@ -255,7 +255,9 @@ def test_vaccination_file_upload_snomed_code_verification(
     - Nasal flu vaccination (AstraZeneca Fluenz) - dose 1 & 2 for a child
     - Injected flu vaccination (Sequirus Cell-based Trivalent) - dose 1 & 2 for a child
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(
         VaccsFileMapping.SNOMED_VERIFICATION,
         session_id=setup_vaccs_flu,
         programme_group=Programme.FLU.group,

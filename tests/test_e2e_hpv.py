@@ -37,7 +37,7 @@ def test_recording_hpv_vaccination_e2e(
     page,
     schools,
     children,
-    nurse,
+    point_of_care_nurse,
 ):
     """
     Test: End-to-end test for recording an HPV vaccination for a child.
@@ -106,6 +106,6 @@ def test_recording_hpv_vaccination_e2e(
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         vaccination_record,
         Vaccine.GARDASIL_9,
-        nurse,
+        point_of_care_nurse,
         schools[0],
     )
