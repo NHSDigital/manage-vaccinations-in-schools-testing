@@ -8,7 +8,11 @@ import requests
 
 from mavis.test.constants import Programme
 from mavis.test.fixtures.data_models import logger
-from mavis.test.onboarding import NationalReportingOnboarding, PointOfCareOnboarding
+from mavis.test.onboarding import (
+    NationalReportingOnboarding,
+    Onboarding,
+    PointOfCareOnboarding,
+)
 
 
 @pytest.fixture(scope="session")
@@ -29,34 +33,12 @@ def onboarding(
     year_groups,
     programmes_enabled,
 ) -> PointOfCareOnboarding:
-    onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    max_attempts = 3
-    onboarding_data = None
-
-    for attempt in range(1, max_attempts + 1):
-        onboarding_data = PointOfCareOnboarding.get_onboarding_data_for_tests(
-            base_url=base_url,
-            year_groups=year_groups,
-            programmes=programmes_enabled,
-        )
-        response = requests.post(
-            onboarding_url, json=onboarding_data.to_dict(), timeout=30
-        )
-        if response.ok:
-            break
-        logger.warning(
-            "Onboarding request failed (attempt %s): %s", attempt, response.content
-        )
-        if attempt < max_attempts:
-            time.sleep(1)
-        else:
-            response.raise_for_status()
-
-    if not onboarding_data:
-        msg = "Failed to create onboarding data for tests"
-        raise RuntimeError(msg)
-
-    return onboarding_data
+    onboarding_data = PointOfCareOnboarding.get_onboarding_data_for_tests(
+        base_url=base_url,
+        year_groups=year_groups,
+        programmes=programmes_enabled,
+    )
+    return _create_onboarding_with_retry(base_url, onboarding_data)
 
 
 @pytest.fixture(scope="session")
@@ -64,19 +46,24 @@ def national_reporting_onboarding(
     base_url,
     programmes_enabled,
 ) -> NationalReportingOnboarding:
+    onboarding_data = NationalReportingOnboarding.get_onboarding_data_for_tests(
+        programmes=programmes_enabled,
+    )
+    return _create_onboarding_with_retry(base_url, onboarding_data)
+
+
+def _create_onboarding_with_retry[T: Onboarding](
+    base_url: str, onboarding_data: T, max_attempts: int = 3
+) -> T:
     onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    max_attempts = 3
-    onboarding_data = None
 
     for attempt in range(1, max_attempts + 1):
-        onboarding_data = NationalReportingOnboarding.get_onboarding_data_for_tests(
-            programmes=programmes_enabled,
-        )
         response = requests.post(
             onboarding_url, json=onboarding_data.to_dict(), timeout=30
         )
         if response.ok:
-            break
+            return onboarding_data
+
         logger.warning(
             "Onboarding request failed (attempt %s): %s", attempt, response.content
         )
@@ -85,8 +72,5 @@ def national_reporting_onboarding(
         else:
             response.raise_for_status()
 
-    if not onboarding_data:
-        msg = "Failed to create onboarding data for tests"
-        raise RuntimeError(msg)
-
-    return onboarding_data
+    msg = "Failed to create onboarding data for tests"
+    raise RuntimeError(msg)

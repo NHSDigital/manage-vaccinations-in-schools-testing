@@ -4,32 +4,47 @@ import urllib.parse
 import pytest
 import requests
 
+from mavis.test.data_models import Team
+
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def delete_team_after_tests(base_url, team):
+def delete_teams_after_tests(base_url, team, national_reporting_team):
     yield
 
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, timeout=30)
-    _check_response_status(response)
+    _delete_team(base_url, team)
+    _delete_team(base_url, national_reporting_team)
 
 
 @pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, team) -> None:
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, params={"keep_itself": "true"}, timeout=30)
-    _check_response_status(response)
+def reset_before_each_module(base_url, team, national_reporting_team) -> None:
+    _delete_team(base_url, team, keep_itself=True)
+    _delete_team_locations(base_url, team, keep_base_locations=True)
 
-    url = urllib.parse.urljoin(
-        base_url, f"api/testing/teams/{team.workgroup}/locations"
-    )
-    response = requests.delete(url, params={"keep_base_locations": "true"}, timeout=30)
-    _check_response_status(response)
+    _delete_team(base_url, national_reporting_team, keep_itself=True)
+    _delete_team_locations(base_url, national_reporting_team, keep_base_locations=True)
 
 
 def _check_response_status(response) -> None:
     if not response.ok:
         logger.warning(response.content)
     response.raise_for_status()
+
+
+def _delete_team(base_url: str, team: Team, *, keep_itself: bool = False) -> None:
+    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
+    params = {"keep_itself": "true"} if keep_itself else {}
+    response = requests.delete(url, params=params, timeout=30)
+    _check_response_status(response)
+
+
+def _delete_team_locations(
+    base_url: str, team: Team, *, keep_base_locations: bool = False
+) -> None:
+    url = urllib.parse.urljoin(
+        base_url, f"api/testing/teams/{team.workgroup}/locations"
+    )
+    params = {"keep_base_locations": "true"} if keep_base_locations else {}
+    response = requests.delete(url, params=params, timeout=30)
+    _check_response_status(response)

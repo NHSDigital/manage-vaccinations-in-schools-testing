@@ -46,7 +46,7 @@ from .playwright import (
     browser_context_args,
     browser_type,
 )
-from .team_reset import delete_team_after_tests, reset_before_each_module
+from .team_reset import delete_teams_after_tests, reset_before_each_module
 
 __all__ = [
     "add_vaccine_batch",
@@ -58,7 +58,7 @@ __all__ = [
     "browser_type",
     "children",
     "clinics",
-    "delete_team_after_tests",
+    "delete_teams_after_tests",
     "file_generator",
     "healthcare_assistant",
     "log_in_as_medical_secretary",

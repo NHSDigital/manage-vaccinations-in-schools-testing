@@ -8,6 +8,7 @@ from mavis.test.data.file_generator import FileGenerator
 from mavis.test.data_models import (
     Child,
     Clinic,
+    NationalReportingTeam,
     Organisation,
     PointOfCareTeam,
     School,
@@ -120,7 +121,7 @@ def national_reporting_organisation(national_reporting_onboarding) -> Organisati
 
 
 @pytest.fixture(scope="session")
-def national_reporting_team(national_reporting_onboarding) -> PointOfCareTeam:
+def national_reporting_team(national_reporting_onboarding) -> NationalReportingTeam:
     return national_reporting_onboarding.team
 
 

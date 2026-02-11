@@ -1,5 +1,6 @@
 import random
 import urllib.parse
+from abc import ABC, abstractmethod
 from datetime import date
 
 import nhs_number
@@ -142,31 +143,51 @@ class Subteam:
 
 
 @dataclass
-class PointOfCareTeam:
+class Team(ABC):
     name: str
     workgroup: str
+    team_type: str
+
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+    def _base_onboarding_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "workgroup": self.workgroup,
+            "type": self.team_type,
+        }
+
+    @abstractmethod
+    def to_onboarding(self) -> dict:
+        """
+        Convert team data to onboarding dictionary format.
+        Must be implemented by subclasses.
+        """
+
+
+@dataclass
+class PointOfCareTeam(Team):
     careplus_venue_code: str
     careplus_staff_code: str
     careplus_staff_type: str
     email: str
     phone: str
 
-    def __str__(self) -> str:
-        return f"{self.name}"
-
     def to_onboarding(self) -> dict:
-        return {
-            "name": self.name,
-            "workgroup": self.workgroup,
-            "email": self.email,
-            "phone": self.phone,
-            "careplus_venue_code": self.careplus_venue_code,
-            "careplus_staff_code": self.careplus_staff_code,
-            "careplus_staff_type": self.careplus_staff_type,
-            "privacy_notice_url": "https://example.com/privacy",
-            "privacy_policy_url": "https://example.com/privacy",
-            "type": "point_of_care",
-        }
+        base = self._base_onboarding_dict()
+        base.update(
+            {
+                "email": self.email,
+                "phone": self.phone,
+                "careplus_venue_code": self.careplus_venue_code,
+                "careplus_staff_code": self.careplus_staff_code,
+                "careplus_staff_type": self.careplus_staff_type,
+                "privacy_notice_url": "https://example.com/privacy",
+                "privacy_policy_url": "https://example.com/privacy",
+            }
+        )
+        return base
 
     @classmethod
     def generate(
@@ -175,6 +196,7 @@ class PointOfCareTeam:
         return cls(
             name=subteam.name,
             workgroup=organisation.ods_code,
+            team_type="point_of_care",
             careplus_venue_code=organisation.ods_code + "A",
             careplus_staff_code=organisation.ods_code + "B",
             careplus_staff_type=organisation.ods_code + "C",
@@ -184,25 +206,16 @@ class PointOfCareTeam:
 
 
 @dataclass
-class NationalReportingTeam:
-    name: str
-    workgroup: str
-
-    def __str__(self) -> str:
-        return f"{self.name}"
-
+class NationalReportingTeam(Team):
     def to_onboarding(self) -> dict:
-        return {
-            "name": self.name,
-            "workgroup": self.workgroup,
-            "type": "national_reporting",
-        }
+        return self._base_onboarding_dict()
 
     @classmethod
     def generate(cls, organisation: Organisation) -> "NationalReportingTeam":
         return cls(
             name=f"NR {faker.company()} est. {random.randint(1600, 2025)}",
             workgroup=organisation.ods_code,
+            team_type="national_reporting",
         )
 
 
