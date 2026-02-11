@@ -1,21 +1,25 @@
 from .data_models import (
     children,
     clinics,
-    delete_team_after_tests,
     file_generator,
     healthcare_assistant,
     medical_secretary,
+    national_reporting_children,
+    national_reporting_file_generator,
+    national_reporting_healthcare_assistant,
+    national_reporting_medical_secretary,
+    national_reporting_nurse,
+    national_reporting_organisation,
+    national_reporting_prescriber,
+    national_reporting_superuser,
+    national_reporting_team,
     nurse,
-    onboarding,
     organisation,
     prescriber,
-    programmes_enabled,
-    reset_before_each_module,
     schools,
     subteam,
     superuser,
     team,
-    year_groups,
 )
 from .helpers import (
     add_vaccine_batch,
@@ -29,6 +33,12 @@ from .helpers import (
     upload_offline_vaccination,
 )
 from .imms_api import authenticate_api
+from .onboarding import (
+    national_reporting_onboarding,
+    onboarding,
+    programmes_enabled,
+    year_groups,
+)
 from .playwright import (
     base_url,
     basic_auth_credentials,
@@ -36,6 +46,7 @@ from .playwright import (
     browser_context_args,
     browser_type,
 )
+from .team_reset import delete_team_after_tests, reset_before_each_module
 
 __all__ = [
     "add_vaccine_batch",
@@ -54,6 +65,16 @@ __all__ = [
     "log_in_as_nurse",
     "log_in_as_prescriber",
     "medical_secretary",
+    "national_reporting_children",
+    "national_reporting_file_generator",
+    "national_reporting_healthcare_assistant",
+    "national_reporting_medical_secretary",
+    "national_reporting_nurse",
+    "national_reporting_onboarding",
+    "national_reporting_organisation",
+    "national_reporting_prescriber",
+    "national_reporting_superuser",
+    "national_reporting_team",
     "nurse",
     "onboarding",
     "organisation",

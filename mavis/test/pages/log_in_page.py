@@ -3,7 +3,7 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data_models import Organisation, Team, User
+from mavis.test.data_models import Organisation, PointOfCareTeam, User
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import get_current_datetime
 
@@ -91,7 +91,9 @@ class LogInPage:
         self.log_out_link.click()
 
     @step("Log in as {1} and choose team {2}")
-    def log_in_and_choose_team_if_necessary(self, user: User, team: Team) -> None:
+    def log_in_and_choose_team_if_necessary(
+        self, user: User, team: PointOfCareTeam
+    ) -> None:
         # Set organisation code from team's workgroup (which contains ods_code)
         self.current_org_code = team.workgroup
 
