@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
@@ -89,36 +89,17 @@ class ImportRecordsWizardPage:
     def fill_location(self, location: str) -> None:
         self.location_combobox.fill(location)
 
-    def get_preview_page_link(self):  # noqa: ANN201
-        """Get the preview page link using multiple selector strategies."""
-        # Try different selector approaches
-        selectors = [
-            self.page.get_by_role("link").filter(has_text=self.records_pattern),
-            self.page.locator("a").filter(has_text=self.records_pattern),
-            self.page.locator("[href]").filter(has_text=self.records_pattern),
-            self.page.get_by_text(self.records_pattern),
-        ]
-
-        for selector in selectors:
-            if selector.count() > 0:
-                return selector.first
-
-        # Fallback: return the first selector even if not found
-        return selectors[0]
+    def get_preview_page_link(self) -> Locator:
+        locator = self.page.locator(".nhsuk-details__summary-text").filter(
+            has_text=self.records_pattern
+        )
+        return locator.first
 
     def is_preview_page_link_visible(self) -> bool:
-        """Check if preview page link is visible using multiple strategies."""
-        selectors = [
-            self.page.get_by_role("link").filter(has_text=self.records_pattern),
-            self.page.locator("a").filter(has_text=self.records_pattern),
-            self.page.locator("[href]").filter(has_text=self.records_pattern),
-            self.page.get_by_text(self.records_pattern),
-        ]
-
-        for selector in selectors:
-            if selector.count() > 0 and selector.first.is_visible():
-                return True
-        return False
+        locator = self.page.locator(".nhsuk-details__summary-text").filter(
+            has_text=self.records_pattern
+        )
+        return locator.count() > 0 and locator.first.is_visible()
 
     def approve_preview_if_shown(self, file_path: Path) -> None:
         self.get_preview_page_link().click()
