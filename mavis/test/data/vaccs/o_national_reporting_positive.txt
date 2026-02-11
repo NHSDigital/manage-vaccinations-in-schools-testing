@@ -1,0 +1,3 @@
+18 new records imported
+0 duplicates not imported
+2 'not vaccinated' records not imported
