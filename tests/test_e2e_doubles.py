@@ -37,7 +37,7 @@ def test_recording_doubles_vaccination_e2e(
     page,
     schools,
     children,
-    nurse,
+    point_of_care_nurse,
 ):
     """
     Test: End-to-end test for recording MenACWY and Td/IPV ("doubles") vaccinations
@@ -112,12 +112,12 @@ def test_recording_doubles_vaccination_e2e(
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         menacwy_vaccination_record,
         Vaccine.MENQUADFI,
-        nurse,
+        point_of_care_nurse,
         schools[0],
     )
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         td_ipv_vaccination_record,
         Vaccine.REVAXIS,
-        nurse,
+        point_of_care_nurse,
         schools[0],
     )

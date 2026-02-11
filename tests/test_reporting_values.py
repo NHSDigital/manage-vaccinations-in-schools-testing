@@ -105,8 +105,8 @@ def test_report_view(
 
 def test_log_out_via_reporting_component(
     page,
-    nurse,
-    team,
+    point_of_care_nurse,
+    point_of_care_team,
 ):
     """
     Test: Verify that logging out via the reporting component works correctly.
@@ -119,7 +119,9 @@ def test_log_out_via_reporting_component(
     - User is successfully logged out and the log out page is shown.
     """
     LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        point_of_care_nurse, point_of_care_team
+    )
     ReportsVaccinationsPage(page).navigate()
     LogInPage(page).log_out_via_reporting_component()
     LogOutPage(page).verify_log_out_page()

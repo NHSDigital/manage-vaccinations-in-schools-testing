@@ -28,7 +28,7 @@ pytestmark = pytest.mark.children
 def setup_children_session(
     log_in_as_nurse,
     page,
-    file_generator,
+    point_of_care_file_generator,
     schools,
     year_groups,
 ):
@@ -39,7 +39,7 @@ def setup_children_session(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )
         schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
@@ -65,7 +65,7 @@ def setup_mav_853(
     log_in_as_nurse,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -74,7 +74,7 @@ def setup_mav_853(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
+    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
@@ -83,18 +83,22 @@ def setup_mav_853(
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.FIXED_CHILD
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
 
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
-        page, file_generator
+        page, point_of_care_file_generator
     ).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
@@ -203,7 +207,7 @@ def test_merge_child_records_does_not_crash(
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_fixed_child,
     page,
-    file_generator,
+    point_of_care_file_generator,
     children,
 ):
     """
@@ -226,10 +230,12 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ChildRecordPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.FIXED_CHILD
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))

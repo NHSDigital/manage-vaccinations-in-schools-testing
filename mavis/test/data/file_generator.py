@@ -27,7 +27,7 @@ class FileGenerator:
         schools: dict[str, list[School]],
         nurse: User,
         children: dict[str, list[Child]],
-        clinics: list[Clinic],
+        clinics: list[Clinic] | None,
         year_groups: dict[str, int],
     ) -> None:
         self.organisation = organisation

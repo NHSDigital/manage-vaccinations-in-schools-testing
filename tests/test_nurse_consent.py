@@ -37,7 +37,7 @@ def setup_session_with_file_upload(
     log_in_as_nurse,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.HPV][0]
@@ -47,7 +47,7 @@ def setup_session_with_file_upload(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )
         schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])

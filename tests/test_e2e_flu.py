@@ -50,7 +50,7 @@ def test_recording_flu_vaccination_e2e(
     page,
     schools,
     children,
-    nurse,
+    point_of_care_nurse,
     consent_option,
 ):
     """
@@ -133,6 +133,6 @@ def test_recording_flu_vaccination_e2e(
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         vaccination_record,
         vaccine,
-        nurse,
+        point_of_care_nurse,
         schools[0],
     )

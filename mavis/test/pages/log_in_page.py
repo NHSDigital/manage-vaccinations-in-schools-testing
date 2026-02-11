@@ -96,6 +96,7 @@ class LogInPage:
         self.current_org_code = team.workgroup
 
         self.log_in(user)
+        self.page.wait_for_load_state()
         if self.select_a_team_heading.is_visible():
             self.page.get_by_role("radio", name=team.name).check()
             self.continue_button.click()

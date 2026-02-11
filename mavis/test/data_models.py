@@ -1,5 +1,6 @@
 import random
 import urllib.parse
+from abc import ABC, abstractmethod
 from datetime import date
 
 import nhs_number
@@ -142,42 +143,79 @@ class Subteam:
 
 
 @dataclass
-class Team:
+class Team(ABC):
     name: str
     workgroup: str
+    team_type: str
+
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+    def _base_onboarding_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "workgroup": self.workgroup,
+            "type": self.team_type,
+        }
+
+    @abstractmethod
+    def to_onboarding(self) -> dict:
+        """
+        Convert team data to onboarding dictionary format.
+        Must be implemented by subclasses.
+        """
+
+
+@dataclass
+class PointOfCareTeam(Team):
     careplus_venue_code: str
     careplus_staff_code: str
     careplus_staff_type: str
     email: str
     phone: str
 
-    def __str__(self) -> str:
-        return f"{self.name}"
-
     def to_onboarding(self) -> dict:
-        return {
-            "name": self.name,
-            "workgroup": self.workgroup,
-            "email": self.email,
-            "phone": self.phone,
-            "careplus_venue_code": self.careplus_venue_code,
-            "careplus_staff_code": self.careplus_staff_code,
-            "careplus_staff_type": self.careplus_staff_type,
-            "privacy_notice_url": "https://example.com/privacy",
-            "privacy_policy_url": "https://example.com/privacy",
-            "type": "point_of_care",
-        }
+        base = self._base_onboarding_dict()
+        base.update(
+            {
+                "email": self.email,
+                "phone": self.phone,
+                "careplus_venue_code": self.careplus_venue_code,
+                "careplus_staff_code": self.careplus_staff_code,
+                "careplus_staff_type": self.careplus_staff_type,
+                "privacy_notice_url": "https://example.com/privacy",
+                "privacy_policy_url": "https://example.com/privacy",
+            }
+        )
+        return base
 
     @classmethod
-    def generate(cls, subteam: Subteam, organisation: Organisation) -> "Team":
+    def generate(
+        cls, subteam: Subteam, organisation: Organisation
+    ) -> "PointOfCareTeam":
         return cls(
             name=subteam.name,
             workgroup=organisation.ods_code,
+            team_type="point_of_care",
             careplus_venue_code=organisation.ods_code + "A",
             careplus_staff_code=organisation.ods_code + "B",
             careplus_staff_type=organisation.ods_code + "C",
             email=subteam.email,
             phone=subteam.phone,
+        )
+
+
+@dataclass
+class NationalReportingTeam(Team):
+    def to_onboarding(self) -> dict:
+        return self._base_onboarding_dict()
+
+    @classmethod
+    def generate(cls, organisation: Organisation) -> "NationalReportingTeam":
+        return cls(
+            name=f"NR {faker.company()} est. {random.randint(1600, 2025)}",
+            workgroup=organisation.ods_code,
+            team_type="national_reporting",
         )
 
 
@@ -287,61 +325,3 @@ class VaccinationRecord:
     batch_name: str
     consent_option: ConsentOption = ConsentOption.INJECTION
     delivery_site: DeliverySite = DeliverySite.LEFT_ARM_UPPER
-
-
-@dataclass
-class Onboarding:
-    organisation: Organisation
-    team: Team
-    subteam: Subteam
-    users: dict[str, User]
-    clinics: list[Clinic]
-    schools: dict[str, list[School]]
-    programmes: str
-
-    @classmethod
-    def get_onboarding_data_for_tests(
-        cls, base_url: str, year_groups: dict[str, int], programmes: str
-    ) -> "Onboarding":
-        subteam = Subteam.generate()
-        organisation = Organisation.generate()
-        team = Team.generate(subteam, organisation)
-        users = {
-            role: User.generate(role)
-            for role in (
-                "nurse",
-                "medical_secretary",
-                "superuser",
-                "prescriber",
-                "healthcare_assistant",
-            )
-        }
-        clinics = [Clinic.generate()]
-        schools = School.get_from_testing_api(base_url, year_groups)
-
-        return cls(
-            organisation=organisation,
-            team=team,
-            subteam=subteam,
-            users=users,
-            clinics=clinics,
-            schools=schools,
-            programmes=programmes,
-        )
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "clinics": {self.subteam.key: [it.to_onboarding() for it in self.clinics]},
-            "team": self.team.to_onboarding(),
-            "organisation": self.organisation.to_onboarding(),
-            "programmes": self.programmes,
-            "schools": {
-                self.subteam.key: [
-                    school.to_onboarding()
-                    for schools_list in self.schools.values()
-                    for school in schools_list
-                ],
-            },
-            "subteams": self.subteam.to_onboarding(),
-            "users": [it.to_onboarding() for it in self.users.values()],
-        }

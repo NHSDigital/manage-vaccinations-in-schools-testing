@@ -18,7 +18,7 @@ from mavis.test.pages.schools.schools_search_page import SchoolsSearchPage
 pytestmark = pytest.mark.team
 
 
-def test_check_team_contact_details(page, log_in_as_nurse, team):
+def test_check_team_contact_details(page, log_in_as_nurse, point_of_care_team):
     """
     Test: Check team contact details appear on the Contact Details page.
     Steps:
@@ -27,8 +27,8 @@ def test_check_team_contact_details(page, log_in_as_nurse, team):
     - Team name and email are visible on the Contact Details page.
     """
     DashboardPage(page).click_your_team()
-    TeamContactDetailsPage(page).check_team_name_is_visible(team)
-    TeamContactDetailsPage(page).check_team_email_is_visible(team)
+    TeamContactDetailsPage(page).check_team_name_is_visible(point_of_care_team)
+    TeamContactDetailsPage(page).check_team_email_is_visible(point_of_care_team)
 
 
 def test_team_page_lists_correct_schools(page, log_in_as_nurse, schools):
@@ -112,7 +112,7 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
 
 
 def test_site_child_record_import(
-    page, log_in_as_nurse, file_generator, schools, children
+    page, log_in_as_nurse, point_of_care_file_generator, schools, children
 ):
     """
     Test: Importing child records for a school that has been split into sites.
@@ -143,15 +143,19 @@ def test_site_child_record_import(
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).confirm_site()
 
-    input_file_path, output_file_path = file_generator.get_file_paths(
+    input_file_path, output_file_path = point_of_care_file_generator.get_file_paths(
         file_mapping=ChildFileMapping.FIXED_CHILD, programme_group=Programme.FLU.group
     )
 
     TeamSchoolsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
-    ImportRecordsWizardPage(page, file_generator).upload_input_file(input_file_path)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).upload_input_file(
+        input_file_path
+    )
     expect(
         page.get_by_text(
             f"The URN {school.urn} has been split into sites. "
@@ -164,12 +168,16 @@ def test_site_child_record_import(
     TeamSchoolsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
     ImportRecordsWizardPage(
-        page, file_generator
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
     ).upload_and_verify_output_for_input_output_files(file_with_site, output_file_path)
 
-    ImportRecordsWizardPage(page, file_generator).header.click_mavis_header()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).header.click_mavis_header()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).search.search_for_a_child_name(str(child))
@@ -181,7 +189,7 @@ def test_site_child_record_import(
 
 
 def test_site_class_list_import(
-    page, log_in_as_nurse, file_generator, schools, children
+    page, log_in_as_nurse, point_of_care_file_generator, schools, children
 ):
     """
     Test: Importing class list records for a school that has been split into sites.
@@ -212,19 +220,23 @@ def test_site_class_list_import(
     TeamSchoolsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
-        str(school), child.year_group
-    )
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(str(school), child.year_group)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(
         file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
     )
     TeamSchoolsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_class_list_record_import(
-        new_site_name, child.year_group
-    )
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(new_site_name, child.year_group)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(
         file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
     )
     TeamSchoolsPage(page).header.click_mavis_header()

@@ -27,7 +27,7 @@ pytestmark = pytest.mark.school_moves
 def setup_confirm_and_ignore(
     log_in_as_nurse,
     page,
-    file_generator,
+    point_of_care_file_generator,
     schools,
     year_groups,
     children,
@@ -36,24 +36,32 @@ def setup_confirm_and_ignore(
     year_group = year_groups[Programme.HPV]
     children = children[Programme.HPV]
     # We need to make sure we're uploading the same class with the same NHS numbers.
-    input_file_path, output_file_path = file_generator.get_file_paths(
+    input_file_path, output_file_path = point_of_care_file_generator.get_file_paths(
         ClassFileMapping.TWO_FIXED_CHILDREN,
     )
 
     def upload_class_list():
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).select_year_groups(year_group)
-        ImportRecordsWizardPage(page, file_generator).set_input_file(input_file_path)
-        ImportRecordsWizardPage(page, file_generator).click_continue()
-        ImportRecordsWizardPage(page, file_generator).click_import_link(input_file_path)
-        ImportRecordsWizardPage(page, file_generator).wait_for_processed()
-        if ImportRecordsWizardPage(page, file_generator).is_preview_page_link_visible():
-            ImportRecordsWizardPage(page, file_generator).approve_preview_if_shown(
-                input_file_path
-            )
-        ImportRecordsWizardPage(page, file_generator).verify_upload_output(
-            file_path=output_file_path
+        ImportRecordsWizardPage(page, point_of_care_file_generator).select_year_groups(
+            year_group
         )
+        ImportRecordsWizardPage(page, point_of_care_file_generator).set_input_file(
+            input_file_path
+        )
+        ImportRecordsWizardPage(page, point_of_care_file_generator).click_continue()
+        ImportRecordsWizardPage(page, point_of_care_file_generator).click_import_link(
+            input_file_path
+        )
+        ImportRecordsWizardPage(page, point_of_care_file_generator).wait_for_processed()
+        if ImportRecordsWizardPage(
+            page, point_of_care_file_generator
+        ).is_preview_page_link_visible():
+            ImportRecordsWizardPage(
+                page, point_of_care_file_generator
+            ).approve_preview_if_shown(input_file_path)
+        ImportRecordsWizardPage(
+            page, point_of_care_file_generator
+        ).verify_upload_output(file_path=output_file_path)
 
     for school in schools:
         schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])

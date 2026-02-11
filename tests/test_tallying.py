@@ -35,7 +35,7 @@ def setup_flu_vaccination(
     add_vaccine_batch,
     schools,
     page,
-    file_generator,
+    point_of_care_file_generator,
     year_groups,
 ):
     school = schools[Programme.FLU][0]
@@ -51,7 +51,7 @@ def setup_flu_vaccination(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
         schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
@@ -171,7 +171,7 @@ def test_tallying_totals_match_eligible_patients(
     programme,
     year_groups,
     schools,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Verify that tallying totals match the number of eligible patients.
@@ -188,7 +188,7 @@ def test_tallying_totals_match_eligible_patients(
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, file_generator).import_class_list(
+    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.FIXED_CHILD, year_group, programme.group
     )
     schedule_school_session_if_needed(page, school, [programme], [year_group])

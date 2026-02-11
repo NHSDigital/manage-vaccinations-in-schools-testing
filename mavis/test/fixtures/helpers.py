@@ -55,13 +55,15 @@ def add_vaccine_batch(page):
 
 @pytest.fixture
 def schedule_session_and_get_consent_url(
-    set_feature_flags, nurse, team, page, year_groups
+    set_feature_flags, point_of_care_nurse, point_of_care_team, page, year_groups
 ):
     def wrapper(school: School, *programmes: Programme):
         year_group = year_groups[programmes[0].group]
 
         LogInPage(page).navigate()
-        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        LogInPage(page).log_in_and_choose_team_if_necessary(
+            point_of_care_nurse, point_of_care_team
+        )
 
         schedule_school_session_if_needed(
             page, school, list(programmes), [year_group], date_offset=7
@@ -74,13 +76,15 @@ def schedule_session_and_get_consent_url(
 
 @pytest.fixture
 def schedule_mmr_session_and_get_consent_url(
-    set_feature_flags, nurse, team, page, year_groups
+    set_feature_flags, point_of_care_nurse, point_of_care_team, page, year_groups
 ):
     def wrapper(school: School, *programmes: Programme):
         year_group = year_groups[programmes[0].group]
 
         LogInPage(page).navigate()
-        LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+        LogInPage(page).log_in_and_choose_team_if_necessary(
+            point_of_care_nurse, point_of_care_team
+        )
         schedule_school_session_if_needed(
             page, school, list(programmes), [year_group], date_offset=7
         )
@@ -93,24 +97,32 @@ def schedule_mmr_session_and_get_consent_url(
 @pytest.fixture
 def log_in_as_medical_secretary(
     set_feature_flags,
-    medical_secretary,
-    team,
+    point_of_care_medical_secretary,
+    point_of_care_team,
     page,
 ):
     LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(medical_secretary, team)
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        point_of_care_medical_secretary, point_of_care_team
+    )
 
 
 @pytest.fixture
-def log_in_as_nurse(set_feature_flags, nurse, team, page):
+def log_in_as_nurse(set_feature_flags, point_of_care_nurse, point_of_care_team, page):
     LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(nurse, team)
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        point_of_care_nurse, point_of_care_team
+    )
 
 
 @pytest.fixture
-def log_in_as_prescriber(set_feature_flags, prescriber, team, page):
+def log_in_as_prescriber(
+    set_feature_flags, point_of_care_prescriber, point_of_care_team, page
+):
     LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(prescriber, team)
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        point_of_care_prescriber, point_of_care_team
+    )
 
 
 @pytest.fixture
@@ -118,7 +130,7 @@ def upload_offline_vaccination(
     schools,
     page,
     children,
-    file_generator,
+    point_of_care_file_generator,
 ):
     def wrapper(
         programme: Programme, consent_option: ConsentOption = ConsentOption.INJECTION
@@ -144,7 +156,7 @@ def upload_offline_vaccination(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
             programme.group,
@@ -155,9 +167,11 @@ def upload_offline_vaccination(
         DashboardPage(page).click_imports()
         ImportsPage(page).click_upload_records()
         ImportRecordsWizardPage(
-            page, file_generator
+            page, point_of_care_file_generator
         ).navigate_to_vaccination_records_import()
-        ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+        ImportRecordsWizardPage(
+            page, point_of_care_file_generator
+        ).upload_and_verify_output(
             file_mapping=vaccs_file,
             session_id=session_id,
             programme_group=programme.group,
@@ -177,7 +191,7 @@ def setup_session_and_batches_with_fixed_child(
     schools,
     children,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     def _setup(programme_group):
         school = schools[programme_group][0]
@@ -201,7 +215,7 @@ def setup_session_and_batches_with_fixed_child(
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
-        ImportRecordsWizardPage(page, file_generator).import_class_list(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
             programme_group,

@@ -15,18 +15,20 @@ from mavis.test.pages import (
 def setup_child_import(
     log_in_as_nurse,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(page, file_generator).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_valid_data(
     setup_child_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a valid child list file and verify successful import.
@@ -41,19 +43,19 @@ def test_child_list_file_upload_valid_data(
     UnicodeApostrophe2, UnicodeApostrophe3, DuplicateEmail, PostcodeNFA,
     PostcodeAddressNotKnown, PostcodeAddressNotSpecified
     """
-    ImportRecordsWizardPage(page, file_generator).read_and_verify_import_format_details(
-        ImportFormatDetails.CHILD
-    )
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.POSITIVE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).read_and_verify_import_format_details(ImportFormatDetails.CHILD)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.POSITIVE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_invalid_data(
     setup_child_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload an invalid child list file and verify error handling.
@@ -67,16 +69,16 @@ def test_child_list_file_upload_invalid_data(
     InvalidPostCode, InvalidParent1Email, InvalidParent2Email, InvalidYearGroup,
     SpaceInDOB, InvalidFirstName, InvalidLastName, InvalidParent1Name,InvalidParent2Name
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.NEGATIVE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.NEGATIVE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_invalid_structure(
     setup_child_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a child list file with invalid structure and verify error handling.
@@ -86,16 +88,16 @@ def test_child_list_file_upload_invalid_structure(
     Verification:
     - Output indicates structural errors.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.INVALID_STRUCTURE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.INVALID_STRUCTURE)
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_header_only(
     setup_child_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a child list file with only headers and verify no records are imported.
@@ -105,16 +107,16 @@ def test_child_list_file_upload_header_only(
     Verification:
     - Output indicates no records imported.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.HEADER_ONLY
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.HEADER_ONLY)
 
 
 @pytest.mark.childlist
 def test_child_list_file_upload_empty_file(
     setup_child_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload an empty child list file and verify error handling.
@@ -124,9 +126,9 @@ def test_child_list_file_upload_empty_file(
     Verification:
     - Output indicates error or no records imported.
     """
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.EMPTY_FILE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.EMPTY_FILE)
 
 
 @pytest.mark.childlist
@@ -134,7 +136,7 @@ def test_child_list_file_upload_empty_file(
 def test_child_list_file_upload_whitespace_normalization(
     setup_child_import,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Upload a child list file with extra whitespace and verify normalization.
@@ -146,7 +148,7 @@ def test_child_list_file_upload_whitespace_normalization(
     - Imported list matches expected normalized data.
     """
     input_file, _ = ImportRecordsWizardPage(
-        page, file_generator
+        page, point_of_care_file_generator
     ).upload_and_verify_output(
         ChildFileMapping.WHITESPACE,
     )
@@ -161,7 +163,7 @@ def test_child_list_file_upload_whitespace_normalization(
 def test_accessibility(
     log_in_as_nurse,
     page,
-    file_generator,
+    point_of_care_file_generator,
 ):
     """
     Test: Verify that the import records page passes accessibility checks.
@@ -177,11 +179,11 @@ def test_accessibility(
     ImportsPage(page).click_upload_records()
     AccessibilityHelper(page).check_accessibility()
 
-    ImportRecordsWizardPage(page, file_generator).select_child_records()
-    ImportRecordsWizardPage(page, file_generator).click_continue()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).select_child_records()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).click_continue()
     AccessibilityHelper(page).check_accessibility()
 
-    ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
-        ChildFileMapping.POSITIVE
-    )
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.POSITIVE)
     AccessibilityHelper(page).check_accessibility()

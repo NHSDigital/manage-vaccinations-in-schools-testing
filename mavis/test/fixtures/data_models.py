@@ -1,23 +1,18 @@
 import logging
-import os
-import random
 import time
-import urllib.parse
 
 import pytest
-import requests
 from faker import Faker
 
-from mavis.test.constants import Programme
 from mavis.test.data.file_generator import FileGenerator
 from mavis.test.data_models import (
     Child,
     Clinic,
-    Onboarding,
+    NationalReportingTeam,
     Organisation,
+    PointOfCareTeam,
     School,
     Subteam,
-    Team,
     User,
 )
 
@@ -28,132 +23,6 @@ onboarding_faker.seed_instance(seed=time.time())
 onboarding_faker.unique.clear()
 
 
-@pytest.fixture(scope="session", autouse=True)
-def delete_team_after_tests(base_url, team):
-    yield
-
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, timeout=30)
-    _check_response_status(response)
-
-
-@pytest.fixture(scope="module", autouse=True)
-def reset_before_each_module(base_url, team) -> None:
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
-    response = requests.delete(url, params={"keep_itself": "true"}, timeout=30)
-    _check_response_status(response)
-
-    url = urllib.parse.urljoin(
-        base_url, f"api/testing/teams/{team.workgroup}/locations"
-    )
-    response = requests.delete(url, params={"keep_base_locations": "true"}, timeout=30)
-    _check_response_status(response)
-
-
-@pytest.fixture(scope="session")
-def year_groups() -> dict[str, int]:
-    return {
-        programme.group: random.choice(programme.year_groups) for programme in Programme
-    }
-
-
-@pytest.fixture(scope="session")
-def programmes_enabled() -> list[str]:
-    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")
-
-
-@pytest.fixture(scope="session")
-def onboarding(
-    base_url,
-    year_groups,
-    programmes_enabled,
-) -> Onboarding:
-    onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    max_attempts = 3
-    onboarding_data = None
-
-    for attempt in range(1, max_attempts + 1):
-        onboarding_data = Onboarding.get_onboarding_data_for_tests(
-            base_url=base_url,
-            year_groups=year_groups,
-            programmes=programmes_enabled,
-        )
-        response = requests.post(
-            onboarding_url, json=onboarding_data.to_dict(), timeout=30
-        )
-        if response.ok:
-            break
-        logger.warning(
-            "Onboarding request failed (attempt %s): %s", attempt, response.content
-        )
-        if attempt < max_attempts:
-            time.sleep(1)
-        else:
-            response.raise_for_status()
-
-    if not onboarding_data:
-        msg = "Failed to create onboarding data for tests"
-        raise RuntimeError(msg)
-
-    return onboarding_data
-
-
-def _check_response_status(response) -> None:
-    if not response.ok:
-        logger.warning(response.content)
-    response.raise_for_status()
-
-
-@pytest.fixture(scope="session")
-def healthcare_assistant(onboarding) -> User:
-    return onboarding.users["healthcare_assistant"]
-
-
-@pytest.fixture(scope="session")
-def medical_secretary(onboarding) -> User:
-    return onboarding.users["medical_secretary"]
-
-
-@pytest.fixture(scope="session")
-def prescriber(onboarding) -> User:
-    return onboarding.users["prescriber"]
-
-
-@pytest.fixture(scope="session")
-def clinics(onboarding) -> list[Clinic]:
-    return onboarding.clinics
-
-
-@pytest.fixture(scope="session")
-def nurse(onboarding) -> User:
-    return onboarding.users["nurse"]
-
-
-@pytest.fixture(scope="session")
-def schools(onboarding) -> dict[str, list[School]]:
-    return onboarding.schools
-
-
-@pytest.fixture(scope="session")
-def superuser(onboarding) -> User:
-    return onboarding.users["superuser"]
-
-
-@pytest.fixture(scope="session")
-def organisation(onboarding) -> Organisation:
-    return onboarding.organisation
-
-
-@pytest.fixture(scope="session")
-def subteam(onboarding) -> Subteam:
-    return onboarding.subteam
-
-
-@pytest.fixture(scope="session")
-def team(onboarding) -> Team:
-    return onboarding.team
-
-
 @pytest.fixture
 def children(year_groups) -> dict[str, list[Child]]:
     return Child.generate_children_in_year_group_for_each_programme_group(
@@ -161,6 +30,131 @@ def children(year_groups) -> dict[str, list[Child]]:
     )
 
 
+@pytest.fixture(scope="session")
+def schools(point_of_care_onboarding) -> dict[str, list[School]]:
+    # schools are retrieved during point of care onboarding
+    # but are also used to generate national reporting files
+    return point_of_care_onboarding.schools
+
+
+# point of care only
+
+
+@pytest.fixture(scope="session")
+def point_of_care_healthcare_assistant(point_of_care_onboarding) -> User:
+    return point_of_care_onboarding.users["healthcare_assistant"]
+
+
+@pytest.fixture(scope="session")
+def point_of_care_medical_secretary(point_of_care_onboarding) -> User:
+    return point_of_care_onboarding.users["medical_secretary"]
+
+
+@pytest.fixture(scope="session")
+def point_of_care_prescriber(point_of_care_onboarding) -> User:
+    return point_of_care_onboarding.users["prescriber"]
+
+
+@pytest.fixture(scope="session")
+def point_of_care_clinics(point_of_care_onboarding) -> list[Clinic]:
+    return point_of_care_onboarding.clinics
+
+
+@pytest.fixture(scope="session")
+def point_of_care_nurse(point_of_care_onboarding) -> User:
+    return point_of_care_onboarding.users["nurse"]
+
+
+@pytest.fixture(scope="session")
+def point_of_care_superuser(point_of_care_onboarding) -> User:
+    return point_of_care_onboarding.users["superuser"]
+
+
+@pytest.fixture(scope="session")
+def point_of_care_organisation(point_of_care_onboarding) -> Organisation:
+    return point_of_care_onboarding.organisation
+
+
+@pytest.fixture(scope="session")
+def point_of_care_subteam(point_of_care_onboarding) -> Subteam:
+    return point_of_care_onboarding.subteam
+
+
+@pytest.fixture(scope="session")
+def point_of_care_team(point_of_care_onboarding) -> PointOfCareTeam:
+    return point_of_care_onboarding.team
+
+
 @pytest.fixture
-def file_generator(organisation, schools, nurse, children, clinics, year_groups):
-    return FileGenerator(organisation, schools, nurse, children, clinics, year_groups)
+def point_of_care_file_generator(
+    point_of_care_organisation,
+    schools,
+    point_of_care_nurse,
+    children,
+    point_of_care_clinics,
+    year_groups,
+):
+    return FileGenerator(
+        point_of_care_organisation,
+        schools,
+        point_of_care_nurse,
+        children,
+        point_of_care_clinics,
+        year_groups,
+    )
+
+
+# national reporting only
+
+
+@pytest.fixture(scope="session")
+def national_reporting_healthcare_assistant(national_reporting_onboarding) -> User:
+    return national_reporting_onboarding.users["healthcare_assistant"]
+
+
+@pytest.fixture(scope="session")
+def national_reporting_medical_secretary(national_reporting_onboarding) -> User:
+    return national_reporting_onboarding.users["medical_secretary"]
+
+
+@pytest.fixture(scope="session")
+def national_reporting_prescriber(national_reporting_onboarding) -> User:
+    return national_reporting_onboarding.users["prescriber"]
+
+
+@pytest.fixture(scope="session")
+def national_reporting_nurse(national_reporting_onboarding) -> User:
+    return national_reporting_onboarding.users["nurse"]
+
+
+@pytest.fixture(scope="session")
+def national_reporting_superuser(national_reporting_onboarding) -> User:
+    return national_reporting_onboarding.users["superuser"]
+
+
+@pytest.fixture(scope="session")
+def national_reporting_organisation(national_reporting_onboarding) -> Organisation:
+    return national_reporting_onboarding.organisation
+
+
+@pytest.fixture(scope="session")
+def national_reporting_team(national_reporting_onboarding) -> NationalReportingTeam:
+    return national_reporting_onboarding.team
+
+
+@pytest.fixture
+def national_reporting_file_generator(
+    national_reporting_organisation,
+    schools,
+    national_reporting_nurse,
+    children,
+    year_groups,
+):
+    return FileGenerator(
+        national_reporting_organisation,
+        schools,
+        national_reporting_nurse,
+        children,
+        None,
+        year_groups,
+    )

@@ -93,7 +93,7 @@ def test_batch_name_too_long(vaccine, page):
     ).to_be_visible()
 
 
-def test_verify_flu_not_available(onboarding, page):
+def test_verify_flu_not_available(point_of_care_onboarding, page):
     """
     Test: Verify that the flu vaccine is not available for selection if not enabled
        in onboarding.
@@ -104,7 +104,7 @@ def test_verify_flu_not_available(onboarding, page):
     - Flu vaccine is not available for selection if not present in the
       enabled programmes.
     """
-    programmes = onboarding.programmes
+    programmes = point_of_care_onboarding.programmes
     VaccinesPage(page).verify_flu_not_available(programmes)
 
 
