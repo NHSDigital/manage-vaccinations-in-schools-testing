@@ -20,8 +20,8 @@ export JIRA_REPORTING_URL=https://your-jira-instance.atlassian.net
 export JIRA_API_TOKEN=your-api-token
 export JIRA_PROJECT_KEY=MAV
 export JIRA_PROJECT_ID=10001
-export JIRA_TEST_CYCLE_NAME="Sprint 1"
-export JIRA_TEST_CYCLE_VERSION="1.0.0"
+export JIRA_TEST_CYCLE_NAME="Ad hoc"
+export JIRA_TEST_CYCLE_VERSION="v1.0.0"
 ```
 
 ### Environment Variables
