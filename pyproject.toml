@@ -46,6 +46,7 @@ markers = [
   "e2e",
   "imms_api",
   "log_in",
+  "national_reporting",
   "rav",
   "reporting",
   "reports",
