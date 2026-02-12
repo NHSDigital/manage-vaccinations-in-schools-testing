@@ -1,4 +1,5 @@
 import re
+
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step

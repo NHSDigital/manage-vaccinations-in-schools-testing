@@ -1,6 +1,6 @@
 import pytest
 
-from mavis.test.constants import Programme
+from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB, Programme
 from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
     DashboardPage,
@@ -12,6 +12,7 @@ from mavis.test.pages import (
     SessionsPatientPage,
     SessionsVaccinationWizardPage,
 )
+from mavis.test.pages.sessions.sessions_search_page import SessionsSearchPage
 from mavis.test.pages.utils import (
     schedule_school_session_if_needed,
 )
@@ -93,3 +94,68 @@ def test_one_dose_vaccinations_already_given(
     VaccinationRecordPage(page).expect_vaccination_details(
         "Date", get_formatted_date_for_session_dates(get_offset_date(0))
     )
+
+
+@pytest.mark.parametrize(
+    "setup_fixed_child_session",
+    [Programme.MMR],
+    indirect=True,
+)
+def test_mmrv_already_given(
+    setup_fixed_child_session,
+    children,
+    schools,
+    page,
+):
+    """
+    Test: Record MMR dose 1 as already given, modify the vaccination details,
+          and verify correct display.
+    Steps:
+    1. Open an MMR session with a fixed child.
+    2. Record dose 1 as already given (confirm MMRV if child is eligible).
+    3. Fill in vaccination details (date as today, time as 00:01).
+    4. Change the date to 45 days ago and time to 00:02.
+    5. Add vaccination notes and confirm the record.
+    Verification:
+    - The vaccination record page displays the updated date (45 days ago),
+      time (12:02am), and notes.
+    """
+    programme = setup_fixed_child_session
+    child = children[programme.group][0]
+    school = schools[programme.group][0]
+    eligible_for_mmrv = child.date_of_birth >= MMRV_ELIGIBILITY_CUTOFF_DOB
+    date_offset = -45
+
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).record_dose_as_already_given(1)
+    if eligible_for_mmrv:
+        SessionsVaccinationWizardPage(page).confirm_mmrv_given()
+
+    SessionsVaccinationWizardPage(page).fill_date_of_vaccination(
+        get_offset_date_compact_format(0)
+    )
+    SessionsVaccinationWizardPage(page).fill_time_of_vaccination("00", "01")
+    SessionsVaccinationWizardPage(page).click_continue_button()
+
+    SessionsVaccinationWizardPage(page).click_change_date_link()
+    SessionsVaccinationWizardPage(page).fill_date_of_vaccination(
+        get_offset_date_compact_format(date_offset)
+    )
+    SessionsVaccinationWizardPage(page).fill_time_of_vaccination("00", "02")
+    SessionsVaccinationWizardPage(page).click_continue_button()
+
+    SessionsVaccinationWizardPage(page).fill_vaccination_notes("Test notes")
+    SessionsVaccinationWizardPage(page).click_confirm_button()
+
+    VaccinationRecordPage(page).expect_vaccination_details(
+        "Date", get_formatted_date_for_session_dates(get_offset_date(date_offset))
+    )
+    VaccinationRecordPage(page).expect_vaccination_details("Time", "12:02am")
+    VaccinationRecordPage(page).expect_vaccination_details("Notes", "Test notes")
+
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.MMR)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
