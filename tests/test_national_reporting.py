@@ -1,11 +1,17 @@
 import pytest
 
+from mavis.test.constants import (
+    Programme,
+)
 from mavis.test.data import VaccsFileMapping
 from mavis.test.pages import (
+    ChildRecordPage,
+    ChildrenSearchPage,
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
+    VaccinationRecordPage,
 )
 
 pytestmark = pytest.mark.national_reporting
@@ -79,3 +85,37 @@ def test_national_reporting_invalid_data(
     ImportRecordsWizardPage(
         page, national_reporting_file_generator
     ).upload_and_verify_output(VaccsFileMapping.NATIONAL_REPORTING_NEGATIVE)
+
+
+def test_national_reporting_upload_creates_vaccination_record(
+    setup_national_reporting_import,
+    schools,
+    page,
+    point_of_care_file_generator,
+    children,
+):
+    """
+    Test: Upload a vaccination file with a fixed child and school
+    Steps:
+    1. Upload a vaccination file.
+    2. Navigate to children page and search for the child.
+    3. Open vaccination details for the child.
+    Verification:
+    - Vaccination location is displayed as the school.
+    - Source shows as National Reporting
+    """
+    child = children[Programme.HPV][0]
+    school = schools[Programme.HPV][0]
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(VaccsFileMapping.NATIONAL_REPORTING_HPV)
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
+
+    ChildrenSearchPage(page).search.search_and_click_child(child)
+    ChildRecordPage(page).click_vaccination_details(school)
+    VaccinationRecordPage(page).expect_vaccination_details("Location", str(school))
+    VaccinationRecordPage(page).expect_vaccination_details(
+        "Source", "Mavis national reporting upload"
+    )
