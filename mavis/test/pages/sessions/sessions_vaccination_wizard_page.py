@@ -10,6 +10,7 @@ from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     expect_alert_text,
     expect_details,
+    get_day_month_year_from_compact_date,
     reload_until_element_is_visible,
 )
 
@@ -31,6 +32,17 @@ class SessionsVaccinationWizardPage:
         self.select_batch_heading = self.page.get_by_role(
             "heading", name="Which batch did you use?"
         )
+        self.day_textbox = self.page.get_by_role("textbox", name="Day")
+        self.month_textbox = self.page.get_by_role("textbox", name="Month")
+        self.year_textbox = self.page.get_by_role("textbox", name="Year")
+        self.hour_textbox = self.page.get_by_role("textbox", name="Hour")
+        self.minute_textbox = self.page.get_by_role("textbox", name="Minute")
+        self.yes_radio = self.page.get_by_role("radio", name="Yes")
+        self.change_date_link = self.page.get_by_role("link", name="Change   date ")
+
+    @step("Click on Change date")
+    def click_change_date_link(self) -> None:
+        self.change_date_link.click()
 
     @step("Click on Confirm")
     def click_confirm_button(self) -> None:
@@ -56,10 +68,39 @@ class SessionsVaccinationWizardPage:
     def click_continue_button(self) -> None:
         self.continue_button.click()
 
+    @step("Fill date of vaccination with {1}")
+    def fill_date_of_vaccination(self, date: str) -> None:
+        day, month, year = get_day_month_year_from_compact_date(date)
+
+        self.day_textbox.fill(str(day))
+        self.month_textbox.fill(str(month))
+        self.year_textbox.fill(str(year))
+
+    @step("Confirm MMRV given")
+    def confirm_mmrv_given(self) -> None:
+        expect(
+            self.page.get_by_role("heading", name="vaccinated with the MMRV vaccine?")
+        ).to_be_visible()
+        self.click_yes()
+        self.click_continue_button()
+
+    @step("Click Yes")
+    def click_yes(self) -> None:
+        self.yes_radio.check()
+
+    @step("Fill time of vaccination with {1}:{2}")
+    def fill_time_of_vaccination(self, hour: str, minute: str) -> None:
+        self.hour_textbox.fill(str(hour))
+        self.minute_textbox.fill(str(minute))
+
     def expect_consent_refused_text(self, parent: Parent) -> None:
         expect(
             self.page.get_by_text(f"{parent.relationship} refused to give consent."),
         ).to_be_visible()
+
+    @step("Fill vaccination notes with {1}")
+    def fill_vaccination_notes(self, notes: str) -> None:
+        self.vaccination_notes.fill(notes)
 
     @step("Choose batch {1}")
     def choose_batch(self, batch_name: str) -> None:
