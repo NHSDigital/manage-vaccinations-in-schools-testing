@@ -264,7 +264,7 @@ class Programme(StrEnum):
         year_group_map = {
             self.FLU: list(range(12)),
             self.HPV: list(range(8, 12)),
-            self.MMR: list(range(12)),
+            self.MMR: list(range(1)),
             self.MENACWY: list(range(9, 12)),
             self.TD_IPV: list(range(9, 12)),
         }
