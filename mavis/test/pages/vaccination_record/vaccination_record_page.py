@@ -21,6 +21,7 @@ class VaccinationRecordPage:
     def click_edit_vaccination_record(self) -> None:
         self.edit_vaccination_record_button.click()
 
+    @step("Expect vaccination details to contain {1} with value {2}")
     def expect_vaccination_details(self, key: str, value: str) -> None:
         detail_key = self.page.locator(".nhsuk-summary-list__key", has_text=key)
         detail_value = detail_key.locator("xpath=following-sibling::*[1]")
