@@ -38,6 +38,11 @@ class SessionsVaccinationWizardPage:
         self.hour_textbox = self.page.get_by_role("textbox", name="Hour")
         self.minute_textbox = self.page.get_by_role("textbox", name="Minute")
         self.yes_radio = self.page.get_by_role("radio", name="Yes")
+        self.change_date_link = self.page.get_by_role("link", name="Change   date ")
+
+    @step("Click on Change date")
+    def click_change_date_link(self) -> None:
+        self.change_date_link.click()
 
     @step("Click on Confirm")
     def click_confirm_button(self) -> None:

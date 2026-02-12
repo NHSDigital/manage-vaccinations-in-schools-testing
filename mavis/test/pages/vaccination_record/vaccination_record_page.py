@@ -1,3 +1,4 @@
+import re
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
@@ -23,7 +24,9 @@ class VaccinationRecordPage:
 
     @step("Expect vaccination details to contain {1} with value {2}")
     def expect_vaccination_details(self, key: str, value: str) -> None:
-        detail_key = self.page.locator(".nhsuk-summary-list__key", has_text=key)
+        detail_key = self.page.locator(
+            ".nhsuk-summary-list__key", has_text=re.compile(f"^{re.escape(key)}$")
+        )
         detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
         self.check_vaccination_details_heading_appears()
