@@ -1,26 +1,26 @@
 Row 2 ORGANISATION_CODE: Enter an organisation code that matches the current team.
 Row 3 ORGANISATION_CODE: Enter an organisation code.
-Row 5 SCHOOL_NAME or School is required
+Row 5 SCHOOL_NAME: Enter a school name.
 Row 6 NHS_NUMBER: should be a valid NHS number with 10 characters
 Row 7 NHS_NUMBER: should be a valid NHS number with 10 characters
-Row 8 PERSON_FORENAME or First name is required
-Row 9 PERSON_SURNAME or Surname is required
-Row 10 PERSON_DOB or Date of birth is required
+Row 8 PERSON_FORENAME: Enter a first name.
+Row 9 PERSON_SURNAME: Enter a last name.
+Row 10 PERSON_DOB: Enter a date of birth.
 Row 11 PERSON_DOB: Enter a date of birth in the correct format.
 Row 12 DATE_OF_VACCINATION: The vaccination date is before the date of birth. PERSON_DOB: Enter a date of birth in the past.
 Row 13 PERSON_DOB: Enter a date of birth in the correct format.
-Row 14 PERSON_GENDER_CODE, PERSON_GENDER or Sex is required
+Row 14 PERSON_GENDER_CODE: Enter a gender or gender code.
 Row 15 PERSON_GENDER_CODE: Enter a valid gender or gender code.
-Row 16 PERSON_POSTCODE or Postcode is required
+Row 16 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
 Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
-Row 18 DATE_OF_VACCINATION or Event date is required
+Row 18 DATE_OF_VACCINATION: Enter a date.
 Row 19 DATE_OF_VACCINATION: The vaccination date is in the future. DATE_OF_VACCINATION: Enter a date that matches when the vaccination session took place.
-Row 20 PROGRAMME or Vaccination type is required VACCINE_GIVEN: is required
-Row 21 BATCH_NUMBER or Vaccination batch number is required
+Row 20 PROGRAMME: Enter a programme. VACCINE_GIVEN: Enter a vaccine name.
+Row 21 BATCH_NUMBER: Enter a batch number.
 Row 22 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 23 ANATOMICAL_SITE: Enter an anatomical site.
 Row 24 ANATOMICAL_SITE: Enter a anatomical site that is appropriate for the vaccine.
-Row 25 DOSE_SEQUENCE or Vaccination type is required
+Row 25 DOSE_SEQUENCE: Enter a dose sequence number, for example, 1, 2 or 3.
 Row 26 DOSE_SEQUENCE: must be less than or equal to 3
 !Row 27 DATE_OF_VACCINATION: Enter a date for a current session
 Row 28 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
