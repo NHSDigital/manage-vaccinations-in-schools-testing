@@ -37,6 +37,7 @@ class SessionsVaccinationWizardPage:
         self.year_textbox = self.page.get_by_role("textbox", name="Year")
         self.hour_textbox = self.page.get_by_role("textbox", name="Hour")
         self.minute_textbox = self.page.get_by_role("textbox", name="Minute")
+        self.yes_radio = self.page.get_by_role("radio", name="Yes")
 
     @step("Click on Confirm")
     def click_confirm_button(self) -> None:
@@ -75,7 +76,12 @@ class SessionsVaccinationWizardPage:
         expect(
             self.page.get_by_role("heading", name="vaccinated with the MMRV vaccine?")
         ).to_be_visible()
+        self.click_yes()
         self.click_continue_button()
+
+    @step("Click Yes")
+    def click_yes(self) -> None:
+        self.yes_radio.check()
 
     @step("Fill time of vaccination with {1}:{2}")
     def fill_time_of_vaccination(self, hour: str, minute: str) -> None:
