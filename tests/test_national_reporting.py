@@ -1,6 +1,7 @@
 import pytest
 
-from mavis.test.data import ChildFileMapping, VaccsFileMapping
+from mavis.test.data import VaccsFileMapping
+from mavis.test.data.file_mappings import ChildFileMapping
 from mavis.test.data_models import User
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import (
@@ -75,8 +76,6 @@ def test_important_notices_dismiss_and_abort(
     page,
     point_of_care_team,
     point_of_care_file_generator,
-    national_reporting_team,
-    national_reporting_nurse,
     point_of_care_nurse,
 ):
     """
@@ -100,6 +99,7 @@ def test_important_notices_dismiss_and_abort(
     - User can abort dismissal and return.
     - Notices are removed after dismissal.
     """
+
     # Log in as the specified superuser role
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
@@ -114,7 +114,7 @@ def test_important_notices_dismiss_and_abort(
     ).navigate_to_child_record_import()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
-    ).upload_and_verify_output(ChildFileMapping.POSITIVE)
+    ).upload_and_verify_output(ChildFileMapping.NR_IMPORTANT_NOTICES)
     SidekiqHelper().run_recurring_job("update_patients_from_pds")
 
     # Log out

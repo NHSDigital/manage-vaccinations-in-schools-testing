@@ -57,6 +57,7 @@ class ChildFileMapping(FileMapping):
     POSITIVE = "positive"
     WHITESPACE = "whitespace"
     FIXED_CHILD = "fixed_child"
+    NR_IMPORTANT_NOTICES = "nr_important_notices"
 
     @property
     def folder(self) -> Path:
