@@ -1,13 +1,16 @@
-"""Jira integration for pytest test reporting."""
-
 from .client import JiraClient
-from .config import JiraConfig
-from .models import TestResult
-from .reporter import JiraReporter
+from .config import JiraConfig, JiraIntegrationConfig
+from .models import JiraTestCase, JiraTestExecution, TestResult, TestStep
+from .reporter import JiraTestReporter, TestReporter
 
 __all__ = [
     "JiraClient",
     "JiraConfig",
-    "JiraReporter",
+    "JiraIntegrationConfig",
+    "JiraTestCase",
+    "JiraTestExecution",
+    "JiraTestReporter",
+    "TestReporter",
     "TestResult",
+    "TestStep",
 ]

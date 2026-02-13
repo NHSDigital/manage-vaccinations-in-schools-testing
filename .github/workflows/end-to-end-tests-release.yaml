@@ -250,13 +250,10 @@ jobs:
           # JIRA Integration Environment Variables
           JIRA_INTEGRATION_ENABLED: ${{ vars.JIRA_INTEGRATION_ENABLED }}
           JIRA_REPORTING_URL: ${{ vars.JIRA_REPORTING_URL }}
-          JIRA_USERNAME: ${{ vars.JIRA_USERNAME }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_PROJECT_KEY: ${{ vars.JIRA_PROJECT_KEY }}
           JIRA_TEST_CYCLE_KEY: ${{ vars.JIRA_TEST_CYCLE_KEY }}
-          ZEPHYR_API_TOKEN: ${{ secrets.ZEPHYR_API_TOKEN }}
           ZEPHYR_PROJECT_ID: ${{ vars.ZEPHYR_PROJECT_ID }}
-          ZEPHYR_URL: ${{ vars.ZEPHYR_URL }}
           SCREENSHOT_ALL_STEPS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
 
