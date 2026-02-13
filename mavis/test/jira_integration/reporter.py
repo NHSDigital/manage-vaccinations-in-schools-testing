@@ -383,6 +383,10 @@ class JiraTestReporter:
             test_case_key, result, error_message
         ):
             return execution_id
+        logger.warning(
+            "Failed to create Zephyr execution for %s, using test case as fallback",
+            test_case_key,
+        )
         return self._create_fallback_execution(test_case_key)
 
     def _create_zephyr_execution(
@@ -435,31 +439,6 @@ class JiraTestReporter:
                 "Could not resolve cycle ID for %s", self.config.test_cycle_key
             )
         return str(cycle_id) if cycle_id is not None else None, version_id
-
-    def _create_atm_execution(
-        self, test_case_key: str, result: TestResult, error_message: str | None
-    ) -> str | None:
-        """Create ATM test execution as fallback."""
-        logger.info("Zephyr not enabled, falling back to ATM for %s", test_case_key)
-        if not self.client:
-            logger.warning("Jira client not initialized for ATM execution creation")
-            return None
-        try:
-            if execution_id := self.client.create_atm_test_execution(
-                test_case_key=test_case_key,
-                test_cycle_version=self.config.test_cycle_version,
-                test_cycle_key=self.config.test_cycle_key,
-                environment="unknown",
-            ):
-                set_execution_id(test_case_key, execution_id, "atm")
-                self.client.update_atm_test_execution(
-                    execution_id, result, comment=error_message
-                )
-                logger.info("Created ATM test execution: %s", execution_id)
-                return execution_id
-        except RuntimeError as e:
-            logger.info("ATM execution creation failed: %s", e)
-        return None
 
     def _create_fallback_execution(self, test_case_key: str) -> str:
         """Create fallback execution using test case key."""
@@ -540,18 +519,6 @@ class JiraTestReporter:
                 attached = True
             except (RuntimeError, ConnectionError, TimeoutError) as e:
                 logger.warning("Failed to attach to Zephyr execution: %s", e)
-        elif execution_type == "atm":
-            try:
-                self.client.attach_atm_execution_files(
-                    execution_id, screenshots_to_attach
-                )
-                logger.info(
-                    "Successfully attached screenshots to ATM execution %s",
-                    execution_id,
-                )
-                attached = True
-            except (RuntimeError, ConnectionError, TimeoutError) as e:
-                logger.warning("Failed to attach to ATM execution: %s", e)
 
         if not attached and test_case_key:
             try:

@@ -100,24 +100,6 @@ class JiraClient:
             "Jira",
         )
 
-    def _make_atm_request(
-        self,
-        method: str,
-        endpoint: str,
-        data: dict | None = None,
-        params: dict | None = None,
-        files: dict | None = None,
-    ) -> dict:
-        """Make authenticated request to Jira Tests (ATM) API."""
-        return self._make_request(
-            method,
-            f"{self.jira_reporting_url}/rest/atm/1.0/{endpoint}",
-            data,
-            params,
-            files,
-            "ATM",
-        )
-
     def _make_zephyr_request(
         self,
         method: str,
@@ -129,93 +111,6 @@ class JiraClient:
         """Make authenticated request to Zephyr Essential DC API."""
         url = f"{self.jira_reporting_url.rstrip('/')}/rest/zapi/latest/{endpoint}"
         return self._make_request(method, url, data=data, params=params, files=files)
-
-    def create_atm_test_execution(
-        self,
-        test_case_key: str,
-        test_cycle_version: str | None = None,
-        test_cycle_key: str | None = None,
-        environment: str | None = None,
-    ) -> str | None:
-        """Create a Jira Tests (ATM) execution, optionally with cycle version."""
-        base_payload = {"testCaseKey": test_case_key, "projectKey": self.project_key}
-        if environment:
-            base_payload["environment"] = environment
-
-        payloads = [base_payload]
-        if test_cycle_version:
-            payloads = [
-                *[
-                    {**base_payload, "testCycleVersion": test_cycle_version},
-                    {**base_payload, "testCycle": {"version": test_cycle_version}},
-                ],
-                *payloads,
-            ]
-        if test_cycle_key:
-            payloads = [
-                *[
-                    {**base_payload, "testCycleKey": test_cycle_key},
-                    {**base_payload, "testCycle": {"key": test_cycle_key}},
-                ],
-                *payloads,
-            ]
-        if test_cycle_key and test_cycle_version:
-            payloads = [
-                *[
-                    {
-                        **base_payload,
-                        "testCycleKey": test_cycle_key,
-                        "testCycleVersion": test_cycle_version,
-                    },
-                    {
-                        **base_payload,
-                        "testCycle": {
-                            "key": test_cycle_key,
-                            "version": test_cycle_version,
-                        },
-                    },
-                ],
-                *payloads,
-            ]
-
-        for payload in payloads:
-            try:
-                response = self._make_atm_request("POST", "testexecution", data=payload)
-                if execution_key := response.get("key") or response.get("id"):
-                    logger.info("Created ATM test execution: %s", execution_key)
-                    return str(execution_key)
-            except requests.exceptions.RequestException as e:
-                last_error = e
-        logger.warning("Failed to create ATM test execution: %s", last_error)
-        return None
-
-    def update_atm_test_execution(
-        self,
-        execution_key: str,
-        result: TestResult,
-        comment: str | None = None,
-        environment: str | None = None,
-    ) -> bool:
-        """Update a Jira Tests (ATM) execution status."""
-        base_payload: dict[str, object] = {}
-        if environment:
-            base_payload["environment"] = environment
-        if comment:
-            base_payload["comment"] = comment
-
-        for status_key in ["statusName", "status", "executionStatus"]:
-            try:
-                self._make_atm_request(
-                    "PUT",
-                    f"testexecution/{execution_key}",
-                    data={**base_payload, status_key: result.value},
-                )
-                logger.info("Updated ATM test execution %s", execution_key)
-                return True
-            except requests.exceptions.RequestException as e:
-                last_error = e
-        logger.warning("Failed to update ATM test execution: %s", last_error)
-        return False
 
     def get_zephyr_test_cycles(self, version_id: int | None = None) -> list[dict]:
         """Get all test cycles from Zephyr Essential DC for the project."""
@@ -482,62 +377,6 @@ class JiraClient:
         if errors and attached_count == 0:
             error_summary = (
                 f"Failed to attach any files to Zephyr execution: {'; '.join(errors)}"
-            )
-            raise RuntimeError(error_summary)
-
-    def attach_atm_execution_files(
-        self, execution_key: str, file_paths: list[str]
-    ) -> None:
-        """Attach files to a Jira Tests (ATM) execution."""
-        attached_count, errors = 0, []
-        url = f"{self.jira_reporting_url}/rest/api/2/issue/{execution_key}/attachments"
-
-        for file_path in file_paths:
-            try:
-                if not (file_path_obj := Path(file_path)).exists():
-                    logger.warning("File not found for attachment: %s", file_path)
-                    continue
-
-                with file_path_obj.open("rb") as file:
-                    content_type = (
-                        "image/png"
-                        if file_path_obj.suffix.lower() == ".png"
-                        else "application/octet-stream"
-                    )
-                    files = {"file": (file_path_obj.name, file, content_type)}
-                    original_headers = dict(self.session.headers)
-                    self.session.headers.update({"X-Atlassian-Token": "no-check"})
-                    self.session.headers.pop("Content-Type", None)
-
-                    try:
-                        response = self.session.post(
-                            url, files=files, timeout=self.timeout
-                        )
-                        if response.status_code == 200:  # noqa: PLR2004
-                            logger.info(
-                                "Attached file %s to ATM execution %s",
-                                file_path_obj.name,
-                                execution_key,
-                            )
-                            attached_count += 1
-                        else:
-                            error_msg = (
-                                f"Failed to attach {file_path}: "
-                                f"HTTP {response.status_code}"
-                            )
-                            logger.warning(error_msg)
-                            errors.append(error_msg)
-                    finally:
-                        self.session.headers.clear()
-                        self.session.headers.update(original_headers)
-            except (OSError, requests.exceptions.RequestException) as e:
-                error_msg = f"Error attaching {file_path}: {e}"
-                logger.warning(error_msg)
-                errors.append(error_msg)
-
-        if errors and attached_count == 0:
-            error_summary = (
-                f"Failed to attach any files to ATM execution: {'; '.join(errors)}"
             )
             raise RuntimeError(error_summary)
 
