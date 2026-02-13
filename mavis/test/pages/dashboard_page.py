@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.pages.header_component import HeaderComponent
@@ -23,6 +23,20 @@ class DashboardPage:
         self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
         self.schools_link = links.get_by_text("Schools")
+
+        # Important notices elements
+        self.important_notices_header = page.get_by_text("Important: Important notices")
+        self.important_notices_banner = page.locator(".nhsuk-notification-banner")
+        self.dismiss_notice_button = page.get_by_role("button", name="Dismiss")
+        self.confirm_dismiss_button = page.get_by_role(
+            "button", name="Confirm dismissal"
+        )
+        self.cancel_dismiss_button = page.get_by_role("button", name="Cancel")
+        self.important_notices_link = self.important_notices_banner.get_by_role("link")
+
+    @step("Click important notices link")
+    def click_important_notices(self) -> None:
+        self.important_notices_link.click()
 
     @step("Click on Schools")
     def click_schools(self) -> None:
@@ -63,3 +77,33 @@ class DashboardPage:
     @step("Go to dashboard")
     def navigate(self) -> None:
         self.page.goto("/dashboard")
+
+    @step("Verify important notices are displayed")
+    def verify_important_notices_displayed(self) -> None:
+        expect(self.important_notices_header).to_be_visible()
+
+    @step("Get important notices count")
+    def get_important_notices_count(self) -> int:
+        return self.important_notices_banner.count()
+
+    @step("Verify important notice contains text: {1}")
+    def verify_important_notice_contains_text(self, text: str) -> None:
+        expect(
+            self.important_notices_banner.filter(has_text=text).first
+        ).to_be_visible()
+
+    @step("Click dismiss notice button")
+    def click_dismiss_notice(self) -> None:
+        self.dismiss_notice_button.first.click()
+
+    @step("Confirm dismissal of notice")
+    def confirm_dismiss_notice(self) -> None:
+        self.confirm_dismiss_button.click()
+
+    @step("Cancel dismissal of notice")
+    def cancel_dismiss_notice(self) -> None:
+        self.cancel_dismiss_button.click()
+
+    @step("Verify important notices are not displayed")
+    def verify_important_notices_not_displayed(self) -> None:
+        expect(self.important_notices_banner).not_to_be_visible()
