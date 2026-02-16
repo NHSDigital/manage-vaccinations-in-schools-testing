@@ -857,11 +857,8 @@ class JiraClient:
 
             if not done_transition:
                 logger.info(
-                    "No 'Done' transition available for issue %s. Available transitions: %s",
+                    "No 'Done' transition available for issue %s.",
                     issue_key,
-                    ", ".join(
-                        t.get("to", {}).get("name", "Unknown") for t in transitions
-                    ),
                 )
                 return False
 
