@@ -789,6 +789,43 @@ class JiraClient:
             logger.exception("Failed to add comment to %s", issue_key)
             return False
 
+    def link_issues(
+        self,
+        inward_issue: str,
+        outward_issue: str,
+        link_type: str = "Relates",
+    ) -> bool:
+        """
+        Create a link between two Jira issues.
+
+        Args:
+            inward_issue: The issue key for the inward side of the link
+            outward_issue: The issue key for the outward side of the link
+            link_type: The type of link to create (default: "Relates")
+
+        Returns:
+            True if the link was created successfully, False otherwise
+        """
+        try:
+            link_data = {
+                "type": {"name": link_type},
+                "inwardIssue": {"key": inward_issue},
+                "outwardIssue": {"key": outward_issue},
+            }
+            self._make_jira_request("POST", "issueLink", data=link_data)
+            logger.info(
+                "Created link between %s and %s (type: %s)",
+                inward_issue,
+                outward_issue,
+                link_type,
+            )
+            return True
+        except requests.exceptions.RequestException as e:
+            logger.warning(
+                "Failed to link %s to %s: %s", inward_issue, outward_issue, e
+            )
+            return False
+
     def attach_files_to_issue(self, issue_key: str, file_paths: list[str]) -> None:
         """Attach files to a JIRA issue using the REST API."""
         logger.info("Attaching %d files to JIRA issue %s", len(file_paths), issue_key)

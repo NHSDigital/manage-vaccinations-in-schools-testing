@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from .reporter import JiraTestReporter
+from .reporter import JiraTestReporter, extract_issue_keys_from_item
 
 logger = logging.getLogger(__name__)
 
@@ -333,6 +333,13 @@ def pytest_runtest_teardown(item: pytest.Item) -> None:
                 test_report.outcome
             )
             error_message = str(test_report.longrepr) if test_report.failed else None
+            issue_keys = extract_issue_keys_from_item(item)
+            if issue_keys:
+                logger.info(
+                    "Found %d issue key(s) to link: %s",
+                    len(issue_keys),
+                    ", ".join(issue_keys),
+                )
             logger.info(
                 "Reporting test result %s for test case %s with %d screenshots",
                 jira_result.value,
@@ -344,6 +351,7 @@ def pytest_runtest_teardown(item: pytest.Item) -> None:
                 result=jira_result,
                 error_message=error_message,
                 screenshots=screenshots,
+                issue_keys=issue_keys,
             )
             mark_reported(test_name, item)
             logger.info("Successfully reported test %s to Jira", test_name)

@@ -83,6 +83,38 @@ def retry_on_failure(
     return decorator
 
 
+def extract_issue_keys_from_item(item: object) -> list[str]:
+    """
+    Extract issue keys from pytest item's allure-pytest markers.
+
+    Args:
+        item: Pytest test item
+
+    Returns:
+        List of issue keys found in @issue decorators
+    """
+    issue_keys = []
+    if not hasattr(item, "own_markers"):
+        logger.debug("Item has no own_markers attribute")
+        return issue_keys
+
+    for marker in item.own_markers:
+        # Allure-pytest's @issue decorator creates 'allure_link' markers with link_type='issue'
+        if marker.name == "allure_link" and marker.kwargs.get("link_type") == "issue":
+            # The issue key is in kwargs['name']
+            issue_key = marker.kwargs.get("name")
+            if issue_key:
+                # Extract just the key if it's a URL (from args)
+                if marker.args and "/" in marker.args[0]:
+                    issue_key = marker.args[0].rstrip("/").split("/")[-1]
+                # Validate it looks like a Jira issue key
+                if re.match(r"^[A-Z]+-\d+$", issue_key):
+                    issue_keys.append(issue_key)
+                    logger.debug("Found issue key %s on test item", issue_key)
+
+    return issue_keys
+
+
 class JiraTestReporter:
     """Handles Jira test reporting integration."""
 
@@ -324,6 +356,7 @@ class JiraTestReporter:
         result: TestResult,
         error_message: str | None = None,
         screenshots: list[str] | None = None,
+        issue_keys: list[str] | None = None,
     ) -> None:
         """Report test execution result to Jira using Zephyr Squad API."""
         if not self.is_enabled() or not self.client:
@@ -334,11 +367,13 @@ class JiraTestReporter:
             self._handle_existing_execution(
                 test_case_key, existing_execution_id, result, error_message, screenshots
             )
+            self._link_related_issues(test_case_key, issue_keys)
             return
 
         execution_id = self._create_new_execution(test_case_key, result, error_message)
         self._add_result_comment(test_case_key, execution_id, result, error_message)
         self._attach_screenshots(execution_id, result, screenshots, test_case_key)
+        self._link_related_issues(test_case_key, issue_keys)
         logger.info(
             "Completed test execution %s with result: %s", execution_id, result.value
         )
@@ -528,6 +563,53 @@ class JiraTestReporter:
                 )
             except Exception:
                 logger.exception("Failed to attach to test case %s", test_case_key)
+
+    def _link_related_issues(
+        self, test_case_key: str, issue_keys: list[str] | None
+    ) -> None:
+        """Link related issues from @issue decorators to the test case."""
+        if not issue_keys or not self.client:
+            return
+
+        logger.info(
+            "Linking %d related issue(s) to test case %s",
+            len(issue_keys),
+            test_case_key,
+        )
+
+        for issue_key in issue_keys:
+            # Skip if trying to link to itself
+            if issue_key == test_case_key:
+                logger.debug("Skipping self-link for %s", issue_key)
+                continue
+
+            # Verify the issue exists before trying to link
+            if not self.client.issue_exists(issue_key):
+                logger.warning(
+                    "Issue %s does not exist, skipping link to %s",
+                    issue_key,
+                    test_case_key,
+                )
+                continue
+
+            # Create the link with the test case as the outward issue (tests)
+            # and the related issue as the inward issue (is tested by)
+            if self.client.link_issues(
+                inward_issue=issue_key,
+                outward_issue=test_case_key,
+                link_type="Relates",
+            ):
+                logger.info(
+                    "Successfully linked test case %s to issue %s",
+                    test_case_key,
+                    issue_key,
+                )
+            else:
+                logger.warning(
+                    "Failed to link test case %s to issue %s",
+                    test_case_key,
+                    issue_key,
+                )
 
 
 class TestReporter:
