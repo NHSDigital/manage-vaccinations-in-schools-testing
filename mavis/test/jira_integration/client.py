@@ -826,6 +826,58 @@ class JiraClient:
             )
             return False
 
+    def transition_issue_to_done(self, issue_key: str) -> bool:
+        """
+        Transition a Jira issue to 'Done' status.
+
+        Args:
+            issue_key: The issue key to transition
+
+        Returns:
+            True if the transition was successful, False otherwise
+        """
+        try:
+            # Get available transitions for the issue
+            transitions_response = self._make_jira_request(
+                "GET", f"issue/{issue_key}/transitions"
+            )
+            transitions = transitions_response.get("transitions", [])
+
+            if not transitions:
+                logger.warning("No transitions available for issue %s", issue_key)
+                return False
+
+            # Find the transition to "Done" status
+            done_transition = None
+            for transition in transitions:
+                to_status = transition.get("to", {}).get("name", "").lower()
+                if to_status == "done":
+                    done_transition = transition
+                    break
+
+            if not done_transition:
+                logger.info(
+                    "No 'Done' transition available for issue %s. Available transitions: %s",
+                    issue_key,
+                    ", ".join(
+                        t.get("to", {}).get("name", "Unknown") for t in transitions
+                    ),
+                )
+                return False
+
+            # Execute the transition
+            self._make_jira_request(
+                "POST",
+                f"issue/{issue_key}/transitions",
+                data={"transition": {"id": done_transition["id"]}},
+            )
+            logger.info("Transitioned issue %s to Done", issue_key)
+            return True
+
+        except requests.exceptions.RequestException as e:
+            logger.warning("Failed to transition issue %s to Done: %s", issue_key, e)
+            return False
+
     def attach_files_to_issue(self, issue_key: str, file_paths: list[str]) -> None:
         """Attach files to a JIRA issue using the REST API."""
         logger.info("Attaching %d files to JIRA issue %s", len(file_paths), issue_key)

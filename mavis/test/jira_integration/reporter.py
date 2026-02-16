@@ -99,7 +99,8 @@ def extract_issue_keys_from_item(item: object) -> list[str]:
         return issue_keys
 
     for marker in item.own_markers:
-        # Allure-pytest's @issue decorator creates 'allure_link' markers with link_type='issue'
+        # Allure-pytest's @issue decorator creates 'allure_link' markers
+        # with link_type='issue'
         if marker.name == "allure_link" and marker.kwargs.get("link_type") == "issue":
             # The issue key is in kwargs['name']
             issue_key = marker.kwargs.get("name")
@@ -367,13 +368,13 @@ class JiraTestReporter:
             self._handle_existing_execution(
                 test_case_key, existing_execution_id, result, error_message, screenshots
             )
-            self._link_related_issues(test_case_key, issue_keys)
+            self._link_related_issues(test_case_key, issue_keys, result)
             return
 
         execution_id = self._create_new_execution(test_case_key, result, error_message)
         self._add_result_comment(test_case_key, execution_id, result, error_message)
         self._attach_screenshots(execution_id, result, screenshots, test_case_key)
-        self._link_related_issues(test_case_key, issue_keys)
+        self._link_related_issues(test_case_key, issue_keys, result)
         logger.info(
             "Completed test execution %s with result: %s", execution_id, result.value
         )
@@ -565,50 +566,65 @@ class JiraTestReporter:
                 logger.exception("Failed to attach to test case %s", test_case_key)
 
     def _link_related_issues(
-        self, test_case_key: str, issue_keys: list[str] | None
+        self, test_case_key: str, issue_keys: list[str] | None, result: TestResult
     ) -> None:
-        """Link related issues from @issue decorators to the test case."""
-        if not issue_keys or not self.client:
+        """Link related issues from @issue decorators and mark test case as Done."""
+        if not self.client:
             return
 
-        logger.info(
-            "Linking %d related issue(s) to test case %s",
-            len(issue_keys),
-            test_case_key,
-        )
+        if issue_keys:
+            logger.info(
+                "Linking %d related issue(s) to test case %s",
+                len(issue_keys),
+                test_case_key,
+            )
 
-        for issue_key in issue_keys:
-            # Skip if trying to link to itself
-            if issue_key == test_case_key:
-                logger.debug("Skipping self-link for %s", issue_key)
-                continue
+            for issue_key in issue_keys:
+                # Skip if trying to link to itself
+                if issue_key == test_case_key:
+                    logger.debug("Skipping self-link for %s", issue_key)
+                    continue
 
-            # Verify the issue exists before trying to link
-            if not self.client.issue_exists(issue_key):
-                logger.warning(
-                    "Issue %s does not exist, skipping link to %s",
-                    issue_key,
-                    test_case_key,
-                )
-                continue
+                # Verify the issue exists before trying to link
+                if not self.client.issue_exists(issue_key):
+                    logger.warning(
+                        "Issue %s does not exist, skipping link to %s",
+                        issue_key,
+                        test_case_key,
+                    )
+                    continue
 
-            # Create the link with the test case as the outward issue (tests)
-            # and the related issue as the inward issue (is tested by)
-            if self.client.link_issues(
-                inward_issue=issue_key,
-                outward_issue=test_case_key,
-                link_type="Relates",
-            ):
+                # Create the link with the test case as the outward issue (tests)
+                # and the related issue as the inward issue (is tested by)
+                if self.client.link_issues(
+                    inward_issue=issue_key,
+                    outward_issue=test_case_key,
+                    link_type="Relates",
+                ):
+                    logger.info(
+                        "Successfully linked test case %s to issue %s",
+                        test_case_key,
+                        issue_key,
+                    )
+                else:
+                    logger.warning(
+                        "Failed to link test case %s to issue %s",
+                        test_case_key,
+                        issue_key,
+                    )
+
+        # Mark the test case issue as Done if the test passed
+        if result == TestResult.PASS:
+            if self.client.transition_issue_to_done(test_case_key):
                 logger.info(
-                    "Successfully linked test case %s to issue %s",
+                    "Marked test case %s as Done after successful test execution",
                     test_case_key,
-                    issue_key,
                 )
             else:
-                logger.warning(
-                    "Failed to link test case %s to issue %s",
+                logger.debug(
+                    "Could not mark test case %s as Done "
+                    "(may already be Done or transition not available)",
                     test_case_key,
-                    issue_key,
                 )
 
 
