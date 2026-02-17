@@ -32,7 +32,9 @@ class DashboardPage:
             "button", name="Confirm dismissal"
         )
         self.cancel_dismiss_button = page.get_by_role("button", name="Cancel")
-        self.important_notices_link = self.important_notices_banner.get_by_role("link")
+        self.important_notices_link = page.get_by_text(
+            "important notices need attention", exact=False
+        )
 
     @step("Click important notices link")
     def click_important_notices(self) -> None:

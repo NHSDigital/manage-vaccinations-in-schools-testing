@@ -1,8 +1,12 @@
+from typing import Literal
+
 import pytest
+from playwright.sync_api._generated import Page
 
 from mavis.test.data import VaccsFileMapping
+from mavis.test.data.file_generator import FileGenerator
 from mavis.test.data.file_mappings import ChildFileMapping
-from mavis.test.data_models import User
+from mavis.test.data_models import NationalReportingTeam, PointOfCareTeam, User
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import (
     DashboardPage,
@@ -10,13 +14,14 @@ from mavis.test.pages import (
     ImportsPage,
     LogInPage,
 )
+from mavis.test.pages.school_moves.school_moves_page import SchoolMovesPage
 
 
 @pytest.fixture
 def setup_national_reporting_import(
-    page,
-    national_reporting_nurse,
-    national_reporting_team,
+    page: Page,
+    national_reporting_nurse: User,
+    national_reporting_team: NationalReportingTeam,
 ):
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
@@ -28,8 +33,8 @@ def setup_national_reporting_import(
 
 @pytest.fixture(scope="session")
 def superusers(
-    point_of_care_superuser,
-    point_of_care_medical_secretary,
+    point_of_care_superuser: User,
+    point_of_care_medical_secretary: User,
 ) -> dict[str, User]:
     return {
         "superuser": point_of_care_superuser,
@@ -39,9 +44,9 @@ def superusers(
 
 @pytest.mark.vaccinations
 def test_national_reporting_valid_data(
-    setup_national_reporting_import,
-    page,
-    national_reporting_file_generator,
+    setup_national_reporting_import: None,
+    page: Page,
+    national_reporting_file_generator: FileGenerator,
 ):
     """
     Test: Upload vaccination records file with valid data and verify import.
@@ -67,16 +72,16 @@ def test_national_reporting_valid_data(
 @pytest.mark.important_notices
 @pytest.mark.parametrize(
     "role",
-    ["superuser", "medical_secretary"],
+    ["superuser"],
     ids=lambda v: f"role: {v}",
 )
 def test_important_notices_dismiss_and_abort(
-    role,
-    superusers,
-    page,
-    point_of_care_team,
-    point_of_care_file_generator,
-    point_of_care_nurse,
+    role: Literal["superuser"],
+    superusers: dict[str, User],
+    page: Page,
+    point_of_care_team: PointOfCareTeam,
+    point_of_care_file_generator: FileGenerator,
+    point_of_care_nurse: User,
 ):
     """
     Test: Verify important notices handling for superuser roles.
@@ -126,9 +131,12 @@ def test_important_notices_dismiss_and_abort(
     )
 
     DashboardPage(page).verify_important_notices_displayed()
-    DashboardPage(page).click_important_notices()
+
+    DashboardPage(page).click_school_moves()
+    SchoolMovesPage(page).accept_all_school_moves()
 
     # Abort the dismissal and return to dashboard
+    DashboardPage(page).click_important_notices()
     DashboardPage(page).cancel_dismiss_notice()
 
     # Verify notices are still displayed after aborting

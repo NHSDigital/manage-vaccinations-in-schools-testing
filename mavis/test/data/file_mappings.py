@@ -76,6 +76,7 @@ class ClassFileMapping(FileMapping):
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
     WHITESPACE = "whitespace"
     WRONG_YEAR_GROUP = "wrong_year_group"
+    NR_IMPORTANT_NOTICES = "nr_important_notices"
 
     @property
     def folder(self) -> Path:
