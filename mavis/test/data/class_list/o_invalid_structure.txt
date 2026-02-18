@@ -1,1 +1,1 @@
-Row 2 CHILD_DATE_OF_BIRTH is missing CHILD_FIRST_NAME is missing CHILD_LAST_NAME is missing
+Row 2 CHILD_DATE_OF_BIRTH is required CHILD_FIRST_NAME is required CHILD_LAST_NAME is required
