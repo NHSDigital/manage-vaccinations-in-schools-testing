@@ -21,6 +21,7 @@ from mavis.test.pages import (
     StartPage,
     UnmatchedConsentResponsesPage,
 )
+from mavis.test.utils import expect_details, format_nhs_number
 
 pytestmark = pytest.mark.consent_responses
 
@@ -171,6 +172,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     Verification:
     - Created alert is visible.
     - Consent response for the child is no longer visible in unmatched list.
+    - NHS number of child fetched from PDS is visible.
     - Activity log for the child shows the creation event.
     """
     child = pds_child
@@ -190,6 +192,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
+    expect_details(page, "NHS number", format_nhs_number(child.nhs_number))
     ChildRecordPage(page).click_programme(Programme.HPV)
     ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 

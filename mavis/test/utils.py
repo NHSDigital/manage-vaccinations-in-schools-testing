@@ -239,3 +239,7 @@ def click_secondary_navigation_item(link: Locator) -> None:
         return
     link.click()
     link.get_by_role("strong").wait_for()
+
+
+def format_nhs_number(nhs_number: str) -> str:
+    return f"{nhs_number[:3]} {nhs_number[3:6]} {nhs_number[6:]}"
