@@ -2,3 +2,4 @@ TEST_DESC_IGNORED,CHILD_FIRST_NAME,CHILD_LAST_NAME,CHILD_PREFERRED_FIRST_NAME,CH
 Deceased,Frank,GUNSON,,,<<SCHOOL_0_URN>>,2019-01-07,9737523857,Male,,82 TWENTYWELL LANE,SHEFFIELD,S17 4QE,8T5,Parent1,Dad,dad1@example.com,,Parent2,Mum,mum1@example.com,,9
 Invalid,Jeremy,LOMMAX,,,<<SCHOOL_0_URN>>,2017-10-15,9737523865,Male,,3 THE GATHERUMS,CLEETHORPES,DN35 8ER,8T5,Parent1,Dad,dad2@example.com,,Parent2,Mum,mum2@example.com,,9
 Sensitive,West,BEAMER,,,<<SCHOOL_0_URN>>,2016-12-29,9737523873,Male,,10 HILLTOP PLACE,GRIMSBY,DN34 5PF,8T5,Parent1,Dad,dad3@example.com,,Parent2,Mum,mum3@example.com,,9
+Gillick,<<RANDOM_FNAME>>,<<RANDOM_LNAME>>,,,<<SCHOOL_0_URN>>,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,Male,Addr1,Addr2,Town,<<RANDOM_POSTCODE>>,8T5,Parent1,Dad,dad@example.com,,Parent2,Mum,mum@example.com,,<<FIXED_YEAR_GROUP>>

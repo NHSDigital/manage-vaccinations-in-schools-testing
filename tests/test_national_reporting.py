@@ -1,20 +1,33 @@
 from typing import Literal
 
+import pandas as pd
 import pytest
 from playwright.sync_api._generated import Page
 
+from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
 from mavis.test.data.file_generator import FileGenerator
 from mavis.test.data.file_mappings import ChildFileMapping
-from mavis.test.data_models import NationalReportingTeam, PointOfCareTeam, User
+from mavis.test.data_models import (
+    Child,
+    NationalReportingTeam,
+    Parent,
+    PointOfCareTeam,
+    User,
+)
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import (
     DashboardPage,
+    GillickCompetencePage,
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
+    SessionsChildrenPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
 )
 from mavis.test.pages.school_moves.school_moves_page import SchoolMovesPage
+from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
 @pytest.fixture
@@ -82,6 +95,7 @@ def test_important_notices_dismiss_and_abort(
     point_of_care_team: PointOfCareTeam,
     point_of_care_file_generator: FileGenerator,
     point_of_care_nurse: User,
+    schools,
 ):
     """
     Test: Verify important notices handling for superuser roles.
@@ -117,9 +131,59 @@ def test_important_notices_dismiss_and_abort(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).navigate_to_child_record_import()
-    ImportRecordsWizardPage(
+    input_file_path, _ = ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.NR_IMPORTANT_NOTICES)
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).header.click_mavis_header()
+
+    # Read the fourth child from the uploaded file for Gillick consent
+    df = pd.read_csv(input_file_path)
+    fourth_row = df.iloc[3]  # Fourth row (index 3) - the Gillick child
+    gillick_child = Child(
+        first_name=fourth_row["CHILD_FIRST_NAME"],
+        last_name=fourth_row["CHILD_LAST_NAME"],
+        date_of_birth=pd.to_datetime(fourth_row["CHILD_DATE_OF_BIRTH"]).date(),
+        nhs_number=str(fourth_row["CHILD_NHS_NUMBER"]),
+        address=(
+            fourth_row["CHILD_ADDRESS_LINE_1"],
+            fourth_row["CHILD_ADDRESS_LINE_2"],
+            fourth_row["CHILD_TOWN"],
+            fourth_row["CHILD_POSTCODE"],
+        ),
+        year_group=int(fourth_row["CHILD_YEAR_GROUP"]),
+        parents=[
+            Parent(
+                full_name=fourth_row["PARENT_1_NAME"],
+                email_address=fourth_row["PARENT_1_EMAIL"],
+                relationship=fourth_row["PARENT_1_RELATIONSHIP"],
+            ),
+            Parent(
+                full_name=fourth_row["PARENT_2_NAME"],
+                email_address=fourth_row["PARENT_2_EMAIL"],
+                relationship=fourth_row["PARENT_2_RELATIONSHIP"],
+            ),
+        ],
+    )
+
+    # Get the school from point_of_care_team and schedule a session
+    school = schools[Programme.HPV.group][0]
+    schedule_school_session_if_needed(
+        page, school, [Programme.HPV], [gillick_child.year_group]
+    )
+
+    # Navigate to the child in the session and give Gillick consent
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(gillick_child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_assess_gillick_competence()
+    GillickCompetencePage(page).add_gillick_competence(is_competent=True)
+
+    # Return to dashboard
+    GillickCompetencePage(page).header.click_mavis_header()
+
     SidekiqHelper().run_recurring_job("update_patients_from_pds")
 
     # Log out
@@ -134,6 +198,7 @@ def test_important_notices_dismiss_and_abort(
 
     DashboardPage(page).click_school_moves()
     SchoolMovesPage(page).accept_all_school_moves()
+    SchoolMovesPage(page).header.click_mavis_header()
 
     # Abort the dismissal and return to dashboard
     DashboardPage(page).click_important_notices()
