@@ -1,4 +1,4 @@
-from playwright.sync_api import Locator, Page
+from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.data_models import Child
@@ -55,4 +55,6 @@ class SchoolMovesPage:
             self.update_child_record_button.click()
 
             # Wait to return to the school moves page
-            self.page.wait_for_load_state("networkidle")
+            expect(
+                self.page.get_by_text("There are currently no school")
+            ).to_be_visible()
