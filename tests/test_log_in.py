@@ -110,7 +110,7 @@ def test_login_with_valid_credentials_point_of_care(
     LogInPage(page).log_out()
 
 
-def test_logout_page(page, users, point_of_care_team):
+def test_logout_page(page, point_of_care_nurse, point_of_care_team):
     """
     Test: Verify the log out page functionality.
     Steps:
@@ -124,14 +124,14 @@ def test_logout_page(page, users, point_of_care_team):
     - After logging out, the start page link is visible.
     """
     LogInPage(page).log_in_and_choose_team_if_necessary(
-        users["nurse"], point_of_care_team
+        point_of_care_nurse, point_of_care_team
     )
     LogOutPage(page).navigate()
     LogOutPage(page).verify_log_out_page()
 
 
 @pytest.mark.accessibility
-def test_accessibility(page, users, point_of_care_team):
+def test_accessibility(page, point_of_care_nurse, point_of_care_team):
     """
     Test: Verify that the log in, team and dashboard page pass accessibility checks.
     Steps:
@@ -146,7 +146,7 @@ def test_accessibility(page, users, point_of_care_team):
     AccessibilityHelper(page).check_accessibility()
 
     LogInPage(page).log_in_and_choose_team_if_necessary(
-        users["nurse"], point_of_care_team
+        point_of_care_nurse, point_of_care_team
     )
     AccessibilityHelper(page).check_accessibility()
 
