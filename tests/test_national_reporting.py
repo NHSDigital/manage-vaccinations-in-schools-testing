@@ -71,16 +71,13 @@ def test_national_reporting_invalid_data(
     - Output lists errors as expected for each record
     Scenarios covered:
 
-    HPV_InvalidODSCode, HPV_EmptyOrgCode, HPV_EmptySchoolURN, HPV_NotKnownSchoolEmpty,
-    HPV_LongNHSNumber, HPV_ShortNHSNumber, HPV_EmptyForename, HPV_EmptyLastname,
-    HPV_EmptyDOB, HPV_InvalidFormatDOB, HPV_FutureDOB, HPV_NonLeapYearDOB,
-    HPV_EmptyGender, HPV_InvalidGender, HPV_EmptyPostCode, HPV_InvalidPostCode,
-    HPV_EmptyVaccDate, HPV_FutureVaccDate, HPV_EmptyVaccGiven, HPV_EmptyBatchNumber,
-    HPV_EmptyExpiryDate, HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite,
-    HPV_EmptyDoseSeq, HPV_InvalidDoseSeq, HPV_EmptyCareSetting, HPV_InvalidProfFName,
-    HPV_InvalidProfSName, HPV_InvalidProfEmail, HPV_InvalidClinic, HPV_InvalidTime,
-    HPV_InvalidReason, HPV_InvalidVaccinatedFlag, HPV_InvalidCareSetting,
-    HPV_TimeInFuture, HPV_VaccinatedFlagEmpty,
+    HPV_EmptyOrgCode, HPV_EmptySchoolURN, HPV_LongNHSNumber, HPV_ShortNHSNumber,
+    HPV_EmptyForename, HPV_EmptyLastname, HPV_EmptyDOB, HPV_InvalidFormatDOB,
+    HPV_FutureDOB, HPV_NonLeapYearDOB, HPV_EmptyGender, HPV_InvalidGender,
+    HPV_EmptyPostCode, HPV_InvalidPostCode, HPV_EmptyVaccDate, HPV_FutureVaccDate,
+    HPV_EmptyVaccGiven, HPV_EmptyBatchNumber, HPV_EmptyExpiryDate,
+    HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite, HPV_EmptyDoseSeq,
+    HPV_InvalidDoseSeq, HPV_InvalidTime, HPV_InvalidVaccinatedFlag, HPV_TimeInFuture
     """
     ImportRecordsWizardPage(
         page, national_reporting_file_generator

@@ -18,9 +18,9 @@ Row 18 VACCINE_GIVEN: Enter a vaccine name.
 Row 19 BATCH_NUMBER: Enter a batch number.
 Row 20 BATCH_EXPIRY_DATE: Enter a batch expiry date.
 Row 21 ANATOMICAL_SITE: Enter an anatomical site.
-Row 22 DOSE_SEQUENCE: Enter a dose sequence number, for example, 1, 2 or 3.
-Row 23 DOSE_SEQUENCE: must be less than or equal to 3
-Row 24 TIME_OF_VACCINATION: Enter a time in the correct format.
-!Row 24 TIME_OF_VACCINATION: Enter a time in the correct format.TIME_OF_VACCINATION: Enter a time in the correct format.
-Row 25 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘VACCINATED’ column.
-Row 26 TIME_OF_VACCINATION: Enter a time in the past.
+Row 22 ANATOMICAL_SITE: Enter a valid anatomical site.
+Row 23 DOSE_SEQUENCE: Enter a dose sequence number, for example, 1, 2 or 3.
+Row 24 DOSE_SEQUENCE: must be less than or equal to 3
+Row 25 TIME_OF_VACCINATION: Enter a time in the correct format.
+Row 26 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘VACCINATED’ column.
+Row 27 TIME_OF_VACCINATION: Enter a time in the past.
