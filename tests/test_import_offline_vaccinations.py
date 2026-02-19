@@ -227,7 +227,7 @@ def test_vaccination_file_upload_creates_child_no_setting(
 ):
     """
     Covers Issue: MAV-855
-    
+
     Test: Upload a vaccination file with no URN/care setting and verify the child
     record is created and the location is set to school.
     Steps:
@@ -297,7 +297,7 @@ def test_vaccination_file_upload_community_clinic_name_case(
 ):
     """
     Covers Issue: MAV-691
-    
+
     Test: Upload a vaccination file with community clinic name case variations and
        verify correct handling.
     Steps:

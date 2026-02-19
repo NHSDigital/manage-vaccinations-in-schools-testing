@@ -242,7 +242,7 @@ def test_vaccination_file_upload_snomed_code_verification(
 ):
     """
     Covers Issue: MAV-3076
-    
+
     Test: Upload a vaccination file with flu vaccines and verify SNOMED procedure codes.
     Steps:
     1. Upload a vaccination file with nasal and injected flu vaccination records.

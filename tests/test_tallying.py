@@ -75,7 +75,7 @@ def test_tallying(  # noqa: PLR0915
 ):
     """
     Covers Issue: MAV-1669
-    
+
     Test: Check the tallying feature counts as expected
     Steps:
     1. Record consent for injection, withdraw it, invalidate it,
@@ -177,7 +177,7 @@ def test_tallying_totals_match_eligible_patients(
 ):
     """
     Covers Issue: MAV-2689
-    
+
     Test: Verify that tallying totals match the number of eligible patients.
     Steps:
     1. Navigate to a session with eligible patients for the given programme.

@@ -116,7 +116,7 @@ def test_patient_details_load_with_missing_vaccine_info(
 ):
     """
     Covers Issue: MAV-853
-    
+
     Test: Ensure patient details page loads for a child with missing vaccine info.
     Steps:
     1. Setup: Import class list, schedule session, import cohort, and upload vaccination
@@ -183,7 +183,7 @@ def test_merge_child_records_does_not_crash(
 ):
     """
     Covers Issues: MAV-248, MAV-1839
-    
+
     Test: Merging two child records does not cause a crash.
     Steps:
     1. Setup: Import a class list with two fixed children and navigate to the
@@ -225,7 +225,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
 ):
     """
     Covers Issues: MAV-909, MAV-1716
-    
+
     Test: Archive a child via cohort upload and then unarchive by re-uploading.
     Steps:
     1. Import a fixed child cohort file.

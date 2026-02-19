@@ -38,7 +38,7 @@ def test_create_imms_record_then_verify_on_children_page(
 ):
     """
     Covers Issue: MAV-2831
-    
+
     Test: Create a vaccination record via IMMS API, then log into MAVIS as a nurse.
 
     Steps:

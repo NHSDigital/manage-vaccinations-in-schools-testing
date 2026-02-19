@@ -180,7 +180,7 @@ def test_session_search_functionality(
 ):
     """
     Covers Issue: MAV-1018
-    
+
     Test: Verify the search functionality within a session.
     Steps:
     1. Open a session with a child.
@@ -212,7 +212,7 @@ def test_consent_filters(
 ):
     """
     Covers Issue: MAV-1381
-    
+
     Test: Record a paper refusal and verify the consent refused checkbox is checked.
     Steps:
     1. Open a session with a fixed child.
@@ -244,7 +244,7 @@ def test_session_activity_notes_order(
 ):
     """
     Covers Issue: MAV-1265
-    
+
     Test: Add multiple notes to a session and verify their order in the activity log.
     Steps:
     1. Open a session with a fixed child.
@@ -430,7 +430,7 @@ def test_session_verify_consent_reminders_and_pdf_downloads(
 ):
     """
     Covers Issue: MAV-2023
-    
+
     Test: Click the 'Send reminders' link and PDF download links in sessions and
     verify there are no errors.
     Steps:

@@ -287,7 +287,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
 ):
     """
     Covers Issue: MAV-2681
-    
+
     Test: Submit a consent form that won't match automatically, find a patient
     with a vaccination record, attempt to match the consent form with that patient,
     and verify that ServiceErrorPage is not displayed.

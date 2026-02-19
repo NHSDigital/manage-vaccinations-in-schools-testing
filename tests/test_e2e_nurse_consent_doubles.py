@@ -26,7 +26,7 @@ def test_e2e_nurse_consent_doubles(
 ):
     """
     Covers Issue: MAV-955
-    
+
     Test: Verify a vaccination can be recorded after providing nurse consent for HPV
     Steps:
     1. Setup: Schedule sessions for doubles at a school and
