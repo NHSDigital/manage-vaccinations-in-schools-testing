@@ -37,6 +37,11 @@ class ChildRecordPage:
             "link",
             name=(get_current_datetime() - timedelta(days=1)).strftime("%-d %B %Y"),
         )
+        self.activity_log_tab = self.page.get_by_role("link", name="Activity log")
+
+    @step("Click Activity log tab")
+    def click_activity_log_tab(self) -> None:
+        self.activity_log_tab.click()
 
     @step("Click on {2} session for programme")
     def click_session_for_programme(

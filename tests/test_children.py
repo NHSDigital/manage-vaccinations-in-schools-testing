@@ -172,6 +172,7 @@ def test_invalid_nhs_number_change_is_rejected(
     expect_alert_text(page, "Enter a valid NHS number")
 
 
+@issue("MAV-248")
 @issue("MAV-1839")
 @pytest.mark.children
 def test_merge_child_records_does_not_crash(
@@ -199,6 +200,14 @@ def test_merge_child_records_does_not_crash(
     ChildArchivePage(page).click_its_a_duplicate(child2.nhs_number)
     ChildArchivePage(page).click_archive_record()
     expect_alert_text(page, "This record has been archived")
+    ChildArchivePage(page).header.click_mavis_header()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child2))
+    ChildrenSearchPage(page).search.click_child(child2)
+    ChildRecordPage(page).click_activity_log_tab()
+    ChildActivityLogPage(page).expect_activity_log_header(
+        "Child record merged", unique=True
+    )
 
 
 @issue("MAV-909")
