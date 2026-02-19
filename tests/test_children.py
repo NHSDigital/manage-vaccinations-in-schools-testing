@@ -171,6 +171,7 @@ def test_invalid_nhs_number_change_is_rejected(
     ChildEditPage(page).click_continue()
     expect_alert_text(page, "Enter a valid NHS number")
 
+
 @issue("MAV-248")
 @issue("MAV-1839")
 @pytest.mark.children
