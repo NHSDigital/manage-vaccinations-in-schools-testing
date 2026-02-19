@@ -33,32 +33,15 @@ def test_login_with_invalid_credentials(username, password, page):
     expect(LogInPage(page).error_message).to_be_visible()
 
 
-@pytest.fixture(scope="session")
-def users(
-    point_of_care_medical_secretary,
-    point_of_care_nurse,
-    point_of_care_superuser,
-    point_of_care_healthcare_assistant,
-    point_of_care_prescriber,
-) -> dict[str, User]:
-    return {
-        "medical_secretary": point_of_care_medical_secretary,
-        "nurse": point_of_care_nurse,
-        "superuser": point_of_care_superuser,
-        "healthcare_assistant": point_of_care_healthcare_assistant,
-        "prescriber": point_of_care_prescriber,
-    }
-
-
 @pytest.mark.parametrize(
     "role",
     ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
     ids=lambda v: f"role: {v}",
 )
-def test_login_with_valid_credentials(
+def test_login_with_valid_credentials_national_reporting(
     role,
-    users,
-    point_of_care_team,
+    national_reporting_team,
+    request,
     page,
 ):
     """
@@ -68,13 +51,49 @@ def test_login_with_valid_credentials(
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
     3. Verify that all expected dashboard links are visible.
-    4. Verify that team information is visible in Team page.
-    5. Log out.
+    4. Log out.
     Verification:
     - Log out button and all dashboard navigation links are visible after login.
     - Team name and email are visible in the Team page.
     """
-    LogInPage(page).log_in_and_choose_team_if_necessary(users[role], point_of_care_team)
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        request.getfixturevalue(f"national_reporting_{role}"), national_reporting_team
+    )
+    expect(LogInPage(page).log_out_button).to_be_visible()
+
+    expect(DashboardPage(page).header.mavis_link).to_be_visible()
+    expect(DashboardPage(page).children_link).to_be_visible()
+    expect(DashboardPage(page).imports_link).to_be_visible()
+
+    LogInPage(page).log_out()
+
+
+@pytest.mark.parametrize(
+    "role",
+    ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
+    ids=lambda v: f"role: {v}",
+)
+def test_login_with_valid_credentials_point_of_care(
+    role,
+    point_of_care_team,
+    request,
+    page,
+):
+    """
+    Test: Log in with valid credentials for each user role and verify dashboard links
+       and team information.
+    Steps:
+    1. Navigate to the log in page (autouse fixture).
+    2. Log in as the specified user role and select team if necessary.
+    3. Verify that all expected dashboard links are visible.
+    4. Log out.
+    Verification:
+    - Log out button and all dashboard navigation links are visible after login.
+    - Team name and email are visible in the Team page.
+    """
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        request.getfixturevalue(f"point_of_care_{role}"), point_of_care_team
+    )
     expect(LogInPage(page).log_out_button).to_be_visible()
 
     expect(DashboardPage(page).header.mavis_link).to_be_visible()
@@ -91,7 +110,7 @@ def test_login_with_valid_credentials(
     LogInPage(page).log_out()
 
 
-def test_logout_page(page, users, point_of_care_team):
+def test_logout_page(page, point_of_care_nurse, point_of_care_team):
     """
     Test: Verify the log out page functionality.
     Steps:
@@ -105,14 +124,14 @@ def test_logout_page(page, users, point_of_care_team):
     - After logging out, the start page link is visible.
     """
     LogInPage(page).log_in_and_choose_team_if_necessary(
-        users["nurse"], point_of_care_team
+        point_of_care_nurse, point_of_care_team
     )
     LogOutPage(page).navigate()
     LogOutPage(page).verify_log_out_page()
 
 
 @pytest.mark.accessibility
-def test_accessibility(page, users, point_of_care_team):
+def test_accessibility(page, point_of_care_nurse, point_of_care_team):
     """
     Test: Verify that the log in, team and dashboard page pass accessibility checks.
     Steps:
@@ -127,7 +146,7 @@ def test_accessibility(page, users, point_of_care_team):
     AccessibilityHelper(page).check_accessibility()
 
     LogInPage(page).log_in_and_choose_team_if_necessary(
-        users["nurse"], point_of_care_team
+        point_of_care_nurse, point_of_care_team
     )
     AccessibilityHelper(page).check_accessibility()
 
