@@ -1,11 +1,7 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.constants import (
-    ConsentOption,
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import ConsentOption, Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages.utils import (
     prepare_child_for_vaccination,
@@ -39,6 +35,8 @@ def test_e2e_nurse_consent_flu(
     consent_option,
 ):
     """
+    Covers Issue: MAV-955
+
     Test: Verify a vaccination can be recorded after providing nurse consent for flu
     Steps:
     1. Setup: Schedule sessions for doubles at a school and

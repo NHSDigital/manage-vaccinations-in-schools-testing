@@ -4,12 +4,7 @@ from playwright.sync_api import expect
 from mavis.test.annotations import issue
 from mavis.test.constants import Vaccine
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.pages import (
-    AddBatchPage,
-    ArchiveBatchPage,
-    DashboardPage,
-    VaccinesPage,
-)
+from mavis.test.pages import AddBatchPage, ArchiveBatchPage, DashboardPage, VaccinesPage
 from mavis.test.utils import get_offset_date
 
 pytestmark = pytest.mark.vaccines
@@ -51,6 +46,8 @@ def test_batch_add_change_archive(
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_name_too_short(vaccine, page):
     """
+    Covers Issue: MAV-955
+
     Test: Attempt to add a batch with a name that is too short and verify error message.
     Steps:
     1. Click to add a new batch for the given vaccine.
@@ -74,6 +71,8 @@ def test_batch_name_too_short(vaccine, page):
 @pytest.mark.parametrize("vaccine", Vaccine)
 def test_batch_name_too_long(vaccine, page):
     """
+    Covers Issue: MAV-955
+
     Test: Attempt to add a batch with a name that is too long and verify error message.
     Steps:
     1. Click to add a new batch for the given vaccine.

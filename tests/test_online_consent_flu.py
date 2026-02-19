@@ -196,6 +196,8 @@ def test_flu_consent_method_displayed_correctly(
     consents,
 ):
     """
+    Covers Issues: MAV-1234, MAV-2025
+
     Test: Submit multiple online flu consent forms with different methods and
        verify the correct method is displayed in the session.
     Steps:
