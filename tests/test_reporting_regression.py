@@ -10,6 +10,8 @@ from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_generator import FileGenerator
 from mavis.test.data_models import Child
+from mavis.test.fixtures.onboarding import _create_onboarding_with_retry
+from mavis.test.fixtures.team_reset import _delete_team
 from mavis.test.onboarding import PointOfCareOnboarding
 from mavis.test.pages import (
     DashboardPage,
@@ -32,31 +34,14 @@ _year_groups = {Programme.FLU.group: random.choice(Programme.FLU.year_groups)}
 _setup_complete = False
 
 
-_MAX_ONBOARDING_ATTEMPTS = 3
-
-
-def _onboard_team(base_url, year_groups, programmes_enabled):
+def _onboard_team(base_url):
+    programmes_enabled = os.environ["PROGRAMMES_ENABLED"].lower().split(",")
     onboarding = PointOfCareOnboarding.get_onboarding_data_for_tests(
         base_url=base_url,
-        year_groups=year_groups,
+        year_groups=_year_groups,
         programmes=programmes_enabled,
     )
-    onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
-    for attempt in range(1, _MAX_ONBOARDING_ATTEMPTS + 1):
-        response = requests.post(onboarding_url, json=onboarding.to_dict(), timeout=30)
-        if response.ok:
-            return onboarding
-        if attempt < _MAX_ONBOARDING_ATTEMPTS:
-            time.sleep(1)
-        else:
-            response.raise_for_status()
-    msg = "Failed to onboard team"
-    raise RuntimeError(msg)
-
-
-def _delete_team(base_url, workgroup):
-    url = urllib.parse.urljoin(base_url, f"api/testing/teams/{workgroup}")
-    requests.delete(url, timeout=30)
+    return _create_onboarding_with_retry(base_url, onboarding)
 
 
 def _refresh_reporting(base_url):
@@ -67,32 +52,17 @@ def _refresh_reporting(base_url):
 
 
 @pytest.fixture(scope="module")
-def base_url():
-    return os.environ["BASE_URL"]
-
-
-@pytest.fixture(scope="module")
-def programmes_enabled():
-    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")
-
-
-@pytest.fixture(scope="module")
-def year_groups():
-    return _year_groups
-
-
-@pytest.fixture(scope="module")
-def team_a(base_url, programmes_enabled):
-    onboarding = _onboard_team(base_url, _year_groups, programmes_enabled)
+def team_a(base_url):
+    onboarding = _onboard_team(base_url)
     yield onboarding
-    _delete_team(base_url, onboarding.team.workgroup)
+    _delete_team(base_url, onboarding.team)
 
 
 @pytest.fixture(scope="module")
-def team_b(base_url, programmes_enabled):
-    onboarding = _onboard_team(base_url, _year_groups, programmes_enabled)
+def team_b(base_url):
+    onboarding = _onboard_team(base_url)
     yield onboarding
-    _delete_team(base_url, onboarding.team.workgroup)
+    _delete_team(base_url, onboarding.team)
 
 
 @pytest.fixture(scope="module")
@@ -220,6 +190,21 @@ def test_team_a_reporting(
     school_a,
     school_b,
 ):
+    """
+    Test: Verify reporting values for Team A after cross-team school moves.
+    Steps:
+    1. Setup two teams with 6 children across Flu programme.
+       Team A gets children 1-4, Team B gets children 2, 4, 5, 6.
+       Children 2 and 4 are school-moved from Team A to Team B.
+       Team A vaccs: children 1, 2 vaccinated, children 3, 4 refused.
+       Team B vaccs: child 5 vaccinated, child 6 refused.
+    2. Log in as Team A nurse.
+    3. Navigate to Reports > Vaccinations and filter by Flu.
+    4. Check cohort size and vaccination percentages.
+    Verification:
+    - Team A cohort is 2 (children 1 and 3 remain after school moves).
+    - 50% vaccinated (child 1), 50% not vaccinated (child 3).
+    """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
     LogInPage(page).navigate()
@@ -243,6 +228,21 @@ def test_team_b_reporting(
     school_a,
     school_b,
 ):
+    """
+    Test: Verify reporting values for Team B after cross-team school moves.
+    Steps:
+    1. Setup two teams with 6 children across Flu programme.
+       Team A gets children 1-4, Team B gets children 2, 4, 5, 6.
+       Children 2 and 4 are school-moved from Team A to Team B.
+       Team A vaccs: children 1, 2 vaccinated, children 3, 4 refused.
+       Team B vaccs: child 5 vaccinated, child 6 refused.
+    2. Log in as Team B nurse.
+    3. Navigate to Reports > Vaccinations and filter by Flu.
+    4. Check cohort size and vaccination percentages.
+    Verification:
+    - Team B cohort is 4 (children 2, 4 moved in, plus children 5, 6).
+    - 50% vaccinated (children 2 and 5), 50% not vaccinated (children 4 and 6).
+    """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
     LogInPage(page).navigate()
