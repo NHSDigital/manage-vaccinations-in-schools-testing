@@ -76,8 +76,9 @@ def test_national_reporting_invalid_data(
     HPV_FutureDOB, HPV_NonLeapYearDOB, HPV_EmptyGender, HPV_InvalidGender,
     HPV_EmptyPostCode, HPV_InvalidPostCode, HPV_EmptyVaccDate, HPV_FutureVaccDate,
     HPV_EmptyVaccGiven, HPV_EmptyBatchNumber, HPV_EmptyExpiryDate,
-    HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite, HPV_EmptyDoseSeq,
-    HPV_InvalidDoseSeq, HPV_InvalidTime, HPV_InvalidVaccinatedFlag, HPV_TimeInFuture
+    HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite, HPV_InappropriateAnatomicalSite,
+    HPV_EmptyDoseSeq, HPV_InvalidDoseSeq, HPV_InvalidTime, HPV_InvalidVaccinatedFlag,
+    HPV_TimeInFuture
     """
     ImportRecordsWizardPage(
         page, national_reporting_file_generator
