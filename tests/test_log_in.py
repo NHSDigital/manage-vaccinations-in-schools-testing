@@ -42,13 +42,20 @@ def test_login_with_valid_credentials_national_reporting(
     page,
 ):
     """
+    Covers Issue MAV-3261: Verify that the correct dashboard links are displayed for
+    each user role and that the service guidance link points to the correct URL.
+
     Test: Log in with valid credentials for each user role and verify dashboard links
        and team information.
+
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
     3. Verify that all expected dashboard links are visible.
-    4. Log out.
+    4. Verify that the service guidance link points to the correct URL.
+    5. Verify the Important Notices link is visible and navigates to the correct page.
+    6. Log out.
+
     Verification:
     - Log out button and all dashboard navigation links are visible after login.
     - Team name and email are visible in the Team page.
@@ -63,12 +70,18 @@ def test_login_with_valid_credentials_national_reporting(
     expect(DashboardPage(page).imports_link).to_be_visible()
 
     expect(DashboardPage(page).header.children_link).to_be_visible()
-    expect(DashboardPage(page).header.imports_link).to_be_visible()
+    expect(DashboardPage(page).header.import_records_link).to_be_visible()
 
     expect(DashboardPage(page).service_guidance_link).to_have_attribute(
         "href",
         "https://guide.manage-vaccinations-in-schools.nhs.uk/national-reporting/",
     )  # MAV-3261
+
+    if role == "superuser":
+        expect(DashboardPage(page).important_notices_header).to_be_visible()
+        expect(DashboardPage(page).important_notices_link).to_have_attribute(
+            "href", "/imports/notices"
+        )
 
     LogInPage(page).log_out()
 
@@ -86,13 +99,19 @@ def test_login_with_valid_credentials_point_of_care(
     page,
 ):
     """
+    Covers Issue MAV-3261: Verify that the correct dashboard links are displayed for
+    each user role and that the service guidance link points to the correct URL.
+
     Test: Log in with valid credentials for each user role and verify dashboard links
        and team information.
+
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
     3. Verify that all expected dashboard links are visible.
-    4. Log out.
+    4. Verify that the service guidance link points to the correct URL.
+    5. Log out.
+
     Verification:
     - Log out button and all dashboard navigation links are visible after login.
     - Team name and email are visible in the Team page.
@@ -114,7 +133,7 @@ def test_login_with_valid_credentials_point_of_care(
     expect(DashboardPage(page).service_guidance_link).to_be_visible()
 
     expect(DashboardPage(page).header.children_link).to_be_visible()
-    expect(DashboardPage(page).header.imports_link).to_be_visible()
+    expect(DashboardPage(page).header.import_records_link).to_be_visible()
 
     expect(DashboardPage(page).service_guidance_link).to_have_attribute(
         "href", "https://guide.manage-vaccinations-in-schools.nhs.uk"

@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.pages.header_component import HeaderComponent
@@ -23,6 +23,18 @@ class DashboardPage:
         self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
         self.schools_link = links.get_by_text("Schools")
+        self.important_notices_header = page.get_by_text("Important: Important notices")
+        self.important_notices_link = page.get_by_text(
+            "important notices need attention", exact=False
+        )
+
+    @step("Click important notices link")
+    def click_important_notices(self) -> None:
+        self.important_notices_link.click()
+
+    @step("Verify important notices are displayed")
+    def verify_important_notices_displayed(self) -> None:
+        expect(self.important_notices_header).to_be_visible()
 
     @step("Click on Schools")
     def click_schools(self) -> None:
