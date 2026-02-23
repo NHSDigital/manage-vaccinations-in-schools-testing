@@ -1,14 +1,10 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.data_models import User
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.pages import (
-    DashboardPage,
-    LogInPage,
-    LogOutPage,
-    StartPage,
-)
+from mavis.test.pages import DashboardPage, LogInPage, LogOutPage, StartPage
 
 pytestmark = pytest.mark.log_in
 
@@ -33,6 +29,7 @@ def test_login_with_invalid_credentials(username, password, page):
     expect(LogInPage(page).error_message).to_be_visible()
 
 
+@issue("MAV-3261")
 @pytest.mark.parametrize(
     "role",
     ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
@@ -65,9 +62,15 @@ def test_login_with_valid_credentials_national_reporting(
     expect(DashboardPage(page).children_link).to_be_visible()
     expect(DashboardPage(page).imports_link).to_be_visible()
 
+    expect(DashboardPage(page).service_guidance_link).to_have_attribute(
+        "href",
+        "https://guide.manage-vaccinations-in-schools.nhs.uk/national-reporting/",
+    )  # MAV-3261
+
     LogInPage(page).log_out()
 
 
+@issue("MAV-3261")
 @pytest.mark.parametrize(
     "role",
     ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
@@ -106,6 +109,10 @@ def test_login_with_valid_credentials_point_of_care(
     expect(DashboardPage(page).imports_link).to_be_visible()
     expect(DashboardPage(page).your_team_link).to_be_visible()
     expect(DashboardPage(page).service_guidance_link).to_be_visible()
+
+    expect(DashboardPage(page).service_guidance_link).to_have_attribute(
+        "href", "https://guide.manage-vaccinations-in-schools.nhs.uk"
+    )  # MAV-3261
 
     LogInPage(page).log_out()
 
