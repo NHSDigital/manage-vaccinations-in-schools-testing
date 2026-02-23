@@ -32,7 +32,13 @@ def test_login_with_invalid_credentials(username, password, page):
 @issue("MAV-3261")
 @pytest.mark.parametrize(
     "role",
-    ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
+    [
+        "medical_secretary",
+        "nurse",
+        "superuser",
+        "healthcare_assistant",
+        "prescriber",
+    ],
     ids=lambda v: f"role: {v}",
 )
 def test_login_with_valid_credentials_national_reporting(
@@ -82,6 +88,9 @@ def test_login_with_valid_credentials_national_reporting(
         expect(DashboardPage(page).important_notices_link).to_have_attribute(
             "href", "/imports/notices"
         )
+    else:
+        expect(DashboardPage(page).important_notices_header).not_to_be_visible()
+        expect(DashboardPage(page).important_notices_link).not_to_be_visible()
 
     LogInPage(page).log_out()
 
