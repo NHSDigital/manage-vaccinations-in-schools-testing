@@ -451,7 +451,7 @@ class ReportFormat(StrEnum):
                 "Manufacturer 3,Batch No 3,Vaccine 4,Vaccine Code 4,Dose 4,"
                 "Reason Not Given 4,Site 4,Manufacturer 4,Batch No 4,Vaccine 5,"
                 "Vaccine Code 5,Dose 5,Reason Not Given 5,Site 5,Manufacturer 5,"
-                "Batch No 5"
+                "Batch No 5,Gender"
             ),
             ReportFormat.CSV: (
                 "ORGANISATION_CODE,SCHOOL_URN,SCHOOL_NAME,CARE_SETTING,CLINIC_NAME,"
