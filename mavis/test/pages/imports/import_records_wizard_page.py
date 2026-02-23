@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from playwright.sync_api import Locator, Page, expect
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
@@ -69,6 +69,11 @@ class ImportRecordsWizardPage:
         self.import_format_details_link = self.page.get_by_text(
             "How to format your Mavis CSV"
         )
+        self.preview_page_link = (
+            self.page.locator(".nhsuk-details__summary-text")
+            .filter(has_text=self.records_pattern)
+            .first
+        )
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -96,20 +101,11 @@ class ImportRecordsWizardPage:
     def fill_location(self, location: str) -> None:
         self.location_combobox.fill(location)
 
-    def get_preview_page_link(self) -> Locator:
-        locator = self.page.locator(".nhsuk-details__summary-text").filter(
-            has_text=self.records_pattern
-        )
-        return locator.first
-
     def is_preview_page_link_visible(self) -> bool:
-        locator = self.page.locator(".nhsuk-details__summary-text").filter(
-            has_text=self.records_pattern
-        )
-        return locator.count() > 0 and locator.first.is_visible()
+        return self.preview_page_link.is_visible()
 
     def approve_preview_if_shown(self, file_path: Path) -> None:
-        self.get_preview_page_link().click()
+        self.preview_page_link.click()
         expect(self.review_and_approve_tag).to_be_visible()
         self.approve_import_button.click()
         expect(
