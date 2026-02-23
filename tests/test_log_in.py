@@ -62,6 +62,9 @@ def test_login_with_valid_credentials_national_reporting(
     expect(DashboardPage(page).children_link).to_be_visible()
     expect(DashboardPage(page).imports_link).to_be_visible()
 
+    expect(DashboardPage(page).header.children_link).to_be_visible()
+    expect(DashboardPage(page).header.imports_link).to_be_visible()
+
     expect(DashboardPage(page).service_guidance_link).to_have_attribute(
         "href",
         "https://guide.manage-vaccinations-in-schools.nhs.uk/national-reporting/",
@@ -109,6 +112,9 @@ def test_login_with_valid_credentials_point_of_care(
     expect(DashboardPage(page).imports_link).to_be_visible()
     expect(DashboardPage(page).your_team_link).to_be_visible()
     expect(DashboardPage(page).service_guidance_link).to_be_visible()
+
+    expect(DashboardPage(page).header.children_link).to_be_visible()
+    expect(DashboardPage(page).header.imports_link).to_be_visible()
 
     expect(DashboardPage(page).service_guidance_link).to_have_attribute(
         "href", "https://guide.manage-vaccinations-in-schools.nhs.uk"
