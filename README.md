@@ -2,7 +2,7 @@
 
 This repository contains automated end-to-end, performance and security tests for the [Manage vaccinations in schools][mavis] application.
 
-[mavis]: https://github.com/nhsuk/manage-vaccinations-in-schools/
+[mavis]: https://github.com/NHSDigital/manage-vaccinations-in-schools/
 
 [![End-to-End tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/end-to-end-tests.yaml/badge.svg?branch=main)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/end-to-end-tests.yaml?branch=main)
 
