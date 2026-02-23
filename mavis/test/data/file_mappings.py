@@ -59,6 +59,7 @@ class ChildFileMapping(FileMapping):
     POSITIVE = "positive"
     WHITESPACE = "whitespace"
     FIXED_CHILD = "fixed_child"
+    RANDOM_CHILD_WITHOUT_NHS_NUMBER = "random_child_without_nhs_number"
 
     @property
     def folder(self) -> Path:

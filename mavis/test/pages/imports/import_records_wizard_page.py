@@ -44,6 +44,13 @@ class ImportRecordsWizardPage:
             "link",
             name="Completed imports",
         )
+        self.upload_issues_group = self.page.get_by_role("group").filter(
+            has_text="upload issue"
+        )
+        self.imported_records_group = self.page.get_by_role("group").filter(
+            has_text="imported record"
+        )
+        self.success_alert = self.page.get_by_role("alert", name="Success")
 
         # Pattern to match dynamic text (s is optional for records)
         self.records_pattern = re.compile(
@@ -232,6 +239,21 @@ class ImportRecordsWizardPage:
                     expect(self.page.get_by_role("main")).not_to_contain_text(_msg[1:])
                 else:
                     expect(self.page.get_by_role("main")).to_contain_text(_msg)
+
+    @step("Verify close match issue and navigate to issues page")
+    def navigate_to_close_match_issue(self) -> None:
+        expect(self.page.get_by_role("main")).to_contain_text(
+            "Close matches to existing records - needs review"
+        )
+        self.upload_issues_group.click()
+        expect(self.upload_issues_group).to_contain_text("Review and confirm.")
+        self.upload_issues_group.get_by_role("link", name="Review").first.click()
+
+    @step("Navigate to import record")
+    def navigate_to_imported_record(self) -> None:
+        expect(self.page.get_by_role("main")).to_contain_text("Imported records")
+        self.imported_records_group.click()
+        self.imported_records_group.get_by_role("link").first.click()
 
     @step("Select year groups {1}")
     def select_year_groups(self, *year_groups: int) -> None:
