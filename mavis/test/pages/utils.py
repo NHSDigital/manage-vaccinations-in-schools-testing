@@ -19,12 +19,13 @@ from mavis.test.pages import (
 from mavis.test.utils import generate_random_string
 
 
-def schedule_school_session_if_needed(
+def schedule_school_session_if_needed(  # noqa: PLR0913
     page: Page,
     school: School,
     programmes: list[Programme],
     year_groups: list[int],
     date_offset: int = 0,
+    consent_style: str = "Standard",
 ) -> None:
     DashboardPage(page).header.click_mavis_header()
     DashboardPage(page).click_sessions()
@@ -33,7 +34,7 @@ def schedule_school_session_if_needed(
     ):
         SessionsSearchPage(page).click_add_a_new_session()
         AddSessionWizardPage(page).schedule_school_session(
-            school, programmes, year_groups, date_offset
+            school, programmes, year_groups, date_offset, consent_style
         )
 
 
