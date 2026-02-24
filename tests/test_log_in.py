@@ -1,14 +1,10 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.data_models import User
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
-from mavis.test.pages import (
-    DashboardPage,
-    LogInPage,
-    LogOutPage,
-    StartPage,
-)
+from mavis.test.pages import DashboardPage, LogInPage, LogOutPage, StartPage
 
 pytestmark = pytest.mark.log_in
 
@@ -33,9 +29,16 @@ def test_login_with_invalid_credentials(username, password, page):
     expect(LogInPage(page).error_message).to_be_visible()
 
 
+@issue("MAV-3261")
 @pytest.mark.parametrize(
     "role",
-    ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
+    [
+        "medical_secretary",
+        "nurse",
+        "superuser",
+        "healthcare_assistant",
+        "prescriber",
+    ],
     ids=lambda v: f"role: {v}",
 )
 def test_login_with_valid_credentials_national_reporting(
@@ -45,13 +48,20 @@ def test_login_with_valid_credentials_national_reporting(
     page,
 ):
     """
+    Covers Issue MAV-3261: Verify that the correct dashboard links are displayed for
+    each user role and that the service guidance link points to the correct URL.
+
     Test: Log in with valid credentials for each user role and verify dashboard links
        and team information.
+
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
     3. Verify that all expected dashboard links are visible.
-    4. Log out.
+    4. Verify that the service guidance link points to the correct URL.
+    5. Verify the Important Notices link is visible and navigates to the correct page.
+    6. Log out.
+
     Verification:
     - Log out button and all dashboard navigation links are visible after login.
     - Team name and email are visible in the Team page.
@@ -65,9 +75,27 @@ def test_login_with_valid_credentials_national_reporting(
     expect(DashboardPage(page).children_link).to_be_visible()
     expect(DashboardPage(page).imports_link).to_be_visible()
 
+    expect(DashboardPage(page).header.children_link).to_be_visible()
+    expect(DashboardPage(page).header.import_records_link).to_be_visible()
+
+    expect(DashboardPage(page).service_guidance_link).to_have_attribute(
+        "href",
+        "https://guide.manage-vaccinations-in-schools.nhs.uk/national-reporting/",
+    )  # MAV-3261
+
+    if role == "superuser":
+        expect(DashboardPage(page).important_notices_header).to_be_visible()
+        expect(DashboardPage(page).important_notices_link).to_have_attribute(
+            "href", "/imports/notices"
+        )
+    else:
+        expect(DashboardPage(page).important_notices_header).not_to_be_visible()
+        expect(DashboardPage(page).important_notices_link).not_to_be_visible()
+
     LogInPage(page).log_out()
 
 
+@issue("MAV-3261")
 @pytest.mark.parametrize(
     "role",
     ["medical_secretary", "nurse", "superuser", "healthcare_assistant", "prescriber"],
@@ -80,13 +108,19 @@ def test_login_with_valid_credentials_point_of_care(
     page,
 ):
     """
+    Covers Issue MAV-3261: Verify that the correct dashboard links are displayed for
+    each user role and that the service guidance link points to the correct URL.
+
     Test: Log in with valid credentials for each user role and verify dashboard links
        and team information.
+
     Steps:
     1. Navigate to the log in page (autouse fixture).
     2. Log in as the specified user role and select team if necessary.
     3. Verify that all expected dashboard links are visible.
-    4. Log out.
+    4. Verify that the service guidance link points to the correct URL.
+    5. Log out.
+
     Verification:
     - Log out button and all dashboard navigation links are visible after login.
     - Team name and email are visible in the Team page.
@@ -106,6 +140,13 @@ def test_login_with_valid_credentials_point_of_care(
     expect(DashboardPage(page).imports_link).to_be_visible()
     expect(DashboardPage(page).your_team_link).to_be_visible()
     expect(DashboardPage(page).service_guidance_link).to_be_visible()
+
+    expect(DashboardPage(page).header.children_link).to_be_visible()
+    expect(DashboardPage(page).header.import_records_link).to_be_visible()
+
+    expect(DashboardPage(page).service_guidance_link).to_have_attribute(
+        "href", "https://guide.manage-vaccinations-in-schools.nhs.uk"
+    )  # MAV-3261
 
     LogInPage(page).log_out()
 
