@@ -52,19 +52,13 @@ class VaccinationReportPage:
             download.save_as(_file_path)
             _actual_df = pd.read_csv(_file_path)
 
-        actual_headers = ",".join(_actual_df.columns.tolist())
-        _e_not_a = [
-            h for h in expected_headers.split(",") if h not in actual_headers.split(",")
-        ]
-        _a_not_e = [
-            h for h in actual_headers.split(",") if h not in expected_headers.split(",")
-        ]
-        if len(_e_not_a) > 0 or len(_a_not_e) > 0:
-            error_message = (
-                f"Report is missing expected field(s): {_e_not_a}. "
-                f"Report contains unexpected field(s): {_a_not_e}."
-            )
-            raise AssertionError(error_message)
+        expected_set = set(expected_headers.split(","))
+        actual_set = set(_actual_df.columns)
+        
+        if missing := expected_set - actual_set:
+            raise AssertionError(f"Report is missing expected field(s): {missing}")
+        if unexpected := actual_set - expected_set:
+            raise AssertionError(f"Report contains unexpected field(s): {unexpected}")
 
     @step("Click on {1}")
     def click_report_format(self, report_format: ReportFormat) -> None:
