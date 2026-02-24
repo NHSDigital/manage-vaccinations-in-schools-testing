@@ -54,11 +54,13 @@ class VaccinationReportPage:
 
         expected_set = set(expected_headers.split(","))
         actual_set = set(_actual_df.columns)
-        
+
         if missing := expected_set - actual_set:
-            raise AssertionError(f"Report is missing expected field(s): {missing}")
+            msg = f"Report is missing expected field(s): {missing}"
+            raise AssertionError(msg)
         if unexpected := actual_set - expected_set:
-            raise AssertionError(f"Report contains unexpected field(s): {unexpected}")
+            msg = f"Report contains unexpected field(s): {unexpected}"
+            raise AssertionError(msg)
 
     @step("Click on {1}")
     def click_report_format(self, report_format: ReportFormat) -> None:
