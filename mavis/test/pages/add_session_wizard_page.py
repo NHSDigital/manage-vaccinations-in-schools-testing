@@ -36,7 +36,7 @@ class AddSessionWizardPage:
         )
         self.select_a_school_combobox = self.page.get_by_role(
             "combobox",
-            name="Start typing to see schools",
+            name="Search for a school",
         )
         self.keep_session_dates_button = self.page.get_by_role(
             "button", name="Keep session dates"
