@@ -93,7 +93,7 @@
           </elementProp>
           <elementProp name="PageOffset" elementType="Argument">
             <stringProp name="Argument.name">PageOffset</stringProp>
-            <stringProp name="Argument.value">6</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
             <stringProp name="Argument.desc">Consents are based on session pages, this moves the starting page as sessions are used. If no data is being extracted, change this to be the next page with &apos;unscheduled&apos; sessions</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
