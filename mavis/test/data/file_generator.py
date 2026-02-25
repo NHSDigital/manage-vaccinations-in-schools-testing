@@ -38,6 +38,7 @@ class FileGenerator:
         self.year_groups = year_groups
 
         self.faker = Faker(locale="en_GB")
+        self._fixed_random_cache: dict[str, str] = {}
 
         self.create_working_directory()
 
@@ -187,6 +188,11 @@ class FileGenerator:
             replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
         return replacements
 
+    def _get_fixed_random(self, key: str, generator: Callable[[], str]) -> str:
+        if key not in self._fixed_random_cache:
+            self._fixed_random_cache[key] = generator()
+        return self._fixed_random_cache[key]
+
     def create_line_replacements_dict(
         self, programme_group: str
     ) -> dict[str, Callable[[], str]]:
@@ -197,6 +203,12 @@ class FileGenerator:
             "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
             "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
             "<<RANDOM_POSTCODE>>": lambda: self.faker.postcode(),
+            "<<FIXED_RANDOM_FNAME>>": lambda: self._get_fixed_random(
+                "fname", self.faker.first_name
+            ),
+            "<<FIXED_RANDOM_LNAME>>": lambda: self._get_fixed_random(
+                "lname", lambda: self.faker.last_name().upper()
+            ),
         }
         # ruff: enable[PLW0108]
 

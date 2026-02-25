@@ -4,13 +4,11 @@ from pathlib import Path
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.constants import Programme
+from mavis.test.constants import DuplicateReviewAction, Programme
 from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.utils import (
-    reload_until_element_is_visible,
-)
+from mavis.test.utils import reload_until_element_is_visible
 
 
 class ImportRecordsWizardPage:
@@ -62,6 +60,26 @@ class ImportRecordsWizardPage:
         self.import_format_details_link = self.page.get_by_text(
             "How to format your Mavis CSV"
         )
+        self.keep_both_option_radio = self.page.get_by_role(
+            "radio",
+            name="Keep both child records",
+        )
+        self.upload_issue_link = self.page.get_by_text("1 upload issue")
+        self.record_updated = page.get_by_role("alert", name="Success").filter(
+            has_text="Record updated",
+        )
+        self.review_link = self.page.get_by_role("link", name="Review")
+        self.resolve_duplicate_button = self.page.get_by_role(
+            "button", name="Resolve duplicate"
+        )
+
+    def handle_duplicate_review(self, action: DuplicateReviewAction) -> None:
+        if action == DuplicateReviewAction.KEEP_BOTH:
+            self.select_keep_both_records()
+        self.resolve_duplicate_button.click()
+
+    def click_review_link(self) -> None:
+        self.review_link.click()
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -100,6 +118,25 @@ class ImportRecordsWizardPage:
             has_text=self.records_pattern
         )
         return locator.count() > 0 and locator.first.is_visible()
+
+    @step("Click Review to expand duplicate details")
+    def click_review_duplicates(self) -> None:
+        self.get_preview_page_link().click()
+        expect(self.review_and_approve_tag).to_be_visible()
+
+    @step("Select Keep both records")
+    def select_keep_both_records(self) -> None:
+        self.keep_both_option_radio.click()
+
+    @step("Approve and import records")
+    def click_approve_and_import(self) -> None:
+        """Click the approve button to finalize the import."""
+        self.approve_import_button.click()
+        expect(
+            self.page.get_by_label("Information")
+            .locator("div")
+            .filter(has_text="Import started")
+        ).to_be_visible()
 
     def approve_preview_if_shown(self, file_path: Path) -> None:
         self.get_preview_page_link().click()

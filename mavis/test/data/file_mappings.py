@@ -66,6 +66,8 @@ class ChildFileMapping(FileMapping):
 
 
 class ClassFileMapping(FileMapping):
+    DUPLICATE_POSTCODE = "duplicate_postcode"
+    DUPLICATE_POSTCODE_2 = "duplicate_postcode_2"
     EMPTY_FILE = "empty"
     FIXED_CHILD = "fixed_child"
     HEADER_ONLY = "header_only"

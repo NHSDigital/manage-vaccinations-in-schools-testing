@@ -1,6 +1,8 @@
 import pytest
+from playwright.sync_api import expect
 
-from mavis.test.constants import Programme
+from mavis.test.annotations import issue
+from mavis.test.constants import DuplicateReviewAction, Programme
 from mavis.test.data import ClassFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages import (
@@ -187,3 +189,69 @@ def test_class_list_file_upload_whitespace_normalization(
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
     )
+
+
+@issue("MAV-3840")
+@pytest.mark.classlist
+def test_class_list_file_upload_duplicate_different_postcode_keep_both(
+    log_in_as_nurse,
+    schools,
+    page,
+    point_of_care_file_generator,
+):
+    """
+    Covers Issue: MAV-3840
+    Test: Upload a patient with duplicate name/DOB but different postcode
+    and empty NHS number.
+
+    Steps:
+    1. Upload the first patient record.
+    2. Upload a second patient with same given name, family name and date of
+       birth, but different postcode and empty NHS number.
+    3. When import duplicate review is staged, click "Review".
+    4. Select "Keep both records" and continue.
+
+    Verification:
+    - Both records are imported successfully.
+    - Review and approve workflow is triggered for close match.
+    """
+    school = schools[Programme.HPV][0]
+    year_group = 9
+
+    schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
+    SessionsOverviewPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(str(school), year_group)
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.DUPLICATE_POSTCODE)
+
+    ImportsPage(page).header.click_mavis_header()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(str(school), year_group)
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.DUPLICATE_POSTCODE_2)
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_issue_link.click()
+
+    ImportRecordsWizardPage(page, point_of_care_file_generator).click_review_link()
+
+    ImportRecordsWizardPage(page, point_of_care_file_generator).handle_duplicate_review(
+        DuplicateReviewAction.KEEP_BOTH
+    )
+
+    expect(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).record_updated
+    ).to_be_visible()
