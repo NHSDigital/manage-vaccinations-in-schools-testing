@@ -18,6 +18,7 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
+    ReportsDownloadPage,
     ReportsVaccinationsPage,
     ReviewSchoolMovePage,
     SchoolMovesPage,
@@ -29,7 +30,9 @@ from mavis.test.pages.utils import schedule_school_session_if_needed
 
 pytestmark = pytest.mark.reporting
 
-_year_groups = {Programme.FLU.group: random.choice(Programme.FLU.year_groups)}
+_flu_year_groups = random.sample(Programme.FLU.year_groups, 3)
+_yg1, _yg2, _yg3 = _flu_year_groups
+_year_groups = {Programme.FLU.group: _yg1}
 
 _setup_complete = False
 
@@ -51,6 +54,41 @@ def _refresh_reporting(base_url):
     time.sleep(5)
 
 
+def _make_file_generator(onboarding, children_list):
+    return FileGenerator(
+        organisation=onboarding.organisation,
+        schools=onboarding.schools,
+        nurse=onboarding.users["nurse"],
+        children={Programme.FLU.group: children_list},
+        clinics=onboarding.clinics,
+        year_groups=_year_groups,
+    )
+
+
+def _upload_class_list(page, school, onboarding, children, mapping, year_group):
+    fg = _make_file_generator(onboarding, children)
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(school)
+    SchoolsChildrenPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, fg).import_class_list(
+        mapping,
+        year_group,
+        Programme.FLU.group,
+    )
+
+
+def _download_aggregate_csv(page, programme):
+    ReportsVaccinationsPage(page).navigate()
+    ReportsVaccinationsPage(page).tabs.click_download_data_tab()
+    page.get_by_role("radio", name="Aggregate vaccination and consent data").check()
+    ReportsDownloadPage(page).click_continue()
+    ReportsDownloadPage(page).choose_programme(programme)
+    ReportsDownloadPage(page).choose_variable("Year group")
+    ReportsDownloadPage(page).choose_variable("Gender")
+    return ReportsDownloadPage(page).download_and_get_dataframe()
+
+
 @pytest.fixture(scope="module")
 def team_a(base_url):
     onboarding = _onboard_team(base_url)
@@ -67,8 +105,14 @@ def team_b(base_url):
 
 @pytest.fixture(scope="module")
 def all_children():
-    flu_year_group = _year_groups[Programme.FLU.group]
-    return Child.generate_children_for_year_group(6, flu_year_group)
+    return [
+        Child.generate(_yg1),
+        Child.generate(_yg1),
+        Child.generate(_yg2),
+        Child.generate(_yg2),
+        Child.generate(_yg3),
+        Child.generate(_yg3),
+    ]
 
 
 @pytest.fixture(scope="module")
@@ -81,17 +125,6 @@ def school_b(team_b):
     return team_b.schools[Programme.FLU.group][0]
 
 
-def _make_file_generator(onboarding, children_list, year_groups):
-    return FileGenerator(
-        organisation=onboarding.organisation,
-        schools=onboarding.schools,
-        nurse=onboarding.users["nurse"],
-        children={Programme.FLU.group: children_list},
-        clinics=onboarding.clinics,
-        year_groups=year_groups,
-    )
-
-
 def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     global _setup_complete  # noqa: PLW0603
     if _setup_complete:
@@ -99,29 +132,26 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     _setup_complete = True
 
     c1, c2, c3, c4, c5, c6 = all_children
-    flu_year_group = _year_groups[Programme.FLU.group]
-
-    team_a_class_fg = _make_file_generator(team_a, [c1, c2, c3, c4], _year_groups)
+    two_mf = ClassFileMapping.REPORTING_REGRESSION_TWO_MF
+    one_f = ClassFileMapping.REPORTING_REGRESSION_ONE_F
 
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_a.users["nurse"], team_a.team
     )
 
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school_a)
-    SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, team_a_class_fg).import_class_list(
-        ClassFileMapping.REPORTING_REGRESSION_FOUR,
-        flu_year_group,
-        Programme.FLU.group,
-    )
+    _upload_class_list(page, school_a, team_a, [c1, c2], two_mf, _yg1)
+    _upload_class_list(page, school_a, team_a, [c3, c4], two_mf, _yg2)
 
-    schedule_school_session_if_needed(page, school_a, [Programme.FLU], [flu_year_group])
+    schedule_school_session_if_needed(
+        page,
+        school_a,
+        [Programme.FLU],
+        [_yg1, _yg2],
+    )
     session_id_a = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
-    team_a_vaccs_fg = _make_file_generator(team_a, [c1, c2, c3, c4], _year_groups)
+    team_a_vaccs_fg = _make_file_generator(team_a, [c1, c2, c3, c4])
 
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
@@ -140,22 +170,19 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
         team_b.users["nurse"], team_b.team
     )
 
-    team_b_class_fg = _make_file_generator(team_b, [c2, c4, c5, c6], _year_groups)
+    _upload_class_list(page, school_b, team_b, [c2], one_f, _yg1)
+    _upload_class_list(page, school_b, team_b, [c4], one_f, _yg2)
+    _upload_class_list(page, school_b, team_b, [c5, c6], two_mf, _yg3)
 
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school_b)
-    SchoolsChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, team_b_class_fg).import_class_list(
-        ClassFileMapping.REPORTING_REGRESSION_FOUR,
-        flu_year_group,
-        Programme.FLU.group,
+    schedule_school_session_if_needed(
+        page,
+        school_b,
+        [Programme.FLU],
+        [_yg1, _yg2, _yg3],
     )
-
-    schedule_school_session_if_needed(page, school_b, [Programme.FLU], [flu_year_group])
     session_id_b = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
-    team_b_vaccs_fg = _make_file_generator(team_b, [c5, c6], _year_groups)
+    team_b_vaccs_fg = _make_file_generator(team_b, [c5, c6])
 
     SessionsOverviewPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
@@ -193,7 +220,8 @@ def test_team_a_reporting(
     """
     Test: Verify reporting values for Team A after cross-team school moves.
     Steps:
-    1. Setup two teams with 6 children across Flu programme.
+    1. Setup two teams with 6 children across Flu programme, spread across
+       3 year groups (2 per group) with alternating Male/Female genders.
        Team A gets children 1-4, Team B gets children 2, 4, 5, 6.
        Children 2 and 4 are school-moved from Team A to Team B.
        Team A vaccs: children 1, 2 vaccinated, children 3, 4 refused.
@@ -231,7 +259,8 @@ def test_team_b_reporting(
     """
     Test: Verify reporting values for Team B after cross-team school moves.
     Steps:
-    1. Setup two teams with 6 children across Flu programme.
+    1. Setup two teams with 6 children across Flu programme, spread across
+       3 year groups (2 per group) with alternating Male/Female genders.
        Team A gets children 1-4, Team B gets children 2, 4, 5, 6.
        Children 2 and 4 are school-moved from Team A to Team B.
        Team A vaccs: children 1, 2 vaccinated, children 3, 4 refused.
@@ -255,3 +284,105 @@ def test_team_b_reporting(
     ReportsVaccinationsPage(page).check_cohort_has_n_children("4")
     ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50")
     ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50")
+
+
+def test_team_a_aggregate_csv(
+    page,
+    base_url,
+    team_a,
+    team_b,
+    all_children,
+    school_a,
+    school_b,
+):
+    """
+    Test: Verify aggregate CSV download for Team A broken down by year group
+       and gender.
+    Steps:
+    1. Setup (shared with other tests).
+    2. Log in as Team A nurse.
+    3. Download aggregate CSV with Year group and Gender breakdowns.
+    4. Assert row values match expected counts.
+    Verification:
+    - Row (YG1, Male): Cohort=1, Vaccinated=1, Not Vaccinated=0
+    - Row (YG2, Male): Cohort=1, Vaccinated=0, Not Vaccinated=1
+    - Only 2 rows (children 2 and 4 moved to Team B).
+    """
+    _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
+
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        team_a.users["nurse"], team_a.team
+    )
+
+    df = _download_aggregate_csv(page, Programme.FLU)
+
+    expected_rows = 2
+    assert len(df) == expected_rows
+
+    yg1_row = df[(df["Year Group"] == _yg1) & (df["Gender"] == "male")].iloc[0]
+    assert yg1_row["Cohort"] == 1
+    assert yg1_row["Vaccinated"] == 1
+    assert yg1_row["Not Vaccinated"] == 0
+
+    yg2_row = df[(df["Year Group"] == _yg2) & (df["Gender"] == "male")].iloc[0]
+    assert yg2_row["Cohort"] == 1
+    assert yg2_row["Vaccinated"] == 0
+    assert yg2_row["Not Vaccinated"] == 1
+
+
+def test_team_b_aggregate_csv(
+    page,
+    base_url,
+    team_a,
+    team_b,
+    all_children,
+    school_a,
+    school_b,
+):
+    """
+    Test: Verify aggregate CSV download for Team B broken down by year group
+       and gender.
+    Steps:
+    1. Setup (shared with other tests).
+    2. Log in as Team B nurse.
+    3. Download aggregate CSV with Year group and Gender breakdowns.
+    4. Assert row values match expected counts.
+    Verification:
+    - Row (YG1, Female): Cohort=1, Vaccinated=1, Not Vaccinated=0
+    - Row (YG2, Female): Cohort=1, Vaccinated=0, Not Vaccinated=1
+    - Row (YG3, Male): Cohort=1, Vaccinated=1, Not Vaccinated=0
+    - Row (YG3, Female): Cohort=1, Vaccinated=0, Not Vaccinated=1
+    - 4 rows total.
+    """
+    _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
+
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        team_b.users["nurse"], team_b.team
+    )
+
+    df = _download_aggregate_csv(page, Programme.FLU)
+
+    expected_rows = 4
+    assert len(df) == expected_rows
+
+    yg1_f = df[(df["Year Group"] == _yg1) & (df["Gender"] == "female")].iloc[0]
+    assert yg1_f["Cohort"] == 1
+    assert yg1_f["Vaccinated"] == 1
+    assert yg1_f["Not Vaccinated"] == 0
+
+    yg2_f = df[(df["Year Group"] == _yg2) & (df["Gender"] == "female")].iloc[0]
+    assert yg2_f["Cohort"] == 1
+    assert yg2_f["Vaccinated"] == 0
+    assert yg2_f["Not Vaccinated"] == 1
+
+    yg3_m = df[(df["Year Group"] == _yg3) & (df["Gender"] == "male")].iloc[0]
+    assert yg3_m["Cohort"] == 1
+    assert yg3_m["Vaccinated"] == 1
+    assert yg3_m["Not Vaccinated"] == 0
+
+    yg3_f = df[(df["Year Group"] == _yg3) & (df["Gender"] == "female")].iloc[0]
+    assert yg3_f["Cohort"] == 1
+    assert yg3_f["Vaccinated"] == 0
+    assert yg3_f["Not Vaccinated"] == 1
