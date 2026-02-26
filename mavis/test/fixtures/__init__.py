@@ -20,6 +20,7 @@ from .data_models import (
     point_of_care_team,
     schools,
 )
+from .fhir_api import authenticate_api
 from .helpers import (
     add_vaccine_batch,
     log_in_as_medical_secretary,
@@ -31,7 +32,6 @@ from .helpers import (
     setup_session_and_batches_with_fixed_child,
     upload_offline_vaccination,
 )
-from .imms_api import authenticate_api
 from .onboarding import (
     national_reporting_onboarding,
     point_of_care_onboarding,

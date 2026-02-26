@@ -529,3 +529,17 @@ class ImmsEndpoints(StrEnum):
             os.getenv("IMMS_BASE_URL", "PROVIDEURL"),
             self.value,
         )
+
+
+class PdsEndpoints(StrEnum):
+    GET_PATIENT_DETAILS = "personal-demographics/FHIR/R4/Patient/"
+
+    @property
+    def to_url(self) -> str:
+        return urllib.parse.urljoin(
+            os.getenv("IMMS_BASE_URL", "PROVIDEURL"),
+            self.value,
+        )
+
+    def to_url_with_suffix(self, suffix: str = "") -> str:
+        return urllib.parse.urljoin(self.to_url, suffix)

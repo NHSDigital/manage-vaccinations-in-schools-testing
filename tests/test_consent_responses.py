@@ -5,6 +5,7 @@ from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
+from mavis.test.helpers.pds_api_helper import PdsApiHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
     ChildActivityLogPage,
@@ -24,6 +25,11 @@ from mavis.test.pages import (
 from mavis.test.utils import expect_details, format_nhs_number
 
 pytestmark = pytest.mark.consent_responses
+
+
+@pytest.fixture(scope="session")
+def pds_api_helper(authenticate_api):
+    return PdsApiHelper(authenticate_api)
 
 
 @pytest.fixture
@@ -158,6 +164,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
 
 
 def test_create_child_record_from_consent_with_nhs_number(
+    pds_api_helper,
     give_online_consent_pds_child,
     pds_child,
     page,
@@ -176,6 +183,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     - Activity log for the child shows the creation event.
     """
     child = pds_child
+    child_in_pds = pds_api_helper.get_child_by_nhs_number(child.nhs_number)
 
     DashboardPage(page).navigate()
     DashboardPage(page).click_unmatched_consent_responses()
