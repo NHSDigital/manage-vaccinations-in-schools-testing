@@ -22,6 +22,32 @@ def read_scenario_list_from_file(input_file_path: Path) -> str | None:
         return None
 
 
+def read_columns_from_csv(input_file_path: Path, columns: list[str]) -> list[tuple]:
+    try:
+        _df = pd.read_csv(input_file_path)
+
+        if not columns:
+            msg = "Empty column list"
+            raise ValueError(msg)
+
+        missing_cols = [col for col in columns if col not in _df.columns]
+        if missing_cols:
+            msg = f"Columns {missing_cols} not found in {input_file_path}."
+            raise ValueError(msg)
+
+        return list(zip(*(_df[col] for col in columns), strict=True))
+
+    except pd.errors.EmptyDataError as e:
+        msg = f"Input file '{input_file_path}' is empty"
+        raise ValueError(msg) from e
+
+
+def read_child_names_from_file(input_file_path: Path) -> list[tuple[str, str]]:
+    return read_columns_from_csv(
+        input_file_path, columns=["CHILD_FIRST_NAME", "CHILD_LAST_NAME"]
+    )
+
+
 def get_session_id(path: Path) -> str:
     data_frame = pd.read_excel(path, sheet_name="Vaccinations", dtype=str)
     session_ids = data_frame["SESSION_ID"].dropna()
@@ -116,5 +142,14 @@ def set_site_for_child_list(file_path: Path, site_identifier: str) -> Path:
     )
 
     new_file_path = file_path.with_stem(file_path.stem + f"withsite{site_identifier}")
+    _file_df.to_csv(new_file_path, index=False)
+    return new_file_path
+
+
+def set_field_for_key(file_path: Path, key: str, value: str) -> Path:
+    _file_df = pd.read_csv(file_path)
+    _file_df[key] = value
+
+    new_file_path = file_path.with_stem(file_path.stem + "modified")
     _file_df.to_csv(new_file_path, index=False)
     return new_file_path
