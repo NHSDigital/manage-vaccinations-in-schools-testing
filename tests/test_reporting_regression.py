@@ -32,7 +32,7 @@ pytestmark = pytest.mark.reporting
 
 _flu_year_groups = random.sample(Programme.FLU.year_groups, 3)
 _yg1, _yg2, _yg3 = _flu_year_groups
-_year_groups = {Programme.FLU.group: _yg1}
+_year_groups = {p.group: _yg1 for p in Programme}
 
 _setup_complete = False
 
@@ -128,7 +128,6 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     global _setup_complete  # noqa: PLW0603
     if _setup_complete:
         return
-    _setup_complete = True
 
     c1, c2, c3, c4, c5, c6 = all_children
     two_mf = ClassFileMapping.REPORTING_REGRESSION_TWO_MF
@@ -164,6 +163,7 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
         programme_group=Programme.FLU.group,
     )
 
+    page.goto("/logout")
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_b.users["nurse"], team_b.team
@@ -205,6 +205,8 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     ReviewSchoolMovePage(page).confirm()
 
     _refresh_reporting(base_url)
+
+    _setup_complete = True
 
 
 def test_team_a_reporting(
