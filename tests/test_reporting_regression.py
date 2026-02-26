@@ -2,6 +2,7 @@ import os
 import random
 import time
 import urllib.parse
+from datetime import UTC, datetime
 
 import pytest
 import requests
@@ -228,10 +229,11 @@ def test_team_a_reporting(
        Team B vaccs: child 5 vaccinated, child 6 refused.
     2. Log in as Team A nurse.
     3. Navigate to Reports > Vaccinations and filter by Flu.
-    4. Check cohort size and vaccination percentages.
+    4. Check cohort size, vaccination percentages, and monthly counts.
     Verification:
     - Team A cohort is 2 (children 1 and 3 remain after school moves).
     - 50% vaccinated (child 1), 50% not vaccinated (child 3).
+    - Monthly vaccinations given: 2 (children 1 and 2, vaccinated by Team A).
     """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
@@ -245,6 +247,12 @@ def test_team_a_reporting(
     ReportsVaccinationsPage(page).check_cohort_has_n_children("2")
     ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50")
     ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50")
+
+    monthly = ReportsVaccinationsPage(page).get_monthly_vaccinations()
+    current_month = datetime.now(tz=UTC).strftime("%B %Y")
+    expected_vaccinations = 2
+    assert monthly[current_month] == expected_vaccinations
+    assert monthly["Total"] == expected_vaccinations
 
 
 def test_team_b_reporting(
@@ -267,10 +275,11 @@ def test_team_b_reporting(
        Team B vaccs: child 5 vaccinated, child 6 refused.
     2. Log in as Team B nurse.
     3. Navigate to Reports > Vaccinations and filter by Flu.
-    4. Check cohort size and vaccination percentages.
+    4. Check cohort size, vaccination percentages, and monthly counts.
     Verification:
     - Team B cohort is 4 (children 2, 4 moved in, plus children 5, 6).
     - 50% vaccinated (children 2 and 5), 50% not vaccinated (children 4 and 6).
+    - Monthly vaccinations given: 1 (child 5, vaccinated by Team B).
     """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
@@ -284,6 +293,11 @@ def test_team_b_reporting(
     ReportsVaccinationsPage(page).check_cohort_has_n_children("4")
     ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50")
     ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50")
+
+    monthly = ReportsVaccinationsPage(page).get_monthly_vaccinations()
+    current_month = datetime.now(tz=UTC).strftime("%B %Y")
+    assert monthly[current_month] == 1
+    assert monthly["Total"] == 1
 
 
 def test_team_a_aggregate_csv(
