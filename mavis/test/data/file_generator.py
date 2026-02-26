@@ -38,7 +38,7 @@ class FileGenerator:
         self.year_groups = year_groups
 
         self.faker = Faker(locale="en_GB")
-        self._fixed_random_cache: dict[str, str] = {}
+        self._fixed_random_cache: Child | None = None
 
         self.create_working_directory()
 
@@ -188,26 +188,47 @@ class FileGenerator:
             replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
         return replacements
 
-    def _get_fixed_random(self, key: str, generator: Callable[[], str]) -> str:
-        if key not in self._fixed_random_cache:
-            self._fixed_random_cache[key] = generator()
-        return self._fixed_random_cache[key]
+    def _get_fixed_random_child(self, programme_group: str) -> Child:
+        if self._fixed_random_cache is None:
+            year_group = self.year_groups.get(programme_group, 8)
+            self._fixed_random_cache = Child.generate(year_group)
+        return self._fixed_random_cache
 
     def create_line_replacements_dict(
         self, programme_group: str
     ) -> dict[str, Callable[[], str]]:
         # ruff: disable[PLW0108]
+        fixed_child = self._get_fixed_random_child(programme_group)
         line_replacements = {
             "<<RANDOM_FNAME>>": lambda: self.faker.first_name(),
             "<<RANDOM_LNAME>>": lambda: self.faker.last_name().upper(),
             "<<RANDOM_NHS_NO>>": lambda: self.get_new_nhs_no(valid=True),
             "<<INVALID_NHS_NO>>": lambda: self.get_new_nhs_no(valid=False),
             "<<RANDOM_POSTCODE>>": lambda: self.faker.postcode(),
-            "<<FIXED_RANDOM_FNAME>>": lambda: self._get_fixed_random(
-                "fname", self.faker.first_name
+            "<<FIXED_RANDOM_FNAME>>": lambda: fixed_child.first_name,
+            "<<FIXED_RANDOM_LNAME>>": lambda: fixed_child.last_name,
+            "<<FIXED_RANDOM_NHS_NO>>": lambda: fixed_child.nhs_number,
+            "<<FIXED_RANDOM_ADDRESS_LINE_1>>": lambda: fixed_child.address[0],
+            "<<FIXED_RANDOM_ADDRESS_LINE_2>>": lambda: fixed_child.address[1],
+            "<<FIXED_RANDOM_TOWN>>": lambda: fixed_child.address[2],
+            "<<FIXED_RANDOM_POSTCODE>>": lambda: fixed_child.address[3],
+            "<<FIXED_RANDOM_DATE_OF_BIRTH>>": lambda: (
+                fixed_child.date_of_birth.strftime("%Y%m%d")
             ),
-            "<<FIXED_RANDOM_LNAME>>": lambda: self._get_fixed_random(
-                "lname", lambda: self.faker.last_name().upper()
+            "<<FIXED_RANDOM_YEAR_GROUP>>": lambda: str(fixed_child.year_group),
+            "<<FIXED_RANDOM_PARENT_1_NAME>>": lambda: fixed_child.parents[0].full_name,
+            "<<FIXED_RANDOM_PARENT_2_NAME>>": lambda: fixed_child.parents[1].full_name,
+            "<<FIXED_RANDOM_PARENT_1_EMAIL>>": lambda: (
+                fixed_child.parents[0].email_address
+            ),
+            "<<FIXED_RANDOM_PARENT_2_EMAIL>>": lambda: (
+                fixed_child.parents[1].email_address
+            ),
+            "<<FIXED_RANDOM_PARENT_1_RELATIONSHIP>>": lambda: (
+                fixed_child.parents[0].relationship
+            ),
+            "<<FIXED_RANDOM_PARENT_2_RELATIONSHIP>>": lambda: (
+                fixed_child.parents[1].relationship
             ),
         }
         # ruff: enable[PLW0108]

@@ -198,6 +198,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     schools,
     page,
     point_of_care_file_generator,
+    year_groups,
 ):
     """
     Covers Issue: MAV-3840
@@ -216,7 +217,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     - Review and approve workflow is triggered for close match.
     """
     school = schools[Programme.HPV][0]
-    year_group = 9
+    year_group = year_groups[Programme.HPV]
 
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     SessionsOverviewPage(page).header.click_mavis_header()
