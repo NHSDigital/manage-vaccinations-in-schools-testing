@@ -3,8 +3,9 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
-from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
+from mavis.test.data import ChildFileMapping, ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
+from mavis.test.helpers.pds_api_helper import PdsApiHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
     ChildProgrammePage,
@@ -26,9 +27,15 @@ from mavis.test.utils import expect_details, format_nhs_number
 pytestmark = pytest.mark.consent_responses
 
 
+@pytest.fixture(scope="session")
+def pds_api_helper(authenticate_api):
+    return PdsApiHelper(authenticate_api)
+
+
 @pytest.fixture
-def pds_child():
-    return pds.get_random_child_patient_without_date_of_death()
+def pds_child(authenticate_api):
+    pds_api_helper = PdsApiHelper(authenticate_api)
+    return pds_api_helper.get_random_child_patient_without_date_of_death()
 
 
 @pytest.fixture
