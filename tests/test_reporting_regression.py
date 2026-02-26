@@ -1,4 +1,3 @@
-import os
 import random
 import time
 import urllib.parse
@@ -39,11 +38,10 @@ _setup_complete = False
 
 
 def _onboard_team(base_url):
-    programmes_enabled = os.environ["PROGRAMMES_ENABLED"].lower().split(",")
     onboarding = PointOfCareOnboarding.get_onboarding_data_for_tests(
         base_url=base_url,
         year_groups=_year_groups,
-        programmes=programmes_enabled,
+        programmes=["flu"],
     )
     return _create_onboarding_with_retry(base_url, onboarding)
 
