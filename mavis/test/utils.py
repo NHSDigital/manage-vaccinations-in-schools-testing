@@ -218,3 +218,6 @@ def expect_details(page: Page, key: str, value: str) -> None:
     detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
     expect(detail_value).to_contain_text(value)
+
+def format_nhs_number(nhs_number: str) -> str:
+    return f"{nhs_number[:3]} {nhs_number[3:6]} {nhs_number[6:]}"

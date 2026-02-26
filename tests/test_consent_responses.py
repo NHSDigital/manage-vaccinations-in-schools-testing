@@ -21,6 +21,7 @@ from mavis.test.pages import (
     StartPage,
     UnmatchedConsentResponsesPage,
 )
+from mavis.test.utils import expect_details, format_nhs_number
 
 pytestmark = pytest.mark.consent_responses
 
@@ -191,15 +192,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    assert (
-        page.locator(
-            ".nhsuk-summary-list__key:has-text('NHS number')"
-            " + .nhsuk-summary-list__value span.app-u-code"
-        )
-        .text_content()
-        .replace(" ", "")
-        == child.nhs_number
-    )
+    expect_details(page, "NHS number", format_nhs_number(child.nhs_number))
     ChildRecordPage(page).tabs.click_activity_log()
     ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
 
