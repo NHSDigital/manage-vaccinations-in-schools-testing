@@ -18,6 +18,7 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
+    LogOutPage,
     ReportsDownloadPage,
     ReportsVaccinationsPage,
     ReviewSchoolMovePage,
@@ -163,7 +164,8 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
         programme_group=Programme.FLU.group,
     )
 
-    page.goto("/logout")
+    LogOutPage(page).navigate()
+    LogOutPage(page).verify_log_out_page()
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_b.users["nurse"], team_b.team
@@ -206,6 +208,9 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
 
     _refresh_reporting(base_url)
 
+    LogOutPage(page).navigate()
+    LogOutPage(page).verify_log_out_page()
+
     _setup_complete = True
 
 
@@ -237,6 +242,7 @@ def test_team_a_reporting(
     """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
+    page.context.clear_cookies()
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_a.users["nurse"], team_a.team
@@ -245,8 +251,8 @@ def test_team_a_reporting(
     ReportsVaccinationsPage(page).navigate()
     ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
     ReportsVaccinationsPage(page).check_cohort_has_n_children("2")
-    ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50")
-    ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50")
+    ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50.0")
+    ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50.0")
 
     monthly = ReportsVaccinationsPage(page).get_monthly_vaccinations()
     current_month = datetime.now(tz=UTC).strftime("%B %Y")
@@ -283,6 +289,7 @@ def test_team_b_reporting(
     """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
+    page.context.clear_cookies()
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_b.users["nurse"], team_b.team
@@ -291,8 +298,8 @@ def test_team_b_reporting(
     ReportsVaccinationsPage(page).navigate()
     ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
     ReportsVaccinationsPage(page).check_cohort_has_n_children("4")
-    ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50")
-    ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50")
+    ReportsVaccinationsPage(page).check_category_percentage("Vaccinated", "50.0")
+    ReportsVaccinationsPage(page).check_category_percentage("Not vaccinated", "50.0")
 
     monthly = ReportsVaccinationsPage(page).get_monthly_vaccinations()
     current_month = datetime.now(tz=UTC).strftime("%B %Y")
@@ -324,6 +331,7 @@ def test_team_a_aggregate_csv(
     """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
+    page.context.clear_cookies()
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_a.users["nurse"], team_a.team
@@ -371,6 +379,7 @@ def test_team_b_aggregate_csv(
     """
     _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
 
+    page.context.clear_cookies()
     LogInPage(page).navigate()
     LogInPage(page).log_in_and_choose_team_if_necessary(
         team_b.users["nurse"], team_b.team
