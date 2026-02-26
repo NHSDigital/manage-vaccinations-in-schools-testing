@@ -5,6 +5,7 @@ from mavis.test.constants import Programme
 from mavis.test.data_models import School
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
+    expect_details,
     get_day_month_year_from_compact_date,
     get_offset_date_compact_format,
 )
@@ -43,6 +44,17 @@ class AddSessionWizardPage:
         )
         self.session_type_heading = self.page.get_by_role(
             "heading", name="What type of session is this?"
+        )
+        self.standard_consent_style_radio = self.page.get_by_role(
+            "radio",
+            name="Standard request",
+        )
+        self.outbreak_consent_style_radio = self.page.get_by_role(
+            "radio",
+            name="Outbreak request",
+        )
+        self.check_and_confirm_heading = self.page.get_by_role(
+            "heading", name="Check and confirm"
         )
 
     @step("Select School session")
@@ -128,6 +140,7 @@ class AddSessionWizardPage:
         programmes: list[Programme],
         year_groups: list[int],
         date_offset: int | None,
+        consent_style: str = "Standard",
     ) -> None:
         if school is not None:
             self.select_school_session()
@@ -142,7 +155,33 @@ class AddSessionWizardPage:
 
         self.keep_session_dates_if_necessary()
 
+        self.select_consent_style_if_necessary(programmes, consent_style)
+
+        expect(self.check_and_confirm_heading).to_be_visible()
+        self.check_confirmation_page(
+            school, programmes, year_groups, date_offset, consent_style
+        )
         self.click_continue()
+
+    def check_confirmation_page(
+        self,
+        school: School | None,
+        programmes: list[Programme],
+        _year_groups: list[int],
+        _date_offset: int | None,
+        consent_style: str,
+    ) -> None:
+        if school is not None:
+            expect_details(self.page, "School", school.name)
+        # TODO: Add programmes, it's a bit trickier because it's a list
+        # TODO: Add year_groups
+        # TODO: Add date_offset, dates are just annoying
+        if Programme.MMR in programmes:
+            expect_details(
+                self.page,
+                "Type of MMR\\(V\\) consent request",
+                f"{consent_style} request",
+            )
 
     def schedule_clinic_session(
         self,
@@ -162,3 +201,23 @@ class AddSessionWizardPage:
         self.page.wait_for_load_state()
         if self.keep_session_dates_button.is_visible():
             self.click_keep_session_dates()
+
+    @step("Click standard consent request style radio")
+    def click_standard_consent_request_radio(self) -> None:
+        self.standard_consent_style_radio.check()
+
+    @step("Click outbreak consent request style radio")
+    def click_outbreak_consent_request_radio(self) -> None:
+        self.outbreak_consent_style_radio.check()
+
+    @step("Select consent style if necessary")
+    def select_consent_style_if_necessary(
+        self, programmes: list[Programme], consent_style: str
+    ) -> None:
+        if Programme.MMR in programmes:
+            self.page.wait_for_load_state()
+            if consent_style == "Standard":
+                self.click_standard_consent_request_radio()
+            else:
+                self.click_outbreak_consent_request_radio()
+            self.click_continue()

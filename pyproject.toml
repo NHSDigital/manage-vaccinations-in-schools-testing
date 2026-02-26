@@ -71,6 +71,9 @@ ignore = [
   "RUF001",   # mavis uses the ambiguous ’ character
   "S311",     # no cryptography warnings needed
   "TRY300",   # conflicts with RET505 in certain patterns
+  "TD002",
+  "TD003",
+  "FIX002",
 ]
 
 [tool.ruff.lint.per-file-ignores]
