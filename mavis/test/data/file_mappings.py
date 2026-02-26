@@ -76,7 +76,6 @@ class ClassFileMapping(FileMapping):
     POSITIVE = "positive"
     RANDOM_CHILD = "random_child"
     REPORTING_REGRESSION_FOUR = "reporting_regression_four"
-    REPORTING_REGRESSION_TWO = "reporting_regression_two"
     TWO_FIXED_CHILDREN = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
     WHITESPACE = "whitespace"
