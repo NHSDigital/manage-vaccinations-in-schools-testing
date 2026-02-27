@@ -142,7 +142,8 @@ class AddSessionWizardPage:
 
         self.keep_session_dates_if_necessary()
 
-        self.click_continue()
+        self.click_continue()  # Standard or Outbreak
+        self.click_continue()  # Final confirmation
 
     def schedule_clinic_session(
         self,
