@@ -90,25 +90,6 @@ class ImportRecordsWizardPage:
             )
         ).to_be_visible()
 
-        # expect(
-        #     self.page.get_by_role(
-        #         "row", name="Flu (winter 2025) Not eligible"
-        #     ).get_by_role("strong")
-        # ).to_be_visible()
-        # expect(
-        #     self.page.get_by_role(
-        #         "row", name="Flu (winter 2024) Not eligible"
-        #     ).get_by_role("strong")
-        # ).to_be_visible()
-        # expect(
-        #     self.page.get_by_role("row", name="HPV Not eligible").get_by_role("strong")
-        # ).to_be_visible()
-        # expect(
-        #     self.page.get_by_role("row", name="MenACWY Not eligible").get_by_role(
-        #         "strong"
-        #     )
-        # ).to_be_visible()
-
     def handle_duplicate_review(self, action: DuplicateReviewAction) -> None:
         if action == DuplicateReviewAction.KEEP_BOTH:
             self.select_keep_both_records()
