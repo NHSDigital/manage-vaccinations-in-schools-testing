@@ -7,10 +7,7 @@ import pandas as pd
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.constants import (
-    Programme,
-    Vaccine,
-)
+from mavis.test.constants import Programme, Vaccine
 from mavis.test.data import get_session_id
 from mavis.test.data_models import Child, School, User, VaccinationRecord
 from mavis.test.pages.header_component import HeaderComponent
@@ -106,11 +103,23 @@ class SessionsOverviewPage:
 
     def get_online_consent_url(self, *programmes: Programme) -> str:
         programme_names = [
-            "MMR" if programme is Programme.MMR else str(programme)
+            "MMRV" if programme is Programme.MMR else str(programme)
             for programme in programmes
         ]
         link_text = f"View the {' and '.join(programme_names)} online consent form"
-        return str(self.page.get_by_role("link", name=link_text).get_attribute("href"))
+
+        # Try to find the link with MMRV first
+        link = self.page.get_by_role("link", name=link_text).first
+
+        # If not found and we have MMRV in the programme names, try with MMR instead
+        if not link.is_visible() and "MMRV" in programme_names:
+            programme_names = [
+                "MMR" if name == "MMRV" else name for name in programme_names
+            ]
+            link_text = f"View the {' and '.join(programme_names)} online consent form"
+            link = self.page.get_by_role("link", name=link_text).first
+
+        return str(link.get_attribute("href"))
 
     @step("Send consent reminders")
     def send_consent_reminders(self) -> None:
