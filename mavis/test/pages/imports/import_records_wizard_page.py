@@ -83,6 +83,11 @@ class ImportRecordsWizardPage:
         self.imported_record_link = self.page.get_by_text(
             re.compile(r"\d+ imported record")
         )
+        self.preview_page_link = (
+            self.page.locator(".nhsuk-details__summary-text")
+            .filter(has_text=self.records_pattern)
+            .first
+        )
 
     @step("Verify linking for child {1} with the import")
     def verify_linking(self, child: Child) -> None:
@@ -104,11 +109,6 @@ class ImportRecordsWizardPage:
 
     def click_review_link(self) -> None:
         self.review_link.click()
-        self.preview_page_link = (
-            self.page.locator(".nhsuk-details__summary-text")
-            .filter(has_text=self.records_pattern)
-            .first
-        )
 
     @step("Select Child Records")
     def select_child_records(self) -> None:
@@ -141,7 +141,7 @@ class ImportRecordsWizardPage:
 
     @step("Click Review to expand duplicate details")
     def click_review_duplicates(self) -> None:
-        self.get_preview_page_link().click()
+        self.preview_page_link.click()
         expect(self.review_and_approve_tag).to_be_visible()
 
     @step("Select Keep both records")
