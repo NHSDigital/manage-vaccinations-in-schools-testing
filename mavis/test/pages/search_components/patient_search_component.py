@@ -1,13 +1,9 @@
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data_models import (
-    Child,
-)
+from mavis.test.data_models import Child
 from mavis.test.pages.search_components.base_search_component import BaseSearchComponent
-from mavis.test.utils import (
-    reload_until_element_is_visible,
-)
+from mavis.test.utils import reload_until_element_is_visible
 
 
 class PatientSearchComponent(BaseSearchComponent):
@@ -71,6 +67,13 @@ class PatientSearchComponent(BaseSearchComponent):
             self.page,
             self.page.get_by_role("link", name=child_name),
         )
+
+    @step("Search for child {1}")
+    def search_for_child_by_name(self, child_name: str) -> None:
+        self.search_textbox.fill(child_name)
+
+        with self.page.expect_navigation():
+            self.search_button.click()
 
     @step("Search for child {1}")
     def search_for_a_child_by_nhs_number(self, child: Child) -> None:

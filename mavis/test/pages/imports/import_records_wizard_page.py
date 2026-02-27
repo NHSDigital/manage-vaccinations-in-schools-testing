@@ -4,13 +4,12 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.constants import Programme
+from mavis.test.constants import DuplicateReviewAction, Programme
 from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
 from mavis.test.data.file_mappings import ImportFormatDetails
+from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.utils import (
-    reload_until_element_is_visible,
-)
+from mavis.test.utils import reload_until_element_is_visible
 
 
 class ImportRecordsWizardPage:
@@ -69,6 +68,42 @@ class ImportRecordsWizardPage:
         self.import_format_details_link = self.page.get_by_text(
             "How to format your Mavis CSV"
         )
+        self.keep_both_option_radio = self.page.get_by_role(
+            "radio",
+            name="Keep both child records",
+        )
+        self.upload_issue_link = self.page.get_by_text("1 upload issue")
+        self.record_updated = page.get_by_role("alert", name="Success").filter(
+            has_text="Record updated",
+        )
+        self.review_link = self.page.get_by_role("link", name="Review")
+        self.resolve_duplicate_button = self.page.get_by_role(
+            "button", name="Resolve duplicate"
+        )
+        self.imported_record_link = self.page.get_by_text(
+            re.compile(r"\d+ imported record")
+        )
+
+    @step("Verify linking for child {1} with the import")
+    def verify_linking(self, child: Child) -> None:
+        self.imported_record_link.click()
+        self.page.get_by_role(
+            "link", name=f"{child.last_name.upper()}, {child.first_name}"
+        ).click()
+        expect(self.page.locator("h3").filter(has_text="Child record")).to_be_visible()
+        expect(
+            self.page.get_by_role(
+                "heading", name=f"{child.last_name.upper()}, {child.first_name}"
+            )
+        ).to_be_visible()
+
+    def handle_duplicate_review(self, action: DuplicateReviewAction) -> None:
+        if action == DuplicateReviewAction.KEEP_BOTH:
+            self.select_keep_both_records()
+        self.resolve_duplicate_button.click()
+
+    def click_review_link(self) -> None:
+        self.review_link.click()
         self.preview_page_link = (
             self.page.locator(".nhsuk-details__summary-text")
             .filter(has_text=self.records_pattern)
@@ -103,6 +138,25 @@ class ImportRecordsWizardPage:
 
     def is_preview_page_link_visible(self) -> bool:
         return self.preview_page_link.is_visible()
+
+    @step("Click Review to expand duplicate details")
+    def click_review_duplicates(self) -> None:
+        self.get_preview_page_link().click()
+        expect(self.review_and_approve_tag).to_be_visible()
+
+    @step("Select Keep both records")
+    def select_keep_both_records(self) -> None:
+        self.keep_both_option_radio.click()
+
+    @step("Approve and import records")
+    def click_approve_and_import(self) -> None:
+        """Click the approve button to finalize the import."""
+        self.approve_import_button.click()
+        expect(
+            self.page.get_by_label("Information")
+            .locator("div")
+            .filter(has_text="Import started")
+        ).to_be_visible()
 
     def approve_preview_if_shown(self, file_path: Path) -> None:
         self.preview_page_link.click()
