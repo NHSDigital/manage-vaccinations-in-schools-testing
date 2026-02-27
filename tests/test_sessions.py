@@ -519,3 +519,41 @@ def test_accessibility(
 
     SessionsPatientPage(page).click_session_activity_and_notes()
     AccessibilityHelper(page).check_accessibility()
+
+
+@issue("MAV-2073")
+def test_outbreak_session(
+    log_in_as_nurse,
+    schools,
+    page,
+    year_groups,
+):
+    """
+    Test: Create, edit, and delete an MMR outbreak session for a school and
+          verify lifecycle actions.
+    Steps:
+    1. Navigate to sessions page.
+    2. Create a new outbreak MMR session for the school and programme.
+    3. Edit the session to have standard consent request style.
+    4. Delete all sessions for the school.
+    Verification:
+    - Session is created, edited, and deleted without errors.
+    """
+    school = schools[Programme.MMR][0]
+    year_group = year_groups[Programme.MMR]
+
+    schedule_school_session_if_needed(
+        page,
+        school,
+        [Programme.MMR],
+        [year_group],
+        date_offset=14,
+        consent_style="Outbreak",
+    )
+    expect_details(
+        page,
+        "Type of MMR\\(V\\) consent request",
+        "Outbreak request",
+    )
+    # TODO: Test editing the consent style to be "Standard"
+    # TODO: Test deletion

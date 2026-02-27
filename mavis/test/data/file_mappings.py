@@ -39,6 +39,8 @@ class VaccsFileMapping(FileMapping):
     NO_CARE_SETTING = "no_care_setting"
     NOT_GIVEN = "not_given"
     POSITIVE = "positive"
+    REPORTING_REGRESSION_TEAM_A = "reporting_regression_team_a"
+    REPORTING_REGRESSION_TEAM_B = "reporting_regression_team_b"
     SNOMED_VERIFICATION = "snomed_verification"
     SYSTMONE_HIST_NEGATIVE = "systmone_hist_negative"
     SYSTMONE_NEGATIVE = "systmone_negative"
@@ -59,6 +61,7 @@ class ChildFileMapping(FileMapping):
     POSITIVE = "positive"
     WHITESPACE = "whitespace"
     FIXED_CHILD = "fixed_child"
+    RANDOM_CHILD_WITHOUT_NHS_NUMBER = "random_child_without_nhs_number"
 
     @property
     def folder(self) -> Path:
@@ -75,6 +78,8 @@ class ClassFileMapping(FileMapping):
     NEGATIVE = "negative"
     POSITIVE = "positive"
     RANDOM_CHILD = "random_child"
+    REPORTING_REGRESSION_ONE_F = "reporting_regression_one_f"
+    REPORTING_REGRESSION_TWO_MF = "reporting_regression_two_mf"
     TWO_FIXED_CHILDREN = "two_fixed_children"
     TWO_FIXED_CHILDREN_HOMESCHOOL = "two_fixed_children_homeschool"
     WHITESPACE = "whitespace"
