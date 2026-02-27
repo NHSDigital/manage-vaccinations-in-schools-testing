@@ -1,5 +1,4 @@
 import uuid
-import urllib.parse
 
 import dateutil.parser
 import requests
@@ -18,7 +17,7 @@ class PdsApiHelper:
             "Authorization": f"Bearer {token}",
         }
 
-    def get_child_by_nhs_number(self, nhs_number: str) -> Patient:
+    def get_patient_by_nhs_number(self, nhs_number: str) -> Patient:
         response = requests.get(
             url=PdsEndpoints.GET_PATIENT_DETAILS.to_url_with_suffix(nhs_number),
             headers=self.headers,
@@ -29,10 +28,18 @@ class PdsApiHelper:
         data = response.json()
 
         name_data = data["name"][0]
-        first_name = name_data["given"][0]
-        last_name = name_data["family"]
-        birth_date = dateutil.parser.parse(data["birthDate"]).date()
+        given_name = name_data["given"][0]
+        family_name = name_data["family"]
+        date_of_birth = dateutil.parser.parse(data["birthDate"]).date()
+        date_of_death = (
+            dateutil.parser.parse(data["deceasedDateTime"]).date()
+            if "deceasedDateTime" in data
+            else None
+        )
 
+        if "address" not in data:
+            msg = "No address in patient data"
+            raise ValueError(msg)
         address = None
         for addr in data["address"]:
             if addr.get("use") == "home":
@@ -49,14 +56,12 @@ class PdsApiHelper:
 
         return Patient(
             nhs_number=nhs_number,
-            date_of_birth=birth_date,
-            family_name=last_name,
-            given_name=first_name,
+            date_of_birth=date_of_birth,
+            family_name=family_name,
+            given_name=given_name,
             address_line_1=address_lines[0],
             address_line_2=address_lines[1],
             address_town=address_lines[2],
             address_postcode=postal_code,
+            date_of_death=date_of_death,
         )
-
-    def check_if_child_is_deceased(self, nhs_number: str) -> bool:
-        return False

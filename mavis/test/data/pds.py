@@ -69,7 +69,7 @@ with (Path(__file__).parent / "pds.csv").open(newline="") as file:
     patients = [Patient.from_csv_row(row) for row in reader]
 
 
-def get_random_child_patient_without_date_of_death() -> Child:
+def get_random_child_patient_without_date_of_death(token: str) -> Child:
     patients_without_date_of_death = [
         patient for patient in patients if not patient.date_of_death
     ]
@@ -82,7 +82,29 @@ def get_random_child_patient_without_date_of_death() -> Child:
         if patient.date_of_birth >= cutoff_date
     ]
 
-    child = random.choice(child_patients_without_date_of_death)
+    from mavis.test.helpers.pds_api_helper import PdsApiHelper
+
+    pds_api_helper = PdsApiHelper(token)
+    child = None
+    checked_nhs_numbers = set()
+    while True:
+        if len(checked_nhs_numbers) == len(child_patients_without_date_of_death):
+            msg = "All patients in PDS export are outdated"
+            raise RuntimeError(msg)
+
+        child = random.choice(child_patients_without_date_of_death)
+        if child.nhs_number in checked_nhs_numbers:
+            continue
+
+        child_in_pds = None
+        checked_nhs_numbers.add(child.nhs_number)
+        try:
+            child_in_pds = pds_api_helper.get_patient_by_nhs_number(child.nhs_number)
+        except:
+            continue
+
+        if child == child_in_pds:
+            break
 
     return Child(
         child.given_name,

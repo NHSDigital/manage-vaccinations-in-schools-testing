@@ -33,8 +33,8 @@ def pds_api_helper(authenticate_api):
 
 
 @pytest.fixture
-def pds_child():
-    return pds.get_random_child_patient_without_date_of_death()
+def pds_child(authenticate_api):
+    return pds.get_random_child_patient_without_date_of_death(authenticate_api)
 
 
 @pytest.fixture
@@ -74,6 +74,7 @@ def give_online_consent_pds_child(
 ):
     child = pds_child
     schools = schools[Programme.HPV]
+    print("NHS NUMBER:" + child.nhs_number)
 
     page.goto(online_consent_url)
     StartPage(page).start()
@@ -164,7 +165,6 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
 
 
 def test_create_child_record_from_consent_with_nhs_number(
-    pds_api_helper,
     give_online_consent_pds_child,
     pds_child,
     page,
@@ -183,7 +183,6 @@ def test_create_child_record_from_consent_with_nhs_number(
     - Activity log for the child shows the creation event.
     """
     child = pds_child
-    child_in_pds = pds_api_helper.get_child_by_nhs_number(child.nhs_number)
 
     DashboardPage(page).navigate()
     DashboardPage(page).click_unmatched_consent_responses()
