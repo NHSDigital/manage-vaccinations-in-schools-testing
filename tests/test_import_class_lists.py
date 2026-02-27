@@ -231,6 +231,9 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ClassFileMapping.DUPLICATE_POSTCODE)
 
+    child = point_of_care_file_generator.fixed_random_child
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_linking(child)
+
     ImportsPage(page).header.click_mavis_header()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
@@ -256,3 +259,13 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     expect(
         ImportRecordsWizardPage(page, point_of_care_file_generator).record_updated
     ).to_be_visible()
+
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_linking(child)
+
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).header.click_mavis_header()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_by_name(str(child))
+
+    expect(page.get_by_text("Showing 1 to 2 of 2 children")).to_be_visible()

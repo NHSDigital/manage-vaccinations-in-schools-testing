@@ -7,6 +7,7 @@ from mavis.test.annotations import step
 from mavis.test.constants import DuplicateReviewAction, Programme
 from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
 from mavis.test.data.file_mappings import ImportFormatDetails
+from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import reload_until_element_is_visible
 
@@ -72,6 +73,41 @@ class ImportRecordsWizardPage:
         self.resolve_duplicate_button = self.page.get_by_role(
             "button", name="Resolve duplicate"
         )
+        self.imported_record_link = self.page.get_by_text(
+            re.compile(r"\d+ imported record")
+        )
+
+    @step("Verify linking for child {1} with the import")
+    def verify_linking(self, child: Child) -> None:
+        self.imported_record_link.click()
+        self.page.get_by_role(
+            "link", name=f"{child.last_name.upper()}, {child.first_name}"
+        ).click()
+        expect(self.page.locator("h3").filter(has_text="Child record")).to_be_visible()
+        expect(
+            self.page.get_by_role(
+                "heading", name=f"{child.last_name.upper()}, {child.first_name}"
+            )
+        ).to_be_visible()
+
+        # expect(
+        #     self.page.get_by_role(
+        #         "row", name="Flu (winter 2025) Not eligible"
+        #     ).get_by_role("strong")
+        # ).to_be_visible()
+        # expect(
+        #     self.page.get_by_role(
+        #         "row", name="Flu (winter 2024) Not eligible"
+        #     ).get_by_role("strong")
+        # ).to_be_visible()
+        # expect(
+        #     self.page.get_by_role("row", name="HPV Not eligible").get_by_role("strong")
+        # ).to_be_visible()
+        # expect(
+        #     self.page.get_by_role("row", name="MenACWY Not eligible").get_by_role(
+        #         "strong"
+        #     )
+        # ).to_be_visible()
 
     def handle_duplicate_review(self, action: DuplicateReviewAction) -> None:
         if action == DuplicateReviewAction.KEEP_BOTH:

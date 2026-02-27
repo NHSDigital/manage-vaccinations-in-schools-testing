@@ -194,6 +194,11 @@ class FileGenerator:
             self._fixed_random_cache = Child.generate(year_group)
         return self._fixed_random_cache
 
+    @property
+    def fixed_random_child(self) -> Child | None:
+        """Get the cached fixed random child, if it has been generated."""
+        return self._fixed_random_cache
+
     def create_line_replacements_dict(
         self, programme_group: str
     ) -> dict[str, Callable[[], str]]:
