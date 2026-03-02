@@ -4,8 +4,9 @@ import dateutil.parser
 import requests
 
 from mavis.test.constants import PdsEndpoints
-from mavis.test.data.pds import Patient
+from mavis.test.data_models import Patient
 
+REQUIRED_ADDRESS_LINES = 3
 
 class PdsApiHelper:
     def __init__(self, token: str) -> None:
@@ -51,7 +52,7 @@ class PdsApiHelper:
         address_lines = address["line"]
         postal_code = address["postalCode"]
 
-        while len(address_lines) < 3:
+        while len(address_lines) < REQUIRED_ADDRESS_LINES:
             address_lines.append("")
 
         return Patient(
