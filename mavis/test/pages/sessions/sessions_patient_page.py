@@ -105,6 +105,9 @@ class SessionsPatientPage:
         self.triage_notes_textbox = self.page.get_by_role(
             "textbox", name="Triage notes"
         )
+        self.record_as_already_vaccinated_link = self.page.get_by_role(
+            "link", name="Record as already vaccinated"
+        )
 
     def _select_tab(self, name: str) -> None:
         link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
@@ -149,6 +152,18 @@ class SessionsPatientPage:
     @step("Click on Mark as invalid")
     def click_mark_as_invalid_button(self) -> None:
         self.mark_as_invalid_button.click()
+
+    @step("Click on Record as already vaccinated")
+    def record_as_already_vaccinated(self) -> None:
+        self.record_as_already_vaccinated_link.click()
+
+    @step("Record {1} dose as already given")
+    def record_dose_as_already_given(self, dose_number: int) -> None:
+        dose_text = "1st" if dose_number == 1 else "2nd"
+        dose_link = self.page.get_by_role(
+            "link", name=f"Record {dose_text} dose as already given"
+        )
+        dose_link.click()
 
     def invalidate_parent_refusal(self, parent: Parent) -> None:
         invalidation_notes = "Invalidation notes."
