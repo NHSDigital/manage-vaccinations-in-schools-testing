@@ -86,3 +86,17 @@ class ReportsVaccinationsPage:
         if vaccinated_pct == one_hundred_percent:
             vaccinated_pct = int(vaccinated_pct)
         return str(total), str(unvaccinated_pct), str(vaccinated_pct)
+
+    @step("Get monthly vaccination counts")
+    def get_monthly_vaccinations(self) -> dict[str, int]:
+        table = self.page.locator("table").filter(
+            has=self.page.get_by_role("columnheader", name="Month")
+        )
+        rows = table.locator("tbody tr")
+        result = {}
+        for row in rows.all():
+            cells = row.locator("td")
+            month = cells.nth(0).inner_text()
+            count = int(cells.nth(1).inner_text().replace(",", ""))
+            result[month] = count
+        return result

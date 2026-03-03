@@ -34,8 +34,7 @@ class TeamSchoolsPage:
         )
         self.continue_button = self.page.get_by_role("button", name="Continue")
         self.confirm_site_button = self.page.get_by_role("button", name="Add site")
-        self.name_error_summary = self.page.locator("#draft-school-site-name-error")
-        self.confirm_school_name = self.page.locator("#confirm-school-site-name")
+        self.name_error_summary = self.page.locator("#draft-school-name-error")
         self.change_parent_school_link = self.page.get_by_role(
             "link", name="Change parent school"
         )

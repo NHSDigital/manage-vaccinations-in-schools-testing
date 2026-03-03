@@ -9,7 +9,7 @@ from .children import (
 from .dashboard_page import DashboardPage
 from .error_pages import BadRequestPage, ServiceErrorPage
 from .flipper_page import FlipperPage
-from .imports import ImportRecordsWizardPage, ImportsPage
+from .imports import ImportIssuesPage, ImportRecordsWizardPage, ImportsPage
 from .log_in_page import LogInPage
 from .log_out_page import LogOutPage
 from .online_consent_wizard_page import OnlineConsentWizardPage
@@ -59,6 +59,7 @@ __all__ = [
     "EditVaccinationRecordPage",
     "FlipperPage",
     "GillickCompetencePage",
+    "ImportIssuesPage",
     "ImportRecordsWizardPage",
     "ImportsPage",
     "LogInPage",
