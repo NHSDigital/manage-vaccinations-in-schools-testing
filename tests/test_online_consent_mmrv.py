@@ -69,9 +69,7 @@ def test_consent_refused_for_mmrv_vaccination(
     )
     OnlineConsentWizardPage(page).click_confirm()
     # Check confirmation message for MMRV-specific text
-    OnlineConsentWizardPage(page).expect_confirmation_text(
-        "Consent refused"
-    )
+    OnlineConsentWizardPage(page).expect_confirmation_text("Consent refused")
     OnlineConsentWizardPage(page).expect_confirmation_text(
         "to get the MMRV vaccination at school"
     )

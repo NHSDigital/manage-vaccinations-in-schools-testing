@@ -1,13 +1,6 @@
 import pytest
-from playwright.sync_api import expect
 
-from mavis.test.constants import (
-    MMRV_ELIGIBILITY_CUTOFF_DOB,
-    ConsentOption,
-    ConsentRefusalReason,
-    Programme,
-)
-from mavis.test.data_models import Child
+from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
 from mavis.test.pages import OnlineConsentWizardPage, StartPage
 
 pytestmark = pytest.mark.consent
@@ -110,5 +103,3 @@ def test_consent_given_for_mmr_vaccination(
         programmes=[Programme.MMR],
         yes_to_health_questions=yes_to_health_questions,
     )
-
-
