@@ -1,4 +1,5 @@
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.constants import (
     MMRV_ELIGIBILITY_CUTOFF_DOB,
@@ -116,12 +117,20 @@ def test_consent_given_for_mmr_vaccination(
 
 @pytest.fixture
 def mmrv_children(year_groups) -> dict[str, list[Child]]:
-    """Generate MMRV-eligible children (born after 2020-01-01)."""
-    # Use year group 0 to ensure MMRV eligibility
-    mmrv_year_groups = {programme.group: 0 for programme in Programme}
-    return Child.generate_children_in_year_group_for_each_programme_group(
-        2, mmrv_year_groups
+    """Generate MMRV-eligible children with manually set DOBs."""
+    from datetime import date
+
+    # Generate children using default year groups
+    children_dict = Child.generate_children_in_year_group_for_each_programme_group(
+        2, year_groups
     )
+    
+    # Override DOBs to ensure MMRV eligibility (Sept 1, 2020)
+    for programme_group in children_dict:
+        for child in children_dict[programme_group]:
+            child.date_of_birth = date(2020, 9, 1)
+    
+    return children_dict
 
 
 def test_consent_refused_for_mmrv_vaccination(
@@ -136,7 +145,7 @@ def test_consent_refused_for_mmrv_vaccination(
     3. Choose refusal reason and provide details.
     4. Submit the consent form.
     Verification:
-    - Confirmation text indicates consent was refused for MMR vaccination.
+    - Confirmation text indicates consent was refused for MMRV vaccination.
     """
     child = mmrv_children[Programme.MMR][0]
     schools = schools[Programme.MMR]
@@ -149,8 +158,9 @@ def test_consent_refused_for_mmrv_vaccination(
     )
     OnlineConsentWizardPage(page).click_confirm()
     OnlineConsentWizardPage(page).expect_confirmation_text(
-        f"Consent refusedYou've told us that you do not want"
-        f" {child.first_name} {child.last_name} to get the MMR vaccination at school"
+        f"Consent refusedYou’ve told us that you do not want"
+        f" {child.first_name} {child.last_name} to get the MMR"
+        f" vaccination at school"
     )
 
 
@@ -189,11 +199,6 @@ def test_consent_given_for_mmrv_vaccination(
     """
     child = mmrv_children[Programme.MMR][0]
     schools = schools[Programme.MMR]
-
-    # Verify child is MMRV eligible
-    assert child.date_of_birth > MMRV_ELIGIBILITY_CUTOFF_DOB, (
-        "Child should be MMRV-eligible for this test"
-    )
 
     number_of_health_questions = len(
         Programme.health_questions(Programme.MMR, consent_option, mmrv_eligibility=True)

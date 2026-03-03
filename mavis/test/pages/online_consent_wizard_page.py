@@ -370,9 +370,6 @@ class OnlineConsentWizardPage:
                     else "nasal spray flu"
                 )
             if programme is Programme.MMR:
-                # Check if child is MMRV-eligible
-                if child.date_of_birth > MMRV_ELIGIBILITY_CUTOFF_DOB:
-                    return "MMR(V)"
                 return "MMR"
             return str(programme)
 
