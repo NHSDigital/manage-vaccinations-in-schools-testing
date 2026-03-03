@@ -101,23 +101,21 @@ class SessionsOverviewPage:
     def click_send_manual_consent_reminders(self) -> None:
         self.send_manual_consent_reminders_button.click()
 
-    def get_online_consent_url(self, *programmes: Programme) -> str:
-        programme_names = [
-            "MMRV" if programme is Programme.MMR else str(programme)
-            for programme in programmes
-        ]
+    def get_online_consent_url(
+        self, *programmes: Programme, prefer_mmrv: bool = False
+    ) -> str:
+        # When prefer_mmrv is True, we look for the MMRV link specifically
+        # Otherwise, we look for MMR link
+        programme_names = []
+        for programme in programmes:
+            if programme is Programme.MMR:
+                # Use MMRV if prefer_mmrv is True, otherwise MMR
+                programme_names.append("MMRV" if prefer_mmrv else "MMR")
+            else:
+                programme_names.append(str(programme))
+
         link_text = f"View the {' and '.join(programme_names)} online consent form"
-
-        # Try to find the link with MMRV first
         link = self.page.get_by_role("link", name=link_text).first
-
-        # If not found and we have MMRV in the programme names, try with MMR instead
-        if not link.is_visible() and "MMRV" in programme_names:
-            programme_names = [
-                "MMR" if name == "MMRV" else name for name in programme_names
-            ]
-            link_text = f"View the {' and '.join(programme_names)} online consent form"
-            link = self.page.get_by_role("link", name=link_text).first
 
         return str(link.get_attribute("href"))
 
