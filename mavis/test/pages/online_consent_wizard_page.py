@@ -4,6 +4,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import (
+    MMRV_ELIGIBILITY_CUTOFF_DOB,
     ConsentOption,
     ConsentRefusalReason,
     Programme,
@@ -369,6 +370,9 @@ class OnlineConsentWizardPage:
                     else "nasal spray flu"
                 )
             if programme is Programme.MMR:
+                # Check if child is MMRV-eligible based on date of birth
+                if child.date_of_birth >= MMRV_ELIGIBILITY_CUTOFF_DOB:
+                    return "MMRV"
                 return "MMR"
             return str(programme)
 

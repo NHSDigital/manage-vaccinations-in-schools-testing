@@ -95,6 +95,30 @@ def schedule_mmr_session_and_get_consent_url(
 
 
 @pytest.fixture
+def schedule_mmrv_session_and_get_consent_url(
+    set_feature_flags, point_of_care_nurse, point_of_care_team, page, year_groups
+):
+    """Get consent URL for MMRV-eligible children (uses the MMRV link)."""
+
+    def wrapper(school: School, *programmes: Programme):
+        year_group = year_groups[programmes[0].group]
+
+        LogInPage(page).navigate()
+        LogInPage(page).log_in_and_choose_team_if_necessary(
+            point_of_care_nurse, point_of_care_team
+        )
+        schedule_school_session_if_needed(
+            page, school, list(programmes), [year_group], date_offset=7
+        )
+        url = SessionsOverviewPage(page).get_online_consent_url(
+            *programmes, prefer_mmrv=True
+        )
+        yield url
+
+    return wrapper
+
+
+@pytest.fixture
 def log_in_as_medical_secretary(
     set_feature_flags,
     point_of_care_medical_secretary,
