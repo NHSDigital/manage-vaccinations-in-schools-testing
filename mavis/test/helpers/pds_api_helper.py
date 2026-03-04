@@ -50,6 +50,9 @@ class PdsApiHelper:
             address = data["address"][0]
 
         address_lines = address["line"]
+        if "postalCode" not in address:
+            msg = "No postal code in patient address"
+            raise ValueError(msg)
         postal_code = address["postalCode"]
 
         while len(address_lines) < REQUIRED_ADDRESS_LINES:
