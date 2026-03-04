@@ -115,7 +115,7 @@ on:
       screenshot_all_steps:
         description: 'Take screenshots for all steps (in addition to failures)'
         required: true
-        default: 'false'
+        default: 'true'
         type: choice
         options:
           - true
@@ -256,6 +256,13 @@ jobs:
           ZEPHYR_PROJECT_ID: ${{ vars.ZEPHYR_PROJECT_ID }}
           SCREENSHOT_ALL_STEPS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
+
+      - name: Configure AWS credentials
+        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
 
       - name: Process reports
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
