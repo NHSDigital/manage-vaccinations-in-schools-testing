@@ -4,6 +4,7 @@ import pytest
 from _pytest.main import Session
 from _pytest.reports import TestReport
 
+from mavis.test.jira_integration.hooks import pytest_sessionfinish as jira_sessionfinish
 from mavis.test.utils import get_current_datetime
 
 path = Path("logs") / "report.log"
@@ -19,6 +20,9 @@ def pytest_sessionstart(session: Session) -> None:
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish(session: Session, exitstatus: int) -> None:
+    jira_sessionfinish(session, exitstatus)
+
+    # Then write session end to report log
     with path.open("a") as file:
         file.write(f"Test Session Ended: {get_current_datetime()}\n")
 

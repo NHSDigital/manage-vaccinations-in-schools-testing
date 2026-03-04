@@ -18,6 +18,7 @@ class JiraConfig:
     test_cycle_version: str | None = None
     test_cycle_key: str | None = None
     zephyr_project_id: str | None = None
+    min_request_interval: float = 0.1  # Minimum seconds between API requests
 
     @classmethod
     def from_env(cls) -> "JiraConfig":
@@ -44,6 +45,7 @@ class JiraConfig:
             ),
             test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
+            min_request_interval=float(os.getenv("JIRA_MIN_REQUEST_INTERVAL", "0.1")),
         )
 
     def is_valid(self) -> bool:

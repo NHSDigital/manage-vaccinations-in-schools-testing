@@ -4,13 +4,25 @@ Jira REST API client for test management.
 
 import logging
 import re
+import time
 from pathlib import Path
+from threading import Lock
 
 import requests
 
 from .models import JiraTestCase, TestResult
 
 logger = logging.getLogger(__name__)
+
+
+def _get_response_attr(
+    error: requests.exceptions.HTTPError, attr: str, default: object = None
+) -> object:
+    return (
+        getattr(error.response, attr, default)
+        if hasattr(error, "response") and error.response
+        else default
+    )
 
 
 class JiraClient:
@@ -22,12 +34,19 @@ class JiraClient:
         api_token: str,
         project_key: str,
         zephyr_project_id: str | None = None,
+        min_request_interval: float = 0.1,  # Minimum 100ms between requests
     ) -> None:
         self.jira_reporting_url = jira_reporting_url.rstrip("/")
         self.api_token = api_token
         self.project_key = project_key
         self.timeout = 30
         self.zephyr_project_id = zephyr_project_id
+
+        # Rate limiting
+        self.min_request_interval = min_request_interval
+        self._last_request_time = 0.0
+        self._request_lock = Lock()
+        self._request_count = 0
 
         self.session = requests.Session()
 
@@ -44,6 +63,46 @@ class JiraClient:
         self._field_id_cache: dict[str, str | None] = {}
         self._zephyr_status_cache: dict[str, int] = {}
 
+    def _throttle_request(self) -> None:
+        """Enforce minimum delay between API requests to avoid rate limiting."""
+        with self._request_lock:
+            current_time = time.time()
+            time_since_last = current_time - self._last_request_time
+
+            if time_since_last < self.min_request_interval:
+                sleep_time = self.min_request_interval - time_since_last
+                time.sleep(sleep_time)
+
+            self._last_request_time = time.time()
+            self._request_count += 1
+
+    def _execute_http_method(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: dict | None = None,
+        params: dict | None = None,
+        files: dict | None = None,
+    ) -> requests.Response:
+        """Execute HTTP request with appropriate method."""
+        kwargs = {"params": params, "timeout": self.timeout}
+
+        if method == "GET":
+            return self.session.get(url, **kwargs)
+        if method == "POST":
+            kwargs["files" if files else "json"] = files or data
+            if files:
+                kwargs["data"] = data
+            return self.session.post(url, **kwargs)
+        if method == "PUT":
+            return self.session.put(url, json=data, **kwargs)
+        if method == "DELETE":
+            return self.session.delete(url, **kwargs)
+
+        error_msg = f"Unsupported method: {method}"
+        raise ValueError(error_msg)
+
     def _make_request(  # noqa: PLR0913
         self,
         method: str,
@@ -54,32 +113,42 @@ class JiraClient:
         api_name: str = "Jira",
     ) -> dict:
         """Make authenticated API request."""
+        # Throttle to avoid overwhelming the API
+        self._throttle_request()
+
         try:
-            kwargs = {"params": params, "timeout": self.timeout}
-            if method == "GET":
-                response = self.session.get(url, **kwargs)
-            elif method == "POST":
-                kwargs["files" if files else "json"] = files or data
-                if files:
-                    kwargs["data"] = data
-                response = self.session.post(url, **kwargs)
-            elif method == "PUT":
-                response = self.session.put(url, json=data, **kwargs)
-            elif method == "DELETE":
-                response = self.session.delete(url, **kwargs)
-            else:
-                error_msg = f"Unsupported method: {method}"
-                raise ValueError(error_msg)
+            response = self._execute_http_method(
+                method, url, data=data, params=params, files=files
+            )
             response.raise_for_status()
             try:
                 return response.json() if response.content else {}
             except ValueError as e:
                 logger.debug("Failed to parse %s JSON response: %s", api_name, e)
                 return {}
+        except requests.exceptions.HTTPError as e:
+            status_code = _get_response_attr(e, "status_code", "unknown")
+            error_body = _get_response_attr(e, "text", "N/A")
+            logger.exception(
+                "%s API HTTP error %s for %s: %s",
+                api_name,
+                status_code,
+                method,
+                error_body[:200] if error_body != "N/A" else "No error details",
+            )
+            raise
+        except requests.exceptions.Timeout:
+            logger.exception(
+                "%s API request timed out after %ss", api_name, self.timeout
+            )
+            raise
+        except requests.exceptions.ConnectionError:
+            logger.exception("%s API connection error", api_name)
+            raise
         except requests.exceptions.RequestException as e:
-            logger.debug("%s API request failed: %s", api_name, e)
-            if hasattr(e, "response") and e.response is not None:
-                logger.debug("%s response: %s", api_name, e.response.text)
+            logger.exception("%s API request failed", api_name)
+            if response_text := _get_response_attr(e, "text"):
+                logger.debug("%s response: %s", api_name, response_text[:500])
             raise
 
     def _make_jira_request(
