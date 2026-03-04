@@ -2,6 +2,7 @@ import csv
 import random
 from pathlib import Path
 
+import requests
 from dateutil.relativedelta import relativedelta
 
 from mavis.test.constants import Relationship
@@ -41,6 +42,10 @@ def get_random_child_patient_without_date_of_death(token: str) -> Child:
         checked_nhs_numbers.add(child.nhs_number)
         try:
             child_in_pds = pds_api_helper.get_patient_by_nhs_number(child.nhs_number)
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:  # noqa: PLR2004
+                continue
+            raise
         except ValueError:
             continue
 
