@@ -32,9 +32,15 @@ class JiraConfig:
             os.getenv("SCREENSHOT_ALL_STEPS", "false").lower() == "true"
         )
 
-        # Generate timestamp-based cycle key
-        timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d_%H-%M-%S")
-        cycle_key = f"Test_Run_{timestamp}"
+        # Generate timestamp-based cycle key (once per test run)
+        # Check if cycle key already exists (set by controller for workers)
+        cycle_key = os.getenv("_JIRA_TEST_CYCLE_KEY_INTERNAL")
+        if not cycle_key:
+            # Generate new cycle key with current date/time
+            timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d_%H-%M-%S")
+            cycle_key = f"Test_Run_{timestamp}"
+            # Store for workers to reuse
+            os.environ["_JIRA_TEST_CYCLE_KEY_INTERNAL"] = cycle_key
 
         return cls(
             jira_reporting_url=jira_reporting_url,

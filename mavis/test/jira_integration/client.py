@@ -129,13 +129,28 @@ class JiraClient:
         except requests.exceptions.HTTPError as e:
             status_code = _get_response_attr(e, "status_code", "unknown")
             error_body = _get_response_attr(e, "text", "N/A")
-            logger.exception(
-                "%s API HTTP error %s for %s: %s",
-                api_name,
-                status_code,
-                method,
-                error_body[:200] if error_body != "N/A" else "No error details",
+            error_details = (
+                error_body[:200] if error_body != "N/A" else "No error details"
             )
+
+            # Log expected errors at lower level to reduce noise
+            if status_code in (400, 404):
+                logger.debug(
+                    "%s API HTTP %s for %s %s: %s",
+                    api_name,
+                    status_code,
+                    method,
+                    url,
+                    error_details,
+                )
+            else:
+                logger.exception(
+                    "%s API HTTP error %s for %s: %s",
+                    api_name,
+                    status_code,
+                    method,
+                    error_details,
+                )
             raise
         except requests.exceptions.Timeout:
             logger.exception(
@@ -552,8 +567,15 @@ class JiraClient:
             return False
 
     def _escape_jql(self, value: str) -> str:
-        """Escape a string value for JQL usage."""
-        return value.replace("\\", "\\\\").replace('"', '\\"')
+        """Escape a string value for JQL usage.
+
+        JQL has issues with certain special characters.
+        For robust searching, we escape problematic characters.
+        """
+        # Escape backslashes first, then quotes, then colons
+        escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+        # JQL can have issues with colons - escape them
+        return escaped.replace(":", "\\:")
 
     def get_zephyr_cycle_id(self, cycle_ref: str, version_id: int | None) -> int | None:
         """Resolve Zephyr cycle id from numeric id or name."""

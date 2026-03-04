@@ -149,6 +149,14 @@ def pytest_configure(config: pytest.Config) -> None:
         and config.option.numprocesses
     )
 
+    # Generate cycle key once in controller/main process before workers start
+    # This ensures all processes in the test run use the same cycle
+    if not is_xdist_worker and not os.getenv("_JIRA_TEST_CYCLE_KEY_INTERNAL"):
+        timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d_%H-%M-%S")
+        cycle_key = f"Test_Run_{timestamp}"
+        os.environ["_JIRA_TEST_CYCLE_KEY_INTERNAL"] = cycle_key
+        logger.info("Generated test cycle key for this run: %s", cycle_key)
+
     if is_xdist_worker:
         logger.debug("Running in xdist worker - Jira reporter initialized per worker")
     elif is_xdist_controller:
