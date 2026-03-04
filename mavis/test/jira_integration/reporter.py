@@ -224,8 +224,16 @@ def extract_issue_keys_from_item(item: object) -> list[str]:
 class JiraTestReporter:
     """Handles Jira test reporting integration."""
 
-    def __init__(self, config: JiraConfig | None = None) -> None:
-        """Initialize Jira reporter with configuration."""
+    def __init__(
+        self, config: JiraConfig | None = None, *, is_xdist_worker: bool = False
+    ) -> None:
+        """Initialize Jira reporter with configuration.
+
+        Args:
+            config: Optional Jira configuration. If None, loads from environment.
+            is_xdist_worker: True if running in xdist worker process.
+                Only the controller/main process should create test cycles.
+        """
         self.config = config or JiraConfig.from_env()
         self.client = None
         self.current_test_plan_key = None
@@ -251,6 +259,9 @@ class JiraTestReporter:
                 min_request_interval=self.config.min_request_interval,
             )
             self._initialize_test_plan()
+            # Only create cycle in controller/main process, not in xdist workers
+            if not is_xdist_worker:
+                self._ensure_test_cycle()
         except RuntimeError as e:
             logger.info("Failed to initialize Jira client: %s", e)
             self.client = None
@@ -276,6 +287,64 @@ class JiraTestReporter:
         except RuntimeError as e:
             logger.warning(
                 "Failed to initialize test plan: %s - continuing without plan", e
+            )
+
+    def _ensure_test_cycle(self) -> None:
+        """Ensure test cycle exists, creating it if necessary."""
+        if not self.client or not self.config.test_cycle_key:
+            return
+
+        # Resolve version ID if version is configured
+        version_id = None
+        if self.config.test_cycle_version:
+            version_id = self.client.get_version_id_by_name(
+                self.config.test_cycle_version
+            )
+            if version_id:
+                logger.info(
+                    "Resolved version '%s' to ID %s",
+                    self.config.test_cycle_version,
+                    version_id,
+                )
+
+        # Check if cycle already exists
+        existing_cycle_id = self.client.get_zephyr_cycle_id(
+            self.config.test_cycle_key, version_id
+        )
+        if existing_cycle_id:
+            logger.info(
+                "Using existing test cycle '%s' (ID: %s)",
+                self.config.test_cycle_key,
+                existing_cycle_id,
+            )
+            return
+
+        # Create new test cycle
+        description = (
+            f"Automated test cycle created at "
+            f"{datetime.now(tz=UTC).strftime('%Y-%m-%d %H:%M:%S')}"
+        )
+        try:
+            cycle_response = self.client.create_zephyr_test_cycle(
+                name=self.config.test_cycle_key,
+                description=description,
+                version_id=version_id,
+            )
+            if cycle_response and cycle_response.get("id"):
+                logger.info(
+                    "Created test cycle '%s' with ID %s",
+                    self.config.test_cycle_key,
+                    cycle_response["id"],
+                )
+            else:
+                logger.warning(
+                    "Failed to create test cycle '%s' - will attempt to continue",
+                    self.config.test_cycle_key,
+                )
+        except Exception:
+            logger.exception(
+                "Error creating test cycle '%s' - will attempt to continue",
+                self.config.test_cycle_key,
             )
 
     def is_enabled(self) -> bool:

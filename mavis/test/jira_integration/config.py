@@ -2,6 +2,7 @@
 
 import os
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -31,6 +32,10 @@ class JiraConfig:
             os.getenv("SCREENSHOT_ALL_STEPS", "false").lower() == "true"
         )
 
+        # Generate timestamp-based cycle key
+        timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d_%H-%M-%S")
+        cycle_key = f"Test_Run_{timestamp}"
+
         return cls(
             jira_reporting_url=jira_reporting_url,
             jira_api_token=os.getenv("JIRA_API_TOKEN"),
@@ -43,7 +48,7 @@ class JiraConfig:
             test_cycle_version=os.getenv(
                 "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
             ),
-            test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
+            test_cycle_key=cycle_key,
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
             min_request_interval=float(os.getenv("JIRA_MIN_REQUEST_INTERVAL", "0.1")),
         )

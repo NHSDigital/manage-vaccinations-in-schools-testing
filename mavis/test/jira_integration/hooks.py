@@ -167,7 +167,7 @@ def pytest_configure(config: pytest.Config) -> None:
         _jira_reporter = None
         return
     try:
-        _jira_reporter = JiraTestReporter()
+        _jira_reporter = JiraTestReporter(is_xdist_worker=is_xdist_worker)
         if _jira_reporter.is_enabled():
             logger.info(
                 "Jira integration enabled - all tests will be automatically tracked"

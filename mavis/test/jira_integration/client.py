@@ -181,6 +181,31 @@ class JiraClient:
         url = f"{self.jira_reporting_url.rstrip('/')}/rest/zapi/latest/{endpoint}"
         return self._make_request(method, url, data=data, params=params, files=files)
 
+    def create_zephyr_test_cycle(
+        self, name: str, description: str = "", version_id: int | None = None
+    ) -> dict | None:
+        """Create a new test cycle in Zephyr Essential DC."""
+        if not (project_id := self.zephyr_project_id or self.get_project_id()):
+            logger.warning("Zephyr project id not configured")
+            return None
+
+        payload = {
+            "name": name,
+            "projectId": int(project_id),
+        }
+        if description:
+            payload["description"] = description
+        if version_id is not None:
+            payload["versionId"] = int(version_id)
+
+        try:
+            response = self._make_zephyr_request("POST", "cycle", data=payload)
+            logger.info("Created test cycle '%s' with ID %s", name, response.get("id"))
+            return response
+        except requests.exceptions.RequestException:
+            logger.exception("Failed to create test cycle '%s'", name)
+            return None
+
     def get_zephyr_test_cycles(self, version_id: int | None = None) -> list[dict]:
         """Get all test cycles from Zephyr Essential DC for the project."""
         if not (project_id := self.zephyr_project_id or self.get_project_id()):
