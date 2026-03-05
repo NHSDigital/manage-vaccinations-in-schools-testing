@@ -177,13 +177,13 @@ class TeamSchoolsPage:
         self.click_continue()
 
         expect(self.name_error_summary).to_be_visible()
-        expect(self.name_error_summary).to_contain_text("can't be blank")
+        expect(self.name_error_summary).to_contain_text("Enter a name")
 
         self.name_textbox.fill(" ")
         self.click_continue()
 
         expect(self.name_error_summary).to_be_visible()
-        expect(self.name_error_summary).to_contain_text("can't be blank")
+        expect(self.name_error_summary).to_contain_text("Enter a name")
 
     @step("Check validation error if invalid characters used")
     def _check_validation_error_if_invalid_characters_used(self) -> None:
