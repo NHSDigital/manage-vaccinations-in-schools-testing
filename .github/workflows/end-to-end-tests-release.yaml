@@ -65,10 +65,22 @@ on:
         type: string
     secrets:
       HTTP_AUTH_TOKEN_FOR_TESTS:
-        description: 'HTTP Basic Auth token for the environment under test'
+        description: HTTP Basic Auth token for the environment under test
+        required: true
+      IMMS_API_KEY:
+        description: API key to use NHS Immunisations API
+        required: false
+      IMMS_API_KID:
+        description: API KID to use NHS Immunisations API
+        required: false
+      IMMS_API_PEM:
+        description: API PEM to use NHS Immunisations API
+        required: false
+      JIRA_API_TOKEN:
+        description: API token to access Jira, used to attach test results to issues
         required: true
       MAVIS_TESTING_REPO_ACCESS_TOKEN:
-        description: 'Git token with access to the mavis testing repo'
+        description: Git token with access to the mavis testing repo
         required: false
   workflow_dispatch:
     inputs:
@@ -273,4 +285,3 @@ jobs:
           environment: ${{ github.event.inputs.environment }}
         env:
           GITHUB_TOKEN: ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
-
