@@ -28,6 +28,7 @@ class PdsApiHelper:
 
         data = response.json()
 
+        id = data["id"]
         name_data = data["name"][0]
         given_name = name_data["given"][0]
         family_name = name_data["family"]
@@ -59,7 +60,7 @@ class PdsApiHelper:
             address_lines.append("")
 
         return Patient(
-            nhs_number=nhs_number,
+            nhs_number=id,
             date_of_birth=date_of_birth,
             family_name=family_name,
             given_name=given_name,
