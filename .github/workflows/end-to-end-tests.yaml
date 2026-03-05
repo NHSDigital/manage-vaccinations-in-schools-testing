@@ -49,12 +49,16 @@ on:
         default: '4'
         type: string
       set_feature_flags:
-        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        description: >-
+          Set feature flags in the flipper page before running tests (affects all
+          users of the environment being tested!)
         required: false
         default: false
         type: boolean
       additional_feature_flags:
-        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        description: >-
+          (If enabled above) Additional feature flags to set. api, basic_auth,
+          dev_tools will be set by default
         required: false
         default: ''
         type: string
@@ -143,7 +147,9 @@ on:
           - '3'
           - '4'
       set_feature_flags:
-        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        description: >-
+          Set feature flags in the flipper page before running tests (affects all
+          users of the environment being tested!)
         required: true
         default: 'false'
         type: choice
@@ -151,7 +157,9 @@ on:
           - true
           - false
       additional_feature_flags:
-        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        description: >-
+          (If enabled above) Additional feature flags to set. api, basic_auth,
+          dev_tools will be set by default
         required: false
         default: ''
 
@@ -160,12 +168,12 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    
+
     name: End-to-End tests
     runs-on: ubuntu-latest
 
     env:
-      TZ: "Europe/London"
+      TZ: Europe/London
 
     steps:
       - name: Set variables
@@ -193,7 +201,7 @@ jobs:
             echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
             echo "cross_service_tests=${{ inputs.cross_service_tests }}" >> $GITHUB_OUTPUT
             echo "device=${{ inputs.device }}" >> $GITHUB_OUTPUT
-          
+
             input_env="${{ inputs.environment }}"
             if [ -n "$input_env" ]; then
               url="${env_map[$input_env]:-${env_map[qa]}}"
@@ -238,7 +246,8 @@ jobs:
           enable_reruns: ${{ steps.set-variables.outputs.enable_reruns }}
           test_workers: ${{ steps.set-variables.outputs.test_workers }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
-          additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          additional_feature_flags: |-
+            ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
@@ -262,4 +271,5 @@ jobs:
           device: ${{ steps.set-variables.outputs.device }}
           environment: ${{ github.event.inputs.environment }}
         env:
-          GITHUB_TOKEN: ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: |-
+            ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}

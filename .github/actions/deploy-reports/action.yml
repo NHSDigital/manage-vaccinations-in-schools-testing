@@ -27,11 +27,13 @@ runs:
 
     - name: Set S3 prefix
       id: set-pages-dir
+      # yamllint disable rule:line-length
       run: |
         branch_ref="${{ github.head_ref || github.ref_name }}"
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
         timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
         echo "dir=$branch_ref/${{ inputs.environment }}/$sanitized_device/$timestamp" >> $GITHUB_OUTPUT
+      # yamllint enable rule:line-length
       shell: bash
 
     - name: Upload report to S3
@@ -43,7 +45,9 @@ runs:
       shell: bash
 
     - name: Set Job Summary
+      # yamllint disable rule:line-length
       run: |
         REPORT_URL="${{ inputs.report-base-url }}/${{ steps.set-pages-dir.outputs.dir }}/index.html"
         echo "View test report: ${REPORT_URL}" >> "$GITHUB_STEP_SUMMARY"
+      # yamllint enable rule:line-length
       shell: bash

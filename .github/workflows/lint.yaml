@@ -16,7 +16,7 @@ jobs:
         with:
           install_args: actionlint
           cache: true
-        # TODO: Enable shellcheck in the future
+      # TODO: Enable shellcheck in the future
       - run: actionlint -shellcheck ''
 
   gitleaks:
