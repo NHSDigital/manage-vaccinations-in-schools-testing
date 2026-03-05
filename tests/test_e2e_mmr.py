@@ -13,6 +13,7 @@ from mavis.test.pages import (
     SessionsVaccinationWizardPage,
     StartPage,
 )
+from mavis.test.utils import generate_random_dob_for_mmr_not_mmrv
 
 pytestmark = pytest.mark.e2e
 
@@ -51,6 +52,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     - Vaccination is recorded for the child in the session.
     """
     child = children[Programme.MMR][0]
+    child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
     schools = schools[Programme.MMR]
     mmr_batch_name = setup_session_for_mmr[Vaccine.PRIORIX]
     number_of_health_questions = len(
@@ -126,6 +128,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     - Child cannot be found when attempting to record a second dose on the same day.
     """
     child = children[Programme.MMR][0]
+    child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
     schools = schools[Programme.MMR]
     mmr_batch_name = setup_session_for_mmr[Vaccine.PRIORIX]
     number_of_health_questions = len(
@@ -204,6 +207,7 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     - Vaccination is recorded for the child in the session.
     """
     child = children[Programme.MMR][0]
+    child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
     schools = schools[Programme.MMR]
     mmr_batch_name = setup_session_for_mmr[Vaccine.PRIORIX]
     number_of_health_questions = len(

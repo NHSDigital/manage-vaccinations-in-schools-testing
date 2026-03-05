@@ -2,6 +2,7 @@ import pytest
 
 from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
 from mavis.test.pages import OnlineConsentWizardPage, StartPage
+from mavis.test.utils import generate_random_dob_for_mmr_not_mmrv
 
 pytestmark = pytest.mark.consent
 
@@ -38,6 +39,7 @@ def test_consent_refused_for_mmr_vaccination(
     - Confirmation text indicates consent was refused for MMR vaccination.
     """
     child = children[Programme.MMR][0]
+    child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
     schools = schools[Programme.MMR]
 
     OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
@@ -85,6 +87,7 @@ def test_consent_given_for_mmr_vaccination(
       health question status.
     """
     child = children[Programme.MMR][0]
+    child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
     schools = schools[Programme.MMR]
     number_of_health_questions = len(
         Programme.health_questions(Programme.MMR, consent_option)

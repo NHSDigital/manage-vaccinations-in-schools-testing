@@ -8,6 +8,7 @@ from faker import Faker
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
+from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
 
 faker = Faker()
 
@@ -101,6 +102,19 @@ def get_date_of_birth_for_year_group(year_group: int) -> date:
     end_date = date(academic_year + 1, 8, 31)
 
     return faker.date_between(start_date, end_date)
+
+
+def generate_random_dob_for_mmr_not_mmrv() -> date:
+    """
+    Generate random date of birth for MMR eligibility (not MMRV).
+
+    Children born before 2020-01-01 are eligible for MMR but not MMRV.
+    This generates dates between Sept 1, 2014 and Dec 31, 2019.
+    """
+    start_date = date(MMRV_ELIGIBILITY_CUTOFF_DOB.year - 6, 9, 1)
+    end_date = MMRV_ELIGIBILITY_CUTOFF_DOB - timedelta(days=1)
+    random_days = random.randint(0, (end_date - start_date).days)
+    return date.fromordinal(start_date.toordinal() + random_days)
 
 
 def random_datetime_earlier_today(input_time: datetime) -> datetime:
