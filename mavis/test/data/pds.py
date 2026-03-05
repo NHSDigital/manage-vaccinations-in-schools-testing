@@ -49,7 +49,14 @@ def get_random_child_patient_without_date_of_death(token: str) -> Child:
         except ValueError:
             continue
 
-        if child == child_in_pds:
+        if (
+            child.nhs_number == child_in_pds.nhs_number
+            and child.date_of_birth == child_in_pds.date_of_birth
+            and child.family_name == child_in_pds.family_name
+            and child.given_name == child_in_pds.given_name
+            and child.address_postcode == child_in_pds.address_postcode
+            and child_in_pds.date_of_death is None
+        ):
             break
 
     return Child(
