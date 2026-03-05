@@ -14,6 +14,9 @@ from .models import JiraTestCase, TestResult
 
 logger = logging.getLogger(__name__)
 
+# Maximum length for error body text in logs
+MAX_ERROR_BODY_LENGTH = 500
+
 
 def _get_response_attr(
     error: requests.exceptions.HTTPError, attr: str, default: object = None
@@ -103,6 +106,63 @@ class JiraClient:
         error_msg = f"Unsupported method: {method}"
         raise ValueError(error_msg)
 
+    def _truncate_error_body(self, error_body: str) -> str:
+        """Truncate error body to maximum length."""
+        if len(error_body) > MAX_ERROR_BODY_LENGTH:
+            return error_body[:MAX_ERROR_BODY_LENGTH]
+        return error_body
+
+    def _parse_jira_error_json(self, error_json: dict) -> str:
+        """Parse structured error from Jira JSON response."""
+        if error_messages := error_json.get("errorMessages", []):
+            return "; ".join(str(msg) for msg in error_messages)
+        if errors := error_json.get("errors", {}):
+            return "; ".join(f"{k}: {v}" for k, v in errors.items())
+        return ""
+
+    def _extract_error_details(
+        self, response: requests.Response | None, error_body: str
+    ) -> str:
+        """Extract error details from response."""
+        if not response or not error_body or error_body == "N/A":
+            return "No error details"
+
+        try:
+            error_json = response.json()
+            if parsed_error := self._parse_jira_error_json(error_json):
+                return parsed_error
+            return self._truncate_error_body(error_body)
+        except (ValueError, AttributeError, TypeError):
+            return self._truncate_error_body(error_body)
+
+    def _log_http_error(
+        self,
+        api_name: str,
+        status_code: int | str,
+        method: str,
+        url: str,
+        error_details: str,
+    ) -> None:
+        """Log HTTP error at appropriate level."""
+        # Expected errors (search failures) logged at DEBUG
+        if status_code in (400, 404):
+            logger.debug(
+                "%s API HTTP %s for %s %s: %s",
+                api_name,
+                status_code,
+                method,
+                url,
+                error_details,
+            )
+        else:
+            logger.exception(
+                "%s API HTTP error %s for %s: %s",
+                api_name,
+                status_code,
+                method,
+                error_details,
+            )
+
     def _make_request(  # noqa: PLR0913
         self,
         method: str,
@@ -113,7 +173,6 @@ class JiraClient:
         api_name: str = "Jira",
     ) -> dict:
         """Make authenticated API request."""
-        # Throttle to avoid overwhelming the API
         self._throttle_request()
 
         try:
@@ -121,36 +180,17 @@ class JiraClient:
                 method, url, data=data, params=params, files=files
             )
             response.raise_for_status()
-            try:
-                return response.json() if response.content else {}
-            except ValueError as e:
-                logger.debug("Failed to parse %s JSON response: %s", api_name, e)
-                return {}
+            return response.json() if response.content else {}
+        except ValueError as e:
+            logger.debug("Failed to parse %s JSON response: %s", api_name, e)
+            return {}
         except requests.exceptions.HTTPError as e:
-            status_code = _get_response_attr(e, "status_code", "unknown")
-            error_body = _get_response_attr(e, "text", "N/A")
-            error_details = (
-                error_body[:200] if error_body != "N/A" else "No error details"
+            status_code = (
+                e.response.status_code if e.response is not None else "unknown"
             )
-
-            # Log expected errors at lower level to reduce noise
-            if status_code in (400, 404):
-                logger.debug(
-                    "%s API HTTP %s for %s %s: %s",
-                    api_name,
-                    status_code,
-                    method,
-                    url,
-                    error_details,
-                )
-            else:
-                logger.exception(
-                    "%s API HTTP error %s for %s: %s",
-                    api_name,
-                    status_code,
-                    method,
-                    error_details,
-                )
+            error_body = e.response.text if e.response is not None else "N/A"
+            error_details = self._extract_error_details(e.response, error_body)
+            self._log_http_error(api_name, status_code, method, url, error_details)
             raise
         except requests.exceptions.Timeout:
             logger.exception(
@@ -163,7 +203,11 @@ class JiraClient:
         except requests.exceptions.RequestException as e:
             logger.exception("%s API request failed", api_name)
             if response_text := _get_response_attr(e, "text"):
-                logger.debug("%s response: %s", api_name, response_text[:500])
+                logger.debug(
+                    "%s response: %s",
+                    api_name,
+                    response_text[:MAX_ERROR_BODY_LENGTH],
+                )
             raise
 
     def _make_jira_request(
@@ -571,11 +615,11 @@ class JiraClient:
 
         JQL has issues with certain special characters.
         For robust searching, we escape problematic characters.
+        When the value is used within quotes in JQL, only quotes and
+        backslashes need to be escaped. Colons don't need escaping.
         """
-        # Escape backslashes first, then quotes, then colons
-        escaped = value.replace("\\", "\\\\").replace('"', '\\"')
-        # JQL can have issues with colons - escape them
-        return escaped.replace(":", "\\:")
+        # Escape backslashes first, then quotes
+        return value.replace("\\", "\\\\").replace('"', '\\"')
 
     def get_zephyr_cycle_id(self, cycle_ref: str, version_id: int | None) -> int | None:
         """Resolve Zephyr cycle id from numeric id or name."""
@@ -836,24 +880,27 @@ class JiraClient:
         return steps_text
 
     def find_test_case_by_name(self, test_name: str) -> str | None:
-        """Find test case by name using JQL search."""
+        """Find test case by name using JQL search.
+
+        Note: Jira's summary field doesn't support '=' operator, only '~' (contains).
+        """
         try:
-            issuetype_candidates = ["Test", "Test Case", "Task"]
+            # Try issue types that might contain test cases
+            issuetype_candidates = ["Test", "Task"]
             issuetype_filter = ", ".join(
                 f'"{candidate}"' for candidate in issuetype_candidates
             )
             escaped_name = self._escape_jql(test_name)
 
+            # Try queries in order of specificity:
+            # 1. Text search within known test issue types
+            # 2. Text search across all issue types in project
             for jql in [
-                (
-                    f'project = "{self.project_key}" AND issuetype in '
-                    f'({issuetype_filter}) AND summary = "{escaped_name}"'
-                ),
                 (
                     f'project = "{self.project_key}" AND issuetype in '
                     f'({issuetype_filter}) AND summary ~ "{escaped_name}"'
                 ),
-                f'project = "{self.project_key}" AND summary = "{escaped_name}"',
+                f'project = "{self.project_key}" AND summary ~ "{escaped_name}"',
             ]:
                 response = self._make_jira_request(
                     "GET",

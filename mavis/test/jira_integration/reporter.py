@@ -237,6 +237,7 @@ class JiraTestReporter:
         self.config = config or JiraConfig.from_env()
         self.client = None
         self.current_test_plan_key = None
+        self._cached_cycle_id: int | None = None  # Cache cycle ID after creation
         self.config.screenshots_dir.mkdir(exist_ok=True)
 
         if not self.config.is_valid():
@@ -312,6 +313,7 @@ class JiraTestReporter:
             self.config.test_cycle_key, version_id
         )
         if existing_cycle_id:
+            self._cached_cycle_id = existing_cycle_id
             logger.info(
                 "Using existing test cycle '%s' (ID: %s)",
                 self.config.test_cycle_key,
@@ -331,11 +333,39 @@ class JiraTestReporter:
                 version_id=version_id,
             )
             if cycle_response and cycle_response.get("id"):
+                created_cycle_id = cycle_response["id"]
+                self._cached_cycle_id = created_cycle_id
                 logger.info(
                     "Created test cycle '%s' with ID %s",
                     self.config.test_cycle_key,
-                    cycle_response["id"],
+                    created_cycle_id,
                 )
+                # Verify cycle was created by attempting to retrieve it
+                # Zephyr needs time to index new cycles before they're searchable
+
+                max_verification_attempts = 3
+                for attempt in range(max_verification_attempts):
+                    time.sleep(2)  # Wait 2 seconds between attempts
+                    verified_cycle_id = self.client.get_zephyr_cycle_id(
+                        self.config.test_cycle_key, version_id
+                    )
+                    if verified_cycle_id:
+                        logger.info(
+                            "Verified test cycle '%s' is accessible (ID: %s)"
+                            " after %d attempts",
+                            self.config.test_cycle_key,
+                            verified_cycle_id,
+                            attempt + 1,
+                        )
+                        break
+                else:
+                    logger.warning(
+                        "Created test cycle '%s' with ID %s but unable"
+                        " to verify after %d attempts - using cached ID",
+                        self.config.test_cycle_key,
+                        created_cycle_id,
+                        max_verification_attempts,
+                    )
             else:
                 logger.warning(
                     "Failed to create test cycle '%s' - will attempt to continue",
@@ -663,9 +693,13 @@ class JiraTestReporter:
             version_id = resolved_version_id
             logger.info("Resolved version ID %s", version_id)
 
-        if cycle_id := self.client.get_zephyr_cycle_id(
-            self.config.test_cycle_key, version_id
-        ):
+        # Use cached cycle ID if available (avoids re-querying after creation)
+        cycle_id = self._cached_cycle_id
+        if not cycle_id:
+            cycle_id = self.client.get_zephyr_cycle_id(
+                self.config.test_cycle_key, version_id
+            )
+        if cycle_id:
             logger.info("Resolved cycle ID %s", cycle_id)
         else:
             logger.warning(
