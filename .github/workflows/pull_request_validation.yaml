@@ -15,9 +15,11 @@ jobs:
     steps:
       - name: Check if branch exists
         id: check-branch
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
         run: |
-          if git ls-remote --exit-code --heads https://github.com/nhsuk/manage-vaccinations-in-schools.git ${{ github.head_ref }} > /dev/null 2>&1; then
-            echo "mavis_branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+          if git ls-remote --exit-code --heads https://github.com/nhsuk/manage-vaccinations-in-schools.git $GITHUB_HEAD_REF > /dev/null 2>&1; then
+            echo "mavis_branch=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
           else
             echo "mavis_branch=" >> $GITHUB_OUTPUT
           fi

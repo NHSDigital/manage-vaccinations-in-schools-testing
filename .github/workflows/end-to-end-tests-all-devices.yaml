@@ -48,6 +48,7 @@ jobs:
           imms_api_tests: 'true'
           reporting_tests: 'true'
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
+          screenshot_all_steps: 'false'
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
           IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
