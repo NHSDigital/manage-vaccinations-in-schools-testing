@@ -491,6 +491,34 @@ class JiraTestReporter:
         match = pattern.search(text)
         return match.group(0) if match else None
 
+    def _build_test_case_from_docstring(
+        self, test_name: str, docstring: str
+    ) -> JiraTestCase:
+        """Build JiraTestCase object from test name and docstring."""
+        test_steps = self.parse_test_steps_from_docstring(docstring)
+        base_description = self._extract_description_from_docstring(docstring)
+        return JiraTestCase(
+            name=test_name,
+            description=self._format_test_steps_as_description(
+                base_description, test_steps
+            ),
+            test_steps=(test_steps if base_description else None),
+            objective=base_description,
+            labels=["Automated"],
+        )
+
+    def _create_new_test_case(self, test_name: str, docstring: str) -> str | None:
+        """Create a new test case in Jira."""
+        test_case = self._build_test_case_from_docstring(test_name, docstring)
+        if test_case_key := self.client.create_test_case(test_case):
+            logger.info("Created new test case: %s for '%s'", test_case_key, test_name)
+            return test_case_key
+        logger.error(
+            "Failed to create test case for '%s' - create_test_case returned None",
+            test_name,
+        )
+        return None
+
     @retry_on_failure(max_retries=3, delay=1.0)
     def get_or_create_test_case(
         self, test_name: str, docstring: str = ""
@@ -501,59 +529,28 @@ class JiraTestReporter:
             return None
 
         try:
-            # Note: issue keys extracted from test decorators are
-            # REQUIREMENT tickets, not test case tickets.
-            # They should be linked, not used as the test case key.
-
             # Search for existing test case by name
             if test_case_key := self.client.find_test_case_by_name(test_name):
                 logger.info("Found existing test case: %s", test_case_key)
                 return test_case_key
 
             # Create new test case
-            test_steps = self.parse_test_steps_from_docstring(docstring)
-            base_description = self._extract_description_from_docstring(docstring)
-            test_case = JiraTestCase(
-                name=test_name,
-                description=self._format_test_steps_as_description(
-                    base_description, test_steps
-                ),
-                test_steps=(test_steps if base_description else None),
-                objective=base_description,
-                labels=["Automated"],
-            )
-
-            if not (test_case_key := self.client.create_test_case(test_case)):
-                logger.error(
-                    "Failed to create test case for '%s' - "
-                    "create_test_case returned None",
-                    test_name,
-                )
-                return None
-
-            logger.info("Created new test case: %s for '%s'", test_case_key, test_name)
-            return test_case_key
+            return self._create_new_test_case(test_name, docstring)
 
         except requests.exceptions.HTTPError as e:
             status = _get_response_attr(e, "status_code", "unknown")
             logger.exception(
-                "HTTP error %s while creating test case for '%s'",
-                status,
-                test_name,
+                "HTTP error %s while creating test case for '%s'", status, test_name
             )
         except (
             requests.exceptions.ConnectionError,
             requests.exceptions.Timeout,
         ):
             logger.exception(
-                "Connection/timeout error creating test case for '%s'",
-                test_name,
+                "Connection/timeout error creating test case for '%s'", test_name
             )
         except Exception:
-            logger.exception(
-                "Unexpected error creating test case for '%s'",
-                test_name,
-            )
+            logger.exception("Unexpected error creating test case for '%s'", test_name)
         return None
 
     def _extract_description_from_docstring(self, docstring: str) -> str:
