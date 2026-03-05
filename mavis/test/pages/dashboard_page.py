@@ -75,3 +75,82 @@ class DashboardPage:
     @step("Go to dashboard")
     def navigate(self) -> None:
         self.page.goto("/dashboard")
+
+    @step("Verify MAVIS link is visible")
+    def verify_mavis_link_visible(self) -> None:
+        expect(self.header.mavis_link).to_be_visible()
+
+    @step("Verify Children link is visible")
+    def verify_children_link_visible(self) -> None:
+        expect(self.children_link).to_be_visible()
+
+    @step("Verify Imports link is visible")
+    def verify_imports_link_visible(self) -> None:
+        expect(self.imports_link).to_be_visible()
+
+    @step("Verify header Children link is visible")
+    def verify_header_children_link_visible(self) -> None:
+        expect(self.header.children_link).to_be_visible()
+
+    @step("Verify header Import Records link is visible")
+    def verify_header_import_records_link_visible(self) -> None:
+        expect(self.header.import_records_link).to_be_visible()
+
+    @step("Verify Service Guidance link for National Reporting")
+    def verify_service_guidance_link_national_reporting(self) -> None:
+        expect(self.service_guidance_link).to_have_attribute(
+            "href",
+            "https://guide.manage-vaccinations-in-schools.nhs.uk/national-reporting/",
+        )
+
+    @step("Verify Service Guidance link for Point of Care")
+    def verify_service_guidance_link_point_of_care(self) -> None:
+        expect(self.service_guidance_link).to_have_attribute(
+            "href", "https://guide.manage-vaccinations-in-schools.nhs.uk"
+        )
+
+    @step("Verify Important Notices header is visible")
+    def verify_important_notices_header_visible(self) -> None:
+        expect(self.important_notices_header).to_be_visible()
+
+    @step("Verify Important Notices link")
+    def verify_important_notices_link(self) -> None:
+        expect(self.important_notices_link).to_have_attribute(
+            "href", "/imports/notices"
+        )
+
+    @step("Verify Important Notices header is not visible")
+    def verify_important_notices_header_not_visible(self) -> None:
+        expect(self.important_notices_header).not_to_be_visible()
+
+    @step("Verify Important Notices link is not visible")
+    def verify_important_notices_link_not_visible(self) -> None:
+        expect(self.important_notices_link).not_to_be_visible()
+
+    @step("Verify Reports link is visible")
+    def verify_reports_link_visible(self) -> None:
+        expect(self.reports_link).to_be_visible()
+
+    @step("Verify Sessions link is visible")
+    def verify_sessions_link_visible(self) -> None:
+        expect(self.sessions_link).to_be_visible()
+
+    @step("Verify Vaccines link is visible")
+    def verify_vaccines_link_visible(self) -> None:
+        expect(self.vaccines_link).to_be_visible()
+
+    @step("Verify Unmatched Consent Responses link is visible")
+    def verify_unmatched_consent_responses_link_visible(self) -> None:
+        expect(self.unmatched_consent_responses_link).to_be_visible()
+
+    @step("Verify School Moves link is visible")
+    def verify_school_moves_link_visible(self) -> None:
+        expect(self.school_moves_link).to_be_visible()
+
+    @step("Verify Your Team link is visible")
+    def verify_your_team_link_visible(self) -> None:
+        expect(self.your_team_link).to_be_visible()
+
+    @step("Verify Service Guidance link is visible")
+    def verify_service_guidance_link_visible(self) -> None:
+        expect(self.service_guidance_link).to_be_visible()

@@ -102,6 +102,14 @@ class LogInPage:
             self.continue_button.click()
         expect(self.log_out_button).to_be_visible()
 
+    @step("Verify log out button is visible")
+    def verify_log_out_button_visible(self) -> None:
+        expect(self.log_out_button).to_be_visible()
+
+    @step("Verify error message is visible")
+    def verify_error_message_visible(self) -> None:
+        expect(self.error_message).to_be_visible()
+
 
 class LogOutPage:
     def __init__(self, page: Page) -> None:
