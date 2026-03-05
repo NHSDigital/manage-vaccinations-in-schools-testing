@@ -82,19 +82,19 @@ jobs:
             echo "GNU parallel not found, installing plugins sequentially"
             IFS=',' read -ra PLUGINS <<< "${{ env.jmeter_plugins }}"
             for plugin in "${PLUGINS[@]}"; do
-              jmeter/bin/PluginsManagerCMD.sh install $plugin
+              jmeter/bin/PluginsManagerCMD.sh install "$plugin"
             done
           fi
 
       - name: Set timestamp
         id: timestamp
-        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> "$GITHUB_ENV"
 
       - name: Start STS Server
         run: |
           dataset_directory=$GITHUB_WORKSPACE/${{ env.large-org-home }}
           nohup jmeter/bin/simple-table-server.sh \
-              -DjmeterPlugin.sts.datasetDirectory=dataset_directory \
+              "-DjmeterPlugin.sts.datasetDirectory=$dataset_directory" \
               -DjmeterPlugin.sts.daemon=true \
               -DjmeterPlugin.sts.port=9191 \
               &

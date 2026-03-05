@@ -20,19 +20,19 @@ jobs:
         run: |
           if git ls-remote --exit-code --heads \
               https://github.com/nhsdigital/manage-vaccinations-in-schools.git \
-              $GITHUB_HEAD_REF > /dev/null 2>&1; then
-            echo "mavis_branch=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
+              "$GITHUB_HEAD_REF" > /dev/null 2>&1; then
+            echo "mavis_branch=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
           else
-            echo "mavis_branch=" >> $GITHUB_OUTPUT
+            echo "mavis_branch=" >> "$GITHUB_OUTPUT"
           fi
       - name: Identify target environment
         id: identify-target-environment
         run: |
-          environment='qa'
+          environment="qa"
           if [[ -n "${{ steps.check-branch.outputs.mavis_branch }}" ]]; then
-            environment='container'
+            environment="container"
           fi
-          echo "environment=$environment" >> $GITHUB_OUTPUT
+          echo "environment=$environment" >> "$GITHUB_OUTPUT"
   run-tests-against-staging:
     needs: identify-target-environment
     if: needs.identify-target-environment.outputs.environment != 'container'

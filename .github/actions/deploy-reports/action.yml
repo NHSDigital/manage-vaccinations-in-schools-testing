@@ -32,7 +32,7 @@ runs:
         branch_ref="${{ github.head_ref || github.ref_name }}"
         sanitized_device=$(echo "${{ inputs.device }}" | tr -cd '[:alnum:]_-')
         timestamp=$(date -u +"%Y-%m-%d_%H-%M-%S")
-        echo "dir=$branch_ref/${{ inputs.environment }}/$sanitized_device/$timestamp" >> $GITHUB_OUTPUT
+        echo "dir=$branch_ref/${{ inputs.environment }}/$sanitized_device/$timestamp" >> "$GITHUB_OUTPUT"
       # yamllint enable rule:line-length
       shell: bash
 
