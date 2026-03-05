@@ -103,6 +103,19 @@ def get_date_of_birth_for_year_group(year_group: int) -> date:
     return faker.date_between(start_date, end_date)
 
 
+def generate_random_dob_for_mmr_not_mmrv() -> date:
+    """
+    Generate random date of birth for MMR eligibility (not MMRV).
+
+    Children born before 2020-01-01 are eligible for MMR but not MMRV.
+    This generates dates between Sept 1, 2014 and Dec 31, 2019.
+    """
+    start_date = date(2014, 9, 1)
+    end_date = date(2019, 12, 31)
+    random_days = random.randint(0, (end_date - start_date).days)
+    return date.fromordinal(start_date.toordinal() + random_days)
+
+
 def random_datetime_earlier_today(input_time: datetime) -> datetime:
     midnight = input_time.replace(hour=0, minute=0, second=0, microsecond=0)
     delta_minutes = int((input_time - midnight).total_seconds() // 60)
