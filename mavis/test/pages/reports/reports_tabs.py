@@ -9,6 +9,9 @@ class ReportsTabs:
         self.vaccinations_tab = page.get_by_label("Secondary menu").get_by_role(
             "link", name="Vaccinations"
         )
+        self.consent_tab = page.get_by_label("Secondary menu").get_by_role(
+            "link", name="Consent"
+        )
         self.download_data_tab = page.get_by_label("Secondary menu").get_by_role(
             "link", name="Download Data"
         )
@@ -17,6 +20,11 @@ class ReportsTabs:
     def click_vaccinations_tab(self) -> None:
         self.vaccinations_tab.click()
         self.vaccinations_tab.get_by_role("strong").wait_for()
+
+    @step("Click on Consent tab")
+    def click_consent_tab(self) -> None:
+        self.consent_tab.click()
+        self.consent_tab.get_by_role("strong").wait_for()
 
     @step("Click on Download Data tab")
     def click_download_data_tab(self) -> None:
