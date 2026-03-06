@@ -74,16 +74,16 @@ runs:
         if [ -z "$exclude" ]; then
           exclude="True"
         fi
-        echo "marker=$exclude" >> $GITHUB_OUTPUT
+        echo "marker=$exclude" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Determine if reruns are enabled
       id: reruns
       run: |
         if [ "${{ inputs.enable_reruns }}" = "true" ]; then
-          echo "reruns=--reruns 2" >> $GITHUB_OUTPUT
+          echo "reruns=--reruns 2" >> "$GITHUB_OUTPUT"
         else
-          echo "reruns=" >> $GITHUB_OUTPUT
+          echo "reruns=" >> "$GITHUB_OUTPUT"
         fi
       shell: bash
 
