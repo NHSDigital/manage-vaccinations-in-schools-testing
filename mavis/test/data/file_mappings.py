@@ -55,13 +55,14 @@ class VaccsFileMapping(FileMapping):
 
 class ChildFileMapping(FileMapping):
     EMPTY_FILE = "empty"
+    FIXED_CHILD = "fixed_child"
     HEADER_ONLY = "header_only"
     INVALID_STRUCTURE = "invalid_structure"
     NEGATIVE = "negative"
     POSITIVE = "positive"
-    WHITESPACE = "whitespace"
-    FIXED_CHILD = "fixed_child"
     RANDOM_CHILD_WITHOUT_NHS_NUMBER = "random_child_without_nhs_number"
+    UNKNOWN_SCHOOL_CHILD = "unknown_school_child"
+    WHITESPACE = "whitespace"
 
     @property
     def folder(self) -> Path:
