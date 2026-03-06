@@ -43,7 +43,7 @@ def setup_children_session(
             class_list_file, year_group
         )
         schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
-        SessionsOverviewPage(page).header.click_mavis_header()
+        SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_children()
         yield
 
@@ -80,7 +80,7 @@ def setup_mav_853(
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -90,7 +90,7 @@ def setup_mav_853(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
 
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -102,7 +102,7 @@ def setup_mav_853(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
 
@@ -204,7 +204,7 @@ def test_merge_child_records_does_not_crash(
     ChildArchivePage(page).click_its_a_duplicate(child2.nhs_number)
     ChildArchivePage(page).click_archive_record()
     expect_alert_text(page, "This record has been archived")
-    ChildArchivePage(page).header.click_mavis_header()
+    ChildArchivePage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child2))
     ChildrenSearchPage(page).search.click_child(child2)
@@ -242,7 +242,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ChildRecordPage(page).click_archive_child_record()
     ChildArchivePage(page).archive_child_record()
 
-    ChildRecordPage(page).header.click_mavis_header()
+    ChildRecordPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -251,7 +251,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)

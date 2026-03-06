@@ -73,7 +73,7 @@ def test_report_view(
         "Vaccinated", expected_vaccinated_percentage
     )
 
-    ReportsVaccinationsPage(page).header.click_mavis_header()
+    ReportsVaccinationsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)

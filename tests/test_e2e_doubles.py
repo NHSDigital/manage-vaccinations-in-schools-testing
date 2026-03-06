@@ -106,7 +106,7 @@ def test_recording_doubles_vaccination_e2e(
     SessionsPatientPage(page).set_up_vaccination(td_ipv_vaccination_record)
     SessionsVaccinationWizardPage(page).record_vaccination(td_ipv_vaccination_record)
 
-    SessionsChildrenPage(page).header.click_mavis_header()
+    SessionsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(schools[0], "doubles")
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(

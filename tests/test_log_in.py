@@ -75,7 +75,7 @@ def test_login_with_valid_credentials_national_reporting(
     DashboardPage(page).verify_imports_link_visible()
 
     DashboardPage(page).verify_header_children_link_visible()
-    DashboardPage(page).verify_header_import_records_link_visible()
+    DashboardPage(page).verify_header_import_link_visible()
 
     DashboardPage(page).verify_service_guidance_link_national_reporting()  # MAV-3261
 
@@ -136,7 +136,7 @@ def test_login_with_valid_credentials_point_of_care(
     DashboardPage(page).verify_service_guidance_link_visible()
 
     DashboardPage(page).verify_header_children_link_visible()
-    DashboardPage(page).verify_header_import_records_link_visible()
+    DashboardPage(page).verify_header_import_link_visible()
 
     DashboardPage(page).verify_service_guidance_link_point_of_care()  # MAV-3261
 

@@ -65,11 +65,11 @@ def setup_confirm_and_ignore(
 
     for school in schools:
         schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(schools[0])
     upload_class_list()
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_a_child_name(str(children[0]))
     ChildrenSearchPage(page).search.click_child(children[0])
@@ -77,11 +77,11 @@ def setup_confirm_and_ignore(
     ChildActivityLogPage(page).expect_activity_log_header(
         f"Added to the session at {schools[0]}"
     )
-    ChildActivityLogPage(page).header.click_mavis_header()
+    ChildActivityLogPage(page).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(schools[1])
     upload_class_list()
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_school_moves()
 
 
@@ -180,7 +180,7 @@ def test_accessibility(
     DownloadSchoolMovesPage(page).click_continue()
     AccessibilityHelper(page).check_accessibility()
 
-    DownloadSchoolMovesPage(page).header.click_mavis_header()
+    DownloadSchoolMovesPage(page).header.click_mavis()
     DashboardPage(page).click_school_moves()
     SchoolMovesPage(page).click_child(child)
     AccessibilityHelper(page).check_accessibility()
