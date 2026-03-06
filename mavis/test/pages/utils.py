@@ -27,7 +27,7 @@ def schedule_school_session_if_needed(  # noqa: PLR0913
     date_offset: int = 0,
     consent_style: str = "Standard",
 ) -> None:
-    DashboardPage(page).header.click_mavis_header()
+    DashboardPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     if not SessionsSearchPage(page).click_session_if_exists(
         school, programmes, year_groups, date_offset
@@ -43,7 +43,7 @@ def schedule_community_clinic_session_if_needed(
     programmes: list[Programme],
     date_offset: int = 0,
 ) -> None:
-    DashboardPage(page).header.click_mavis_header()
+    DashboardPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     if not SessionsSearchPage(page).click_session_if_exists(
         Clinic("community clinic"), programmes, [], date_offset
@@ -58,7 +58,7 @@ def prepare_child_for_vaccination(
     programme_group: str,
     child: Child,
 ) -> None:
-    DashboardPage(page).header.click_mavis_header()
+    DashboardPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, programme_group)
     SessionsOverviewPage(page).tabs.click_children_tab()

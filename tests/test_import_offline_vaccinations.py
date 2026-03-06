@@ -37,7 +37,7 @@ def setup_vaccs(
     )
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -146,7 +146,7 @@ def test_vaccination_file_upload_duplicate_records(
         VaccsFileMapping.DUP_1,
         session_id=setup_vaccs,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -244,7 +244,7 @@ def test_vaccination_file_upload_creates_child_no_setting(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(VaccsFileMapping.NO_CARE_SETTING)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).search.click_advanced_filters()
@@ -280,7 +280,7 @@ def test_vaccination_file_upload_whitespace_normalization(
         VaccsFileMapping.WHITESPACE,
         session_id=setup_vaccs,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=True

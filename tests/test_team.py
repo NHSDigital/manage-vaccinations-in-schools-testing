@@ -147,7 +147,7 @@ def test_site_child_record_import(
         file_mapping=ChildFileMapping.FIXED_CHILD, programme_group=Programme.FLU.group
     )
 
-    TeamSchoolsPage(page).header.click_mavis_header()
+    TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -165,7 +165,7 @@ def test_site_child_record_import(
 
     file_with_site = set_site_for_child_list(input_file_path, "A")
 
-    TeamSchoolsPage(page).header.click_mavis_header()
+    TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -175,14 +175,12 @@ def test_site_child_record_import(
         page, point_of_care_file_generator
     ).upload_and_verify_output_for_input_output_files(file_with_site, output_file_path)
 
-    ImportRecordsWizardPage(
-        page, point_of_care_file_generator
-    ).header.click_mavis_header()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolsChildrenPage(page).search.search_for_a_child_name(str(child))
 
-    SchoolsChildrenPage(page).header.click_mavis_header()
+    SchoolsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(new_site_name)
     SchoolsChildrenPage(page).search.search_for_child_that_should_not_exist(child)
@@ -217,7 +215,7 @@ def test_site_class_list_import(
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).confirm_site()
 
-    TeamSchoolsPage(page).header.click_mavis_header()
+    TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -228,7 +226,7 @@ def test_site_class_list_import(
     ).upload_and_verify_output(
         file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
     )
-    TeamSchoolsPage(page).header.click_mavis_header()
+    TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -239,6 +237,6 @@ def test_site_class_list_import(
     ).upload_and_verify_output(
         file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
     )
-    TeamSchoolsPage(page).header.click_mavis_header()
+    TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_school_moves()
     SchoolMovesPage(page).click_child(child)

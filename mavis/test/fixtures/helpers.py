@@ -187,7 +187,7 @@ def upload_offline_vaccination(
         )
         schedule_school_session_if_needed(page, school, [programme], [child.year_group])
         session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-        SessionsOverviewPage(page).header.click_mavis_header()
+        SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_imports()
         ImportsPage(page).click_upload_records()
         ImportRecordsWizardPage(
@@ -200,7 +200,7 @@ def upload_offline_vaccination(
             session_id=session_id,
             programme_group=programme.group,
         )
-        ImportsPage(page).header.click_mavis_header()
+        ImportsPage(page).header.click_mavis()
         DashboardPage(page).click_children()
         ChildrenSearchPage(page).search.search_and_click_child(child)
         ChildRecordPage(page).click_vaccination_details(school)
@@ -227,7 +227,7 @@ def setup_session_and_batches_with_fixed_child(
             for vaccine in Vaccine
             if vaccine.programme.group == programme_group
         }
-        VaccinesPage(page).header.click_mavis_header()
+        VaccinesPage(page).header.click_mavis()
         DashboardPage(page).click_sessions()
         session_programmes = [
             programme for programme in Programme if programme.group == programme_group
@@ -235,7 +235,7 @@ def setup_session_and_batches_with_fixed_child(
         schedule_school_session_if_needed(
             page, school, session_programmes, [child.year_group]
         )
-        SessionsOverviewPage(page).header.click_mavis_header()
+        SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()

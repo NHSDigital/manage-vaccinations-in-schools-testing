@@ -92,13 +92,13 @@ def test_recording_hpv_vaccination_e2e(
         vaccination_record, test_recording_twice=True
     )
 
-    SessionsVaccinationWizardPage(page).header.click_mavis_header()
+    SessionsVaccinationWizardPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).verify_one_vaccination_appears(schools[0], Programme.HPV)
 
-    SessionsChildrenPage(page).header.click_mavis_header()
+    SessionsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
         schools[0], Programme.HPV

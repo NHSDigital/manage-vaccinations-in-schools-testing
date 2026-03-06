@@ -110,7 +110,7 @@ def test_historical_vaccination_file_upload_creates_child(
         page, point_of_care_file_generator
     ).upload_and_verify_output(VaccsFileMapping.HIST_HPV)
 
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).search.click_advanced_filters()

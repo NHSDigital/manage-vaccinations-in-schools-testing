@@ -27,7 +27,7 @@ def setup_class_list_import(
     year_group = year_groups[Programme.HPV]
 
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -184,7 +184,7 @@ def test_class_list_file_upload_whitespace_normalization(
     ).upload_and_verify_output(
         ClassFileMapping.WHITESPACE,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
@@ -220,7 +220,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     year_group = year_groups[Programme.HPV]
 
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -234,7 +234,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     child = point_of_care_file_generator.fixed_random_child
     ImportRecordsWizardPage(page, point_of_care_file_generator).verify_linking(child)
 
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
 
@@ -262,9 +262,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
 
     ImportRecordsWizardPage(page, point_of_care_file_generator).verify_linking(child)
 
-    ImportRecordsWizardPage(
-        page, point_of_care_file_generator
-    ).header.click_mavis_header()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_by_name(str(child))
 

@@ -57,7 +57,7 @@ def setup_session_with_file_upload(
             point_of_care_prescriber, point_of_care_team
         )
 
-        VaccinesPage(page).header.click_mavis_header()
+        VaccinesPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()
