@@ -5,9 +5,9 @@ from mavis.test.constants import Programme
 from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
-    ChildActivityLogPage,
     ChildArchivePage,
     ChildEditPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -43,7 +43,7 @@ def setup_children_session(
             class_list_file, year_group
         )
         schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
-        SessionsOverviewPage(page).header.click_mavis_header()
+        SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_children()
         yield
 
@@ -80,7 +80,7 @@ def setup_mav_853(
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -90,7 +90,7 @@ def setup_mav_853(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
 
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -102,7 +102,7 @@ def setup_mav_853(
         file_mapping=VaccsFileMapping.NOT_GIVEN,
         session_id=session_id,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
 
@@ -130,18 +130,18 @@ def test_patient_details_load_with_missing_vaccine_info(
     - Vaccination details show "Outcome" as "Vaccinated".
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
     # Verify activity log
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).expect_activity_log_header(
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).expect_activity_log_header(
         "Vaccinated with Gardasil 9", unique=True
     )
     # Verify vaccination record
     ChildRecordPage(page).click_child_record()
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_vaccination_record()
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
 
 
@@ -204,12 +204,12 @@ def test_merge_child_records_does_not_crash(
     ChildArchivePage(page).click_its_a_duplicate(child2.nhs_number)
     ChildArchivePage(page).click_archive_record()
     expect_alert_text(page, "This record has been archived")
-    ChildArchivePage(page).header.click_mavis_header()
+    ChildArchivePage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child2))
     ChildrenSearchPage(page).search.click_child(child2)
-    ChildRecordPage(page).click_activity_log_tab()
-    ChildActivityLogPage(page).expect_activity_log_header(
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).expect_activity_log_header(
         "Child record merged", unique=True
     )
 
@@ -242,7 +242,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ChildRecordPage(page).click_archive_child_record()
     ChildArchivePage(page).archive_child_record()
 
-    ChildRecordPage(page).header.click_mavis_header()
+    ChildRecordPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -251,7 +251,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
@@ -280,5 +280,5 @@ def test_accessibility(
     ChildrenSearchPage(page).search.click_child(child)
     AccessibilityHelper(page).check_accessibility()
 
-    ChildRecordPage(page).tabs.click_activity_log()
+    ChildRecordPage(page).click_programme(Programme.HPV)
     AccessibilityHelper(page).check_accessibility()

@@ -7,7 +7,7 @@ from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
-    ChildActivityLogPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     ConsentResponsePage,
@@ -137,7 +137,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_unmatched_consent_responses()
 
     UnmatchedConsentResponsesPage(page).click_parent_on_consent_record_for_child(child)
@@ -148,12 +148,12 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     expect(UnmatchedConsentResponsesPage(page).matched_alert).to_be_visible()
     UnmatchedConsentResponsesPage(page).check_response_for_child_not_visible(child)
 
-    UnmatchedConsentResponsesPage(page).header.click_mavis_header()
+    UnmatchedConsentResponsesPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
 def test_create_child_record_from_consent_with_nhs_number(
@@ -186,12 +186,12 @@ def test_create_child_record_from_consent_with_nhs_number(
     expect(UnmatchedConsentResponsesPage(page).created_alert).to_be_visible()
     UnmatchedConsentResponsesPage(page).check_response_for_child_not_visible(child)
 
-    UnmatchedConsentResponsesPage(page).header.click_mavis_header()
+    UnmatchedConsentResponsesPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
 def test_create_child_record_from_consent_without_nhs_number(
@@ -225,12 +225,12 @@ def test_create_child_record_from_consent_without_nhs_number(
     expect(UnmatchedConsentResponsesPage(page).created_alert).to_be_visible()
     UnmatchedConsentResponsesPage(page).check_response_for_child_not_visible(child)
 
-    UnmatchedConsentResponsesPage(page).header.click_mavis_header()
+    UnmatchedConsentResponsesPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
 @pytest.mark.accessibility
@@ -259,7 +259,7 @@ def test_accessibility(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_unmatched_consent_responses()
     AccessibilityHelper(page).check_accessibility()
 
@@ -326,7 +326,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
     child_with_vaccination = children[Programme.HPV][1]
 
     # Navigate back to unmatched consent responses
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_unmatched_consent_responses()
 
     # Step 4: Navigate to unmatched consent responses and attempt to search for

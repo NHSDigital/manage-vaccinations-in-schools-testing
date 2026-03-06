@@ -5,6 +5,7 @@ from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages import (
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -16,6 +17,7 @@ from mavis.test.pages import (
     VaccinationRecordPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import get_current_datetime
 
 
 @pytest.fixture
@@ -37,7 +39,7 @@ def setup_vaccs(
     )
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -146,7 +148,7 @@ def test_vaccination_file_upload_duplicate_records(
         VaccsFileMapping.DUP_1,
         session_id=setup_vaccs,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -244,14 +246,17 @@ def test_vaccination_file_upload_creates_child_no_setting(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(VaccsFileMapping.NO_CARE_SETTING)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).search.click_advanced_filters()
     ChildrenSearchPage(page).search.check_children_aged_out_of_programmes()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_vaccination_record(
+        get_current_datetime().replace(year=get_current_datetime().year - 2)
+    )
     VaccinationRecordPage(page).expect_vaccination_details("Location", str(school))
 
 
@@ -280,7 +285,7 @@ def test_vaccination_file_upload_whitespace_normalization(
         VaccsFileMapping.WHITESPACE,
         session_id=setup_vaccs,
     )
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=True

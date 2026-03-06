@@ -63,9 +63,7 @@ def test_child_file_upload_close_match(
         input_file_path, "CHILD_FIRST_NAME", "Test"
     )
 
-    ImportRecordsWizardPage(
-        page, point_of_care_file_generator
-    ).header.click_mavis_header()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
@@ -94,7 +92,7 @@ def test_child_file_upload_close_match(
     ).navigate_to_imported_record()
     expect_details(page, "Full name", f"{last_name}, {first_name}")
 
-    ChildRecordPage(page).header.click_mavis_header()
+    ChildRecordPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_a_child_name(
         f"{last_name}, {first_name}"
@@ -120,7 +118,7 @@ def setup_vaccination_import(
     )
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-    SessionsOverviewPage(page).header.click_mavis_header()
+    SessionsOverviewPage(page).header.click_mavis()
     return session_id
 
 
@@ -165,9 +163,7 @@ def test_vaccination_file_upload_close_match(
         input_file_path, "ANATOMICAL_SITE", DeliverySite.LEFT_ARM_LOWER
     )
 
-    ImportRecordsWizardPage(
-        page, point_of_care_file_generator
-    ).header.click_mavis_header()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
     DashboardPage(page).click_imports()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
