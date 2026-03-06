@@ -4,13 +4,28 @@ Jira REST API client for test management.
 
 import logging
 import re
+import time
 from pathlib import Path
+from threading import Lock
 
 import requests
 
 from .models import JiraTestCase, TestResult
 
 logger = logging.getLogger(__name__)
+
+# Maximum length for error body text in logs
+MAX_ERROR_BODY_LENGTH = 500
+
+
+def _get_response_attr(
+    error: requests.exceptions.HTTPError, attr: str, default: object = None
+) -> object:
+    return (
+        getattr(error.response, attr, default)
+        if hasattr(error, "response") and error.response
+        else default
+    )
 
 
 class JiraClient:
@@ -22,12 +37,19 @@ class JiraClient:
         api_token: str,
         project_key: str,
         zephyr_project_id: str | None = None,
+        min_request_interval: float = 0.1,  # Minimum 100ms between requests
     ) -> None:
         self.jira_reporting_url = jira_reporting_url.rstrip("/")
         self.api_token = api_token
         self.project_key = project_key
         self.timeout = 30
         self.zephyr_project_id = zephyr_project_id
+
+        # Rate limiting
+        self.min_request_interval = min_request_interval
+        self._last_request_time = 0.0
+        self._request_lock = Lock()
+        self._request_count = 0
 
         self.session = requests.Session()
 
@@ -44,6 +66,103 @@ class JiraClient:
         self._field_id_cache: dict[str, str | None] = {}
         self._zephyr_status_cache: dict[str, int] = {}
 
+    def _throttle_request(self) -> None:
+        """Enforce minimum delay between API requests to avoid rate limiting."""
+        with self._request_lock:
+            current_time = time.time()
+            time_since_last = current_time - self._last_request_time
+
+            if time_since_last < self.min_request_interval:
+                sleep_time = self.min_request_interval - time_since_last
+                time.sleep(sleep_time)
+
+            self._last_request_time = time.time()
+            self._request_count += 1
+
+    def _execute_http_method(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: dict | None = None,
+        params: dict | None = None,
+        files: dict | None = None,
+    ) -> requests.Response:
+        """Execute HTTP request with appropriate method."""
+        kwargs = {"params": params, "timeout": self.timeout}
+
+        if method == "GET":
+            return self.session.get(url, **kwargs)
+        if method == "POST":
+            kwargs["files" if files else "json"] = files or data
+            if files:
+                kwargs["data"] = data
+            return self.session.post(url, **kwargs)
+        if method == "PUT":
+            return self.session.put(url, json=data, **kwargs)
+        if method == "DELETE":
+            return self.session.delete(url, **kwargs)
+
+        error_msg = f"Unsupported method: {method}"
+        raise ValueError(error_msg)
+
+    def _truncate_error_body(self, error_body: str) -> str:
+        """Truncate error body to maximum length."""
+        if len(error_body) > MAX_ERROR_BODY_LENGTH:
+            return error_body[:MAX_ERROR_BODY_LENGTH]
+        return error_body
+
+    def _parse_jira_error_json(self, error_json: dict) -> str:
+        """Parse structured error from Jira JSON response."""
+        if error_messages := error_json.get("errorMessages", []):
+            return "; ".join(str(msg) for msg in error_messages)
+        if errors := error_json.get("errors", {}):
+            return "; ".join(f"{k}: {v}" for k, v in errors.items())
+        return ""
+
+    def _extract_error_details(
+        self, response: requests.Response | None, error_body: str
+    ) -> str:
+        """Extract error details from response."""
+        if not response or not error_body or error_body == "N/A":
+            return "No error details"
+
+        try:
+            error_json = response.json()
+            if parsed_error := self._parse_jira_error_json(error_json):
+                return parsed_error
+            return self._truncate_error_body(error_body)
+        except (ValueError, AttributeError, TypeError):
+            return self._truncate_error_body(error_body)
+
+    def _log_http_error(
+        self,
+        api_name: str,
+        status_code: int | str,
+        method: str,
+        url: str,
+        error_details: str,
+    ) -> None:
+        """Log HTTP error at appropriate level."""
+        # Expected errors (search failures) logged at DEBUG
+        if status_code in (400, 404):
+            logger.debug(
+                "%s API HTTP %s for %s %s: %s",
+                api_name,
+                status_code,
+                method,
+                url,
+                error_details,
+            )
+        else:
+            logger.exception(
+                "%s API HTTP error %s for %s: %s",
+                api_name,
+                status_code,
+                method,
+                error_details,
+            )
+
     def _make_request(  # noqa: PLR0913
         self,
         method: str,
@@ -54,32 +173,41 @@ class JiraClient:
         api_name: str = "Jira",
     ) -> dict:
         """Make authenticated API request."""
+        self._throttle_request()
+
         try:
-            kwargs = {"params": params, "timeout": self.timeout}
-            if method == "GET":
-                response = self.session.get(url, **kwargs)
-            elif method == "POST":
-                kwargs["files" if files else "json"] = files or data
-                if files:
-                    kwargs["data"] = data
-                response = self.session.post(url, **kwargs)
-            elif method == "PUT":
-                response = self.session.put(url, json=data, **kwargs)
-            elif method == "DELETE":
-                response = self.session.delete(url, **kwargs)
-            else:
-                error_msg = f"Unsupported method: {method}"
-                raise ValueError(error_msg)
+            response = self._execute_http_method(
+                method, url, data=data, params=params, files=files
+            )
             response.raise_for_status()
-            try:
-                return response.json() if response.content else {}
-            except ValueError as e:
-                logger.debug("Failed to parse %s JSON response: %s", api_name, e)
-                return {}
+            return response.json() if response.content else {}
+        except ValueError as e:
+            logger.debug("Failed to parse %s JSON response: %s", api_name, e)
+            return {}
+        except requests.exceptions.HTTPError as e:
+            status_code = (
+                e.response.status_code if e.response is not None else "unknown"
+            )
+            error_body = e.response.text if e.response is not None else "N/A"
+            error_details = self._extract_error_details(e.response, error_body)
+            self._log_http_error(api_name, status_code, method, url, error_details)
+            raise
+        except requests.exceptions.Timeout:
+            logger.exception(
+                "%s API request timed out after %ss", api_name, self.timeout
+            )
+            raise
+        except requests.exceptions.ConnectionError:
+            logger.exception("%s API connection error", api_name)
+            raise
         except requests.exceptions.RequestException as e:
-            logger.debug("%s API request failed: %s", api_name, e)
-            if hasattr(e, "response") and e.response is not None:
-                logger.debug("%s response: %s", api_name, e.response.text)
+            logger.exception("%s API request failed", api_name)
+            if response_text := _get_response_attr(e, "text"):
+                logger.debug(
+                    "%s response: %s",
+                    api_name,
+                    response_text[:MAX_ERROR_BODY_LENGTH],
+                )
             raise
 
     def _make_jira_request(
@@ -111,6 +239,31 @@ class JiraClient:
         """Make authenticated request to Zephyr Essential DC API."""
         url = f"{self.jira_reporting_url.rstrip('/')}/rest/zapi/latest/{endpoint}"
         return self._make_request(method, url, data=data, params=params, files=files)
+
+    def create_zephyr_test_cycle(
+        self, name: str, description: str = "", version_id: int | None = None
+    ) -> dict | None:
+        """Create a new test cycle in Zephyr Essential DC."""
+        if not (project_id := self.zephyr_project_id or self.get_project_id()):
+            logger.warning("Zephyr project id not configured")
+            return None
+
+        payload = {
+            "name": name,
+            "projectId": int(project_id),
+        }
+        if description:
+            payload["description"] = description
+        if version_id is not None:
+            payload["versionId"] = int(version_id)
+
+        try:
+            response = self._make_zephyr_request("POST", "cycle", data=payload)
+            logger.info("Created test cycle '%s' with ID %s", name, response.get("id"))
+            return response
+        except requests.exceptions.RequestException:
+            logger.exception("Failed to create test cycle '%s'", name)
+            return None
 
     def get_zephyr_test_cycles(self, version_id: int | None = None) -> list[dict]:
         """Get all test cycles from Zephyr Essential DC for the project."""
@@ -458,7 +611,14 @@ class JiraClient:
             return False
 
     def _escape_jql(self, value: str) -> str:
-        """Escape a string value for JQL usage."""
+        """Escape a string value for JQL usage.
+
+        JQL has issues with certain special characters.
+        For robust searching, we escape problematic characters.
+        When the value is used within quotes in JQL, only quotes and
+        backslashes need to be escaped. Colons don't need escaping.
+        """
+        # Escape backslashes first, then quotes
         return value.replace("\\", "\\\\").replace('"', '\\"')
 
     def get_zephyr_cycle_id(self, cycle_ref: str, version_id: int | None) -> int | None:
@@ -720,24 +880,27 @@ class JiraClient:
         return steps_text
 
     def find_test_case_by_name(self, test_name: str) -> str | None:
-        """Find test case by name using JQL search."""
+        """Find test case by name using JQL search.
+
+        Note: Jira's summary field doesn't support '=' operator, only '~' (contains).
+        """
         try:
-            issuetype_candidates = ["Test", "Test Case", "Task"]
+            # Try issue types that might contain test cases
+            issuetype_candidates = ["Test", "Task"]
             issuetype_filter = ", ".join(
                 f'"{candidate}"' for candidate in issuetype_candidates
             )
             escaped_name = self._escape_jql(test_name)
 
+            # Try queries in order of specificity:
+            # 1. Text search within known test issue types
+            # 2. Text search across all issue types in project
             for jql in [
-                (
-                    f'project = "{self.project_key}" AND issuetype in '
-                    f'({issuetype_filter}) AND summary = "{escaped_name}"'
-                ),
                 (
                     f'project = "{self.project_key}" AND issuetype in '
                     f'({issuetype_filter}) AND summary ~ "{escaped_name}"'
                 ),
-                f'project = "{self.project_key}" AND summary = "{escaped_name}"',
+                f'project = "{self.project_key}" AND summary ~ "{escaped_name}"',
             ]:
                 response = self._make_jira_request(
                     "GET",

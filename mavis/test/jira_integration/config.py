@@ -2,6 +2,7 @@
 
 import os
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -18,6 +19,7 @@ class JiraConfig:
     test_cycle_version: str | None = None
     test_cycle_key: str | None = None
     zephyr_project_id: str | None = None
+    min_request_interval: float = 0.1  # Minimum seconds between API requests
 
     @classmethod
     def from_env(cls) -> "JiraConfig":
@@ -29,6 +31,16 @@ class JiraConfig:
         screenshot_all_steps = (
             os.getenv("SCREENSHOT_ALL_STEPS", "false").lower() == "true"
         )
+
+        # Generate timestamp-based cycle key (once per test run)
+        # Check if cycle key already exists (set by controller for workers)
+        cycle_key = os.getenv("_JIRA_TEST_CYCLE_KEY_INTERNAL")
+        if not cycle_key:
+            # Generate new cycle key with current date/time
+            timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d_%H-%M-%S")
+            cycle_key = f"Test_Run_{timestamp}"
+            # Store for workers to reuse
+            os.environ["_JIRA_TEST_CYCLE_KEY_INTERNAL"] = cycle_key
 
         return cls(
             jira_reporting_url=jira_reporting_url,
@@ -42,8 +54,9 @@ class JiraConfig:
             test_cycle_version=os.getenv(
                 "JIRA_TEST_CYCLE_VERSION", default="Unscheduled"
             ),
-            test_cycle_key=os.getenv("JIRA_TEST_CYCLE_KEY", default="Ad hoc"),
+            test_cycle_key=cycle_key,
             zephyr_project_id=os.getenv("ZEPHYR_PROJECT_ID"),
+            min_request_interval=float(os.getenv("JIRA_MIN_REQUEST_INTERVAL", "0.1")),
         )
 
     def is_valid(self) -> bool:

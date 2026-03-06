@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from functools import wraps
 from typing import TypeVar
 
-from playwright.sync_api import Page
+import requests
 
 from .client import JiraClient
 from .config import JiraConfig
@@ -20,6 +20,9 @@ from .models import JiraTestCase, TestResult, TestStep
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
+
+# HTTP status codes
+HTTP_TOO_MANY_REQUESTS = 429
 
 
 # ===== Execution ID State Management =====
@@ -53,29 +56,131 @@ class FunctionFailedWithoutError(RuntimeError):
         super().__init__("Function failed without raising an exception")
 
 
-def retry_on_failure(
-    max_retries: int = 3, delay: float = 1.0
-) -> Callable[[Callable[..., T]], Callable[..., T]]:
-    """Decorator to retry operations on failure."""
+def _calculate_wait_time(attempt: int, delay: float, *, exponential: bool) -> float:
+    return delay * (2**attempt) if exponential else delay
 
-    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+
+def _get_response_attr(
+    error: requests.exceptions.HTTPError, attr: str, default: object = None
+) -> object:
+    return (
+        getattr(error.response, attr, default)
+        if hasattr(error, "response") and error.response
+        else default
+    )
+
+
+def _is_rate_limit_error(error: requests.exceptions.HTTPError) -> bool:
+    return _get_response_attr(error, "status_code") == HTTP_TOO_MANY_REQUESTS
+
+
+def retry_on_failure(  # noqa: C901 - Complexity needed for robust error handling
+    max_retries: int = 3,
+    delay: float = 1.0,
+    *,
+    exponential_backoff: bool = True,
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
+    """Decorator to retry operations on failure with exponential backoff
+    and rate limit handling.
+    """
+
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:  # noqa: C901
         @wraps(func)
-        def wrapper(*args: object, **kwargs: object) -> T:
+        def wrapper(*args: object, **kwargs: object) -> T:  # noqa: C901, PLR0912
+            last_exception = None
             for attempt in range(max_retries):
                 try:
                     return func(*args, **kwargs)
+                except requests.exceptions.HTTPError as e:
+                    last_exception = e
+                    is_last_attempt = attempt >= max_retries - 1
+
+                    # Handle rate limiting specifically
+                    if _is_rate_limit_error(e):
+                        retry_after = int(
+                            e.response.headers.get(
+                                "Retry-After",
+                                _calculate_wait_time(
+                                    attempt, delay, exponential=exponential_backoff
+                                ),
+                            )
+                        )
+                        if not is_last_attempt:
+                            logger.warning(
+                                "Rate limited (HTTP 429). "
+                                "Waiting %ss before retry %d/%d",
+                                retry_after,
+                                attempt + 2,
+                                max_retries,
+                            )
+                            time.sleep(retry_after)
+                        else:
+                            logger.exception(
+                                "Rate limited after %d attempts. Giving up.",
+                                max_retries,
+                            )
+                            raise
+                    elif not is_last_attempt:
+                        wait_time = _calculate_wait_time(
+                            attempt, delay, exponential=exponential_backoff
+                        )
+                        logger.warning(
+                            "HTTP error %s on attempt %d: %s. Retrying in %ss...",
+                            _get_response_attr(e, "status_code", "unknown"),
+                            attempt + 1,
+                            e,
+                            wait_time,
+                        )
+                        time.sleep(wait_time)
+                    else:
+                        logger.exception(
+                            "All %d attempts failed with HTTP error.", max_retries
+                        )
+                        raise
+                except (
+                    requests.exceptions.ConnectionError,
+                    requests.exceptions.Timeout,
+                ) as e:
+                    last_exception = e
+                    is_last_attempt = attempt >= max_retries - 1
+
+                    if not is_last_attempt:
+                        wait_time = _calculate_wait_time(
+                            attempt, delay, exponential=exponential_backoff
+                        )
+                        logger.warning(
+                            "Connection error on attempt %d: %s. Retrying in %ss...",
+                            attempt + 1,
+                            e,
+                            wait_time,
+                        )
+                        time.sleep(wait_time)
+                    else:
+                        logger.exception(
+                            "All %d attempts failed with connection error.", max_retries
+                        )
+                        raise
                 except Exception as e:
-                    if attempt < max_retries - 1:
+                    last_exception = e
+                    is_last_attempt = attempt >= max_retries - 1
+
+                    if not is_last_attempt:
+                        wait_time = _calculate_wait_time(
+                            attempt, delay, exponential=exponential_backoff
+                        )
                         logger.warning(
                             "Attempt %d failed: %s. Retrying in %ss...",
                             attempt + 1,
                             e,
-                            delay,
+                            wait_time,
                         )
-                        time.sleep(delay)
+                        time.sleep(wait_time)
                     else:
                         logger.exception("All %d attempts failed.", max_retries)
                         raise
+            # If we exhausted retries without explicit raise
+            if last_exception:
+                raise last_exception
             raise FunctionFailedWithoutError
 
         return wrapper
@@ -119,11 +224,20 @@ def extract_issue_keys_from_item(item: object) -> list[str]:
 class JiraTestReporter:
     """Handles Jira test reporting integration."""
 
-    def __init__(self, config: JiraConfig | None = None) -> None:
-        """Initialize Jira reporter with configuration."""
+    def __init__(
+        self, config: JiraConfig | None = None, *, is_xdist_worker: bool = False
+    ) -> None:
+        """Initialize Jira reporter with configuration.
+
+        Args:
+            config: Optional Jira configuration. If None, loads from environment.
+            is_xdist_worker: True if running in xdist worker process.
+                Only the controller/main process should create test cycles.
+        """
         self.config = config or JiraConfig.from_env()
         self.client = None
         self.current_test_plan_key = None
+        self._cached_cycle_id: int | None = None  # Cache cycle ID after creation
         self.config.screenshots_dir.mkdir(exist_ok=True)
 
         if not self.config.is_valid():
@@ -143,8 +257,12 @@ class JiraTestReporter:
                 self.config.jira_api_token or "",
                 self.config.project_key,
                 zephyr_project_id=self.config.zephyr_project_id,
+                min_request_interval=self.config.min_request_interval,
             )
             self._initialize_test_plan()
+            # Only create cycle in controller/main process, not in xdist workers
+            if not is_xdist_worker:
+                self._ensure_test_cycle()
         except RuntimeError as e:
             logger.info("Failed to initialize Jira client: %s", e)
             self.client = None
@@ -170,6 +288,93 @@ class JiraTestReporter:
         except RuntimeError as e:
             logger.warning(
                 "Failed to initialize test plan: %s - continuing without plan", e
+            )
+
+    def _ensure_test_cycle(self) -> None:
+        """Ensure test cycle exists, creating it if necessary."""
+        if not self.client or not self.config.test_cycle_key:
+            return
+
+        # Resolve version ID if version is configured
+        version_id = None
+        if self.config.test_cycle_version:
+            version_id = self.client.get_version_id_by_name(
+                self.config.test_cycle_version
+            )
+            if version_id:
+                logger.info(
+                    "Resolved version '%s' to ID %s",
+                    self.config.test_cycle_version,
+                    version_id,
+                )
+
+        # Check if cycle already exists
+        existing_cycle_id = self.client.get_zephyr_cycle_id(
+            self.config.test_cycle_key, version_id
+        )
+        if existing_cycle_id:
+            self._cached_cycle_id = existing_cycle_id
+            logger.info(
+                "Using existing test cycle '%s' (ID: %s)",
+                self.config.test_cycle_key,
+                existing_cycle_id,
+            )
+            return
+
+        # Create new test cycle
+        description = (
+            f"Automated test cycle created at "
+            f"{datetime.now(tz=UTC).strftime('%Y-%m-%d %H:%M:%S')}"
+        )
+        try:
+            cycle_response = self.client.create_zephyr_test_cycle(
+                name=self.config.test_cycle_key,
+                description=description,
+                version_id=version_id,
+            )
+            if cycle_response and cycle_response.get("id"):
+                created_cycle_id = cycle_response["id"]
+                self._cached_cycle_id = created_cycle_id
+                logger.info(
+                    "Created test cycle '%s' with ID %s",
+                    self.config.test_cycle_key,
+                    created_cycle_id,
+                )
+                # Verify cycle was created by attempting to retrieve it
+                # Zephyr needs time to index new cycles before they're searchable
+
+                max_verification_attempts = 3
+                for attempt in range(max_verification_attempts):
+                    time.sleep(2)  # Wait 2 seconds between attempts
+                    verified_cycle_id = self.client.get_zephyr_cycle_id(
+                        self.config.test_cycle_key, version_id
+                    )
+                    if verified_cycle_id:
+                        logger.info(
+                            "Verified test cycle '%s' is accessible (ID: %s)"
+                            " after %d attempts",
+                            self.config.test_cycle_key,
+                            verified_cycle_id,
+                            attempt + 1,
+                        )
+                        break
+                else:
+                    logger.warning(
+                        "Created test cycle '%s' with ID %s but unable"
+                        " to verify after %d attempts - using cached ID",
+                        self.config.test_cycle_key,
+                        created_cycle_id,
+                        max_verification_attempts,
+                    )
+            else:
+                logger.warning(
+                    "Failed to create test cycle '%s' - will attempt to continue",
+                    self.config.test_cycle_key,
+                )
+        except Exception:
+            logger.exception(
+                "Error creating test cycle '%s' - will attempt to continue",
+                self.config.test_cycle_key,
             )
 
     def is_enabled(self) -> bool:
@@ -286,29 +491,13 @@ class JiraTestReporter:
         match = pattern.search(text)
         return match.group(0) if match else None
 
-    @retry_on_failure(max_retries=3, delay=1.0)
-    def get_or_create_test_case(
-        self, test_name: str, docstring: str = ""
-    ) -> str | None:
-        """Get existing test case or create a new one in Jira."""
-        if not self.is_enabled() or not self.client:
-            logger.debug("Jira integration disabled or client not initialized")
-            return None
-
-        if (
-            issue_key := self._extract_issue_key(test_name)
-            or self._extract_issue_key(docstring)
-        ) and self.client.issue_exists(issue_key):
-            logger.info("Using existing test case by key: %s", issue_key)
-            return issue_key
-
-        if test_case_key := self.client.find_test_case_by_name(test_name):
-            logger.info("Found existing test case: %s", test_case_key)
-            return test_case_key
-
+    def _build_test_case_from_docstring(
+        self, test_name: str, docstring: str
+    ) -> JiraTestCase:
+        """Build JiraTestCase object from test name and docstring."""
         test_steps = self.parse_test_steps_from_docstring(docstring)
         base_description = self._extract_description_from_docstring(docstring)
-        test_case = JiraTestCase(
+        return JiraTestCase(
             name=test_name,
             description=self._format_test_steps_as_description(
                 base_description, test_steps
@@ -318,15 +507,51 @@ class JiraTestReporter:
             labels=["Automated"],
         )
 
-        try:
-            if not (test_case_key := self.client.create_test_case(test_case)):
-                logger.warning("Failed to create test case")
-                return None
-            logger.info("Created new test case: %s", test_case_key)
+    def _create_new_test_case(self, test_name: str, docstring: str) -> str | None:
+        """Create a new test case in Jira."""
+        test_case = self._build_test_case_from_docstring(test_name, docstring)
+        if test_case_key := self.client.create_test_case(test_case):
+            logger.info("Created new test case: %s for '%s'", test_case_key, test_name)
             return test_case_key
-        except RuntimeError:
-            logger.exception("Failed to create test case")
+        logger.error(
+            "Failed to create test case for '%s' - create_test_case returned None",
+            test_name,
+        )
+        return None
+
+    @retry_on_failure(max_retries=3, delay=1.0)
+    def get_or_create_test_case(
+        self, test_name: str, docstring: str = ""
+    ) -> str | None:
+        """Get existing test case or create a new one in Jira."""
+        if not self.is_enabled():
+            logger.debug("Jira integration disabled or client not initialized")
             return None
+
+        try:
+            # Search for existing test case by name
+            if test_case_key := self.client.find_test_case_by_name(test_name):
+                logger.info("Found existing test case: %s", test_case_key)
+                return test_case_key
+
+            # Create new test case
+            return self._create_new_test_case(test_name, docstring)
+
+        except requests.exceptions.HTTPError as e:
+            status = _get_response_attr(e, "status_code", "unknown")
+            logger.exception(
+                "HTTP error %s while creating test case for '%s'", status, test_name
+            )
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+        ):
+            logger.exception(
+                "Connection/timeout error creating test case for '%s'", test_name
+            )
+        except Exception:
+            logger.exception("Unexpected error creating test case for '%s'", test_name)
+        return None
 
     def _extract_description_from_docstring(self, docstring: str) -> str:
         """Extract description from docstring."""
@@ -360,8 +585,7 @@ class JiraTestReporter:
         issue_keys: list[str] | None = None,
     ) -> None:
         """Report test execution result to Jira using Zephyr Squad API."""
-        if not self.is_enabled() or not self.client:
-            logger.debug("Jira integration disabled or client not initialized")
+        if not self.is_enabled():
             return
 
         if existing_execution_id := get_execution_id(test_case_key):
@@ -466,9 +690,13 @@ class JiraTestReporter:
             version_id = resolved_version_id
             logger.info("Resolved version ID %s", version_id)
 
-        if cycle_id := self.client.get_zephyr_cycle_id(
-            self.config.test_cycle_key, version_id
-        ):
+        # Use cached cycle ID if available (avoids re-querying after creation)
+        cycle_id = self._cached_cycle_id
+        if not cycle_id:
+            cycle_id = self.client.get_zephyr_cycle_id(
+                self.config.test_cycle_key, version_id
+            )
+        if cycle_id:
             logger.info("Resolved cycle ID %s", cycle_id)
         else:
             logger.warning(
@@ -747,122 +975,3 @@ class TestReporter:
         if current_step and line:
             current_step.description += f" {line}"
         return current_step, steps
-
-    def _extract_issue_key(self, text: str) -> str | None:
-        if not text:
-            return None
-        return (
-            match.group(0)
-            if (
-                match := re.compile(
-                    rf"\b{re.escape(self.config.project_key)}-\d+\b"
-                ).search(text)
-            )
-            else None
-        )
-
-    @retry_on_failure(max_retries=3, delay=1.0)
-    def get_or_create_test_case(
-        self, test_name: str, docstring: str = ""
-    ) -> str | None:
-        """Get existing test case or create a new one."""
-        if self.jira_reporter:
-            return self.jira_reporter.get_or_create_test_case(test_name, docstring)
-        if not self.client:
-            logger.warning("No integration client initialized")
-            return None
-
-        if (
-            issue_key := self._extract_issue_key(test_name)
-            or self._extract_issue_key(docstring)
-        ) and self.client.issue_exists(issue_key):
-            logger.info("Using existing test case by key: %s", issue_key)
-            return issue_key
-        if test_case_key := self.client.find_test_case_by_name(test_name):
-            logger.info("Found existing test case: %s", test_case_key)
-            return test_case_key
-
-        test_steps = self.parse_test_steps_from_docstring(docstring)
-        base_description = self._extract_description_from_docstring(docstring)
-        test_case = JiraTestCase(
-            name=test_name,
-            description=self._format_test_steps_as_description(
-                base_description, test_steps
-            ),
-            test_steps=None,
-            precondition=base_description,
-            labels=["Automated"],
-        )
-        try:
-            if test_case_key := self.client.create_test_case(test_case):
-                logger.info("Created new test case: %s", test_case_key)
-            else:
-                logger.warning("Failed to create test case")
-            return test_case_key
-        except RuntimeError:
-            logger.exception("Failed to create test case")
-            return None
-
-    def _extract_description_from_docstring(self, docstring: str) -> str:
-        if not docstring:
-            return ""
-        description_lines = []
-        for line in (
-            original_line.strip() for original_line in docstring.strip().split("\n")
-        ):
-            if line.lower().startswith(("test:", "steps:", "verification:")):
-                break
-            if line and not line.startswith(("Args:", "Returns:")):
-                description_lines.append(line)
-        return " ".join(description_lines)
-
-    def _format_test_steps_as_description(
-        self, description: str, test_steps: list[TestStep]
-    ) -> str:
-        if not test_steps:
-            return description
-        parts = [description, "\n\n"] if description else []
-        parts.append("h3. Test Steps\n\n")
-        for i, step in enumerate(test_steps, 1):
-            parts.append(f"{i}. {step.description}\n")
-            if step.expected_result:
-                parts.append(f"   *Expected:* {step.expected_result}\n")
-            parts.append("\n")
-        return "".join(parts)
-
-    def pytest_result_to_jira_result(self, pytest_outcome: str) -> TestResult:
-        return {
-            "passed": TestResult.PASS,
-            "failed": TestResult.FAIL,
-            "skipped": TestResult.NOT_EXECUTED,
-            "blocked": TestResult.BLOCKED,
-        }.get(pytest_outcome.lower(), TestResult.FAIL)
-
-    def take_screenshot(
-        self, page: Page, test_name: str, suffix: str = ""
-    ) -> str | None:
-        """Take a screenshot and save it with timeout protection."""
-        try:
-            try:
-                page.wait_for_load_state("domcontentloaded", timeout=1000)
-            except (TimeoutError, RuntimeError):
-                logger.info("Page not responsive for screenshot, skipping")
-                return None
-            timestamp = datetime.now(tz=UTC).strftime("%Y%m%d_%H%M%S")
-            filename = (
-                f"{test_name}_{suffix}_{timestamp}.png"
-                if suffix
-                else f"{test_name}_{timestamp}.png"
-            )
-            screenshot_path = self.config.screenshots_dir / filename
-            page.screenshot(path=str(screenshot_path), full_page=True, timeout=3000)
-            logger.info("Screenshot saved: %s", screenshot_path)
-            return str(screenshot_path)
-        except (RuntimeError, OSError, TimeoutError) as e:
-            logger.warning("Failed to take screenshot for %s: %s", test_name, e)
-            return None
-
-    def create_or_update_test_case(
-        self, test_name: str, docstring: str = ""
-    ) -> str | None:
-        return self.get_or_create_test_case(test_name, docstring)
