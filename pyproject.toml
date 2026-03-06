@@ -41,6 +41,7 @@ markers = [
   "childlist",
   "children",
   "classlist",
+  "clinics",
   "consent",
   "consent_responses",
   "e2e",
