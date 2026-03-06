@@ -1,5 +1,4 @@
 import pytest
-from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.data_models import User
@@ -26,7 +25,7 @@ def test_login_with_invalid_credentials(username, password, page):
     - Error message is displayed indicating invalid credentials.
     """
     LogInPage(page).log_in(User(username=username, password=password, role="unknown"))
-    expect(LogInPage(page).error_message).to_be_visible()
+    LogInPage(page).verify_error_message_visible()
 
 
 @issue("MAV-3261")
@@ -69,28 +68,23 @@ def test_login_with_valid_credentials_national_reporting(
     LogInPage(page).log_in_and_choose_team_if_necessary(
         request.getfixturevalue(f"national_reporting_{role}"), national_reporting_team
     )
-    expect(LogInPage(page).log_out_button).to_be_visible()
+    LogInPage(page).verify_log_out_button_visible()
 
-    expect(DashboardPage(page).header.mavis_link).to_be_visible()
-    expect(DashboardPage(page).children_link).to_be_visible()
-    expect(DashboardPage(page).imports_link).to_be_visible()
+    DashboardPage(page).verify_mavis_link_visible()
+    DashboardPage(page).verify_children_link_visible()
+    DashboardPage(page).verify_imports_link_visible()
 
-    expect(DashboardPage(page).header.children_link).to_be_visible()
-    expect(DashboardPage(page).header.import_records_link).to_be_visible()
+    DashboardPage(page).verify_header_children_link_visible()
+    DashboardPage(page).verify_header_import_records_link_visible()
 
-    expect(DashboardPage(page).service_guidance_link).to_have_attribute(
-        "href",
-        "https://guide.manage-vaccinations-in-schools.nhs.uk/national-reporting/",
-    )  # MAV-3261
+    DashboardPage(page).verify_service_guidance_link_national_reporting()  # MAV-3261
 
     if role == "superuser":
-        expect(DashboardPage(page).important_notices_header).to_be_visible()
-        expect(DashboardPage(page).important_notices_link).to_have_attribute(
-            "href", "/imports/notices"
-        )
+        DashboardPage(page).verify_important_notices_header_visible()
+        DashboardPage(page).verify_important_notices_link()
     else:
-        expect(DashboardPage(page).important_notices_header).not_to_be_visible()
-        expect(DashboardPage(page).important_notices_link).not_to_be_visible()
+        DashboardPage(page).verify_important_notices_header_not_visible()
+        DashboardPage(page).verify_important_notices_link_not_visible()
 
     LogInPage(page).log_out()
 
@@ -128,25 +122,23 @@ def test_login_with_valid_credentials_point_of_care(
     LogInPage(page).log_in_and_choose_team_if_necessary(
         request.getfixturevalue(f"point_of_care_{role}"), point_of_care_team
     )
-    expect(LogInPage(page).log_out_button).to_be_visible()
+    LogInPage(page).verify_log_out_button_visible()
 
-    expect(DashboardPage(page).header.mavis_link).to_be_visible()
-    expect(DashboardPage(page).reports_link).to_be_visible()
-    expect(DashboardPage(page).sessions_link).to_be_visible()
-    expect(DashboardPage(page).children_link).to_be_visible()
-    expect(DashboardPage(page).vaccines_link).to_be_visible()
-    expect(DashboardPage(page).unmatched_consent_responses_link).to_be_visible()
-    expect(DashboardPage(page).school_moves_link).to_be_visible()
-    expect(DashboardPage(page).imports_link).to_be_visible()
-    expect(DashboardPage(page).your_team_link).to_be_visible()
-    expect(DashboardPage(page).service_guidance_link).to_be_visible()
+    DashboardPage(page).verify_mavis_link_visible()
+    DashboardPage(page).verify_reports_link_visible()
+    DashboardPage(page).verify_sessions_link_visible()
+    DashboardPage(page).verify_children_link_visible()
+    DashboardPage(page).verify_vaccines_link_visible()
+    DashboardPage(page).verify_unmatched_consent_responses_link_visible()
+    DashboardPage(page).verify_school_moves_link_visible()
+    DashboardPage(page).verify_imports_link_visible()
+    DashboardPage(page).verify_your_team_link_visible()
+    DashboardPage(page).verify_service_guidance_link_visible()
 
-    expect(DashboardPage(page).header.children_link).to_be_visible()
-    expect(DashboardPage(page).header.import_records_link).to_be_visible()
+    DashboardPage(page).verify_header_children_link_visible()
+    DashboardPage(page).verify_header_import_records_link_visible()
 
-    expect(DashboardPage(page).service_guidance_link).to_have_attribute(
-        "href", "https://guide.manage-vaccinations-in-schools.nhs.uk"
-    )  # MAV-3261
+    DashboardPage(page).verify_service_guidance_link_point_of_care()  # MAV-3261
 
     LogInPage(page).log_out()
 
