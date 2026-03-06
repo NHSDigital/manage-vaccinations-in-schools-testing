@@ -16,7 +16,7 @@ jobs:
         with:
           install_args: actionlint
           cache: true
-        # TODO: Enable shellcheck in the future
+      # TODO: Enable shellcheck in the future
       - run: actionlint -shellcheck ''
 
   gitleaks:
@@ -46,3 +46,11 @@ jobs:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
       - run: uv sync --locked --all-extras --dev
+
+  yamllint:
+    name: Yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run yamllint .

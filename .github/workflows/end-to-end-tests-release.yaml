@@ -49,17 +49,21 @@ on:
         default: '4'
         type: string
       set_feature_flags:
-        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        description: >-
+          Set feature flags in the flipper page before running tests (affects all
+          users of the environment being tested!)
         required: false
         default: false
         type: boolean
       additional_feature_flags:
-        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        description: >-
+          (If enabled above) Additional feature flags to set. api, basic_auth,
+          dev_tools will be set by default
         required: false
         default: ''
         type: string
       jira_test_cycle_version:
-        description: 'JIRA test cycle version for test management integration'
+        description: JIRA test cycle version for test management integration
         required: false
         default: 'Unscheduled'
         type: string
@@ -151,7 +155,9 @@ on:
           - '3'
           - '4'
       set_feature_flags:
-        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        description: >-
+          Set feature flags in the flipper page before running tests (affects all
+          users of the environment being tested!)
         required: true
         default: 'false'
         type: choice
@@ -159,7 +165,9 @@ on:
           - true
           - false
       additional_feature_flags:
-        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        description: >-
+          (If enabled above) Additional feature flags to set. api, basic_auth,
+          dev_tools will be set by default
         required: false
         default: ''
       jira_test_cycle_version:
@@ -171,7 +179,7 @@ jobs:
   test:
     permissions:
       contents: write
-    
+
     name: End-to-End tests
     runs-on: ubuntu-latest
 
@@ -179,6 +187,7 @@ jobs:
       TZ: "Europe/London"
 
     steps:
+      # yamllint disable rule:line-length
       - name: Set variables
         id: set-variables
         run: |
@@ -205,7 +214,7 @@ jobs:
             echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
             echo "cross_service_tests=${{ inputs.cross_service_tests }}" >> $GITHUB_OUTPUT
             echo "device=${{ inputs.device }}" >> $GITHUB_OUTPUT
-          
+
             input_env="${{ inputs.environment }}"
             if [ -n "$input_env" ]; then
               url="${env_map[$input_env]:-${env_map[qa]}}"
@@ -223,6 +232,7 @@ jobs:
             echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
             echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version || vars.JIRA_TEST_CYCLE_VERSION}}" >> $GITHUB_OUTPUT
           fi
+      # yamllint enable rule:line-length
 
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -251,7 +261,8 @@ jobs:
           enable_reruns: ${{ steps.set-variables.outputs.enable_reruns }}
           test_workers: ${{ steps.set-variables.outputs.test_workers }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
-          additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          additional_feature_flags: >-
+            ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
@@ -266,8 +277,10 @@ jobs:
           JIRA_PROJECT_KEY: ${{ vars.JIRA_PROJECT_KEY }}
           JIRA_TEST_CYCLE_KEY: ${{ vars.JIRA_TEST_CYCLE_KEY }}
           ZEPHYR_PROJECT_ID: ${{ vars.ZEPHYR_PROJECT_ID }}
-          SCREENSHOT_ALL_STEPS: ${{ steps.set-variables.outputs.screenshot_all_steps }}
-          JIRA_TEST_CYCLE_VERSION: ${{ steps.set-variables.outputs.jira_test_cycle_version }}
+          SCREENSHOT_ALL_STEPS: >-
+            ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          JIRA_TEST_CYCLE_VERSION: >-
+            ${{ steps.set-variables.outputs.jira_test_cycle_version }}
 
       - name: Configure AWS credentials
         if: always() && steps.set-variables.outputs.deploy_report == 'true'
@@ -284,4 +297,5 @@ jobs:
           device: ${{ steps.set-variables.outputs.device }}
           environment: ${{ github.event.inputs.environment }}
         env:
-          GITHUB_TOKEN: ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: >-
+            ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
