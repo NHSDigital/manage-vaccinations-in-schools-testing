@@ -307,6 +307,84 @@ def test_team_b_reporting(
     assert monthly["Total"] == 1
 
 
+def test_team_a_consent(
+    page,
+    base_url,
+    team_a,
+    team_b,
+    all_children,
+    school_a,
+    school_b,
+):
+    """
+    Test: Verify consent reporting values for Team A.
+    Steps:
+    1. Setup (shared with other tests).
+    2. Log in as Team A nurse.
+    3. Navigate to Reports > Consent tab and filter by Flu.
+    4. Check cohort size and consent percentages.
+    Verification:
+    - Team A cohort is 2 (children 1 and 3).
+    - 50% consent given (child 1, vaccinated → consent not required).
+    - 50% no consent recorded (child 3, refused with no consent form).
+    """
+    _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
+
+    page.context.clear_cookies()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        team_a.users["nurse"], team_a.team
+    )
+
+    ReportsVaccinationsPage(page).navigate()
+    ReportsVaccinationsPage(page).tabs.click_consent_tab()
+    ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
+    ReportsVaccinationsPage(page).check_cohort_has_n_children("2")
+    ReportsVaccinationsPage(page).check_category_percentage("Consent given", "50.0")
+    ReportsVaccinationsPage(page).check_category_percentage(
+        "No consent recorded", "50.0"
+    )
+
+
+def test_team_b_consent(
+    page,
+    base_url,
+    team_a,
+    team_b,
+    all_children,
+    school_a,
+    school_b,
+):
+    """
+    Test: Verify consent reporting values for Team B.
+    Steps:
+    1. Setup (shared with other tests).
+    2. Log in as Team B nurse.
+    3. Navigate to Reports > Consent tab and filter by Flu.
+    4. Check cohort size and consent percentages.
+    Verification:
+    - Team B cohort is 4 (children 2, 4, 5, 6).
+    - 50% consent given (children 2 and 5, vaccinated → consent not required).
+    - 50% no consent recorded (children 4 and 6, refused with no consent form).
+    """
+    _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b)
+
+    page.context.clear_cookies()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        team_b.users["nurse"], team_b.team
+    )
+
+    ReportsVaccinationsPage(page).navigate()
+    ReportsVaccinationsPage(page).tabs.click_consent_tab()
+    ReportsVaccinationsPage(page).check_filter_for_programme(Programme.FLU)
+    ReportsVaccinationsPage(page).check_cohort_has_n_children("4")
+    ReportsVaccinationsPage(page).check_category_percentage("Consent given", "50.0")
+    ReportsVaccinationsPage(page).check_category_percentage(
+        "No consent recorded", "50.0"
+    )
+
+
 def test_team_a_aggregate_csv(
     page,
     base_url,
