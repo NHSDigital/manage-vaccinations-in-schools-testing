@@ -7,6 +7,7 @@ from mavis.test.data import ClassFileMapping
 from mavis.test.data_models import Clinic, VaccinationRecord
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -393,12 +394,10 @@ def test_verify_excel_export_and_clinic_invitation(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_a_child_name(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_invite_to_community_clinic()
-    ChildRecordPage(page).click_session_for_programme(
-        generic_clinic,
-        Programme.HPV,
-        check_date=True,
-    )
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_invite_to_community_clinic()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_session(generic_clinic)
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)

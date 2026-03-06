@@ -7,7 +7,7 @@ from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
-    ChildActivityLogPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     ConsentResponsePage,
@@ -152,8 +152,8 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
 def test_create_child_record_from_consent_with_nhs_number(
@@ -190,8 +190,8 @@ def test_create_child_record_from_consent_with_nhs_number(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
 def test_create_child_record_from_consent_without_nhs_number(
@@ -229,8 +229,8 @@ def test_create_child_record_from_consent_without_nhs_number(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).verify_activity_log_for_created_or_matched_child()
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
 @pytest.mark.accessibility

@@ -5,9 +5,9 @@ from mavis.test.constants import Programme
 from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
-    ChildActivityLogPage,
     ChildArchivePage,
     ChildEditPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -130,18 +130,18 @@ def test_patient_details_load_with_missing_vaccine_info(
     - Vaccination details show "Outcome" as "Vaccinated".
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
     # Verify activity log
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).expect_activity_log_header(
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).expect_activity_log_header(
         "Vaccinated with Gardasil 9", unique=True
     )
     # Verify vaccination record
     ChildRecordPage(page).click_child_record()
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_vaccination_record()
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
 
 
@@ -208,8 +208,8 @@ def test_merge_child_records_does_not_crash(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child2))
     ChildrenSearchPage(page).search.click_child(child2)
-    ChildRecordPage(page).click_activity_log_tab()
-    ChildActivityLogPage(page).expect_activity_log_header(
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).expect_activity_log_header(
         "Child record merged", unique=True
     )
 
@@ -280,5 +280,5 @@ def test_accessibility(
     ChildrenSearchPage(page).search.click_child(child)
     AccessibilityHelper(page).check_accessibility()
 
-    ChildRecordPage(page).tabs.click_activity_log()
+    ChildRecordPage(page).click_programme(Programme.HPV)
     AccessibilityHelper(page).check_accessibility()
