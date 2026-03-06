@@ -18,7 +18,6 @@ def setup_reports(log_in_as_nurse, page):
     ReportsDownloadPage(page).click_continue()
 
 
-@pytest.mark.reports
 def test_verify_careplus_report_for_hpv(
     setup_reports,
     page,
@@ -37,7 +36,6 @@ def test_verify_careplus_report_for_hpv(
     )
 
 
-@pytest.mark.reports
 def test_verify_careplus_report_for_doubles(
     setup_reports,
     page,
@@ -62,7 +60,6 @@ def test_verify_careplus_report_for_doubles(
     )
 
 
-@pytest.mark.reports
 def test_verify_csv_report_for_hpv(
     setup_reports,
     page,
@@ -81,7 +78,6 @@ def test_verify_csv_report_for_hpv(
     )
 
 
-@pytest.mark.reports
 def test_verify_csv_report_for_doubles(
     setup_reports,
     page,
@@ -106,7 +102,6 @@ def test_verify_csv_report_for_doubles(
     )
 
 
-@pytest.mark.reports
 def test_verify_systmone_report_for_hpv(
     setup_reports,
     page,
@@ -125,7 +120,6 @@ def test_verify_systmone_report_for_hpv(
     )
 
 
-@pytest.mark.reports
 def test_verify_systmone_report_for_menacwy(
     setup_reports,
     page,
@@ -144,7 +138,6 @@ def test_verify_systmone_report_for_menacwy(
     )
 
 
-@pytest.mark.reports
 def test_verify_careplus_report_for_mmr(
     setup_reports,
     page,
@@ -163,7 +156,6 @@ def test_verify_careplus_report_for_mmr(
     )
 
 
-@pytest.mark.reports
 def test_verify_csv_report_for_mmr(
     setup_reports,
     page,
@@ -182,7 +174,6 @@ def test_verify_csv_report_for_mmr(
     )
 
 
-@pytest.mark.reports
 def test_verify_systmone_report_for_mmr(
     setup_reports,
     page,
