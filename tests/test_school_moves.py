@@ -5,7 +5,7 @@ from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
-    ChildActivityLogPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -73,11 +73,11 @@ def setup_confirm_and_ignore(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_a_child_name(str(children[0]))
     ChildrenSearchPage(page).search.click_child(children[0])
-    ChildRecordPage(page).tabs.click_activity_log()
-    ChildActivityLogPage(page).expect_activity_log_header(
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).expect_activity_log_header(
         f"Added to the session at {schools[0]}"
     )
-    ChildActivityLogPage(page).header.click_mavis()
+    ChildProgrammePage(page).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(schools[1])
     upload_class_list()

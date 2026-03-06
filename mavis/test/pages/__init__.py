@@ -1,8 +1,8 @@
 from .add_session_wizard_page import AddSessionWizardPage
 from .children import (
-    ChildActivityLogPage,
     ChildArchivePage,
     ChildEditPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
 )
@@ -47,9 +47,9 @@ __all__ = [
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
     "BadRequestPage",
-    "ChildActivityLogPage",
     "ChildArchivePage",
     "ChildEditPage",
+    "ChildProgrammePage",
     "ChildRecordPage",
     "ChildrenSearchPage",
     "ConsentResponsePage",

@@ -5,6 +5,7 @@ from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages import (
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -16,6 +17,7 @@ from mavis.test.pages import (
     VaccinationRecordPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import get_current_datetime
 
 
 @pytest.fixture
@@ -251,7 +253,10 @@ def test_vaccination_file_upload_creates_child_no_setting(
     ChildrenSearchPage(page).search.check_children_aged_out_of_programmes()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_vaccination_record(
+        get_current_datetime().replace(year=get_current_datetime().year - 2)
+    )
     VaccinationRecordPage(page).expect_vaccination_details("Location", str(school))
 
 

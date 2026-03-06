@@ -8,6 +8,7 @@ from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data_models import School
 from mavis.test.pages import (
     AddBatchPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -21,7 +22,7 @@ from mavis.test.pages import (
     VaccinesPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
-from mavis.test.utils import get_offset_date
+from mavis.test.utils import get_current_datetime, get_offset_date
 
 
 @pytest.fixture
@@ -164,14 +165,19 @@ def upload_offline_vaccination(
 
         if programme is Programme.HPV:
             vaccs_file = VaccsFileMapping.HPV_DOSE_TWO
+            vaccs_date = get_current_datetime()
         elif programme is Programme.FLU:
             vaccs_file = (
                 VaccsFileMapping.FLU_INJECTED
                 if consent_option is ConsentOption.INJECTION
                 else VaccsFileMapping.FLU_NASAL
             )
+            vaccs_date = get_current_datetime()
         elif programme is Programme.MMR:
             vaccs_file = VaccsFileMapping.MMR_DOSE_ONE
+            vaccs_date = get_current_datetime().replace(
+                year=get_current_datetime().year - 2
+            )
         else:
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
@@ -203,7 +209,8 @@ def upload_offline_vaccination(
         ImportsPage(page).header.click_mavis()
         DashboardPage(page).click_children()
         ChildrenSearchPage(page).search.search_and_click_child(child)
-        ChildRecordPage(page).click_vaccination_details(school)
+        ChildRecordPage(page).click_programme(programme)
+        ChildProgrammePage(page).click_vaccination_record(vaccs_date)
         yield
 
     return wrapper

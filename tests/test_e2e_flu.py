@@ -4,6 +4,7 @@ from mavis.test.annotations import issue
 from mavis.test.constants import ConsentOption, Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -121,7 +122,8 @@ def test_recording_flu_vaccination_e2e(
     SessionsPatientPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_and_click_child(child)
-    ChildRecordPage(page).click_vaccination_details(schools[0])
+    ChildRecordPage(page).click_programme(Programme.FLU)
+    ChildProgrammePage(page).click_vaccination_record()
     VaccinationRecordPage(page).click_edit_vaccination_record()
     EditVaccinationRecordPage(page).expect_text_to_not_be_visible(
         "Incorrect vaccine given"

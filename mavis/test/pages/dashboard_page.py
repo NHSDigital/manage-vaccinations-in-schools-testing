@@ -93,8 +93,8 @@ class DashboardPage:
         expect(self.header.children_link).to_be_visible()
 
     @step("Verify header Import Records link is visible")
-    def verify_header_import_link_visible(self) -> None:
-        expect(self.header.import_link).to_be_visible()
+    def verify_header_imports_link_visible(self) -> None:
+        expect(self.header.imports_link).to_be_visible()
 
     @step("Verify Service Guidance link for National Reporting")
     def verify_service_guidance_link_national_reporting(self) -> None:
