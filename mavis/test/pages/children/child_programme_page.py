@@ -79,23 +79,26 @@ class ChildProgrammePage:
     def click_invite_to_community_clinic(self) -> None:
         self.invite_to_community_clinic_button.click()
 
-    def check_log_updates_with_match(self) -> None:
+    @step("Checking for '{1}' in the activity log")
+    def expect_activity_log_entry(
+        self, heading_name: str, *, unique: bool = False
+    ) -> None:
+        heading = self.page.get_by_role("heading", name=heading_name)
+
+        if unique:
+            expect(heading).to_be_visible()
+        else:
+            expect(heading.first).to_be_visible()
+
+    def verify_activity_log_for_created_or_matched_child(
+        self,
+    ) -> None:
         self.page.wait_for_load_state()
+
+        self.expect_activity_log_entry("Consent given")
+
         reload_until_element_is_visible(
             self.page,
             self.manually_matched_card,
             seconds=30,
         )
-
-    def verify_activity_log_for_created_or_matched_child(
-        self,
-    ) -> None:
-        self.expect_activity_log_header("Consent given")
-
-        self.check_log_updates_with_match()
-
-    def expect_activity_log_header(self, header: str, *, unique: bool = False) -> None:
-        if unique:
-            expect(self.page.get_by_role("heading", name=header)).to_be_visible()
-        else:
-            expect(self.page.get_by_role("heading", name=header).first).to_be_visible()

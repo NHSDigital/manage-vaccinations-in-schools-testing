@@ -74,7 +74,7 @@ def setup_confirm_and_ignore(
     ChildrenSearchPage(page).search.search_for_a_child_name(str(children[0]))
     ChildrenSearchPage(page).search.click_child(children[0])
     ChildRecordPage(page).click_programme(Programme.HPV)
-    ChildProgrammePage(page).expect_activity_log_header(
+    ChildProgrammePage(page).expect_activity_log_entry(
         f"Added to the session at {schools[0]}"
     )
     ChildProgrammePage(page).header.click_mavis()
