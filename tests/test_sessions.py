@@ -13,7 +13,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
@@ -47,7 +47,7 @@ def setup_session_with_file_upload(
     def _setup(class_list_file, offset_days: int = 0):
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )

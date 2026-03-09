@@ -13,8 +13,8 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     ReviewSchoolMovePage,
+    SchoolChildrenPage,
     SchoolMovesPage,
-    SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
 )
@@ -41,7 +41,7 @@ def setup_confirm_and_ignore(
     )
 
     def upload_class_list():
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).select_year_groups(
             year_group
         )

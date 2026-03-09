@@ -13,7 +13,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
     VaccinationRecordPage,
@@ -38,7 +38,7 @@ def setup_children_session(
 
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )
@@ -73,7 +73,7 @@ def setup_mav_853(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )

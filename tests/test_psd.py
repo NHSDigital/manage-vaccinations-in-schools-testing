@@ -10,7 +10,7 @@ from mavis.test.pages import (
     LogInPage,
     NurseConsentWizardPage,
     OnlineConsentWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
@@ -60,7 +60,7 @@ def setup_session_with_file_upload(
         VaccinesPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_file_mapping, year_group, Programme.FLU.group
         )

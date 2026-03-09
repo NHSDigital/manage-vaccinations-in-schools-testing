@@ -15,7 +15,7 @@ from mavis.test.pages import (
     ImportIssuesPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
 )
@@ -112,7 +112,7 @@ def setup_vaccination_import(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
