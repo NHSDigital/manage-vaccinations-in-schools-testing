@@ -9,45 +9,52 @@ on:
   workflow_dispatch:
     inputs:
       AddNewSession:
-        description: "Add a new session date (not needed if there are already enough patients)"
+        description: >-
+          Add a new session date (not needed if there are already enough patients)
         required: true
         type: boolean
         default: true
       runConsent:
-        description: "Run consent journey"
+        description: Run consent journey
         required: true
         type: boolean
         default: true
       runNurse:
-        description: "Run the nurse journey"
+        description: Run the nurse journey
         required: true
         type: boolean
         default: true
       duration:
-        description: "Optional (default 3600) Duration of nurse journey test, in seconds. This will include ramp-up."
+        description: >-
+          Optional (default 3600) Duration of nurse journey test, in seconds. This
+          will include ramp-up.
         required: false
         type: number
         default: 3600
       threads:
-        description: "Optional (default 70) Threads to run. Equivalent to the number of nurses using the system."
+        description: >-
+          Optional (default 70) Threads to run. Equivalent to the number of nurses
+          using the system.
         required: false
         type: number
         default: 70
       ramp_up:
-        description: "Optional (default 900) Ramp-up time in seconds. Threads will be gradually started up over this time."
+        description: >-
+          Optional (default 900) Ramp-up time in seconds. Threads will be gradually
+          started up over this time.
         required: false
         type: number
         default: 900
       user:
-        description: "Optional (default Nurse perftest) user."
+        description: Optional (default Nurse perftest) user.
         required: true
         type: string
-        default: 'nurse.perf2test@example.com'
+        default: nurse.perf2test@example.com
       BaseURL:
-        description: "Optional (default performance.mavistesting.com) URL"
+        description: Optional (default performance.mavistesting.com) URL
         required: true
         type: string
-        default: 'performance.mavistesting.com'
+        default: performance.mavistesting.com
 
 jobs:
   check-image-presence:
@@ -66,7 +73,8 @@ jobs:
       - name: Check if image exists
         id: check-image
         run: |
-          if aws ecr describe-images --repository-name performancetest --image-ids imageTag=${{ github.sha }} > /dev/null 2>&1; then
+          if aws ecr describe-images --repository-name performancetest \
+              --image-ids imageTag=${{ github.sha }} > /dev/null 2>&1; then
             echo "Docker image with given tag already exists"
           else
             echo "Docker image does not exist. Build needed"
@@ -106,15 +114,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
       - name: Build and push performancetest docker image
+        # yamllint disable rule:line-length
         run: |
           docker load -i ${{ runner.temp }}/jmeter-image.tar
           docker build -t "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}" .
           docker push "393416225559.dkr.ecr.eu-west-2.amazonaws.com/performancetest:${{ github.sha }}"
+        # yamllint enable rule:line-length
   run-performance-test:
     needs: [build-and-push, check-image-presence]
     if: ${{ !cancelled() &&
-      (needs.build-and-push.result == 'success' || 
-      (needs.check-image-presence.result == 'success' && needs.build-and-push.result == 'skipped')
+        (needs.build-and-push.result == 'success' ||
+          (needs.check-image-presence.result == 'success' &&
+        needs.build-and-push.result == 'skipped')
       ) }}
     runs-on: ubuntu-latest
     permissions:
@@ -124,6 +135,7 @@ jobs:
     env:
       RESULT_PATH: ${{ github.run_number }}
     steps:
+      # yamllint disable rule:line-length
       - uses: actions/checkout@v6
       - name: Set timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
@@ -132,7 +144,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
-          role-duration-seconds: 32400 # 9 hours
+          role-duration-seconds: 32400  # 9 hours
       - name: Create task definition
         id: create-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -168,10 +180,10 @@ jobs:
         id: run-task
         run: |
           echo "Starting ECS task to run performance test against ${{ inputs.BaseURL }}"
-          
+
           subnet_id=$(aws ec2 describe-subnets --filters Name=tag:Name,Values=assurance-testing-subnet --query 'Subnets[0].SubnetId' --output text)
           security_group_id=$(aws ec2 describe-security-groups --filters Name=group-name,Values=assurance-testing-performance-sg --query 'SecurityGroups[0].GroupId' --output text)
-          
+
           task_arn=$(aws ecs run-task \
             --cluster assurance-testing \
             --task-definition ${{ steps.register-task-definition.outputs.task_definition_arn }} \
@@ -185,7 +197,7 @@ jobs:
             --query 'tasks[0].taskArn' \
             --enable-execute-command \
             --output text)
-          
+
           echo "task_arn=$task_arn" >> $GITHUB_OUTPUT
           echo "test_start_time=$(date +%s)000" >> $GITHUB_ENV
           echo "Started task: $task_arn"
@@ -203,7 +215,7 @@ jobs:
               --tasks ${{ steps.run-task.outputs.task_arn }} \
               --query 'tasks[0].lastStatus' \
               --output text)
-            
+
             echo "Current task status: $task_status"
             if [ "$task_status" == "STOPPED" ]; then
               echo "Task has stopped"
@@ -211,24 +223,25 @@ jobs:
             fi
             sleep 30 # Check every 30 seconds
           done
-          
+
           exit_code=$(aws ecs describe-tasks \
             --cluster assurance-testing \
             --tasks ${{ steps.run-task.outputs.task_arn }} \
             --query 'tasks[0].containers[0].exitCode' \
             --output text)
-          
+
           echo "Container exit code: $exit_code"
-          
+
           if [ "$exit_code" != "0" ]; then
             echo "ECS task failed with exit code: $exit_code"
             exit 1
           fi
+
       - name: Collect test result
         id: collect-results
         run: |
           echo "Downloading test results from S3"
-          S3_PATH="s3://performancetest-reports/${{ env.RESULT_PATH }}"          
+          S3_PATH="s3://performancetest-reports/${{ env.RESULT_PATH }}"
           aws s3 sync "${S3_PATH}" ./test-results --no-progress
 
       - name: Upload nurse journey JMeter output
@@ -259,7 +272,7 @@ jobs:
           # Extract task ID from task ARN
           TASK_ARN="${{ steps.run-task.outputs.task_arn }}"
           TASK_ID=$(echo $TASK_ARN | awk -F/ '{print $NF}')
-          
+
           # Construct CloudWatch Logs URL
           LOG_GROUP="/ecs/performancetest-task-definition"
           LOG_STREAM="ecs/performancetest-container/${TASK_ID}"
@@ -267,7 +280,7 @@ jobs:
           ENCODED_LOG_GROUP=$(echo "$LOG_GROUP" | sed 's/\//%252F/g')
           ENCODED_LOG_STREAM=$(echo "$LOG_STREAM" | sed 's/\//%252F/g')
           CLOUDWATCH_URL="https://eu-west-2.console.aws.amazon.com/cloudwatch/home?region=eu-west-2#logsV2:log-groups/log-group/${ENCODED_LOG_GROUP}/log-events/${ENCODED_LOG_STREAM}"
-          
+
           echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **BaseURL:** ${{ inputs.BaseURL }}" >> $GITHUB_STEP_SUMMARY
@@ -277,3 +290,4 @@ jobs:
           echo "📊 [View Test Report](https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📋 [View CloudWatch Logs](${CLOUDWATCH_URL})" >> $GITHUB_STEP_SUMMARY
+    # yamllint disable rule:line-length

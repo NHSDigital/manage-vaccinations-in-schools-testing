@@ -1,5 +1,5 @@
-name: 'Run End-to-End tests'
-description: 'Execute tests'
+name: Run End-to-End tests
+description: Execute tests
 inputs:
   tests:
     default: ''
@@ -43,7 +43,10 @@ runs:
       shell: bash
 
     - name: Install Playwright dependencies if using webkit
-      if: inputs.device == 'Desktop Safari' || inputs.device == 'iPad (gen 7) landscape' || inputs.device == 'iPhone 15'
+      if: >-
+        inputs.device == 'Desktop Safari' ||
+        inputs.device == 'iPad (gen 7) landscape' ||
+        inputs.device == 'iPhone 15'
       run: uv run playwright install-deps webkit
       shell: bash
 
@@ -85,7 +88,11 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: uv run pytest -n ${{ inputs.test_workers }} ${{ steps.reruns.outputs.reruns }} -m "${{ steps.marker.outputs.marker }}" --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: >-
+        uv run pytest -n ${{ inputs.test_workers }}
+        ${{ steps.reruns.outputs.reruns }}
+        -m "${{ steps.marker.outputs.marker }}"
+        --device "${{ inputs.device }}" ${{ inputs.tests }}
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}

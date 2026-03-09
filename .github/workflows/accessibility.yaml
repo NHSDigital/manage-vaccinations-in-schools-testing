@@ -28,7 +28,7 @@ on:
         required: true
         default: FLU,HPV,MENACWY,MMR,TD_IPV
       environment:
-        description: 'Environment to run tests on'
+        description: Environment to run tests on
         required: true
         default: 'qa'
         type: choice
@@ -38,7 +38,7 @@ on:
           - sandbox-alpha
           - sandbox-beta
       screenshot_all_steps:
-        description: 'Take screenshots for all steps (in addition to failures)'
+        description: Take screenshots for all steps (in addition to failures)
         required: true
         default: 'false'
         type: choice
@@ -46,7 +46,9 @@ on:
           - true
           - false
       set_feature_flags:
-        description: 'Set feature flags in the flipper page before running tests (affects all users of the environment being tested!)'
+        description: >-
+          Set feature flags in the flipper page before running tests (affects all
+          users of the environment being tested!)
         required: true
         default: 'false'
         type: choice
@@ -54,7 +56,9 @@ on:
           - true
           - false
       additional_feature_flags:
-        description: '(If enabled above) Additional feature flags to set. api, basic_auth, dev_tools will be set by default'
+        description: >-
+          (If enabled above) Additional feature flags to set. api, basic_auth,
+          dev_tools will be set by default
         required: false
         default: ''
 
@@ -62,7 +66,7 @@ jobs:
   test:
     permissions:
       contents: write
-    
+
     name: End-to-End tests
     runs-on: ubuntu-latest
 
@@ -70,6 +74,7 @@ jobs:
       TZ: "Europe/London"
 
     steps:
+      # yamllint disable rule:line-length
       - name: Set variables
         id: set-variables
         run: |
@@ -102,6 +107,7 @@ jobs:
             echo "deploy_report=true" >> $GITHUB_OUTPUT
             echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
           fi
+      # yamllint enable rule:line-length
 
       - uses: actions/checkout@v6
 
@@ -122,7 +128,8 @@ jobs:
           programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
           screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
-          additional_feature_flags: ${{ steps.set-variables.outputs.additional_feature_flags }}
+          additional_feature_flags: >-
+            ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
         env:
           BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
