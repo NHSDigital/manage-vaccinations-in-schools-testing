@@ -110,13 +110,13 @@ jobs:
             echo "GNU parallel not found, installing plugins sequentially"
             IFS=',' read -ra PLUGINS <<< "${{ env.jmeter_plugins }}"
             for plugin in "${PLUGINS[@]}"; do
-              jmeter/bin/PluginsManagerCMD.sh install $plugin
+              jmeter/bin/PluginsManagerCMD.sh install "$plugin"
             done
           fi
 
       - name: Set timestamp
         id: timestamp
-        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> "$GITHUB_ENV"
 
       - name: Create new cohort file
         if: inputs.runDataPrep == true
@@ -208,4 +208,4 @@ jobs:
 
       - name: Set Job Summary
         # yamllint disable-line rule:line-length
-        run: echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> $GITHUB_STEP_SUMMARY
+        run: echo "Test report URL is https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/report-${{ env.timestamp }}/" >> "$GITHUB_STEP_SUMMARY"

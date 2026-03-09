@@ -200,39 +200,43 @@ jobs:
             [sandbox-beta]="https://sandbox-beta.mavistesting.com"
           )
           if [ "${{ github.event_name }}" = "push" ]; then
-            echo "tests=" >> $GITHUB_OUTPUT
-            echo "cross_service_tests=true" >> $GITHUB_OUTPUT
-            echo "device=Desktop Chrome" >> $GITHUB_OUTPUT
-            echo "environment=${env_map[qa]}" >> $GITHUB_OUTPUT
-            echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV" >> $GITHUB_OUTPUT
-            echo "set_feature_flags=false" >> $GITHUB_OUTPUT
-            echo "additional_feature_flags=" >> $GITHUB_OUTPUT
-            echo "deploy_report=false" >> $GITHUB_OUTPUT
-            echo "screenshot_all_steps=false" >> $GITHUB_OUTPUT
-            echo "enable_reruns=true" >> $GITHUB_OUTPUT
-            echo "test_workers=4" >> $GITHUB_OUTPUT
-            echo "jira_test_cycle_version=${{ vars.JIRA_TEST_CYCLE_VERSION || 'Unscheduled' }}" >> $GITHUB_OUTPUT
+            {
+              echo "tests="
+              echo "cross_service_tests=true"
+              echo "device=Desktop Chrome"
+              echo "environment=${env_map[qa]}"
+              echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV"
+              echo "set_feature_flags=false"
+              echo "additional_feature_flags="
+              echo "deploy_report=false"
+              echo "screenshot_all_steps=false"
+              echo "enable_reruns=true"
+              echo "test_workers=4"
+              echo "jira_test_cycle_version=${{ vars.JIRA_TEST_CYCLE_VERSION || 'Unscheduled' }}"
+          } >> "$GITHUB_OUTPUT"
           else
-            echo "tests=${{ inputs.tests }}" >> $GITHUB_OUTPUT
-            echo "cross_service_tests=${{ inputs.cross_service_tests }}" >> $GITHUB_OUTPUT
-            echo "device=${{ inputs.device }}" >> $GITHUB_OUTPUT
+            {
+              echo "tests=${{ inputs.tests }}"
+              echo "cross_service_tests=${{ inputs.cross_service_tests }}"
+              echo "device=${{ inputs.device }}"
 
-            input_env="${{ inputs.environment }}"
-            if [ -n "$input_env" ]; then
-              url="${env_map[$input_env]:-${env_map[qa]}}"
-              echo "environment=$url" >> $GITHUB_OUTPUT
-            else
-              echo "environment=${{ inputs.endpoint }}" >> $GITHUB_OUTPUT
-            fi
+              input_env="${{ inputs.environment }}"
+              if [ -n "$input_env" ]; then
+                url="${env_map[$input_env]:-${env_map[qa]}}"
+                echo "environment=$url"
+              else
+                echo "environment=${{ inputs.endpoint }}"
+              fi
 
-            echo "programmes=${{ inputs.programmes }}" >> $GITHUB_OUTPUT
-            echo "set_feature_flags=${{ inputs.set_feature_flags }}" >> $GITHUB_OUTPUT
-            echo "additional_feature_flags=${{ inputs.additional_feature_flags }}" >> $GITHUB_OUTPUT
-            echo "deploy_report=true" >> $GITHUB_OUTPUT
-            echo "screenshot_all_steps=${{ inputs.screenshot_all_steps }}" >> $GITHUB_OUTPUT
-            echo "enable_reruns=${{ inputs.enable_reruns }}" >> $GITHUB_OUTPUT
-            echo "test_workers=${{ inputs.test_workers }}" >> $GITHUB_OUTPUT
-            echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version || vars.JIRA_TEST_CYCLE_VERSION}}" >> $GITHUB_OUTPUT
+              echo "programmes=${{ inputs.programmes }}"
+              echo "set_feature_flags=${{ inputs.set_feature_flags }}"
+              echo "additional_feature_flags=${{ inputs.additional_feature_flags }}"
+              echo "deploy_report=true"
+              echo "screenshot_all_steps=${{ inputs.screenshot_all_steps }}"
+              echo "enable_reruns=${{ inputs.enable_reruns }}"
+              echo "test_workers=${{ inputs.test_workers }}"
+              echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version || vars.JIRA_TEST_CYCLE_VERSION}}"
+          } >> "$GITHUB_OUTPUT"
           fi
       # yamllint enable rule:line-length
 

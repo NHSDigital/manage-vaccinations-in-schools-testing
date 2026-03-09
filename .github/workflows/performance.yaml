@@ -78,7 +78,7 @@ jobs:
             echo "Docker image with given tag already exists"
           else
             echo "Docker image does not exist. Build needed"
-            echo "build-needed=true" >> $GITHUB_OUTPUT
+            echo "build-needed=true" >> "$GITHUB_OUTPUT"
           fi
   build-and-push:
     needs: check-image-presence
@@ -138,7 +138,7 @@ jobs:
       # yamllint disable rule:line-length
       - uses: actions/checkout@v6
       - name: Set timestamp
-        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> "$GITHUB_ENV"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -169,13 +169,13 @@ jobs:
         run: |
           file_path="assurance-testing-performance-task-definition.json"
           family_name="assurance-testing-performance-task-definition"
-          echo "$(jq --arg f "$family_name" '.family = $f' "${{ steps.create-task-definition.outputs.task-definition }}")" > "$file_path"
+          jq --arg f "$family_name" '.family = $f' "${{ steps.create-task-definition.outputs.task-definition }}" > "$file_path"
           task_definition_arn=$(aws ecs register-task-definition \
                                   --cli-input-json file://$file_path \
                                   --query 'taskDefinition.taskDefinitionArn' \
                                   --output text
                                 )
-          echo "task_definition_arn=$task_definition_arn" >> $GITHUB_OUTPUT
+          echo "task_definition_arn=$task_definition_arn" >> "$GITHUB_OUTPUT"
       - name: Start performance test
         id: run-task
         run: |
@@ -198,17 +198,18 @@ jobs:
             --enable-execute-command \
             --output text)
 
-          echo "task_arn=$task_arn" >> $GITHUB_OUTPUT
-          echo "test_start_time=$(date +%s)000" >> $GITHUB_ENV
+          echo "task_arn=$task_arn" >> "$GITHUB_OUTPUT"
+          echo "test_start_time=$(date +%s)000" >> "$GITHUB_ENV"
           echo "Started task: $task_arn"
       - name: Wait for performance test to complete
         id: wait-for-completion
         run: |
           echo "Waiting for task to complete: ${{ steps.run-task.outputs.task_arn }}"
+          # shellcheck disable=SC2001
           TASK_ID=$(sed 's:^.*/::' <<< ${{ steps.run-task.outputs.task_arn }})
           CLOUDWATCH_URL="https://eu-west-2.console.aws.amazon.com/cloudwatch/home?region=eu-west-2#logsV2:log-groups/log-group/assurance-testing-ecs/log-events/assurance-testing-logs\$252Fperformancetest-container\$252F${TASK_ID}\$3Fstart\$3D${test_start_time}\$26end\$3D$(date -d '+1 hour + 15 minutes' +%s)000"
           echo "Performance test logs: $CLOUDWATCH_URL"
-          echo "CLOUDWATCH_URL=$CLOUDWATCH_URL" >> $GITHUB_ENV
+          echo "CLOUDWATCH_URL=$CLOUDWATCH_URL" >> "$GITHUB_ENV"
           while true; do
             task_status=$(aws ecs describe-tasks \
               --cluster assurance-testing \
@@ -281,13 +282,15 @@ jobs:
           ENCODED_LOG_STREAM=$(echo "$LOG_STREAM" | sed 's/\//%252F/g')
           CLOUDWATCH_URL="https://eu-west-2.console.aws.amazon.com/cloudwatch/home?region=eu-west-2#logsV2:log-groups/log-group/${ENCODED_LOG_GROUP}/log-events/${ENCODED_LOG_STREAM}"
 
-          echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **BaseURL:** ${{ inputs.BaseURL }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Run Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Test Logs:** $CLOUDWATCH_URL" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 [View Test Report](https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📋 [View CloudWatch Logs](${CLOUDWATCH_URL})" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Performance Test Results"
+            echo ""
+            echo "- **BaseURL:** ${{ inputs.BaseURL }}"
+            echo "- **Run Number:** ${{ github.run_number }}"
+            echo "- **Test Logs:** $CLOUDWATCH_URL"
+            echo ""
+            echo "📊 [View Test Report](https://nhsdigital.github.io/manage-vaccinations-in-schools-testing/JMeter/${{ env.RESULT_PATH }}/)"
+            echo ""
+            echo "📋 [View CloudWatch Logs](${CLOUDWATCH_URL})"
+          } >> "$GITHUB_STEP_SUMMARY"
     # yamllint disable rule:line-length
