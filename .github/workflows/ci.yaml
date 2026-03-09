@@ -1,0 +1,70 @@
+name: CI
+
+on: pull_request
+
+permissions: {}
+
+jobs:
+  identify-target:
+    name: Identify target to run end-to-end tests against
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      value: ${{ steps.check-mavis-branch.outputs.branch == '' && 'staging' || 'container' }}
+      mavis-branch: ${{ steps.check-mavis-branch.outputs.branch }}
+    steps:
+      - name: Check if a branch exists with the same name in Mavis repo
+        id: check-mavis-branch
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if git ls-remote --exit-code --heads \
+              https://github.com/nhsdigital/manage-vaccinations-in-schools.git \
+              "$GITHUB_HEAD_REF" > /dev/null 2>&1; then
+            echo "branch=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch=" >> "$GITHUB_OUTPUT"
+          fi
+
+  run-against-staging:
+    name: Run end-to-end tests against staging
+    needs: identify-target
+    if: needs.identify-target.outputs.value == 'staging'
+    uses: ./.github/workflows/end-to-end-tests.yaml
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      cross_service_tests: false
+      github_ref: ${{ github.ref }}
+      endpoint: https://qa.mavistesting.com
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+
+  run-against-container:
+    name: Run end-to-end tests against container
+    needs: identify-target
+    if: needs.identify-target.outputs.value == 'container'
+    uses: NHSDigital/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests.yml@next
+    permissions:
+      id-token: write
+      contents: write
+    with:
+      git_reference_for_application_image: ${{ needs.identify-target.outputs.mavis-branch }}
+    secrets:
+      HTTP_AUTH_TOKEN_FOR_TESTS: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+      MAVIS_TESTING_REPO_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ensure-run-success:
+    name: Ensure end-to-end tests ran successfully
+    runs-on: ubuntu-latest
+    needs: [run-against-staging, run-against-container]
+    if: |
+      always() && (
+        needs.run-against-staging.result == 'success' ||
+        needs.run-against-container.result == 'success'
+      )
+    steps:
+      - name: Output result
+        run: echo "End-to-end tests ran successfully"
