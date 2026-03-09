@@ -17,6 +17,14 @@ class SchoolChildrenPage:
             "link", name="Import class lists"
         )
 
+        self.send_clinic_invitations_link = page.get_by_role(
+            "link", name="Send clinic invitations"
+        )
+
     @step("Click Import class lists")
     def click_import_class_lists(self) -> None:
         self.import_class_lists_link.click()
+
+    @step("Click Send clinic invitations")
+    def click_send_clinic_invitations(self) -> None:
+        self.send_clinic_invitations_link.click()
