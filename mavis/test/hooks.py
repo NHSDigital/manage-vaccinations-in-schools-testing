@@ -8,11 +8,14 @@ from mavis.test.utils import get_current_datetime
 
 # Import from external package
 try:
-    from pytest_jira_zephyr_reporter.hooks import pytest_sessionfinish as jira_sessionfinish
+    from pytest_jira_zephyr_reporter.hooks import (
+        pytest_sessionfinish as jira_sessionfinish,
+    )
 except ImportError:
     # If package not installed, use no-op function
     def jira_sessionfinish(session: Session, exitstatus: int) -> None:
         pass
+
 
 path = Path("logs") / "report.log"
 
