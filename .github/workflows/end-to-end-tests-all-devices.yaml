@@ -46,6 +46,7 @@ jobs:
           device: ${{ matrix.device }}
           base_url: ${{ vars.BASE_URL }}
           imms_api_tests: 'true'
+          pds_api_tests: 'true'
           reporting_tests: 'true'
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
           screenshot_all_steps: 'false'

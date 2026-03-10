@@ -12,6 +12,8 @@ inputs:
     default: 'false'
   imms_api_tests:
     default: 'false'
+  pds_api_tests:
+    default: 'false'
   device:
     required: true
   base_url:
@@ -69,6 +71,13 @@ runs:
             exclude="$exclude and not imms_api"
           else
             exclude="not imms_api"
+          fi
+        fi
+        if [ "${{ inputs.pds_api_tests }}" = "false" ]; then
+          if [ -n "$exclude" ]; then
+            exclude="$exclude and not pds_api"
+          else
+            exclude="not pds_api"
           fi
         fi
         if [ -z "$exclude" ]; then

@@ -164,6 +164,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
+@pytest.mark.pds_api
 def test_create_child_record_from_consent_with_nhs_number(
     give_online_consent_pds_child,
     pds_child,
