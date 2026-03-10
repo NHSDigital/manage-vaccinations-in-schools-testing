@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
@@ -309,6 +309,7 @@ dependencies = [
     { name = "pyjwt" },
     { name = "pytest" },
     { name = "pytest-dotenv" },
+    { name = "pytest-jira-zephyr-reporter" },
     { name = "pytest-playwright" },
     { name = "pytest-rerunfailures" },
     { name = "pytest-xdist" },
@@ -338,6 +339,7 @@ requires-dist = [
     { name = "pyjwt", specifier = "==2.11.0" },
     { name = "pytest", specifier = "==9.0.2" },
     { name = "pytest-dotenv", specifier = "==0.5.2" },
+    { name = "pytest-jira-zephyr-reporter", git = "https://github.com/NHSDigital/pytest-jira-zephyr-reporter.git?rev=v0.1.0" },
     { name = "pytest-playwright", specifier = "==0.7.2" },
     { name = "pytest-rerunfailures", specifier = "==16.1" },
     { name = "pytest-xdist", specifier = "==3.8.0" },
@@ -660,6 +662,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cd/b0/cafee9c627c1bae228eb07c9977f679b3a7cb111b488307ab9594ba9e4da/pytest-dotenv-0.5.2.tar.gz", hash = "sha256:2dc6c3ac6d8764c71c6d2804e902d0ff810fa19692e95fe138aefc9b1aa73732", size = 3782, upload-time = "2020-06-16T12:38:03.4Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/da/9da67c67b3d0963160e3d2cbc7c38b6fae342670cc8e6d5936644b2cf944/pytest_dotenv-0.5.2-py3-none-any.whl", hash = "sha256:40a2cece120a213898afaa5407673f6bd924b1fa7eafce6bda0e8abffe2f710f", size = 3993, upload-time = "2020-06-16T12:38:01.139Z" },
+]
+
+[[package]]
+name = "pytest-jira-zephyr-reporter"
+version = "0.1.0"
+source = { git = "https://github.com/NHSDigital/pytest-jira-zephyr-reporter.git?rev=v0.1.0#f918617e6a438c0dfb090f483de7f93bc2d4ce10" }
+dependencies = [
+    { name = "pytest" },
+    { name = "requests" },
 ]
 
 [[package]]
