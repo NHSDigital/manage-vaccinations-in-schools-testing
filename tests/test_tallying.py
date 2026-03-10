@@ -47,7 +47,7 @@ def setup_flu_vaccination(
             vaccine: add_vaccine_batch(vaccine)
             for vaccine in [Vaccine.SEQUIRUS, Vaccine.FLUENZ]
         }
-        VaccinesPage(page).header.click_mavis_header()
+        VaccinesPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()

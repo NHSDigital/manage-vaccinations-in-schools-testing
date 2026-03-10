@@ -1,8 +1,6 @@
 import pytest
 
-from mavis.test.constants import (
-    Programme,
-)
+from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
 from mavis.test.pages import (
     ChildRecordPage,
@@ -108,11 +106,11 @@ def test_national_reporting_upload_creates_vaccination_record(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(VaccsFileMapping.NATIONAL_REPORTING_HPV)
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).search.search_and_click_child(child)
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_vaccination_record()
     VaccinationRecordPage(page).expect_vaccination_details("Location", str(school))
     VaccinationRecordPage(page).expect_vaccination_details(
         "Source", "Mavis national reporting upload"

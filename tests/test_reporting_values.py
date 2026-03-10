@@ -2,6 +2,7 @@ import pytest
 
 from mavis.test.constants import Programme
 from mavis.test.pages import (
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -46,7 +47,6 @@ def test_report_view(
     """
 
     child = children[Programme.FLU][0]
-    school = schools[Programme.FLU][0]
 
     DashboardPage(page).navigate()
     DashboardPage(page).click_reports()
@@ -73,11 +73,12 @@ def test_report_view(
         "Vaccinated", expected_vaccinated_percentage
     )
 
-    ReportsVaccinationsPage(page).header.click_mavis_header()
+    ReportsVaccinationsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_programme(Programme.FLU)
+    ChildProgrammePage(page).click_vaccination_record()
     VaccinationRecordPage(page).click_edit_vaccination_record()
     EditVaccinationRecordPage(page).click_change_outcome()
     EditVaccinationRecordPage(page).click_they_refused_it()

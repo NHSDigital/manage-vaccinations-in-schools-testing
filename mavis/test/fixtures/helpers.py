@@ -8,6 +8,7 @@ from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data_models import School
 from mavis.test.pages import (
     AddBatchPage,
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
@@ -21,7 +22,7 @@ from mavis.test.pages import (
     VaccinesPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
-from mavis.test.utils import get_offset_date
+from mavis.test.utils import get_current_datetime, get_offset_date
 
 
 @pytest.fixture
@@ -164,14 +165,19 @@ def upload_offline_vaccination(
 
         if programme is Programme.HPV:
             vaccs_file = VaccsFileMapping.HPV_DOSE_TWO
+            vaccs_date = get_current_datetime()
         elif programme is Programme.FLU:
             vaccs_file = (
                 VaccsFileMapping.FLU_INJECTED
                 if consent_option is ConsentOption.INJECTION
                 else VaccsFileMapping.FLU_NASAL
             )
+            vaccs_date = get_current_datetime()
         elif programme is Programme.MMR:
             vaccs_file = VaccsFileMapping.MMR_DOSE_ONE
+            vaccs_date = get_current_datetime().replace(
+                year=get_current_datetime().year - 2
+            )
         else:
             msg = "Update upload_offline_vaccination to handle programme"
             raise ValueError(msg)
@@ -187,7 +193,7 @@ def upload_offline_vaccination(
         )
         schedule_school_session_if_needed(page, school, [programme], [child.year_group])
         session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-        SessionsOverviewPage(page).header.click_mavis_header()
+        SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_imports()
         ImportsPage(page).click_upload_records()
         ImportRecordsWizardPage(
@@ -200,10 +206,11 @@ def upload_offline_vaccination(
             session_id=session_id,
             programme_group=programme.group,
         )
-        ImportsPage(page).header.click_mavis_header()
+        ImportsPage(page).header.click_mavis()
         DashboardPage(page).click_children()
         ChildrenSearchPage(page).search.search_and_click_child(child)
-        ChildRecordPage(page).click_vaccination_details(school)
+        ChildRecordPage(page).click_programme(programme)
+        ChildProgrammePage(page).click_vaccination_record(vaccs_date)
         yield
 
     return wrapper
@@ -227,7 +234,7 @@ def setup_session_and_batches_with_fixed_child(
             for vaccine in Vaccine
             if vaccine.programme.group == programme_group
         }
-        VaccinesPage(page).header.click_mavis_header()
+        VaccinesPage(page).header.click_mavis()
         DashboardPage(page).click_sessions()
         session_programmes = [
             programme for programme in Programme if programme.group == programme_group
@@ -235,7 +242,7 @@ def setup_session_and_batches_with_fixed_child(
         schedule_school_session_if_needed(
             page, school, session_programmes, [child.year_group]
         )
-        SessionsOverviewPage(page).header.click_mavis_header()
+        SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
         SchoolsChildrenPage(page).click_import_class_lists()

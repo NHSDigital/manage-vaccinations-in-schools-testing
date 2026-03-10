@@ -3,12 +3,14 @@ import pytest
 from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
 from mavis.test.pages import (
+    ChildProgrammePage,
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
 )
+from mavis.test.utils import get_current_datetime
 
 
 @pytest.fixture
@@ -104,17 +106,19 @@ def test_historical_vaccination_file_upload_creates_child(
     - Vaccination record and child record exist.
     """
     child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
 
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(VaccsFileMapping.HIST_HPV)
 
-    ImportsPage(page).header.click_mavis_header()
+    ImportsPage(page).header.click_mavis()
     DashboardPage(page).click_children()
 
     ChildrenSearchPage(page).search.click_advanced_filters()
     ChildrenSearchPage(page).search.check_children_aged_out_of_programmes()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_vaccination_details(school)
+    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_vaccination_record(
+        get_current_datetime().replace(year=get_current_datetime().year - 2)
+    )

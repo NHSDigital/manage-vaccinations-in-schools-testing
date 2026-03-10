@@ -7,9 +7,11 @@ from mavis.test.annotations import issue
 from mavis.test.constants import DeliverySite, Programme, Vaccine
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
 from mavis.test.helpers.sidekiq_helper import SidekiqHelper
-from mavis.test.pages import ChildrenSearchPage, DashboardPage
-from mavis.test.pages.children.child_record_page import ChildRecordPage
-from mavis.test.pages.vaccination_record.vaccination_record_page import (
+from mavis.test.pages import (
+    ChildProgrammePage,
+    ChildRecordPage,
+    ChildrenSearchPage,
+    DashboardPage,
     VaccinationRecordPage,
 )
 from mavis.test.utils import get_current_datetime
@@ -84,7 +86,8 @@ def test_create_imms_record_then_verify_on_children_page(
     expect(child_card_locator).to_contain_text("FluVaccinated")
 
     ChildrenSearchPage(page).search.click_child(child)
-    ChildRecordPage(page).click_vaccination_record_link()
+    ChildRecordPage(page).click_programme(Programme.FLU)
+    ChildProgrammePage(page).click_vaccination_record()
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
     VaccinationRecordPage(page).expect_vaccination_details(
         "Source", "External source such as GP practice"

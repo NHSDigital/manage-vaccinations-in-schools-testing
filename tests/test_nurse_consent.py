@@ -87,7 +87,7 @@ def test_gillick_competence(
 
     GillickCompetencePage(page).add_gillick_competence(is_competent=True)
 
-    SessionsChildrenPage(page).header.click_mavis_header()
+    SessionsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).verify_offline_sheet_gillick_competence(
@@ -100,7 +100,7 @@ def test_gillick_competence(
     SessionsPatientPage(page).click_edit_gillick_competence()
     GillickCompetencePage(page).edit_gillick_competence(is_competent=False)
 
-    SessionsChildrenPage(page).header.click_mavis_header()
+    SessionsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).verify_offline_sheet_gillick_competence(
@@ -352,7 +352,7 @@ def test_accessibility(
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
 
-    VaccinesPage(page).header.click_mavis_header()
+    VaccinesPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
     SessionsOverviewPage(page).tabs.click_children_tab()
