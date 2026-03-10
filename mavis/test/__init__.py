@@ -43,12 +43,22 @@ from .fixtures import (
     year_groups,
 )
 from .hooks import pytest_sessionfinish, pytest_sessionstart
-from .jira_integration.hooks import (
-    pytest_configure,
-    pytest_runtest_makereport,
-    pytest_runtest_setup,
-    pytest_runtest_teardown,
-)
+
+# Note: Jira integration hooks are now provided by pytest-jira-zephyr-reporter package
+# and auto-register via pytest entry points. Explicit imports below for backwards compatibility.
+try:
+    from pytest_jira_zephyr_reporter.hooks import (
+        pytest_configure,
+        pytest_runtest_makereport,
+        pytest_runtest_setup,
+        pytest_runtest_teardown,
+    )
+except ImportError:
+    # If package is not installed, define no-op hooks
+    pytest_configure = None
+    pytest_runtest_makereport = None
+    pytest_runtest_setup = None
+    pytest_runtest_teardown = None
 
 __all__ = [
     "add_vaccine_batch",
