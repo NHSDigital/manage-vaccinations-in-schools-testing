@@ -45,7 +45,8 @@ from .fixtures import (
 from .hooks import pytest_sessionfinish, pytest_sessionstart
 
 # Note: Jira integration hooks are now provided by pytest-jira-zephyr-reporter package
-# and auto-register via pytest entry points. Explicit imports below for backwards compatibility.
+# and auto-register via pytest entry points.
+# Explicit imports below for backwards compatibility.
 try:
     from pytest_jira_zephyr_reporter.hooks import (
         pytest_configure,
