@@ -4,6 +4,7 @@ from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
+from mavis.test.fixtures.data_models import setup_national_reporting_import
 from mavis.test.pages import (
     ChildProgrammePage,
     ChildRecordPage,
@@ -18,6 +19,9 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import get_current_datetime
+
+# Fixtures used via request.getfixturevalue() in parametrized tests
+__fixtures__ = (setup_national_reporting_import,)
 
 
 @pytest.fixture
