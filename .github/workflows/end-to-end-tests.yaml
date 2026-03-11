@@ -9,7 +9,7 @@ on:
         default: ''
         type: string
       cross_service_tests:
-        description: 'Include imms api and reporting tests'
+        description: 'Include imms api, pds api and reporting tests'
         required: false
         default: false
         type: boolean
@@ -85,7 +85,7 @@ on:
         required: false
         default: ''
       cross_service_tests:
-        description: 'Include imms api and reporting tests'
+        description: 'Include imms api, pds api and reporting tests'
         required: false
         default: 'true'
         type: choice
@@ -241,6 +241,7 @@ jobs:
         with:
           tests: ${{ steps.set-variables.outputs.tests }}
           imms_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          pds_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
           reporting_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
           github_ref: ${{ inputs.github_ref || github.head_ref }}
           device: ${{ steps.set-variables.outputs.device }}

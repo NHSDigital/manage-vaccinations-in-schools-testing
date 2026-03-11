@@ -53,6 +53,7 @@ markers = [
   "imms_api",
   "log_in",
   "national_reporting",
+  "pds_api",
   "rav",
   "reporting",
   "school_moves",

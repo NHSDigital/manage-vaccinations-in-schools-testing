@@ -3,8 +3,9 @@ from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
-from mavis.test.data import ChildFileMapping, ClassFileMapping, pds
+from mavis.test.data import ChildFileMapping, ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
+from mavis.test.helpers.pds_api_helper import PdsApiHelper
 from mavis.test.pages import (
     ArchiveConsentResponsePage,
     ChildProgrammePage,
@@ -21,13 +22,20 @@ from mavis.test.pages import (
     StartPage,
     UnmatchedConsentResponsesPage,
 )
+from mavis.test.utils import expect_details, format_nhs_number
 
 pytestmark = pytest.mark.consent_responses
 
 
+@pytest.fixture(scope="session")
+def pds_api_helper(authenticate_api):
+    return PdsApiHelper(authenticate_api)
+
+
 @pytest.fixture
-def pds_child():
-    return pds.get_random_child_patient_without_date_of_death()
+def pds_child(authenticate_api):
+    pds_api_helper = PdsApiHelper(authenticate_api)
+    return pds_api_helper.get_random_child_patient_without_date_of_death()
 
 
 @pytest.fixture
@@ -156,6 +164,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
 
+@pytest.mark.pds_api
 def test_create_child_record_from_consent_with_nhs_number(
     give_online_consent_pds_child,
     pds_child,
@@ -171,6 +180,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     Verification:
     - Created alert is visible.
     - Consent response for the child is no longer visible in unmatched list.
+    - NHS number of child fetched from PDS is visible.
     - Activity log for the child shows the creation event.
     """
     child = pds_child
@@ -190,6 +200,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
+    expect_details(page, "NHS number", format_nhs_number(child.nhs_number))
     ChildRecordPage(page).click_programme(Programme.HPV)
     ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
