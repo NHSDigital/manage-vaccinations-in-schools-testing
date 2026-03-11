@@ -3,3 +3,4 @@ Row 3 This record appears more than once in the file. Remove any duplicates.
 Row 4 This record appears more than once in the file. Remove any duplicates.
 Row 5 This record appears more than once in the file. Remove any duplicates.
 Row 6 This record appears more than once in the file. Remove any duplicates.
+!Row 7 This record appears more than once in the file. Remove any duplicates.
