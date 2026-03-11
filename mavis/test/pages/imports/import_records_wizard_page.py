@@ -9,7 +9,10 @@ from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.utils import reload_until_element_is_visible
+from mavis.test.utils import (
+    click_secondary_navigation_item,
+    reload_until_element_is_visible,
+)
 
 
 class ImportRecordsWizardPage:
@@ -274,8 +277,7 @@ class ImportRecordsWizardPage:
         self.page.wait_for_load_state()
 
         if not import_link.is_visible():
-            self.completed_imports_tab.click()
-            self.completed_imports_tab.get_by_role("strong").wait_for()
+            click_secondary_navigation_item(self.completed_imports_tab)
 
         import_link.click()
         self.page.wait_for_load_state()

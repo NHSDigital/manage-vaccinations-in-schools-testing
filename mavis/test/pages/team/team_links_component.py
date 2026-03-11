@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
+from mavis.test.utils import click_secondary_navigation_item
 
 
 class TeamLinksComponent:
@@ -18,20 +19,16 @@ class TeamLinksComponent:
 
     @step("Click on Contact details")
     def click_contact_details(self) -> None:
-        self.contact_details_link.click()
-        self.contact_details_link.get_by_role("strong").wait_for()
+        click_secondary_navigation_item(self.contact_details_link)
 
     @step("Click on Schools")
     def click_schools(self) -> None:
-        self.schools_link.click()
-        self.schools_link.get_by_role("strong").wait_for()
+        click_secondary_navigation_item(self.schools_link)
 
     @step("Click on Clinics")
     def click_clinics(self) -> None:
-        self.clinics_link.click()
-        self.clinics_link.get_by_role("strong").wait_for()
+        click_secondary_navigation_item(self.clinics_link)
 
     @step("Click on Sessions")
     def click_sessions(self) -> None:
-        self.sessions_link.click()
-        self.sessions_link.get_by_role("strong").wait_for()
+        click_secondary_navigation_item(self.sessions_link)
