@@ -5,7 +5,7 @@ from playwright.sync_api import Locator, Page, expect
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.utils import get_todays_date
+from mavis.test.utils import click_secondary_navigation_item, get_todays_date
 
 
 class ChildRecordPage:
@@ -33,17 +33,12 @@ class ChildRecordPage:
 
     @step("Click on Child record")
     def click_child_record(self) -> None:
-        self._click_tab(self.child_record_link)
+        click_secondary_navigation_item(self.child_record_link)
 
     @step("Click on {1}")
     def click_programme(self, programme: Programme) -> None:
         link = self.secondary_menu.get_by_role("link", name=str(programme))
-        self._click_tab(link)
-
-    def _click_tab(self, link: Locator) -> None:
-        link.click()
-        link.get_by_role("strong").wait_for()
-        self.page.wait_for_load_state()
+        click_secondary_navigation_item(link)
 
     @step("Click on Edit child record")
     def click_edit_child_record(self) -> None:

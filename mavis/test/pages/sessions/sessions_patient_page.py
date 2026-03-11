@@ -17,6 +17,7 @@ from mavis.test.data_models import (
 )
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
+    click_secondary_navigation_item,
     expect_alert_text,
     expect_details,
     reload_until_element_is_visible,
@@ -109,17 +110,11 @@ class SessionsPatientPage:
             "link", name="Record as already vaccinated"
         )
 
-    def _select_tab(self, name: str) -> None:
-        link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
-        if link.get_by_role("strong").is_visible():
-            return
-        link.click()
-        link.get_by_role("strong").wait_for()
-
     @step("Click on {1} tab")
     def click_programme_tab(self, programme: Programme) -> None:
-        tab_name = "MMR" if programme is Programme.MMR else str(programme)
-        self._select_tab(tab_name)
+        name = "MMR" if programme is Programme.MMR else str(programme)
+        link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
+        click_secondary_navigation_item(link)
 
     @step("Click on Update triage outcome")
     def click_update_triage_outcome(self) -> None:
@@ -319,4 +314,7 @@ class SessionsPatientPage:
 
     @step("Click on Session activity and notes tab")
     def click_session_activity_and_notes(self) -> None:
-        self._select_tab("Session activity and notes")
+        link = self.page.get_by_label("Secondary menu").get_by_role(
+            "link", name="Session activity and notes"
+        )
+        click_secondary_navigation_item(link)

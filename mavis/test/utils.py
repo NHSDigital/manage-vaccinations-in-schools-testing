@@ -232,3 +232,10 @@ def expect_details(page: Page, key: str, value: str) -> None:
     detail_value = detail_key.locator("xpath=following-sibling::*[1]")
 
     expect(detail_value).to_contain_text(value)
+
+
+def click_secondary_navigation_item(link: Locator) -> None:
+    if link.get_by_role("strong").is_visible():
+        return
+    link.click()
+    link.get_by_role("strong").wait_for()

@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
+from mavis.test.utils import click_secondary_navigation_item
 
 
 class ReportsTabs:
@@ -15,10 +16,8 @@ class ReportsTabs:
 
     @step("Click on Vaccinations tab")
     def click_vaccinations_tab(self) -> None:
-        self.vaccinations_tab.click()
-        self.vaccinations_tab.get_by_role("strong").wait_for()
+        click_secondary_navigation_item(self.vaccinations_tab)
 
     @step("Click on Download Data tab")
     def click_download_data_tab(self) -> None:
-        self.download_data_tab.click()
-        self.download_data_tab.get_by_role("strong").wait_for()
+        click_secondary_navigation_item(self.download_data_tab)
