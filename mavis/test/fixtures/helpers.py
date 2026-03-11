@@ -16,7 +16,7 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     LogInPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
     VaccinesPage,
@@ -185,7 +185,7 @@ def upload_offline_vaccination(
         DashboardPage(page).navigate()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,
@@ -245,7 +245,7 @@ def setup_session_and_batches_with_fixed_child(
         SessionsOverviewPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             ClassFileMapping.FIXED_CHILD,
             child.year_group,

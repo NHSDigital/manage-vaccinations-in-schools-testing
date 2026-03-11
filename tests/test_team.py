@@ -12,7 +12,7 @@ from mavis.test.pages import (
     TeamContactDetailsPage,
     TeamSchoolsPage,
 )
-from mavis.test.pages.schools.schools_children_page import SchoolsChildrenPage
+from mavis.test.pages.schools.school_children_page import SchoolChildrenPage
 from mavis.test.pages.schools.schools_search_page import SchoolsSearchPage
 
 pytestmark = pytest.mark.team
@@ -178,12 +178,12 @@ def test_site_child_record_import(
     ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).search.search_for_a_child_name(str(child))
+    SchoolChildrenPage(page).search.search_for_a_child_name(str(child))
 
-    SchoolsChildrenPage(page).header.click_mavis()
+    SchoolChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(new_site_name)
-    SchoolsChildrenPage(page).search.search_for_child_that_should_not_exist(child)
+    SchoolChildrenPage(page).search.search_for_child_that_should_not_exist(child)
 
 
 def test_site_class_list_import(

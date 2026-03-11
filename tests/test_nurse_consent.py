@@ -15,7 +15,7 @@ from mavis.test.pages import (
     GillickCompetencePage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
@@ -46,7 +46,7 @@ def setup_session_with_file_upload(
     def _setup(class_list_file):
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )

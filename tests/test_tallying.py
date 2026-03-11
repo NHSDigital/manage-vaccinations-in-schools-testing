@@ -15,7 +15,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
@@ -50,7 +50,7 @@ def setup_flu_vaccination(
         VaccinesPage(page).header.click_mavis()
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group, Programme.FLU.group
         )
@@ -191,7 +191,7 @@ def test_tallying_totals_match_eligible_patients(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.FIXED_CHILD, year_group, programme.group
     )

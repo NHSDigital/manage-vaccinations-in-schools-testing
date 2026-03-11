@@ -4,9 +4,9 @@ from mavis.test.constants import Programme
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     DashboardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
+    SchoolSessionsPage,
     SchoolsSearchPage,
-    SchoolsSessionsPage,
 )
 from mavis.test.pages.add_session_wizard_page import AddSessionWizardPage
 
@@ -33,15 +33,15 @@ def test_schools_schedule_session_with_no_dates(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).tabs.click_sessions_tab()
-    SchoolsSessionsPage(page).click_add_a_new_session()
+    SchoolChildrenPage(page).tabs.click_sessions_tab()
+    SchoolSessionsPage(page).click_add_a_new_session()
     AddSessionWizardPage(page).schedule_school_session(
         school=None,
         programmes=[Programme.HPV],
         year_groups=[year_group],
         date_offset=None,
     )
-    SchoolsSessionsPage(page).verify_session_exists(
+    SchoolSessionsPage(page).verify_session_exists(
         programmes=[Programme.HPV],
         year_groups=[year_group],
         scheduled=False,
@@ -68,15 +68,15 @@ def test_schools_schedule_session_with_date(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).tabs.click_sessions_tab()
-    SchoolsSessionsPage(page).click_add_a_new_session()
+    SchoolChildrenPage(page).tabs.click_sessions_tab()
+    SchoolSessionsPage(page).click_add_a_new_session()
     AddSessionWizardPage(page).schedule_school_session(
         school=None,
         programmes=[Programme.HPV],
         year_groups=[year_group],
         date_offset=0,
     )
-    SchoolsSessionsPage(page).verify_session_exists(
+    SchoolSessionsPage(page).verify_session_exists(
         programmes=[Programme.HPV],
         year_groups=[year_group],
         scheduled=True,
@@ -105,5 +105,5 @@ def test_accessibility(
     SchoolsSearchPage(page).click_school(school)
     AccessibilityHelper(page).check_accessibility()
 
-    SchoolsChildrenPage(page).tabs.click_sessions_tab()
+    SchoolChildrenPage(page).tabs.click_sessions_tab()
     AccessibilityHelper(page).check_accessibility()

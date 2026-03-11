@@ -13,8 +13,8 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     ReviewSchoolMovePage,
+    SchoolChildrenPage,
     SchoolMovesPage,
-    SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
 )
@@ -41,7 +41,7 @@ def setup_confirm_and_ignore(
     )
 
     def upload_class_list():
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).select_year_groups(
             year_group
         )
@@ -74,7 +74,7 @@ def setup_confirm_and_ignore(
     ChildrenSearchPage(page).search.search_for_a_child_name(str(children[0]))
     ChildrenSearchPage(page).search.click_child(children[0])
     ChildRecordPage(page).click_programme(Programme.HPV)
-    ChildProgrammePage(page).expect_activity_log_header(
+    ChildProgrammePage(page).expect_activity_log_entry(
         f"Added to the session at {schools[0]}"
     )
     ChildProgrammePage(page).header.click_mavis()

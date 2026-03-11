@@ -9,7 +9,7 @@ from mavis.test.pages import (
     EditVaccinationRecordPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
     SessionsPatientPage,
@@ -39,7 +39,7 @@ def setup_vaccs_flu(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
 
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.TWO_FIXED_CHILDREN,

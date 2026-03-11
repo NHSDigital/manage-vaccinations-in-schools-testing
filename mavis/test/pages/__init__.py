@@ -15,7 +15,12 @@ from .log_out_page import LogOutPage
 from .online_consent_wizard_page import OnlineConsentWizardPage
 from .reports import ReportsDownloadPage, ReportsVaccinationsPage, VaccinationReportPage
 from .school_moves import DownloadSchoolMovesPage, ReviewSchoolMovePage, SchoolMovesPage
-from .schools import SchoolsChildrenPage, SchoolsSearchPage, SchoolsSessionsPage
+from .schools import (
+    SchoolChildrenPage,
+    SchoolInviteToClinicPage,
+    SchoolSessionsPage,
+    SchoolsSearchPage,
+)
 from .sessions import (
     GillickCompetencePage,
     NurseConsentWizardPage,
@@ -70,10 +75,11 @@ __all__ = [
     "ReportsDownloadPage",
     "ReportsVaccinationsPage",
     "ReviewSchoolMovePage",
+    "SchoolChildrenPage",
+    "SchoolInviteToClinicPage",
     "SchoolMovesPage",
-    "SchoolsChildrenPage",
+    "SchoolSessionsPage",
     "SchoolsSearchPage",
-    "SchoolsSessionsPage",
     "ServiceErrorPage",
     "SessionsChildrenPage",
     "SessionsEditPage",

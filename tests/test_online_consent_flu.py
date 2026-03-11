@@ -7,7 +7,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     OnlineConsentWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
@@ -46,7 +46,7 @@ def setup_session_with_file_upload(
     DashboardPage(page).navigate()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.FIXED_CHILD,
         year_group,

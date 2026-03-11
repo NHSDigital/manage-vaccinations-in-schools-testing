@@ -5,7 +5,7 @@ from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
@@ -42,7 +42,7 @@ def setup_fixed_child_session(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.FIXED_CHILD, year_group, programme.group
     )

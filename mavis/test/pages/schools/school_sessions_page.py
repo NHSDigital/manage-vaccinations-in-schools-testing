@@ -3,14 +3,14 @@ from playwright.sync_api import Page
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.pages.schools.schools_tabs import SchoolsTabs
+from mavis.test.pages.schools.school_tabs import SchoolTabs
 
 
-class SchoolsSessionsPage:
+class SchoolSessionsPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.header = HeaderComponent(page)
-        self.tabs = SchoolsTabs(page)
+        self.tabs = SchoolTabs(page)
         self.add_a_new_session_link = page.get_by_role("link", name="Add a new session")
         self.scheduled_sessions_heading = page.get_by_role(
             "heading", name="Scheduled sessions"

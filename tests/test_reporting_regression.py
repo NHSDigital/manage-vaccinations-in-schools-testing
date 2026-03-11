@@ -22,8 +22,8 @@ from mavis.test.pages import (
     ReportsDownloadPage,
     ReportsVaccinationsPage,
     ReviewSchoolMovePage,
+    SchoolChildrenPage,
     SchoolMovesPage,
-    SchoolsChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
 )
@@ -70,7 +70,7 @@ def _upload_class_list(page, school, onboarding, children, mapping, year_group):
     DashboardPage(page).navigate()
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, fg).import_class_list(
         mapping,
         year_group,

@@ -13,7 +13,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsEditPage,
@@ -47,7 +47,7 @@ def setup_session_with_file_upload(
     def _setup(class_list_file, offset_days: int = 0):
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )
@@ -362,8 +362,9 @@ def test_consent_refused_and_activity_log(
     )
 
 
-@pytest.mark.rav
 @pytest.mark.bug
+@pytest.mark.clinics
+@pytest.mark.rav
 def test_verify_excel_export_and_clinic_invitation(
     setup_fixed_child,
     add_vaccine_batch,
@@ -394,9 +395,14 @@ def test_verify_excel_export_and_clinic_invitation(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_a_child_name(str(child))
     ChildrenSearchPage(page).search.click_child(child)
+
     ChildRecordPage(page).click_programme(Programme.HPV)
+    # TODO: Replace this with importing an unknown school child without
+    #  needing to manually invite them to the clinic. Inviting to a clinic
+    #  is covered by other tests.
     ChildProgrammePage(page).click_invite_to_community_clinic()
     ChildRecordPage(page).click_programme(Programme.HPV)
+
     ChildProgrammePage(page).click_session(generic_clinic)
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])

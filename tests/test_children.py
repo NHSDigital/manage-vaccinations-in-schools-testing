@@ -13,7 +13,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    SchoolsChildrenPage,
+    SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
     VaccinationRecordPage,
@@ -38,7 +38,7 @@ def setup_children_session(
 
         DashboardPage(page).click_schools()
         SchoolsSearchPage(page).click_school(school)
-        SchoolsChildrenPage(page).click_import_class_lists()
+        SchoolChildrenPage(page).click_import_class_lists()
         ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
             class_list_file, year_group
         )
@@ -73,7 +73,7 @@ def setup_mav_853(
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
-    SchoolsChildrenPage(page).click_import_class_lists()
+    SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
@@ -135,7 +135,7 @@ def test_patient_details_load_with_missing_vaccine_info(
     ChildrenSearchPage(page).search.click_child(child)
     # Verify activity log
     ChildRecordPage(page).click_programme(Programme.HPV)
-    ChildProgrammePage(page).expect_activity_log_header(
+    ChildProgrammePage(page).expect_activity_log_entry(
         "Vaccinated with Gardasil 9", unique=True
     )
     # Verify vaccination record
@@ -209,7 +209,7 @@ def test_merge_child_records_does_not_crash(
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child2))
     ChildrenSearchPage(page).search.click_child(child2)
     ChildRecordPage(page).click_programme(Programme.HPV)
-    ChildProgrammePage(page).expect_activity_log_header(
+    ChildProgrammePage(page).expect_activity_log_entry(
         "Child record merged", unique=True
     )
 
