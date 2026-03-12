@@ -46,7 +46,8 @@ jobs:
     name: Run end-to-end tests against container
     needs: identify-target
     if: needs.identify-target.outputs.value == 'container'
-    uses: NHSDigital/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests.yml@next
+    # yamllint disable-line rule:line-length
+    uses: NHSDigital/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests-on-pull-request.yml@next
     permissions:
       id-token: write
       contents: write
