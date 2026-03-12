@@ -15,7 +15,6 @@ from mavis.test.data_models import (
     Subteam,
     User,
 )
-from mavis.test.pages import DashboardPage, ImportsPage, LogInPage
 
 logger = logging.getLogger(__name__)
 
@@ -159,18 +158,3 @@ def national_reporting_file_generator(
         None,
         year_groups,
     )
-
-
-@pytest.fixture
-def setup_national_reporting_import(
-    page,
-    national_reporting_nurse,
-    national_reporting_team,
-):
-    """Fixture to set up national reporting import page."""
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(
-        national_reporting_nurse, national_reporting_team
-    )
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
