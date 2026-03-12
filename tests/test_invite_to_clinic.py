@@ -70,7 +70,7 @@ def test_single_from_child_record(
     #   emails actually get sent from the end to end test environments.
 
 
-@issue("MAV-2854")
+@issue("MAV-3886")
 def test_bulk_from_unknown_school(
     children, log_in_as_nurse, page, point_of_care_file_generator
 ):
