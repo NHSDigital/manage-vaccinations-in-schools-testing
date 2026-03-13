@@ -2,31 +2,18 @@ import pytest
 
 from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
+from mavis.test.fixtures.helpers import setup_national_reporting_import
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
     DashboardPage,
     ImportRecordsWizardPage,
     ImportsPage,
-    LogInPage,
     VaccinationRecordPage,
 )
 
 pytestmark = pytest.mark.national_reporting
-
-
-@pytest.fixture
-def setup_national_reporting_import(
-    page,
-    national_reporting_nurse,
-    national_reporting_team,
-):
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(
-        national_reporting_nurse, national_reporting_team
-    )
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
+__fixtures__ = (setup_national_reporting_import,)
 
 
 def test_national_reporting_valid_data(

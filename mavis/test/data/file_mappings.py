@@ -20,6 +20,7 @@ class VaccsFileMapping(FileMapping):
     CLINIC_NAME_CASE = "clinic_name_case"
     DUP_1 = "dup_1"
     DUP_2 = "dup_2"
+    MULTIPLE_EXACT_DUPLICATES = "multiple_exact_duplicates"
     EMPTY_FILE = "empty"
     FLU_INJECTED = "flu_injected"
     FLU_NASAL = "flu_nasal"
