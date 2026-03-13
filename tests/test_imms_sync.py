@@ -87,7 +87,9 @@ def test_create_imms_record_then_verify_on_children_page(
 
     ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_programme(Programme.FLU)
-    ChildProgrammePage(page).click_vaccination_record()
+    ChildProgrammePage(page).click_vaccination_record(
+        get_current_datetime() - timedelta(days=1)
+    )
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
     VaccinationRecordPage(page).expect_vaccination_details(
         "Source", "External source such as GP practice"
