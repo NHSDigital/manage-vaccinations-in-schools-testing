@@ -58,7 +58,8 @@ def test_create_imms_record_then_verify_on_children_page(
     school = schools[Programme.FLU][0]
     vaccine = Vaccine.SEQUIRUS
 
-    vaccination_time = (get_current_datetime() - timedelta(days=1)).replace(
+    vaccination_date = get_current_datetime() - timedelta(days=1)
+    vaccination_time = vaccination_date.replace(
         hour=10, minute=30, second=0, microsecond=0
     )
     sidekiq_job_name = "enqueue_vaccinations_search_in_nhs_job"
@@ -87,7 +88,7 @@ def test_create_imms_record_then_verify_on_children_page(
 
     ChildrenSearchPage(page).search.click_child(child)
     ChildRecordPage(page).click_programme(Programme.FLU)
-    ChildProgrammePage(page).click_vaccination_record()
+    ChildProgrammePage(page).click_vaccination_record(vaccination_date)
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
     VaccinationRecordPage(page).expect_vaccination_details(
         "Source", "External source such as GP practice"
