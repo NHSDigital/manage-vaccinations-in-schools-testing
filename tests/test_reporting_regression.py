@@ -31,8 +31,7 @@ from mavis.test.pages.utils import schedule_school_session_if_needed
 
 pytestmark = pytest.mark.reporting
 
-_flu_year_groups = random.sample(Programme.FLU.year_groups, 3)
-_yg1, _yg2, _yg3 = _flu_year_groups
+_yg1, _yg2, _yg3 = random.sample(list(range(7, 12)), 3)
 _year_groups = {p.group: _yg1 for p in Programme}
 
 _setup_complete = False
