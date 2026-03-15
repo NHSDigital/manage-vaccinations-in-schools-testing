@@ -12,6 +12,10 @@ class PatientSearchComponent(BaseSearchComponent):
         page: Page,
     ) -> None:
         super().__init__(page)
+        self.invited_to_clinic_checkbox = self.page.get_by_role(
+            "checkbox",
+            name="Invited to clinic",
+        )
         self.advanced_filters_link = page.get_by_text("Advanced filters")
         self.archived_records_checkbox = self.page.get_by_role(
             "checkbox",
@@ -47,6 +51,13 @@ class PatientSearchComponent(BaseSearchComponent):
             "link", name=str(child)
         )
         expect(child_locator).not_to_be_visible()
+
+    @step("Search for children invited to clinic")
+    def search_invited_to_clinic(self) -> None:
+        self.invited_to_clinic_checkbox.check()
+
+        with self.page.expect_navigation():
+            self.search_button.click()
 
     @step("Click on child {1}")
     def click_child(self, child: Child) -> None:
