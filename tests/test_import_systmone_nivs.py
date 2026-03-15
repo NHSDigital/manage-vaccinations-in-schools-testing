@@ -127,8 +127,6 @@ def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
     point_of_care_file_generator,
 ):
     """
-    Covers Issue: MAV-1547
-
     Test: Upload a NIVS historic flu vaccination file for previous years and verify
        it is disallowed.
     Steps:
@@ -152,8 +150,6 @@ def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
     point_of_care_file_generator,
 ):
     """
-    Covers Issue: MAV-1599
-
     Test: Upload a SystmOne historic flu vaccination file for previous years and verify
        it is disallowed.
     Steps:

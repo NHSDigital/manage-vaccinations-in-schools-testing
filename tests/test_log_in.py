@@ -47,11 +47,8 @@ def test_login_with_valid_credentials_national_reporting(
     page,
 ):
     """
-    Covers Issue MAV-3261: Verify that the correct dashboard links are displayed for
-    each user role and that the service guidance link points to the correct URL.
-
-    Test: Log in with valid credentials for each user role and verify dashboard links
-       and team information.
+    Test: Verify that the correct dashboard links are displayed for each user
+    role and that the service guidance link points to the correct URL.
 
     Steps:
     1. Navigate to the log in page (autouse fixture).
@@ -102,11 +99,8 @@ def test_login_with_valid_credentials_point_of_care(
     page,
 ):
     """
-    Covers Issue MAV-3261: Verify that the correct dashboard links are displayed for
-    each user role and that the service guidance link points to the correct URL.
-
-    Test: Log in with valid credentials for each user role and verify dashboard links
-       and team information.
+    Test: Verify that the correct dashboard links are displayed for
+        each user role and that the service guidance link points to the correct URL.
 
     Steps:
     1. Navigate to the log in page (autouse fixture).

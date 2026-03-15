@@ -201,7 +201,6 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     year_groups,
 ):
     """
-    Covers Issue: MAV-3840
     Test: Upload a patient with duplicate name/DOB but different postcode
     and empty NHS number.
 

@@ -115,8 +115,6 @@ def test_gillick_competence_notes(
     children,
 ):
     """
-    Covers Issue: MAV-955
-
     Test: Validate Gillick competence assessment notes length and update.
     Steps:
     1. Open the session for the school and programme.

@@ -292,8 +292,6 @@ def test_vaccination_file_upload_creates_child_no_setting(
     children,
 ):
     """
-    Covers Issue: MAV-855
-
     Test: Upload a vaccination file with no URN/care setting and verify the child
     record is created and the location is set to school.
     Steps:
@@ -302,7 +300,6 @@ def test_vaccination_file_upload_creates_child_no_setting(
     3. Open vaccination details for the child.
     Verification:
     - Vaccination location is displayed as the school.
-    Scenarios covered: MAV-855
     """
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
@@ -365,8 +362,6 @@ def test_vaccination_file_upload_community_clinic_name_case(
     point_of_care_file_generator,
 ):
     """
-    Covers Issue: MAV-691
-
     Test: Upload a vaccination file with community clinic name case variations and
        verify correct handling.
     Steps:
