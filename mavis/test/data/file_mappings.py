@@ -58,6 +58,7 @@ class ChildFileMapping(FileMapping):
     EMPTY_FILE = "empty"
     FIXED_CHILD = "fixed_child"
     HEADER_ONLY = "header_only"
+    HOME_EDUCATED_CHILD = "home_educated_child"
     INVALID_STRUCTURE = "invalid_structure"
     NEGATIVE = "negative"
     POSITIVE = "positive"
