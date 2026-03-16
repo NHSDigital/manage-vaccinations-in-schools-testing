@@ -31,11 +31,9 @@ class UnmatchedConsentResponsesPage:
             (p.full_name for p in child.parents if p.relationship is Relationship.DAD),
             None,
         )
-        reload_until_element_is_visible(
-            self.page,
-            self.page.get_by_role("link", name=str(parent_name)),
-        )
-        self.page.get_by_role("link", name=str(parent_name)).click()
+        link = self.page.get_by_role("link", name=str(parent_name)).first
+        reload_until_element_is_visible(self.page, link)
+        link.click()
 
     def check_response_for_child_not_visible(self, child: Child) -> None:
         row = self.rows.filter(has=self.page.get_by_text(str(child)))
