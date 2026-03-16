@@ -12,6 +12,14 @@ import requests
 logger = logging.getLogger(__name__)
 
 
+class AuthToken:
+    def __init__(self, token):
+        self.token = token
+
+    def __repr__(self):
+        return "<AuthToken>"
+
+
 @pytest.fixture(scope="session")
 def authenticate_api():
     _api_auth: dict[str, str] = _read_imms_api_credentials()
@@ -29,7 +37,7 @@ def authenticate_api():
         logger.warning(response.content)
     response.raise_for_status()
 
-    return response.json()["access_token"]
+    return AuthToken(response.json()["access_token"])
 
 
 def _read_imms_api_credentials() -> dict[str, str]:

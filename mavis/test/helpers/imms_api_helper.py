@@ -9,6 +9,7 @@ import requests
 from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data.file_utils import create_fhir_immunization_payload
 from mavis.test.data_models import Child, School
+from mavis.test.fixtures.fhir_api import AuthToken
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -65,13 +66,13 @@ class ImmsApiVaccinationRecord(NamedTuple):
 
 
 class ImmsApiHelper:
-    def __init__(self, token: str) -> None:
+    def __init__(self, auth_token: AuthToken) -> None:
         self.headers = {
             "accept": "application/fhir+json",
             "content-type": "application/x-www-form-urlencoded",
             "x-correlation-id": str(uuid.uuid4()),
             "x-request-id": str(uuid.uuid4()),
-            "Authorization": f"Bearer {token}",
+            "Authorization": f"Bearer {auth_token.token}",
         }
 
     def check_record_in_imms_api(
