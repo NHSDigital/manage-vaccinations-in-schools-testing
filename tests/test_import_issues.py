@@ -116,7 +116,9 @@ def setup_vaccination_import(
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
         ClassFileMapping.RANDOM_CHILD, year_group
     )
-    schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
+    schedule_school_session_if_needed(
+        page, school, [Programme.FLU, Programme.HPV], [year_group]
+    )
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
     SessionsOverviewPage(page).header.click_mavis()
     return session_id

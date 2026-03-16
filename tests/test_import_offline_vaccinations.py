@@ -32,16 +32,27 @@ def setup_vaccs(
     point_of_care_file_generator,
     year_groups,
 ):
-    school = schools[Programme.HPV][0]
-    year_group = year_groups[Programme.HPV]
+    school = schools["doubles"][0]
+    year_group = year_groups["doubles"]
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
-        ClassFileMapping.RANDOM_CHILD, year_group
+        ClassFileMapping.RANDOM_CHILD, year_group, programme_group="doubles"
     )
-    schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
+    schedule_school_session_if_needed(
+        page,
+        school,
+        [
+            Programme.FLU,
+            Programme.HPV,
+            Programme.MENACWY,
+            Programme.MMR,
+            Programme.TD_IPV,
+        ],
+        [year_group],
+    )
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
     SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
