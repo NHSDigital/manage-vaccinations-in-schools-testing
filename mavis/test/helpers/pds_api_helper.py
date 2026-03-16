@@ -12,6 +12,7 @@ from dateutil.relativedelta import relativedelta
 
 from mavis.test.constants import PdsEndpoints, Relationship
 from mavis.test.data_models import Child, Parent
+from mavis.test.fixtures.fhir_api import AuthToken
 from mavis.test.utils import get_todays_date
 
 
@@ -78,13 +79,13 @@ class Patient(NamedTuple):
 
 
 class PdsApiHelper:
-    def __init__(self, token: str) -> None:
+    def __init__(self, auth_token: AuthToken) -> None:
         self.headers = {
             "accept": "application/fhir+json",
             "content-type": "application/x-www-form-urlencoded",
             "x-correlation-id": str(uuid.uuid4()),
             "x-request-id": str(uuid.uuid4()),
-            "Authorization": f"Bearer {token}",
+            "Authorization": f"Bearer {auth_token.token}",
         }
         self._load_patients()
 
