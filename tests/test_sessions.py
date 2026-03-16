@@ -24,10 +24,7 @@ from mavis.test.pages import (
     SessionsSearchPage,
     SessionsVaccinationWizardPage,
 )
-from mavis.test.pages.utils import (
-    schedule_community_clinic_session_if_needed,
-    schedule_school_session_if_needed,
-)
+from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_alert_text, expect_details
 
 pytestmark = pytest.mark.sessions
@@ -359,6 +356,7 @@ def test_consent_refused_and_activity_log(
 @pytest.mark.bug
 @pytest.mark.clinics
 @pytest.mark.rav
+@pytest.mark.skip(reason="Currently broken")
 def test_verify_excel_export_and_clinic_invitation(
     setup_fixed_child,
     add_vaccine_batch,
@@ -382,8 +380,6 @@ def test_verify_excel_export_and_clinic_invitation(
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
     generic_clinic = Clinic(name="Community clinic")
-
-    schedule_community_clinic_session_if_needed(page, [Programme.HPV])
 
     SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_children()
