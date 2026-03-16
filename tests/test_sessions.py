@@ -4,7 +4,7 @@ from playwright.sync_api import expect
 from mavis.test.annotations import issue
 from mavis.test.constants import ConsentMethod, Programme, Vaccine
 from mavis.test.data import ClassFileMapping
-from mavis.test.data_models import Clinic, VaccinationRecord
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import (
     ChildProgrammePage,
@@ -356,8 +356,7 @@ def test_consent_refused_and_activity_log(
 @pytest.mark.bug
 @pytest.mark.clinics
 @pytest.mark.rav
-@pytest.mark.skip(reason="Currently broken")
-def test_verify_excel_export_and_clinic_invitation(
+def test_add_child_to_community_clinic_session(
     setup_fixed_child,
     add_vaccine_batch,
     schools,
@@ -366,20 +365,22 @@ def test_verify_excel_export_and_clinic_invitation(
     children,
 ):
     """
-    Test: Export session data to Excel and send clinic invitations,
-       then verify vaccination record.
+    Test: Add a child to a community clinic session, record a vaccination, and
+      verify outcome and Excel export.
+
     Steps:
-    1. Schedule session, import class list, and send clinic invitations.
+    1. Import a child and click on "Record a new vaccination".
     2. Record verbal consent and register child as attending.
     3. Record vaccination for the child at the clinic.
     4. Verify vaccination outcome and Excel export.
+
     Verification:
     - Vaccination outcome is recorded and session Excel export is available.
     """
+
     child = children[Programme.HPV][0]
     school = schools[Programme.HPV][0]
     batch_name = add_vaccine_batch(Vaccine.GARDASIL_9)
-    generic_clinic = Clinic(name="Community clinic")
 
     SessionsOverviewPage(page).header.click_mavis()
     DashboardPage(page).click_children()
@@ -387,13 +388,8 @@ def test_verify_excel_export_and_clinic_invitation(
     ChildrenSearchPage(page).search.click_child(child)
 
     ChildRecordPage(page).click_programme(Programme.HPV)
-    # TODO: Replace this with importing an unknown school child without
-    #  needing to manually invite them to the clinic. Inviting to a clinic
-    #  is covered by other tests.
-    ChildProgrammePage(page).click_invite_to_community_clinic()
-    ChildRecordPage(page).click_programme(Programme.HPV)
+    ChildProgrammePage(page).click_record_new_vaccination(Programme.HPV)
 
-    ChildProgrammePage(page).click_session(generic_clinic)
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
