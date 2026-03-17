@@ -13,7 +13,7 @@ class LogOutPage:
             "button", name="Log out"
         )
         self.log_out_header = page.get_by_role("heading", name="Log out")
-        self.start_page_link = page.get_by_role("link", name="Start now")
+        self.start_page_link = page.get_by_role("button", name="Start now")
 
     @step("Navigate to the Log out page")
     def navigate(self) -> None:
