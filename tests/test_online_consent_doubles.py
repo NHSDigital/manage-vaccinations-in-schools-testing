@@ -77,12 +77,18 @@ def test_consent_refused_for_doubles_vaccination(
     [False, True],
     ids=lambda v: f"yes_to_health_questions: {v}",
 )
+@pytest.mark.parametrize(
+    "yes_to_follow_up_request",
+    [False, True],
+    ids=lambda v: f"yes_to_follow_up_request: {v}",
+)
 def test_consent_given_for_doubles_vaccination(
     start_consent_with_session_scheduled,
     page,
     schools,
     programmes,
     yes_to_health_questions,
+    yes_to_follow_up_request,
     children,
 ):
     """
@@ -94,7 +100,8 @@ def test_consent_given_for_doubles_vaccination(
     3. Fill in address details.
     4. Answer the required number of health questions, optionally marking one as 'yes'.
     5. If not both vaccines, select a reason for not giving consent to the other.
-    6. Submit the consent form.
+    6. Answer question about wanting a follow-up discussion for the refused vaccine.
+    7. Submit the consent form.
     Verification:
     - Confirmation message is shown for the correct child, vaccines,
        and health question status.
@@ -119,13 +126,14 @@ def test_consent_given_for_doubles_vaccination(
         OnlineConsentWizardPage(page).select_consent_not_given_reason(
             ConsentRefusalReason.PERSONAL_CHOICE,
         )
+        OnlineConsentWizardPage(page).answer_follow_up_question(
+            yes_to_follow_up_request=yes_to_follow_up_request
+        )
 
     OnlineConsentWizardPage(page).click_confirm()
 
     OnlineConsentWizardPage(page).check_final_consent_message(
-        child,
-        programmes=programmes,
-        yes_to_health_questions=yes_to_health_questions,
+        child, programmes=programmes, yes_to_health_questions=yes_to_health_questions
     )
 
 
