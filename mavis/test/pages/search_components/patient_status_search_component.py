@@ -22,7 +22,7 @@ class PatientStatusSearchComponent(PatientSearchComponent):
         )
         self.parent_refused_checkbox = self.page.get_by_role(
             "checkbox",
-            name="Parent refused",
+            name="Consent refused",
         )
         self.due_vaccination_radio = self.page.get_by_role(
             "radio",
@@ -41,8 +41,8 @@ class PatientStatusSearchComponent(PatientSearchComponent):
     def select_has_a_refusal(self) -> None:
         self.has_a_refusal_radio.check()
 
-    @step("Select Parent refused")
-    def select_parent_refused(self) -> None:
+    @step("Select Consent refused")
+    def select_consent_refused(self) -> None:
         self.parent_refused_checkbox.check()
 
     @step("Select Due vaccination")

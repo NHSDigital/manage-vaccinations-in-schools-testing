@@ -194,7 +194,7 @@ def test_invalid_consent(
     NurseConsentWizardPage(page).record_parent_refuse_consent()
 
     SessionsChildrenPage(page).search.select_has_a_refusal()
-    SessionsChildrenPage(page).search.select_parent_refused()
+    SessionsChildrenPage(page).search.select_consent_refused()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
     SessionsPatientPage(page).invalidate_parent_refusal(child.parents[1])
@@ -253,7 +253,7 @@ def test_parent_provides_consent_twice(
     NurseConsentWizardPage(page).record_parent_refuse_consent()
 
     SessionsChildrenPage(page).search.select_has_a_refusal()
-    SessionsChildrenPage(page).search.select_parent_refused()
+    SessionsChildrenPage(page).search.select_consent_refused()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
@@ -313,7 +313,7 @@ def test_conflicting_consent_with_gillick_consent(
     NurseConsentWizardPage(page).record_parent_refuse_consent()
 
     SessionsChildrenPage(page).search.select_has_a_refusal()
-    SessionsChildrenPage(page).search.select_parent_refused()
+    SessionsChildrenPage(page).search.select_consent_refused()
     SessionsChildrenPage(page).search.select_conflicting_consent()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
