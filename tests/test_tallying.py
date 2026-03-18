@@ -206,7 +206,7 @@ def test_tallying_totals_match_eligible_patients(
 
     # Count all children cards displayed (these are the eligible children)
     children_cards = SessionsChildrenPage(page).page.locator(
-        "div.nhsuk-card.app-card.app-card--compact:has(h4)"
+        "div.nhsuk-card.app-card.app-card--compact:has(h3)"
     )
     eligible_children_count = children_cards.count()
 

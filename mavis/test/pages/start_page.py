@@ -10,7 +10,7 @@ class StartPage:
             "heading",
             name="Manage vaccinations in schools (Mavis)",
         )
-        self.start_link = page.get_by_role("link", name="Start now")
+        self.start_link = page.get_by_role("button", name="Start now")
         self.accessibility_statement_link = page.get_by_role(
             "link",
             name="Accessibility statement",

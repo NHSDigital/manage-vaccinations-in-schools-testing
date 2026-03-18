@@ -37,7 +37,7 @@ class LogInPage:
         self.log_out_link = page.get_by_role("link", name="Log out")
         self.continue_button = page.get_by_role("button", name="Continue")
         self.select_a_team_heading = page.get_by_text("Select a team")
-        self.start_page_link = page.get_by_role("link", name="Start now")
+        self.start_page_link = page.get_by_role("button", name="Start now")
 
     def _write_audit_log(
         self, event_type: str, user: User, org_code: str | None = None
@@ -120,7 +120,7 @@ class LogOutPage:
             "button", name="Log out"
         )
         self.log_out_header = page.get_by_role("heading", name="Log out")
-        self.start_page_link = page.get_by_role("link", name="Start now")
+        self.start_page_link = page.get_by_role("button", name="Start now")
 
     @step("Navigate to the Log out page")
     def navigate(self) -> None:
