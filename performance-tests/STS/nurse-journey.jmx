@@ -247,7 +247,7 @@ log.info(vars.get(&quot;BaseURL&quot;))</stringProp>
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Nurse journey">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Nurse journey" enabled="true">
         <stringProp name="ThreadGroup.num_threads">${Threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${RampUp}</stringProp>
         <stringProp name="ThreadGroup.duration">${Duration}</stringProp>
@@ -269,7 +269,7 @@ log.info(vars.get(&quot;BaseURL&quot;))</stringProp>
         </ModuleController>
         <hashTree/>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -538,7 +538,7 @@ props.put(&quot;VaccineCount_td_ipv&quot;,&quot;0&quot;)
           <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Get all session ID&apos;s" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">SessionID</stringProp>
-            <stringProp name="RegexExtractor.regex">sessions\/(.*?)&quot;[\s\S]{1,400}nhsuk-tag nhsuk-tag--white&quot;&gt;(.*?)&lt;</stringProp>
+            <stringProp name="RegexExtractor.regex">sessions\/(.{10})&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
             <stringProp name="RegexExtractor.default">SessionIDNotFound</stringProp>
             <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
