@@ -28,7 +28,7 @@ class PatientSearchComponent(BaseSearchComponent):
 
     def get_patient_card_locator(self, child: Child) -> Locator:
         return self.page.locator(
-            f'div.nhsuk-card.app-card.app-card--compact:has(h4:has-text("{child!s}"))'
+            f'div.nhsuk-card.app-card.app-card--compact:has(h3:has-text("{child!s}"))'
         )
 
     def check_no_patients_found_when_expected(self) -> None:
