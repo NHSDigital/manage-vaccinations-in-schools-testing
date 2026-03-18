@@ -339,12 +339,17 @@ def assert_questions_in_pdf(
     for question in questions:
         question_normalized = normalize_text(str(question))
 
-        # Convert question to regex pattern:
-        # Replace "any other vaccine?" with regex to match both:
+        # Convert question to regex pattern to handle variations:
+        # - MMR vs MMRV text in PDFs
         # - "any other vaccine?" (web form)
         # - "any other measles, mumps or rubella vaccine?" (MMR PDF)
         # - "any other measles, mumps, rubella or varicella vaccine?" (MMRV PDF)
         question_pattern = re.escape(question_normalized)
+
+        # Handle MMR vs MMRV variations
+        question_pattern = question_pattern.replace(r"mmrv", r"mmr(?:v)?")
+
+        # Handle vaccine type variations
         vaccine_variations = (
             r"any\ other\ (?:measles,\ mumps(?:,\ rubella)?\ "
             r"(?:or\ )?(?:rubella\ )?(?:or\ varicella\ )?)?vaccine\?"
