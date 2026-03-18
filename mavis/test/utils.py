@@ -325,6 +325,8 @@ def assert_questions_in_pdf(
 ) -> None:
     """Assert that all questions are present in normalized PDF text.
 
+    Uses regex matching to handle variations between web form and PDF text.
+
     Args:
         pdf_text_normalized: The normalized PDF text to search in
         questions: List of questions to verify
@@ -333,8 +335,25 @@ def assert_questions_in_pdf(
     Raises:
         AssertionError: If any question is not found in the PDF
     """
+
     for question in questions:
         question_normalized = normalize_text(str(question))
-        assert question_normalized in pdf_text_normalized, (  # noqa: S101
+
+        # Convert question to regex pattern:
+        # Replace "any other vaccine?" with regex to match both:
+        # - "any other vaccine?" (web form)
+        # - "any other measles, mumps or rubella vaccine?" (MMR PDF)
+        # - "any other measles, mumps, rubella or varicella vaccine?" (MMRV PDF)
+        question_pattern = re.escape(question_normalized)
+        vaccine_variations = (
+            r"any\ other\ (?:measles,\ mumps(?:,\ rubella)?\ "
+            r"(?:or\ )?(?:rubella\ )?(?:or\ varicella\ )?)?vaccine\?"
+        )
+        question_pattern = question_pattern.replace(
+            r"any\ other\ vaccine\?",
+            vaccine_variations,
+        )
+
+        assert re.search(question_pattern, pdf_text_normalized), (  # noqa: S101
             f"Health question '{question}' not found in {context}"
         )

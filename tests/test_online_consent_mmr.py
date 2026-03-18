@@ -1,8 +1,22 @@
 import pytest
 
 from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
-from mavis.test.pages import OnlineConsentWizardPage, StartPage
-from mavis.test.utils import generate_random_dob_for_mmr_not_mmrv
+from mavis.test.data import ClassFileMapping
+from mavis.test.pages import (
+    DashboardPage,
+    ImportRecordsWizardPage,
+    OnlineConsentWizardPage,
+    SchoolChildrenPage,
+    SchoolsSearchPage,
+    SessionsOverviewPage,
+    SessionsSearchPage,
+    StartPage,
+)
+from mavis.test.utils import (
+    assert_questions_in_pdf,
+    generate_random_dob_for_mmr_not_mmrv,
+    read_pdf_as_normalized_text,
+)
 
 pytestmark = pytest.mark.consent
 
@@ -22,6 +36,36 @@ def start_consent_with_session_scheduled(
 ):
     page.goto(url_with_mmr_session_scheduled)
     StartPage(page).start()
+
+
+@pytest.fixture
+def setup_logged_in_session_with_file_upload(
+    url_with_mmr_session_scheduled,
+    schools,
+    page,
+    point_of_care_file_generator,
+    year_groups,
+):
+    """Sets up an MMR session with class list and navigates to the session."""
+    school = schools[Programme.MMR][0]
+    year_group = year_groups[Programme.MMR]
+
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(school)
+    SchoolChildrenPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
+        ClassFileMapping.FIXED_CHILD,
+        year_group,
+        Programme.MMR.group,
+    )
+
+    # Navigate to the session
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.MMR)
+
+    return school
 
 
 def test_consent_refused_for_mmr_vaccination(
@@ -105,4 +149,34 @@ def test_consent_given_for_mmr_vaccination(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=yes_to_health_questions,
+    )
+
+
+@pytest.mark.parametrize(
+    "consent_option",
+    [ConsentOption.MMR_WITHOUT_GELATINE, ConsentOption.MMR_EITHER],
+    ids=lambda v: f"consent_option: {v}",
+)
+def test_pdf_consent_form_contains_health_questions(
+    setup_logged_in_session_with_file_upload,
+    page,
+    consent_option,
+):
+    """Test that PDF consent form contains all health questions for consent option.
+
+    Verifies that the downloadable PDF consent form includes all health questions
+    that parents need to answer when giving consent for their child to be vaccinated.
+    """
+    programme = Programme.MMR
+
+    pdf_text_normalized = read_pdf_as_normalized_text(
+        SessionsOverviewPage(page).download_consent_form(programme)
+    )
+
+    expected_questions = programme.health_questions(consent_option)
+
+    assert_questions_in_pdf(
+        pdf_text_normalized,
+        expected_questions,
+        context=f"{programme} {consent_option} consent PDF",
     )
