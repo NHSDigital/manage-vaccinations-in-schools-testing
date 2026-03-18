@@ -4,6 +4,7 @@ from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
+from mavis.test.fixtures.helpers import setup_national_reporting_import
 from mavis.test.pages import (
     ChildProgrammePage,
     ChildRecordPage,
@@ -18,6 +19,9 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import get_current_datetime
+
+# Fixtures used via request.getfixturevalue() in parametrized tests
+__fixtures__ = (setup_national_reporting_import,)
 
 
 @pytest.fixture
@@ -160,6 +164,66 @@ def test_vaccination_file_upload_duplicate_records(
         VaccsFileMapping.DUP_2,
         session_id=setup_vaccs,
     )
+
+
+@issue("MAV-3408")
+@pytest.mark.bug
+@pytest.mark.parametrize(
+    ("user_type", "setup_fixture", "file_generator_fixture", "include_session_id"),
+    [
+        pytest.param(
+            "point_of_care",
+            "setup_vaccs",
+            "point_of_care_file_generator",
+            True,
+            marks=pytest.mark.vaccinations,
+            id="point_of_care",
+        ),
+        pytest.param(
+            "national_reporting",
+            "setup_national_reporting_import",
+            "national_reporting_file_generator",
+            False,
+            marks=pytest.mark.national_reporting,
+            id="national_reporting",
+        ),
+    ],
+)
+def test_vaccination_file_upload_multiple_exact_duplicates(
+    user_type,
+    setup_fixture,
+    file_generator_fixture,
+    include_session_id,
+    page,
+    request,
+):
+    """
+    Test: Upload a vaccination file with multiple exact duplicate rows and verify
+    that the import summary correctly counts duplicates or rejects the file.
+    This test covers both point of care and national reporting upload scenarios.
+
+    Steps:
+    1. Navigate to vaccination records import page.
+    2. Upload a file containing multiple exact duplicate rows.
+    3. Verify the import summary on the imports page.
+
+    Verification:
+    - Import summary shows correct duplicate count
+    - Duplicate rows are handled appropriately (rejected or deduplicated)
+    - Only unique records are imported into Mavis
+    """
+    setup = request.getfixturevalue(setup_fixture)
+    file_generator = request.getfixturevalue(file_generator_fixture)
+
+    if include_session_id:  # Point of care scenario requires session ID
+        ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+            file_mapping=VaccsFileMapping.MULTIPLE_EXACT_DUPLICATES,
+            session_id=setup,
+        )
+    else:  # National reporting scenario does not need session ID
+        ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
+            file_mapping=VaccsFileMapping.MULTIPLE_EXACT_DUPLICATES,
+        )
 
 
 @pytest.mark.vaccinations
