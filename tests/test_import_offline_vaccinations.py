@@ -220,7 +220,7 @@ def test_vaccination_file_upload_multiple_exact_duplicates(
             file_mapping=VaccsFileMapping.MULTIPLE_EXACT_DUPLICATES,
             session_id=setup,
         )
-    else:  # National reporting scenario does not use session ID
+    else:  # National reporting scenario does not need session ID
         ImportRecordsWizardPage(page, file_generator).upload_and_verify_output(
             file_mapping=VaccsFileMapping.MULTIPLE_EXACT_DUPLICATES,
         )
