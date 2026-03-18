@@ -4,7 +4,6 @@ import time
 import unicodedata
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from faker import Faker
@@ -13,9 +12,6 @@ from pypdf import PdfReader
 
 from mavis.test.annotations import step
 from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
-
-if TYPE_CHECKING:
-    from mavis.test.constants import ConsentOption, Programme
 
 faker = Faker()
 
@@ -296,26 +292,24 @@ def read_pdf_as_normalized_text(pdf_path: Path) -> str:
     return normalize_text(pdf_text)
 
 
-def get_consent_option_with_most_questions(
-    programme: "Programme",
-) -> "ConsentOption":
-    """Get the consent option with the most health questions for a programme.
+def _build_question_regex_pattern(question_normalized: str) -> str:
+    """Build regex pattern to match question variations in PDFs.
 
-    This is useful for testing to ensure all possible questions are covered.
-
-    Args:
-        programme: The vaccination programme
-
-    Returns:
-        The consent option that has the most health questions
+    Handles variations between web forms and PDFs:
+    - MMR vs MMRV text
+    - Generic "any other vaccine?" vs specific vaccine types
     """
-    from mavis.test.constants import ConsentOption, Programme  # noqa: PLC0415
+    pattern = re.escape(question_normalized)
 
-    if programme == Programme.FLU:
-        # Nasal spray has more questions than injection
-        return ConsentOption.NASAL_SPRAY
-    # For other programmes, injection is the default
-    return ConsentOption.INJECTION
+    # Match both "mmr" and "mmrv" in PDFs
+    pattern = pattern.replace(r"mmrv", r"mmr(?:v)?")
+
+    # Match vaccine type variations
+    return pattern.replace(
+        r"any\ other\ vaccine\?",
+        r"any\ other\ (?:measles,\ mumps(?:,\ rubella)?\ "
+        r"(?:or\ )?(?:rubella\ )?(?:or\ varicella\ )?)?vaccine\?",
+    )
 
 
 def assert_questions_in_pdf(
@@ -338,27 +332,8 @@ def assert_questions_in_pdf(
 
     for question in questions:
         question_normalized = normalize_text(str(question))
+        pattern = _build_question_regex_pattern(question_normalized)
 
-        # Convert question to regex pattern to handle variations:
-        # - MMR vs MMRV text in PDFs
-        # - "any other vaccine?" (web form)
-        # - "any other measles, mumps or rubella vaccine?" (MMR PDF)
-        # - "any other measles, mumps, rubella or varicella vaccine?" (MMRV PDF)
-        question_pattern = re.escape(question_normalized)
-
-        # Handle MMR vs MMRV variations
-        question_pattern = question_pattern.replace(r"mmrv", r"mmr(?:v)?")
-
-        # Handle vaccine type variations
-        vaccine_variations = (
-            r"any\ other\ (?:measles,\ mumps(?:,\ rubella)?\ "
-            r"(?:or\ )?(?:rubella\ )?(?:or\ varicella\ )?)?vaccine\?"
-        )
-        question_pattern = question_pattern.replace(
-            r"any\ other\ vaccine\?",
-            vaccine_variations,
-        )
-
-        assert re.search(question_pattern, pdf_text_normalized), (  # noqa: S101
+        assert re.search(pattern, pdf_text_normalized), (  # noqa: S101
             f"Health question '{question}' not found in {context}"
         )
