@@ -38,7 +38,9 @@ class SessionsOverviewPage:
             "link",
             name="Import class lists",
         )
-        self.record_offline_link = self.page.get_by_role("link", name="Record offline")
+        self.download_offline_spreadsheet_button = self.page.get_by_role(
+            "link", name="Download offline spreadsheet"
+        )
         self.review_no_consent_response_link = self.page.get_by_role(
             "link",
             name="with no response",
@@ -139,12 +141,12 @@ class SessionsOverviewPage:
         file_path = self.download_offline_recording_excel()
         return get_session_id(file_path)
 
-    @step("Click on Record offline")
+    @step("Click on Download offline spreadsheet")
     def download_offline_recording_excel(self) -> Path:
         _file_path = Path(f"working/excel_{get_current_datetime_compact()}.xlsx")
 
         with self.page.expect_download() as download_info:
-            self.record_offline_link.click()
+            self.download_offline_spreadsheet_button.click()
         download = download_info.value
         download.save_as(_file_path)
 
