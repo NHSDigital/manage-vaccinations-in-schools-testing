@@ -59,31 +59,10 @@ def setup_session_with_file_upload(
 @pytest.fixture
 def setup_logged_in_session_with_file_upload(
     url_with_session_scheduled,
-    schools,
-    page,
-    point_of_care_file_generator,
-    year_groups,
+    setup_logged_in_session_with_file_upload_for_programme,
 ):
     """Sets up a flu session with a class list imported and navigates to the session."""
-    school = schools[Programme.FLU][0]
-    year_group = year_groups[Programme.FLU]
-
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
-        ClassFileMapping.FIXED_CHILD,
-        year_group,
-        Programme.FLU.group,
-    )
-
-    # Navigate to the session
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
-
-    return school
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.FLU)
 
 
 def test_consent_refused_for_flu_vaccination(

@@ -30,6 +30,7 @@ from .helpers import (
     schedule_mmrv_session_and_get_consent_url,
     schedule_session_and_get_consent_url,
     set_feature_flags,
+    setup_logged_in_session_with_file_upload_for_programme,
     setup_session_and_batches_with_fixed_child,
     upload_offline_vaccination,
 )
@@ -88,6 +89,7 @@ __all__ = [
     "schedule_session_and_get_consent_url",
     "schools",
     "set_feature_flags",
+    "setup_logged_in_session_with_file_upload_for_programme",
     "setup_session_and_batches_with_fixed_child",
     "upload_offline_vaccination",
     "year_groups",

@@ -3,8 +3,10 @@ import pytest
 from mavis.test.constants import ConsentRefusalReason, Programme
 from mavis.test.pages import (
     OnlineConsentWizardPage,
+    SessionsOverviewPage,
     StartPage,
 )
+from mavis.test.utils import assert_questions_in_pdf, read_pdf_as_normalized_text
 
 pytestmark = pytest.mark.consent
 
@@ -22,6 +24,15 @@ def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):
 def start_consent_with_session_scheduled(url_with_session_scheduled, page):
     page.goto(url_with_session_scheduled)
     StartPage(page).start()
+
+
+@pytest.fixture
+def setup_logged_in_session_with_file_upload(
+    url_with_session_scheduled,
+    setup_logged_in_session_with_file_upload_for_programme,
+):
+    """Sets up a doubles session with class list and navigates to the session."""
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.MENACWY)
 
 
 def test_consent_refused_for_doubles_vaccination(
@@ -117,4 +128,32 @@ def test_consent_given_for_doubles_vaccination(
         child,
         programmes=programmes,
         yes_to_health_questions=yes_to_health_questions,
+    )
+
+
+@pytest.mark.parametrize(
+    "programme",
+    [Programme.MENACWY, Programme.TD_IPV],
+    ids=lambda v: f"programme: {v}",
+)
+def test_pdf_consent_form_contains_health_questions(
+    setup_logged_in_session_with_file_upload,
+    page,
+    programme,
+):
+    """Test that PDF consent form contains all health questions for programme.
+
+    Verifies that the downloadable PDF consent form includes all health questions
+    that parents need to answer when giving consent for their child to be vaccinated.
+    """
+    pdf_text_normalized = read_pdf_as_normalized_text(
+        SessionsOverviewPage(page).download_consent_form(programme)
+    )
+
+    expected_questions = programme.health_questions()
+
+    assert_questions_in_pdf(
+        pdf_text_normalized,
+        expected_questions,
+        context=f"{programme} consent PDF",
     )

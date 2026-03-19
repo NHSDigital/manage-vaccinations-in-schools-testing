@@ -1,15 +1,9 @@
 import pytest
 
 from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
-from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
-    DashboardPage,
-    ImportRecordsWizardPage,
     OnlineConsentWizardPage,
-    SchoolChildrenPage,
-    SchoolsSearchPage,
     SessionsOverviewPage,
-    SessionsSearchPage,
     StartPage,
 )
 from mavis.test.utils import (
@@ -41,31 +35,10 @@ def start_consent_with_session_scheduled(
 @pytest.fixture
 def setup_logged_in_session_with_file_upload(
     url_with_mmr_session_scheduled,
-    schools,
-    page,
-    point_of_care_file_generator,
-    year_groups,
+    setup_logged_in_session_with_file_upload_for_programme,
 ):
     """Sets up an MMR session with class list and navigates to the session."""
-    school = schools[Programme.MMR][0]
-    year_group = year_groups[Programme.MMR]
-
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
-        ClassFileMapping.FIXED_CHILD,
-        year_group,
-        Programme.MMR.group,
-    )
-
-    # Navigate to the session
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.MMR)
-
-    return school
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.MMR)
 
 
 def test_consent_refused_for_mmr_vaccination(

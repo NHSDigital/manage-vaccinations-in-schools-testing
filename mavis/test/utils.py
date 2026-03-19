@@ -248,15 +248,6 @@ def format_nhs_number(nhs_number: str) -> str:
     return f"{nhs_number[:3]} {nhs_number[3:6]} {nhs_number[6:]}"
 
 
-PDF_LIGATURES = {
-    "\ufb00": "ff",
-    "\ufb01": "fi",
-    "\ufb02": "fl",
-    "\ufb03": "ffi",
-    "\ufb04": "ffl",
-}
-
-
 def normalize_text(text: str) -> str:
     """Normalize text by handling ligatures and whitespace.
 
@@ -265,8 +256,15 @@ def normalize_text(text: str) -> str:
     """
     # Normalize Unicode (NFKD decomposes ligatures)
     text = unicodedata.normalize("NFKD", text)
+    pdf_ligatures = {
+        "\ufb00": "ff",
+        "\ufb01": "fi",
+        "\ufb02": "fl",
+        "\ufb03": "ffi",
+        "\ufb04": "ffl",
+    }
     # Replace common ligatures that might not decompose
-    for ligature, replacement in PDF_LIGATURES.items():
+    for ligature, replacement in pdf_ligatures.items():
         text = text.replace(ligature, replacement)
     # Normalize whitespace
     text = re.sub(r"\s+", " ", text)

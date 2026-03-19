@@ -1,15 +1,9 @@
 import pytest
 
 from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
-from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
-    DashboardPage,
-    ImportRecordsWizardPage,
     OnlineConsentWizardPage,
-    SchoolChildrenPage,
-    SchoolsSearchPage,
     SessionsOverviewPage,
-    SessionsSearchPage,
     StartPage,
 )
 from mavis.test.utils import assert_questions_in_pdf, read_pdf_as_normalized_text
@@ -34,31 +28,10 @@ def start_consent_with_session_scheduled(url_with_session_scheduled, page):
 @pytest.fixture
 def setup_logged_in_session_with_file_upload(
     url_with_session_scheduled,
-    schools,
-    page,
-    point_of_care_file_generator,
-    year_groups,
+    setup_logged_in_session_with_file_upload_for_programme,
 ):
     """Sets up an HPV session with class list and navigates to the session."""
-    school = schools[Programme.HPV][0]
-    year_group = year_groups[Programme.HPV]
-
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_schools()
-    SchoolsSearchPage(page).click_school(school)
-    SchoolChildrenPage(page).click_import_class_lists()
-    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
-        ClassFileMapping.FIXED_CHILD,
-        year_group,
-        Programme.HPV.group,
-    )
-
-    # Navigate to the session
-    DashboardPage(page).navigate()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
-
-    return school
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.HPV)
 
 
 def test_consent_refused_for_hpv_vaccination(
