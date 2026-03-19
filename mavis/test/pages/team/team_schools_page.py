@@ -134,6 +134,15 @@ class TeamSchoolsPage:
         if not self.address_postcode_textbox.input_value():
             self.address_postcode_textbox.fill("SW1A 1AA")
 
+    @step("Select year groups")
+    def select_year_groups(self, year_groups: list[int | str]) -> None:
+        for year_group in year_groups:
+            checkbox = self.page.locator(
+                f'input[type="checkbox"][value="{year_group}"]'
+            )
+            if not checkbox.is_checked():
+                checkbox.check()
+
     @step("Check new site success flash and site is listed in the table")
     def check_new_site_is_listed(
         self, new_site_name: str, new_site_urn: str, old_school_urn: str

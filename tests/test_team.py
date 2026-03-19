@@ -81,6 +81,7 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_site_details_form(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name_1)
     TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).click_continue()  # Continue with pre-selected year groups
     TeamSchoolsPage(page).check_confirm_screen_shows_right_details(
         new_site_urn_1, new_site_name_1, "New Address Line 1"
     )
@@ -93,6 +94,7 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).select_school(school_to_not_use)
     TeamSchoolsPage(page).fill_site_name(f"{school_to_not_use} (Site 0)")
     TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).click_continue()  # Continue with pre-selected year groups
     TeamSchoolsPage(page).click_change_parent_school()
 
     new_site_name_2 = f"{school} (Site C)"
@@ -102,6 +104,7 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_site_details_form(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name_2)
     TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).click_continue()  # Continue with pre-selected year groups
     TeamSchoolsPage(page).check_confirm_screen_shows_right_details(
         new_site_urn_2, new_site_name_2, "New Address Line 1"
     )
@@ -140,6 +143,8 @@ def test_site_child_record_import(
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name)
     TeamSchoolsPage(page).fill_missing_details()
+    TeamSchoolsPage(page).click_continue()
+    TeamSchoolsPage(page).select_year_groups([child.year_group])
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).confirm_site()
 
@@ -212,6 +217,8 @@ def test_site_class_list_import(
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name)
     TeamSchoolsPage(page).fill_missing_details()
+    TeamSchoolsPage(page).click_continue()
+    TeamSchoolsPage(page).select_year_groups([child.year_group])
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).confirm_site()
 
