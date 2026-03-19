@@ -142,7 +142,7 @@ $ npx allure-commandline open
 
 ### Linting and formatting
 
-[Ruff] is used as a linting and formatting tool in this repo:
+[Ruff] is used as a Python linting and formatting tool in this repo:
 
 ```shell
 $ ruff format
@@ -150,6 +150,13 @@ $ ruff check --fix
 ```
 
 [Ruff]:https://github.com/astral-sh/ruff
+
+`actionlint` and `yamllint` are used to lint GitHub actions and other yaml files
+
+```shell
+$ actionlint
+$ yamllint .
+```
 
 ### Playwright Page Object Model
 
