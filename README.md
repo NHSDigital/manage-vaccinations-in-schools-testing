@@ -8,7 +8,7 @@ This repository contains automated end-to-end, performance and security tests fo
 
 [![Performance (end to end) tests](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/performance.yaml)
 
-[![Run full OWASP ZAP scan against QA](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp_zap.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp_zap.yaml)
+[![Run full OWASP ZAP scan against QA](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp-zap.yaml/badge.svg)](https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/actions/workflows/owasp-zap.yaml)
 
 ## End-to-End tests
 
@@ -18,6 +18,10 @@ The end-to-end tests are written using [Playwright] with [Pytest].
 [Pytest]: https://docs.pytest.org/en/stable/
 
 ### Installation
+
+For executing the tests via GitHub workflow, refer to the workflows [README.md]
+
+[README.md]: https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/tree/main/.github/workflows/
 
 To execute the tests from your system, follow the steps below:
 
