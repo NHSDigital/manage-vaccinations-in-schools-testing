@@ -14,6 +14,7 @@ from mavis.test.pages import (
     SessionsSearchPage,
     StartPage,
 )
+from mavis.test.utils import assert_questions_in_pdf, read_pdf_as_normalized_text
 
 pytestmark = pytest.mark.consent
 
@@ -53,6 +54,15 @@ def setup_session_with_file_upload(
         Programme.FLU.group,
     )
     return url_with_session_scheduled
+
+
+@pytest.fixture
+def setup_logged_in_session_with_file_upload(
+    url_with_session_scheduled,
+    setup_logged_in_session_with_file_upload_for_programme,
+):
+    """Sets up a flu session with a class list imported and navigates to the session."""
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.FLU)
 
 
 def test_consent_refused_for_flu_vaccination(
@@ -269,3 +279,33 @@ def test_flu_consent_method_displayed_correctly(
     # Verify in session download
     SessionsChildrenPage(page).tabs.click_overview_tab()
     SessionsOverviewPage(page).verify_consent_message_in_excel()
+
+
+@pytest.mark.parametrize(
+    "consent_option",
+    [ConsentOption.NASAL_SPRAY, ConsentOption.INJECTION],
+    ids=lambda v: f"consent_option: {v}",
+)
+def test_pdf_consent_form_contains_health_questions(
+    setup_logged_in_session_with_file_upload,
+    page,
+    consent_option,
+):
+    """Test that PDF consent form contains all health questions for consent option.
+
+    Verifies that the downloadable PDF consent form includes all health questions
+    that parents need to answer when giving consent for their child to be vaccinated.
+    """
+    programme = Programme.FLU
+
+    pdf_text_normalized = read_pdf_as_normalized_text(
+        SessionsOverviewPage(page).download_consent_form(programme)
+    )
+
+    expected_questions = programme.health_questions(consent_option)
+
+    assert_questions_in_pdf(
+        pdf_text_normalized,
+        expected_questions,
+        context=f"{programme} {consent_option} consent PDF",
+    )

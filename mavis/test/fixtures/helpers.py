@@ -19,6 +19,7 @@ from mavis.test.pages import (
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsOverviewPage,
+    SessionsSearchPage,
     VaccinesPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
@@ -252,6 +253,37 @@ def setup_session_and_batches_with_fixed_child(
             programme_group,
         )
         return batch_names
+
+    return _setup
+
+
+@pytest.fixture
+def setup_logged_in_session_with_file_upload_for_programme(
+    schools,
+    page,
+    point_of_care_file_generator,
+    year_groups,
+):
+    def _setup(programme: Programme):
+        school = schools[programme.group][0]
+        year_group = year_groups[programme.group]
+
+        DashboardPage(page).navigate()
+        DashboardPage(page).click_schools()
+        SchoolsSearchPage(page).click_school(school)
+        SchoolChildrenPage(page).click_import_class_lists()
+        ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
+            ClassFileMapping.FIXED_CHILD,
+            year_group,
+            programme.group,
+        )
+
+        # Navigate to the session
+        DashboardPage(page).navigate()
+        DashboardPage(page).click_sessions()
+        SessionsSearchPage(page).click_session_for_programme_group(school, programme)
+
+        return school
 
     return _setup
 

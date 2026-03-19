@@ -4,7 +4,12 @@ import pytest
 
 from mavis.test.constants import ConsentOption, ConsentRefusalReason, Programme
 from mavis.test.data_models import Child
-from mavis.test.pages import OnlineConsentWizardPage, StartPage
+from mavis.test.pages import (
+    OnlineConsentWizardPage,
+    SessionsOverviewPage,
+    StartPage,
+)
+from mavis.test.utils import assert_questions_in_pdf, read_pdf_as_normalized_text
 
 pytestmark = pytest.mark.consent
 
@@ -25,6 +30,15 @@ def start_consent_with_session_scheduled(
 ):
     page.goto(url_with_mmr_session_scheduled)
     StartPage(page).start()
+
+
+@pytest.fixture
+def setup_logged_in_session_with_file_upload(
+    url_with_mmr_session_scheduled,
+    setup_logged_in_session_with_file_upload_for_programme,
+):
+    """Sets up an MMRV session with class list and navigates to the session."""
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.MMR)
 
 
 @pytest.fixture
@@ -127,4 +141,37 @@ def test_consent_given_for_mmrv_vaccination(
         child,
         programmes=[Programme.MMR],
         yes_to_health_questions=yes_to_health_questions,
+    )
+
+
+@pytest.mark.parametrize(
+    "consent_option",
+    [ConsentOption.MMR_WITHOUT_GELATINE, ConsentOption.MMR_EITHER],
+    ids=lambda v: f"consent_option: {v}",
+)
+def test_pdf_consent_form_contains_health_questions(
+    setup_logged_in_session_with_file_upload,
+    page,
+    consent_option,
+):
+    """Test that PDF consent form contains all MMRV health questions for consent option.
+
+    Verifies that the downloadable PDF consent form includes all health questions
+    that parents need to answer when giving consent for their child to receive MMRV.
+    Uses mmrv_eligibility=True to ensure MMRV-specific questions are included.
+    """
+    programme = Programme.MMR
+
+    pdf_text_normalized = read_pdf_as_normalized_text(
+        SessionsOverviewPage(page).download_consent_form(programme)
+    )
+
+    expected_questions = programme.health_questions(
+        consent_option, mmrv_eligibility=True
+    )
+
+    assert_questions_in_pdf(
+        pdf_text_normalized,
+        expected_questions,
+        context=f"MMRV {consent_option} consent PDF",
     )

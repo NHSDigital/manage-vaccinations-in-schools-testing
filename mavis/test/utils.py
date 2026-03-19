@@ -1,11 +1,14 @@
 import random
 import re
 import time
+import unicodedata
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from faker import Faker
 from playwright.sync_api import Locator, Page, expect
+from pypdf import PdfReader
 
 from mavis.test.annotations import step
 from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
@@ -243,3 +246,92 @@ def click_secondary_navigation_item(link: Locator) -> None:
 
 def format_nhs_number(nhs_number: str) -> str:
     return f"{nhs_number[:3]} {nhs_number[3:6]} {nhs_number[6:]}"
+
+
+def normalize_text(text: str) -> str:
+    """Normalize text by handling ligatures and whitespace.
+
+    Useful for comparing text extracted from PDFs where ligatures
+    and whitespace formatting may differ from source text.
+    """
+    # Normalize Unicode (NFKD decomposes ligatures)
+    text = unicodedata.normalize("NFKD", text)
+    pdf_ligatures = {
+        "\ufb00": "ff",
+        "\ufb01": "fi",
+        "\ufb02": "fl",
+        "\ufb03": "ffi",
+        "\ufb04": "ffl",
+    }
+    # Replace common ligatures that might not decompose
+    for ligature, replacement in pdf_ligatures.items():
+        text = text.replace(ligature, replacement)
+    # Normalize whitespace
+    text = re.sub(r"\s+", " ", text)
+    return text.lower()
+
+
+def read_pdf_as_normalized_text(pdf_path: Path) -> str:
+    """Read a PDF file and return its text content normalized.
+
+    Extracts text from all pages of the PDF and normalizes it by
+    handling ligatures and whitespace to facilitate text comparison.
+
+    Args:
+        pdf_path: Path to the PDF file to read
+
+    Returns:
+        Normalized text content from the PDF
+    """
+    reader = PdfReader(pdf_path)
+    pdf_text = ""
+    for pdf_page in reader.pages:
+        pdf_text += pdf_page.extract_text()
+    return normalize_text(pdf_text)
+
+
+def _build_question_regex_pattern(question_normalized: str) -> str:
+    """Build regex pattern to match question variations in PDFs.
+
+    Handles variations between web forms and PDFs:
+    - MMR vs MMRV text
+    - Generic "any other vaccine?" vs specific vaccine types
+    """
+    pattern = re.escape(question_normalized)
+
+    # Match both "mmr" and "mmrv" in PDFs
+    pattern = pattern.replace(r"mmrv", r"mmr(?:v)?")
+
+    # Match vaccine type variations
+    return pattern.replace(
+        r"any\ other\ vaccine\?",
+        r"any\ other\ (?:measles,\ mumps(?:,\ rubella)?\ "
+        r"(?:or\ )?(?:rubella\ )?(?:or\ varicella\ )?)?vaccine\?",
+    )
+
+
+def assert_questions_in_pdf(
+    pdf_text_normalized: str,
+    questions: list,
+    context: str = "PDF",
+) -> None:
+    """Assert that all questions are present in normalized PDF text.
+
+    Uses regex matching to handle variations between web form and PDF text.
+
+    Args:
+        pdf_text_normalized: The normalized PDF text to search in
+        questions: List of questions to verify
+        context: Context description for error messages (default: "PDF")
+
+    Raises:
+        AssertionError: If any question is not found in the PDF
+    """
+
+    for question in questions:
+        question_normalized = normalize_text(str(question))
+        pattern = _build_question_regex_pattern(question_normalized)
+
+        assert re.search(pattern, pdf_text_normalized), (  # noqa: S101
+            f"Health question '{question}' not found in {context}"
+        )

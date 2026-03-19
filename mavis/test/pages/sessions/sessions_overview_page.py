@@ -298,9 +298,12 @@ class SessionsOverviewPage:
     def download_consent_form(self, programme: Programme) -> Path:
         _file_path = Path(f"working/consent_{get_current_datetime_compact()}.pdf")
 
+        # For MMR, the link text uses "MMR" not "MMR(V)"
+        programme_name = "MMR" if programme is Programme.MMR else str(programme)
+
         with self.page.expect_download() as download_info:
             self.page.get_by_role(
-                "link", name=f"Download the {programme} consent form (PDF)"
+                "link", name=f"Download the {programme_name} consent form (PDF)"
             ).click()
         download = download_info.value
         download.save_as(_file_path)
