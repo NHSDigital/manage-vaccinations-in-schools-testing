@@ -224,7 +224,10 @@ def reload_until_element_is_not_visible(
 
 
 def expect_alert_text(page: Page, text: str) -> None:
-    expect(page.get_by_role("alert")).to_contain_text(text)
+    alert = page.get_by_role("alert")
+    # Wait for alert to appear with longer timeout (Safari can be slower)
+    alert.wait_for(state="visible", timeout=10000)
+    expect(alert).to_contain_text(text)
 
 
 def expect_details(page: Page, key: str, value: str) -> None:

@@ -2,10 +2,7 @@ from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import MAVIS_NOTE_LENGTH_LIMIT, Programme
-from mavis.test.data_models import (
-    Parent,
-    VaccinationRecord,
-)
+from mavis.test.data_models import Parent, VaccinationRecord
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     expect_alert_text,
@@ -46,7 +43,11 @@ class SessionsVaccinationWizardPage:
 
     @step("Click on Confirm")
     def click_confirm_button(self) -> None:
-        self.confirm_button.click()
+        # Wait for navigation after clicking confirm (redirects to patient page)
+        with self.page.expect_navigation(wait_until="domcontentloaded", timeout=30000):
+            self.confirm_button.click()
+        # Wait for page to stabilize (especially important for Safari)
+        self.page.wait_for_load_state("networkidle", timeout=10000)
 
     @step("Click on Confirm in two tabs simultaneously")
     def click_confirm_button_in_two_tabs(self) -> None:
