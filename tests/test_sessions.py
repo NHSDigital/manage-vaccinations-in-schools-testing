@@ -223,7 +223,7 @@ def test_consent_filters(
     - Consent refused checkbox is checked for the child.
     """
     child = children[Programme.HPV][0]
-    SessionsOverviewPage(page).review_child_with_no_response()
+    SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_record_a_new_consent_response()
 
