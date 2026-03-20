@@ -116,7 +116,7 @@ Some tests are grouped using markers. You can include/exclude groups with the `-
 
 ```shell
 $ pytest -m log_in
-$ pytest -m "not imms_api and not accessibility"
+$ pytest -m "not imms_api and not pds_api and not accessibility"
 ```
 #### Parallel test execution
 

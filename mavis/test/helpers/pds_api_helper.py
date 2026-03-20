@@ -3,6 +3,7 @@ import random
 import uuid
 from datetime import date, datetime
 from pathlib import Path
+from time import sleep
 from typing import NamedTuple
 from zoneinfo import ZoneInfo
 
@@ -97,49 +98,24 @@ class PdsApiHelper:
             self.patients = [Patient.from_csv_row(row) for row in reader]
 
     def get_random_child_patient_without_date_of_death(self) -> Child:
-        patients_without_date_of_death = [
-            patient for patient in self.patients if not patient.date_of_death
-        ]
-
-        cutoff_date = get_todays_date() - relativedelta(years=22)
-
-        child_patients_without_date_of_death = [
-            patient
-            for patient in patients_without_date_of_death
-            if patient.date_of_birth >= cutoff_date
-        ]
-
+        child_patients = self._get_eligible_child_patients()
         checked_nhs_numbers = set()
+
         while True:
-            if len(checked_nhs_numbers) == len(child_patients_without_date_of_death):
+            if len(checked_nhs_numbers) == len(child_patients):
                 msg = "All patients in PDS export are outdated"
                 raise RuntimeError(msg)
 
-            child = random.choice(child_patients_without_date_of_death)
+            sleep(0.5)
+
+            child = random.choice(child_patients)
             if child.nhs_number in checked_nhs_numbers:
                 continue
 
             checked_nhs_numbers.add(child.nhs_number)
-            try:
-                child_in_pds = self.get_patient_by_nhs_number(child.nhs_number)
-            except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 404:  # noqa: PLR2004
-                    continue
-                raise
-            except ValueError:
-                continue
 
-            if not (
-                child.matches_key_attributes(child_in_pds)
-                and self.confirm_patient_can_be_found_by_search(child)
-            ):
-                continue
-
-            try:
-                if self.confirm_patient_can_be_found_by_search(child):
-                    break
-            except requests.exceptions.HTTPError:
-                continue
+            if self._is_valid_child_patient(child):
+                break
 
         return Child(
             child.given_name,
@@ -150,6 +126,37 @@ class PdsApiHelper:
             9,
             (Parent.get(Relationship.DAD), Parent.get(Relationship.MUM)),
         )
+
+    def _get_eligible_child_patients(self) -> list[Patient]:
+        patients_without_date_of_death = [
+            patient for patient in self.patients if not patient.date_of_death
+        ]
+        cutoff_date = get_todays_date() - relativedelta(years=22)
+        return [
+            patient
+            for patient in patients_without_date_of_death
+            if patient.date_of_birth >= cutoff_date
+        ]
+
+    def _is_valid_child_patient(self, child: Patient) -> bool:
+        try:
+            child_in_pds = self.get_patient_by_nhs_number(child.nhs_number)
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code in {404, 429}:
+                return False
+            raise
+        except ValueError:
+            return False
+
+        if not child.matches_key_attributes(child_in_pds):
+            return False
+
+        try:
+            return self._confirm_patient_can_be_found_by_search(child)
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code in {404, 429}:
+                return False
+            return False
 
     def get_patient_by_nhs_number(self, nhs_number: str) -> Patient:
         response = requests.get(
@@ -205,7 +212,7 @@ class PdsApiHelper:
             date_of_death=date_of_death,
         )
 
-    def confirm_patient_can_be_found_by_search(self, patient: Patient) -> bool:
+    def _confirm_patient_can_be_found_by_search(self, patient: Patient) -> bool:
         response = requests.get(
             url=PdsEndpoints.SEARCH_FOR_PATIENT.to_url_with_suffix(
                 f"family={patient.family_name}"
