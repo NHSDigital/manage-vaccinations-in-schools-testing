@@ -241,6 +241,7 @@ def click_secondary_navigation_item(link: Locator) -> None:
     if link.get_by_role("strong").is_visible():
         return
     link.click()
+    link.page.wait_for_load_state()  # Wait for page to stabilize before accessing DOM
     link.get_by_role("strong").wait_for()
 
 
