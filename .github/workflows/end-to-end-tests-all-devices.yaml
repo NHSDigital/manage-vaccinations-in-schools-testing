@@ -6,55 +6,97 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-linux:
     permissions:
       contents: write
       id-token: write
 
-    name: End-to-End tests
+    name: Linux devices
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - device: Desktop Chrome
-            os: ubuntu-latest
-          - device: Desktop Edge
-            os: ubuntu-latest
-          - device: Desktop Firefox
-            os: ubuntu-latest
-          - device: Desktop Safari
-            os: macos-latest
-          - device: Galaxy S9+
-            os: ubuntu-latest
-          - device: Pixel 7
-            os: ubuntu-latest
-          - device: iPad (gen 7) landscape
-            os: macos-latest
-          - device: iPhone 15
-            os: macos-latest
-      max-parallel: 2
+        device:
+          - Desktop Chrome
+          - Desktop Edge
+          - Desktop Firefox
+          - Galaxy S9+
+          - Pixel 7
+      max-parallel: 5
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     env:
       TZ: "Europe/London"
 
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set cache path
-        id: cache-path
-        run: |
-          if [ "$RUNNER_OS" == "macOS" ]; then
-            echo "path=$HOME/Library/Caches/ms-playwright" >> "$GITHUB_OUTPUT"
-          else
-            echo "path=$HOME/.cache/ms-playwright" >> "$GITHUB_OUTPUT"
-          fi
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+
+      - name: Run tests
+        uses: ./.github/actions/run-end-to-end-tests
+        with:
+          device: ${{ matrix.device }}
+          base_url: ${{ vars.BASE_URL }}
+          imms_api_tests: 'true'
+          pds_api_tests: 'true'
+          reporting_tests: 'true'
+          playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
+          screenshot_all_steps: 'false'
+        env:
+          BASIC_AUTH_TOKEN: ${{ secrets.HTTP_AUTH_TOKEN_FOR_TESTS }}
+          IMMS_BASE_URL: ${{ vars.IMMS_BASE_URL }}
+          IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
+          IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
+          IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
+
+      - name: Configure AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
+
+      - name: Process reports
+        if: always()
+        uses: ./.github/actions/deploy-reports
+        with:
+          device: ${{ matrix.device }}
+          environment: qa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test-macos:
+    permissions:
+      contents: write
+      id-token: write
+
+    name: Apple devices
+    strategy:
+      fail-fast: false
+      matrix:
+        device:
+          - Desktop Safari
+          - iPad (gen 7) landscape
+          - iPhone 15
+      max-parallel: 3
+
+    runs-on: macos-latest
+    env:
+      TZ: "Europe/London"
+
+    steps:
+      - uses: actions/checkout@v6
 
       - name: Cache Playwright browsers
         uses: actions/cache@v5
         id: playwright-cache
         with:
-          path: ${{ steps.cache-path.outputs.path }}
+          path: ~/Library/Caches/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
 
       - name: Run tests
