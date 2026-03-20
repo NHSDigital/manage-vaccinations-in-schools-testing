@@ -115,8 +115,6 @@ def test_patient_details_load_with_missing_vaccine_info(
     page,
 ):
     """
-    Covers Issue: MAV-853
-
     Test: Ensure patient details page loads for a child with missing vaccine info.
     Steps:
     1. Setup: Import class list, schedule session, import cohort, and upload vaccination
@@ -173,8 +171,7 @@ def test_invalid_nhs_number_change_is_rejected(
     expect_alert_text(page, "Enter a valid NHS number")
 
 
-@issue("MAV-248")
-@issue("MAV-1839")
+@issue("MAV-248", "MAV-1839")
 @pytest.mark.children
 def test_merge_child_records_does_not_crash(
     setup_child_merge,
@@ -182,8 +179,6 @@ def test_merge_child_records_does_not_crash(
     children,
 ):
     """
-    Covers Issues: MAV-248, MAV-1839
-
     Test: Merging two child records does not cause a crash.
     Steps:
     1. Setup: Import a class list with two fixed children and navigate to the
@@ -214,8 +209,7 @@ def test_merge_child_records_does_not_crash(
     )
 
 
-@issue("MAV-909")
-@issue("MAV-1716")
+@issue("MAV-909", "MAV-1716")
 @pytest.mark.bug
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_fixed_child,
@@ -224,8 +218,6 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     children,
 ):
     """
-    Covers Issues: MAV-909, MAV-1716
-
     Test: Archive a child via cohort upload and then unarchive by re-uploading.
     Steps:
     1. Import a fixed child cohort file.

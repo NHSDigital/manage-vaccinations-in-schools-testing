@@ -1,6 +1,7 @@
 import os
 from functools import wraps
 from io import BytesIO
+from urllib.parse import urljoin
 
 import allure
 from PIL import Image
@@ -70,11 +71,20 @@ def step(title: str, *, page_object: bool = True):
     return decorator
 
 
-def issue(ticket_number: str):
+def issue(*issue_numbers: str):
     base_url = os.environ.get(
         "JIRA_ISSUE_URL", "https://nhsd-jira.digital.nhs.uk/browse/"
     )
-    if base_url:
-        full_url = f"{base_url.rstrip('/')}/{ticket_number}"
-        return allure.issue(url=full_url, name=ticket_number)
-    return allure.issue(ticket_number)
+
+    issue_urls = [urljoin(base_url, issue_number) for issue_number in issue_numbers]
+
+    if len(issue_urls) == 1:
+        return allure.issue(issue_urls[0])
+
+    def decorator(func):
+        decorated_func = func
+        for issue_url in reversed(issue_urls):
+            decorated_func = allure.issue(issue_url)(decorated_func)
+        return decorated_func
+
+    return decorator

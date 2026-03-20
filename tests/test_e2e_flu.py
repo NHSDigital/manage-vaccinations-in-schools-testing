@@ -55,8 +55,6 @@ def test_recording_flu_vaccination_e2e(
     consent_option,
 ):
     """
-    Covers Issue: MAV-1831
-
     Test: End-to-end test for recording a flu vaccination for a child.
     Steps:
     1. Setup: Log in as nurse, create session, import class list, and get batch name.
@@ -118,7 +116,6 @@ def test_recording_flu_vaccination_e2e(
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
-    # MAV-1831
     SessionsPatientPage(page).header.click_mavis()
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_and_click_child(child)
