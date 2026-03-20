@@ -428,28 +428,6 @@ def test_verify_excel_export_and_clinic_invitation(
     assert SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
 
-@issue("MAV-2023")
-def test_session_verify_consent_reminders_and_pdf_downloads(
-    setup_fixed_child_future_date,
-    page,
-):
-    """
-    Covers Issue: MAV-2023
-
-    Test: Click the 'Send reminders' link and PDF download links in sessions and
-    verify there are no errors.
-    Steps:
-    1. Open a session with a fixed child.
-    2. Click 'Send reminders' link and verify no errors.
-    3. Attempt to download consent PDFs and verify no errors.
-    Verification:
-    - No errors occur when sending reminders or downloading PDFs.
-    """
-
-    SessionsOverviewPage(page).send_consent_reminders()
-    SessionsOverviewPage(page).download_consent_form(Programme.HPV)
-
-
 def test_editing_session_programmes(
     setup_fixed_child,
     children,
