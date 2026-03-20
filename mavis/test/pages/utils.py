@@ -5,7 +5,7 @@ from mavis.test.constants import (
     ConsentMethod,
     Programme,
 )
-from mavis.test.data_models import Child, Clinic, School, VaccinationRecord
+from mavis.test.data_models import Child, School, VaccinationRecord
 from mavis.test.pages import (
     AddSessionWizardPage,
     DashboardPage,
@@ -36,20 +36,6 @@ def schedule_school_session_if_needed(  # noqa: PLR0913
         AddSessionWizardPage(page).schedule_school_session(
             school, programmes, year_groups, date_offset, consent_style
         )
-
-
-def schedule_community_clinic_session_if_needed(
-    page: Page,
-    programmes: list[Programme],
-    date_offset: int = 0,
-) -> None:
-    DashboardPage(page).header.click_mavis()
-    DashboardPage(page).click_sessions()
-    if not SessionsSearchPage(page).click_session_if_exists(
-        Clinic("community clinic"), programmes, [], date_offset
-    ):
-        SessionsSearchPage(page).click_add_a_new_session()
-        AddSessionWizardPage(page).schedule_clinic_session(programmes, date_offset)
 
 
 def prepare_child_for_vaccination(

@@ -12,10 +12,7 @@ from mavis.test.utils import (
 
 
 class AddSessionWizardPage:
-    def __init__(
-        self,
-        page: Page,
-    ) -> None:
+    def __init__(self, page: Page) -> None:
         self.page = page
         self.header = HeaderComponent(page)
 
@@ -27,23 +24,12 @@ class AddSessionWizardPage:
             "button",
             name="Add another date",
         )
-        self.school_session_radio = self.page.get_by_role(
-            "radio",
-            name="School session",
-        )
-        self.community_clinic_radio = self.page.get_by_role(
-            "radio",
-            name="Community clinic",
-        )
         self.select_a_school_combobox = self.page.get_by_role(
             "combobox",
             name="Search for a school",
         )
         self.keep_session_dates_button = self.page.get_by_role(
             "button", name="Keep session dates"
-        )
-        self.session_type_heading = self.page.get_by_role(
-            "heading", name="What type of session is this?"
         )
         self.standard_consent_style_radio = self.page.get_by_role(
             "radio",
@@ -56,15 +42,6 @@ class AddSessionWizardPage:
         self.check_and_confirm_heading = self.page.get_by_role(
             "heading", name="Check and confirm"
         )
-
-    @step("Select School session")
-    def select_school_session(self) -> None:
-        expect(self.session_type_heading).to_be_visible()
-
-        self.school_session_radio.check()
-        self.page.wait_for_load_state()
-
-        self.click_continue()
 
     @step("Select Community clinic")
     def select_community_clinic(self) -> None:
@@ -142,8 +119,7 @@ class AddSessionWizardPage:
         date_offset: int | None,
         consent_style: str = "Standard",
     ) -> None:
-        if school is not None:
-            self.select_school_session()
+        if school:
             self.select_school(school)
 
         self.choose_programmes(programmes)
@@ -182,19 +158,6 @@ class AddSessionWizardPage:
                 "Type of MMR\\(V\\) consent request",
                 f"{consent_style} request",
             )
-
-    def schedule_clinic_session(
-        self,
-        programmes: list[Programme],
-        date_offset: int,
-    ) -> None:
-        self.select_community_clinic()
-        self.choose_programmes(programmes)
-
-        self.fill_date_fields(get_offset_date_compact_format(date_offset))
-        self.click_continue()
-
-        self.click_continue()
 
     @step("Keep session dates if necessary")
     def keep_session_dates_if_necessary(self) -> None:
