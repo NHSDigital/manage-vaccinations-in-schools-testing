@@ -4,6 +4,7 @@ from io import StringIO
 import pandas as pd
 from pandas import DataFrame, Series
 from playwright.sync_api import Page
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from mavis.test.annotations import step
 from mavis.test.constants import SCHOOL_MOVE_HEADERS
@@ -57,14 +58,28 @@ class DownloadSchoolMovesPage:
         # Playwright's webkit browser always opens CSVs in the browser
         # unlike Chromium and Firefox
         if browser_type_name == "webkit":
-            # Wait for navigation when clicking download on WebKit
-            with self.page.expect_navigation(wait_until="load", timeout=60000):
+            # WebKit may open CSV in same page or new popup
+            # Try to handle both cases
+            with self.page.context.expect_page() as new_page_info:
                 self.click_download_csv()
-            # Wait for CSV content to be loaded in the browser
-            pre_element = self.page.locator("pre")
-            pre_element.wait_for(state="visible", timeout=30000)
-            csv_content = pre_element.inner_text()
-            self.page.go_back()
+
+            # Check if a new page was opened
+            try:
+                new_page = new_page_info.value
+                # CSV opened in new page/tab
+                new_page.wait_for_load_state("load", timeout=30000)
+                pre_element = new_page.locator("pre")
+                pre_element.wait_for(state="visible", timeout=10000)
+                csv_content = pre_element.inner_text()
+                new_page.close()
+            except (PlaywrightTimeoutError, AttributeError):
+                # CSV opened in current page (or new_page_info.value failed)
+                self.page.wait_for_load_state("load", timeout=30000)
+                pre_element = self.page.locator("pre")
+                pre_element.wait_for(state="visible", timeout=10000)
+                csv_content = pre_element.inner_text()
+                self.page.go_back()
+
             return pd.read_csv(StringIO(csv_content), dtype={"NHS_REF": str})
 
         with self.page.expect_download() as download_info:
