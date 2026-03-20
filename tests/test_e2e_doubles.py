@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from mavis.test.constants import Programme, Vaccine
@@ -109,12 +111,18 @@ def test_recording_doubles_vaccination_e2e(
     SessionsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(schools[0], "doubles")
+
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         menacwy_vaccination_record,
         Vaccine.MENQUADFI,
         point_of_care_nurse,
         schools[0],
     )
+
+    # The button to download the offline spreadsheet prevents double clicks.
+    # We need to wait here to avoid the second click being ignored.
+    time.sleep(1)
+
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         td_ipv_vaccination_record,
         Vaccine.REVAXIS,
