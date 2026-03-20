@@ -59,25 +59,22 @@ class DownloadSchoolMovesPage:
         # unlike Chromium and Firefox
         if browser_type_name == "webkit":
             # WebKit may open CSV in same page or new popup
-            # Try to handle both cases
-            with self.page.context.expect_page() as new_page_info:
-                self.click_download_csv()
-
-            # Check if a new page was opened
+            # Try to detect new page with short timeout
+            csv_content = None
             try:
-                new_page = new_page_info.value
+                with self.page.context.expect_page(timeout=5000) as new_page_info:
+                    self.click_download_csv()
                 # CSV opened in new page/tab
+                new_page = new_page_info.value
                 new_page.wait_for_load_state("load", timeout=30000)
                 pre_element = new_page.locator("pre")
-                pre_element.wait_for(state="visible", timeout=10000)
-                csv_content = pre_element.inner_text()
+                csv_content = pre_element.inner_text(timeout=30000)
                 new_page.close()
-            except (PlaywrightTimeoutError, AttributeError):
-                # CSV opened in current page (or new_page_info.value failed)
+            except PlaywrightTimeoutError:
+                # No new page opened - CSV opened in current page
                 self.page.wait_for_load_state("load", timeout=30000)
                 pre_element = self.page.locator("pre")
-                pre_element.wait_for(state="visible", timeout=10000)
-                csv_content = pre_element.inner_text()
+                csv_content = pre_element.inner_text(timeout=30000)
                 self.page.go_back()
 
             return pd.read_csv(StringIO(csv_content), dtype={"NHS_REF": str})
