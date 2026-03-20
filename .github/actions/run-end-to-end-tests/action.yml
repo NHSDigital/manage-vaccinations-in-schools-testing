@@ -44,11 +44,22 @@ runs:
       run: uv run playwright install
       shell: bash
 
-    - name: Install Playwright dependencies if using webkit
+    - name: Install WebKit on macOS
       if: >-
+        runner.os == 'macOS' && 
+        inputs.playwright_cache_hit != 'true' && (
         inputs.device == 'Desktop Safari' ||
         inputs.device == 'iPad (gen 7) landscape' ||
-        inputs.device == 'iPhone 15'
+        inputs.device == 'iPhone 15')
+      run: uv run playwright install webkit
+      shell: bash
+
+    - name: Install Playwright dependencies if using webkit on Linux
+      if: >-
+        runner.os == 'Linux' && (
+        inputs.device == 'Desktop Safari' ||
+        inputs.device == 'iPad (gen 7) landscape' ||
+        inputs.device == 'iPhone 15')
       run: uv run playwright install-deps webkit
       shell: bash
 
