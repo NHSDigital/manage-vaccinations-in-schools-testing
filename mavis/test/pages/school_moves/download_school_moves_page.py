@@ -57,8 +57,13 @@ class DownloadSchoolMovesPage:
         # Playwright's webkit browser always opens CSVs in the browser
         # unlike Chromium and Firefox
         if browser_type_name == "webkit":
-            self.click_download_csv()
-            csv_content = self.page.locator("pre").inner_text()
+            # Wait for navigation when clicking download on WebKit
+            with self.page.expect_navigation(wait_until="load", timeout=60000):
+                self.click_download_csv()
+            # Wait for CSV content to be loaded in the browser
+            pre_element = self.page.locator("pre")
+            pre_element.wait_for(state="visible", timeout=30000)
+            csv_content = pre_element.inner_text()
             self.page.go_back()
             return pd.read_csv(StringIO(csv_content), dtype={"NHS_REF": str})
 
