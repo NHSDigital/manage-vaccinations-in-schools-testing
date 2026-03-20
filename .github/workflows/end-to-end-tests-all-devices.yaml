@@ -15,18 +15,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        device:
-          - Desktop Chrome
-          - Desktop Edge
-          - Desktop Firefox
-          - Desktop Safari
-          - Galaxy S9+
-          - Pixel 7
-          - iPad (gen 7) landscape
-          - iPhone 15
+        include:
+          - device: Desktop Chrome
+            os: ubuntu-latest
+          - device: Desktop Edge
+            os: ubuntu-latest
+          - device: Desktop Firefox
+            os: ubuntu-latest
+          - device: Desktop Safari
+            os: macos-latest
+          - device: Galaxy S9+
+            os: ubuntu-latest
+          - device: Pixel 7
+            os: ubuntu-latest
+          - device: iPad (gen 7) landscape
+            os: macos-latest
+          - device: iPhone 15
+            os: macos-latest
       max-parallel: 2
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     env:
       TZ: "Europe/London"
 
@@ -38,11 +46,21 @@ jobs:
         with:
           environment_url: ${{ vars.BASE_URL }}
 
+      - name: Set cache path
+        id: cache-path
+        run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            echo "path=$HOME/Library/Caches/ms-playwright" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=$HOME/.cache/ms-playwright" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Cache Playwright browsers
         uses: actions/cache@v5
         id: playwright-cache
         with:
-          path: /home/runner/.cache/ms-playwright
+          path: ${{ steps.cache-path.outputs.path }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
 
       - name: Run tests
