@@ -3,6 +3,7 @@ import random
 import uuid
 from datetime import date, datetime
 from pathlib import Path
+from time import sleep
 from typing import NamedTuple
 from zoneinfo import ZoneInfo
 
@@ -115,6 +116,8 @@ class PdsApiHelper:
                 msg = "All patients in PDS export are outdated"
                 raise RuntimeError(msg)
 
+            sleep(0.5)
+
             child = random.choice(child_patients_without_date_of_death)
             if child.nhs_number in checked_nhs_numbers:
                 continue
@@ -123,7 +126,7 @@ class PdsApiHelper:
             try:
                 child_in_pds = self.get_patient_by_nhs_number(child.nhs_number)
             except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 404:  # noqa: PLR2004
+                if e.response.status_code in {404, 429}:
                     continue
                 raise
             except ValueError:
@@ -138,7 +141,9 @@ class PdsApiHelper:
             try:
                 if self.confirm_patient_can_be_found_by_search(child):
                     break
-            except requests.exceptions.HTTPError:
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code in {404, 429}:
+                    continue
                 continue
 
         return Child(
