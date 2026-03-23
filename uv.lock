@@ -331,7 +331,7 @@ requires-dist = [
     { name = "axe-playwright-python", specifier = "==0.1.7" },
     { name = "cryptography", specifier = "==46.0.5" },
     { name = "faker", specifier = "==40.11.0" },
-    { name = "nhs-number", specifier = "==1.3.6" },
+    { name = "nhs-number", specifier = "==1.3.10" },
     { name = "oauthlib", specifier = "==3.3.1" },
     { name = "openpyxl", specifier = "==3.1.5" },
     { name = "pandas", specifier = "==3.0.1" },
@@ -357,11 +357,11 @@ dev = [
 
 [[package]]
 name = "nhs-number"
-version = "1.3.6"
+version = "1.3.10"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/41/a3/61316c5e9cdada95de568991f11bad274dfa32d2b8f6055f70589455480d/nhs_number-1.3.6.tar.gz", hash = "sha256:5effca980ce7bb6734f07a7843816ae952166767511c3edf179b8fdcde8713e5", size = 7003, upload-time = "2025-07-15T15:11:56.375Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9b/04/23591168ed7fd0b61a4bd447fab6091ed209813e681fe70f19b06dd3d9bc/nhs_number-1.3.10.tar.gz", hash = "sha256:0d9a5f9e3c15d87c3162bd6b55ba4d64178422b9f19d16b8247261e41a3b612e", size = 7016, upload-time = "2026-03-21T21:46:34.243Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/16/d1/f981c4393dcdb397b637eda5814c7a818af6450c315b8124be6946649404/nhs_number-1.3.6-py3-none-any.whl", hash = "sha256:22b8937b148f0d930acc69aaff00af1d6fb0e73f4c03fced3df4ad017479dc19", size = 9456, upload-time = "2025-07-15T15:11:55.344Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/89/e587d979db35cb66678104ae152e9bcc4d00c18c9581307cabb6006e6d0c/nhs_number-1.3.10-py3-none-any.whl", hash = "sha256:03615288338060aa8f94b5c6ec837554713d126eae61b1cff717536d0e7ed402", size = 9514, upload-time = "2026-03-21T21:46:32.888Z" },
 ]
 
 [[package]]
