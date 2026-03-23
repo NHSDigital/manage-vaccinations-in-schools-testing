@@ -268,7 +268,7 @@ class ImportRecordsWizardPage:
         ).first
         reload_until_element_is_visible(self.page, status_text, seconds=60)
 
-    @step("Click import link for {1}")
+    @step("Click import link for  {1}")
     def click_import_link(self, file_path: Path) -> None:
         import_link = (
             self.page.get_by_role("cell", name=file_path.name).get_by_role("link").first
@@ -279,7 +279,9 @@ class ImportRecordsWizardPage:
         if not import_link.is_visible():
             click_secondary_navigation_item(self.completed_imports_tab)
 
-        import_link.click()
+        # On mobile viewports, ensure element is scrolled into view before clicking
+        import_link.scroll_into_view_if_needed()
+        import_link.click(force=True)
         self.page.wait_for_load_state()
 
     @step("Verify upload output for {file_path}")

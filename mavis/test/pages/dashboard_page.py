@@ -90,10 +90,12 @@ class DashboardPage:
 
     @step("Verify header Children link is visible")
     def verify_header_children_link_visible(self) -> None:
+        self.header.ensure_menu_visible()
         expect(self.header.children_link).to_be_visible()
 
     @step("Verify header Import Records link is visible")
     def verify_header_imports_link_visible(self) -> None:
+        self.header.ensure_menu_visible()
         expect(self.header.imports_link).to_be_visible()
 
     @step("Verify Service Guidance link for National Reporting")
