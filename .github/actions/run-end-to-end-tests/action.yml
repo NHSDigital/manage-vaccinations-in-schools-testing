@@ -7,7 +7,7 @@ inputs:
     default: 'main'
     required: false
   accessibility_tests:
-    default: 'false'
+    default: 'true'
   reporting_tests:
     default: 'false'
   imms_api_tests:
