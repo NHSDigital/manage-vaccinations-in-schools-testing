@@ -39,8 +39,8 @@ class VaccinationReportPage:
             getattr(browser, "browser_type", None), "name", None
         )
 
-        # Playwright's webkit browser always opens CSVs in the browser
-        # unlike Chromium and Firefox
+        # Playwright's webkit browser may open CSVs in the browser
+        # unlike Chromium and Firefox, but behavior varies by environment
         if browser_type_name == "webkit":
             # WebKit may open CSV in same page or new popup
             # Try to detect new page with short timeout
@@ -54,14 +54,24 @@ class VaccinationReportPage:
                 pre_element = new_page.locator("pre")
                 csv_content = pre_element.inner_text(timeout=30000)
                 new_page.close()
+                _actual_df = pd.read_csv(StringIO(csv_content))
             except PlaywrightTimeoutError:
-                # No new page opened - CSV opened in current page
-                self.page.wait_for_load_state("load", timeout=30000)
-                pre_element = self.page.locator("pre")
-                csv_content = pre_element.inner_text(timeout=30000)
-                self.page.go_back()
-
-            _actual_df = pd.read_csv(StringIO(csv_content))
+                # No new page opened - try to handle as current page
+                # or fall back to download
+                try:
+                    # Check if CSV opened in current page
+                    pre_element = self.page.locator("pre")
+                    csv_content = pre_element.inner_text(timeout=5000)
+                    self.page.go_back()
+                    _actual_df = pd.read_csv(StringIO(csv_content))
+                except PlaywrightTimeoutError:
+                    # Fall back to download handler
+                    # (WebKit behavior varies by environment)
+                    with self.page.expect_download() as download_info:
+                        self.click_download_report()
+                    download = download_info.value
+                    download.save_as(_file_path)
+                    _actual_df = pd.read_csv(_file_path)
         else:
             with self.page.expect_download() as download_info:
                 self.click_download_report()
