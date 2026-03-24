@@ -71,7 +71,7 @@ class School(Location):
         def _get_schools_with_year_group(year_group: int) -> list[School]:
             url = urllib.parse.urljoin(base_url, "api/testing/locations")
             params = {
-                "type": "school",
+                "type": "gias_school",
                 "status": "open",
                 "is_attached_to_team": "false",
                 "gias_year_groups[]": [str(year_group)],
