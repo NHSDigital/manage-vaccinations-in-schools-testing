@@ -13,7 +13,7 @@ VACCINATED	Required, must be Y or N. Can be omitted if VACCINE_GIVEN is provided
 BATCH_NUMBER	Required if BATCH_EXPIRY_DATE is provided.
 BATCH_EXPIRY_DATE	Required if BATCH_NUMBER is provided, must use either YYYYMMDD or DD/MM/YYYY format.
 PROGRAMME	Required, must be Flu, HPV, ACWYX4, MenACWY, MMR, MMRV, 3-in-1 or Td/IPV.
-ANATOMICAL_SITE	Optional, if provided must be appropriate for the vaccine delivery method and be one of: left arm (lower position), left arm (upper position), left buttock, left deltoid, left thigh, left upper arm, nasal, right arm (lower position), right arm (upper position), right buttock, right deltoid, right thigh or right upper arm.
+ANATOMICAL_SITE	Optional, if provided must be appropriate for the vaccine delivery method and be one of: left arm (lower position), left arm (upper position), left buttock, left deltoid, left lower, left lower arm, left thigh, left upper arm, nasal, right arm (lower position), right arm (upper position), right buttock, right deltoid, right lower, right lower arm, right thigh or right upper arm.
 REASON_NOT_VACCINATED	Required if VACCINATED is N, must be already had elsewhere, refused, unwell or vaccination contraindicated.
 NOTES	Optional
 DOSE_SEQUENCE	Optional, must be a number or 1B, 1P, 1st Scheduled Booster, 2B, 2P, 2nd Scheduled Booster or 3P.
