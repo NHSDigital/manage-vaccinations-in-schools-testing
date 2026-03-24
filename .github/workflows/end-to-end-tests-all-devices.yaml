@@ -6,24 +6,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-linux:
+  test:
     permissions:
       contents: write
       id-token: write
 
-    name: Linux devices
+    name: ${{ matrix.device }}
     strategy:
       fail-fast: false
       matrix:
-        device:
-          - Desktop Chrome
-          - Desktop Edge
-          - Desktop Firefox
-          - Galaxy S9+
-          - Pixel 7
+        include:
+          # Linux devices
+          - device: Desktop Chrome
+            os: ubuntu-latest
+            cache_path: ~/.cache/ms-playwright
+          - device: Desktop Edge
+            os: ubuntu-latest
+            cache_path: ~/.cache/ms-playwright
+          - device: Desktop Firefox
+            os: ubuntu-latest
+            cache_path: ~/.cache/ms-playwright
+          - device: Galaxy S9+
+            os: ubuntu-latest
+            cache_path: ~/.cache/ms-playwright
+          - device: Pixel 7
+            os: ubuntu-latest
+            cache_path: ~/.cache/ms-playwright
+          # macOS devices
+          - device: Desktop Safari
+            os: macos-latest
+            cache_path: ~/Library/Caches/ms-playwright
+          - device: iPad (gen 7) landscape
+            os: macos-latest
+            cache_path: ~/Library/Caches/ms-playwright
+          - device: iPhone 15
+            os: macos-latest
+            cache_path: ~/Library/Caches/ms-playwright
       max-parallel: 5
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     env:
       TZ: "Europe/London"
 
@@ -50,6 +71,9 @@ jobs:
         with:
           path: ${{ steps.cache-path.outputs.path }}
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+
+      - name: Run tests
+        uses: ./.github/actions/run-end-to-end-tests
         with:
           device: ${{ matrix.device }}
           base_url: ${{ vars.BASE_URL }}
@@ -64,57 +88,6 @@ jobs:
           IMMS_API_KEY: ${{ secrets.IMMS_API_KEY }}
           IMMS_API_KID: ${{ secrets.IMMS_API_KID }}
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
-
-      - name: Configure AWS credentials
-        if: always()
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
-
-      - name: Process reports
-        if: always()
-        uses: ./.github/actions/deploy-reports
-        with:
-          device: ${{ matrix.device }}
-          environment: qa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  test-macos:
-    permissions:
-      contents: write
-      id-token: write
-
-    name: Apple devices
-    strategy:
-      fail-fast: false
-      matrix:
-        device:
-          - Desktop Safari
-          - iPad (gen 7) landscape
-          - iPhone 15
-      max-parallel: 3
-
-    runs-on: macos-latest
-    env:
-      TZ: "Europe/London"
-
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v5
-        id: playwright-cache
-        with:
-          path: ~/Library/Caches/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
-
-      - name: Run tests
-        uses: ./.github/actions/run-end-to-end-tests
-        with:
-          device: ${{ matrix.device }}
           base_url: ${{ vars.BASE_URL }}
           imms_api_tests: 'true'
           pds_api_tests: 'true'

@@ -46,16 +46,21 @@ class HeaderComponent:
                         button = buttons.nth(i)
                         if button.is_visible(timeout=100):
                             # Check if button is expanded already
-                            # (may have aria-expanded attribute)
                             aria_expanded = button.get_attribute("aria-expanded")
                             if aria_expanded != "true":
                                 button.click()
-                                # Wait longer for menu to fully expand
-                                self.page.wait_for_timeout(1000)
+                                # Wait for the menu to become visible
+                                self.page.wait_for_selector(
+                                    '[aria-label="Menu"] [role="link"]',
+                                    state="visible",
+                                    timeout=2000,
+                                )
                             return
-                except Exception:  # noqa: BLE001, S112
+                except (TimeoutError, Exception):  # noqa: BLE001, S112
+                    # Playwright may raise TimeoutError or generic Error if element is
+                    # detached or not interactable
                     continue  # Button check failed, try next
-        except Exception:  # noqa: BLE001, S110
+        except (TimeoutError, Exception):  # noqa: BLE001, S110
             pass  # Browse More button not found or menu already expanded
 
     @step("Click on Manage vaccinations in schools")

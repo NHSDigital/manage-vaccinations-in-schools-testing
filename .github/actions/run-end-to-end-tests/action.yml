@@ -45,14 +45,13 @@ runs:
       shell: bash
 
     - name: Install Playwright dependencies if using webkit on Linux
-      if: inputs.playwright_cache_hit != 'true'
-      run: |
-        if [[ "$RUNNER_OS" == "Linux" ]] && \
-           ( [[ "${{ inputs.device }}" == "Desktop Safari" ]] || \
-             [[ "${{ inputs.device }}" == "iPad (gen 7) landscape" ]] || \
-             [[ "${{ inputs.device }}" == "iPhone 15" ]] ); then
-          uv run playwright install-deps webkit
-        fi
+      if: |
+        inputs.playwright_cache_hit != 'true' &&
+        runner.os == 'Linux' &&
+        (inputs.device == 'Desktop Safari' ||
+         inputs.device == 'iPad (gen 7) landscape' ||
+         inputs.device == 'iPhone 15')
+      run: uv run playwright install-deps webkit
       shell: bash
 
     - name: Choose test suite to run

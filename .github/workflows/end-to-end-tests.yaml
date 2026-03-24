@@ -170,7 +170,14 @@ jobs:
       id-token: write
 
     name: End-to-End tests
-    runs-on: ubuntu-latest
+    runs-on: |
+      ${{ 
+        (inputs.device == 'Desktop Safari' || 
+         inputs.device == 'iPad (gen 7) landscape' || 
+         inputs.device == 'iPhone 15') && 
+        'macos-latest' || 
+        'ubuntu-latest' 
+      }}
 
     env:
       TZ: Europe/London
@@ -238,24 +245,36 @@ jobs:
         uses: actions/cache@v5
         id: playwright-cache
         with:
-          path: /home/runner/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
+          path: |
+            ${{ 
+              runner.os == 'macOS' && 
+              '~/Library/Caches/ms-playwright' || 
+              '~/.cache/ms-playwright' 
+            }}
+          key: |
+            playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
 
       - name: Run tests
         uses: ./.github/actions/run-end-to-end-tests
         with:
           tests: ${{ steps.set-variables.outputs.tests }}
-          imms_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
-          pds_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
-          reporting_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          imms_api_tests: |
+            ${{ steps.set-variables.outputs.cross_service_tests }}
+          pds_api_tests: |
+            ${{ steps.set-variables.outputs.cross_service_tests }}
+          reporting_tests: |
+            ${{ steps.set-variables.outputs.cross_service_tests }}
           github_ref: ${{ inputs.github_ref || github.head_ref }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
-          programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
-          screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
+          programmes_enabled: |
+            ${{ steps.set-variables.outputs.programmes }}
+          screenshot_all_steps: |
+            ${{ steps.set-variables.outputs.screenshot_all_steps }}
           enable_reruns: ${{ steps.set-variables.outputs.enable_reruns }}
           test_workers: ${{ steps.set-variables.outputs.test_workers }}
-          set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
+          set_feature_flags: |
+            ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: |-
             ${{ steps.set-variables.outputs.additional_feature_flags }}
           playwright_cache_hit: ${{ steps.playwright-cache.outputs.cache-hit }}
@@ -267,14 +286,19 @@ jobs:
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
 
       - name: Configure AWS credentials
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        if: |
+          always() && 
+          steps.set-variables.outputs.deploy_report == 'true'
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
+          role-to-assume: |
+            arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
 
       - name: Process reports
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        if: |
+          always() && 
+          steps.set-variables.outputs.deploy_report == 'true'
         continue-on-error: true
         uses: ./.github/actions/deploy-reports
         with:
