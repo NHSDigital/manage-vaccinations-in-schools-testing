@@ -13,7 +13,6 @@ from mavis.test.pages import (
     SchoolInviteToClinicPage,
     SchoolsSearchPage,
 )
-from mavis.test.pages.utils import schedule_community_clinic_session_if_needed
 
 pytestmark = pytest.mark.clinics
 
@@ -26,11 +25,10 @@ def test_single_from_child_record(
     Test: Invite a single child to the clinic from their child record.
 
     Steps:
-    1. Schedule a community clinic session for the future.
-    2. Import a child with parent details via child records.
-    3. Find the child's record.
-    4. Click on "Invite to community clinic"
-    5. Check the activity log for an invitation having been sent.
+    1. Import a child with parent details via child records.
+    2. Find the child's record.
+    3. Click on "Invite to community clinic"
+    4. Check the child has been invited.
     """
 
     programme = Programme.HPV
@@ -43,8 +41,6 @@ def test_single_from_child_record(
     children_search_page = ChildrenSearchPage(page)
     child_programme_page = ChildProgrammePage(page)
     child_record_page = ChildRecordPage(page)
-
-    schedule_community_clinic_session_if_needed(page, [programme])
 
     # Import a child with parent details via child records.
     imports_page.header.click_imports()
@@ -60,11 +56,11 @@ def test_single_from_child_record(
     # Click on "Invite to community clinic"
     child_record_page.click_programme(programme)
     child_programme_page.click_invite_to_community_clinic()
+    child_programme_page.header.click_children()
 
-    # Check the activity log for an invitation having been sent.
-    child_programme_page.expect_activity_log_entry(
-        "Added to the session at Community Clinic"
-    )
+    # Check the child has been invited.
+    children_search_page.search.search_invited_to_clinic()
+    children_search_page.search.click_child(child)
 
     # TODO: We can't check for the entry from the notifications log as no
     #   emails actually get sent from the end to end test environments.
@@ -90,13 +86,12 @@ def test_bulk_home_educated_or_unknown_school(
     Test: Invite a single child to the clinic from their child record.
 
     Steps:
-    1. Schedule a community clinic session for the future.
-    2. Import a home-educated or unknown school child with parent details via child
+    1. Import a home-educated or unknown school child with parent details via child
        records.
-    3. Click on "Invite to community clinic" from the home-educated or unknown school.
-    4. Choose a programme and submit the request to send invitations
-    5. Find the child's record.
-    6. Check the activity log for an invitation having been sent.
+    2. Click on "Invite to community clinic" from the home-educated or unknown school.
+    3. Choose a programme and submit the request to send invitations
+    4. Find the child's record.
+    5. Check the activity log for an invitation having been sent.
     """
 
     programme = Programme.HPV
