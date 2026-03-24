@@ -171,12 +171,12 @@ jobs:
 
     name: End-to-End tests
     runs-on: |
-      ${{ 
-        (inputs.device == 'Desktop Safari' || 
-         inputs.device == 'iPad (gen 7) landscape' || 
-         inputs.device == 'iPhone 15') && 
-        'macos-latest' || 
-        'ubuntu-latest' 
+      ${{
+        (inputs.device == 'Desktop Safari' ||
+         inputs.device == 'iPad (gen 7) landscape' ||
+         inputs.device == 'iPhone 15') &&
+        'macos-latest' ||
+        'ubuntu-latest'
       }}
 
     env:
@@ -246,10 +246,10 @@ jobs:
         id: playwright-cache
         with:
           path: |
-            ${{ 
-              runner.os == 'macOS' && 
-              '~/Library/Caches/ms-playwright' || 
-              '~/.cache/ms-playwright' 
+            ${{
+              runner.os == 'macOS' &&
+              '~/Library/Caches/ms-playwright' ||
+              '~/.cache/ms-playwright'
             }}
           key: |
             playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
@@ -287,7 +287,7 @@ jobs:
 
       - name: Configure AWS credentials
         if: |
-          always() && 
+          always() &&
           steps.set-variables.outputs.deploy_report == 'true'
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -297,7 +297,7 @@ jobs:
 
       - name: Process reports
         if: |
-          always() && 
+          always() &&
           steps.set-variables.outputs.deploy_report == 'true'
         continue-on-error: true
         uses: ./.github/actions/deploy-reports
