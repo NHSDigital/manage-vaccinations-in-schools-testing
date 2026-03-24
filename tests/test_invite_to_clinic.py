@@ -70,17 +70,30 @@ def test_single_from_child_record(
     #   emails actually get sent from the end to end test environments.
 
 
-@issue("MAV-3886")
-def test_bulk_from_unknown_school(
-    children, log_in_as_nurse, page, point_of_care_file_generator
+@issue("MAV-3886", "MAV-3159")
+@pytest.mark.parametrize(
+    ("child_file_mapping", "school_name"),
+    [
+        (ChildFileMapping.HOME_EDUCATED_CHILD, "Home-educated"),
+        (ChildFileMapping.UNKNOWN_SCHOOL_CHILD, "Unknown school"),
+    ],
+)
+def test_bulk_home_educated_or_unknown_school(
+    children,
+    log_in_as_nurse,
+    page,
+    point_of_care_file_generator,
+    child_file_mapping,
+    school_name,
 ):
     """
     Test: Invite a single child to the clinic from their child record.
 
     Steps:
     1. Schedule a community clinic session for the future.
-    2. Import an unknown school child with parent details via child records.
-    3. Click on "Invite to community clinic" from the unknown school.
+    2. Import a home-educated or unknown school child with parent details via child
+       records.
+    3. Click on "Invite to community clinic" from the home-educated or unknown school.
     4. Choose a programme and submit the request to send invitations
     5. Find the child's record.
     6. Check the activity log for an invitation having been sent.
@@ -94,25 +107,20 @@ def test_bulk_from_unknown_school(
         page, point_of_care_file_generator
     )
     children_search_page = ChildrenSearchPage(page)
-    child_programme_page = ChildProgrammePage(page)
-    child_record_page = ChildRecordPage(page)
     schools_search_page = SchoolsSearchPage(page)
     school_children_page = SchoolChildrenPage(page)
     school_invite_to_clinic_page = SchoolInviteToClinicPage(page)
 
-    schedule_community_clinic_session_if_needed(page, [programme])
-
-    # Import an unknown school child with parent details via child records.
+    # Import a home-educated or unknown school child with parent details via child
+    # records.
     imports_page.header.click_imports()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_child_record_import()
-    import_records_wizard_page.upload_and_verify_output(
-        ChildFileMapping.UNKNOWN_SCHOOL_CHILD
-    )
+    import_records_wizard_page.upload_and_verify_output(child_file_mapping)
     imports_page.header.click_schools()
 
-    # Click on "Invite to community clinic" from the unknown school.
-    schools_search_page.click_school("No known school")
+    # Click on "Invite to community clinic" from the home-educated or unknown school.
+    schools_search_page.click_school(school_name)
     school_children_page.click_send_clinic_invitations()
 
     # Choose a programme and submit the request to send invitations
@@ -121,14 +129,8 @@ def test_bulk_from_unknown_school(
     school_invite_to_clinic_page.header.click_children()
 
     # Find the child's record.
-    children_search_page.search.search_for_a_child_name(str(child))
+    children_search_page.search.search_invited_to_clinic()
     children_search_page.search.click_child(child)
-    child_record_page.click_programme(programme)
-
-    # Check the activity log for an invitation having been sent.
-    child_programme_page.expect_activity_log_entry(
-        "Added to the session at Community Clinic"
-    )
 
     # TODO: We can't check for the entry from the notifications log as no
     #   emails actually get sent from the end to end test environments.
