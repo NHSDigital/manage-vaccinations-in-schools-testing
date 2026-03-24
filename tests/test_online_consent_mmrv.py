@@ -163,7 +163,7 @@ def test_pdf_consent_form_contains_health_questions(
     programme = Programme.MMR
 
     pdf_text_normalized = read_pdf_as_normalized_text(
-        SessionsOverviewPage(page).download_consent_form(programme)
+        SessionsOverviewPage(page).download_consent_form(programme, prefer_mmrv=True)
     )
 
     expected_questions = programme.health_questions(

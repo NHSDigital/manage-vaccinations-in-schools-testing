@@ -295,11 +295,19 @@ class SessionsOverviewPage:
             raise ValueError(msg)
 
     @step("Click on Download the {1} consent form (PDF)")
-    def download_consent_form(self, programme: Programme) -> Path:
+    def download_consent_form(
+        self, programme: Programme, *, prefer_mmrv: bool = False
+    ) -> Path:
         _file_path = Path(f"working/consent_{get_current_datetime_compact()}.pdf")
 
         # For MMR, the link text uses "MMR" not "MMR(V)"
-        programme_name = "MMR" if programme is Programme.MMR else str(programme)
+        # When prefer_mmrv=True and programme is MMR, download MMRV form instead
+        if programme is Programme.MMR and prefer_mmrv:
+            programme_name = "MMRV"
+        elif programme is Programme.MMR:
+            programme_name = "MMR"
+        else:
+            programme_name = str(programme)
 
         with self.page.expect_download() as download_info:
             self.page.get_by_role(

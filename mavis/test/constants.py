@@ -113,12 +113,13 @@ class HealthQuestion(StrEnum):
         " or immunoglobulin in the last 3 months?"
     )
     MMRV_ALLERGIC_REACTION = (
-        "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
-        " of MMRV or any other vaccine?"
+        "Has your child had a severe allergic reaction (anaphylaxis) to a "
+        "previous dose of MMRV or any other measles, mumps, rubella or varicella "
+        "(chickenpox) vaccine?"
     )
     MMR_ALLERGIC_REACTION = (
-        "Has your child had a severe allergic reaction (anaphylaxis) to a previous dose"
-        " of MMR or any other vaccine?"
+        "Has your child had a severe allergic reaction (anaphylaxis) to a "
+        "previous dose of MMR or any other measles, mumps or rubella vaccine?"
     )
     MMR_ALLERGIC_REACTION_NEOMYCIN = (
         "Has your child ever had a severe allergic reaction (anaphylaxis) to neomycin?"

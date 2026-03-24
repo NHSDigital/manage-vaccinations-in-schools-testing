@@ -290,34 +290,12 @@ def read_pdf_as_normalized_text(pdf_path: Path) -> str:
     return normalize_text(pdf_text)
 
 
-def _build_question_regex_pattern(question_normalized: str) -> str:
-    """Build regex pattern to match question variations in PDFs.
-
-    Handles variations between web forms and PDFs:
-    - MMR vs MMRV text
-    - Generic "any other vaccine?" vs specific vaccine types
-    """
-    pattern = re.escape(question_normalized)
-
-    # Match both "mmr" and "mmrv" in PDFs
-    pattern = pattern.replace(r"mmrv", r"mmr(?:v)?")
-
-    # Match vaccine type variations
-    return pattern.replace(
-        r"any\ other\ vaccine\?",
-        r"any\ other\ (?:measles,\ mumps(?:,\ rubella)?\ "
-        r"(?:or\ )?(?:rubella\ )?(?:or\ varicella\ )?)?vaccine\?",
-    )
-
-
 def assert_questions_in_pdf(
     pdf_text_normalized: str,
     questions: list,
     context: str = "PDF",
 ) -> None:
     """Assert that all questions are present in normalized PDF text.
-
-    Uses regex matching to handle variations between web form and PDF text.
 
     Args:
         pdf_text_normalized: The normalized PDF text to search in
@@ -330,8 +308,7 @@ def assert_questions_in_pdf(
 
     for question in questions:
         question_normalized = normalize_text(str(question))
-        pattern = _build_question_regex_pattern(question_normalized)
 
-        assert re.search(pattern, pdf_text_normalized), (  # noqa: S101
+        assert question_normalized in pdf_text_normalized, (  # noqa: S101
             f"Health question '{question}' not found in {context}"
         )
