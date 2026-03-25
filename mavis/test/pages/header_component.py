@@ -1,3 +1,5 @@
+import re
+
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
@@ -32,36 +34,14 @@ class HeaderComponent:
         self.your_team_link = menu.get_by_role("link", name="Your Team", exact=True)
 
     def ensure_menu_visible(self) -> None:
-        """Expand mobile menu if needed (e.g., 'Browse More' button)."""
-        # Look for "Browse More" button
-        # (has newline between words on mobile)
-        try:
-            # Find button containing both Browse and More
-            buttons = self.page.get_by_role("button")
-            for i in range(buttons.count()):
-                try:
-                    btn_text = buttons.nth(i).inner_text(timeout=100)
-                    # Check if button contains both Browse and More
-                    if "browse" in btn_text.lower() and "more" in btn_text.lower():
-                        button = buttons.nth(i)
-                        if button.is_visible(timeout=100):
-                            # Check if button is expanded already
-                            aria_expanded = button.get_attribute("aria-expanded")
-                            if aria_expanded != "true":
-                                button.click()
-                                # Wait for the menu to become visible
-                                self.page.wait_for_selector(
-                                    '[aria-label="Menu"] [role="link"]',
-                                    state="visible",
-                                    timeout=2000,
-                                )
-                            return
-                except (TimeoutError, Exception):  # noqa: BLE001, S112
-                    # Playwright may raise TimeoutError or generic Error if element is
-                    # detached or not interactable
-                    continue  # Button check failed, try next
-        except (TimeoutError, Exception):  # noqa: BLE001, S110
-            pass  # Browse More button not found or menu already expanded
+        browse_button = self.page.get_by_role(
+            "button", name=re.compile(r"browse\s*more", re.IGNORECASE)
+        )
+        if (
+            browse_button.count() > 0
+            and browse_button.get_attribute("aria-expanded") != "true"
+        ):
+            browse_button.click()
 
     @step("Click on Manage vaccinations in schools")
     def click_mavis(self) -> None:

@@ -39,35 +39,28 @@ class VaccinationReportPage:
             getattr(browser, "browser_type", None), "name", None
         )
 
-        # Playwright's webkit browser may open CSVs in the browser
-        # unlike Chromium and Firefox, but behavior varies by environment
-        if browser_type_name == "webkit":
-            # WebKit behavior varies: may download file, open in new page,
-            # or open in current page. Try download first (macOS CI behavior)
-            try:
-                with self.page.expect_download(timeout=5000) as download_info:
-                    self.click_download_report()
-                download = download_info.value
-                download.save_as(_file_path)
-                _actual_df = pd.read_csv(_file_path)
-            except PlaywrightTimeoutError:
-                # No download - CSV opened in browser (new page or current page)
-                new_page = self.page.context.pages[-1]
-                if new_page != self.page:
-                    new_page.wait_for_load_state("load", timeout=10000)
-                    csv_content = new_page.locator("pre").inner_text(timeout=5000)
-                    new_page.close()
-                else:
-                    self.page.wait_for_load_state("load", timeout=10000)
-                    csv_content = self.page.locator("pre").inner_text(timeout=10000)
-                    self.page.go_back()
-                _actual_df = pd.read_csv(StringIO(csv_content))
-        else:
-            with self.page.expect_download() as download_info:
+        # Try to download the file (set shorter timeout for WebKit)
+        download_timeout = 5000 if browser_type_name == "webkit" else None
+        page_load_timeout = 10000 if browser_type_name == "webkit" else None
+        try:
+            with self.page.expect_download(timeout=download_timeout) as download_info:
                 self.click_download_report()
             download = download_info.value
             download.save_as(_file_path)
             _actual_df = pd.read_csv(_file_path)
+        except PlaywrightTimeoutError:
+            # WebKit may open CSV in browser - read from <pre> element
+            pages = self.page.context.pages
+            page_to_read = pages[-1] if len(pages) > 1 else self.page
+            page_to_read.wait_for_load_state("load", timeout=page_load_timeout)
+            csv_content = page_to_read.locator("pre").inner_text()
+            _actual_df = pd.read_csv(StringIO(csv_content))
+
+            # Clean up: close new page or go back on current page
+            if page_to_read != self.page:
+                page_to_read.close()
+            else:
+                self.page.go_back()
 
         expected_set = set(expected_headers.split(","))
         actual_set = set(_actual_df.columns)
