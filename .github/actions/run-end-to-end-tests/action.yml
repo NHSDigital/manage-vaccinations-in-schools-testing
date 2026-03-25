@@ -2,34 +2,34 @@ name: Run End-to-End tests
 description: Execute tests
 inputs:
   tests:
-    default: ''
+    default: ""
   github_ref:
-    default: 'main'
+    default: "main"
     required: false
   accessibility_tests:
-    default: 'false'
+    default: "false"
   reporting_tests:
-    default: 'false'
+    default: "false"
   imms_api_tests:
-    default: 'false'
+    default: "false"
   pds_api_tests:
-    default: 'false'
+    default: "false"
   device:
     required: true
   base_url:
     required: true
   programmes_enabled:
-    default: 'FLU,HPV,MENACWY,MMR,TD_IPV'
+    default: "FLU,HPV,MENACWY,MMR,TD_IPV"
   screenshot_all_steps:
     required: true
   enable_reruns:
-    default: 'true'
+    default: "true"
   test_workers:
-    default: '4'
+    default: "4"
   set_feature_flags:
-    default: 'false'
+    default: "false"
   additional_feature_flags:
-    default: ''
+    default: ""
   playwright_cache_hit:
     required: true
 
