@@ -47,7 +47,7 @@ jobs:
     needs: identify-target
     if: needs.identify-target.outputs.value == 'container'
     # yamllint disable-line rule:line-length
-    uses: NHSDigital/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests-on-pull-request.yml@next
+    uses: NHSDigital/manage-vaccinations-in-schools/.github/workflows/end-to-end-tests-aws.yml@next
     permissions:
       id-token: write
       contents: write
