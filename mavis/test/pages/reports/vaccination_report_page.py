@@ -51,30 +51,17 @@ class VaccinationReportPage:
                 download.save_as(_file_path)
                 _actual_df = pd.read_csv(_file_path)
             except PlaywrightTimeoutError:
-                # No download - check if CSV opened in a new page or current page
-                try:
-                    # Check for new page
-                    new_page = self.page.context.pages[-1]
-                    if new_page != self.page:
-                        new_page.wait_for_load_state("load", timeout=10000)
-                        pre_element = new_page.locator("pre")
-                        csv_content = pre_element.inner_text(timeout=5000)
-                        new_page.close()
-                        _actual_df = pd.read_csv(StringIO(csv_content))
-                    else:
-                        # No new page, so treat as current page case
-                        self.page.wait_for_load_state("load", timeout=10000)
-                        pre_element = self.page.locator("pre")
-                        csv_content = pre_element.inner_text(timeout=10000)
-                        self.page.go_back()
-                        _actual_df = pd.read_csv(StringIO(csv_content))
-                except (PlaywrightTimeoutError, IndexError):
-                    # CSV opened in current page
+                # No download - CSV opened in browser (new page or current page)
+                new_page = self.page.context.pages[-1]
+                if new_page != self.page:
+                    new_page.wait_for_load_state("load", timeout=10000)
+                    csv_content = new_page.locator("pre").inner_text(timeout=5000)
+                    new_page.close()
+                else:
                     self.page.wait_for_load_state("load", timeout=10000)
-                    pre_element = self.page.locator("pre")
-                    csv_content = pre_element.inner_text(timeout=10000)
+                    csv_content = self.page.locator("pre").inner_text(timeout=10000)
                     self.page.go_back()
-                    _actual_df = pd.read_csv(StringIO(csv_content))
+                _actual_df = pd.read_csv(StringIO(csv_content))
         else:
             with self.page.expect_download() as download_info:
                 self.click_download_report()
