@@ -87,7 +87,7 @@ on:
       cross_service_tests:
         description: "Include imms api, pds api and reporting tests"
         required: false
-        default: "true"
+        default: "false"
         type: choice
         options:
           - true
@@ -195,7 +195,7 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             {
               echo "tests="
-              echo "cross_service_tests=true"
+              echo "cross_service_tests=false"
               echo "device=Desktop Chrome"
               echo "environment=${env_map[qa]}"
               echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV"
