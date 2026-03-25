@@ -3,7 +3,7 @@ import datetime
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.data_models import Location, Programme
+from mavis.test.data_models import Location
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import get_todays_date, reload_until_element_is_visible
 
@@ -15,6 +15,10 @@ class ChildProgrammePage:
 
         self.vaccination_record_card = page.locator("section").filter(
             has=page.get_by_role("heading", name="Vaccination record"),
+        )
+
+        self.record_new_clinic_vaccination_button = page.get_by_role(
+            "button", name="Record a vaccination in clinic"
         )
 
         self.sessions_card = page.locator("section").filter(
@@ -30,10 +34,8 @@ class ChildProgrammePage:
             "Consent response manually matched with child record",
         )
 
-    def click_record_new_vaccination(self, programme: Programme) -> None:
-        self.page.get_by_role(
-            "button", name=f"Record a new {programme.name} vaccination"
-        ).click()
+    def click_record_new_clinic_vaccination(self) -> None:
+        self.record_new_clinic_vaccination_button.click()
 
     def _link_for_vaccination_record(self, date: datetime.date) -> Locator:
         return self.vaccination_record_card.filter(

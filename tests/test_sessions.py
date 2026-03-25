@@ -388,7 +388,7 @@ def test_add_child_to_community_clinic_session(
     ChildrenSearchPage(page).search.click_child(child)
 
     ChildRecordPage(page).click_programme(Programme.HPV)
-    ChildProgrammePage(page).click_record_new_vaccination(Programme.HPV)
+    ChildProgrammePage(page).click_record_new_clinic_vaccination()
 
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
