@@ -44,10 +44,10 @@ class SessionsVaccinationWizardPage:
     @step("Click on Confirm")
     def click_confirm_button(self) -> None:
         # Wait for navigation after clicking confirm (redirects to patient page)
-        with self.page.expect_navigation(wait_until="domcontentloaded", timeout=30000):
+        with self.page.expect_navigation(wait_until="domcontentloaded", timeout=10000):
             self.confirm_button.click()
-        # Wait for page to stabilize (especially important for Safari)
-        self.page.wait_for_load_state("networkidle", timeout=10000)
+        # Assert that the header is visible to ensure the page is ready
+        expect(self.header.page.locator("header")).to_be_visible()
 
     @step("Click on Confirm in two tabs simultaneously")
     def click_confirm_button_in_two_tabs(self) -> None:
