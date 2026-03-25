@@ -69,16 +69,19 @@ class SessionsPatientPage:
         self.ready_for_nasal_spray_radio = self.page.locator(
             "#vaccinate-form-vaccine-method-nasal-field",
         )
-        pre_screening = self.page.locator("section").filter(
+
+        vaccination_form = self.page.locator("form").filter(
             has=page.get_by_role("heading", name="Pre-screening checks"),
         )
 
-        self.pre_screening_listitem = pre_screening.get_by_role("listitem")
-        self.pre_screening_checkbox = pre_screening.get_by_role("checkbox")
-        self.pre_screening_notes = pre_screening.get_by_role(
-            "textbox",
-            name="Pre-screening notes (optional)",
+        self.pre_screening_listitem = vaccination_form.get_by_role("listitem")
+        self.pre_screening_checkbox = vaccination_form.get_by_role(
+            "checkbox", name="I have checked that the above statements are true"
         )
+        self.pre_screening_notes = vaccination_form.get_by_role(
+            "textbox", name="Pre-screening notes (optional)"
+        )
+
         vaccinations_card = page.get_by_role("table", name="Vaccination records")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.withdraw_consent_link = self.page.get_by_role(
