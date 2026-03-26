@@ -17,8 +17,6 @@ from mavis.test.pages import (
     StartPage,
 )
 
-pytestmark = pytest.mark.e2e
-
 
 @pytest.fixture
 def hpv_consent_url(schedule_session_and_get_consent_url, schools):

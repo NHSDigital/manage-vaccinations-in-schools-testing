@@ -20,8 +20,6 @@ def setup_session_for_mmr(setup_session_and_batches_with_fixed_child):
 
 
 @issue("MAV-955")
-@pytest.mark.rav
-@pytest.mark.bug
 @pytest.mark.parametrize(
     "consent_option",
     [

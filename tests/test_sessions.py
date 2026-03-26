@@ -27,8 +27,6 @@ from mavis.test.pages import (
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_alert_text, expect_details
 
-pytestmark = pytest.mark.sessions
-
 
 @pytest.fixture
 def setup_session_with_file_upload(
@@ -137,7 +135,6 @@ def test_create_invalid_session(
     SessionsEditPage(page).create_session_in_next_academic_year()
 
 
-@pytest.mark.bug
 def test_attendance_filters_functionality(
     setup_positive_upload,
     page,
@@ -170,7 +167,6 @@ def test_attendance_filters_functionality(
 
 
 @issue("MAV-1018")
-@pytest.mark.bug
 def test_session_search_functionality(
     setup_fixed_child,
     children,
@@ -200,7 +196,6 @@ def test_session_search_functionality(
 
 
 @issue("MAV-1381")
-@pytest.mark.bug
 def test_consent_filters(
     setup_fixed_child,
     page,
@@ -269,7 +264,6 @@ def test_session_activity_notes_order(
     )
 
 
-@pytest.mark.rav
 def test_triage_consent_given_and_triage_outcome(
     setup_fixed_child,
     schools,
@@ -318,7 +312,6 @@ def test_triage_consent_given_and_triage_outcome(
     SessionsOverviewPage(page).verify_offline_sheet_triage(child)
 
 
-@pytest.mark.rav
 def test_consent_refused_and_activity_log(
     setup_fixed_child,
     page,
@@ -353,9 +346,6 @@ def test_consent_refused_and_activity_log(
     )
 
 
-@pytest.mark.bug
-@pytest.mark.clinics
-@pytest.mark.rav
 def test_add_child_to_community_clinic_session(
     setup_fixed_child,
     add_vaccine_batch,

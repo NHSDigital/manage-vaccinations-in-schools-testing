@@ -24,8 +24,6 @@ from mavis.test.pages import (
 )
 from mavis.test.utils import expect_details, format_nhs_number
 
-pytestmark = pytest.mark.consent_responses
-
 
 @pytest.fixture(scope="session")
 def pds_api_helper(authenticate_api):

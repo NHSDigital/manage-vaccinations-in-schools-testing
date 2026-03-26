@@ -29,8 +29,6 @@ from mavis.test.pages import (
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_alert_text
 
-pytestmark = pytest.mark.consent
-
 
 @pytest.fixture
 def setup_session_with_file_upload(
@@ -153,7 +151,6 @@ def test_gillick_competence_notes(
     GillickCompetencePage(page).check_notes_length_error_appears()
 
 
-@pytest.mark.bug
 def test_invalid_consent(
     setup_fixed_child,
     page,
@@ -209,7 +206,6 @@ def test_invalid_consent(
     )
 
 
-@pytest.mark.bug
 def test_parent_provides_consent_twice(
     setup_fixed_child,
     page,
@@ -268,7 +264,6 @@ def test_parent_provides_consent_twice(
     )
 
 
-@pytest.mark.bug
 def test_conflicting_consent_with_gillick_consent(
     setup_fixed_child,
     page,

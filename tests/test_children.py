@@ -21,8 +21,6 @@ from mavis.test.pages import (
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_alert_text
 
-pytestmark = pytest.mark.children
-
 
 @pytest.fixture
 def setup_children_session(
@@ -107,7 +105,6 @@ def setup_mav_853(
 
 
 @issue("MAV-853")
-@pytest.mark.bug
 def test_patient_details_load_with_missing_vaccine_info(
     setup_mav_853,
     schools,
@@ -143,7 +140,6 @@ def test_patient_details_load_with_missing_vaccine_info(
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
 
 
-@pytest.mark.bug
 def test_invalid_nhs_number_change_is_rejected(
     setup_fixed_child,
     page,
@@ -172,7 +168,6 @@ def test_invalid_nhs_number_change_is_rejected(
 
 
 @issue("MAV-248", "MAV-1839")
-@pytest.mark.children
 def test_merge_child_records_does_not_crash(
     setup_child_merge,
     page,
@@ -210,7 +205,6 @@ def test_merge_child_records_does_not_crash(
 
 
 @issue("MAV-909", "MAV-1716")
-@pytest.mark.bug
 def test_archive_and_unarchive_child_via_cohort_upload(
     setup_fixed_child,
     page,

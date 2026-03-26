@@ -1,8 +1,5 @@
-import pytest
-
 from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
-from mavis.test.fixtures.helpers import setup_national_reporting_import
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -11,9 +8,6 @@ from mavis.test.pages import (
     ImportsPage,
     VaccinationRecordPage,
 )
-
-pytestmark = pytest.mark.national_reporting
-__fixtures__ = (setup_national_reporting_import,)
 
 
 def test_national_reporting_valid_data(

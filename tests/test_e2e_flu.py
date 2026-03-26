@@ -20,8 +20,6 @@ from mavis.test.pages import (
     VaccinationRecordPage,
 )
 
-pytestmark = pytest.mark.e2e
-
 
 @pytest.fixture
 def flu_consent_url(schedule_session_and_get_consent_url, schools):

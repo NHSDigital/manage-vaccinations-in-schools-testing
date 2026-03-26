@@ -23,7 +23,6 @@ from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_details
 
 
-@pytest.mark.childlist
 def test_child_file_upload_close_match(
     log_in_as_nurse,
     page,
@@ -124,7 +123,6 @@ def setup_vaccination_import(
     return session_id
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_close_match(
     setup_vaccination_import, page, point_of_care_file_generator
 ):

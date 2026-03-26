@@ -5,8 +5,6 @@ from mavis.test.data_models import User
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import DashboardPage, LogInPage, LogOutPage, StartPage
 
-pytestmark = pytest.mark.log_in
-
 
 @pytest.fixture(autouse=True)
 def go_to_log_in_page(page):

@@ -26,7 +26,6 @@ def setup_hist_vaccs(
     ).navigate_to_vaccination_records_import()
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_historic_valid_data(
     setup_hist_vaccs,
     page,
@@ -58,7 +57,6 @@ def test_vaccination_file_upload_historic_valid_data(
     ).upload_and_verify_output(VaccsFileMapping.HIST_POSITIVE)
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_historic_invalid_data(
     setup_hist_vaccs,
     page,

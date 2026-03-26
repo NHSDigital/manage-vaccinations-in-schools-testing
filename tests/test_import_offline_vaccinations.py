@@ -4,7 +4,6 @@ from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
-from mavis.test.fixtures.helpers import setup_national_reporting_import
 from mavis.test.pages import (
     ChildProgrammePage,
     ChildRecordPage,
@@ -19,9 +18,6 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import get_current_datetime
-
-# Fixtures used via request.getfixturevalue() in parametrized tests
-__fixtures__ = (setup_national_reporting_import,)
 
 
 @pytest.fixture
@@ -63,7 +59,6 @@ def setup_vaccs(
     return session_id
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_valid_data(
     setup_vaccs, page, point_of_care_file_generator
 ):
@@ -106,7 +101,6 @@ def test_vaccination_file_upload_valid_data(
     )
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_invalid_data(
     setup_vaccs, page, point_of_care_file_generator
 ):
@@ -140,7 +134,6 @@ def test_vaccination_file_upload_invalid_data(
 
 
 @pytest.mark.skip(reason="Need further clarification")
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_duplicate_records(
     setup_vaccs,
     page,
@@ -178,7 +171,6 @@ def test_vaccination_file_upload_duplicate_records(
 
 
 @issue("MAV-3408")
-@pytest.mark.bug
 @pytest.mark.parametrize(
     ("user_type", "setup_fixture", "file_generator_fixture", "include_session_id"),
     [
@@ -187,7 +179,6 @@ def test_vaccination_file_upload_duplicate_records(
             "setup_vaccs",
             "point_of_care_file_generator",
             True,
-            marks=pytest.mark.vaccinations,
             id="point_of_care",
         ),
         pytest.param(
@@ -195,7 +186,6 @@ def test_vaccination_file_upload_duplicate_records(
             "setup_national_reporting_import",
             "national_reporting_file_generator",
             False,
-            marks=pytest.mark.national_reporting,
             id="national_reporting",
         ),
     ],
@@ -237,7 +227,6 @@ def test_vaccination_file_upload_multiple_exact_duplicates(
         )
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_invalid_structure(
     setup_vaccs,
     page,
@@ -257,7 +246,6 @@ def test_vaccination_file_upload_invalid_structure(
     ).upload_and_verify_output(VaccsFileMapping.INVALID_STRUCTURE)
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_header_only(
     setup_vaccs, page, point_of_care_file_generator
 ):
@@ -275,7 +263,6 @@ def test_vaccination_file_upload_header_only(
     ).upload_and_verify_output(VaccsFileMapping.HEADER_ONLY)
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_empty_file(
     setup_vaccs, page, point_of_care_file_generator
 ):
@@ -293,8 +280,6 @@ def test_vaccination_file_upload_empty_file(
 
 
 @issue("MAV-855")
-@pytest.mark.vaccinations
-@pytest.mark.bug
 def test_vaccination_file_upload_creates_child_no_setting(
     setup_vaccs,
     schools,
@@ -332,8 +317,6 @@ def test_vaccination_file_upload_creates_child_no_setting(
     VaccinationRecordPage(page).expect_vaccination_details("Location", str(school))
 
 
-@pytest.mark.vaccinations
-@pytest.mark.bug
 def test_vaccination_file_upload_whitespace_normalization(
     setup_vaccs,
     page,
@@ -365,8 +348,6 @@ def test_vaccination_file_upload_whitespace_normalization(
 
 
 @issue("MAV-691")
-@pytest.mark.vaccinations
-@pytest.mark.bug
 def test_vaccination_file_upload_community_clinic_name_case(
     setup_vaccs,
     page,
