@@ -3,7 +3,7 @@ import os
 import time
 from typing import Any
 
-import requests
+import httpx
 
 
 class SidekiqHelper:
@@ -26,12 +26,10 @@ class SidekiqHelper:
             self.auth_headers = {}
 
         # Initialize session for maintaining cookies and state
-        self.session = requests.Session()
+        self.session = httpx.Client()
         self.session.headers.update(
             {
-                "User-Agent": (
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                ),
+                "User-Agent": "Mavis Testing",
                 **self.auth_headers,
             }
         )
@@ -51,8 +49,8 @@ class SidekiqHelper:
             None
 
         Raises:
-            requests.HTTPError: If the API request fails
-            requests.RequestException: If there's a network or connection error
+            httpx.HTTPStatusError: If the API request fails
+            httpx.RequestError: If there's a network or connection error
         """
         # Get initial stats to track job execution (if available)
         try:
@@ -70,7 +68,7 @@ class SidekiqHelper:
             else:
                 initial_enqueued = 0
             stats_available = True
-        except (requests.HTTPError, requests.RequestException, ValueError, KeyError):
+        except (httpx.HTTPStatusError, httpx.RequestError, ValueError, KeyError):
             initial_enqueued = 0
             stats_available = False
 
@@ -105,7 +103,7 @@ class SidekiqHelper:
             headers=request_headers,
             data=form_data,
             timeout=30,
-            allow_redirects=True,
+            follow_redirects=True,
         )
 
         enqueue_response = response
@@ -164,8 +162,8 @@ class SidekiqHelper:
                     return  # Job completed successfully
 
             except (
-                requests.HTTPError,
-                requests.RequestException,
+                httpx.HTTPStatusError,
+                httpx.RequestError,
                 ValueError,
                 KeyError,
             ):

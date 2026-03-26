@@ -5,9 +5,9 @@ import time
 import urllib.parse
 import uuid
 
+import httpx
 import jwt
 import pytest
-import requests
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +31,9 @@ def authenticate_api():
     }
     _headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-    response = requests.post(url=_endpoint, headers=_headers, data=_payload, timeout=30)
+    response = httpx.post(url=_endpoint, headers=_headers, data=_payload, timeout=30)
 
-    if not response.ok:
+    if not response.is_success:
         logger.warning(response.content)
     response.raise_for_status()
 

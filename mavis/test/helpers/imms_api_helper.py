@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import NamedTuple
 
 import dateutil.parser
-import requests
+import httpx
 
 from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data.file_utils import create_fhir_immunization_payload
@@ -21,7 +21,7 @@ class ImmsApiVaccinationRecord(NamedTuple):
 
     @classmethod
     def from_response(
-        cls, response: requests.Response
+        cls, response: httpx.Response
     ) -> "ImmsApiVaccinationRecord | None":
         data = response.json()
         immunization = next(
@@ -176,14 +176,14 @@ class ImmsApiHelper:
 
     def get_raw_api_response_for_child(
         self, vaccine: Vaccine, child: Child
-    ) -> requests.Response:
+    ) -> httpx.Response:
         _params = {
             "_include": "Immunization:patient",
             "-immunization.target": vaccine.programme.upper(),
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
-        response = requests.get(
+        response = httpx.get(
             url=ImmsEndpoints.READ.to_url,
             headers=self.headers,
             params=_params,
@@ -222,7 +222,7 @@ class ImmsApiHelper:
             True if record was created successfully
 
         Raises:
-            requests.HTTPError: If the API request fails
+            httpx.HTTPStatusError: If the API request fails
         """
         # Create FHIR Immunization resource payload
         immunization_payload = create_fhir_immunization_payload(
@@ -237,7 +237,7 @@ class ImmsApiHelper:
         create_headers = self.headers.copy()
         create_headers["content-type"] = "application/fhir+json"
 
-        response = requests.post(
+        response = httpx.post(
             url=ImmsEndpoints.CREATE.to_url,
             headers=create_headers,
             json=immunization_payload,

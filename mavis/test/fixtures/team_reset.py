@@ -1,8 +1,8 @@
 import logging
 import urllib.parse
 
+import httpx
 import pytest
-import requests
 
 from mavis.test.data_models import Team
 
@@ -29,7 +29,7 @@ def reset_before_each_module(
 
 
 def _check_response_status(response) -> None:
-    if not response.ok:
+    if not response.is_success:
         logger.warning(response.content)
     response.raise_for_status()
 
@@ -37,7 +37,7 @@ def _check_response_status(response) -> None:
 def _delete_team(base_url: str, team: Team, *, keep_itself: bool = False) -> None:
     url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
     params = {"keep_itself": "true"} if keep_itself else {}
-    response = requests.delete(url, params=params, timeout=30)
+    response = httpx.delete(url, params=params, timeout=30)
     _check_response_status(response)
 
 
@@ -48,5 +48,5 @@ def _delete_team_locations(
         base_url, f"api/testing/teams/{team.workgroup}/locations"
     )
     params = {"keep_base_locations": "true"} if keep_base_locations else {}
-    response = requests.delete(url, params=params, timeout=30)
+    response = httpx.delete(url, params=params, timeout=30)
     _check_response_status(response)

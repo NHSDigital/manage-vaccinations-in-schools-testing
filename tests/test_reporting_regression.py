@@ -3,8 +3,8 @@ import time
 import urllib.parse
 from datetime import UTC, datetime
 
+import httpx
 import pytest
-import requests
 
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
@@ -49,7 +49,7 @@ def _onboard_team(base_url):
 
 def _refresh_reporting(base_url):
     url = urllib.parse.urljoin(base_url, "api/testing/refresh-reporting")
-    response = requests.get(url, timeout=30)
+    response = httpx.get(url, timeout=30)
     response.raise_for_status()
     time.sleep(5)
 
