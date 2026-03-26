@@ -2,7 +2,7 @@ import os
 import re
 import time
 
-import requests
+import httpx
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
@@ -33,7 +33,7 @@ class ReportsVaccinationsPage(ReportsDashboardComponent):
         self.navigate()
         base_url = os.getenv("BASE_URL", "PROVIDEURL")
         refresh_reports_url = f"{base_url}/api/testing/refresh-reporting"
-        response = requests.get(refresh_reports_url, timeout=30)
+        response = httpx.get(refresh_reports_url, timeout=30)
         response.raise_for_status()
 
         time.sleep(5)

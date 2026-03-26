@@ -3,8 +3,8 @@ import random
 import time
 import urllib.parse
 
+import httpx
 import pytest
-import requests
 
 from mavis.test.constants import Programme
 from mavis.test.fixtures.data_models import logger
@@ -58,10 +58,10 @@ def _create_onboarding_with_retry[T: Onboarding](
     onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
 
     for attempt in range(1, max_attempts + 1):
-        response = requests.post(
+        response = httpx.post(
             onboarding_url, json=onboarding_data.to_dict(), timeout=30
         )
-        if response.ok:
+        if response.is_success:
             return onboarding_data
 
         logger.warning(

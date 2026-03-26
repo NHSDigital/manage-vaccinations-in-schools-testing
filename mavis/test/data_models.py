@@ -3,8 +3,8 @@ import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import date
 
+import httpx
 import nhs_number
-import requests
 from attr import dataclass
 from faker import Faker
 
@@ -78,7 +78,7 @@ class School(Location):
                 "site": "",
             }
 
-            response = requests.get(url, params=params, timeout=30)
+            response = httpx.get(url, params=params, timeout=30)
             response.raise_for_status()
 
             data = response.json()

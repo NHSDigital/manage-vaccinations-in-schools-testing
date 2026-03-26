@@ -8,7 +8,7 @@ from typing import NamedTuple
 from zoneinfo import ZoneInfo
 
 import dateutil.parser
-import requests
+import httpx
 from dateutil.relativedelta import relativedelta
 
 from mavis.test.constants import PdsEndpoints, Relationship
@@ -140,7 +140,7 @@ class PdsApiHelper:
     def _is_valid_child_patient(self, child: Patient) -> bool:
         try:
             child_in_pds = self.get_patient_by_nhs_number(child.nhs_number)
-        except requests.exceptions.HTTPError as e:
+        except httpx.HTTPStatusError as e:
             if e.response.status_code in {404, 429}:
                 return False
             raise
@@ -152,13 +152,13 @@ class PdsApiHelper:
 
         try:
             return self._confirm_patient_can_be_found_by_search(child)
-        except requests.exceptions.HTTPError as e:
+        except httpx.HTTPStatusError as e:
             if e.response.status_code in {404, 429}:
                 return False
             return False
 
     def get_patient_by_nhs_number(self, nhs_number: str) -> Patient:
-        response = requests.get(
+        response = httpx.get(
             url=PdsEndpoints.GET_PATIENT_DETAILS.to_url_with_suffix(nhs_number),
             headers=self.headers,
             timeout=30,
@@ -212,7 +212,7 @@ class PdsApiHelper:
         )
 
     def _confirm_patient_can_be_found_by_search(self, patient: Patient) -> bool:
-        response = requests.get(
+        response = httpx.get(
             url=PdsEndpoints.SEARCH_FOR_PATIENT.to_url_with_suffix(
                 f"family={patient.family_name}"
                 f"&given={patient.given_name}"
