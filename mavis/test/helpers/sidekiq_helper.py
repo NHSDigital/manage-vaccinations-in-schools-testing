@@ -29,9 +29,7 @@ class SidekiqHelper:
         self.session = httpx.Client()
         self.session.headers.update(
             {
-                "User-Agent": (
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                ),
+                "User-Agent": "Mavis Testing",
                 **self.auth_headers,
             }
         )
