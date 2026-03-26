@@ -39,12 +39,12 @@ def test_create_imms_record_then_verify_on_children_page(
     schools,
 ):
     """
-    Test: Create a vaccination record via IMMS API, then log into MAVIS as a nurse.
+    Test: Create a vaccination record via IMMS API, then log into Mavis as a nurse.
 
     Steps:
     1. Create a vaccination record directly via IMMS API
     2. Verify the record was created successfully
-    3. Navigate to MAVIS login page
+    3. Navigate to Mavis login page
     4. Log in as a nurse
     5. Navigate to the children page
     6. Search for the child associated with the vaccination record
@@ -73,7 +73,7 @@ def test_create_imms_record_then_verify_on_children_page(
 
     SidekiqHelper().run_recurring_job(sidekiq_job_name)
 
-    # Verify the child created via IMMS API is visible in MAVIS children page
+    # Verify the child created via IMMS API is visible in Mavis children page
     DashboardPage(page).navigate()
     DashboardPage(page).click_children()
 

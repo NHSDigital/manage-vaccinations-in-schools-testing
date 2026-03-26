@@ -49,10 +49,9 @@ RUN curl -sSO --output-dir ${JMETER_HOME}/lib https://repo1.maven.org/maven2/org
 RUN sed -i '$ajmeterPlugin.sts.loadAndRunOnStartup=true \njmeterPlugin.sts.port=9191 \njmeterPlugin.sts.daemon=false \njsr223.init.file=/opt/jmeter/bin/simple-table-server.groovy' ${JMETER_HOME}/bin/user.properties
 
 # Set report defaults
-RUN sed -i '$ajmeter.reportgenerator.report_title="MAVIS test report" \njmeter.reportgenerator.overall_granularity=10000 \njmeter.reportgenerator.sample_filter="^.*[^0-9]$"' ${JMETER_HOME}/bin/user.properties
+RUN sed -i '$ajmeter.reportgenerator.report_title="Mavis test report" \njmeter.reportgenerator.overall_granularity=10000 \njmeter.reportgenerator.sample_filter="^.*[^0-9]$"' ${JMETER_HOME}/bin/user.properties
 
 # Create blank data files for STS
 RUN cd /opt/jmeter/bin && touch consents.txt && touch vaccinations.txt
 
 ENTRYPOINT ["/bin/bash"]
-
