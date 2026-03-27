@@ -42,7 +42,7 @@ jobs:
           - device: iPhone 15
             os: macos-latest
             cache_path: ~/Library/Caches/ms-playwright
-      max-parallel: 5
+      max-parallel: 1
 
     runs-on: ${{ matrix.os }}
     env:
