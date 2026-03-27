@@ -33,6 +33,10 @@ class SessionsChildrenPage:
     def click_on_attending(self) -> None:
         self.attending_button.click()
 
+    @step("Click on child to view patient session page")
+    def click_child(self, child: Child) -> None:
+        self.page.get_by_role("link", name=str(child)).last.click()
+
     def verify_child_shows_correct_flu_consent_method(
         self,
         child: Child,
@@ -60,3 +64,22 @@ class SessionsChildrenPage:
         heading = self.page.get_by_role("heading", name=str(child))
         next_element = heading.locator("xpath=following-sibling::*[1]")
         expect(next_element.get_by_role("blockquote")).to_have_text(note)
+
+    @step("Verify child programme status is {2} {3}")
+    def expect_child_programme_status(
+        self,
+        child: Child,
+        programme: str,
+        status: str,
+        additional_text: str | None = None,
+    ) -> None:
+        child_locator = self.search.get_patient_card_locator(child)
+        programme_status_section = child_locator.locator(f"p:has-text('{programme}')")
+        reload_until_element_is_visible(self.page, programme_status_section)
+
+        expect(programme_status_section).to_contain_text(status)
+        if additional_text:
+            additional_text_locator = programme_status_section.get_by_text(
+                additional_text
+            )
+            reload_until_element_is_visible(self.page, additional_text_locator)

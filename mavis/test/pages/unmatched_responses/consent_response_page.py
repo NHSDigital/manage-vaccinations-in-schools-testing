@@ -16,6 +16,7 @@ class ConsentResponsePage:
             exact=True,
         )
         self.match_link = page.get_by_role("link", name="Match", exact=True)
+        self.follow_up_link = page.get_by_role("link", name="Follow up", exact=True)
 
     @step("Click on Archive")
     def click_archive(self) -> None:

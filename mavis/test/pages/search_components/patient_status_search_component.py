@@ -32,6 +32,10 @@ class PatientStatusSearchComponent(PatientSearchComponent):
             "checkbox",
             name="Conflicting consent",
         )
+        self.follow_up_requested_checkbox = self.page.get_by_role(
+            "checkbox",
+            name="Follow-up requested",
+        )
 
     @step("Select Needs consent")
     def select_needs_consent(self) -> None:
@@ -52,6 +56,10 @@ class PatientStatusSearchComponent(PatientSearchComponent):
     @step("Select Conflicting consent")
     def select_conflicting_consent(self) -> None:
         self.conflicting_consent_checkbox.check()
+
+    @step("Select Follow-up requested")
+    def select_follow_up_requested(self) -> None:
+        self.follow_up_requested_checkbox.check()
 
     @step("Expect Has a refusal to be selected")
     def expect_has_a_refusal_to_be_selected(self) -> None:

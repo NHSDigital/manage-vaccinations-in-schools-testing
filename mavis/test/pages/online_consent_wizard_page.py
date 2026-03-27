@@ -10,6 +10,7 @@ from mavis.test.constants import (
     Programme,
 )
 from mavis.test.data_models import Child, Parent, School
+from mavis.test.utils import expect_details
 
 
 class OnlineConsentWizardPage:
@@ -123,6 +124,12 @@ class OnlineConsentWizardPage:
         self.follow_up_question_no_radio = self.page.get_by_role(
             "radio",
             name="No",
+        )
+        self.change_discuss_options_link = self.page.get_by_role(
+            "link", name="Change  follow-up request"
+        )
+        self.change_reason_for_refusal_link = self.page.get_by_role(
+            "link", name="Change  reason for refusal"
         )
 
     @step("Click Continue")
@@ -337,6 +344,44 @@ class OnlineConsentWizardPage:
         confirmation = self.page.locator(".nhsuk-panel.nhsuk-panel--confirmation")
         expect(confirmation).to_contain_text(text)
 
+    @step("Verify check and confirm refusal details")
+    def verify_check_and_confirm_refusal_details(
+        self, refusal_reason: ConsentRefusalReason, *, follow_up_requested: bool
+    ) -> None:
+        expect_details(self.page, "Reason", str(refusal_reason))
+        expected_discuss_value = "Yes" if follow_up_requested else "No"
+        expect_details(self.page, "Discuss options", expected_discuss_value)
+
+    @step("Verify follow-up hint text")
+    def verify_follow_up_hint_text(self, refusal_reason: ConsentRefusalReason) -> None:
+        hint_text_medical = (
+            "We understand alternatives might not be suitable in some cases."
+        )
+        hint_text_gelatine = (
+            "For example, it may be possible to use a vaccine that "
+            "does not contain gelatine"
+        )
+
+        if refusal_reason is ConsentRefusalReason.MEDICAL_REASONS:
+            expect(self.page.get_by_text(hint_text_medical)).to_be_visible()
+        elif refusal_reason is ConsentRefusalReason.CONTAINS_GELATINE:
+            expect(self.page.get_by_text(hint_text_gelatine)).to_be_visible()
+        else:
+            expect(self.page.get_by_text(hint_text_medical)).not_to_be_visible()
+            expect(self.page.get_by_text(hint_text_gelatine)).not_to_be_visible()
+
+    @step("Click Change link for discuss options")
+    def click_change_discuss_options(self) -> None:
+        self.change_discuss_options_link.click()
+
+    @step("Click Change link for refusal reason")
+    def click_change_refusal_reason(self) -> None:
+        self.change_reason_for_refusal_link.click()
+
+    @step("Verify Discuss options is not shown")
+    def verify_discuss_options_not_shown(self) -> None:
+        expect(self.page.get_by_text("Discuss options")).not_to_be_visible()
+
     def go_to_url(self, url: str) -> None:
         self.page.goto(url)
 
@@ -357,6 +402,45 @@ class OnlineConsentWizardPage:
             self.select_child_school(schools[0])
 
         self.fill_parent_details(parent)
+
+    @step("Submit refused consent, follow-up requested: {follow_up_requested}")
+    def submit_refusal(
+        self,
+        reason: ConsentRefusalReason = ConsentRefusalReason.PERSONAL_CHOICE,
+        *,
+        follow_up_requested: bool = False,
+        details: str | None = None,
+    ) -> None:
+        self.dont_agree_to_vaccination()
+        self.select_consent_not_given_reason(reason, details)
+        if reason.has_follow_up_option:
+            self.answer_follow_up_question(yes_to_follow_up_request=follow_up_requested)
+        self.click_confirm()
+
+    @step("Submit given consent")
+    def submit_positive_consent(
+        self,
+        child: Child,
+        programme: Programme,
+        consent_option: ConsentOption,
+        *,
+        yes_to_health_questions: bool = False,
+    ) -> None:
+        if programme is Programme.MMR_MMRV:
+            self.agree_to_mmr_vaccination(consent_option)
+        elif programme is Programme.HPV:
+            self.agree_to_hpv_vaccination()
+        elif programme is Programme.FLU:
+            self.agree_to_flu_vaccination(consent_option)
+        elif programme in (Programme.MENACWY, Programme.TD_IPV):
+            self.agree_to_doubles_vaccinations(programme)
+
+        self.fill_address_details(*child.address)
+        number_of_questions = len(programme.health_questions(consent_option))
+        self.answer_health_questions(
+            number_of_questions, yes_to_health_questions=yes_to_health_questions
+        )
+        self.click_confirm()
 
     def answer_health_questions(
         self, number_of_questions: int, *, yes_to_health_questions: bool

@@ -432,6 +432,13 @@ class ConsentRefusalReason(StrEnum):
             ConsentRefusalReason.CONTAINS_GELATINE,
         )
 
+    @property
+    def has_follow_up_option(self) -> bool:
+        return self not in (
+            ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
+            ConsentRefusalReason.VACCINE_WILL_BE_GIVEN_ELSEWHERE,
+        )
+
 
 class ConsentMethod(StrEnum):
     PHONE = "By phone"

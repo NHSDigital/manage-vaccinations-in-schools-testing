@@ -214,6 +214,13 @@ class SessionsPatientPage:
     def click_response_from_parent(self, parent: Parent) -> None:
         self.page.get_by_role("link", name=parent.full_name).click()
 
+    @step("Verify original response from parent is invalidated")
+    def verify_original_response_invalidated(self, parent: Parent, notes: str) -> None:
+        self.page.get_by_role("link", name=parent.full_name).last.click()
+        expect_details(self.page, "Response", "Invalid")
+        expect_details(self.page, "Notes", notes)
+        self.click_back()
+
     def click_withdraw_consent(self) -> None:
         self.withdraw_consent_link.click()
 
@@ -245,6 +252,9 @@ class SessionsPatientPage:
 
     def expect_consent_status(self, programme: Programme, status: str) -> None:
         expect(self.page.get_by_text(f"{programme}: {status}")).to_be_visible()
+
+    def expect_consent_recorded_success(self) -> None:
+        expect_alert_text(self.page, "Consent recorded")
 
     def expect_child_safe_to_vaccinate(self, child: Child) -> None:
         expect(
