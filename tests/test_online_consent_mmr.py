@@ -12,8 +12,6 @@ from mavis.test.utils import (
     read_pdf_as_normalized_text,
 )
 
-pytestmark = pytest.mark.consent
-
 
 @pytest.fixture
 def url_with_mmr_session_scheduled(schedule_mmr_session_and_get_consent_url, schools):

@@ -18,7 +18,6 @@ def setup_systmone_nivs(
     ).navigate_to_vaccination_records_import()
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_systmone_valid_data(
     setup_systmone_nivs,
     page,
@@ -40,7 +39,6 @@ def test_vaccination_file_upload_systmone_valid_data(
     ).upload_and_verify_output(VaccsFileMapping.SYSTMONE_POSITIVE)
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_systmone_invalid_data(
     setup_systmone_nivs,
     page,
@@ -66,7 +64,6 @@ def test_vaccination_file_upload_systmone_invalid_data(
     ).upload_and_verify_output(VaccsFileMapping.SYSTMONE_NEGATIVE)
 
 
-@pytest.mark.vaccinations
 def test_vaccination_file_upload_systmone_historic_invalid_data(
     setup_systmone_nivs,
     page,
@@ -93,8 +90,6 @@ def test_vaccination_file_upload_systmone_historic_invalid_data(
     )
 
 
-@pytest.mark.vaccinations
-@pytest.mark.bug
 def test_vaccination_file_upload_systmone_whitespace_normalization(
     setup_systmone_nivs,
     page,
@@ -119,8 +114,6 @@ def test_vaccination_file_upload_systmone_whitespace_normalization(
 
 
 @issue("MAV-1547")
-@pytest.mark.vaccinations
-@pytest.mark.bug
 def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
     setup_systmone_nivs,
     page,
@@ -142,8 +135,6 @@ def test_vaccination_file_upload_nivs_disallow_flu_for_previous_years(
 
 
 @issue("MAV-1599")
-@pytest.mark.vaccinations
-@pytest.mark.bug
 def test_vaccination_file_upload_systmone_disallow_flu_for_previous_years(
     setup_systmone_nivs,
     page,

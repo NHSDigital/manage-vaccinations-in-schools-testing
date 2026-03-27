@@ -26,8 +26,6 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 
-pytestmark = pytest.mark.tallying
-
 
 @pytest.fixture
 def setup_flu_vaccination(
@@ -66,7 +64,6 @@ def setup_fixed_child(setup_flu_vaccination):
 
 
 @issue("MAV-1669")
-@pytest.mark.bug
 def test_tallying(  # noqa: PLR0915
     setup_fixed_child,
     page,

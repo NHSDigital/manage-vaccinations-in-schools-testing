@@ -20,8 +20,6 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 
-pytestmark = pytest.mark.school_moves
-
 
 @pytest.fixture
 def setup_confirm_and_ignore(

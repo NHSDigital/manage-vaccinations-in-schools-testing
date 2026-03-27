@@ -1,4 +1,3 @@
-import pytest
 from playwright.sync_api import expect
 
 from mavis.test.constants import Programme
@@ -14,8 +13,6 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.schools.school_children_page import SchoolChildrenPage
 from mavis.test.pages.schools.schools_search_page import SchoolsSearchPage
-
-pytestmark = pytest.mark.team
 
 
 def test_check_team_contact_details(page, log_in_as_nurse, point_of_care_team):

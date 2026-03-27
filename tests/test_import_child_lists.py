@@ -24,7 +24,6 @@ def setup_child_import(
     ).navigate_to_child_record_import()
 
 
-@pytest.mark.childlist
 def test_child_list_file_upload_valid_data(
     setup_child_import,
     page,
@@ -51,7 +50,6 @@ def test_child_list_file_upload_valid_data(
     ).upload_and_verify_output(ChildFileMapping.POSITIVE)
 
 
-@pytest.mark.childlist
 def test_child_list_file_upload_invalid_data(
     setup_child_import,
     page,
@@ -74,7 +72,6 @@ def test_child_list_file_upload_invalid_data(
     ).upload_and_verify_output(ChildFileMapping.NEGATIVE)
 
 
-@pytest.mark.childlist
 def test_child_list_file_upload_invalid_structure(
     setup_child_import,
     page,
@@ -93,7 +90,6 @@ def test_child_list_file_upload_invalid_structure(
     ).upload_and_verify_output(ChildFileMapping.INVALID_STRUCTURE)
 
 
-@pytest.mark.childlist
 def test_child_list_file_upload_header_only(
     setup_child_import,
     page,
@@ -112,7 +108,6 @@ def test_child_list_file_upload_header_only(
     ).upload_and_verify_output(ChildFileMapping.HEADER_ONLY)
 
 
-@pytest.mark.childlist
 def test_child_list_file_upload_empty_file(
     setup_child_import,
     page,
@@ -131,8 +126,6 @@ def test_child_list_file_upload_empty_file(
     ).upload_and_verify_output(ChildFileMapping.EMPTY_FILE)
 
 
-@pytest.mark.childlist
-@pytest.mark.bug
 def test_child_list_file_upload_whitespace_normalization(
     setup_child_import,
     page,

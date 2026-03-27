@@ -19,8 +19,6 @@ def upload_offline_vaccination_hpv(upload_offline_vaccination, add_vaccine_batch
     yield from upload_offline_vaccination(Programme.HPV)
 
 
-@pytest.mark.rav
-@pytest.mark.bug
 def test_edit_vaccination_dose_to_not_given_and_bac(
     log_in_as_nurse,
     setup_gardasil_batch,

@@ -76,7 +76,7 @@ class DashboardPage:
     def navigate(self) -> None:
         self.page.goto("/dashboard")
 
-    @step("Verify MAVIS link is visible")
+    @step("Verify Mavis link is visible")
     def verify_mavis_link_visible(self) -> None:
         expect(self.header.mavis_link).to_be_visible()
 

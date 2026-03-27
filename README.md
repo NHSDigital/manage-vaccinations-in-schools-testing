@@ -19,19 +19,24 @@ The end-to-end tests are written using [Playwright] with [Pytest].
 
 ### Installation
 
-For executing the tests via GitHub workflow, refer to the workflows [README.md]
+For executing the tests via GitHub workflow, refer to the workflows [README.md].
 
 [README.md]: https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/tree/main/.github/workflows/
 
 To execute the tests from your system, follow the steps below:
 
-1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods). `uv` will attempt to detect and use a compatible Python installation. Otherwise, it will install a compatible version to use at runtime. Verify the installation with:
+1. Install [uv][uv]. `uv` will attempt to detect and use a compatible Python
+   installation. Otherwise, it will install a compatible version to use at
+   runtime. Verify the installation with:
 
    ```shell
    $ uv sync
    ```
 
-1. Create a .env file. Speak to a team member to get the contents of the .env file.
+[uv]: https://docs.astral.sh/uv/getting-started/installation/#installation-methods
+
+1. Create a `.env` file. Speak to a team member to get the contents of the
+   `.env` file.
 
    ```shell
    $ cp .env.generic .env
@@ -43,7 +48,8 @@ To execute the tests from your system, follow the steps below:
    $ uv run playwright install
    ```
 
-1. **Optional:** if running tests against a local version of Mavis, ensure GIAS locations are loaded. Run this from your Mavis repository:
+1. **Optional:** if running tests against a local version of Mavis, ensure
+   GIAS locations are loaded. Run this from your Mavis repository:
 
    ```shell
    $ bin/mavis gias import
@@ -65,7 +71,8 @@ There are two ways to run commands with `uv`
     $ uv run pytest
     ```
 
-* You can run commands from inside the `uv` virtual environment, by first creating the environment and then activating it.
+* You can run commands from inside the `uv` virtual environment, by first
+  creating the environment and then activating it.
 
     ```shell
     $ uv venv
@@ -75,13 +82,16 @@ There are two ways to run commands with `uv`
 
 ### Playwright CLI arguments
 
-Playwright offers many [CLI arguments] which can be used when running tests. Some useful ones are highlighted here:
+Playwright offers many [CLI arguments] which can be used when running tests.
+Some useful ones are highlighted here:
 
 [CLI arguments]: https://playwright.dev/python/docs/test-runners#cli-arguments
 
 #### Browsers and devices
 
-Playwright can emulate running tests on various [devices]. By default, the tests use `Desktop Chrome`. This can be changed by using the `--device` CLI argument like so:
+Playwright can emulate running tests on various [devices]. By default, the
+tests use `Desktop Chrome`. This can be changed by using the `--device` CLI
+argument like so:
 
 ```shell
 $ pytest --device "iPhone 15"
@@ -91,8 +101,8 @@ $ pytest --device "iPhone 15"
 
 #### Headless mode
 
-By default the tests will run in headless mode. To
-run the tests in headed mode, use the following command:
+By default, the tests will run in headless mode. To run the tests in headed
+mode, use the following command:
 
 ```shell
 $ pytest --headed
@@ -112,7 +122,8 @@ Pytest also has some useful CLI arguments
 
 #### Markers
 
-Some tests are grouped using markers. You can include/exclude groups with the `-m` flag: 
+Some tests are grouped using markers. You can include/exclude groups with the
+`-m` flag: 
 
 ```shell
 $ pytest -m log_in
@@ -120,7 +131,11 @@ $ pytest -m "not imms_api and not pds_api and not accessibility"
 ```
 #### Parallel test execution
 
-This repository uses [pytest-xdist] to run test modules in parallel. The number of available workers is equal to the number of CPUs that your system has. By default, when running tests locally, all available workers will be used when running multiple test modules. This behaviour can be configured with the `-n` flag.
+This repository uses [pytest-xdist] to run test modules in parallel. The
+number of available workers is equal to the number of CPUs that your system
+has. By default, when running tests locally, all available workers will be
+used when running multiple test modules. This behaviour can be configured
+with the `-n` flag.
 
 ```shell
 $ pytest -n 4    # only use 4 workers
@@ -132,7 +147,9 @@ $ pytest -n 0    # disable pytest-xdist
 ### Reporting
 
 While the tests are running, results are stored in `allure-results` which can
-then be used to generate a report. Using the `--single-file` flag generates an html which can be easily shared and can be opened in any browser. This requires a Java installation.
+then be used to generate a report. Using the `--single-file` flag generates an
+HTML file which can be easily shared and can be opened in any browser. This
+requires a Java installation.
 
 ```shell
 $ npm install
@@ -151,7 +168,7 @@ $ ruff check --fix
 
 [Ruff]:https://github.com/astral-sh/ruff
 
-`actionlint` and `yamllint` are used to lint GitHub actions and other yaml files
+`actionlint` and `yamllint` are used to lint GitHub actions and other YAML files
 
 ```shell
 $ actionlint
@@ -160,33 +177,58 @@ $ yamllint .
 
 ### Playwright Page Object Model
 
-The Playwright [Page Object Model] (or POM) approach is taken when developing this repository. Each page/wizard in Mavis should have its own Page object, storing all appropriate locators and methods. When multiple pages use the same locators/methods, a component should be created that extracts these. Then page objects can access this functionality via the component. See `mavis/test/pages/header_component.py` and its usages for an example.
+The Playwright [Page Object Model] (or POM) approach is taken when developing
+this repository. Each page/wizard in Mavis should have its own Page object,
+storing all appropriate locators and methods. When multiple pages use the same
+locators/methods, a component should be created that extracts these. Then page
+objects can access this functionality via the component. See
+`mavis/test/pages/header_component.py` and its usages for an example.
 
 [Page Object Model]:https://playwright.dev/docs/pom
 
 ### Test data
 
-Test data is created before running tests using the `/api/testing/onboard` endpoint of the chosen MAVIS environment. The data is then cleaned up at the end. Most of this can be seen [here]. The following process is performed for each worker:
+Test data is created before running tests using the `/api/testing/onboard`
+endpoint of the chosen Mavis environment. The data is then cleaned up at the
+end. Most of this can be seen [here]. The following process is performed for
+each worker:
 
 1. For each programme group (HPV, Flu, Doubles, MMR)
    1. A random valid year group is selected.
-   2. Two random valid schools that have this year group are retrieved using the MAVIS `/api/testing/locations` endpoint.
-2. User, team, and organisation data is generated by the test worker for both a "point of care" team and a "national reporting" team
-3. The school, user, team, and organisation data is sent to the MAVIS `/api/testing/onboard` endpoint, inserting all of this data into the database and linking the schools to the "point of care" team.
-4. The test worker also generates two children for each programme which are not immediately added to the database but can be imported later.
-5. The generated test data is provided as a set of fixtures, which can be injected into tests (or other fixtures). Some common examples:
-   - `children` – provides two children for each programme group (in the form of a map)
-   - `schools` – provides two schools for each programme group (also in the form of a map)
-   - `point_of_care_nurse` – provides a nurse user for the "point of care" team
-   - `national_reporting_nurse` – provides a nurse user for the "national reporting" team
-6. After a test module has finished, the worker clears out any data created by running the test module by calling the MAVIS `/api/testing/teams/<workgroup>` endpoint with parameter `keep_itself=true`.
-7. After a worker has finished running all test modules allocated to it, it calls the MAVIS `/api/testing/teams/<workgroup>` endpoint without the `keep_itself` parameter, which clears all associated with the team used by the worker including the team itself. No data should remain after a test run.
+   2. Two random valid schools that have this year group are retrieved using
+      the Mavis `/api/testing/locations` endpoint.
+2. User, team, and organisation data is generated by the test worker for both
+   a "point of care" team and a "national reporting" team
+3. The school, user, team, and organisation data is sent to the Mavis
+   `/api/testing/onboard` endpoint, inserting all of this data into the
+   database and linking the schools to the "point of care" team.
+4. The test worker also generates two children for each programme which are
+   not immediately added to the database but can be imported later.
+5. The generated test data is provided as a set of fixtures, which can be
+   injected into tests (or other fixtures). Some common examples:
+   - `children` – provides two children for each programme group (in the form 
+     of a map)
+   - `schools` – provides two schools for each programme group (also in the
+     form of a map)
+   - `point_of_care_nurse` – provides a nurse user for the "point of care"
+     team
+   - `national_reporting_nurse` – provides a nurse user for the "national
+     reporting" team
+6. After a test module has finished, the worker clears out any data created by
+   running the test module by calling the Mavis
+   `/api/testing/teams/<workgroup>` endpoint with parameter `keep_itself=true`.
+7. After a worker has finished running all test modules allocated to it, it
+   calls the Mavis `/api/testing/teams/<workgroup>` endpoint without the
+   `keep_itself` parameter, which clears all associated with the team used by
+   the worker including the team itself. No data should remain after a test
+   run.
 
 [here]: https://github.com/NHSDigital/manage-vaccinations-in-schools-testing/blob/main/mavis/test/fixtures/data_models.py
 
 ### More information
 
-Further details on the scope and approach of the automation are on the [NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).
+Further details on the scope and approach of the automation are on the
+[NHSD Confluence page](https://nhsd-confluence.digital.nhs.uk/pages/viewpage.action?spaceKey=Vacc&title=Mavis+Test+Automation).
 
 ## Performance tests
 
@@ -218,7 +260,7 @@ Older workflows are no longer viable due to the amount of data involved. Only th
 
 The script is now presented as a 'single click' execution as the 'Performance' GitHub workflow, with many default values being acceptable for repeated testing. For greater control the options and their usage is listed below. 
 
-- Use Workflow from xxxxx . Use Main branch where possible, unless testing a code change in a different branch.
+- Use Workflow from xxxxx. Use Main branch where possible, unless testing a code change in a different branch.
 - Add a new session date, default is true. This takes an unused session that has cohorts added to it, and creates session dates for today and tomorrow. The default organisation has more than 400 schools for each programme so should not need refreshing for quite some time.
 - Run consent journey, default is true. This completes consents for any/all of the active sessions (including the one created above). This can be run without the previous step if there are already open sessions for today.
 - Run nurse journey, default is true. This completes vaccinations for any/all of the active consents (including the ones created from the consent journey). This can be run without previous steps if there are already sufficient consents for open sessions.

@@ -35,7 +35,6 @@ def setup_class_list_import(
     ).navigate_to_class_list_record_import(str(school), year_group)
 
 
-@pytest.mark.classlist
 def test_class_list_file_upload_valid_data(
     setup_class_list_import,
     page,
@@ -62,7 +61,6 @@ def test_class_list_file_upload_valid_data(
     ).upload_and_verify_output(ClassFileMapping.POSITIVE)
 
 
-@pytest.mark.classlist
 def test_class_list_file_upload_invalid_data(
     setup_class_list_import,
     page,
@@ -86,7 +84,6 @@ def test_class_list_file_upload_invalid_data(
     ).upload_and_verify_output(ClassFileMapping.NEGATIVE)
 
 
-@pytest.mark.classlist
 def test_class_list_file_upload_invalid_structure(
     setup_class_list_import,
     page,
@@ -105,7 +102,6 @@ def test_class_list_file_upload_invalid_structure(
     ).upload_and_verify_output(ClassFileMapping.INVALID_STRUCTURE)
 
 
-@pytest.mark.classlist
 def test_class_list_file_upload_header_only(
     setup_class_list_import,
     page,
@@ -125,7 +121,6 @@ def test_class_list_file_upload_header_only(
     ).upload_and_verify_output(ClassFileMapping.HEADER_ONLY)
 
 
-@pytest.mark.classlist
 def test_class_list_file_upload_empty_file(
     setup_class_list_import,
     page,
@@ -144,7 +139,6 @@ def test_class_list_file_upload_empty_file(
     ).upload_and_verify_output(ClassFileMapping.EMPTY_FILE)
 
 
-@pytest.mark.classlist
 def test_class_list_file_upload_wrong_year_group(
     setup_class_list_import,
     page,
@@ -163,8 +157,6 @@ def test_class_list_file_upload_wrong_year_group(
     ).upload_and_verify_output(ClassFileMapping.WRONG_YEAR_GROUP)
 
 
-@pytest.mark.classlist
-@pytest.mark.bug
 def test_class_list_file_upload_whitespace_normalization(
     setup_class_list_import,
     page,
@@ -192,7 +184,6 @@ def test_class_list_file_upload_whitespace_normalization(
 
 
 @issue("MAV-3840")
-@pytest.mark.classlist
 def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     log_in_as_nurse,
     schools,

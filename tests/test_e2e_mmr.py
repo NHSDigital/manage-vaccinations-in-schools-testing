@@ -15,8 +15,6 @@ from mavis.test.pages import (
 )
 from mavis.test.utils import generate_random_dob_for_mmr_not_mmrv
 
-pytestmark = pytest.mark.e2e
-
 
 @pytest.fixture
 def url_with_mmr_session_scheduled(schedule_mmr_session_and_get_consent_url, schools):

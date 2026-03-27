@@ -43,28 +43,10 @@ log_cli_date_format = "%H:%M:%S"
 addopts = "-vs -rf --alluredir allure-results -n auto --dist=loadscope"
 markers = [
   "accessibility",
-  "bug",
-  "childlist",
-  "children",
-  "classlist",
-  "clinics",
-  "consent",
-  "consent_responses",
-  "e2e",
   "imms_api",
-  "log_in",
-  "national_reporting",
   "pds_api",
-  "rav",
   "reporting",
-  "school_moves",
-  "schools",
-  "sessions",
   "smoke",
-  "tallying",
-  "team",
-  "vaccinations",
-  "vaccines",
 ]
 
 [tool.ruff]

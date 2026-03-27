@@ -14,8 +14,6 @@ from mavis.test.pages import (
     SchoolsSearchPage,
 )
 
-pytestmark = pytest.mark.clinics
-
 
 @issue("MAV-2854")
 def test_single_from_child_record(

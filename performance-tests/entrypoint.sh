@@ -39,7 +39,7 @@ if [ "$RUN_CONSENT" = true ]; then
         -l /output/consent/samples.jtl \
         -j /output/consent/jmeter.log \
         -e -o /output/consent/report \
-        -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+        -Jjmeter.reportgenerator.report_title="Mavis test report" \
         -Jjmeter.reportgenerator.overall_granularity=10000 \
         -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
         -JAuthToken="$AUTH_TOKEN" \
@@ -63,7 +63,7 @@ if [ "$RUN_NURSE" = true ]; then
         -l /output/nurse/samples.jtl \
         -j /output/nurse/jmeter.log \
         -e -o /output/nurse/report \
-        -Jjmeter.reportgenerator.report_title="MAVIS test report" \
+        -Jjmeter.reportgenerator.report_title="Mavis test report" \
         -Jjmeter.reportgenerator.overall_granularity=10000 \
         -Jjmeter.reportgenerator.sample_filter="^.*[^0-9]$" \
         -JAuthToken="$AUTH_TOKEN" \

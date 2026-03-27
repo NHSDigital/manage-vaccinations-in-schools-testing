@@ -20,8 +20,6 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 
-pytestmark = pytest.mark.consent
-
 
 @pytest.fixture
 def url_with_session_scheduled(schedule_session_and_get_consent_url, schools):

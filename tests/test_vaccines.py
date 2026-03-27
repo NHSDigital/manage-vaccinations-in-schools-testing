@@ -7,8 +7,6 @@ from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.pages import AddBatchPage, ArchiveBatchPage, DashboardPage, VaccinesPage
 from mavis.test.utils import get_offset_date
 
-pytestmark = pytest.mark.vaccines
-
 
 @pytest.fixture(autouse=True)
 def go_to_vaccines_page(log_in_as_nurse, page):

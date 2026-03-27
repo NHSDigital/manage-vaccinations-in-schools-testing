@@ -24,8 +24,6 @@ from mavis.test.utils import (
     get_offset_date_compact_format,
 )
 
-pytestmark = pytest.mark.sessions
-
 
 @pytest.fixture
 def setup_fixed_child_session(

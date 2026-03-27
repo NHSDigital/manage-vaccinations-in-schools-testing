@@ -10,8 +10,6 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.add_session_wizard_page import AddSessionWizardPage
 
-pytestmark = pytest.mark.schools
-
 
 def test_schools_schedule_session_with_no_dates(
     log_in_as_nurse,

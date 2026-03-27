@@ -231,7 +231,6 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
 
 
 @issue("MAV-3076")
-@pytest.mark.vaccinations
 @pytest.mark.imms_api
 def test_vaccination_file_upload_snomed_code_verification(
     setup_vaccs_flu,
