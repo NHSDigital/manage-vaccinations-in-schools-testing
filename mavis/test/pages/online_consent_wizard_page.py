@@ -116,6 +116,14 @@ class OnlineConsentWizardPage:
             name="My child can have either type of vaccine",
         )
         self.no_consent_radio = self.page.get_by_role("radio", name="No")
+        self.follow_up_question_yes_radio = self.page.get_by_role(
+            "radio",
+            name="Yes, I would like someone to contact me",
+        )
+        self.follow_up_question_no_radio = self.page.get_by_role(
+            "radio",
+            name="No",
+        )
 
     @step("Click Continue")
     def click_continue(self) -> None:
@@ -316,6 +324,13 @@ class OnlineConsentWizardPage:
             self.click_continue()
             self.give_details(str(details))
 
+        self.click_continue()
+
+    def answer_follow_up_question(self, *, yes_to_follow_up_request: bool) -> None:
+        if yes_to_follow_up_request:
+            self.follow_up_question_yes_radio.check()
+        else:
+            self.follow_up_question_no_radio.check()
         self.click_continue()
 
     def expect_confirmation_text(self, text: str) -> None:
