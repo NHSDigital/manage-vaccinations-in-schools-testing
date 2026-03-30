@@ -1,5 +1,6 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
 from mavis.test.pages import (
@@ -26,6 +27,7 @@ def setup_hist_vaccs(
     ).navigate_to_vaccination_records_import()
 
 
+@issue("MAV-4631")
 def test_vaccination_file_upload_historic_valid_data(
     setup_hist_vaccs,
     page,

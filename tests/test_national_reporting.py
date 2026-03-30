@@ -1,3 +1,4 @@
+from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
 from mavis.test.pages import (
@@ -10,6 +11,7 @@ from mavis.test.pages import (
 )
 
 
+@issue("MAV-4631")
 def test_national_reporting_valid_data(
     setup_national_reporting_import,
     page,
