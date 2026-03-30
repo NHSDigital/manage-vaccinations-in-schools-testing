@@ -202,7 +202,7 @@ def test_invalid_consent(
         f"Consent refused by {child.parents[1].name_and_relationship}",
     )
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
-        f"Consent not_provided by {child.parents[0].name_and_relationship}",
+        f"Consent not provided by {child.parents[0].name_and_relationship}",
     )
 
 
