@@ -16,10 +16,13 @@ from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
 
 faker = Faker()
 
+# Maximum length for API response text in logs
+MAX_API_RESPONSE_LOG_LENGTH = 1000
+
 
 def _mask_sensitive_data(text: str) -> str:
     """Mask sensitive data in text for logging.
-    
+
     Masks:
     - Bearer tokens
     - Access tokens in JSON
@@ -27,32 +30,30 @@ def _mask_sensitive_data(text: str) -> str:
     - Authorization headers
     """
     # Mask Bearer tokens in headers
-    text = re.sub(r'Bearer [A-Za-z0-9._-]+', 'Bearer ***REDACTED***', text)
-    
+    text = re.sub(r"Bearer [A-Za-z0-9._-]+", "Bearer ***REDACTED***", text)
+
     # Mask access_token in JSON responses
     text = re.sub(
-        r'"access_token"\s*:\s*"[^"]+?"',
-        '"access_token": "***REDACTED***"',
-        text
+        r'"access_token"\s*:\s*"[^"]+?"', '"access_token": "***REDACTED***"', text
     )
-    
+
     # Mask JWT tokens (eyJ... pattern)
-    text = re.sub(r'\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', '***JWT_REDACTED***', text)
+    text = re.sub(
+        r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
+        "***JWT_REDACTED***",
+        text,
+    )
 
     # Mask Authorization header values
-    text = re.sub(
+    return re.sub(
         r'"authorization"\s*:\s*"[^"]+?"',
         '"authorization": "***REDACTED***"',
         text,
-        flags=re.IGNORECASE
+        flags=re.IGNORECASE,
     )
-    
-    return text
 
 
-def log_api_response(
-    response: httpx.Response, endpoint: str, method: str = ""
-) -> None:
+def log_api_response(response: httpx.Response, endpoint: str, method: str = "") -> None:
     """Log API response to audit log file.
 
     Args:
@@ -66,8 +67,12 @@ def log_api_response(
     timestamp = get_current_datetime().strftime("%Y-%m-%d %H:%M:%S")
     http_method = method or response.request.method
     status_code = response.status_code
-    response_text = response.text[:1000] if len(response.text) > 1000 else response.text
-    
+    response_text = (
+        response.text[:MAX_API_RESPONSE_LOG_LENGTH]
+        if len(response.text) > MAX_API_RESPONSE_LOG_LENGTH
+        else response.text
+    )
+
     # Mask sensitive data
     masked_response = _mask_sensitive_data(response_text)
 
