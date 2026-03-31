@@ -22,7 +22,7 @@ dependencies = [
     "pytest-rerunfailures==16.1",
     "pytest-xdist==3.8.0",
     "pytest-jira-zephyr-reporter @ git+https://github.com/NHSDigital/pytest-jira-zephyr-reporter.git@v0.2.0",
-    "requests==2.33.0",
+    "requests==2.33.1",
     "pypdf>=6.9.1",
 ]
 
