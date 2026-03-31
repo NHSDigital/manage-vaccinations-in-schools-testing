@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import httpx
 from faker import Faker
 from playwright.sync_api import Locator, Page, expect
 from pypdf import PdfReader
@@ -14,6 +15,68 @@ from mavis.test.annotations import step
 from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
 
 faker = Faker()
+
+
+def _mask_sensitive_data(text: str) -> str:
+    """Mask sensitive data in text for logging.
+    
+    Masks:
+    - Bearer tokens
+    - Access tokens in JSON
+    - JWT tokens
+    - Authorization headers
+    """
+    # Mask Bearer tokens in headers
+    text = re.sub(r'Bearer [A-Za-z0-9._-]+', 'Bearer ***REDACTED***', text)
+    
+    # Mask access_token in JSON responses
+    text = re.sub(
+        r'"access_token"\s*:\s*"[^"]+?"',
+        '"access_token": "***REDACTED***"',
+        text
+    )
+    
+    # Mask JWT tokens (eyJ... pattern)
+    text = re.sub(r'\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', '***JWT_REDACTED***', text)
+
+    # Mask Authorization header values
+    text = re.sub(
+        r'"authorization"\s*:\s*"[^"]+?"',
+        '"authorization": "***REDACTED***"',
+        text,
+        flags=re.IGNORECASE
+    )
+    
+    return text
+
+
+def log_api_response(
+    response: httpx.Response, endpoint: str, method: str = ""
+) -> None:
+    """Log API response to audit log file.
+
+    Args:
+        response: The httpx.Response object from the API call
+        endpoint: The API endpoint that was called (e.g., "IMMS_GET", "PDS_SEARCH")
+        method: Optional HTTP method (will be inferred from response if not provided)
+    """
+    audit_log_path = Path("logs") / "api.log"
+    audit_log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    timestamp = get_current_datetime().strftime("%Y-%m-%d %H:%M:%S")
+    http_method = method or response.request.method
+    status_code = response.status_code
+    response_text = response.text[:1000] if len(response.text) > 1000 else response.text
+    
+    # Mask sensitive data
+    masked_response = _mask_sensitive_data(response_text)
+
+    with audit_log_path.open("a") as file:
+        log_message = (
+            f"{timestamp} | {http_method} | {endpoint} | "
+            f"STATUS: {status_code} | RESPONSE: {masked_response}\n"
+        )
+        file.write(log_message)
 
 
 def format_datetime_for_upload_link(now: datetime) -> str:

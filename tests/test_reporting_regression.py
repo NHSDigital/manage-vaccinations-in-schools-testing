@@ -29,6 +29,7 @@ from mavis.test.pages import (
     SessionsOverviewPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import log_api_response
 
 pytestmark = pytest.mark.reporting
 
@@ -50,6 +51,7 @@ def _onboard_team(base_url):
 def _refresh_reporting(base_url):
     url = urllib.parse.urljoin(base_url, "api/testing/refresh-reporting")
     response = httpx.get(url, timeout=30)
+    log_api_response(response, "REFRESH_REPORTING")
     response.raise_for_status()
     time.sleep(5)
 

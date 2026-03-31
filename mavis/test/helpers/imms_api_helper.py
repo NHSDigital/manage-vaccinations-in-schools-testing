@@ -10,6 +10,7 @@ from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data.file_utils import create_fhir_immunization_payload
 from mavis.test.data_models import Child, School
 from mavis.test.fixtures.fhir_api import AuthToken
+from mavis.test.utils import log_api_response
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -189,6 +190,7 @@ class ImmsApiHelper:
             params=_params,
             timeout=30,
         )
+        log_api_response(response, "IMMS_READ")
         response.raise_for_status()
 
         return response
@@ -243,6 +245,7 @@ class ImmsApiHelper:
             json=immunization_payload,
             timeout=30,
         )
+        log_api_response(response, "IMMS_CREATE")
         response.raise_for_status()
 
         # If creation was successful, verify the record exists in the API

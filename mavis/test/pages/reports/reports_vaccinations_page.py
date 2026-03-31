@@ -11,6 +11,7 @@ from mavis.test.pages.reports.reports_dashboard_component import (
     ReportsDashboardComponent,
 )
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
+from mavis.test.utils import log_api_response
 
 
 class ReportsVaccinationsPage(ReportsDashboardComponent):
@@ -34,6 +35,7 @@ class ReportsVaccinationsPage(ReportsDashboardComponent):
         base_url = os.getenv("BASE_URL", "PROVIDEURL")
         refresh_reports_url = f"{base_url}/api/testing/refresh-reporting"
         response = httpx.get(refresh_reports_url, timeout=30)
+        log_api_response(response, "REFRESH_REPORTING")
         response.raise_for_status()
 
         time.sleep(5)

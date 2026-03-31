@@ -9,6 +9,8 @@ import httpx
 import jwt
 import pytest
 
+from mavis.test.utils import log_api_response
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,6 +35,8 @@ def authenticate_api():
 
     response = httpx.post(url=_endpoint, headers=_headers, data=_payload, timeout=30)
 
+    log_api_response(response, "AUTH_TOKEN")
+    
     if not response.is_success:
         logger.warning(response.content)
     response.raise_for_status()

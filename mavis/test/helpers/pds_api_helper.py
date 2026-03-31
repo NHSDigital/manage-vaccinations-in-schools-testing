@@ -14,7 +14,7 @@ from dateutil.relativedelta import relativedelta
 from mavis.test.constants import PdsEndpoints, Relationship
 from mavis.test.data_models import Child, Parent
 from mavis.test.fixtures.fhir_api import AuthToken
-from mavis.test.utils import get_todays_date
+from mavis.test.utils import get_todays_date, log_api_response
 
 
 class Patient(NamedTuple):
@@ -163,6 +163,7 @@ class PdsApiHelper:
             headers=self.headers,
             timeout=30,
         )
+        log_api_response(response, "PDS_GET_PATIENT")
         response.raise_for_status()
 
         data = response.json()
@@ -222,6 +223,7 @@ class PdsApiHelper:
             headers=self.headers,
             timeout=30,
         )
+        log_api_response(response, "PDS_SEARCH_PATIENT")
         response.raise_for_status()
 
         data = response.json()

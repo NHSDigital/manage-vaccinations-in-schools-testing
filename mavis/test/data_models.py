@@ -8,14 +8,10 @@ import nhs_number
 from attr import dataclass
 from faker import Faker
 
-from mavis.test.constants import (
-    ConsentOption,
-    DeliverySite,
-    Programme,
-    Relationship,
-)
+from mavis.test.constants import ConsentOption, DeliverySite, Programme, Relationship
 from mavis.test.utils import (
     get_date_of_birth_for_year_group,
+    log_api_response,
     normalize_postcode,
     normalize_whitespace,
 )
@@ -79,6 +75,7 @@ class School(Location):
             }
 
             response = httpx.get(url, params=params, timeout=30)
+            log_api_response(response, "GET_SCHOOLS")
             response.raise_for_status()
 
             data = response.json()
