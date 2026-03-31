@@ -116,8 +116,8 @@ def create_fhir_immunization_payload(
         "<<PATIENT_GENDER>>": "unknown",  # Child model doesn't have gender
         "<<PATIENT_BIRTH_DATE>>": child.date_of_birth.strftime("%Y-%m-%d"),
         "<<PATIENT_POSTAL_CODE>>": child.address[3],
-        "<<VACCINATION_TIME>>": vaccination_time.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
-        "<<RECORDED_TIME>>": get_current_datetime().strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+        "<<VACCINATION_TIME>>": vaccination_time.isoformat(timespec="seconds"),
+        "<<RECORDED_TIME>>": get_current_datetime().isoformat(timespec="seconds"),
         "<<SCHOOL_URN>>": school.urn,
         "<<DELIVERY_SITE_CODE>>": delivery_site.imms_api_code,
         "<<DELIVERY_SITE_DISPLAY>>": delivery_site.value,
