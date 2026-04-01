@@ -17,7 +17,7 @@ from mavis.test.pages import (
 
 @issue("MAV-2854")
 def test_single_from_child_record(
-    children, log_in_as_nurse, page, point_of_care_file_generator
+    children, page, point_of_care_file_generator, log_in_as_nurse
 ):
     """
     Test: Invite a single child to the clinic from their child record.
@@ -32,13 +32,13 @@ def test_single_from_child_record(
     programme = Programme.HPV
     child = children[programme][0]
 
-    imports_page = ImportsPage(page)
+    child_programme_page = ChildProgrammePage(page)
+    child_record_page = ChildRecordPage(page)
+    children_search_page = ChildrenSearchPage(page)
     import_records_wizard_page = ImportRecordsWizardPage(
         page, point_of_care_file_generator
     )
-    children_search_page = ChildrenSearchPage(page)
-    child_programme_page = ChildProgrammePage(page)
-    child_record_page = ChildRecordPage(page)
+    imports_page = ImportsPage(page)
 
     # Import a child with parent details via child records.
     imports_page.header.click_imports()

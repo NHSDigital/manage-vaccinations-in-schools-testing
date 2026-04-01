@@ -151,18 +151,6 @@ class SessionsPatientPage:
     def click_mark_as_invalid_button(self) -> None:
         self.mark_as_invalid_button.click()
 
-    @step("Click on Record as already vaccinated")
-    def record_as_already_vaccinated(self) -> None:
-        self.record_as_already_vaccinated_link.click()
-
-    @step("Record {1} dose as already given")
-    def record_dose_as_already_given(self, dose_number: int) -> None:
-        dose_text = "1st" if dose_number == 1 else "2nd"
-        dose_link = self.page.get_by_role(
-            "link", name=f"Record {dose_text} dose as already given"
-        )
-        dose_link.click()
-
     def invalidate_parent_refusal(self, parent: Parent) -> None:
         invalidation_notes = "Invalidation notes."
         self.click_response_from_parent(parent)

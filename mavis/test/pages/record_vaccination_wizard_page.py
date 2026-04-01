@@ -1,3 +1,5 @@
+import random
+
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
@@ -20,6 +22,13 @@ class RecordVaccinationWizardPage:
         self.page = page
         self.header = HeaderComponent(page)
 
+        self.mmrv_vaccine_yes_radio = self.page.get_by_role(
+            "radio", name="Yes, they got the MMRV vaccine"
+        )
+        self.mmrv_vaccine_no_radio = self.page.get_by_role(
+            "radio", name="No, they got the MMR vaccine"
+        )
+
         self.confirm_button = self.page.get_by_role("button", name="Confirm")
         self.vaccination_notes = self.page.get_by_role(
             "textbox",
@@ -37,8 +46,42 @@ class RecordVaccinationWizardPage:
         self.year_textbox = self.page.get_by_role("textbox", name="Year")
         self.hour_textbox = self.page.get_by_role("textbox", name="Hour")
         self.minute_textbox = self.page.get_by_role("textbox", name="Minute")
-        self.yes_radio = self.page.get_by_role("radio", name="Yes")
         self.change_date_link = self.page.get_by_role("link", name="Change   date ")
+
+        self.vaccinated_outcome = self.page.get_by_role("radio", name="Vaccinated")
+
+    @step("Confirm MMRV given")
+    def confirm_mmrv_given(self) -> None:
+        expect(
+            self.page.get_by_role("heading", name="vaccinated with the MMRV vaccine?")
+        ).to_be_visible()
+        self.click_yes()
+        self.click_continue_button()
+
+    @step("Choose Yes, they got the MMRV vaccine")
+    def choose_yes_mmrv_vaccine(self) -> None:
+        self.mmrv_vaccine_yes_radio.check()
+
+    @step("Choose No, they got the MMR vaccine")
+    def choose_no_mmrv_vaccine(self) -> None:
+        self.mmrv_vaccine_no_radio.check()
+
+    def confirm_mmrv_given_if_necessary(self, *, yes_or_no: bool | None = None) -> None:
+        self.page.wait_for_load_state()
+
+        if (
+            self.mmrv_vaccine_yes_radio.is_visible()
+            or self.mmrv_vaccine_no_radio.is_visible()
+        ):
+            if yes_or_no is None:
+                yes_or_no = random.choice([True, False])
+
+            if yes_or_no:
+                self.choose_yes_mmrv_vaccine()
+            else:
+                self.choose_no_mmrv_vaccine()
+
+            self.click_continue_button()
 
     @step("Click on Change date")
     def click_change_date_link(self) -> None:
@@ -76,22 +119,14 @@ class RecordVaccinationWizardPage:
         self.month_textbox.fill(str(month))
         self.year_textbox.fill(str(year))
 
-    @step("Confirm MMRV given")
-    def confirm_mmrv_given(self) -> None:
-        expect(
-            self.page.get_by_role("heading", name="vaccinated with the MMRV vaccine?")
-        ).to_be_visible()
-        self.click_yes()
-        self.click_continue_button()
-
-    @step("Click Yes")
-    def click_yes(self) -> None:
-        self.yes_radio.check()
-
     @step("Fill time of vaccination with {1}:{2}")
     def fill_time_of_vaccination(self, hour: str, minute: str) -> None:
         self.hour_textbox.fill(str(hour))
         self.minute_textbox.fill(str(minute))
+
+    @step("Choose outcome: vaccinated")
+    def choose_outcome_vaccinated(self) -> None:
+        self.vaccinated_outcome.check()
 
     def expect_consent_refused_text(self, parent: Parent) -> None:
         expect(

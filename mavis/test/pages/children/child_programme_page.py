@@ -1,5 +1,6 @@
 import datetime
 
+import inflect
 from playwright.sync_api import Locator, Page, expect
 
 from mavis.test.annotations import step
@@ -7,11 +8,15 @@ from mavis.test.data_models import Location
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import get_todays_date, reload_until_element_is_visible
 
+ordinal = inflect.engine().ordinal
+
 
 class ChildProgrammePage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.header = HeaderComponent(page)
+
+        self.programme_status_tag = page.get_by_role("strong")
 
         self.vaccination_record_card = page.locator("section").filter(
             has=page.get_by_role("heading", name="Vaccination record"),
@@ -34,8 +39,24 @@ class ChildProgrammePage:
             "Consent response manually matched with child record",
         )
 
+    @step("Expect child to have status: {1}")
+    def expect_programme_status(self, status: str) -> None:
+        expect(self.page.get_by_text(status).first).to_be_visible()
+
+    @step("Click on Record a vaccination in clinic")
     def click_record_new_clinic_vaccination(self) -> None:
         self.record_new_clinic_vaccination_button.click()
+
+    @step("Click on Record as already vaccinated")
+    def click_record_as_already_vaccinated(
+        self, dose_number: int | None = None
+    ) -> None:
+        if dose_number is None:
+            text = "Record as already vaccinated"
+        else:
+            text = f"Record {ordinal(dose_number)} dose as already given"
+
+        self.page.get_by_role("button", name=text).click()
 
     def _link_for_vaccination_record(self, date: datetime.date) -> Locator:
         return self.vaccination_record_card.filter(
