@@ -257,3 +257,49 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     ChildrenSearchPage(page).search.search_for_child_by_name(str(child))
 
     expect(page.get_by_text("Showing 1 to 2 of 2 children")).to_be_visible()
+
+
+def test_class_list_close_match_verify_counts(
+    setup_class_list_import,
+    page,
+    point_of_care_file_generator,
+):
+    """
+    Test: Upload class list files with close match records and verify
+    close match workflow.
+
+    Close match scenario: Two children with the same name and DOB, but
+    different NHS numbers (first has NHS number, second doesn't) and
+    different postcodes.
+
+    Steps:
+    1. Upload first file (creates child record with NHS number).
+    2. Upload second file (same child, no NHS number, different postcode).
+    3. Verify close match review workflow is triggered.
+
+    Verification:
+    - "Close matches to existing" heading is visible.
+    - Import appears in Issues tab for review.
+    - Correct counts are displayed in navigation.
+    """
+    # Upload first class list file
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.CLOSE_MATCH_1)
+
+    # Navigate back to import page
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(
+        str(point_of_care_file_generator.schools[Programme.HPV][0]),
+        point_of_care_file_generator.year_groups[Programme.HPV],
+    )
+
+    # Upload second file with similar child details and verify close match UI
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.CLOSE_MATCH_2)
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_close_match()

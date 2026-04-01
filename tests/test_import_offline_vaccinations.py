@@ -368,3 +368,49 @@ def test_vaccination_file_upload_community_clinic_name_case(
         VaccsFileMapping.CLINIC_NAME_CASE,
         session_id=setup_vaccs,
     )
+
+
+def test_vaccination_close_match_imports(
+    setup_vaccs,
+    page,
+    point_of_care_file_generator,
+):
+    """
+    Test: Upload vaccination files with similar patient details and verify imports.
+
+    Close match scenario: Two patients with the same name and DOB, but different
+    NHS numbers (first has NHS number, second doesn't) and different postcodes.
+
+    Steps:
+    1. Upload first vaccination file (creates patient record with NHS number).
+    2. Upload second vaccination file (same patient, no NHS number, different postcode).
+
+    Verification:
+    - Both vaccination records import successfully.
+
+    Note: Unlike child/class list imports, vaccination imports automatically match
+    patients and don't trigger a manual close match review workflow.
+    """
+    # Upload first vaccination (creates patient)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(
+        VaccsFileMapping.CLOSE_MATCH_1,
+        session_id=setup_vaccs,
+    )
+
+    # Navigate back and upload second vaccination with similar patient details
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_vaccination_records_import()
+
+    # Upload second vaccination (same patient, different NHS/postcode)
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(
+        VaccsFileMapping.CLOSE_MATCH_2,
+        session_id=setup_vaccs,
+    )

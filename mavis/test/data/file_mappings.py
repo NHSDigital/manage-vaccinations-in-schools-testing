@@ -18,6 +18,8 @@ class FileMapping(Enum):
 
 class VaccsFileMapping(FileMapping):
     CLINIC_NAME_CASE = "clinic_name_case"
+    CLOSE_MATCH_1 = "close_match_1"
+    CLOSE_MATCH_2 = "close_match_2"
     DUP_1 = "dup_1"
     DUP_2 = "dup_2"
     MULTIPLE_EXACT_DUPLICATES = "multiple_exact_duplicates"
@@ -74,10 +76,13 @@ class ChildFileMapping(FileMapping):
 
 
 class ClassFileMapping(FileMapping):
+    CLOSE_MATCH_1 = "close_match_1"
+    CLOSE_MATCH_2 = "close_match_2"
     DUPLICATE_POSTCODE = "duplicate_postcode"
     DUPLICATE_POSTCODE_2 = "duplicate_postcode_2"
     EMPTY_FILE = "empty"
     FIXED_CHILD = "fixed_child"
+    FIXED_RANDOM_CHILD = "fixed_random_child"
     HEADER_ONLY = "header_only"
     INVALID_STRUCTURE = "invalid_structure"
     NEGATIVE = "negative"
