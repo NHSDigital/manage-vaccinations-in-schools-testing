@@ -5,12 +5,12 @@ from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
     OnlineConsentWizardPage,
+    RecordVaccinationWizardPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
     StartPage,
 )
 from mavis.test.utils import generate_random_dob_for_mmr_not_mmrv
@@ -100,7 +100,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
 
 def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
@@ -167,7 +167,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
     # Attempt to record second dose on the same day
     SessionsPatientPage(page).header.click_mavis()
@@ -258,4 +258,4 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
 
     vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)

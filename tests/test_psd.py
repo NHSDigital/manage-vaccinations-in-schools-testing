@@ -10,6 +10,7 @@ from mavis.test.pages import (
     LogInPage,
     NurseConsentWizardPage,
     OnlineConsentWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
@@ -19,7 +20,6 @@ from mavis.test.pages import (
     SessionsPsdPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
     StartPage,
     VaccinesPage,
 )
@@ -162,7 +162,7 @@ def test_delivering_vaccination_after_psd(
         child, Programme.FLU, fluenz_batch_name, ConsentOption.NASAL_SPRAY_OR_INJECTION
     )
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(
+    RecordVaccinationWizardPage(page).record_vaccination(
         vaccination_record, psd_option=True
     )
 

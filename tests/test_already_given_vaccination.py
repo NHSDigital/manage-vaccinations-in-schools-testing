@@ -5,12 +5,12 @@ from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
-    SessionsVaccinationWizardPage,
 )
 from mavis.test.pages.utils import (
     schedule_school_session_if_needed,
@@ -78,13 +78,13 @@ def test_one_dose_vaccinations_already_given(
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).record_as_already_vaccinated()
-    SessionsVaccinationWizardPage(page).fill_date_of_vaccination(
+    RecordVaccinationWizardPage(page).fill_date_of_vaccination(
         get_offset_date_compact_format(0)
     )
-    SessionsVaccinationWizardPage(page).fill_time_of_vaccination("00", "01")
-    SessionsVaccinationWizardPage(page).click_continue_button()
-    SessionsVaccinationWizardPage(page).fill_vaccination_notes("Test notes")
-    SessionsVaccinationWizardPage(page).click_confirm_button()
+    RecordVaccinationWizardPage(page).fill_time_of_vaccination("00", "01")
+    RecordVaccinationWizardPage(page).click_continue_button()
+    RecordVaccinationWizardPage(page).fill_vaccination_notes("Test notes")
+    RecordVaccinationWizardPage(page).click_confirm_button()
 
     VaccinationRecordPage(page).expect_vaccination_details("Time", "12:01am")
     VaccinationRecordPage(page).expect_vaccination_details("Notes", "Test notes")

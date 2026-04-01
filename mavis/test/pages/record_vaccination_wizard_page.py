@@ -15,7 +15,7 @@ from mavis.test.utils import (
 )
 
 
-class SessionsVaccinationWizardPage:
+class RecordVaccinationWizardPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.header = HeaderComponent(page)

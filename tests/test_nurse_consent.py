@@ -15,6 +15,7 @@ from mavis.test.pages import (
     GillickCompetencePage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
@@ -23,7 +24,6 @@ from mavis.test.pages import (
     SessionsPatientSessionActivityPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
     VaccinesPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
@@ -251,7 +251,7 @@ def test_parent_provides_consent_twice(
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsVaccinationWizardPage(page).expect_consent_refused_text(child.parents[0])
+    RecordVaccinationWizardPage(page).expect_consent_refused_text(child.parents[0])
     SessionsPatientPage(page).click_session_activity_and_notes()
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent refused by {child.parents[0].name_and_relationship}",
@@ -394,13 +394,13 @@ def test_accessibility(
     SessionsPatientPage(page).select_identity_confirmed_by_child(child)
     SessionsPatientPage(page).select_ready_for_vaccination()
     SessionsPatientPage(page).select_delivery_site(DeliverySite.LEFT_ARM_UPPER)
-    SessionsVaccinationWizardPage(page).click_continue_button()
+    RecordVaccinationWizardPage(page).click_continue_button()
     AccessibilityHelper(page).check_accessibility()
 
-    SessionsVaccinationWizardPage(page).choose_batch(batch_name)
+    RecordVaccinationWizardPage(page).choose_batch(batch_name)
     AccessibilityHelper(page).check_accessibility()
 
-    SessionsVaccinationWizardPage(page).click_confirm_button()
+    RecordVaccinationWizardPage(page).click_confirm_button()
     AccessibilityHelper(page).check_accessibility()
 
     SessionsPatientPage(page).click_vaccination_details(school)
