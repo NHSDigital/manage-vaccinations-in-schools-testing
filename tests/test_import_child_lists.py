@@ -152,6 +152,34 @@ def test_child_list_file_upload_whitespace_normalization(
     )
 
 
+def test_child_list_close_match_verify_counts(
+    setup_child_import,
+    page,
+    point_of_care_file_generator,
+):
+    """
+    Test: Upload a child list file with close match records and verify counts.
+    Steps:
+    1. Navigate to child record import page.
+    2. Upload a file with close match records.
+    Verification:
+    - Output indicates correct counts for close match records.
+    """
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.CLOSE_MATCH_1)
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.CLOSE_MATCH_2)
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_close_match()
+
+
 @pytest.mark.accessibility
 def test_accessibility(
     log_in_as_nurse,

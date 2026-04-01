@@ -16,6 +16,19 @@ from mavis.test.utils import (
 
 
 class ImportRecordsWizardPage:
+    # Regex patterns for navigation and verification
+    IMPORTS_MENU_PATTERN = re.compile(r"Imports\s+\(\s*\d+\s*\)")
+    ISSUES_MENU_PATTERN = re.compile(r"Issues\s+\(\s*\d+\s*\)")
+    UPLOADED_RECORDS_REVIEW_PATTERN = re.compile(
+        r"\d+\s+uploaded\s+records?\s+needs?\s+review"
+    )
+    RECORDS_PATTERN = re.compile(
+        r"\d+ new record(?:s)?"
+        r"|\d+ school move(?:s)?"
+        r"|\d+ record(?:s)? already in Mavis"
+        r"|\d+ close match(?:es)? to existing record(?:s)?",
+    )
+
     def __init__(
         self,
         page: Page,
@@ -54,13 +67,6 @@ class ImportRecordsWizardPage:
         )
         self.success_alert = self.page.get_by_role("alert", name="Success")
 
-        # Pattern to match dynamic text (s is optional for records)
-        self.records_pattern = re.compile(
-            r"\d+ new record(?:s)?"
-            r"|\d+ school move(?:s)?"
-            r"|\d+ record(?:s)? already in Mavis"
-            r"|\d+ close match(?:es)? to existing record(?:s)?",
-        )
         self.approve_import_button = self.page.get_by_role(
             "button", name="Approve and import records"
         )
@@ -75,7 +81,9 @@ class ImportRecordsWizardPage:
             "radio",
             name="Keep both child records",
         )
-        self.upload_issue_link = self.page.get_by_text("1 upload issue")
+        self.upload_issue_link = self.page.get_by_text(
+            re.compile(r"\d+ upload issues?")
+        )
         self.record_updated = page.get_by_role("alert", name="Success").filter(
             has_text="Record updated",
         )
@@ -88,9 +96,54 @@ class ImportRecordsWizardPage:
         )
         self.preview_page_link = (
             self.page.locator(".nhsuk-details__summary-text")
-            .filter(has_text=self.records_pattern)
+            .filter(has_text=self.RECORDS_PATTERN)
             .first
         )
+
+    @step("Navigate to Imports section")
+    def _navigate_to_imports_section(self) -> None:
+        """Navigate to the Imports section from the main menu."""
+        expect(self.page.get_by_label("Menu").get_by_role("list")).to_contain_text(
+            self.IMPORTS_MENU_PATTERN
+        )
+        imports_link = self.page.get_by_role("link", name=self.IMPORTS_MENU_PATTERN)
+        imports_link.click()
+
+    @step("Navigate to Issues tab")
+    def _navigate_to_issues_tab(self) -> None:
+        """Navigate to the Issues tab within the Imports section."""
+        expect(
+            self.page.get_by_label("Secondary menu").get_by_role("list")
+        ).to_contain_text(self.ISSUES_MENU_PATTERN)
+        issues_link = self.page.get_by_role("link", name=self.ISSUES_MENU_PATTERN)
+        expect(issues_link).to_be_visible()
+        issues_link.click()
+
+    @step("Verify and expand uploaded records for review")
+    def _verify_and_expand_uploaded_records_review(self) -> None:
+        """Verify uploaded records heading and expand it."""
+        expect(self.page.locator("h3")).to_contain_text(
+            self.UPLOADED_RECORDS_REVIEW_PATTERN
+        )
+        uploaded_records_heading = self.page.get_by_role(
+            "heading", name=self.UPLOADED_RECORDS_REVIEW_PATTERN
+        )
+        expect(uploaded_records_heading).to_be_visible()
+        uploaded_records_heading.click()
+
+    def verify_close_match(self) -> None:
+        """
+        Verify close match imports workflow:
+        1. Verify close matches heading is visible
+        2. Navigate through Imports -> Issues
+        3. Verify and expand uploaded records that need review
+        """
+        expect(
+            self.page.get_by_role("heading", name="Close matches to existing")
+        ).to_be_visible()
+        self._navigate_to_imports_section()
+        self._navigate_to_issues_tab()
+        self._verify_and_expand_uploaded_records_review()
 
     @step("Verify linking for child {1} with the import")
     def verify_linking(self, child: Child) -> None:
