@@ -384,8 +384,6 @@ def test_add_child_to_community_clinic_session(
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
     NurseConsentWizardPage(page).record_parent_positive_consent()
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).register_child_as_attending(child)
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
     vaccination_record = VaccinationRecord(child, Programme.HPV, batch_name)
