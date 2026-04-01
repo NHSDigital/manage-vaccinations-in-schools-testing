@@ -1,54 +1,32 @@
-#!/usr/bin/env python3
-"""
-Minimal mock SOAP service that implements the SchImmsService / InsertImmsRecord
+"""Minimal mock SOAP service implementing the SchImmsService / InsertImmsRecord
 endpoint described in the CarePlus WSDL.
-
-Usage:
-    python soap_mock_service.py [--host 127.0.0.1] [--port 8080]
-  [--site-namespace MOCK]
-
-WSDL is served at:  GET <path>?wsdl
-Endpoint is at:     POST <path>
-Healthcheck is at:  GET /health
 """
 
-import argparse
 import csv
 import logging
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler
 from io import StringIO
-from typing import TypedDict, cast
+from typing import TypedDict
 
 from defusedxml import ElementTree
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Configuration (overridden by CLI args at startup)
-# ---------------------------------------------------------------------------
-DEFAULT_HOST = "127.0.0.1"
-DEFAULT_PORT = 8080
 DEFAULT_NAMESPACE_BASE = "https://careplus.syhapp.thirdparty.nhs.uk"
-DEFAULT_SITE_NAMESPACE = "MOCK"
 
 
 class Config(TypedDict):
     host: str
     port: int
-    site_namespace: str
     namespace: str
     path: str
 
 
-_config = cast("Config", {})
-
-
-def _build_target_namespace(site_namespace: str) -> str:
+def build_target_namespace(site_namespace: str) -> str:
     return f"{DEFAULT_NAMESPACE_BASE}/{site_namespace}/webservices"
 
 
-def _build_service_path(site_namespace: str) -> str:
+def build_service_path(site_namespace: str) -> str:
     return f"/{site_namespace}/soap.SchImms.cls"
 
 
@@ -57,14 +35,10 @@ def _split_request_target(request_target: str) -> tuple[str, str]:
     return path, query.lower()
 
 
-# ---------------------------------------------------------------------------
-# SOAP / XML helpers
-# ---------------------------------------------------------------------------
-
-
-def _build_wsdl(host: str, port: int, namespace: str, path: str) -> str:
-    location = f"http://{host}:{port}{path}"
-    soap_action = f"{namespace}/soap.SchImms.InsertImmsRecord"
+def _build_wsdl(config: Config) -> str:
+    location = f"http://{config['host']}:{config['port']}{config['path']}"
+    soap_action = f"{config['namespace']}/soap.SchImms.InsertImmsRecord"
+    namespace = config["namespace"]
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <definitions
     xmlns="http://schemas.xmlsoap.org/wsdl/"
@@ -150,11 +124,6 @@ def _soap_fault(code: str, message: str) -> bytes:
 </soap:Envelope>""".encode()
 
 
-# ---------------------------------------------------------------------------
-# Business logic
-# ---------------------------------------------------------------------------
-
-
 class InsertImmsRecordError(Exception):
     pass
 
@@ -219,18 +188,19 @@ def handle_insert_imms_record(user_id: str, pwd: str, payload: str) -> str:
     return "1"
 
 
-# ---------------------------------------------------------------------------
-# HTTP handler
-# ---------------------------------------------------------------------------
-
-
 class SOAPHandler(BaseHTTPRequestHandler):
+    config: Config
+
+    @classmethod
+    def make_handler(cls, config: Config) -> type["SOAPHandler"]:
+        return type(cls.__name__, (cls,), {"config": config})
+
     def log_message(self, format: str, *args: object) -> None:  # noqa: A002
         log.info("HTTP %s", format % args)
 
     def _is_configured_path(self) -> bool:
         request_path, _ = _split_request_target(self.path)
-        return request_path == _config["path"]
+        return request_path == self.config["path"]
 
     # ------------------------------------------------------------------
     # GET — serve the WSDL
@@ -246,18 +216,13 @@ class SOAPHandler(BaseHTTPRequestHandler):
             self.wfile.write(body)
             return
 
-        if request_path != _config["path"]:
+        if request_path != self.config["path"]:
             self.send_response(404)
             self.end_headers()
             return
 
         if query == "wsdl":
-            wsdl = _build_wsdl(
-                _config["host"],
-                _config["port"],
-                _config["namespace"],
-                _config["path"],
-            )
+            wsdl = _build_wsdl(self.config)
             body = wsdl.encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/xml; charset=utf-8")
@@ -286,7 +251,7 @@ class SOAPHandler(BaseHTTPRequestHandler):
             self._send_xml(400, _soap_fault("soap:Client", f"Malformed XML: {exc}"))
             return
 
-        namespace = _config["namespace"]
+        namespace = self.config["namespace"]
         insert_el = root.find(f".//{{{namespace}}}InsertImmsRecord")
         if insert_el is None:
             self._send_xml(
@@ -314,43 +279,3 @@ class SOAPHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
-
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Mock SchImmsService SOAP server")
-    parser.add_argument("--host", default=DEFAULT_HOST)
-    parser.add_argument("--port", type=int, default=DEFAULT_PORT)
-    parser.add_argument("--site-namespace", default=DEFAULT_SITE_NAMESPACE)
-    args = parser.parse_args()
-
-    namespace = _build_target_namespace(args.site_namespace)
-    path = _build_service_path(args.site_namespace)
-
-    _config.update(
-        {
-            "host": args.host,
-            "port": args.port,
-            "site_namespace": args.site_namespace,
-            "namespace": namespace,
-            "path": path,
-        }
-    )
-
-    server = HTTPServer((args.host, args.port), SOAPHandler)
-    log.info(
-        "SOAP mock service listening on http://%s:%d%s", args.host, args.port, path
-    )
-    log.info("WSDL at http://%s:%d%s?wsdl", args.host, args.port, path)
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        log.info("Shutting down")
-
-
-if __name__ == "__main__":
-    main()
