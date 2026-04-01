@@ -3,6 +3,7 @@ import re
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
+from mavis.test.data_models import Child
 from mavis.test.pages.header_component import HeaderComponent
 
 
@@ -18,6 +19,10 @@ class VaccinationRecordPage:
             "heading",
             name="Vaccination details",
         )
+
+    @step("Click on {1}")
+    def click_child_record(self, child: Child) -> None:
+        self.page.get_by_role("link", name=str(child)).click()
 
     @step("Click on Edit vaccination record")
     def click_edit_vaccination_record(self) -> None:

@@ -15,13 +15,13 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
-    SessionsVaccinationWizardPage,
     VaccinesPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
@@ -150,7 +150,7 @@ def test_tallying(  # noqa: PLR0915
         child, Programme.FLU, batch_name, ConsentOption.NASAL_SPRAY
     )
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)
     SessionsPatientPage(page).go_back_to_session_for_school(school)
 
     tally_totals[TallyCategory.DUE_NASAL_SPRAY] -= 1

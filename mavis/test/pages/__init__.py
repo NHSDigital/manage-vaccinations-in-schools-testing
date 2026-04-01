@@ -13,6 +13,7 @@ from .imports import ImportIssuesPage, ImportRecordsWizardPage, ImportsPage
 from .log_in_page import LogInPage
 from .log_out_page import LogOutPage
 from .online_consent_wizard_page import OnlineConsentWizardPage
+from .record_vaccination_wizard_page import RecordVaccinationWizardPage
 from .reports import (
     ReportsConsentPage,
     ReportsDownloadPage,
@@ -37,7 +38,6 @@ from .sessions import (
     SessionsPsdPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
 )
 from .start_page import StartPage
 from .team import TeamContactDetailsPage, TeamSchoolsPage
@@ -77,6 +77,7 @@ __all__ = [
     "MatchConsentResponsePage",
     "NurseConsentWizardPage",
     "OnlineConsentWizardPage",
+    "RecordVaccinationWizardPage",
     "ReportsConsentPage",
     "ReportsDownloadPage",
     "ReportsVaccinationsPage",
@@ -95,7 +96,6 @@ __all__ = [
     "SessionsPsdPage",
     "SessionsRecordVaccinationsPage",
     "SessionsSearchPage",
-    "SessionsVaccinationWizardPage",
     "StartPage",
     "TeamContactDetailsPage",
     "TeamSchoolsPage",

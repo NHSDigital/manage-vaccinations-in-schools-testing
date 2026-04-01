@@ -10,11 +10,11 @@ from mavis.test.pages import (
     AddSessionWizardPage,
     DashboardPage,
     NurseConsentWizardPage,
+    RecordVaccinationWizardPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
 )
 from mavis.test.utils import generate_random_string
 
@@ -82,6 +82,6 @@ def record_nurse_consent_and_vaccination(
     )
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record, notes=notes)
-    SessionsVaccinationWizardPage(page).record_vaccination(
+    RecordVaccinationWizardPage(page).record_vaccination(
         vaccination_record, notes=notes
     )

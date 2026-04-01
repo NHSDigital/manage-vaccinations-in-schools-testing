@@ -13,6 +13,7 @@ from mavis.test.pages import (
     DashboardPage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
@@ -22,7 +23,6 @@ from mavis.test.pages import (
     SessionsPatientSessionActivityPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_alert_text, expect_details
@@ -390,13 +390,13 @@ def test_add_child_to_community_clinic_session(
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
     vaccination_record = VaccinationRecord(child, Programme.HPV, batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(
+    RecordVaccinationWizardPage(page).record_vaccination(
         vaccination_record, at_school=False
     )
 
-    SessionsVaccinationWizardPage(page).check_location_radio(point_of_care_clinics[0])
-    SessionsVaccinationWizardPage(page).click_continue_button()
-    SessionsVaccinationWizardPage(page).click_confirm_button()
+    RecordVaccinationWizardPage(page).check_location_radio(point_of_care_clinics[0])
+    RecordVaccinationWizardPage(page).click_continue_button()
+    RecordVaccinationWizardPage(page).click_confirm_button()
     expect_alert_text(page, "Vaccination outcome recorded for HPV")
     SessionsPatientPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()

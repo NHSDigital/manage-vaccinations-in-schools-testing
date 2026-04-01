@@ -24,6 +24,7 @@ dependencies = [
     "pytest-jira-zephyr-reporter @ git+https://github.com/NHSDigital/pytest-jira-zephyr-reporter.git@v0.2.0",
     "requests==2.33.1",
     "pypdf>=6.9.1",
+    "inflect>=7.5.0",
 ]
 
 [dependency-groups]

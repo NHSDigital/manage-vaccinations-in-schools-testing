@@ -10,12 +10,12 @@ from mavis.test.pages import (
     DashboardPage,
     EditVaccinationRecordPage,
     OnlineConsentWizardPage,
+    RecordVaccinationWizardPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
     StartPage,
     VaccinationRecordPage,
 )
@@ -112,7 +112,7 @@ def test_recording_flu_vaccination_e2e(
         child, Programme.FLU, batch_name, consent_option
     )
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
     SessionsPatientPage(page).header.click_mavis()
     DashboardPage(page).click_children()

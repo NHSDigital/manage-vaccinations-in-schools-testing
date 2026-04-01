@@ -7,12 +7,12 @@ from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
     DashboardPage,
     OnlineConsentWizardPage,
+    RecordVaccinationWizardPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsRecordVaccinationsPage,
     SessionsSearchPage,
-    SessionsVaccinationWizardPage,
     StartPage,
 )
 
@@ -98,13 +98,13 @@ def test_recording_doubles_vaccination_e2e(
         child, Programme.MENACWY, menquadfi_batch_name
     )
     SessionsPatientPage(page).set_up_vaccination(menacwy_vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(menacwy_vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(menacwy_vaccination_record)
 
     td_ipv_vaccination_record = VaccinationRecord(
         child, Programme.TD_IPV, revaxis_batch_name
     )
     SessionsPatientPage(page).set_up_vaccination(td_ipv_vaccination_record)
-    SessionsVaccinationWizardPage(page).record_vaccination(td_ipv_vaccination_record)
+    RecordVaccinationWizardPage(page).record_vaccination(td_ipv_vaccination_record)
 
     SessionsChildrenPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
