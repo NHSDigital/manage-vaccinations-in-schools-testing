@@ -4,7 +4,7 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
-from mavis.test.constants import DuplicateReviewAction, Programme
+from mavis.test.constants import Programme
 from mavis.test.data import FileGenerator, FileMapping, read_scenario_list_from_file
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.data_models import Child
@@ -176,11 +176,6 @@ class ImportRecordsWizardPage:
                 "heading", name=f"{child.last_name.upper()}, {child.first_name}"
             )
         ).to_be_visible()
-
-    def handle_duplicate_review(self, action: DuplicateReviewAction) -> None:
-        if action == DuplicateReviewAction.KEEP_BOTH:
-            self.select_keep_both_records()
-        self.resolve_duplicate_button.click()
 
     def click_review_link(self) -> None:
         self.review_link.click()

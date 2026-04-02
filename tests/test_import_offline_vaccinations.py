@@ -1,4 +1,5 @@
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
@@ -16,6 +17,7 @@ from mavis.test.pages import (
     SessionsOverviewPage,
     VaccinationRecordPage,
 )
+from mavis.test.pages.imports.import_issues_page import ImportIssuesPage, RecordToKeep
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import get_current_datetime
 
@@ -370,26 +372,36 @@ def test_vaccination_file_upload_community_clinic_name_case(
     )
 
 
+@pytest.mark.parametrize(
+    "close_match_resolution",
+    [RecordToKeep.UPLOADED, RecordToKeep.EXISTING],
+    ids=lambda x: f"Close match resolution: {x}",
+)
 def test_vaccination_close_match_imports(
     setup_vaccs,
     page,
     point_of_care_file_generator,
+    close_match_resolution,
 ):
     """
-    Test: Upload vaccination files with similar patient details and verify imports.
+    Test: Upload vaccination files with close match records and verify different
+    resolution strategies.
 
-    Close match scenario: Two patients with the same name and DOB, but different
-    NHS numbers (first has NHS number, second doesn't) and different postcodes.
+    This test is parametrized to verify two resolution options:
+    - Use uploaded record (replaces existing)
+    - Keep existing record (discards uploaded)
+
+    Note: Keep both option is not available for vaccination imports.
 
     Steps:
     1. Upload first vaccination file (creates patient record with NHS number).
     2. Upload second vaccination file (same patient, no NHS number, different postcode).
+    3. Verify close match review workflow is triggered.
+    4. Resolve duplicate using parametrized resolution strategy.
 
     Verification:
-    - Both vaccination records import successfully.
-
-    Note: Unlike child/class list imports, vaccination imports automatically match
-    patients and don't trigger a manual close match review workflow.
+    - Close match review workflow is triggered.
+    - Resolution completes successfully with "Record updated" message.
     """
     # Upload first vaccination (creates patient)
     ImportRecordsWizardPage(
@@ -415,3 +427,8 @@ def test_vaccination_close_match_imports(
         session_id=setup_vaccs,
     )
     ImportRecordsWizardPage(page, point_of_care_file_generator).verify_close_match()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).review_link.click()
+    ImportIssuesPage(page).resolve_duplicate(close_match_resolution)
+    expect(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).success_alert
+    ).to_contain_text("Record updated")
