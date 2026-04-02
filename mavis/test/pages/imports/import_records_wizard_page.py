@@ -103,9 +103,10 @@ class ImportRecordsWizardPage:
     @step("Navigate to Imports section")
     def _navigate_to_imports_section(self) -> None:
         """Navigate to the Imports section from the main menu."""
-        expect(self.page.get_by_label("Menu").get_by_role("list")).to_contain_text(
-            self.IMPORTS_MENU_PATTERN
-        )
+        expect(
+            self.page.get_by_label("Menu").get_by_role("list"),
+            "Expected Imports menu item to be present in main menu",
+        ).to_contain_text(self.IMPORTS_MENU_PATTERN)
         imports_link = self.page.get_by_role("link", name=self.IMPORTS_MENU_PATTERN)
         imports_link.click()
 
@@ -113,33 +114,51 @@ class ImportRecordsWizardPage:
     def _navigate_to_issues_tab(self) -> None:
         """Navigate to the Issues tab within the Imports section."""
         expect(
-            self.page.get_by_label("Secondary menu").get_by_role("list")
+            self.page.get_by_label("Secondary menu").get_by_role("list"),
+            "Expected Issues menu item to be present in secondary menu",
         ).to_contain_text(self.ISSUES_MENU_PATTERN)
         issues_link = self.page.get_by_role("link", name=self.ISSUES_MENU_PATTERN)
-        expect(issues_link).to_be_visible()
+        expect(
+            issues_link,
+            "Expected Issues link to be visible in Imports section",
+        ).to_be_visible()
         issues_link.click()
 
     @step("Verify and expand uploaded records for review")
     def _verify_and_expand_uploaded_records_review(self) -> None:
         """Verify uploaded records heading and expand it."""
-        expect(self.page.locator("h3")).to_contain_text(
-            self.UPLOADED_RECORDS_REVIEW_PATTERN
-        )
+        expect(
+            self.page.locator("h3"),
+            "Expected 'Uploaded records that need review' heading in Issues tab",
+        ).to_contain_text(self.UPLOADED_RECORDS_REVIEW_PATTERN)
         uploaded_records_heading = self.page.get_by_role(
             "heading", name=self.UPLOADED_RECORDS_REVIEW_PATTERN
         )
-        expect(uploaded_records_heading).to_be_visible()
+        expect(
+            uploaded_records_heading,
+            "Expected uploaded records review heading to be visible",
+        ).to_be_visible()
         uploaded_records_heading.click()
 
     def verify_close_match(self) -> None:
         """
-        Verify close match imports workflow:
-        1. Verify close matches heading is visible
-        2. Navigate through Imports -> Issues
+        Verify close match imports workflow for child and class list imports.
+        
+        A "close match" occurs when importing a record with the same name and DOB
+        but different identifying information (e.g., different NHS number or postcode).
+        This triggers a manual review workflow in the Issues tab.
+        
+        Note: Vaccination imports handle close matches automatically and may not
+        trigger the same review workflow.
+        
+        Verification steps:
+        1. Verify "Close matches to existing" heading is visible
+        2. Navigate through Imports -> Issues menu
         3. Verify and expand uploaded records that need review
         """
         expect(
-            self.page.get_by_role("heading", name="Close matches to existing")
+            self.page.get_by_role("heading", name="Close matches to existing"),
+            "Expected 'Close matches to existing' heading to be visible for close match review",
         ).to_be_visible()
         self._navigate_to_imports_section()
         self._navigate_to_issues_tab()
