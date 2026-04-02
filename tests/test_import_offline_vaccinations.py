@@ -371,6 +371,7 @@ def test_vaccination_file_upload_community_clinic_name_case(
         session_id=setup_vaccs,
     )
 
+
 @issue("MAV-2782")
 @pytest.mark.parametrize(
     "close_match_resolution",

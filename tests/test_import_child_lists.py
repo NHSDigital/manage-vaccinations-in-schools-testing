@@ -154,6 +154,7 @@ def test_child_list_file_upload_whitespace_normalization(
         input_file, is_vaccinations=False
     )
 
+
 @issue("MAV-2782")
 @pytest.mark.parametrize(
     "close_match_resolution",
