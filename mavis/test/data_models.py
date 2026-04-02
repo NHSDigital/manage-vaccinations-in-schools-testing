@@ -11,7 +11,7 @@ from faker import Faker
 from mavis.test.constants import ConsentOption, DeliverySite, Programme, Relationship
 from mavis.test.utils import (
     get_date_of_birth_for_year_group,
-    log_api_response,
+    get_logged_httpx_client,
     normalize_postcode,
     normalize_whitespace,
 )
@@ -74,9 +74,9 @@ class School(Location):
                 "site": "",
             }
 
-            response = httpx.get(url, params=params, timeout=30)
-            log_api_response(response, "GET_SCHOOLS")
-            response.raise_for_status()
+            with get_logged_httpx_client(timeout=30) as client:
+                response = client.get(url, params=params)
+                response.raise_for_status()
 
             data = response.json()
             schools_data = random.choices(data, k=2)

@@ -1,3 +1,4 @@
+import logging
 import random
 import re
 import time
@@ -16,6 +17,26 @@ from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
 
 faker = Faker()
 
+# Configure API logging
+_api_logger = logging.getLogger("mavis.api")
+_api_log_path = Path("logs") / "api.log"
+_api_log_path.parent.mkdir(parents=True, exist_ok=True)
+
+# Set up file handler for API logs
+_api_handler = logging.FileHandler(_api_log_path)
+_api_handler.setLevel(logging.INFO)
+_api_formatter = logging.Formatter(
+    "%(asctime)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+)
+_api_handler.setFormatter(_api_formatter)
+_api_logger.addHandler(_api_handler)
+_api_logger.setLevel(logging.INFO)
+# Don't propagate to root logger (prevents console output during tests)
+_api_logger.propagate = False
+
+# Completely disable httpx's built-in logging to prevent any credential leaks
+logging.getLogger("httpx").disabled = True
+
 # Maximum length for API response text in logs
 MAX_API_RESPONSE_LOG_LENGTH = 1000
 
@@ -26,10 +47,13 @@ def _mask_sensitive_data(text: str) -> str:
     Masks:
     - Bearer tokens
     - Access tokens in JSON
-    - JWT tokens
+    - JWT tokens (including client_assertion)
     - Authorization headers
+    - API keys
+    - Client secrets
+    - Passwords
     """
-    # Mask Bearer tokens in headers
+    # Mask Bearer tokens in headers or text
     text = re.sub(r"Bearer [A-Za-z0-9._-]+", "Bearer ***REDACTED***", text)
 
     # Mask access_token in JSON responses
@@ -37,51 +61,143 @@ def _mask_sensitive_data(text: str) -> str:
         r'"access_token"\s*:\s*"[^"]+?"', '"access_token": "***REDACTED***"', text
     )
 
-    # Mask JWT tokens (eyJ... pattern)
+    # Mask refresh_token in JSON
     text = re.sub(
-        r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
+        r'"refresh_token"\s*:\s*"[^"]+?"', '"refresh_token": "***REDACTED***"', text
+    )
+
+    # Mask client_assertion (JWT used in OAuth)
+    text = re.sub(
+        r'"client_assertion"\s*:\s*"[^"]+?"',
+        '"client_assertion": "***REDACTED***"',
+        text,
+    )
+
+    # Mask client_secret
+    text = re.sub(
+        r'"client_secret"\s*:\s*"[^"]+?"', '"client_secret": "***REDACTED***"', text
+    )
+
+    # Mask password fields
+    text = re.sub(r'"password"\s*:\s*"[^"]+?"', '"password": "***REDACTED***"', text)
+
+    # Mask API keys
+    text = re.sub(r'"api_key"\s*:\s*"[^"]+?"', '"api_key": "***REDACTED***"', text)
+    text = re.sub(r'"apiKey"\s*:\s*"[^"]+?"', '"apiKey": "***REDACTED***"', text)
+
+    # Mask JWT tokens anywhere (eyJ... pattern)
+    text = re.sub(
+        r"\beyJ[A-Za-z0-9._-]{20,}\b",
         "***JWT_REDACTED***",
         text,
     )
 
-    # Mask Authorization header values
-    return re.sub(
+    # Mask Authorization header values in JSON
+    text = re.sub(
         r'"authorization"\s*:\s*"[^"]+?"',
         '"authorization": "***REDACTED***"',
         text,
         flags=re.IGNORECASE,
     )
 
+    # Mask session tokens or similar
+    text = re.sub(
+        r'"session_token"\s*:\s*"[^"]+?"',
+        '"session_token": "***REDACTED***"',
+        text,
+    )
+    text = re.sub(r'"token"\s*:\s*"[^"]+?"', '"token": "***REDACTED***"', text)
 
-def log_api_response(response: httpx.Response, endpoint: str, method: str = "") -> None:
-    """Log API response to audit log file.
+    return text
+
+
+def _sanitize_headers(headers: httpx.Headers) -> dict[str, str]:
+    """Remove or mask sensitive headers for logging.
 
     Args:
-        response: The httpx.Response object from the API call
-        endpoint: The API endpoint that was called (e.g., "IMMS_GET", "PDS_SEARCH")
-        method: Optional HTTP method (will be inferred from response if not provided)
-    """
-    audit_log_path = Path("logs") / "api.log"
-    audit_log_path.parent.mkdir(parents=True, exist_ok=True)
+        headers: httpx.Headers object
 
-    timestamp = get_current_datetime().strftime("%Y-%m-%d %H:%M:%S")
-    http_method = method or response.request.method
-    status_code = response.status_code
-    response_text = (
-        response.text[:MAX_API_RESPONSE_LOG_LENGTH]
-        if len(response.text) > MAX_API_RESPONSE_LOG_LENGTH
-        else response.text
+    Returns:
+        Dictionary with sensitive headers redacted
+    """
+    safe_headers = dict(headers)
+
+    # Redact sensitive headers (case-insensitive)
+    sensitive_keys = [
+        "authorization",
+        "x-api-key",
+        "cookie",
+        "set-cookie",
+        "x-auth-token",
+        "x-access-token",
+        "x-session-token",
+        "proxy-authorization",
+        "www-authenticate",
+        "api-key",
+        "apikey",
+    ]
+    
+    # Convert header keys to lowercase for comparison
+    lower_headers = {k.lower(): k for k in safe_headers.keys()}
+    
+    for sensitive_key in sensitive_keys:
+        if sensitive_key in lower_headers:
+            original_key = lower_headers[sensitive_key]
+            safe_headers[original_key] = "***REDACTED***"
+
+    return safe_headers
+
+
+def _log_request(request: httpx.Request) -> None:
+    """Event hook to log httpx requests with sanitized headers.
+    
+    Note: Request body is intentionally NOT logged to prevent credential leaks,
+    as POST/PUT bodies may contain sensitive data like passwords, tokens, etc.
+    """
+    headers_str = ", ".join(
+        f"{k}: {v}" for k, v in _sanitize_headers(request.headers).items()
+    )
+    _api_logger.info(
+        f"REQUEST | {request.method} | {request.url} | HEADERS: {headers_str}"
     )
 
-    # Mask sensitive data
+
+def _log_response(response: httpx.Response) -> None:
+    """Event hook to log httpx responses with masked sensitive data."""
+    # Read the response content if not already read (for streaming responses)
+    response.read()
+
+    # Truncate and mask response body
+    response_text = response.text
+    if len(response_text) > MAX_API_RESPONSE_LOG_LENGTH:
+        response_text = response_text[:MAX_API_RESPONSE_LOG_LENGTH] + "... [truncated]"
+
     masked_response = _mask_sensitive_data(response_text)
 
-    with audit_log_path.open("a") as file:
-        log_message = (
-            f"{timestamp} | {http_method} | {endpoint} | "
-            f"STATUS: {status_code} | RESPONSE: {masked_response}\n"
-        )
-        file.write(log_message)
+    # Log response with headers
+    headers_str = ", ".join(f"{k}: {v}" for k, v in _sanitize_headers(response.headers).items())
+
+    _api_logger.info(
+        f"RESPONSE | {response.request.method} | {response.request.url} | "
+        f"STATUS: {response.status_code} | HEADERS: {headers_str} | BODY: {masked_response}"
+    )
+
+
+# Create a default httpx client with logging event hooks
+def get_logged_httpx_client(**kwargs) -> httpx.Client:
+    """Get an httpx.Client configured with API logging event hooks.
+
+    Args:
+        **kwargs: Additional arguments to pass to httpx.Client
+
+    Returns:
+        httpx.Client with logging configured
+    """
+    event_hooks = kwargs.pop("event_hooks", {})
+    event_hooks.setdefault("request", []).append(_log_request)
+    event_hooks.setdefault("response", []).append(_log_response)
+
+    return httpx.Client(event_hooks=event_hooks, **kwargs)
 
 
 def format_datetime_for_upload_link(now: datetime) -> str:

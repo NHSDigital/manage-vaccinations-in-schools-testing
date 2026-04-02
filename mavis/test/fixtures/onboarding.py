@@ -13,7 +13,7 @@ from mavis.test.onboarding import (
     Onboarding,
     PointOfCareOnboarding,
 )
-from mavis.test.utils import log_api_response
+from mavis.test.utils import get_logged_httpx_client
 
 
 @pytest.fixture(scope="session")
@@ -59,10 +59,8 @@ def _create_onboarding_with_retry[T: Onboarding](
     onboarding_url = urllib.parse.urljoin(base_url, "api/testing/onboard")
 
     for attempt in range(1, max_attempts + 1):
-        response = httpx.post(
-            onboarding_url, json=onboarding_data.to_dict(), timeout=30
-        )
-        log_api_response(response, "ONBOARDING")
+        with get_logged_httpx_client(timeout=30) as client:
+            response = client.post(onboarding_url, json=onboarding_data.to_dict())
         if response.is_success:
             return onboarding_data
 
