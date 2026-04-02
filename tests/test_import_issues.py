@@ -4,10 +4,7 @@ from playwright.sync_api import expect
 from mavis.test.constants import DeliverySite, Programme
 from mavis.test.data import ChildFileMapping, ClassFileMapping, VaccsFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
-from mavis.test.data.file_utils import (
-    read_child_names_from_file,
-    set_field_for_key,
-)
+from mavis.test.data.file_utils import read_child_names_from_file, set_field_for_key
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -19,6 +16,7 @@ from mavis.test.pages import (
     SchoolsSearchPage,
     SessionsOverviewPage,
 )
+from mavis.test.pages.imports.import_issues_page import RecordToKeep
 from mavis.test.pages.utils import schedule_school_session_if_needed
 from mavis.test.utils import expect_details
 
@@ -77,7 +75,7 @@ def test_child_file_upload_close_match(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).navigate_to_close_match_issue()
-    ImportIssuesPage(page).resolve_duplicate(ImportIssuesPage.RecordToKeep.UPLOADED)
+    ImportIssuesPage(page).resolve_duplicate(RecordToKeep.UPLOADED)
     expect(
         ImportRecordsWizardPage(page, point_of_care_file_generator).success_alert
     ).to_contain_text("Record updated")
@@ -178,7 +176,7 @@ def test_vaccination_file_upload_close_match(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).navigate_to_close_match_issue()
-    ImportIssuesPage(page).resolve_duplicate(ImportIssuesPage.RecordToKeep.UPLOADED)
+    ImportIssuesPage(page).resolve_duplicate(RecordToKeep.UPLOADED)
     expect(
         ImportRecordsWizardPage(page, point_of_care_file_generator).success_alert
     ).to_contain_text("Record updated")
