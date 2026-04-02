@@ -258,6 +258,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     expect(page.get_by_text("Showing 1 to 2 of 2 children")).to_be_visible()
 
 
+@issue("MAV-2782")
 @pytest.mark.parametrize(
     "close_match_resolution",
     [RecordToKeep.UPLOADED, RecordToKeep.EXISTING, RecordToKeep.BOTH],

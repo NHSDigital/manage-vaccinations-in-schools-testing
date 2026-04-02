@@ -372,6 +372,7 @@ def test_vaccination_file_upload_community_clinic_name_case(
     )
 
 
+@issue("MAV-2782")
 @pytest.mark.parametrize(
     "close_match_resolution",
     [RecordToKeep.UPLOADED, RecordToKeep.EXISTING],

@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import expect
 
+from mavis.test.annotations import issue
 from mavis.test.data import ChildFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
@@ -154,6 +155,7 @@ def test_child_list_file_upload_whitespace_normalization(
     )
 
 
+@issue("MAV-2782")
 @pytest.mark.parametrize(
     "close_match_resolution",
     [RecordToKeep.UPLOADED, RecordToKeep.EXISTING, RecordToKeep.BOTH],
@@ -231,4 +233,5 @@ def test_accessibility(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.POSITIVE)
+    AccessibilityHelper(page).check_accessibility()
     AccessibilityHelper(page).check_accessibility()
