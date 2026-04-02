@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
-from mavis.test.constants import DuplicateReviewAction, Programme
+from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages import (
@@ -12,6 +12,7 @@ from mavis.test.pages import (
     ImportsPage,
     SessionsOverviewPage,
 )
+from mavis.test.pages.imports.import_issues_page import ImportIssuesPage, RecordToKeep
 from mavis.test.pages.utils import schedule_school_session_if_needed
 
 
@@ -242,9 +243,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
 
     ImportRecordsWizardPage(page, point_of_care_file_generator).click_review_link()
 
-    ImportRecordsWizardPage(page, point_of_care_file_generator).handle_duplicate_review(
-        DuplicateReviewAction.KEEP_BOTH
-    )
+    ImportIssuesPage(page).resolve_duplicate(RecordToKeep.BOTH)
 
     expect(
         ImportRecordsWizardPage(page, point_of_care_file_generator).record_updated
@@ -257,3 +256,62 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     ChildrenSearchPage(page).search.search_for_child_by_name(str(child))
 
     expect(page.get_by_text("Showing 1 to 2 of 2 children")).to_be_visible()
+
+
+@pytest.mark.parametrize(
+    "close_match_resolution",
+    [RecordToKeep.UPLOADED, RecordToKeep.EXISTING, RecordToKeep.BOTH],
+    ids=lambda x: f"Close match resolution: {x}",
+)
+def test_class_list_close_match_verify_counts(
+    setup_class_list_import,
+    page,
+    point_of_care_file_generator,
+    close_match_resolution,
+):
+    """
+    Test: Upload class list files with close match records and verify different
+    resolution strategies.
+
+    This test is parametrized to verify all three resolution options:
+    - Use uploaded record (replaces existing)
+    - Keep existing record (discards uploaded)
+    - Keep both records (creates two separate records)
+
+    Steps:
+    1. Upload first file (creates child record with NHS number).
+    2. Upload second file (same child, no NHS number, different postcode).
+    3. Verify close match review workflow is triggered.
+    4. Resolve duplicate using parametrized resolution strategy.
+
+    Verification:
+    - "Close matches to existing" heading is visible.
+    - Import appears in Issues tab for review.
+    - Resolution completes successfully with "Record updated" message.
+    """
+    # Upload first class list file
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.CLOSE_MATCH_1)
+
+    # Navigate back to import page
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_class_list_record_import(
+        str(point_of_care_file_generator.schools[Programme.HPV][0]),
+        point_of_care_file_generator.year_groups[Programme.HPV],
+    )
+
+    # Upload second file with similar child details and verify close match UI
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ClassFileMapping.CLOSE_MATCH_2)
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_close_match()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).review_link.click()
+    ImportIssuesPage(page).resolve_duplicate(close_match_resolution)
+    expect(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).success_alert
+    ).to_contain_text("Record updated")

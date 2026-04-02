@@ -433,10 +433,6 @@ class ConsentMethod(StrEnum):
     IN_PERSON = "In person"
 
 
-class DuplicateReviewAction(StrEnum):
-    KEEP_BOTH = "keep_both"
-
-
 class ReportFormat(StrEnum):
     CAREPLUS = "CSV for CarePlus (System C)"
     CSV = "CSV"

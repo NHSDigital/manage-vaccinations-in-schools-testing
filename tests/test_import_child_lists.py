@@ -1,4 +1,5 @@
 import pytest
+from playwright.sync_api import expect
 
 from mavis.test.data import ChildFileMapping
 from mavis.test.data.file_mappings import ImportFormatDetails
@@ -9,6 +10,7 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
 )
+from mavis.test.pages.imports.import_issues_page import ImportIssuesPage, RecordToKeep
 
 
 @pytest.fixture
@@ -150,6 +152,56 @@ def test_child_list_file_upload_whitespace_normalization(
     ChildrenSearchPage(page).verify_list_has_been_uploaded(
         input_file, is_vaccinations=False
     )
+
+
+@pytest.mark.parametrize(
+    "close_match_resolution",
+    [RecordToKeep.UPLOADED, RecordToKeep.EXISTING, RecordToKeep.BOTH],
+    ids=lambda x: f"Close match resolution: {x}",
+)
+def test_child_list_close_match_verify_counts(
+    setup_child_import,
+    page,
+    point_of_care_file_generator,
+    close_match_resolution,
+):
+    """
+    Test: Upload child list files with close match records and verify different
+    resolution strategies.
+
+    This test is parametrized to verify all three resolution options:
+    - Use uploaded record (replaces existing)
+    - Keep existing record (discards uploaded)
+    - Keep both records (creates two separate records)
+
+    Steps:
+    1. Upload first file (creates child record with NHS number).
+    2. Upload second file (same child, no NHS number, different postcode).
+    3. Verify close match review workflow is triggered.
+    4. Resolve duplicate using parametrized resolution strategy.
+
+    Verification:
+    - Close match review workflow is triggered.
+    - Resolution completes successfully with "Record updated" message.
+    """
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.CLOSE_MATCH_1)
+    ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).navigate_to_child_record_import()
+    ImportRecordsWizardPage(
+        page, point_of_care_file_generator
+    ).upload_and_verify_output(ChildFileMapping.CLOSE_MATCH_2)
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_close_match()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).review_link.click()
+    ImportIssuesPage(page).resolve_duplicate(close_match_resolution)
+    expect(
+        ImportRecordsWizardPage(page, point_of_care_file_generator).success_alert
+    ).to_contain_text("Record updated")
 
 
 @pytest.mark.accessibility
