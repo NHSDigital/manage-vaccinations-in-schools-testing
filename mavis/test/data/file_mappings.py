@@ -82,7 +82,6 @@ class ClassFileMapping(FileMapping):
     DUPLICATE_POSTCODE_2 = "duplicate_postcode_2"
     EMPTY_FILE = "empty"
     FIXED_CHILD = "fixed_child"
-    FIXED_RANDOM_CHILD = "fixed_random_child"
     HEADER_ONLY = "header_only"
     INVALID_STRUCTURE = "invalid_structure"
     NEGATIVE = "negative"

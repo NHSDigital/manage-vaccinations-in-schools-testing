@@ -414,3 +414,4 @@ def test_vaccination_close_match_imports(
         VaccsFileMapping.CLOSE_MATCH_2,
         session_id=setup_vaccs,
     )
+    ImportRecordsWizardPage(page, point_of_care_file_generator).verify_close_match()
