@@ -143,14 +143,14 @@ class ImportRecordsWizardPage:
     def verify_close_match(self) -> None:
         """
         Verify close match imports workflow for child and class list imports.
-        
+
         A "close match" occurs when importing a record with the same name and DOB
         but different identifying information (e.g., different NHS number or postcode).
         This triggers a manual review workflow in the Issues tab.
-        
+
         Note: Vaccination imports handle close matches automatically and may not
         trigger the same review workflow.
-        
+
         Verification steps:
         1. Verify "Close matches to existing" heading is visible
         2. Navigate through Imports -> Issues menu
@@ -158,7 +158,7 @@ class ImportRecordsWizardPage:
         """
         expect(
             self.page.get_by_role("heading", name="Close matches to existing"),
-            "Expected 'Close matches to existing' heading to be visible for close match review",
+            "Expected 'Close matches to existing' heading to be visible",
         ).to_be_visible()
         self._navigate_to_imports_section()
         self._navigate_to_issues_tab()
