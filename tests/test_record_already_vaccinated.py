@@ -1,5 +1,6 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import ChildFileMapping
 from mavis.test.pages import (
@@ -14,6 +15,7 @@ from mavis.test.pages import (
 from mavis.test.utils import get_offset_date_compact_format
 
 
+@issue("MAV-3905")
 @pytest.mark.parametrize(
     "programme_and_doses",
     [
