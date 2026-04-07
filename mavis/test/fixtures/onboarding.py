@@ -3,7 +3,6 @@ import random
 import time
 import urllib.parse
 
-import httpx
 import pytest
 
 from mavis.test.constants import Programme

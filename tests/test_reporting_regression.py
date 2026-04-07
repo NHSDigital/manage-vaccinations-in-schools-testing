@@ -3,7 +3,6 @@ import time
 import urllib.parse
 from datetime import UTC, datetime
 
-import httpx
 import pytest
 
 from mavis.test.constants import Programme

@@ -2,7 +2,6 @@ import os
 import re
 import time
 
-import httpx
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step

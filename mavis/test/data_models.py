@@ -3,7 +3,6 @@ import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import date
 
-import httpx
 import nhs_number
 from attr import dataclass
 from faker import Faker

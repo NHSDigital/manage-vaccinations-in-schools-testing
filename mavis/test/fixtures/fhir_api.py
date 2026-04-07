@@ -5,7 +5,6 @@ import time
 import urllib.parse
 import uuid
 
-import httpx
 import jwt
 import pytest
 

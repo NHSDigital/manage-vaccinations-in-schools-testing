@@ -106,9 +106,7 @@ def _mask_sensitive_data(text: str) -> str:
         '"session_token": "***REDACTED***"',
         text,
     )
-    text = re.sub(r'"token"\s*:\s*"[^"]+?"', '"token": "***REDACTED***"', text)
-
-    return text
+    return re.sub(r'"token"\s*:\s*"[^"]+?"', '"token": "***REDACTED***"', text)
 
 
 def _sanitize_headers(headers: httpx.Headers) -> dict[str, str]:
@@ -136,10 +134,10 @@ def _sanitize_headers(headers: httpx.Headers) -> dict[str, str]:
         "api-key",
         "apikey",
     ]
-    
+
     # Convert header keys to lowercase for comparison
-    lower_headers = {k.lower(): k for k in safe_headers.keys()}
-    
+    lower_headers = {k.lower(): k for k in safe_headers}
+
     for sensitive_key in sensitive_keys:
         if sensitive_key in lower_headers:
             original_key = lower_headers[sensitive_key]
@@ -150,7 +148,7 @@ def _sanitize_headers(headers: httpx.Headers) -> dict[str, str]:
 
 def _log_request(request: httpx.Request) -> None:
     """Event hook to log httpx requests with sanitized headers.
-    
+
     Note: Request body is intentionally NOT logged to prevent credential leaks,
     as POST/PUT bodies may contain sensitive data like passwords, tokens, etc.
     """
@@ -158,7 +156,10 @@ def _log_request(request: httpx.Request) -> None:
         f"{k}: {v}" for k, v in _sanitize_headers(request.headers).items()
     )
     _api_logger.info(
-        f"REQUEST | {request.method} | {request.url} | HEADERS: {headers_str}"
+        "REQUEST | %s | %s | HEADERS: %s",
+        request.method,
+        request.url,
+        headers_str,
     )
 
 
@@ -175,16 +176,22 @@ def _log_response(response: httpx.Response) -> None:
     masked_response = _mask_sensitive_data(response_text)
 
     # Log response with headers
-    headers_str = ", ".join(f"{k}: {v}" for k, v in _sanitize_headers(response.headers).items())
+    headers_str = ", ".join(
+        f"{k}: {v}" for k, v in _sanitize_headers(response.headers).items()
+    )
 
     _api_logger.info(
-        f"RESPONSE | {response.request.method} | {response.request.url} | "
-        f"STATUS: {response.status_code} | HEADERS: {headers_str} | BODY: {masked_response}"
+        "RESPONSE | %s | %s | STATUS: %s | HEADERS: %s | BODY: %s",
+        response.request.method,
+        response.request.url,
+        response.status_code,
+        headers_str,
+        masked_response,
     )
 
 
 # Create a default httpx client with logging event hooks
-def get_logged_httpx_client(**kwargs) -> httpx.Client:
+def get_logged_httpx_client(**kwargs: object) -> httpx.Client:
     """Get an httpx.Client configured with API logging event hooks.
 
     Args:

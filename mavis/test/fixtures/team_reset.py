@@ -1,7 +1,6 @@
 import logging
 import urllib.parse
 
-import httpx
 import pytest
 
 from mavis.test.data_models import Team
