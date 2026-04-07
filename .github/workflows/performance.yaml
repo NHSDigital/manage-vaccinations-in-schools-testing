@@ -59,7 +59,7 @@ on:
 jobs:
   check-image-presence:
     name: Check if docker image already exists
-    runs-on: ubuntu-latest
+    runs-on: codebuild-mavis-testing-github-runner-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       id-token: write
     outputs:
@@ -83,7 +83,7 @@ jobs:
   build-and-push:
     needs: check-image-presence
     if: needs.check-image-presence.outputs.build-needed == 'true'
-    runs-on: ubuntu-latest
+    runs-on: codebuild-mavis-testing-github-runner-${{ github.run_id }}-${{ github.run_attempt }}
     defaults:
       run:
         working-directory: performance-tests/
@@ -127,7 +127,7 @@ jobs:
           (needs.check-image-presence.result == 'success' &&
         needs.build-and-push.result == 'skipped')
       ) }}
-    runs-on: ubuntu-latest
+    runs-on: codebuild-mavis-testing-github-runner-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       id-token: write
       contents: write
