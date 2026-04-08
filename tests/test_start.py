@@ -21,6 +21,8 @@ def test_start_page_elements_visible(page):
 
     StartPage(page).check_all_start_page_elements_visible()
 
+    pytest.fail("Fail test")
+
 
 def test_accessibility_statement_link(page):
     """
