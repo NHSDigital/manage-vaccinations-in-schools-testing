@@ -25,6 +25,7 @@ dependencies = [
     "requests==2.33.1",
     "pypdf>=6.9.1",
     "inflect>=7.5.0",
+    "defusedxml>=0.7.1",
 ]
 
 [dependency-groups]
