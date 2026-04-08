@@ -1,7 +1,12 @@
 import pytest
 
 from mavis.test.annotations import issue
-from mavis.test.constants import MAVIS_NOTE_LENGTH_LIMIT, ConsentMethod, Programme
+from mavis.test.constants import (
+    MAVIS_NOTE_LENGTH_LIMIT,
+    ConsentMethod,
+    ConsentOption,
+    Programme,
+)
 from mavis.test.data import ClassFileMapping
 from mavis.test.pages import (
     DashboardPage,
@@ -21,12 +26,12 @@ from mavis.test.utils import expect_alert_text
 
 
 @pytest.fixture
-def set_up_session_with_file_upload(
-    log_in_as_nurse,
+def session_with_child_for_programme(
     schools,
-    page,
-    point_of_care_file_generator,
     year_groups,
+    point_of_care_file_generator,
+    page,
+    log_in_as_nurse,
 ):
     school = schools[Programme.HPV][0]
     year_group = year_groups[Programme.HPV]
@@ -39,13 +44,10 @@ def set_up_session_with_file_upload(
     )
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
 
+    return Programme.HPV, ConsentOption.INJECTION
 
-def test_gillick_competence(
-    set_up_session_with_file_upload,
-    page,
-    children,
-    schools,
-):
+
+def test_gillick(session_with_child_for_programme, children, schools, page):
     """
     Test: Add and edit Gillick competence assessment for a child.
 
@@ -59,43 +61,47 @@ def test_gillick_competence(
     - Gillick competence status is updated and reflected for the child.
     """
 
-    child = children[Programme.HPV][0]
-    school = schools[Programme.HPV][0]
+    programme, _ = session_with_child_for_programme
+    child = children[programme.group][0]
+    school = schools[programme.group][0]
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).click_assess_gillick_competence()
+    dashboard_page = DashboardPage(page)
+    gillick_competence_page = GillickCompetencePage(page)
+    sessions_children_page = SessionsChildrenPage(page)
+    sessions_overview_page = SessionsOverviewPage(page)
+    sessions_patient_page = SessionsPatientPage(page)
+    sessions_search_page = SessionsSearchPage(page)
 
-    GillickCompetencePage(page).add_gillick_competence(is_competent=True)
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_assess_gillick_competence()
 
-    SessionsChildrenPage(page).header.click_mavis()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
-    SessionsOverviewPage(page).verify_offline_sheet_gillick_competence(
+    gillick_competence_page.add_gillick_competence(is_competent=True)
+
+    sessions_children_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, programme)
+    sessions_overview_page.verify_offline_sheet_gillick_competence(
         child, competent=True
     )
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).click_edit_gillick_competence()
-    GillickCompetencePage(page).edit_gillick_competence(is_competent=False)
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_edit_gillick_competence()
+    gillick_competence_page.edit_gillick_competence(is_competent=False)
 
-    SessionsChildrenPage(page).header.click_mavis()
-    DashboardPage(page).click_sessions()
-    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.HPV)
-    SessionsOverviewPage(page).verify_offline_sheet_gillick_competence(
+    sessions_children_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    sessions_search_page.click_session_for_programme_group(school, programme)
+    sessions_overview_page.verify_offline_sheet_gillick_competence(
         child, competent=False
     )
 
 
 @issue("MAV-955")
-def test_gillick_competence_notes(
-    set_up_session_with_file_upload,
-    page,
-    children,
-):
+def test_gillick_with_notes(session_with_child_for_programme, children, page):
     """
     Test: Validate Gillick competence assessment notes length and update.
 
@@ -112,36 +118,40 @@ def test_gillick_competence_notes(
     - Assessment can be completed and updated with valid notes.
     """
 
-    child = children[Programme.HPV][0]
+    programme, _ = session_with_child_for_programme
+    child = children[programme.group][0]
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).click_assess_gillick_competence()
+    gillick_competence_page = GillickCompetencePage(page)
+    sessions_children_page = SessionsChildrenPage(page)
+    sessions_overview_page = SessionsOverviewPage(page)
+    sessions_patient_page = SessionsPatientPage(page)
 
-    GillickCompetencePage(page).answer_gillick_competence_questions(is_competent=True)
-    GillickCompetencePage(page).fill_assessment_notes_with_string_of_length(
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_assess_gillick_competence()
+
+    gillick_competence_page.answer_gillick_competence_questions(is_competent=True)
+    gillick_competence_page.fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    GillickCompetencePage(page).click_complete_assessment()
-    GillickCompetencePage(page).check_notes_length_error_appears()
+    gillick_competence_page.click_complete_assessment()
+    gillick_competence_page.check_notes_length_error_appears()
 
-    GillickCompetencePage(page).fill_assessment_notes("Gillick competent")
-    GillickCompetencePage(page).click_complete_assessment()
+    gillick_competence_page.fill_assessment_notes("Gillick competent")
+    gillick_competence_page.click_complete_assessment()
 
-    SessionsPatientPage(page).click_edit_gillick_competence()
-    GillickCompetencePage(page).answer_gillick_competence_questions(is_competent=True)
-    GillickCompetencePage(page).fill_assessment_notes_with_string_of_length(
+    sessions_patient_page.click_edit_gillick_competence()
+    gillick_competence_page.answer_gillick_competence_questions(is_competent=True)
+    gillick_competence_page.fill_assessment_notes_with_string_of_length(
         MAVIS_NOTE_LENGTH_LIMIT + 1
     )
-    GillickCompetencePage(page).click_update_assessment()
-    GillickCompetencePage(page).check_notes_length_error_appears()
+    gillick_competence_page.click_update_assessment()
+    gillick_competence_page.check_notes_length_error_appears()
 
 
-def test_conflicting_consent_with_gillick_consent(
-    set_up_session_with_file_upload,
-    page,
-    children,
+def test_gillick_override_conflicting_from_parent(
+    session_with_child_for_programme, children, page
 ):
     """
     Test: Record conflicting consents from parents, resolve with Gillick competence,
@@ -161,50 +171,56 @@ def test_conflicting_consent_with_gillick_consent(
     - Activity log contains entry for Gillick competent child consent.
     """
 
-    child = children[Programme.HPV][0]
+    programme, consent_option = session_with_child_for_programme
+    child = children[programme.group][0]
 
-    SessionsOverviewPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.select_needs_consent()
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).click_record_a_new_consent_response()
+    gillick_competence_page = GillickCompetencePage(page)
+    nurse_consent_wizard_page = NurseConsentWizardPage(page)
+    sessions_children_page = SessionsChildrenPage(page)
+    sessions_overview_page = SessionsOverviewPage(page)
+    sessions_patient_page = SessionsPatientPage(page)
+    sessions_patient_session_activity_page = SessionsPatientSessionActivityPage(page)
 
-    NurseConsentWizardPage(page).select_parent(child.parents[0])
-    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
-    NurseConsentWizardPage(page).record_parent_given_consent()
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.select_needs_consent()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_record_a_new_consent_response()
 
-    SessionsChildrenPage(page).search.select_due_vaccination()
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).click_record_a_new_consent_response()
+    nurse_consent_wizard_page.select_parent(child.parents[0])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_given_consent(programme, consent_option)
 
-    NurseConsentWizardPage(page).select_parent(child.parents[1])
-    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
-    NurseConsentWizardPage(page).record_parent_refuse_consent()
+    sessions_children_page.search.select_due_vaccination()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_record_a_new_consent_response()
 
-    SessionsChildrenPage(page).search.select_has_a_refusal()
-    SessionsChildrenPage(page).search.select_consent_refused()
-    SessionsChildrenPage(page).search.select_conflicting_consent()
+    nurse_consent_wizard_page.select_parent(child.parents[1])
+    nurse_consent_wizard_page.select_consent_method(ConsentMethod.IN_PERSON)
+    nurse_consent_wizard_page.record_parent_refuse_consent()
 
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).expect_consent_status(
-        Programme.HPV, "Conflicting consent"
-    )
-    SessionsPatientPage(page).expect_conflicting_consent_text()
-    SessionsPatientPage(page).click_assess_gillick_competence()
-    GillickCompetencePage(page).add_gillick_competence(is_competent=True)
-    SessionsPatientPage(page).click_record_a_new_consent_response()
+    sessions_children_page.search.select_has_a_refusal()
+    sessions_children_page.search.select_consent_refused()
+    sessions_children_page.search.select_conflicting_consent()
 
-    NurseConsentWizardPage(page).select_gillick_competent_child()
-    NurseConsentWizardPage(page).record_child_given_consent()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.expect_consent_status(programme, "Conflicting consent")
+    sessions_patient_page.expect_conflicting_consent_text()
+    sessions_patient_page.click_assess_gillick_competence()
+    gillick_competence_page.add_gillick_competence(is_competent=True)
+    sessions_patient_page.click_record_a_new_consent_response()
+
+    nurse_consent_wizard_page.select_gillick_competent_child()
+    nurse_consent_wizard_page.record_child_given_consent(programme, consent_option)
     expect_alert_text(page, f"Consent recorded for {child!s}")
 
-    SessionsChildrenPage(page).search.select_due_vaccination()
-    SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent given")
-    SessionsPatientPage(page).click_session_activity_and_notes()
-    SessionsPatientSessionActivityPage(page).check_session_activity_entry(
+    sessions_children_page.search.select_due_vaccination()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.expect_consent_status(programme, "Consent given")
+    sessions_patient_page.click_session_activity_and_notes()
+    sessions_patient_session_activity_page.check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
     )
