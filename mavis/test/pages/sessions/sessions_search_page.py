@@ -35,6 +35,18 @@ class SessionsSearchPage:
         self.page.get_by_role("link", name=str(location)).first.click()
 
     @step("Click on {2} session at {1}")
+    def click_session_for_programmes(
+        self, location: Location, programmes: list[Programme]
+    ) -> None:
+        self._check_programmes(programmes)
+        self._search_for_location(location)
+        self._click_location(location)
+
+        expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
+            timeout=10_000,
+        )
+
+    @step("Click on {2} session at {1}")
     def click_session_for_programme_group(
         self, location: Location, programme_group: str
     ) -> None:

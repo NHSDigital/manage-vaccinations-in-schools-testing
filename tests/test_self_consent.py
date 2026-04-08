@@ -27,26 +27,48 @@ from mavis.test.utils import expect_alert_text
 
 @pytest.fixture
 def session_with_child_for_programme(
+    request,
     schools,
     year_groups,
     point_of_care_file_generator,
     page,
     log_in_as_nurse,
 ):
-    school = schools[Programme.HPV][0]
-    year_group = year_groups[Programme.HPV]
+    programme, consent_option = request.param
+    school = schools[programme.group][0]
+    year_group = year_groups[programme.group]
 
     DashboardPage(page).click_schools()
     SchoolsSearchPage(page).click_school(school)
     SchoolChildrenPage(page).click_import_class_lists()
     ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
-        ClassFileMapping.FIXED_CHILD, year_group
+        ClassFileMapping.FIXED_CHILD, year_group, programme.group
     )
-    schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
+    schedule_school_session_if_needed(page, school, [programme], [year_group])
 
-    return Programme.HPV, ConsentOption.INJECTION
+    return programme, consent_option
 
 
+programmes_and_consent_options = [
+    (Programme.FLU, ConsentOption.INJECTION),
+    (Programme.FLU, ConsentOption.NASAL_SPRAY_OR_INJECTION),
+    (Programme.HPV, ConsentOption.INJECTION),
+    (Programme.MENACWY, ConsentOption.INJECTION),
+    # TODO: Enable these once we have a way of working with children that are either
+    #  MMR or MMRV, and `expect_programme_status` is able to accept the MMR or MMRV
+    #  variant.
+    # (Programme.MMR, ConsentOption.MMR_EITHER), # noqa: ERA001
+    # (Programme.MMR, ConsentOption.MMR_WITHOUT_GELATINE), # noqa: ERA001
+    (Programme.TD_IPV, ConsentOption.INJECTION),
+]
+
+
+@pytest.mark.parametrize(
+    "session_with_child_for_programme",
+    programmes_and_consent_options,
+    indirect=True,
+    ids=lambda v: f"{v[0]}-{v[1]}",
+)
 def test_gillick(session_with_child_for_programme, children, schools, page):
     """
     Test: Add and edit Gillick competence assessment for a child.
@@ -76,12 +98,11 @@ def test_gillick(session_with_child_for_programme, children, schools, page):
     sessions_children_page.search.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(programme)
     sessions_patient_page.click_assess_gillick_competence()
-
     gillick_competence_page.add_gillick_competence(is_competent=True)
 
     sessions_children_page.header.click_mavis()
     dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(school, programme)
+    sessions_search_page.click_session_for_programmes(school, [programme])
     sessions_overview_page.verify_offline_sheet_gillick_competence(
         child, competent=True
     )
@@ -94,13 +115,19 @@ def test_gillick(session_with_child_for_programme, children, schools, page):
 
     sessions_children_page.header.click_mavis()
     dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programme_group(school, programme)
+    sessions_search_page.click_session_for_programmes(school, [programme])
     sessions_overview_page.verify_offline_sheet_gillick_competence(
         child, competent=False
     )
 
 
 @issue("MAV-955")
+@pytest.mark.parametrize(
+    "session_with_child_for_programme",
+    programmes_and_consent_options,
+    indirect=True,
+    ids=lambda v: f"{v[0]}-{v[1]}",
+)
 def test_gillick_with_notes(session_with_child_for_programme, children, page):
     """
     Test: Validate Gillick competence assessment notes length and update.
@@ -150,6 +177,12 @@ def test_gillick_with_notes(session_with_child_for_programme, children, page):
     gillick_competence_page.check_notes_length_error_appears()
 
 
+@pytest.mark.parametrize(
+    "session_with_child_for_programme",
+    programmes_and_consent_options,
+    indirect=True,
+    ids=lambda v: f"{v[0]}-{v[1]}",
+)
 def test_gillick_override_conflicting_from_parent(
     session_with_child_for_programme, children, page
 ):
@@ -219,7 +252,15 @@ def test_gillick_override_conflicting_from_parent(
     sessions_children_page.search.select_due_vaccination()
     sessions_children_page.search.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(programme)
-    sessions_patient_page.expect_consent_status(programme, "Consent given")
+
+    if consent_option == ConsentOption.NASAL_SPRAY_OR_INJECTION:
+        consent_status = "Consent given for nasal spray"
+    elif consent_option == ConsentOption.MMR_WITHOUT_GELATINE:
+        consent_status = "Consent given for gelatine-free injection"
+    else:
+        consent_status = "Consent given"
+    sessions_patient_page.expect_consent_status(programme, consent_status)
+
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
