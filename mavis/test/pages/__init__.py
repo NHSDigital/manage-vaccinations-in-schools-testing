@@ -7,7 +7,7 @@ from .children import (
     ChildrenSearchPage,
 )
 from .dashboard_page import DashboardPage
-from .error_pages import BadRequestPage, ServiceErrorPage
+from .error_pages import BadRequestPage, PageNotFound, ServiceErrorPage
 from .flipper_page import FlipperPage
 from .imports import ImportIssuesPage, ImportRecordsWizardPage, ImportsPage
 from .log_in_page import LogInPage
@@ -77,6 +77,7 @@ __all__ = [
     "MatchConsentResponsePage",
     "NurseConsentWizardPage",
     "OnlineConsentWizardPage",
+    "PageNotFound",
     "RecordVaccinationWizardPage",
     "ReportsConsentPage",
     "ReportsDownloadPage",
