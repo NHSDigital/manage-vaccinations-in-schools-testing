@@ -71,7 +71,7 @@ def record_nurse_consent_and_vaccination(
     if mmrv_eligibility:
         NurseConsentWizardPage(page).select_mmrv_eligibility_for_child()
 
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         programme=programme,
         consent_option=consent_option,
         mmrv_eligibility=mmrv_eligibility,

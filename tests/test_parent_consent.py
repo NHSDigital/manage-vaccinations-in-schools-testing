@@ -136,7 +136,7 @@ def test_parent_provides_consent_twice(
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         yes_to_health_questions=True
     )
     SessionsChildrenPage(page).search.select_due_vaccination()

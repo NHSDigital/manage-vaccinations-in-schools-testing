@@ -171,7 +171,7 @@ def test_conflicting_consent_with_gillick_consent(
 
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
-    NurseConsentWizardPage(page).record_parent_positive_consent()
+    NurseConsentWizardPage(page).record_parent_given_consent()
 
     SessionsChildrenPage(page).search.select_due_vaccination()
     SessionsChildrenPage(page).search.search_and_click_child(child)
@@ -197,7 +197,7 @@ def test_conflicting_consent_with_gillick_consent(
     SessionsPatientPage(page).click_record_a_new_consent_response()
 
     NurseConsentWizardPage(page).select_gillick_competent_child()
-    NurseConsentWizardPage(page).record_child_positive_consent()
+    NurseConsentWizardPage(page).record_child_given_consent()
     expect_alert_text(page, f"Consent recorded for {child!s}")
 
     SessionsChildrenPage(page).search.select_due_vaccination()
