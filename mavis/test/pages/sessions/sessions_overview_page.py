@@ -110,7 +110,7 @@ class SessionsOverviewPage:
         # Otherwise, we look for MMR link
         programme_names = []
         for programme in programmes:
-            if programme is Programme.MMR:
+            if programme is Programme.MMR_MMRV:
                 # Use MMRV if prefer_mmrv is True, otherwise MMR
                 programme_names.append("MMRV" if prefer_mmrv else "MMR")
             else:
@@ -304,9 +304,9 @@ class SessionsOverviewPage:
 
         # For MMR, the link text uses "MMR" not "MMR(V)"
         # When prefer_mmrv=True and programme is MMR, download MMRV form instead
-        if programme is Programme.MMR and prefer_mmrv:
+        if programme is Programme.MMR_MMRV and prefer_mmrv:
             programme_name = "MMRV"
-        elif programme is Programme.MMR:
+        elif programme is Programme.MMR_MMRV:
             programme_name = "MMR"
         else:
             programme_name = str(programme)

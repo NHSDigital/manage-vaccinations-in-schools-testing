@@ -16,7 +16,7 @@ from mavis.test.pages.utils import (
 
 @pytest.fixture
 def setup_session_for_mmr(setup_session_and_batches_with_fixed_child):
-    return setup_session_and_batches_with_fixed_child(Programme.MMR)
+    return setup_session_and_batches_with_fixed_child(Programme.MMR_MMRV)
 
 
 @issue("MAV-955")
@@ -49,7 +49,7 @@ def test_e2e_nurse_consent_mmr(
     - Providing long notes gives an error
     """
     batch_names = setup_session_for_mmr
-    programme_group = Programme.MMR
+    programme_group = Programme.MMR_MMRV
 
     child = children[programme_group][0]
     school = schools[programme_group][0]
@@ -73,7 +73,7 @@ def test_e2e_nurse_consent_mmr(
 
     mmr_vaccination_record = VaccinationRecord(
         child,
-        Programme.MMR,
+        Programme.MMR_MMRV,
         batch_names[vaccine],
         consent_option,
     )

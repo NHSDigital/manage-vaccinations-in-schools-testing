@@ -150,7 +150,7 @@ def test_verify_careplus_report_for_mmr(
     Verification:
     - Report is generated in CarePlus format for MMR.
     """
-    VaccinationReportPage(page).choose_programme(Programme.MMR)
+    VaccinationReportPage(page).choose_programme(Programme.MMR_MMRV)
     VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CAREPLUS,
     )
@@ -168,7 +168,7 @@ def test_verify_csv_report_for_mmr(
     Verification:
     - Report is generated in CSV format for MMR.
     """
-    VaccinationReportPage(page).choose_programme(Programme.MMR)
+    VaccinationReportPage(page).choose_programme(Programme.MMR_MMRV)
     VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.CSV,
     )
@@ -186,7 +186,7 @@ def test_verify_systmone_report_for_mmr(
     Verification:
     - Report is generated in SystmOne format for MMR.
     """
-    VaccinationReportPage(page).choose_programme(Programme.MMR)
+    VaccinationReportPage(page).choose_programme(Programme.MMR_MMRV)
     VaccinationReportPage(page).verify_report_format(
         report_format=ReportFormat.SYSTMONE,
     )

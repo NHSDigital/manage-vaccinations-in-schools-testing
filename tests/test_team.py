@@ -203,8 +203,8 @@ def test_site_class_list_import(
     - The import succeeds for the new school site (B).
     - The child is visible on the School Moves page.
     """
-    school = schools[Programme.MMR][0]
-    child = children[Programme.MMR][0]
+    school = schools[Programme.MMR_MMRV][0]
+    child = children[Programme.MMR_MMRV][0]
 
     new_site_name = f"{school} (Site B)"
 
@@ -228,7 +228,8 @@ def test_site_class_list_import(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(
-        file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
+        file_mapping=ClassFileMapping.FIXED_CHILD,
+        programme_group=Programme.MMR_MMRV.group,
     )
     TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_imports()
@@ -239,7 +240,8 @@ def test_site_class_list_import(
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
     ).upload_and_verify_output(
-        file_mapping=ClassFileMapping.FIXED_CHILD, programme_group=Programme.MMR.group
+        file_mapping=ClassFileMapping.FIXED_CHILD,
+        programme_group=Programme.MMR_MMRV.group,
     )
     TeamSchoolsPage(page).header.click_mavis()
     DashboardPage(page).click_school_moves()

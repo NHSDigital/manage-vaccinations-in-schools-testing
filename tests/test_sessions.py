@@ -496,13 +496,13 @@ def test_outbreak_session(
     Verification:
     - Session is created, edited, and deleted without errors.
     """
-    school = schools[Programme.MMR][0]
-    year_group = year_groups[Programme.MMR]
+    school = schools[Programme.MMR_MMRV][0]
+    year_group = year_groups[Programme.MMR_MMRV]
 
     schedule_school_session_if_needed(
         page,
         school,
-        [Programme.MMR],
+        [Programme.MMR_MMRV],
         [year_group],
         date_offset=14,
         consent_style="Outbreak",

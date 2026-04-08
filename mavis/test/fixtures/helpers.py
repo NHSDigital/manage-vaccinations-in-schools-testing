@@ -174,7 +174,7 @@ def upload_offline_vaccination(
                 else VaccsFileMapping.FLU_NASAL
             )
             vaccs_date = get_current_datetime()
-        elif programme is Programme.MMR:
+        elif programme is Programme.MMR_MMRV:
             vaccs_file = VaccsFileMapping.MMR_DOSE_ONE
             vaccs_date = get_current_datetime().replace(
                 year=get_current_datetime().year - 2

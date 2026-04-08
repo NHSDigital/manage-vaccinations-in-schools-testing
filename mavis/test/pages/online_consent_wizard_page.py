@@ -384,7 +384,7 @@ class OnlineConsentWizardPage:
                     if consent_option is ConsentOption.INJECTION
                     else "nasal spray flu"
                 )
-            if programme is Programme.MMR:
+            if programme is Programme.MMR_MMRV:
                 if child.date_of_birth >= MMRV_ELIGIBILITY_CUTOFF_DOB:
                     return "MMRV"
                 return "MMR"

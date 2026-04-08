@@ -16,8 +16,8 @@ from mavis.test.utils import (
 @pytest.fixture
 def url_with_mmr_session_scheduled(schedule_mmr_session_and_get_consent_url, schools):
     yield from schedule_mmr_session_and_get_consent_url(
-        schools[Programme.MMR.group][0],
-        Programme.MMR,
+        schools[Programme.MMR_MMRV.group][0],
+        Programme.MMR_MMRV,
     )
 
 
@@ -36,7 +36,7 @@ def setup_logged_in_session_with_file_upload(
     setup_logged_in_session_with_file_upload_for_programme,
 ):
     """Sets up an MMR session with class list and navigates to the session."""
-    return setup_logged_in_session_with_file_upload_for_programme(Programme.MMR)
+    return setup_logged_in_session_with_file_upload_for_programme(Programme.MMR_MMRV)
 
 
 def test_consent_refused_for_mmr_vaccination(
@@ -53,9 +53,9 @@ def test_consent_refused_for_mmr_vaccination(
     Verification:
     - Confirmation text indicates consent was refused for MMR vaccination.
     """
-    child = children[Programme.MMR][0]
+    child = children[Programme.MMR_MMRV][0]
     child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
-    schools = schools[Programme.MMR]
+    schools = schools[Programme.MMR_MMRV]
 
     OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
     OnlineConsentWizardPage(page).dont_agree_to_vaccination()
@@ -101,11 +101,11 @@ def test_consent_given_for_mmr_vaccination(
     - Confirmation message is shown for the correct child, vaccine, and
       health question status.
     """
-    child = children[Programme.MMR][0]
+    child = children[Programme.MMR_MMRV][0]
     child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
-    schools = schools[Programme.MMR]
+    schools = schools[Programme.MMR_MMRV]
     number_of_health_questions = len(
-        Programme.health_questions(Programme.MMR, consent_option)
+        Programme.health_questions(Programme.MMR_MMRV, consent_option)
     )
 
     OnlineConsentWizardPage(page).fill_details(child, child.parents[0], schools)
@@ -118,7 +118,7 @@ def test_consent_given_for_mmr_vaccination(
     OnlineConsentWizardPage(page).click_confirm()
     OnlineConsentWizardPage(page).check_final_consent_message(
         child,
-        programmes=[Programme.MMR],
+        programmes=[Programme.MMR_MMRV],
         yes_to_health_questions=yes_to_health_questions,
     )
 
@@ -138,7 +138,7 @@ def test_pdf_consent_form_contains_health_questions(
     Verifies that the downloadable PDF consent form includes all health questions
     that parents need to answer when giving consent for their child to be vaccinated.
     """
-    programme = Programme.MMR
+    programme = Programme.MMR_MMRV
 
     pdf_text_normalized = read_pdf_as_normalized_text(
         SessionsOverviewPage(page).download_consent_form(programme)

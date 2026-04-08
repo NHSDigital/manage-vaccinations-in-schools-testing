@@ -25,7 +25,7 @@ class SessionsSearchPage:
     def click_session_for_programme_group(
         self, location: Location, programme_group: str
     ) -> None:
-        if programme_group != Programme.MMR:
+        if programme_group != Programme.MMR_MMRV:
             for programme in Programme:
                 if programme.group == programme_group:
                     self.page.get_by_role("checkbox", name=str(programme)).check()
