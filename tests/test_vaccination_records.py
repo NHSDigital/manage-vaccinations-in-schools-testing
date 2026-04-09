@@ -1,10 +1,9 @@
 import pytest
 
+from mavis.test.annotations import issue
 from mavis.test.constants import DeliverySite, Programme, Vaccine
-from mavis.test.pages import (
-    EditVaccinationRecordPage,
-    VaccinationRecordPage,
-)
+from mavis.test.pages import EditVaccinationRecordPage, VaccinationRecordPage
+from mavis.test.pages.error_pages.page_not_found import PageNotFound
 from mavis.test.pages.sessions.sessions_patient_page import SessionsPatientPage
 from mavis.test.utils import expect_alert_text
 
@@ -17,6 +16,11 @@ def setup_gardasil_batch(page, add_vaccine_batch):
 @pytest.fixture
 def upload_offline_vaccination_hpv(upload_offline_vaccination, add_vaccine_batch):
     yield from upload_offline_vaccination(Programme.HPV)
+
+
+@pytest.fixture
+def upload_offline_vaccination_flu(upload_offline_vaccination):
+    yield from upload_offline_vaccination(Programme.FLU)
 
 
 def test_edit_vaccination_dose_to_not_given_and_bac(
@@ -61,3 +65,26 @@ def test_edit_vaccination_dose_to_not_given_and_bac(
     EditVaccinationRecordPage(page).update_time_of_delivery()
     EditVaccinationRecordPage(page).click_save_changes()
     expect_alert_text(page, "Vaccination outcome recorded for HPV")
+
+
+@issue("MAV-1756")
+def test_edit_flu_vaccination_without_changes(
+    log_in_as_nurse,
+    upload_offline_vaccination_flu,
+    page,
+):
+    """
+    Test: Edit a FLU vaccination record without making any changes and verify no
+    page not found error.
+    Steps:
+    1. Upload a FLU vaccination file for a child.
+    2. Navigate to the child's record and click 'Edit vaccination'.
+    3. Do not change anything on the vaccination page and just click 'Save changes'.
+    Verification:
+    - 'Page not found' should not be displayed.
+    """
+    VaccinationRecordPage(page).click_edit_vaccination_record()
+    EditVaccinationRecordPage(page).click_save_changes()
+
+    expect_alert_text(page, "Vaccination outcome recorded")
+    PageNotFound(page).is_not_displayed()
