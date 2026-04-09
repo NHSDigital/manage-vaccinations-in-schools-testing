@@ -115,7 +115,7 @@ class SessionsPatientPage:
 
     @step("Click on {1} tab")
     def click_programme_tab(self, programme: Programme) -> None:
-        name = "MMR" if programme is Programme.MMR else str(programme)
+        name = "MMR" if programme is Programme.MMR_MMRV else str(programme)
         link = self.page.get_by_label("Secondary menu").get_by_role("link", name=name)
         click_secondary_navigation_item(link)
 

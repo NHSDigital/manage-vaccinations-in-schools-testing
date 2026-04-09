@@ -46,7 +46,7 @@ def setup_vaccs(
             Programme.FLU,
             Programme.HPV,
             Programme.MENACWY,
-            Programme.MMR,
+            Programme.MMR_MMRV,
             Programme.TD_IPV,
         ],
         [year_group],

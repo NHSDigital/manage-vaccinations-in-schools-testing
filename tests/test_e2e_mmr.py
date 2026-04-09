@@ -19,14 +19,14 @@ from mavis.test.utils import generate_random_dob_for_mmr_not_mmrv
 @pytest.fixture
 def url_with_mmr_session_scheduled(schedule_mmr_session_and_get_consent_url, schools):
     yield from schedule_mmr_session_and_get_consent_url(
-        schools[Programme.MMR.group][0],
-        Programme.MMR,
+        schools[Programme.MMR_MMRV.group][0],
+        Programme.MMR_MMRV,
     )
 
 
 @pytest.fixture
 def setup_session_for_mmr(setup_session_and_batches_with_fixed_child):
-    return setup_session_and_batches_with_fixed_child(Programme.MMR)
+    return setup_session_and_batches_with_fixed_child(Programme.MMR_MMRV)
 
 
 def test_recording_mmr_vaccination_e2e_with_triage(
@@ -49,12 +49,12 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     - Final consent message is shown after online consent.
     - Vaccination is recorded for the child in the session.
     """
-    child = children[Programme.MMR][0]
+    child = children[Programme.MMR_MMRV][0]
     child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
-    schools = schools[Programme.MMR]
+    schools = schools[Programme.MMR_MMRV]
     mmr_batch_name = setup_session_for_mmr[Vaccine.PRIORIX]
     number_of_health_questions = len(
-        Programme.health_questions(Programme.MMR, ConsentOption.MMR_EITHER)
+        Programme.health_questions(Programme.MMR_MMRV, ConsentOption.MMR_EITHER)
     )
 
     OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
@@ -70,7 +70,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     OnlineConsentWizardPage(page).click_confirm()
     OnlineConsentWizardPage(page).check_final_consent_message(
         child,
-        programmes=[Programme.MMR],
+        programmes=[Programme.MMR_MMRV],
         yes_to_health_questions=True,
     )
 
@@ -79,17 +79,17 @@ def test_recording_mmr_vaccination_e2e_with_triage(
 
     # Triage step added for MMR
     SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.MMR
+        schools[0], Programme.MMR_MMRV
     )
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.MMR)
+    SessionsPatientPage(page).click_programme_tab(Programme.MMR_MMRV)
     SessionsPatientPage(page).triage_mmr_patient(ConsentOption.MMR_EITHER)
     DashboardPage(page).navigate()
     DashboardPage(page).click_sessions()
 
     SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.MMR
+        schools[0], Programme.MMR_MMRV
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
 
@@ -98,7 +98,7 @@ def test_recording_mmr_vaccination_e2e_with_triage(
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
-    vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
+    vaccination_record = VaccinationRecord(child, Programme.MMR_MMRV, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
@@ -125,12 +125,14 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     - Vaccination is recorded for the child in the session on the first attempt.
     - Child cannot be found when attempting to record a second dose on the same day.
     """
-    child = children[Programme.MMR][0]
+    child = children[Programme.MMR_MMRV][0]
     child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
-    schools = schools[Programme.MMR]
+    schools = schools[Programme.MMR_MMRV]
     mmr_batch_name = setup_session_for_mmr[Vaccine.PRIORIX]
     number_of_health_questions = len(
-        Programme.health_questions(Programme.MMR, ConsentOption.MMR_WITHOUT_GELATINE)
+        Programme.health_questions(
+            Programme.MMR_MMRV, ConsentOption.MMR_WITHOUT_GELATINE
+        )
     )
 
     OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
@@ -148,7 +150,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     OnlineConsentWizardPage(page).click_confirm()
     OnlineConsentWizardPage(page).check_final_consent_message(
         child,
-        programmes=[Programme.MMR],
+        programmes=[Programme.MMR_MMRV],
         yes_to_health_questions=False,
     )
 
@@ -157,7 +159,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
 
     # Dose 1 flow
     SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.MMR
+        schools[0], Programme.MMR_MMRV
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
     SessionsOverviewPage(page).tabs.click_children_tab()
@@ -165,7 +167,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
-    vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
+    vaccination_record = VaccinationRecord(child, Programme.MMR_MMRV, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)
 
@@ -173,7 +175,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     SessionsPatientPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
     SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.MMR
+        schools[0], Programme.MMR_MMRV
     )
     SessionsOverviewPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_for_child_that_should_not_exist(
@@ -204,16 +206,16 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     - Final consent message is shown after online consent.
     - Vaccination is recorded for the child in the session.
     """
-    child = children[Programme.MMR][0]
+    child = children[Programme.MMR_MMRV][0]
     child.date_of_birth = generate_random_dob_for_mmr_not_mmrv()
-    schools = schools[Programme.MMR]
+    schools = schools[Programme.MMR_MMRV]
     mmr_batch_name = setup_session_for_mmr[Vaccine.PRIORIX]
     number_of_health_questions = len(
-        Programme.health_questions(Programme.MMR, ConsentOption.MMR_EITHER)
+        Programme.health_questions(Programme.MMR_MMRV, ConsentOption.MMR_EITHER)
     )
 
     # Import vaccination file with MMR dose 1
-    list(upload_offline_vaccination(Programme.MMR))
+    list(upload_offline_vaccination(Programme.MMR_MMRV))
 
     # Proceed with consent and vaccination process
     OnlineConsentWizardPage(page).go_to_url(url_with_mmr_session_scheduled)
@@ -229,7 +231,7 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     OnlineConsentWizardPage(page).click_confirm()
     OnlineConsentWizardPage(page).check_final_consent_message(
         child,
-        programmes=[Programme.MMR],
+        programmes=[Programme.MMR_MMRV],
         yes_to_health_questions=True,
     )
 
@@ -238,17 +240,17 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
 
     # Triage step added for MMR
     SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.MMR
+        schools[0], Programme.MMR_MMRV
     )
     SessionsOverviewPage(page).tabs.click_children_tab()
     SessionsChildrenPage(page).search.search_and_click_child(child)
-    SessionsPatientPage(page).click_programme_tab(Programme.MMR)
+    SessionsPatientPage(page).click_programme_tab(Programme.MMR_MMRV)
     SessionsPatientPage(page).triage_mmr_patient(ConsentOption.MMR_EITHER)
     SessionsPatientPage(page).header.click_mavis()
     DashboardPage(page).click_sessions()
 
     SessionsSearchPage(page).click_session_for_programme_group(
-        schools[0], Programme.MMR
+        schools[0], Programme.MMR_MMRV
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
     SessionsOverviewPage(page).tabs.click_children_tab()
@@ -256,6 +258,6 @@ def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
 
-    vaccination_record = VaccinationRecord(child, Programme.MMR, mmr_batch_name)
+    vaccination_record = VaccinationRecord(child, Programme.MMR_MMRV, mmr_batch_name)
     SessionsPatientPage(page).set_up_vaccination(vaccination_record)
     RecordVaccinationWizardPage(page).record_vaccination(vaccination_record)

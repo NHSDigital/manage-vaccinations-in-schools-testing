@@ -71,5 +71,7 @@ class VaccinationReportPage:
 
     def choose_programme(self, programme: Programme) -> None:
         # temp to ensure MMR works as expected
-        programme_radio_name = "MMR" if programme is Programme.MMR else str(programme)
+        programme_radio_name = (
+            "MMR" if programme is Programme.MMR_MMRV else str(programme)
+        )
         self.page.get_by_role("radio", name=programme_radio_name).check()

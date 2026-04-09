@@ -306,7 +306,7 @@ class NurseConsentWizardPage:
         else:
             self.click_yes_they_agree()
 
-        if programme is Programme.MMR:
+        if programme is Programme.MMR_MMRV:
             if consent_option is ConsentOption.MMR_WITHOUT_GELATINE:
                 self.select_gelatine_free_vaccine_option()
             else:

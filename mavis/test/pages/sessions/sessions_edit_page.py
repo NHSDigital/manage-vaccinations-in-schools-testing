@@ -215,7 +215,7 @@ class SessionsEditPage:
             offset_days=offset_days, skip_weekends=skip_weekends
         )
         self.click_change_programmes()
-        self.add_programme(Programme.MMR)
+        self.add_programme(Programme.MMR_MMRV)
         self.click_continue_button()
         self.add_or_change_session_dates()
         if not self.session_date_already_scheduled(_future_date.strftime("%Y%m%d")):

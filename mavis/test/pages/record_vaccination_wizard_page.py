@@ -185,7 +185,7 @@ class RecordVaccinationWizardPage:
 
             expected_outcome = (
                 "MMR"
-                if vaccination_record.programme is Programme.MMR
+                if vaccination_record.programme is Programme.MMR_MMRV
                 else str(vaccination_record.programme)
             )
 

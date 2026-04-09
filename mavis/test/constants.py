@@ -152,7 +152,7 @@ class Programme(StrEnum):
     FLU = "flu"
     HPV = "HPV"
     MENACWY = "MenACWY"
-    MMR = "MMR(V)"
+    MMR_MMRV = "MMR(V)"
     TD_IPV = "Td/IPV"
 
     @property
@@ -235,7 +235,7 @@ class Programme(StrEnum):
                 HealthQuestion.EXTRA_SUPPORT,
             ],
             Programme.FLU: flu_questions,
-            Programme.MMR: mmr_questions,
+            Programme.MMR_MMRV: mmr_questions,
         }
         return programme_specific_questions[self]
 
@@ -265,8 +265,8 @@ class Programme(StrEnum):
         year_group_map = {
             self.FLU: list(range(12)),
             self.HPV: list(range(8, 12)),
-            self.MMR: list(range(12)),
             self.MENACWY: list(range(9, 12)),
+            self.MMR_MMRV: list(range(12)),
             self.TD_IPV: list(range(9, 12)),
         }
         return year_group_map[self]
@@ -290,12 +290,14 @@ class Programme(StrEnum):
 
     @property
     def offline_sheet_name(self) -> str:
+        # TODO: Some programmes have multiple supported named (e.g. 3-in-1 and Td/IPV),
+        #  we should add test coverage for this.
         offline_name_map = {
-            self.MENACWY: "ACWYX4",
-            self.TD_IPV: "3-in-1",
             self.FLU: "Flu",
             self.HPV: self.HPV,
-            self.MMR: self.MMR,
+            self.MENACWY: "ACWYX4",
+            self.MMR_MMRV: self.MMR_MMRV,
+            self.TD_IPV: "3-in-1",
         }
         return offline_name_map[self]
 
@@ -343,10 +345,10 @@ class Vaccine(StrEnum):
             Vaccine.MENVEO: Programme.MENACWY,
             Vaccine.NIMENRIX: Programme.MENACWY,
             Vaccine.REVAXIS: Programme.TD_IPV,
-            Vaccine.MMR_VAXPRO: Programme.MMR,
-            Vaccine.PRIORIX: Programme.MMR,
-            Vaccine.PROQUAD: Programme.MMR,
-            Vaccine.PRIORIX_TETRA: Programme.MMR,
+            Vaccine.MMR_VAXPRO: Programme.MMR_MMRV,
+            Vaccine.PRIORIX: Programme.MMR_MMRV,
+            Vaccine.PROQUAD: Programme.MMR_MMRV,
+            Vaccine.PRIORIX_TETRA: Programme.MMR_MMRV,
         }
         return programme_mapping[self]
 

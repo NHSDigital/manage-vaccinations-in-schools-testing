@@ -22,7 +22,7 @@ from mavis.test.utils import get_offset_date_compact_format
         (Programme.FLU, 1),
         (Programme.HPV, 1),
         (Programme.MENACWY, 1),
-        (Programme.MMR, 2),
+        (Programme.MMR_MMRV, 2),
         (Programme.TD_IPV, 1),
     ],
     ids=lambda v: v[0],

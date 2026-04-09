@@ -152,7 +152,7 @@ class AddSessionWizardPage:
         # TODO: Add programmes, it's a bit trickier because it's a list
         # TODO: Add year_groups
         # TODO: Add date_offset, dates are just annoying
-        if Programme.MMR in programmes:
+        if Programme.MMR_MMRV in programmes:
             expect_details(
                 self.page,
                 "Type of MMR\\(V\\) consent request",
@@ -177,7 +177,7 @@ class AddSessionWizardPage:
     def select_consent_style_if_necessary(
         self, programmes: list[Programme], consent_style: str
     ) -> None:
-        if Programme.MMR in programmes:
+        if Programme.MMR_MMRV in programmes:
             self.page.wait_for_load_state()
             if consent_style == "Standard":
                 self.click_standard_consent_request_radio()
