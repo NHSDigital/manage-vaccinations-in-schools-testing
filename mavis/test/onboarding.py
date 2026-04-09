@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import ClassVar
 
 from attr import dataclass
 
@@ -19,7 +20,7 @@ class Onboarding(ABC):
     organisation: Organisation
     team: Team
     users: dict[str, User]
-    programmes: str
+    programmes: list[str]
 
     @staticmethod
     def _generate_users() -> dict[str, User]:
@@ -52,13 +53,15 @@ class Onboarding(ABC):
 
 @dataclass
 class PointOfCareOnboarding(Onboarding):
+    PROGRAMMES: ClassVar[list[str]] = ["flu", "hpv", "menacwy", "mmr", "td_ipv"]
+
     subteam: Subteam
     clinics: list[Clinic]
     schools: dict[str, list[School]]
 
     @classmethod
     def get_onboarding_data_for_tests(
-        cls, base_url: str, year_groups: dict[str, int], programmes: str
+        cls, base_url: str, year_groups: dict[str, int]
     ) -> "PointOfCareOnboarding":
         organisation = Organisation.generate()
         subteam = Subteam.generate()
@@ -74,7 +77,7 @@ class PointOfCareOnboarding(Onboarding):
             users=users,
             clinics=clinics,
             schools=schools,
-            programmes=programmes,
+            programmes=cls.PROGRAMMES,
         )
 
     def to_dict(self) -> dict[str, object]:
@@ -99,19 +102,16 @@ class PointOfCareOnboarding(Onboarding):
 
 @dataclass
 class NationalReportingOnboarding(Onboarding):
+    PROGRAMMES: ClassVar[list[str]] = ["flu", "hpv"]
+
     @classmethod
-    def get_onboarding_data_for_tests(
-        cls, programmes: str
-    ) -> "NationalReportingOnboarding":
+    def get_onboarding_data_for_tests(cls) -> "NationalReportingOnboarding":
         organisation = Organisation.generate()
         team = NationalReportingTeam.generate(organisation)
         users = cls._generate_users()
 
         return cls(
-            organisation=organisation,
-            team=team,
-            users=users,
-            programmes=programmes,
+            organisation=organisation, team=team, users=users, programmes=cls.PROGRAMMES
         )
 
     def to_dict(self) -> dict[str, object]:

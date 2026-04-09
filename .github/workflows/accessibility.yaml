@@ -23,10 +23,6 @@ on:
           - Pixel 7
           - iPad (gen 7) landscape
           - iPhone 15
-      programmes:
-        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
-        required: true
-        default: FLU,HPV,MENACWY,MMR,TD_IPV
       environment:
         description: Environment to run tests on
         required: true
@@ -90,7 +86,6 @@ jobs:
               echo "tests="
               echo "device=Desktop Chrome"
               echo "environment=${env_map[qa]}"
-              echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV"
               echo "set_feature_flags=false"
               echo "additional_feature_flags="
               echo "deploy_report=false"
@@ -105,7 +100,6 @@ jobs:
               url="${env_map[$input_env]:-${env_map[qa]}}"
               echo "environment=$url"
 
-              echo "programmes=${{ github.event.inputs.programmes }}"
               echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}"
               echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}"
               echo "deploy_report=true"
@@ -135,7 +129,6 @@ jobs:
           accessibility_tests: 'true'
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
-          programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
           screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           set_feature_flags: ${{ steps.set-variables.outputs.set_feature_flags }}
           additional_feature_flags: >-

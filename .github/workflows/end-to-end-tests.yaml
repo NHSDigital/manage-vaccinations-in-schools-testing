@@ -23,11 +23,6 @@ on:
         required: false
         default: 'Desktop Chrome'
         type: string
-      programmes:
-        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
-        required: false
-        default: FLU,HPV,MENACWY,MMR,TD_IPV
-        type: string
       endpoint:
         description: 'Environment to run tests against'
         required: false
@@ -106,10 +101,6 @@ on:
           - Pixel 7
           - iPad (gen 7) landscape
           - iPhone 15
-      programmes:
-        description: Programmes to use (FLU, HPV, MENACWY, MMR or TD_IPV)
-        required: true
-        default: FLU,HPV,MENACWY,MMR,TD_IPV
       environment:
         description: 'Environment to run tests on'
         required: true
@@ -191,7 +182,6 @@ jobs:
               echo "cross_service_tests=true"
               echo "device=Desktop Chrome"
               echo "environment=${env_map[qa]}"
-              echo "programmes=FLU,HPV,MENACWY,MMR,TD_IPV"
               echo "set_feature_flags=false"
               echo "additional_feature_flags="
               echo "deploy_report=false"
@@ -213,7 +203,6 @@ jobs:
                 echo "environment=${{ inputs.endpoint }}"
               fi
 
-              echo "programmes=${{ inputs.programmes }}"
               echo "set_feature_flags=${{ inputs.set_feature_flags }}"
               echo "additional_feature_flags=${{ inputs.additional_feature_flags }}"
               echo "deploy_report=true"
@@ -251,7 +240,6 @@ jobs:
           github_ref: ${{ inputs.github_ref || github.head_ref }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
-          programmes_enabled: ${{ steps.set-variables.outputs.programmes }}
           screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
           enable_reruns: ${{ steps.set-variables.outputs.enable_reruns }}
           test_workers: ${{ steps.set-variables.outputs.test_workers }}

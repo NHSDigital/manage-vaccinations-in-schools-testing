@@ -1,4 +1,3 @@
-import os
 import random
 import time
 import urllib.parse
@@ -23,32 +22,16 @@ def year_groups() -> dict[str, int]:
 
 
 @pytest.fixture(scope="session")
-def programmes_enabled() -> list[str]:
-    return os.environ["PROGRAMMES_ENABLED"].lower().split(",")
-
-
-@pytest.fixture(scope="session")
-def point_of_care_onboarding(
-    base_url,
-    year_groups,
-    programmes_enabled,
-) -> PointOfCareOnboarding:
+def point_of_care_onboarding(base_url, year_groups) -> PointOfCareOnboarding:
     onboarding_data = PointOfCareOnboarding.get_onboarding_data_for_tests(
-        base_url=base_url,
-        year_groups=year_groups,
-        programmes=programmes_enabled,
+        base_url=base_url, year_groups=year_groups
     )
     return _create_onboarding_with_retry(base_url, onboarding_data)
 
 
 @pytest.fixture(scope="session")
-def national_reporting_onboarding(
-    base_url,
-    programmes_enabled,
-) -> NationalReportingOnboarding:
-    onboarding_data = NationalReportingOnboarding.get_onboarding_data_for_tests(
-        programmes=programmes_enabled,
-    )
+def national_reporting_onboarding(base_url) -> NationalReportingOnboarding:
+    onboarding_data = NationalReportingOnboarding.get_onboarding_data_for_tests()
     return _create_onboarding_with_retry(base_url, onboarding_data)
 
 
