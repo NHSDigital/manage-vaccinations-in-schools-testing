@@ -69,7 +69,7 @@ on:
         required: false
       HTTP_AUTH_TOKEN_FOR_TESTS:
         description: HTTP Basic Auth token for the environment under test
-        required: true
+        required: false
   workflow_dispatch:
     inputs:
       tests:
