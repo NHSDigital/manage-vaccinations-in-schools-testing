@@ -99,6 +99,7 @@ def test_gillick(session_with_child_for_programme, children, schools, page):
     sessions_patient_page.click_programme_tab(programme)
     sessions_patient_page.click_assess_gillick_competence()
     gillick_competence_page.add_gillick_competence(is_competent=True)
+    # TODO: Ensure that you cannot give consent prior to Gillick assessment
 
     sessions_children_page.header.click_mavis()
     dashboard_page.click_sessions()
@@ -119,6 +120,17 @@ def test_gillick(session_with_child_for_programme, children, schools, page):
     sessions_overview_page.verify_offline_sheet_gillick_competence(
         child, competent=False
     )
+
+
+@pytest.mark.parametrize(
+    "session_with_child_for_programme",
+    programmes_and_consent_options,
+    indirect=True,
+    ids=lambda v: f"{v[0]}-{v[1]}",
+)
+def test_16_plus_without_gillick(
+    session_with_child_for_programme, children, schools, page
+): ...  # TODO: Implement
 
 
 @issue("MAV-955")
@@ -144,6 +156,8 @@ def test_gillick_with_notes(session_with_child_for_programme, children, page):
     - Error is shown for notes over 1000 characters.
     - Assessment can be completed and updated with valid notes.
     """
+
+    # TODO: Merge this with `test_gillick`.
 
     programme, _ = session_with_child_for_programme
     child = children[programme.group][0]
@@ -203,6 +217,8 @@ def test_gillick_override_conflicting_from_parent(
       then 'Consent given'.
     - Activity log contains entry for Gillick competent child consent.
     """
+
+    # TODO: Test this with Gillick and non-Gillick.
 
     programme, consent_option = session_with_child_for_programme
     child = children[programme.group][0]
