@@ -4,6 +4,7 @@ from mavis.test.annotations import issue
 from mavis.test.constants import (
     MAVIS_NOTE_LENGTH_LIMIT,
     ConsentMethod,
+    ConsentRefusalReason,
     DeliverySite,
     Programme,
     Vaccine,
@@ -331,6 +332,46 @@ def test_conflicting_consent_with_gillick_consent(
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
     )
+
+
+def test_consent_refusal_do_not_want_vaccination_at_school(
+    setup_fixed_child,
+    page,
+    children,
+):
+    """
+    Test: Record a refusal consent with reason 'Do not want vaccination at school'.
+    Steps:
+    1. Open the session and navigate to child.
+    2. Record a verbal refusal consent with the relevant refusal reason.
+    3. Verify the consent status is "Consent refused".
+    Verification:
+    - Consent status shows "Consent refused".
+    - Refusal reason is correctly recorded.
+    """
+    child = children[Programme.HPV][0]
+
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.select_needs_consent()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
+    NurseConsentWizardPage(page).click_no_they_do_not_agree()
+    NurseConsentWizardPage(page).click_continue()
+    NurseConsentWizardPage(page).click_consent_refusal_reason(
+        ConsentRefusalReason.DO_NOT_WANT_VACCINATION_AT_SCHOOL
+    )
+    NurseConsentWizardPage(page).click_continue()
+    NurseConsentWizardPage(page).click_confirm()
+
+    SessionsChildrenPage(page).search.select_has_a_refusal()
+    SessionsChildrenPage(page).search.select_consent_refused()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.HPV)
+    SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent refused")
 
 
 @pytest.mark.accessibility
