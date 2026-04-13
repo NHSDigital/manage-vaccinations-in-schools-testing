@@ -42,7 +42,6 @@ def _onboard_team(base_url):
     onboarding = PointOfCareOnboarding.get_onboarding_data_for_tests(
         base_url=base_url,
         year_groups=_year_groups,
-        programmes=["flu"],
     )
     return _create_onboarding_with_retry(base_url, onboarding)
 
