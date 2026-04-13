@@ -6,6 +6,7 @@ from mavis.test.annotations import step
 from mavis.test.constants import (
     MAVIS_NOTE_LENGTH_LIMIT,
     ConsentOption,
+    ConsentStatus,
     DeliverySite,
     Programme,
 )
@@ -44,7 +45,7 @@ class SessionsPatientPage:
         )
         self.edit_gillick_competence_link = self.page.get_by_role(
             "link",
-            name="Edit Gillick competence",
+            name="Update Gillick competence",
         )
         self.could_not_vaccinate_link = self.page.get_by_role(
             "link",
@@ -60,7 +61,7 @@ class SessionsPatientPage:
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
         self.record_a_new_consent_response_button = self.page.get_by_role(
-            "button",
+            "link",
             name="Record a new consent response",
         )
         self.ready_for_injection_radio = self.page.locator(
@@ -250,8 +251,20 @@ class SessionsPatientPage:
             ),
         ).to_be_visible()
 
-    def expect_consent_status(self, programme: Programme, status: str) -> None:
-        expect(self.page.get_by_text(f"{programme}: {status}")).to_be_visible()
+    def expect_consent_status(self, status: ConsentStatus) -> None:
+        if status is ConsentStatus.GIVEN:
+            expected_text = "is ready for the vaccinator"
+        elif status is ConsentStatus.REFUSED:
+            expected_text = "refused to give consent"
+        elif status is ConsentStatus.FOLLOW_UP_REQUESTED:
+            expected_text = "would like to speak to a member of the team"
+        elif status is ConsentStatus.NO_RESPONSE:
+            expected_text = "No-one responded to our requests"
+        elif status is ConsentStatus.CONFLICTS:
+            expected_text = "You can only vaccinate if all respondents give consent"
+        else:
+            expected_text = str(status)
+        expect(self.page.get_by_text(expected_text, exact=False)).to_be_visible()
 
     def expect_consent_recorded_success(self) -> None:
         expect_alert_text(self.page, "Consent recorded")

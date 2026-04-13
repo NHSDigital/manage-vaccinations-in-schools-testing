@@ -448,6 +448,18 @@ class ConsentMethod(StrEnum):
     IN_PERSON = "In person"
 
 
+class ConsentStatus(StrEnum):
+    GIVEN = "Consent given"
+    REFUSED = "Consent refused"
+    FOLLOW_UP_REQUESTED = "Follow-up requested"
+    CONFLICTS = "Conflicting consent"
+    NO_CONTACT_DETAILS = "No contact details"
+    REQUEST_SCHEDULED = "Request scheduled"
+    REQUEST_NOT_SCHEDULED = "Request not scheduled"
+    NO_RESPONSE = "No response"
+    NOT_REQUIRED = "Not required"
+
+
 class ReportFormat(StrEnum):
     CAREPLUS = "CSV for CarePlus (System C)"
     CSV = "CSV"

@@ -5,6 +5,7 @@ from mavis.test.constants import (
     MAVIS_NOTE_LENGTH_LIMIT,
     ConsentMethod,
     ConsentRefusalReason,
+    ConsentStatus,
     DeliverySite,
     Programme,
     Vaccine,
@@ -312,9 +313,7 @@ def test_conflicting_consent_with_gillick_consent(
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).expect_consent_status(
-        Programme.HPV, "Conflicting consent"
-    )
+    SessionsPatientPage(page).expect_consent_status(ConsentStatus.CONFLICTS)
     SessionsPatientPage(page).expect_conflicting_consent_text()
     SessionsPatientPage(page).click_assess_gillick_competence()
     GillickCompetencePage(page).add_gillick_competence(is_competent=True)
@@ -327,7 +326,7 @@ def test_conflicting_consent_with_gillick_consent(
     SessionsChildrenPage(page).search.select_due_vaccination()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent given")
+    SessionsPatientPage(page).expect_consent_status(ConsentStatus.GIVEN)
     SessionsPatientPage(page).click_session_activity_and_notes()
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
@@ -371,7 +370,7 @@ def test_consent_refusal_do_not_want_vaccination_at_school(
     SessionsChildrenPage(page).search.select_consent_refused()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent refused")
+    SessionsPatientPage(page).expect_consent_status(ConsentStatus.REFUSED)
 
 
 @pytest.mark.accessibility
