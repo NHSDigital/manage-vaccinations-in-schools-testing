@@ -38,7 +38,6 @@ from .helpers import (
 from .onboarding import (
     national_reporting_onboarding,
     point_of_care_onboarding,
-    programmes_enabled,
     year_groups,
 )
 from .playwright import (
@@ -83,7 +82,6 @@ __all__ = [
     "point_of_care_subteam",
     "point_of_care_superuser",
     "point_of_care_team",
-    "programmes_enabled",
     "reset_before_each_module",
     "schedule_mmr_session_and_get_consent_url",
     "schedule_mmrv_session_and_get_consent_url",
