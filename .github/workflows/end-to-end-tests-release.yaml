@@ -78,9 +78,6 @@ on:
       JIRA_API_TOKEN:
         description: API token to access Jira, used to attach test results to issues
         required: true
-      MAVIS_TESTING_REPO_ACCESS_TOKEN:
-        description: Git token with access to the mavis testing repo
-        required: false
   workflow_dispatch:
     inputs:
       tests:
@@ -297,6 +294,3 @@ jobs:
         with:
           device: ${{ steps.set-variables.outputs.device }}
           environment: ${{ github.event.inputs.environment }}
-        env:
-          GITHUB_TOKEN: >-
-            ${{ secrets.MAVIS_TESTING_REPO_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
