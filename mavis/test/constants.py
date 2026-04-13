@@ -387,6 +387,16 @@ class Vaccine(StrEnum):
         }
         return offline_sheet_map[self]
 
+    @classmethod
+    def systmone_procedure_codes(cls) -> dict[str, str]:
+        """SystmOne procedure codes for MMR and MMRV vaccines."""
+        return {
+            "Priorix 1": "65M1.",  # MMR dose 1
+            "VaxPro 2": "65MA.",  # MMR dose 2 (often shown as "MMR VaxPro" in reports)
+            "ProQuad 1": "Y3fec",  # MMRV dose 1
+            "Priorix-Tetra 2": "Y3fed",  # MMRV dose 2
+        }
+
 
 class DeliverySite(StrEnum):
     LEFT_ARM_UPPER = "Left arm (upper position)"
