@@ -5,6 +5,7 @@ from mavis.test.constants import (
     MAVIS_NOTE_LENGTH_LIMIT,
     ConsentMethod,
     ConsentOption,
+    ConsentStatus,
     Programme,
 )
 from mavis.test.data import ClassFileMapping
@@ -239,7 +240,7 @@ def test_gillick_override_conflicting_from_parent(
 
     sessions_children_page.search.search_and_click_child(child)
     sessions_patient_page.click_programme_tab(programme)
-    sessions_patient_page.expect_consent_status(programme, "Conflicting consent")
+    sessions_patient_page.expect_consent_status(ConsentStatus.CONFLICTS)
     sessions_patient_page.expect_conflicting_consent_text()
     sessions_patient_page.click_assess_gillick_competence()
     gillick_competence_page.add_gillick_competence(is_competent=True)
@@ -254,12 +255,13 @@ def test_gillick_override_conflicting_from_parent(
     sessions_patient_page.click_programme_tab(programme)
 
     if consent_option == ConsentOption.NASAL_SPRAY_OR_INJECTION:
-        consent_status = "Consent given for nasal spray"
+        programme_status = "is ready to vaccinate (nasal spray preferred)"
     elif consent_option == ConsentOption.MMR_WITHOUT_GELATINE:
-        consent_status = "Consent given for gelatine-free injection"
+        programme_status = "is ready to vaccinate (gelatine-free vaccine only)"
     else:
-        consent_status = "Consent given"
-    sessions_patient_page.expect_consent_status(programme, consent_status)
+        programme_status = "is ready to vaccinate"
+    sessions_patient_page.expect_programme_status(programme_status)
+    sessions_patient_page.expect_consent_status(ConsentStatus.GIVEN)
 
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.check_session_activity_entry(

@@ -3,6 +3,7 @@ import pytest
 from mavis.test.constants import (
     ConsentMethod,
     ConsentRefusalReason,
+    ConsentStatus,
     DeliverySite,
     Programme,
     Vaccine,
@@ -203,7 +204,7 @@ def test_consent_refusal_do_not_want_vaccination_at_school(
     SessionsChildrenPage(page).search.select_consent_refused()
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).click_programme_tab(Programme.HPV)
-    SessionsPatientPage(page).expect_consent_status(Programme.HPV, "Consent refused")
+    SessionsPatientPage(page).expect_consent_status(ConsentStatus.REFUSED)
 
 
 @pytest.mark.accessibility
