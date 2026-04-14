@@ -28,32 +28,9 @@ class VaccinationReportPage:
         report_format: ReportFormat,
     ) -> None:
         self.click_report_format(report_format)
-        self._download_and_verify_report_headers(expected_headers=report_format.headers)
-
-    def _download_and_verify_report_headers(self, expected_headers: str) -> None:
-        _file_path = f"working/rpt_{get_current_datetime_compact()}.csv"
-
-        browser = getattr(self.page.context, "browser", None)
-        browser_type_name = getattr(
-            getattr(browser, "browser_type", None), "name", None
-        )
-
-        # Playwright's webkit browser always opens CSVs in the browser
-        # unlike Chromium and Firefox
-        if browser_type_name == "webkit":
-            self.click_download_report()
-            csv_content = self.page.locator("pre").inner_text()
-            _actual_df = pd.read_csv(StringIO(csv_content))
-            self.page.go_back()
-        else:
-            with self.page.expect_download() as download_info:
-                self.click_download_report()
-            download = download_info.value
-            download.save_as(_file_path)
-            _actual_df = pd.read_csv(_file_path)
-
-        expected_set = set(expected_headers.split(","))
-        actual_set = set(_actual_df.columns)
+        df = self.download_report_as_dataframe()
+        expected_set = set(report_format.headers.split(","))
+        actual_set = set(df.columns)
 
         if missing := expected_set - actual_set:
             msg = f"Report is missing expected field(s): {missing}"
@@ -68,6 +45,28 @@ class VaccinationReportPage:
 
     def click_download_report(self) -> None:
         self.download_report_button.click()
+
+    def download_report_as_dataframe(self) -> pd.DataFrame:
+        """Download the report and return it as a pandas DataFrame."""
+        _file_path = f"working/rpt_{get_current_datetime_compact()}.csv"
+        browser_type_name = getattr(
+            getattr(self.page.context, "browser", None), "browser_type", None
+        )
+
+        # Playwright's webkit browser always opens CSVs in the browser
+        if getattr(browser_type_name, "name", None) == "webkit":
+            self.click_download_report()
+            csv_content = self.page.locator("pre").inner_text()
+            df = pd.read_csv(StringIO(csv_content))
+            self.page.go_back()
+        else:
+            with self.page.expect_download() as download_info:
+                self.click_download_report()
+            download = download_info.value
+            download.save_as(_file_path)
+            df = pd.read_csv(_file_path)
+
+        return df
 
     def choose_programme(self, programme: Programme) -> None:
         # temp to ensure MMR works as expected
