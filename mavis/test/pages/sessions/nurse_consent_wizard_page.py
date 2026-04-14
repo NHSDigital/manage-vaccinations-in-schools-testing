@@ -85,6 +85,20 @@ class NurseConsentWizardPage:
         self.mmrv_question_text = self.page.get_by_text(
             "is eligible for the new MMRV vaccine"
         )
+        self.parent_consent_refusal_stands_no = self.page.get_by_role(
+            "radio", name="No"
+        )
+        self.parent_consent_refusal_stands_yes = self.page.get_by_role(
+            "radio", name="Yes"
+        )
+
+    @step("Select parent consent refusal stands - Yes")
+    def select_parent_consent_refusal_stands_yes(self) -> None:
+        self.parent_consent_refusal_stands_yes.check()
+
+    @step("Select parent consent refusal stands - No")
+    def select_parent_consent_refusal_stands_no(self) -> None:
+        self.parent_consent_refusal_stands_no.check()
 
     @step("Select either vaccine option")
     def select_either_vaccine_option(self) -> None:

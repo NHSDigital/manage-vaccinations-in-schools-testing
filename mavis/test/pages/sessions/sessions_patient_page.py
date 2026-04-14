@@ -9,12 +9,7 @@ from mavis.test.constants import (
     DeliverySite,
     Programme,
 )
-from mavis.test.data_models import (
-    Child,
-    Parent,
-    School,
-    VaccinationRecord,
-)
+from mavis.test.data_models import Child, Parent, School, VaccinationRecord
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     click_secondary_navigation_item,
@@ -53,7 +48,7 @@ class SessionsPatientPage:
         self.mark_as_invalid_link = self.page.get_by_role(
             "link",
             name="Mark as invalid",
-        )
+        ).first
         self.mark_as_invalid_button = self.page.get_by_role(
             "button",
             name="Mark as invalid",
@@ -86,7 +81,8 @@ class SessionsPatientPage:
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.withdraw_consent_link = self.page.get_by_role(
             "link", name="Withdraw consent"
-        )
+        ).first
+        self.follow_up_link = self.page.get_by_role("link", name="Follow up").first
         self.triage_safe_mmr_either_radio = self.page.get_by_role(
             "radio",
             name="Yes, it’s safe to vaccinate",
