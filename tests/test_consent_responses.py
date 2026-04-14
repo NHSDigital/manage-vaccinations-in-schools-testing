@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
-from mavis.test.constants import Programme
+from mavis.test.constants import ConsentMethod, ConsentRefusalReason, Programme
 from mavis.test.data import ChildFileMapping, ClassFileMapping
 from mavis.test.helpers.accessibility_helper import AccessibilityHelper
 from mavis.test.helpers.pds_api_helper import PdsApiHelper
@@ -17,12 +17,20 @@ from mavis.test.pages import (
     ImportRecordsWizardPage,
     ImportsPage,
     MatchConsentResponsePage,
+    NurseConsentWizardPage,
     OnlineConsentWizardPage,
+    SchoolChildrenPage,
+    SchoolsSearchPage,
     ServiceErrorPage,
+    SessionsChildrenPage,
+    SessionsOverviewPage,
+    SessionsPatientPage,
+    SessionsSearchPage,
     StartPage,
     UnmatchedConsentResponsesPage,
 )
-from mavis.test.utils import expect_details, format_nhs_number
+from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import expect_alert_text, expect_details, format_nhs_number
 
 
 @pytest.fixture(scope="session")
@@ -354,3 +362,217 @@ def test_match_consent_with_vaccination_record_no_service_error(
 
     # Final verification that no error pages appeared during the search process
     expect(ServiceErrorPage(page).page_heading).not_to_be_visible()
+
+
+@pytest.fixture
+def setup_flu_session_with_child(
+    log_in_as_nurse,
+    schools,
+    page,
+    point_of_care_file_generator,
+    year_groups,
+):
+    """Sets up a FLU session with a fixed child imported and returns the consent URL."""
+    school = schools[Programme.FLU][0]
+    year_group = year_groups[Programme.FLU]
+
+    DashboardPage(page).click_schools()
+    SchoolsSearchPage(page).click_school(school)
+    SchoolChildrenPage(page).click_import_class_lists()
+    ImportRecordsWizardPage(page, point_of_care_file_generator).import_class_list(
+        ClassFileMapping.FIXED_CHILD, year_group, programme_group=Programme.FLU.group
+    )
+    schedule_school_session_if_needed(
+        page, school, [Programme.FLU], [year_group], date_offset=7
+    )
+    # Capture the consent URL while we're on the session overview page
+    return SessionsOverviewPage(page).get_online_consent_url(Programme.FLU)
+
+
+@issue("MAV-5309")
+def test_withdraw_consent_link_on_summary_card(
+    setup_flu_session_with_child,
+    page,
+    children,
+):
+    """
+    Test: Verify that "Withdraw consent" link displays on summary card.
+    Steps:
+    1. Record consent with "given" status.
+    2. Verify "Withdraw consent" link is visible.
+    3. Click link, enter notes, and complete withdrawal.
+    Verification:
+    - "Withdraw consent" link is visible for consents with response "given"
+    - Link navigates to withdraw consent page
+    - Withdrawal action completes successfully
+    """
+    child = children[Programme.FLU][0]
+
+    # Navigate to the patient session page
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+
+    # Record consent with "given" status
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
+    NurseConsentWizardPage(page).record_parent_positive_consent(
+        yes_to_health_questions=False, programme=Programme.FLU
+    )
+
+    # Navigate back to patient page to see summary card
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+
+    # Verify "Withdraw consent" link is visible
+    expect(SessionsPatientPage(page).withdraw_consent_link).to_be_visible()
+
+    # Click link and complete withdrawal
+    SessionsPatientPage(page).click_withdraw_consent()
+    expect(page.get_by_role("heading", name="Withdraw consent")).to_be_visible()
+    NurseConsentWizardPage(page).click_consent_refusal_reason(
+        ConsentRefusalReason.PERSONAL_CHOICE
+    )
+    NurseConsentWizardPage(page).give_withdraw_consent_notes(
+        "Withdrawing consent notes"
+    )
+    NurseConsentWizardPage(page).click_withdraw_consent()
+
+    # Verify consent details page shows withdrawn status
+    expect_details(page, "Response", "Withdrawn")
+    expect_details(page, "Notes", "Withdrawing consent notes")
+
+    # Navigate to child record and verify activity log
+    SessionsPatientPage(page).header.click_mavis()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
+    ChildRecordPage(page).click_programme(Programme.FLU)
+    ChildProgrammePage(page).expect_activity_log_entry(
+        f"Consent from {child.parents[0].full_name} withdrawn"
+    )
+
+
+@issue("MAV-5309")
+def test_mark_as_invalid_link_on_summary_card(
+    setup_flu_session_with_child,
+    page,
+    children,
+):
+    """
+    Test: Verify that "Mark as invalid" link displays on summary card.
+    Steps:
+    1. Record consent with "refused" status.
+    2. Verify "Mark as invalid" link is visible.
+    3. Click link, enter notes, and complete invalidation.
+    Verification:
+    - "Mark as invalid" link is visible for refused consents
+    - Link navigates to invalidation page
+    - Invalidation action completes and shows result
+    """
+    child = children[Programme.FLU][0]
+
+    # Navigate to the patient session page
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+
+    # Record consent with "refused" status
+    SessionsPatientPage(page).click_record_a_new_consent_response()
+    NurseConsentWizardPage(page).select_parent(child.parents[0])
+    NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PAPER)
+    NurseConsentWizardPage(page).record_parent_refuse_consent()
+
+    # Navigate back to patient page to see summary card
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+
+    # Verify "Mark as invalid" link is visible
+    expect(SessionsPatientPage(page).mark_as_invalid_link).to_be_visible()
+
+    # Click link and complete invalidation
+    SessionsPatientPage(page).mark_as_invalid_link.click()
+    expect(SessionsPatientPage(page).notes_textbox).to_be_visible()
+    expect(SessionsPatientPage(page).mark_as_invalid_button).to_be_visible()
+    SessionsPatientPage(page).fill_notes("Marking as invalid notes")
+    SessionsPatientPage(page).click_mark_as_invalid_button()
+
+    # Verify redirected to consent details page showing invalid status
+    expect(page.get_by_role("heading", name=child.parents[0].full_name)).to_be_visible()
+    expect_details(page, "Response", "Invalid")
+    expect_details(page, "Notes", "Marking as invalid notes")
+
+    # Navigate to child record and verify activity log
+    SessionsPatientPage(page).header.click_mavis()
+    DashboardPage(page).click_children()
+    ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
+    ChildrenSearchPage(page).search.click_child(child)
+    ChildRecordPage(page).click_programme(Programme.FLU)
+    ChildProgrammePage(page).expect_activity_log_entry(
+        f"Consent from {child.parents[0].full_name} invalidated"
+    )
+
+
+@issue("MAV-5309")
+def test_follow_up_link_on_summary_card(
+    setup_flu_session_with_child,
+    page,
+    children,
+    schools,
+):
+    """
+    Test: Verify that "Follow up" link displays on summary card and can be completed.
+    Steps:
+    1. Record online consent with follow-up request.
+    2. Navigate to patient page.
+    3. Verify "Follow up" link is visible.
+    4. Click link, enter notes, and complete follow-up.
+    Verification:
+    - "Follow up" link is visible for consents with follow-up request
+    - Link navigates to correct page and follow-up can be completed
+    - Follow-up sent confirmation is displayed
+    """
+    consent_url = setup_flu_session_with_child
+    child = children[Programme.FLU][0]
+    school = schools[Programme.FLU][0]
+
+    # Record online consent with follow-up request
+    page.goto(consent_url)
+    StartPage(page).start()
+    OnlineConsentWizardPage(page).fill_child_name_details(
+        child.first_name, child.last_name
+    )
+    OnlineConsentWizardPage(page).fill_child_date_of_birth(child.date_of_birth)
+    OnlineConsentWizardPage(page).select_child_school(school)
+    OnlineConsentWizardPage(page).fill_parent_details(child.parents[0])
+    OnlineConsentWizardPage(page).dont_agree_to_vaccination()
+    OnlineConsentWizardPage(page).select_consent_not_given_reason(
+        ConsentRefusalReason.PERSONAL_CHOICE
+    )
+    OnlineConsentWizardPage(page).answer_follow_up_question(
+        yes_to_follow_up_request=True
+    )
+    OnlineConsentWizardPage(page).click_confirm()
+
+    # Navigate to patient page
+    DashboardPage(page).navigate()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, Programme.FLU)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(Programme.FLU)
+
+    # Verify "Follow up" link is visible
+    expect(SessionsPatientPage(page).follow_up_link).to_be_visible()
+
+    # Click link and complete follow-up
+    SessionsPatientPage(page).follow_up_link.click()
+    expect(page.get_by_role("heading", name="Follow up")).to_be_visible()
+    # Complete by clicking continue (notes are optional)
+    NurseConsentWizardPage(page).select_parent_consent_refusal_stands_no()
+    NurseConsentWizardPage(page).click_continue()
+    NurseConsentWizardPage(page).record_parent_positive_consent(
+        yes_to_health_questions=False, programme=Programme.FLU
+    )
+    expect_alert_text(page, "Consent recorded for")
