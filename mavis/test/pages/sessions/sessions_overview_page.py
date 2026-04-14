@@ -215,23 +215,29 @@ class SessionsOverviewPage:
         *,
         competent: bool,
     ) -> None:
-        _data_frame = self.get_offline_recording_dataframe()
-        competence_status = (
-            "Gillick competent" if competent else "Not Gillick competent"
-        )
-        row = _data_frame[
-            (_data_frame["PERSON_FORENAME"] == child.first_name)
-            & (_data_frame["PERSON_SURNAME"] == child.last_name)
-            & (_data_frame["GILLICK_STATUS"] == competence_status)
+        data_frame = self.get_offline_recording_dataframe()
+
+        child_rows = data_frame[
+            (data_frame["PERSON_FORENAME"] == child.first_name)
+            & (data_frame["PERSON_SURNAME"] == child.last_name)
         ]
-        if row.empty:
+
+        if child_rows.empty:
+            msg = f"No row found for child {child}."
+            raise ValueError(msg)
+
+        expected_status = "Gillick competent" if competent else "Not Gillick competent"
+        rows = child_rows[child_rows["GILLICK_STATUS"] == expected_status]
+
+        if rows.empty:
             msg = (
-                f"No corresponding Gillick competence found for {child!s} "
-                "in offline recording excel."
+                f"Child {child} found but Gillick competence status of "
+                f"'{expected_status}' was not. Current status: "
+                f"{child_rows.iloc[0]['GILLICK_STATUS']}"
             )
             raise ValueError(msg)
 
-        row = row.iloc[0]
+        row = rows.iloc[0]
 
         assert row["GILLICK_ASSESSMENT_DATE"].split(" ")[
             0
