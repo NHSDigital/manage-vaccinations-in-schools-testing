@@ -77,7 +77,7 @@ class SessionsPatientPage:
             "textbox", name="Pre-screening notes (optional)"
         )
 
-        vaccinations_card = page.get_by_role("table", name="Vaccination records")
+        vaccinations_card = page.get_by_role("table", name="Vaccination outcomes")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.withdraw_consent_link = self.page.get_by_role(
             "link", name="Withdraw consent"
@@ -259,12 +259,16 @@ class SessionsPatientPage:
             ),
         ).to_be_visible()
 
-    @step("Click on {1} vaccination details")
-    def click_vaccination_details(self, school: School) -> None:
+    @step("Click on vaccination details")
+    def click_vaccination_details(
+        self, outcome: str | None = None, index: int = 0
+    ) -> None:
         with self.page.expect_navigation():
-            self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
-                "link",
-            ).click()
+            if outcome:
+                row = self.vaccinations_card_row.filter(has_text=outcome)
+                row.get_by_role("link").nth(index).click()
+            else:
+                self.vaccinations_card_row.get_by_role("link").nth(index).click()
 
     def go_back_to_session_for_school(self, school: School) -> None:
         self.page.get_by_role("link", name=school.name).click()
