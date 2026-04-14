@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan Mavis on QA with the OWASP ZAP full scan
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.13.0
+        uses: zaproxy/action-full-scan@bee4e5be916301228d2b1b2dcad73aab6fa6a25b # v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: https://qa.mavistesting.com/

@@ -66,7 +66,7 @@ jobs:
       build-needed: ${{ steps.check-image.outputs.build-needed }}
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
@@ -93,13 +93,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
       - name: Cache base jmeter image
         id: jmeter-base
-        uses: actions/cache@v5
+        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v5.0.0
         env:
           cache-name: cache-jmeter
         with:
@@ -112,7 +112,7 @@ jobs:
           docker save -o ${{ runner.temp }}/jmeter-image.tar base-jmeter-image:latest
       - name: Login to ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@062340a7de7a9da2b919efc70d2a5638c4be725c # v2.0.0
       - name: Build and push performancetest docker image
         # yamllint disable rule:line-length
         run: |
@@ -136,18 +136,18 @@ jobs:
       RESULT_PATH: ${{ github.run_number }}
     steps:
       # yamllint disable rule:line-length
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Set timestamp
         run: echo "timestamp=$(date '+%Y%m%d%H%M%S')" >> "$GITHUB_ENV"
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
           aws-region: eu-west-2
           role-duration-seconds: 32400  # 9 hours
       - name: Create task definition
         id: create-task-definition
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        uses: aws-actions/amazon-ecs-render-task-definition@823d5d2ba6624bd7b8690e1d92b5443532ea20af # v1.2.0
         with:
           task-definition-family: "assurance-testing-performance-task-definition-template"
           container-name: "performancetest-container"
@@ -247,21 +247,21 @@ jobs:
 
       - name: Upload nurse journey JMeter output
         if: inputs.runNurse == true
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
           path: test-results/nurse
           if-no-files-found: warn
       - name: Upload consent journey JMeter output
         if: inputs.runConsent == true
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: test-results/consent
           if-no-files-found: warn
       - name: Publish report to GH Pages
         if: inputs.runNurse == true
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@47f197a2200bb9de68ba5f48fad1c088eb1c4a32 # v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
