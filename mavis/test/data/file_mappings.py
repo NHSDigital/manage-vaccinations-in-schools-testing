@@ -35,6 +35,7 @@ class VaccsFileMapping(FileMapping):
     HPV_DOSE_TWO = "hpv_dose_two"
     INVALID_STRUCTURE = "invalid_structure"
     MMR_DOSE_ONE = "mmr_dose_one"
+    MMR_MMRV_PROCEDURE_CODES = "mmr_mmrv_procedure_codes"
     NATIONAL_REPORTING_HPV = "national_reporting_hpv"
     NATIONAL_REPORTING_NEGATIVE = "national_reporting_negative"
     NATIONAL_REPORTING_POSITIVE = "national_reporting_positive"
