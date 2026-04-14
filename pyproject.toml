@@ -16,7 +16,7 @@ dependencies = [
     "pillow==12.2.0",
     "playwright==1.58.0",
     "pyjwt==2.12.1",
-    "pytest==9.0.2",
+    "pytest==9.0.3",
     "pytest-dotenv==0.5.2",
     "pytest-playwright==0.7.2",
     "pytest-rerunfailures==16.1",
