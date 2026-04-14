@@ -443,5 +443,5 @@ def test_accessibility(
     RecordVaccinationWizardPage(page).click_confirm_button()
     AccessibilityHelper(page).check_accessibility()
 
-    SessionsPatientPage(page).click_vaccination_details(school)
+    SessionsPatientPage(page).click_vaccination_details()
     AccessibilityHelper(page).check_accessibility()
