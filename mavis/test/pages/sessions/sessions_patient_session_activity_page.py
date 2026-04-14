@@ -1,6 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
+from mavis.test.data_models import Location
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.utils import (
     expect_alert_text,
@@ -45,3 +46,7 @@ class SessionsPatientSessionActivityPage:
 
     def check_session_activity_entry(self, text: str) -> None:
         expect(self.page.get_by_role("heading", name=text).first).to_be_visible()
+
+    @step("Go back to Session")
+    def click_back_to_session(self, location: Location) -> None:
+        self.page.get_by_role("link", name=location.name).click()

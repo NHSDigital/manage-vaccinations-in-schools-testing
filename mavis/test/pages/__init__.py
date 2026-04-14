@@ -6,6 +6,11 @@ from .children import (
     ChildRecordPage,
     ChildrenSearchPage,
 )
+from .consent import (
+    ConsentConfirmRefusalPage,
+    ConsentRefusalFollowUpPage,
+    ConsentResponseDetailsPage,
+)
 from .dashboard_page import DashboardPage
 from .error_pages import BadRequestPage, PageNotFound, ServiceErrorPage
 from .flipper_page import FlipperPage
@@ -62,6 +67,9 @@ __all__ = [
     "ChildProgrammePage",
     "ChildRecordPage",
     "ChildrenSearchPage",
+    "ConsentConfirmRefusalPage",
+    "ConsentRefusalFollowUpPage",
+    "ConsentResponseDetailsPage",
     "ConsentResponsePage",
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",

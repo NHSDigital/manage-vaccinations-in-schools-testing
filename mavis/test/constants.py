@@ -418,6 +418,7 @@ class DeliverySite(StrEnum):
 
 
 class ConsentRefusalReason(StrEnum):
+    CONTAINS_GELATINE = "I’m concerned the vaccine contains gelatine"
     VACCINE_ALREADY_RECEIVED = "Vaccine already received"
     VACCINE_WILL_BE_GIVEN_ELSEWHERE = "Vaccine will be given elsewhere"
     MEDICAL_REASONS = "Medical reasons"
@@ -426,7 +427,17 @@ class ConsentRefusalReason(StrEnum):
 
     @property
     def requires_details(self) -> bool:
-        return self is not ConsentRefusalReason.PERSONAL_CHOICE
+        return self not in (
+            ConsentRefusalReason.PERSONAL_CHOICE,
+            ConsentRefusalReason.CONTAINS_GELATINE,
+        )
+
+    @property
+    def has_follow_up_option(self) -> bool:
+        return self not in (
+            ConsentRefusalReason.VACCINE_ALREADY_RECEIVED,
+            ConsentRefusalReason.VACCINE_WILL_BE_GIVEN_ELSEWHERE,
+        )
 
 
 class ConsentMethod(StrEnum):
