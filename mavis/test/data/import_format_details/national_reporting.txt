@@ -13,7 +13,7 @@ VACCINE_GIVEN	Required
 
 For HPV records, must be one of: Cervarix, Gardasil or Gardasil9.
 
-For flu records, must be one of: Seqirus Cell-Based Trivalent IIVc, AstraZeneca Fluenz LAIV or Viatris Quadrivalent Influvac sub - unit Tetra - QIVe.
+For flu records, must be one of: AstraZeneca Fluenz LAIV, Seqirus Cell-Based Trivalent IIVc or Viatris Quadrivalent Influvac sub - unit Tetra - QIVe.
 BATCH_NUMBER	Required
 BATCH_EXPIRY_DATE	Required, must use YYYYMMDD format.
 ANATOMICAL_SITE	Required, must be one of: left arm (lower position), left arm (upper position), left buttock, left deltoid, left lower, left lower arm, left thigh, left upper arm, nasal, right arm (lower position), right arm (upper position), right buttock, right deltoid, right lower, right lower arm, right thigh or right upper arm.

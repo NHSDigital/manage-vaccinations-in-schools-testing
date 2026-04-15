@@ -411,9 +411,10 @@ class ImportRecordsWizardPage:
         self.page.wait_for_load_state()
         self.import_format_details_link.click()
         main_content = self.page.get_by_role("main").inner_text()
+
         for line in spec_lines:
             if line not in main_content:
-                missing_line_msg = f"Inconsistent import format details: {line}"
+                missing_line_msg = f"Missing import format details: {line}"
                 raise AssertionError(missing_line_msg)
 
         if import_format_details_mapping is ImportFormatDetails.VACCS:
