@@ -39,6 +39,7 @@ def test_vaccination_file_upload_systmone_valid_data(
     ).upload_and_verify_output(VaccsFileMapping.SYSTMONE_POSITIVE)
 
 
+@issue("MAV-6541")
 def test_vaccination_file_upload_systmone_invalid_data(
     setup_systmone_nivs,
     page,
@@ -64,6 +65,7 @@ def test_vaccination_file_upload_systmone_invalid_data(
     ).upload_and_verify_output(VaccsFileMapping.SYSTMONE_NEGATIVE)
 
 
+@issue("MAV-6541")
 def test_vaccination_file_upload_systmone_historic_invalid_data(
     setup_systmone_nivs,
     page,

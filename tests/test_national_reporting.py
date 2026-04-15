@@ -42,6 +42,7 @@ def test_national_reporting_valid_data(
     ).upload_and_verify_output(VaccsFileMapping.NATIONAL_REPORTING_POSITIVE)
 
 
+@issue("MAV-6541")
 def test_national_reporting_invalid_data(
     setup_national_reporting_import,
     page,

@@ -1,6 +1,8 @@
 TEST_DESC_IGNORED,Date of birth,NHS number,Vaccination area code,Vaccination batch number,Vaccination reason,Vaccination type,First name,Postcode,Sex,Surname,Event date,Event location type,Event time,Organisation ID,School,School code,Patient Count
 EmptyDoB,,<<RANDOM_NHS_NO>>,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
 InvalidDoB,10050101,<<RANDOM_NHS_NO>>,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+InvalidDoB,12/12/12,<<RANDOM_NHS_NO>>,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,23:59:00,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
+TooOldDoB,1980-10-15,<<RANDOM_NHS_NO>>,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,23:59:00,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
 LongerNHSNo,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>1,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
 ShorterNHSNo,<<FIXED_YEAR_GROUP_DOB>>,9123456,,123013325,,Cervarix 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
 InvalidVaccsType,<<FIXED_YEAR_GROUP_DOB>>,<<RANDOM_NHS_NO>>,,123013325,,Cervari 1,<<RANDOM_FNAME>>,<<RANDOM_POSTCODE>>,Female,<<RANDOM_LNAME>>,<<VACCS_DATE>>,School,<<VACCS_TIME>>,<<ORG_CODE>>,<<SCHOOL_0_NAME>>,<<SCHOOL_0_URN>>,
