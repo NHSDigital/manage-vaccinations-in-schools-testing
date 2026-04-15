@@ -27,6 +27,7 @@ def setup_child_import(
     ).navigate_to_child_record_import()
 
 
+@issue("MAV-5893")
 def test_child_list_file_upload_valid_data(
     setup_child_import,
     page,

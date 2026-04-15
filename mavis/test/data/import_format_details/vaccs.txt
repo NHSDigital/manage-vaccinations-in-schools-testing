@@ -1,17 +1,17 @@
 ORGANISATION_CODE	Optional, must be a valid ODS code.
 SCHOOL_URN	Optional, must be 6 digits and numeric. Use 888888 for school unknown and 999999 for homeschooled.
 SCHOOL_NAME	Required if SCHOOL_URN is 888888.
-NHS_NUMBER	Optional, must be a valid NHS number.
-PERSON_FORENAME	Required
-PERSON_SURNAME	Required
-PERSON_DOB	Required, must use either YYYYMMDD or DD/MM/YYYY format.
+NHS_NUMBER	You must enter a valid NHS number if available.
+PERSON_FORENAME	Required, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
+PERSON_SURNAME	Required, must use alphabetical characters (you can include accents like Jiménez, hyphens like Burne-Jones or apostrophes like O'Hare but no other special characters).
+PERSON_DOB	Required, you must use either YYYYMMDD or DD/MM/YYYY format.
 PERSON_GENDER_CODE	Required, must be one of: female, male, not known or not specified.
-PERSON_POSTCODE	Required, must be formatted as a valid postcode, for example SW1A 1AA.
-DATE_OF_VACCINATION	Required, must use either YYYYMMDD or DD/MM/YYYY format.
-TIME_OF_VACCINATION	Optional, must use HH:MM:SS format.
-VACCINATED	Required, must be Y or N. Can be omitted if VACCINE_GIVEN is provided.
-BATCH_NUMBER	Required if BATCH_EXPIRY_DATE is provided.
-BATCH_EXPIRY_DATE	Required if BATCH_NUMBER is provided, must use either YYYYMMDD or DD/MM/YYYY format.
+PERSON_POSTCODE	Required, must be a full postcode, for example SW1A 1AA
+DATE_OF_VACCINATION	Required, you must use either YYYYMMDD or DD/MM/YYYY format.
+TIME_OF_VACCINATION	Optional, use HH:MM:SS format.
+VACCINATED	Enter Y or N. Mavis will assume Y if VACCINE_GIVEN is provided.
+BATCH_NUMBER	Optional
+BATCH_EXPIRY_DATE	Optional, use either YYYYMMDD or DD/MM/YYYY format.
 PROGRAMME	Required, must be Flu, HPV, ACWYX4, MenACWY, MMR, MMRV, 3-in-1 or Td/IPV.
 ANATOMICAL_SITE	Optional, if provided must be appropriate for the vaccine delivery method and be one of: left arm (lower position), left arm (upper position), left buttock, left deltoid, left lower, left lower arm, left thigh, left upper arm, nasal, right arm (lower position), right arm (upper position), right buttock, right deltoid, right lower, right lower arm, right thigh or right upper arm.
 REASON_NOT_VACCINATED	Required if VACCINATED is N, must be already had elsewhere, refused, unwell or vaccination contraindicated.
