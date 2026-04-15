@@ -207,7 +207,7 @@ class NurseConsentWizardPage:
     def click_yes_for_injected_vaccine(self) -> None:
         self.online_flu_agree_injection_radio.check()
 
-    def record_parent_positive_consent(
+    def record_parent_given_consent(
         self,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,
@@ -235,7 +235,7 @@ class NurseConsentWizardPage:
         self.click_continue()
         self.click_confirm()
 
-    def record_child_positive_consent(
+    def record_child_given_consent(
         self,
         programme: Programme = Programme.HPV,
         consent_option: ConsentOption = ConsentOption.INJECTION,

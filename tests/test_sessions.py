@@ -289,7 +289,7 @@ def test_triage_consent_given_and_triage_outcome(
 
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         yes_to_health_questions=True
     )
 
@@ -383,7 +383,7 @@ def test_add_child_to_community_clinic_session(
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.IN_PERSON)
-    NurseConsentWizardPage(page).record_parent_positive_consent()
+    NurseConsentWizardPage(page).record_parent_given_consent()
     SessionsChildrenPage(page).tabs.click_record_vaccinations_tab()
     SessionsRecordVaccinationsPage(page).search.search_and_click_child(child)
     vaccination_record = VaccinationRecord(child, Programme.HPV, batch_name)

@@ -369,7 +369,7 @@ def test_follow_up_journey_decision_changed_record_consent(
     ConsentRefusalFollowUpPage(page).select_decision_stands(stands=False)
     ConsentRefusalFollowUpPage(page).click_continue()
 
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         programme=Programme.MMR_MMRV,
         consent_option=ConsentOption.MMR_EITHER,
         yes_to_health_questions=False,
@@ -443,7 +443,7 @@ def test_gillick_self_consent_overrides_follow_up_requested(
 
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_gillick_competent_child()
-    NurseConsentWizardPage(page).record_child_positive_consent(
+    NurseConsentWizardPage(page).record_child_given_consent(
         programme=Programme.MMR_MMRV,
         consent_option=ConsentOption.MMR_EITHER,
         yes_to_health_questions=False,

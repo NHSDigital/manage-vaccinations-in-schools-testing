@@ -92,7 +92,7 @@ def test_tallying(  # noqa: PLR0915
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
 
@@ -131,7 +131,7 @@ def test_tallying(  # noqa: PLR0915
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[1])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         yes_to_health_questions=False,
         programme=Programme.FLU,
         consent_option=ConsentOption.NASAL_SPRAY,

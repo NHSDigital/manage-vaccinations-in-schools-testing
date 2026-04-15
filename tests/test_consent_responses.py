@@ -417,7 +417,7 @@ def test_withdraw_consent_link_on_summary_card(
     SessionsPatientPage(page).click_record_a_new_consent_response()
     NurseConsentWizardPage(page).select_parent(child.parents[0])
     NurseConsentWizardPage(page).select_consent_method(ConsentMethod.PHONE)
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
 
@@ -572,7 +572,7 @@ def test_follow_up_link_on_summary_card(
     # Complete by clicking continue (notes are optional)
     NurseConsentWizardPage(page).select_parent_consent_refusal_stands_no()
     NurseConsentWizardPage(page).click_continue()
-    NurseConsentWizardPage(page).record_parent_positive_consent(
+    NurseConsentWizardPage(page).record_parent_given_consent(
         yes_to_health_questions=False, programme=Programme.FLU
     )
     expect_alert_text(page, "Consent recorded for")

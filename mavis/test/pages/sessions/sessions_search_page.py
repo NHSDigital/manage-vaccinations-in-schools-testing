@@ -21,25 +21,48 @@ class SessionsSearchPage:
     def click_add_a_new_session(self) -> None:
         self.add_a_new_session_link.click()
 
+    def _check_programmes(self, checked_programmes: list[Programme]) -> None:
+        for programme in Programme:
+            if programme in checked_programmes:
+                self.page.get_by_role("checkbox", name=str(programme)).check()
+            else:
+                self.page.get_by_role("checkbox", name=str(programme)).uncheck()
+
+    def _search_for_location(self, location: Location) -> None:
+        self.search.search_for(str(location))
+
+    def _click_location(self, location: Location) -> None:
+        self.page.get_by_role("link", name=str(location)).first.click()
+
+    @step("Click on {2} session at {1}")
+    def click_session_for_programmes(
+        self, location: Location, programmes: list[Programme]
+    ) -> None:
+        self._check_programmes(programmes)
+        self._search_for_location(location)
+        self._click_location(location)
+
+        expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
+            timeout=10_000,
+        )
+
     @step("Click on {2} session at {1}")
     def click_session_for_programme_group(
         self, location: Location, programme_group: str
     ) -> None:
         if programme_group != Programme.MMR_MMRV:
-            for programme in Programme:
-                if programme.group == programme_group:
-                    self.page.get_by_role("checkbox", name=str(programme)).check()
-                else:
-                    self.page.get_by_role("checkbox", name=str(programme)).uncheck()
+            programmes = [
+                programme
+                for programme in Programme
+                if programme.group == programme_group
+            ]
+            self._check_programmes(programmes)
 
-        self.search.search_for(str(location))
-
-        self.page.get_by_role("link", name=str(location)).first.click()
-
-        ten_seconds_ms = 10000
+        self._search_for_location(location)
+        self._click_location(location)
 
         expect(self.page.locator("h1", has_text=str(location))).to_be_visible(
-            timeout=ten_seconds_ms,
+            timeout=10_000,
         )
 
     @step("Check if session exists")
