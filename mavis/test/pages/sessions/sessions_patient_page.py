@@ -6,6 +6,7 @@ from mavis.test.annotations import step
 from mavis.test.constants import (
     MAVIS_NOTE_LENGTH_LIMIT,
     ConsentOption,
+    ConsentStatus,
     DeliverySite,
     Programme,
 )
@@ -39,7 +40,7 @@ class SessionsPatientPage:
         )
         self.edit_gillick_competence_link = self.page.get_by_role(
             "link",
-            name="Edit Gillick competence",
+            name="Update Gillick competence",
         )
         self.could_not_vaccinate_link = self.page.get_by_role(
             "link",
@@ -55,7 +56,7 @@ class SessionsPatientPage:
         )
         self.notes_textbox = self.page.get_by_role("textbox", name="Notes")
         self.record_a_new_consent_response_button = self.page.get_by_role(
-            "button",
+            "link",
             name="Record a new consent response",
         )
         self.ready_for_injection_radio = self.page.locator(
@@ -77,7 +78,7 @@ class SessionsPatientPage:
             "textbox", name="Pre-screening notes (optional)"
         )
 
-        vaccinations_card = page.get_by_role("table", name="Vaccination records")
+        vaccinations_card = page.get_by_role("table", name="Vaccination outcomes")
         self.vaccinations_card_row = vaccinations_card.get_by_role("row")
         self.withdraw_consent_link = self.page.get_by_role(
             "link", name="Withdraw consent"
@@ -246,8 +247,20 @@ class SessionsPatientPage:
             ),
         ).to_be_visible()
 
-    def expect_consent_status(self, programme: Programme, status: str) -> None:
-        expect(self.page.get_by_text(f"{programme}: {status}")).to_be_visible()
+    def expect_consent_status(self, status: ConsentStatus) -> None:
+        if status is ConsentStatus.GIVEN:
+            expected_text = "is ready for the vaccinator"
+        elif status is ConsentStatus.REFUSED:
+            expected_text = "refused to give consent"
+        elif status is ConsentStatus.FOLLOW_UP_REQUESTED:
+            expected_text = "would like to speak to a member of the team"
+        elif status is ConsentStatus.NO_RESPONSE:
+            expected_text = "No-one responded to our requests"
+        elif status is ConsentStatus.CONFLICTS:
+            expected_text = "You can only vaccinate if all respondents give consent"
+        else:
+            expected_text = str(status)
+        expect(self.page.get_by_text(expected_text, exact=False)).to_be_visible()
 
     def expect_consent_recorded_success(self) -> None:
         expect_alert_text(self.page, "Consent recorded")
@@ -259,12 +272,16 @@ class SessionsPatientPage:
             ),
         ).to_be_visible()
 
-    @step("Click on {1} vaccination details")
-    def click_vaccination_details(self, school: School) -> None:
+    @step("Click on vaccination details")
+    def click_vaccination_details(
+        self, outcome: str | None = None, index: int = 0
+    ) -> None:
         with self.page.expect_navigation():
-            self.vaccinations_card_row.filter(has_text=str(school)).get_by_role(
-                "link",
-            ).click()
+            if outcome:
+                row = self.vaccinations_card_row.filter(has_text=outcome)
+                row.get_by_role("link").nth(index).click()
+            else:
+                self.vaccinations_card_row.get_by_role("link").nth(index).click()
 
     def go_back_to_session_for_school(self, school: School) -> None:
         self.page.get_by_role("link", name=school.name).click()
