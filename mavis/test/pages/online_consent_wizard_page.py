@@ -361,14 +361,21 @@ class OnlineConsentWizardPage:
             "For example, it may be possible to use a vaccine that "
             "does not contain gelatine"
         )
+        hint_text_community = (
+            "For example, it may be possible to vaccinate your "
+            "child in a community clinic"
+        )
 
         if refusal_reason is ConsentRefusalReason.MEDICAL_REASONS:
             expect(self.page.get_by_text(hint_text_medical)).to_be_visible()
         elif refusal_reason is ConsentRefusalReason.CONTAINS_GELATINE:
             expect(self.page.get_by_text(hint_text_gelatine)).to_be_visible()
+        elif refusal_reason is ConsentRefusalReason.DO_NOT_WANT_VACCINATION_AT_SCHOOL:
+            expect(self.page.get_by_text(hint_text_community)).to_be_visible()
         else:
             expect(self.page.get_by_text(hint_text_medical)).not_to_be_visible()
             expect(self.page.get_by_text(hint_text_gelatine)).not_to_be_visible()
+            expect(self.page.get_by_text(hint_text_community)).not_to_be_visible()
 
     @step("Click Change link for discuss options")
     def click_change_discuss_options(self) -> None:

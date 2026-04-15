@@ -431,6 +431,7 @@ class ConsentRefusalReason(StrEnum):
     CONTAINS_GELATINE = "I’m concerned the vaccine contains gelatine"
     VACCINE_ALREADY_RECEIVED = "Vaccine already received"
     VACCINE_WILL_BE_GIVEN_ELSEWHERE = "Vaccine will be given elsewhere"
+    DO_NOT_WANT_VACCINATION_AT_SCHOOL = "Do not want vaccination at school"
     MEDICAL_REASONS = "Medical reasons"
     PERSONAL_CHOICE = "Personal choice"
     OTHER = "Other"
@@ -440,6 +441,7 @@ class ConsentRefusalReason(StrEnum):
         return self not in (
             ConsentRefusalReason.PERSONAL_CHOICE,
             ConsentRefusalReason.CONTAINS_GELATINE,
+            ConsentRefusalReason.DO_NOT_WANT_VACCINATION_AT_SCHOOL,
         )
 
     @property

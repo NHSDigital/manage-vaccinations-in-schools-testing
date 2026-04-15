@@ -96,6 +96,7 @@ def give_online_consent_with_follow_up_request(
         ConsentRefusalReason.MEDICAL_REASONS,
         ConsentRefusalReason.PERSONAL_CHOICE,
         ConsentRefusalReason.CONTAINS_GELATINE,
+        ConsentRefusalReason.DO_NOT_WANT_VACCINATION_AT_SCHOOL,
         ConsentRefusalReason.OTHER,
     ],
     ids=lambda v: f"refusal_reason: {v}",
