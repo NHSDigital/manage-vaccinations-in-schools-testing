@@ -78,10 +78,24 @@ class School(Location):
                 "site": "",
             }
 
-            response = httpx.get(url, params=params, timeout=30)
-            response.raise_for_status()
+            try:
+                response = httpx.get(url, params=params, timeout=30)
+                response.raise_for_status()
+            except (httpx.ConnectError, httpx.HTTPStatusError):
+                msg = (
+                    f"Could not reach the Mavis API at {base_url}. "
+                    "Is Mavis (or the reporting app) running?"
+                )
+                raise RuntimeError(msg) from None
 
             data = response.json()
+            if not data:
+                msg = (
+                    f"No schools found with year group {year_group} at {base_url}. "
+                    "Have GIAS locations been loaded? "
+                    "Try running 'bin/mavis gias import' from the Mavis repository."
+                )
+                raise RuntimeError(msg)
             schools_data = random.choices(data, k=2)
 
             return [
