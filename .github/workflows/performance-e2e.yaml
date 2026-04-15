@@ -74,11 +74,11 @@ jobs:
       # jmeter_home: ${{ github.workspace }}/jmeter-${{ env.jmeter_version }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Cache jmeter
         id: cache-jmeter
-        uses: actions/cache@v5
+        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v5.0.0
         env:
           cache-name: cache-jmeter
         with:
@@ -183,7 +183,7 @@ jobs:
 
       - name: Upload consent journey JMeter output
         if: inputs.runDataPrep == true
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: jmeter-consent-journey-output-${{ env.timestamp }}
           path: consent-output
@@ -191,14 +191,14 @@ jobs:
 
       - name: Upload nurse journey JMeter output
         if: inputs.runNurse == true
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: jmeter-nurse-journey-output-${{ env.timestamp }}
           path: nurse-output
           if-no-files-found: warn
 
       - name: Publish report to GH Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@47f197a2200bb9de68ba5f48fad1c088eb1c4a32 # v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
