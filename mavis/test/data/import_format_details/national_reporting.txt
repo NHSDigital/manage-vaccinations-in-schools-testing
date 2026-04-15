@@ -1,0 +1,26 @@
+ORGANISATION_CODE	Required, must be a valid ODS code.
+SCHOOL_URN	Required, must be 6 digits and numeric. Use 888888 for school unknown and 999999 for homeschooled.
+NHS_NUMBER	You must enter a valid NHS number if available.
+PERSON_FORENAME	Required, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
+PERSON_SURNAME	Required, must use alphabetical characters (you can include accents like Jiménez, hyphens like Burne-Jones or apostrophes like O'Hare but no other special characters).
+PERSON_DOB	Required, you must use either YYYYMMDD or DD/MM/YYYY format.
+PERSON_GENDER	Required, must be one of: female, male, not known or not specified.
+PERSON_POSTCODE	Required, must be a full postcode, for example SW1A 1AA
+VACCINATED	Optional, enter Y or N. If you enter nothing, Mavis will assume Y. If you enter N, the row will not be uploaded.
+DATE_OF_VACCINATION	Required, you must use either YYYYMMDD or DD/MM/YYYY format.
+TIME_OF_VACCINATION	Optional, use HH:MM:SS format.
+VACCINE_GIVEN	Required
+
+For HPV records, must be one of: Cervarix, Gardasil or Gardasil9.
+
+For flu records, must be one of: Seqirus Cell-Based Trivalent IIVc, AstraZeneca Fluenz LAIV or Viatris Quadrivalent Influvac sub - unit Tetra - QIVe.
+BATCH_NUMBER	Required
+BATCH_EXPIRY_DATE	Required, must use YYYYMMDD format.
+ANATOMICAL_SITE	Required, must be one of: left arm (lower position), left arm (upper position), left buttock, left deltoid, left lower, left lower arm, left thigh, left upper arm, nasal, right arm (lower position), right arm (upper position), right buttock, right deltoid, right lower, right lower arm, right thigh or right upper arm.
+DOSE_SEQUENCE	Required for HPV records, optional for flu records.
+
+Must be a number between 1 and 3 for HPV records and between 1 and 2 for flu records.
+PERFORMING_PROFESSIONAL_FORENAME	Required for flu records, optional for HPV records.
+PERFORMING_PROFESSIONAL_SURNAME	Required for flu records, optional for HPV records.
+LOCAL_PATIENT_ID	Required, supplied automatically by your vaccination recording system.
+LOCAL_PATIENT_ID_URI	Required, supplied automatically by your vaccination recording system.
