@@ -3,19 +3,14 @@ import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import date
 
-import httpx
 import nhs_number
 from attr import dataclass
 from faker import Faker
 
-from mavis.test.constants import (
-    ConsentOption,
-    DeliverySite,
-    Programme,
-    Relationship,
-)
+from mavis.test.constants import ConsentOption, DeliverySite, Programme, Relationship
 from mavis.test.utils import (
     get_date_of_birth_for_year_group,
+    get_logged_httpx_client,
     normalize_postcode,
     normalize_whitespace,
 )
@@ -78,8 +73,9 @@ class School(Location):
                 "site": "",
             }
 
-            response = httpx.get(url, params=params, timeout=30)
-            response.raise_for_status()
+            with get_logged_httpx_client(timeout=30) as client:
+                response = client.get(url, params=params)
+                response.raise_for_status()
 
             data = response.json()
             schools_data = random.choices(data, k=2)

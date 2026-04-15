@@ -10,6 +10,7 @@ from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data.file_utils import create_fhir_immunization_payload
 from mavis.test.data_models import Child, School
 from mavis.test.fixtures.fhir_api import AuthToken
+from mavis.test.utils import get_logged_httpx_client
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -183,12 +184,12 @@ class ImmsApiHelper:
             "patient.identifier": f"https://fhir.nhs.uk/Id/nhs-number|{child.nhs_number}",
         }
 
-        response = httpx.get(
-            url=ImmsEndpoints.READ.to_url,
-            headers=self.headers,
-            params=_params,
-            timeout=30,
-        )
+        with get_logged_httpx_client(timeout=30) as client:
+            response = client.get(
+                url=ImmsEndpoints.READ.to_url,
+                headers=self.headers,
+                params=_params,
+            )
         response.raise_for_status()
 
         return response
@@ -237,12 +238,12 @@ class ImmsApiHelper:
         create_headers = self.headers.copy()
         create_headers["content-type"] = "application/fhir+json"
 
-        response = httpx.post(
-            url=ImmsEndpoints.CREATE.to_url,
-            headers=create_headers,
-            json=immunization_payload,
-            timeout=30,
-        )
+        with get_logged_httpx_client(timeout=30) as client:
+            response = client.post(
+                url=ImmsEndpoints.CREATE.to_url,
+                headers=create_headers,
+                json=immunization_payload,
+            )
         response.raise_for_status()
 
         # If creation was successful, verify the record exists in the API

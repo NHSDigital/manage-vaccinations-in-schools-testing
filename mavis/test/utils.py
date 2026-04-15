@@ -1,3 +1,4 @@
+import logging
 import random
 import re
 import time
@@ -6,6 +7,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import httpx
 from faker import Faker
 from playwright.sync_api import Locator, Page, expect
 from pypdf import PdfReader
@@ -14,6 +16,195 @@ from mavis.test.annotations import step
 from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
 
 faker = Faker()
+
+# Configure API logging
+_api_logger = logging.getLogger("mavis.api")
+_api_log_path = Path("logs") / "api.log"
+_api_log_path.parent.mkdir(parents=True, exist_ok=True)
+
+# Set up file handler for API logs
+_api_handler = logging.FileHandler(_api_log_path)
+_api_handler.setLevel(logging.INFO)
+_api_formatter = logging.Formatter(
+    "%(asctime)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+)
+_api_handler.setFormatter(_api_formatter)
+_api_logger.addHandler(_api_handler)
+_api_logger.setLevel(logging.INFO)
+# Don't propagate to root logger (prevents console output during tests)
+_api_logger.propagate = False
+
+# Completely disable httpx's built-in logging to prevent any credential leaks
+logging.getLogger("httpx").disabled = True
+
+# Maximum length for API response text in logs
+MAX_API_RESPONSE_LOG_LENGTH = 1000
+
+
+def _mask_sensitive_data(text: str) -> str:
+    """Mask sensitive data in text for logging.
+
+    Masks:
+    - Bearer tokens
+    - Access tokens in JSON
+    - JWT tokens (including client_assertion)
+    - Authorization headers
+    - API keys
+    - Client secrets
+    - Passwords
+    """
+    # Mask Bearer tokens in headers or text
+    text = re.sub(r"Bearer [A-Za-z0-9._-]+", "Bearer ***REDACTED***", text)
+
+    # Mask access_token in JSON responses
+    text = re.sub(
+        r'"access_token"\s*:\s*"[^"]+?"', '"access_token": "***REDACTED***"', text
+    )
+
+    # Mask refresh_token in JSON
+    text = re.sub(
+        r'"refresh_token"\s*:\s*"[^"]+?"', '"refresh_token": "***REDACTED***"', text
+    )
+
+    # Mask client_assertion (JWT used in OAuth)
+    text = re.sub(
+        r'"client_assertion"\s*:\s*"[^"]+?"',
+        '"client_assertion": "***REDACTED***"',
+        text,
+    )
+
+    # Mask client_secret
+    text = re.sub(
+        r'"client_secret"\s*:\s*"[^"]+?"', '"client_secret": "***REDACTED***"', text
+    )
+
+    # Mask password fields
+    text = re.sub(r'"password"\s*:\s*"[^"]+?"', '"password": "***REDACTED***"', text)
+
+    # Mask API keys
+    text = re.sub(r'"api_key"\s*:\s*"[^"]+?"', '"api_key": "***REDACTED***"', text)
+    text = re.sub(r'"apiKey"\s*:\s*"[^"]+?"', '"apiKey": "***REDACTED***"', text)
+
+    # Mask JWT tokens anywhere (eyJ... pattern)
+    text = re.sub(
+        r"\beyJ[A-Za-z0-9._-]{20,}\b",
+        "***JWT_REDACTED***",
+        text,
+    )
+
+    # Mask Authorization header values in JSON
+    text = re.sub(
+        r'"authorization"\s*:\s*"[^"]+?"',
+        '"authorization": "***REDACTED***"',
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Mask session tokens or similar
+    text = re.sub(
+        r'"session_token"\s*:\s*"[^"]+?"',
+        '"session_token": "***REDACTED***"',
+        text,
+    )
+    return re.sub(r'"token"\s*:\s*"[^"]+?"', '"token": "***REDACTED***"', text)
+
+
+def _sanitize_headers(headers: httpx.Headers) -> dict[str, str]:
+    """Remove or mask sensitive headers for logging.
+
+    Args:
+        headers: httpx.Headers object
+
+    Returns:
+        Dictionary with sensitive headers redacted
+    """
+    safe_headers = dict(headers)
+
+    # Redact sensitive headers (case-insensitive)
+    sensitive_keys = [
+        "authorization",
+        "x-api-key",
+        "cookie",
+        "set-cookie",
+        "x-auth-token",
+        "x-access-token",
+        "x-session-token",
+        "proxy-authorization",
+        "www-authenticate",
+        "api-key",
+        "apikey",
+    ]
+
+    # Convert header keys to lowercase for comparison
+    lower_headers = {k.lower(): k for k in safe_headers}
+
+    for sensitive_key in sensitive_keys:
+        if sensitive_key in lower_headers:
+            original_key = lower_headers[sensitive_key]
+            safe_headers[original_key] = "***REDACTED***"
+
+    return safe_headers
+
+
+def _log_request(request: httpx.Request) -> None:
+    """Event hook to log httpx requests with sanitized headers.
+
+    Note: Request body is intentionally NOT logged to prevent credential leaks,
+    as POST/PUT bodies may contain sensitive data like passwords, tokens, etc.
+    """
+    headers_str = ", ".join(
+        f"{k}: {v}" for k, v in _sanitize_headers(request.headers).items()
+    )
+    _api_logger.info(
+        "REQUEST | %s | %s | HEADERS: %s",
+        request.method,
+        request.url,
+        headers_str,
+    )
+
+
+def _log_response(response: httpx.Response) -> None:
+    """Event hook to log httpx responses with masked sensitive data."""
+    # Read the response content if not already read (for streaming responses)
+    response.read()
+
+    # Truncate and mask response body
+    response_text = response.text
+    if len(response_text) > MAX_API_RESPONSE_LOG_LENGTH:
+        response_text = response_text[:MAX_API_RESPONSE_LOG_LENGTH] + "... [truncated]"
+
+    masked_response = _mask_sensitive_data(response_text)
+
+    # Log response with headers
+    headers_str = ", ".join(
+        f"{k}: {v}" for k, v in _sanitize_headers(response.headers).items()
+    )
+
+    _api_logger.info(
+        "RESPONSE | %s | %s | STATUS: %s | HEADERS: %s | BODY: %s",
+        response.request.method,
+        response.request.url,
+        response.status_code,
+        headers_str,
+        masked_response,
+    )
+
+
+# Create a default httpx client with logging event hooks
+def get_logged_httpx_client(**kwargs: object) -> httpx.Client:
+    """Get an httpx.Client configured with API logging event hooks.
+
+    Args:
+        **kwargs: Additional arguments to pass to httpx.Client
+
+    Returns:
+        httpx.Client with logging configured
+    """
+    event_hooks = kwargs.pop("event_hooks", {})
+    event_hooks.setdefault("request", []).append(_log_request)
+    event_hooks.setdefault("response", []).append(_log_response)
+
+    return httpx.Client(event_hooks=event_hooks, **kwargs)
 
 
 def format_datetime_for_upload_link(now: datetime) -> str:

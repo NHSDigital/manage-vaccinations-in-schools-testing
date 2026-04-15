@@ -5,9 +5,10 @@ import time
 import urllib.parse
 import uuid
 
-import httpx
 import jwt
 import pytest
+
+from mavis.test.utils import get_logged_httpx_client
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,8 @@ def authenticate_api():
     }
     _headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-    response = httpx.post(url=_endpoint, headers=_headers, data=_payload, timeout=30)
+    with get_logged_httpx_client(timeout=30) as client:
+        response = client.post(url=_endpoint, headers=_headers, data=_payload)
 
     if not response.is_success:
         logger.warning(response.content)

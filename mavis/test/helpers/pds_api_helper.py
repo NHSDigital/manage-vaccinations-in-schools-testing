@@ -14,7 +14,7 @@ from dateutil.relativedelta import relativedelta
 from mavis.test.constants import PdsEndpoints, Relationship
 from mavis.test.data_models import Child, Parent
 from mavis.test.fixtures.fhir_api import AuthToken
-from mavis.test.utils import get_todays_date
+from mavis.test.utils import get_logged_httpx_client, get_todays_date
 
 
 class Patient(NamedTuple):
@@ -158,11 +158,11 @@ class PdsApiHelper:
             return False
 
     def get_patient_by_nhs_number(self, nhs_number: str) -> Patient:
-        response = httpx.get(
-            url=PdsEndpoints.GET_PATIENT_DETAILS.to_url_with_suffix(nhs_number),
-            headers=self.headers,
-            timeout=30,
-        )
+        with get_logged_httpx_client(timeout=30) as client:
+            response = client.get(
+                url=PdsEndpoints.GET_PATIENT_DETAILS.to_url_with_suffix(nhs_number),
+                headers=self.headers,
+            )
         response.raise_for_status()
 
         data = response.json()
@@ -212,16 +212,16 @@ class PdsApiHelper:
         )
 
     def _confirm_patient_can_be_found_by_search(self, patient: Patient) -> bool:
-        response = httpx.get(
-            url=PdsEndpoints.SEARCH_FOR_PATIENT.to_url_with_suffix(
-                f"family={patient.family_name}"
-                f"&given={patient.given_name}"
-                f"&birthdate=eq{patient.date_of_birth.isoformat()}"
-                f"&address-postcode={patient.address_postcode.replace(' ', '')}"
-            ),
-            headers=self.headers,
-            timeout=30,
-        )
+        with get_logged_httpx_client(timeout=30) as client:
+            response = client.get(
+                url=PdsEndpoints.SEARCH_FOR_PATIENT.to_url_with_suffix(
+                    f"family={patient.family_name}"
+                    f"&given={patient.given_name}"
+                    f"&birthdate=eq{patient.date_of_birth.isoformat()}"
+                    f"&address-postcode={patient.address_postcode.replace(' ', '')}"
+                ),
+                headers=self.headers,
+            )
         response.raise_for_status()
 
         data = response.json()

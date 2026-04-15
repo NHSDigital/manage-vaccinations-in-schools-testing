@@ -1,10 +1,10 @@
 import logging
 import urllib.parse
 
-import httpx
 import pytest
 
 from mavis.test.data_models import Team
+from mavis.test.utils import get_logged_httpx_client
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,8 @@ def _check_response_status(response) -> None:
 def _delete_team(base_url: str, team: Team, *, keep_itself: bool = False) -> None:
     url = urllib.parse.urljoin(base_url, f"api/testing/teams/{team.workgroup}")
     params = {"keep_itself": "true"} if keep_itself else {}
-    response = httpx.delete(url, params=params, timeout=30)
+    with get_logged_httpx_client(timeout=30) as client:
+        response = client.delete(url, params=params)
     _check_response_status(response)
 
 
@@ -48,5 +49,6 @@ def _delete_team_locations(
         base_url, f"api/testing/teams/{team.workgroup}/locations"
     )
     params = {"keep_base_locations": "true"} if keep_base_locations else {}
-    response = httpx.delete(url, params=params, timeout=30)
+    with get_logged_httpx_client(timeout=30) as client:
+        response = client.delete(url, params=params)
     _check_response_status(response)
