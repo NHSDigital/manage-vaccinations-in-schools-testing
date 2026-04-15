@@ -7,7 +7,7 @@ import nhs_number
 import pandas as pd
 from faker import Faker
 
-from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB, Programme
+from mavis.test.constants import Programme
 from mavis.test.data.file_mappings import FileMapping
 from mavis.test.data_models import Child, Clinic, Organisation, School, User
 from mavis.test.utils import (
@@ -187,11 +187,6 @@ class FileGenerator:
             fixed_year_group = self.year_groups[programme_group]
             replacements["<<FIXED_YEAR_GROUP>>"] = str(fixed_year_group)
 
-        # MMRV-eligible date of birth (children born on or after 2020-01-01)
-        # Using September 1, 2020 as it's after the cutoff and aligns with school year
-        mmrv_eligible_dob = MMRV_ELIGIBILITY_CUTOFF_DOB.replace(month=9, day=1)
-        replacements["<<MMRV_ELIGIBLE_DOB>>"] = mmrv_eligible_dob.strftime("%Y%m%d")
-
         return replacements
 
     def _get_fixed_random_child(self, programme_group: str) -> Child:
@@ -241,6 +236,9 @@ class FileGenerator:
             "<<FIXED_RANDOM_PARENT_2_RELATIONSHIP>>": lambda: (
                 fixed_child.parents[1].relationship
             ),
+            "<<MMRV_ELIGIBLE_DOB>>": lambda: self.faker.date_between(
+                start_date="-6y", end_date="-4y"
+            ).strftime("%Y%m%d"),
         }
         # ruff: enable[PLW0108]
 
