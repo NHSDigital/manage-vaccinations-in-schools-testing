@@ -1,6 +1,7 @@
 from mavis.test.annotations import issue
 from mavis.test.constants import Programme
 from mavis.test.data import VaccsFileMapping
+from mavis.test.data.file_mappings import ImportFormatDetails
 from mavis.test.pages import (
     ChildRecordPage,
     ChildrenSearchPage,
@@ -11,7 +12,7 @@ from mavis.test.pages import (
 )
 
 
-@issue("MAV-4631")
+@issue("MAV-4631", "MAV-5893")
 def test_national_reporting_valid_data(
     setup_national_reporting_import,
     page,
@@ -33,6 +34,9 @@ def test_national_reporting_valid_data(
     Flu_Optional, Flu_NFA, Flu_Add_Not_Known, Flu_AllowPastExpiryDate,
     Flu_SiteRAU, Flu_SiteRAL, Flu_NotVaccinated, Flu_BatchName100Chars
     """
+    ImportRecordsWizardPage(
+        page, national_reporting_file_generator
+    ).read_and_verify_import_format_details(ImportFormatDetails.NATIONAL_REPORTING)
     ImportRecordsWizardPage(
         page, national_reporting_file_generator
     ).upload_and_verify_output(VaccsFileMapping.NATIONAL_REPORTING_POSITIVE)

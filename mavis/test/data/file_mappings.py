@@ -104,6 +104,7 @@ class ImportFormatDetails(Enum):
     CLASS = "class"
     CHILD = "child"
     VACCS = "vaccs"
+    NATIONAL_REPORTING = "national_reporting"
 
     @property
     def import_format_details_path(self) -> Path:

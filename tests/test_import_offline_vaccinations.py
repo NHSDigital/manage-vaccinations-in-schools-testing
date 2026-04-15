@@ -61,6 +61,7 @@ def setup_vaccs(
     return session_id
 
 
+@issue("MAV-5893")
 def test_vaccination_file_upload_valid_data(
     setup_vaccs, page, point_of_care_file_generator
 ):

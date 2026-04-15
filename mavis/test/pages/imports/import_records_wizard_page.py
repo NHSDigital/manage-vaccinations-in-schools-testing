@@ -75,7 +75,7 @@ class ImportRecordsWizardPage:
             "Review and approve"
         )
         self.import_format_details_link = self.page.get_by_text(
-            "How to format your Mavis CSV"
+            "What your CSV file must include"
         )
         self.keep_both_option_radio = self.page.get_by_role(
             "radio",

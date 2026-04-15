@@ -36,6 +36,7 @@ def setup_class_list_import(
     ).navigate_to_class_list_record_import(str(school), year_group)
 
 
+@issue("MAV-5893")
 def test_class_list_file_upload_valid_data(
     setup_class_list_import,
     page,
