@@ -129,7 +129,7 @@ jobs:
           family_name="mavis-mock-careplus-task-definition-${{ inputs.environment }}"
           jq --arg f "$family_name" '.family = $f' "$file_path" > tmpfile && mv tmpfile "$file_path"
       - name: Deploy mock-careplus service
-        uses: aws-actions/amazon-ecs-deploy-task-definition@01f2cfcf1bcc6568460b29052fdbc959f44983be # v2.0.0
+        uses: aws-actions/amazon-ecs-deploy-task-definition@fc8fc60f3a60ffd500fcb13b209c59d221ac8c8c # v2.6.1
         with:
           task-definition: ${{ runner.temp }}/mock-careplus-task-definition.json
           cluster: ${{ env.cluster_name }}
