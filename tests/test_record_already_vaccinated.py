@@ -91,9 +91,6 @@ def test_eligible(
         record_vaccination_wizard_page.fill_time_of_vaccination("00", "01")
         record_vaccination_wizard_page.click_continue_button()
 
-        record_vaccination_wizard_page.choose_outcome_vaccinated()
-        record_vaccination_wizard_page.click_continue_button()
-
         record_vaccination_wizard_page.fill_vaccination_notes("Test notes")
         record_vaccination_wizard_page.click_confirm_button()
 
