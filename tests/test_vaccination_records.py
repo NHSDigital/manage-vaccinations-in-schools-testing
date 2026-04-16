@@ -45,7 +45,6 @@ def test_edit_vaccination_dose_to_not_given_and_bac(
     Verification:
     - Alert confirms vaccination outcome recorded as refused.
     """
-    school = schools[Programme.HPV][0]
     batch_name = setup_gardasil_batch
 
     VaccinationRecordPage(page).click_edit_vaccination_record()
@@ -55,7 +54,7 @@ def test_edit_vaccination_dose_to_not_given_and_bac(
     EditVaccinationRecordPage(page).click_save_changes()
     expect_alert_text(page, "Vaccination outcome recorded for HPV")
 
-    SessionsPatientPage(page).click_vaccination_details(school)
+    SessionsPatientPage(page).click_vaccination_details()
     VaccinationRecordPage(page).click_edit_vaccination_record()
     EditVaccinationRecordPage(page).click_change_outcome()
     EditVaccinationRecordPage(page).click_vaccinated()

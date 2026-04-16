@@ -129,7 +129,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
     )
 
     # Step 6: Edit outcome to refused
-    SessionsPatientPage(page).click_vaccination_details(school)
+    SessionsPatientPage(page).click_vaccination_details()
     VaccinationRecordPage(page).expect_vaccination_details(
         "Synced with NHS England?", "Synced"
     )
@@ -142,7 +142,7 @@ def test_create_edit_delete_injected_flu_vaccination_and_verify_imms_api(
 
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.SEQUIRUS, child)
-    SessionsPatientPage(page).click_vaccination_details(school)
+    SessionsPatientPage(page).click_vaccination_details()
     VaccinationRecordPage(page).expect_vaccination_details(
         "Synced with NHS England?", "Not synced"
     )
@@ -211,7 +211,7 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
     )
 
     # Step 6: Edit outcome to refused
-    SessionsPatientPage(page).click_vaccination_details(school)
+    SessionsPatientPage(page).click_vaccination_details()
     VaccinationRecordPage(page).expect_vaccination_details(
         "Synced with NHS England?", "Synced"
     )
@@ -224,7 +224,7 @@ def test_create_edit_delete_nasal_flu_vaccination_and_verify_imms_api(
 
     # Step 7: Verify deletion in IMMS API
     imms_api_helper.check_record_is_not_in_imms_api(Vaccine.FLUENZ, child)
-    SessionsPatientPage(page).click_vaccination_details(school)
+    SessionsPatientPage(page).click_vaccination_details()
     VaccinationRecordPage(page).expect_vaccination_details(
         "Synced with NHS England?", "Not synced"
     )
