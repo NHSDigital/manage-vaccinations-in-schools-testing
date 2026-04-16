@@ -5,18 +5,20 @@ Row 8 PERSON_FORENAME: Enter a first name.
 Row 9 PERSON_SURNAME: Enter a last name.
 Row 10 PERSON_DOB: Enter a date of birth.
 Row 11 PERSON_DOB: Enter a date of birth in the correct format.
-Row 12 DATE_OF_VACCINATION: The vaccination date is before the date of birth. PERSON_DOB: Enter a date of birth in the past.
-Row 13 PERSON_DOB: Enter a date of birth in the correct format.
-Row 14 PERSON_GENDER_CODE: Enter a gender or gender code.
-Row 15 PERSON_GENDER_CODE: Enter a valid gender or gender code.
-Row 16 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
-Row 17 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
-Row 18 DATE_OF_VACCINATION: Enter a date.
-Row 19 DATE_OF_VACCINATION: The vaccination date is in the future.
-Row 28 DOSE_SEQUENCE: must be less than or equal to 3
-Row 32 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
-Row 34 TIME_OF_VACCINATION: Enter a time in the correct format.
-Row 35 REASON_NOT_VACCINATED: must be blank
-Row 36 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘VACCINATED’ column. BATCH_EXPIRY_DATE: must be blank BATCH_NUMBER: must be blank ANATOMICAL_SITE: must be blank REASON_NOT_VACCINATED: Enter a valid reason
-Row 37 CARE_SETTING: Enter a valid care setting.
-Row 39 BATCH_NUMBER: must be at most 100 characters long
+Row 12 PERSON_DOB: Enter a date of birth in the correct format.
+Row 13 PERSON_DOB: is too old to still be in school
+Row 14 DATE_OF_VACCINATION: The vaccination date is before the date of birth. PERSON_DOB: Enter a date of birth in the past.
+Row 15 PERSON_DOB: Enter a date of birth in the correct format.
+Row 16 PERSON_GENDER_CODE: Enter a gender or gender code.
+Row 17 PERSON_GENDER_CODE: Enter a valid gender or gender code.
+Row 18 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
+Row 19 PERSON_POSTCODE: Enter a valid postcode, such as SW1A 1AA.
+Row 20 DATE_OF_VACCINATION: Enter a date.
+Row 21 DATE_OF_VACCINATION: The vaccination date is in the future.
+Row 30 DOSE_SEQUENCE: must be less than or equal to 3
+Row 34 PERFORMING_PROFESSIONAL_EMAIL: Enter a valid email address.
+Row 36 TIME_OF_VACCINATION: Enter a time in the correct format.
+Row 37 REASON_NOT_VACCINATED: must be blank
+Row 38 VACCINATED: You need to record whether the child was vaccinated or not. Enter ‘Y’ or ‘N’ in the ‘VACCINATED’ column. BATCH_EXPIRY_DATE: must be blank BATCH_NUMBER: must be blank ANATOMICAL_SITE: must be blank REASON_NOT_VACCINATED: Enter a valid reason
+Row 39 CARE_SETTING: Enter a valid care setting.
+Row 41 BATCH_NUMBER: must be at most 100 characters long

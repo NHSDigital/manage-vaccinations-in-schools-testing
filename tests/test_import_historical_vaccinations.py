@@ -59,6 +59,7 @@ def test_vaccination_file_upload_historic_valid_data(
     ).upload_and_verify_output(VaccsFileMapping.HIST_POSITIVE)
 
 
+@issue("MAV-6541")
 def test_vaccination_file_upload_historic_invalid_data(
     setup_hist_vaccs,
     page,

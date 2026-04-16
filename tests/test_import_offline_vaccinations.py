@@ -104,6 +104,7 @@ def test_vaccination_file_upload_valid_data(
     )
 
 
+@issue("MAV-6541")
 def test_vaccination_file_upload_invalid_data(
     setup_vaccs, page, point_of_care_file_generator
 ):
