@@ -3,7 +3,7 @@ CHILD_LAST_NAME	Required, must use alphabetical characters (you can include acce
 CHILD_PREFERRED_FIRST_NAME	Optional, must use alphabetical characters (you can include accents like Chloë, hyphens like Anne-Marie or apostrophes like D'Arcy but no other special characters).
 CHILD_PREFERRED_LAST_NAME	Optional, must use alphabetical characters (you can include accents like Jiménez, hyphens like Burne-Jones or apostrophes like O'Hare but no other special characters).
 CHILD_DATE_OF_BIRTH	Required, must use DD/MM/YYYY or YYYY-MM-DD format.
-CHILD_YEAR_GROUP	Optional, numeric, the child’s year group, for example 8. If present, and when the child’s date of birth would place them in a different year, this value can be used to override the cohort the child will be placed in.
+CHILD_YEAR_GROUP	Optional, numeric, for example 8. If present, and when the child’s date of birth would place them in a different year, this value can be used to override the cohort the child will be placed in.
 CHILD_REGISTRATION	Optional, the child’s registration group, for example 8T5.
 CHILD_NHS_NUMBER	You must enter a valid NHS number if available.
 CHILD_GENDER	Optional, must be one of: female, male, not known or not specified.
