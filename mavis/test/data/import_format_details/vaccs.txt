@@ -10,6 +10,7 @@ PERSON_POSTCODE	Required, must be a full postcode, for example SW1A 1AA
 DATE_OF_VACCINATION	Required, you must use either YYYYMMDD or DD/MM/YYYY format.
 TIME_OF_VACCINATION	Optional, use HH:MM:SS format.
 VACCINATED	Enter Y or N. Mavis will assume Y if VACCINE_GIVEN is provided.
+VACCINE_GIVEN	Optional, must be one of: AstraZeneca Fluenz, Cervarix, Gardasil, Gardasil9, MenQuadfi, Menveo, Nimenrix, Priorix, Priorix-Tetra, ProQuad, Revaxis, Sanofi Vaxigrip, Sequirus Cell-based Trivalent, VaxPro or Viatris.
 BATCH_NUMBER	Optional
 BATCH_EXPIRY_DATE	Optional, use either YYYYMMDD or DD/MM/YYYY format.
 PROGRAMME	Required, must be Flu, HPV, ACWYX4, MenACWY, MMR, MMRV, 3-in-1 or Td/IPV.
