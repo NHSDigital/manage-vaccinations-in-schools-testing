@@ -158,7 +158,7 @@ class SessionsPatientPage:
 
         self.click_back()
         expect_details(self.page, "Response", "Invalid")
-        expect(self.page.get_by_text("No requests have been sent.")).to_be_visible()
+        expect(self.page.get_by_text("No consent request is scheduled")).to_be_visible()
 
     @step("Click Back")
     def click_back(self) -> None:
