@@ -84,12 +84,14 @@ def increment_date_of_birth_for_records(file_path: Path) -> None:
     _file_df.to_csv(file_path, index=False)
 
 
-def create_fhir_immunization_payload(
+def create_fhir_immunization_payload(  # noqa: PLR0913
     vaccine: Vaccine,
     child: Child,
     school: School,
     delivery_site: DeliverySite,
     vaccination_time: datetime,
+    *,
+    primary_source: bool = True,
 ) -> dict:
     """Create a FHIR Immunization resource payload using FileGenerator pattern.
 
@@ -130,7 +132,9 @@ def create_fhir_immunization_payload(
     for placeholder, value in replacements.items():
         payload_content = payload_content.replace(placeholder, value)
 
-    return json.loads(payload_content)
+    payload = json.loads(payload_content)
+    payload["primarySource"] = primary_source
+    return payload
 
 
 def set_site_for_child_list(file_path: Path, site_identifier: str) -> Path:

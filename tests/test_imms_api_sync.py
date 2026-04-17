@@ -1,3 +1,5 @@
+import json
+import re
 from datetime import timedelta
 
 import pytest
@@ -17,6 +19,22 @@ from mavis.test.pages import (
 from mavis.test.utils import get_current_datetime
 
 pytestmark = pytest.mark.imms_api
+
+
+def normalize_uuids(data):
+    """
+    Recursively normalize UUID references in FHIR response data.
+    Replaces all urn:uuid:* references with a placeholder to allow comparison.
+    """
+
+    json_str = json.dumps(data)
+    # Replace all urn:uuid references with a normalized placeholder
+    normalized = re.sub(
+        r"urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+        "urn:uuid:normalized",
+        json_str,
+    )
+    return json.loads(normalized)
 
 
 @pytest.fixture(scope="session")
@@ -90,4 +108,78 @@ def test_create_imms_record_then_verify_on_children_page(
     VaccinationRecordPage(page).expect_vaccination_details("Outcome", "Vaccinated")
     VaccinationRecordPage(page).expect_vaccination_details(
         "Source", "External source such as GP practice"
+    )
+
+
+@issue("MAV-6055")
+def test_duplicate_records_with_different_primary_source_remain_stable(
+    imms_api_helper,
+    log_in_as_nurse,
+    setup_session_for_flu,
+    children,
+    schools,
+):
+    """
+    Test: Create duplicate vaccination records with different primarySource
+    values. Verify that subsequent searches return stable results with no
+    changes.
+
+    Steps:
+    1. Create a vaccination record with primarySource: true
+    2. Create a duplicate record (same patient, date, programme) with
+       primarySource: false
+    3. Perform a search for the patient
+    4. Perform a second search for the same patient
+
+    Expected result:
+    The two search results should be identical, indicating records are up to
+    date and no synchronization changes occur.
+    """
+    child = children[Programme.FLU][0]
+    school = schools[Programme.FLU][0]
+    vaccine = Vaccine.SEQUIRUS
+
+    vaccination_date = get_current_datetime() - timedelta(days=1)
+    vaccination_time = vaccination_date.replace(
+        hour=10, minute=30, second=0, microsecond=0
+    )
+
+    # Create first vaccination record with primarySource: true
+    imms_api_helper.create_vaccination_record(
+        vaccine=vaccine,
+        child=child,
+        school=school,
+        delivery_site=DeliverySite.LEFT_ARM_UPPER,
+        vaccination_time=vaccination_time,
+        primary_source=True,
+        skip_verification=True,
+    )
+
+    # Create duplicate vaccination record with primarySource: false
+    imms_api_helper.create_vaccination_record(
+        vaccine=vaccine,
+        child=child,
+        school=school,
+        delivery_site=DeliverySite.LEFT_ARM_UPPER,
+        vaccination_time=vaccination_time,
+        primary_source=False,
+        skip_verification=True,
+    )
+
+    # Perform first search
+    first_response = imms_api_helper.get_raw_api_response_for_child(vaccine, child)
+    first_response_data = first_response.json()
+
+    # Perform second search
+    second_response = imms_api_helper.get_raw_api_response_for_child(vaccine, child)
+    second_response_data = second_response.json()
+
+    # Normalize UUIDs before comparison (UUIDs are dynamically generated)
+    normalized_first = normalize_uuids(first_response_data)
+    normalized_second = normalize_uuids(second_response_data)
+
+    # Verify both search results are identical
+    assert normalized_first == normalized_second, (
+        "Search results changed between first and second search. "
+        f"First: {normalized_first}, Second: {normalized_second}"
     )
