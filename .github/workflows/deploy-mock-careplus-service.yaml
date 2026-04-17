@@ -88,7 +88,7 @@ jobs:
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
       - name: Populate mock-careplus task definition
         id: create-task-definition
-        uses: aws-actions/amazon-ecs-render-task-definition@823d5d2ba6624bd7b8690e1d92b5443532ea20af # v1.2.0
+        uses: aws-actions/amazon-ecs-render-task-definition@77954e213ba1f9f9cb016b86a1d4f6fcdea0d57e # v1.8.4
         with:
           # yamllint disable-line rule:line-length
           task-definition-family: mavis-mock-careplus-task-definition-${{ inputs.environment }}-template
