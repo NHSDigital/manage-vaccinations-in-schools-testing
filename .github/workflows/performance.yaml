@@ -147,7 +147,7 @@ jobs:
           role-duration-seconds: 32400  # 9 hours
       - name: Create task definition
         id: create-task-definition
-        uses: aws-actions/amazon-ecs-render-task-definition@823d5d2ba6624bd7b8690e1d92b5443532ea20af # v1.2.0
+        uses: aws-actions/amazon-ecs-render-task-definition@77954e213ba1f9f9cb016b86a1d4f6fcdea0d57e # v1.8.4
         with:
           task-definition-family: "assurance-testing-performance-task-definition-template"
           container-name: "performancetest-container"
