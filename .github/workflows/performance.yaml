@@ -99,7 +99,7 @@ jobs:
           aws-region: eu-west-2
       - name: Cache base jmeter image
         id: jmeter-base
-        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v5.0.0
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         env:
           cache-name: cache-jmeter
         with:
