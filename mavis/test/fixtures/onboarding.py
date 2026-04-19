@@ -1,5 +1,4 @@
 import random
-import time
 import urllib.parse
 
 import httpx
@@ -12,6 +11,7 @@ from mavis.test.onboarding import (
     Onboarding,
     PointOfCareOnboarding,
 )
+from mavis.test.utils import deliberate_sleep
 
 
 @pytest.fixture(scope="session")
@@ -51,7 +51,7 @@ def _create_onboarding_with_retry[T: Onboarding](
             "Onboarding request failed (attempt %s): %s", attempt, response.content
         )
         if attempt < max_attempts:
-            time.sleep(1)
+            deliberate_sleep(1, "retry backoff for onboarding API")
         else:
             response.raise_for_status()
 

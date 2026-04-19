@@ -93,6 +93,12 @@ ignore = [
 "mavis/test/imms_api.py" = [
   "S101",     # assertions are used here, though perhaps this file could be moved
 ]
+"mavis/test/utils.py" = [
+  "TID251",   # deliberate_sleep wraps time.sleep — the one allowed call site
+]
 "utils/*" = [
   "ALL",      # small utilities can be safely ignored
 ]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"time.sleep".msg = "Use deliberate_sleep(seconds, reason) from mavis.test.utils instead."

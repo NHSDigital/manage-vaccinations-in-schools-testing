@@ -5,6 +5,8 @@ from typing import Any
 
 import httpx
 
+from mavis.test.utils import deliberate_sleep
+
 
 class SidekiqHelper:
     def __init__(self) -> None:
@@ -117,13 +119,15 @@ class SidekiqHelper:
             except TimeoutError:
                 # Polling failed, fall back to time-based wait for remaining time
                 remaining_time = max(30, min(timeout - 60, 120))
-                time.sleep(remaining_time)
+                deliberate_sleep(
+                    remaining_time, "fallback wait after Sidekiq polling failed"
+                )
         else:
             # If stats unavailable, wait for reasonable portion of timeout
             wait_time = min(
                 timeout, 60
             )  # Wait up to 60 seconds or timeout, whichever is less
-            time.sleep(wait_time)
+            deliberate_sleep(wait_time, "Sidekiq stats unavailable, waiting for job")
 
     def _poll_for_completion(self, initial_enqueued: int, timeout: int) -> None:
         """Poll Sidekiq stats for job completion within timeout period."""
@@ -132,7 +136,7 @@ class SidekiqHelper:
         poll_interval = 2  # Check every 2 seconds
 
         # Give some time for the job to be enqueued initially
-        time.sleep(1)
+        deliberate_sleep(1, "grace period before Sidekiq job polling")
 
         while time.time() - start_time < timeout:
             try:
@@ -171,7 +175,7 @@ class SidekiqHelper:
                 pass
 
             # Wait before next check
-            time.sleep(poll_interval)
+            deliberate_sleep(poll_interval, "Sidekiq polling interval")
 
         # If we reach here, job didn't complete within timeout
         msg = f"Job did not complete within {timeout} seconds"
