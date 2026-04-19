@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import (
@@ -188,6 +188,7 @@ class NurseConsentWizardPage:
 
     @step("Click on Yes, they agree")
     def click_yes_they_agree(self) -> None:
+        expect(self.yes_they_agree_radio).to_be_visible()
         self.yes_they_agree_radio.check()
 
     @step("Click on No, they do not agree")
@@ -198,6 +199,7 @@ class NurseConsentWizardPage:
     def select_gillick_competent_child(self) -> None:
         self.child_gillick_competent_radio.check()
         self.click_continue()
+        self.page.wait_for_load_state()
 
     @step("Click on Yes, for the nasal spray")
     def click_yes_for_nasal_spray(self) -> None:

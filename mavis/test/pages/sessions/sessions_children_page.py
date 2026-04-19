@@ -74,10 +74,10 @@ class SessionsChildrenPage:
         additional_text: str | None = None,
     ) -> None:
         child_locator = self.search.get_patient_card_locator(child)
-        programme_status_section = child_locator.locator(f"p:has-text('{programme}')")
+        programme_status_section = child_locator.locator(
+            f"p:has-text('{programme}')", has_text=status
+        )
         reload_until_element_is_visible(self.page, programme_status_section)
-
-        expect(programme_status_section).to_contain_text(status)
         if additional_text:
             additional_text_locator = programme_status_section.get_by_text(
                 additional_text

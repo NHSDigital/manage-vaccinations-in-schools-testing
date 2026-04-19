@@ -1,6 +1,5 @@
 import os
 import re
-import time
 
 import httpx
 from playwright.sync_api import Page
@@ -11,6 +10,7 @@ from mavis.test.pages.reports.reports_dashboard_component import (
     ReportsDashboardComponent,
 )
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
+from mavis.test.utils import reload_until_element_is_visible
 
 
 class ReportsVaccinationsPage(ReportsDashboardComponent):
@@ -36,8 +36,11 @@ class ReportsVaccinationsPage(ReportsDashboardComponent):
         response = httpx.get(refresh_reports_url, timeout=30)
         response.raise_for_status()
 
-        time.sleep(5)
-        self.page.reload()
+        reload_until_element_is_visible(
+            self.page,
+            self.page.locator(".nhsuk-card__content").first,
+            seconds=15,
+        )
 
     def get_children_count(self, category: str) -> int:
         category_card = self.page.locator(

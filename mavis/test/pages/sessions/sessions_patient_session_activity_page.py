@@ -45,7 +45,10 @@ class SessionsPatientSessionActivityPage:
         reload_until_element_is_visible(self.page, self.page.get_by_text(note))
 
     def check_session_activity_entry(self, text: str) -> None:
-        expect(self.page.get_by_role("heading", name=text).first).to_be_visible()
+        # Some activity entries (e.g. notification confirmations) are created by
+        # background jobs and may not appear immediately after page navigation.
+        heading = self.page.get_by_role("heading", name=text).first
+        reload_until_element_is_visible(self.page, heading)
 
     @step("Go back to Session")
     def click_back_to_session(self, location: Location) -> None:
