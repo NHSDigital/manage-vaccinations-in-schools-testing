@@ -10,7 +10,7 @@ from mavis.test.pages.reports.reports_dashboard_component import (
     ReportsDashboardComponent,
 )
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
-from mavis.test.utils import reload_until_element_is_visible
+from mavis.test.utils import deliberate_sleep, reload_until_element_is_visible
 
 
 class ReportsVaccinationsPage(ReportsDashboardComponent):
@@ -31,10 +31,14 @@ class ReportsVaccinationsPage(ReportsDashboardComponent):
     @step("Navigate to and refresh Reports")
     def navigate_and_refresh_reports(self) -> None:
         self.navigate()
+
         base_url = os.getenv("BASE_URL", "PROVIDEURL")
         refresh_reports_url = f"{base_url}/api/testing/refresh-reporting"
         response = httpx.get(refresh_reports_url, timeout=30)
         response.raise_for_status()
+
+        deliberate_sleep(5, "the refresh endpoint doesn't tell us when it has finished")
+        self.page.reload()
 
         reload_until_element_is_visible(
             self.page,
