@@ -1,5 +1,4 @@
 import re
-import time
 from datetime import date
 from pathlib import Path
 
@@ -87,8 +86,7 @@ class SessionsOverviewPage:
     @step("Go to Edit session page")
     def schedule_or_edit_session(self) -> None:
         locator = self.schedule_sessions_link.or_(self.edit_session_link).first
-        # temporary wait to prevent page not found error
-        time.sleep(1)
+        expect(locator).to_be_visible()
         locator.click()
 
     @step("Click on Schedule sessions")

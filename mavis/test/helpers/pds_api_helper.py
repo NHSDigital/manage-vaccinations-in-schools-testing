@@ -3,7 +3,6 @@ import random
 import uuid
 from datetime import date, datetime
 from pathlib import Path
-from time import sleep
 from typing import NamedTuple
 from zoneinfo import ZoneInfo
 
@@ -14,7 +13,7 @@ from dateutil.relativedelta import relativedelta
 from mavis.test.constants import PdsEndpoints, Relationship
 from mavis.test.data_models import Child, Parent
 from mavis.test.fixtures.fhir_api import AuthToken
-from mavis.test.utils import get_todays_date
+from mavis.test.utils import deliberate_sleep, get_todays_date
 
 
 class Patient(NamedTuple):
@@ -113,7 +112,7 @@ class PdsApiHelper:
             checked_nhs_numbers.add(child.nhs_number)
 
             if self._is_valid_child_patient(child):
-                sleep(0.5)
+                deliberate_sleep(0.5, "rate limiting between PDS API calls")
                 break
 
         return Child(

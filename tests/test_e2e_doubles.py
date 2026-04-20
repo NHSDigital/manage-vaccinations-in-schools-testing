@@ -1,5 +1,3 @@
-import time
-
 import pytest
 
 from mavis.test.constants import Programme, Vaccine
@@ -15,6 +13,7 @@ from mavis.test.pages import (
     SessionsSearchPage,
     StartPage,
 )
+from mavis.test.utils import deliberate_sleep
 
 
 @pytest.fixture
@@ -117,9 +116,7 @@ def test_recording_doubles_vaccination_e2e(
         schools[0],
     )
 
-    # The button to download the offline spreadsheet prevents double clicks.
-    # We need to wait here to avoid the second click being ignored.
-    time.sleep(1)
+    deliberate_sleep(1, "download button debounce — wait_for_load_state not sufficient")
 
     SessionsOverviewPage(page).verify_offline_sheet_vaccination_row(
         td_ipv_vaccination_record,

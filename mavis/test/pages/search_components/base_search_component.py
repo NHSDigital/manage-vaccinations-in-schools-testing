@@ -24,3 +24,4 @@ class BaseSearchComponent:
     @step("Click on Update results")
     def click_on_update_results(self) -> None:
         self.update_results_button.click()
+        self.page.wait_for_load_state()

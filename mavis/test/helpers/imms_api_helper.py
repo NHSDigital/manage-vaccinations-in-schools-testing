@@ -1,4 +1,3 @@
-import time
 import uuid
 from datetime import datetime
 from typing import NamedTuple
@@ -10,6 +9,7 @@ from mavis.test.constants import DeliverySite, ImmsEndpoints, Vaccine
 from mavis.test.data.file_utils import create_fhir_immunization_payload
 from mavis.test.data_models import Child, School
 from mavis.test.fixtures.fhir_api import AuthToken
+from mavis.test.utils import deliberate_sleep
 
 
 class ImmsApiVaccinationRecord(NamedTuple):
@@ -99,7 +99,7 @@ class ImmsApiHelper:
             except AssertionError:
                 if attempt == max_attempts - 1:
                     raise
-                time.sleep(3)
+                deliberate_sleep(3, "retry interval for IMMS API polling")
 
     def check_expected_and_actual_records_match(
         self,
@@ -172,7 +172,7 @@ class ImmsApiHelper:
             if attempt == max_attempts - 1:
                 msg = f"Immunization record still found for {child.nhs_number}"
                 raise AssertionError(msg)
-            time.sleep(3)
+            deliberate_sleep(3, "retry interval for IMMS API polling")
 
     def get_raw_api_response_for_child(
         self, vaccine: Vaccine, child: Child

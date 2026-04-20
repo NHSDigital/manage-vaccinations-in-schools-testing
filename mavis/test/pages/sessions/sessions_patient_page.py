@@ -1,5 +1,3 @@
-import time
-
 from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
@@ -198,8 +196,6 @@ class SessionsPatientPage:
 
     @step("Click on Record a new consent response")
     def click_record_a_new_consent_response(self) -> None:
-        # temporary wait before clicking the button to prevent errors
-        time.sleep(1)
         self.record_a_new_consent_response_button.click()
 
     @step("Go back to Record Vaccinations")
@@ -229,9 +225,6 @@ class SessionsPatientPage:
         for check in programme.pre_screening_checks(consent_option):
             locator = self.pre_screening_listitem.get_by_text(check)
             expect(locator).to_be_visible()
-
-        # need to wait for checkbox to load properly
-        time.sleep(1)
 
         expect(self.pre_screening_checkbox).to_be_editable()
         self.pre_screening_checkbox.check()

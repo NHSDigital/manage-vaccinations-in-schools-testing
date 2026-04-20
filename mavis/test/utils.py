@@ -193,6 +193,11 @@ def normalize_postcode(postcode: str) -> str:
 DEFAULT_TIMEOUT_SECONDS = 30
 
 
+def deliberate_sleep(seconds: float, reason: str) -> None:  # noqa: ARG001
+    """Sleep that requires a documented reason. Use only when no better wait exists."""
+    time.sleep(seconds)
+
+
 @step("Reload page until {1} is visible", page_object=False)
 def reload_until_element_is_visible(
     page: Page, tag: Locator, seconds: int = DEFAULT_TIMEOUT_SECONDS
@@ -201,7 +206,7 @@ def reload_until_element_is_visible(
         if tag.is_visible():
             break
 
-        time.sleep(0.5)
+        deliberate_sleep(0.5, "polling interval for reload loop")
 
         page.reload()
     else:
@@ -216,7 +221,7 @@ def reload_until_element_is_not_visible(
         if not tag.is_visible():
             break
 
-        time.sleep(0.5)
+        deliberate_sleep(0.5, "polling interval for reload loop")
 
         page.reload()
     else:
