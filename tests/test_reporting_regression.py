@@ -28,7 +28,6 @@ from mavis.test.pages import (
     SessionsOverviewPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
-from mavis.test.utils import deliberate_sleep
 
 pytestmark = pytest.mark.reporting
 
@@ -47,10 +46,9 @@ def _onboard_team(base_url):
 
 
 def _refresh_reporting(base_url):
-    url = urllib.parse.urljoin(base_url, "api/testing/refresh-reporting")
-    response = httpx.get(url, timeout=30)
+    url = urllib.parse.urljoin(base_url, "api/testing/refresh-reporting?wait=true")
+    response = httpx.get(url, timeout=60)
     response.raise_for_status()
-    deliberate_sleep(5, "backend reporting job has no observable completion signal")
 
 
 def _make_file_generator(onboarding, children_list):
