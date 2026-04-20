@@ -186,7 +186,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TZ: "Europe/London"
+      TZ: Europe/London
 
     steps:
       # yamllint disable rule:line-length
@@ -238,8 +238,8 @@ jobs:
               echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version || vars.JIRA_TEST_CYCLE_VERSION}}"
           } >> "$GITHUB_OUTPUT"
           fi
-      # yamllint enable rule:line-length
 
+      # yamllint enable rule:line-length
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
