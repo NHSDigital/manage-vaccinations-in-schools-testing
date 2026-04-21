@@ -9,6 +9,7 @@ from mavis.test.annotations import step
 from mavis.test.constants import Programme, Vaccine
 from mavis.test.data import get_session_id
 from mavis.test.data_models import Child, School, User, VaccinationRecord
+from mavis.test.pages.downloads_page import DownloadsPage
 from mavis.test.pages.header_component import HeaderComponent
 from mavis.test.pages.sessions.sessions_tabs import SessionsTabs
 from mavis.test.utils import (
@@ -38,7 +39,7 @@ class SessionsOverviewPage:
             name="Import class lists",
         )
         self.download_offline_spreadsheet_button = self.page.get_by_role(
-            "link", name="Download offline spreadsheet"
+            "button", name="Download offline spreadsheet"
         )
         self.review_no_consent_response_link = self.page.get_by_role(
             "link",
@@ -139,16 +140,17 @@ class SessionsOverviewPage:
         file_path = self.download_offline_recording_excel()
         return get_session_id(file_path)
 
-    @step("Click on Download offline spreadsheet")
+    @step("Download offline spreadsheet")
     def download_offline_recording_excel(self) -> Path:
-        _file_path = Path(f"working/excel_{get_current_datetime_compact()}.xlsx")
-
-        with self.page.expect_download() as download_info:
-            self.download_offline_spreadsheet_button.click()
-        download = download_info.value
-        download.save_as(_file_path)
-
-        return _file_path
+        file_path = Path(f"working/excel_{get_current_datetime_compact()}.xlsx")
+        return_url = self.page.url
+        self.download_offline_spreadsheet_button.click()
+        self.page.goto("/downloads")
+        downloads = DownloadsPage(self.page)
+        downloads.wait_for_session_export_ready()
+        downloads.download_session_export(file_path)
+        self.page.goto(return_url)
+        return file_path
 
     def get_offline_recording_dataframe(self) -> pd.DataFrame:
         file_path = self.download_offline_recording_excel()
