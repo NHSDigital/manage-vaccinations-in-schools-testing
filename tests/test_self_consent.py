@@ -6,19 +6,26 @@ from mavis.test.constants import (
     ConsentMethod,
     ConsentOption,
     Programme,
+    Vaccine,
 )
 from mavis.test.data import ClassFileMapping
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
+    ChildProgrammePage,
+    ChildRecordPage,
+    ChildrenSearchPage,
     DashboardPage,
     GillickCompetencePage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsPatientSessionActivityPage,
+    SessionsRecordVaccinationsPage,
     SessionsSearchPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
@@ -264,4 +271,193 @@ def test_gillick_override_conflicting_from_parent(
     sessions_patient_page.click_session_activity_and_notes()
     sessions_patient_session_activity_page.check_session_activity_entry(
         f"Consent given by {child!s} (Child (Gillick competent))",
+    )
+
+
+@pytest.mark.parametrize(
+    "session_with_child_for_programme",
+    programmes_and_consent_options,
+    indirect=True,
+    ids=lambda v: f"{v[0]}-{v[1]}",
+)
+def test_gillick_consent_and_vaccination(
+    session_with_child_for_programme, children, schools, page, add_vaccine_batch
+):
+    """
+    Test: Record Gillick competence, child self-consent, and vaccination.
+
+    Steps:
+    1. Open the session and consent tab for the child.
+    2. Assess Gillick competence as competent.
+    3. Record child self-consent.
+    4. Set session in progress and register child as attending.
+    5. Add vaccine batch and record vaccination for the child.
+    6. Verify vaccination is recorded and appears in child record.
+
+    Expectations:
+    - Gillick competence is recorded as competent.
+    - Child self-consent is recorded successfully.
+    - Vaccination is recorded for the child.
+    - Vaccination appears in the child's record.
+    """
+
+    programme, consent_option = session_with_child_for_programme
+    child = children[programme.group][0]
+    school = schools[programme.group][0]
+
+    # Determine the vaccine for the programme
+    vaccine_mapping = {
+        Programme.FLU: Vaccine.SEQUIRUS
+        if consent_option == ConsentOption.INJECTION
+        else Vaccine.FLUENZ,
+        Programme.HPV: Vaccine.GARDASIL_9,
+        Programme.MENACWY: Vaccine.NIMENRIX,
+        Programme.TD_IPV: Vaccine.REVAXIS,
+    }
+    vaccine = vaccine_mapping[programme]
+    batch_name = add_vaccine_batch(vaccine)
+
+    gillick_competence_page = GillickCompetencePage(page)
+    nurse_consent_wizard_page = NurseConsentWizardPage(page)
+    sessions_children_page = SessionsChildrenPage(page)
+    sessions_overview_page = SessionsOverviewPage(page)
+    sessions_patient_page = SessionsPatientPage(page)
+    sessions_record_vaccinations_page = SessionsRecordVaccinationsPage(page)
+    record_vaccination_wizard_page = RecordVaccinationWizardPage(page)
+    dashboard_page = DashboardPage(page)
+    children_search_page = ChildrenSearchPage(page)
+    child_record_page = ChildRecordPage(page)
+    child_programme_page = ChildProgrammePage(page)
+
+    # Navigate to the session (fixtures may have left us elsewhere)
+    dashboard_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    SessionsSearchPage(page).click_session_for_programmes(school, [programme])
+
+    # Step 1-2: Assess Gillick competence
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_assess_gillick_competence()
+    gillick_competence_page.add_gillick_competence(is_competent=True)
+
+    # Step 3: Record child self-consent
+    sessions_patient_page.click_record_a_new_consent_response()
+    nurse_consent_wizard_page.select_gillick_competent_child()
+    nurse_consent_wizard_page.record_child_given_consent(programme, consent_option)
+    expect_alert_text(page, f"Consent recorded for {child!s}")
+
+    # Step 4: Set session in progress and register child as attending
+    sessions_children_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    SessionsSearchPage(page).click_session_for_programmes(school, [programme])
+    sessions_overview_page.click_set_session_in_progress_for_today()
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.register_child_as_attending(child)
+
+    # Step 5: Record vaccination
+    sessions_children_page.tabs.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search.search_and_click_child(child)
+
+    vaccination_record = VaccinationRecord(child, programme, batch_name, consent_option)
+    sessions_patient_page.set_up_vaccination(vaccination_record)
+    record_vaccination_wizard_page.record_vaccination(
+        vaccination_record, test_recording_twice=True
+    )
+
+    # Step 6: Verify vaccination in child record
+    record_vaccination_wizard_page.header.click_mavis()
+    dashboard_page.click_children()
+    children_search_page.search.search_for_child_name_with_all_filters(str(child))
+    children_search_page.search.click_child(child)
+    child_record_page.click_programme(programme)
+    child_programme_page.verify_one_vaccination_appears()
+
+
+@pytest.mark.parametrize(
+    "session_with_child_for_programme",
+    programmes_and_consent_options,
+    indirect=True,
+    ids=lambda v: f"{v[0]}-{v[1]}",
+)
+def test_gillick_consent_and_vaccination_next_day_fails(
+    session_with_child_for_programme, children, schools, page, add_vaccine_batch
+):
+    """
+    Test: Verify that Gillick consent given on day A cannot be used
+      to vaccinate on day B.
+
+    Steps:
+    1. Open the session and consent tab for the child (day 0).
+    2. Assess Gillick competence as competent.
+    3. Record child self-consent.
+    4. Create a new session for the next day (day 1).
+    5. Set the next day's session in progress.
+    6. Attempt to record vaccination for the child on day 1.
+
+    Expectations:
+    - Gillick competence is recorded as competent on day 0.
+    - Child self-consent is recorded successfully on day 0.
+    - Child cannot be found for vaccination on day 1's session.
+    - Vaccination recording fails due to consent being tied to the
+      previous day's session.
+    """
+
+    programme, consent_option = session_with_child_for_programme
+    child = children[programme.group][0]
+    school = schools[programme.group][0]
+
+    # Determine the vaccine for the programme
+    vaccine_mapping = {
+        Programme.FLU: Vaccine.SEQUIRUS
+        if consent_option == ConsentOption.INJECTION
+        else Vaccine.FLUENZ,
+        Programme.HPV: Vaccine.GARDASIL_9,
+        Programme.MENACWY: Vaccine.NIMENRIX,
+        Programme.TD_IPV: Vaccine.REVAXIS,
+    }
+    vaccine = vaccine_mapping[programme]
+    add_vaccine_batch(vaccine)
+
+    gillick_competence_page = GillickCompetencePage(page)
+    nurse_consent_wizard_page = NurseConsentWizardPage(page)
+    sessions_children_page = SessionsChildrenPage(page)
+    sessions_overview_page = SessionsOverviewPage(page)
+    sessions_patient_page = SessionsPatientPage(page)
+    sessions_record_vaccinations_page = SessionsRecordVaccinationsPage(page)
+    dashboard_page = DashboardPage(page)
+
+    # Navigate to the session (fixtures may have left us elsewhere)
+    dashboard_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    SessionsSearchPage(page).click_session_for_programmes(school, [programme])
+
+    # Step 1-2: Assess Gillick competence on day 0
+    sessions_overview_page.tabs.click_children_tab()
+    sessions_children_page.search.search_and_click_child(child)
+    sessions_patient_page.click_programme_tab(programme)
+    sessions_patient_page.click_assess_gillick_competence()
+    gillick_competence_page.add_gillick_competence(is_competent=True)
+
+    # Step 3: Record child self-consent on day 0
+    sessions_patient_page.click_record_a_new_consent_response()
+    nurse_consent_wizard_page.select_gillick_competent_child()
+    nurse_consent_wizard_page.record_child_given_consent(programme, consent_option)
+    expect_alert_text(page, f"Consent recorded for {child!s}")
+
+    # Step 4: Create/navigate to a session for the next day (day 1)
+    sessions_children_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    year_group = child.year_group
+    schedule_school_session_if_needed(
+        page, school, [programme], [year_group], date_offset=1
+    )
+
+    # Step 5: Set the next day's session in progress
+    sessions_overview_page.click_set_session_in_progress_for_today()
+
+    # Step 6: Attempt to record vaccination on day 1 - should fail
+    sessions_overview_page.tabs.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page.search.search_for_child_that_should_not_exist(
+        child
     )
