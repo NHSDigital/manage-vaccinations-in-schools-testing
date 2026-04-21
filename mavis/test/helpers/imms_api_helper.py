@@ -201,13 +201,16 @@ class ImmsApiHelper:
         response = self.get_raw_api_response_for_child(vaccine, child)
         return ImmsApiVaccinationRecord.from_response(response)
 
-    def create_vaccination_record(
+    def create_vaccination_record(  # noqa: PLR0913
         self,
         vaccine: Vaccine,
         child: Child,
         school: School,
         delivery_site: DeliverySite,
         vaccination_time: datetime,
+        *,
+        primary_source: bool = True,
+        skip_verification: bool = False,
     ) -> None:
         """Create a vaccination record in the IMMS API.
 
@@ -217,6 +220,8 @@ class ImmsApiHelper:
             school: The school where vaccination took place
             delivery_site: Anatomical site of delivery
             vaccination_time: When the vaccination occurred
+            primary_source: Whether this is a primary source record
+            skip_verification: Skip API verification after creation
 
         Returns:
             True if record was created successfully
@@ -231,6 +236,7 @@ class ImmsApiHelper:
             school=school,
             delivery_site=delivery_site,
             vaccination_time=vaccination_time,
+            primary_source=primary_source,
         )
 
         # Create headers for POST request
@@ -246,10 +252,11 @@ class ImmsApiHelper:
         response.raise_for_status()
 
         # If creation was successful, verify the record exists in the API
-        self.check_record_in_imms_api(
-            vaccine=vaccine,
-            child=child,
-            school=school,
-            delivery_site=delivery_site,
-            vaccination_time=vaccination_time,
-        )
+        if not skip_verification:
+            self.check_record_in_imms_api(
+                vaccine=vaccine,
+                child=child,
+                school=school,
+                delivery_site=delivery_site,
+                vaccination_time=vaccination_time,
+            )
