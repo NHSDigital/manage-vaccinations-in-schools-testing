@@ -5,7 +5,12 @@ from playwright.sync_api import Locator, Page, expect
 from mavis.test.annotations import step
 from mavis.test.constants import Programme
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.utils import click_secondary_navigation_item, get_todays_date
+from mavis.test.utils import (
+    click_secondary_navigation_item,
+    format_nhs_number,
+    get_todays_date,
+    reload_until_element_is_visible,
+)
 
 
 class ChildRecordPage:
@@ -50,6 +55,15 @@ class ChildRecordPage:
 
     def check_child_is_unarchived(self) -> None:
         expect(self.archive_child_record_link).to_be_visible()
+
+    def expect_nhs_number(self, nhs_number: str) -> None:
+        """Wait for the NHS number to appear, reloading if necessary.
+
+        The NHS number may be populated by a background PDS lookup after
+        record creation, so the page may initially show "Not provided".
+        """
+        formatted = format_nhs_number(nhs_number)
+        reload_until_element_is_visible(self.page, self.page.get_by_text(formatted))
 
     def _link_for_vaccination_record(self, date: datetime.date) -> Locator:
         return self.vaccinations_card.filter(
