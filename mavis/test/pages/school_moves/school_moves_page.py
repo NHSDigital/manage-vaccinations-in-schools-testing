@@ -12,7 +12,7 @@ class SchoolMovesPage:
         self.header = HeaderComponent(page)
 
         self.rows = page.get_by_role("row")
-        self.download_button = page.get_by_role("button", name="Download records")
+        self.download_button = page.get_by_role("link", name="Download records")
         self.confirmed_alert = page.get_by_role("alert", name="Success").filter(
             has_text="updated",
         )
