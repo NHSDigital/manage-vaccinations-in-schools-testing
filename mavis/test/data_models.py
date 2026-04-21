@@ -185,6 +185,9 @@ class PointOfCareTeam(Team):
     careplus_venue_code: str
     careplus_staff_code: str
     careplus_staff_type: str
+    careplus_username: str
+    careplus_password: str
+    careplus_namespace: str
     email: str
     phone: str
 
@@ -197,6 +200,9 @@ class PointOfCareTeam(Team):
                 "careplus_venue_code": self.careplus_venue_code,
                 "careplus_staff_code": self.careplus_staff_code,
                 "careplus_staff_type": self.careplus_staff_type,
+                "careplus_username": self.careplus_username,
+                "careplus_password": self.careplus_password,
+                "careplus_namespace": self.careplus_namespace,
                 "privacy_notice_url": "https://example.com/privacy",
                 "privacy_policy_url": "https://example.com/privacy",
             }
@@ -214,6 +220,9 @@ class PointOfCareTeam(Team):
             careplus_venue_code=organisation.ods_code + "A",
             careplus_staff_code=organisation.ods_code + "B",
             careplus_staff_type=organisation.ods_code + "C",
+            careplus_username="careplus_user",
+            careplus_password="careplus_password",  # noqa: S106
+            careplus_namespace="careplus_namespace",
             email=subteam.email,
             phone=subteam.phone,
         )
