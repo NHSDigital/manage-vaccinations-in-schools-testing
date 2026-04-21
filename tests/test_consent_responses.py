@@ -30,7 +30,7 @@ from mavis.test.pages import (
     UnmatchedConsentResponsesPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
-from mavis.test.utils import expect_alert_text, expect_details, format_nhs_number
+from mavis.test.utils import expect_alert_text, expect_details
 
 
 @pytest.fixture(scope="session")
@@ -206,7 +206,7 @@ def test_create_child_record_from_consent_with_nhs_number(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child))
     ChildrenSearchPage(page).search.click_child(child)
-    expect_details(page, "NHS number", format_nhs_number(child.nhs_number))
+    ChildRecordPage(page).expect_nhs_number(child.nhs_number)
     ChildRecordPage(page).click_programme(Programme.HPV)
     ChildProgrammePage(page).verify_activity_log_for_created_or_matched_child()
 
