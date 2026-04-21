@@ -21,20 +21,20 @@ from mavis.test.utils import get_current_datetime
 pytestmark = pytest.mark.imms_api
 
 
-def normalize_uuids(data):
+def _replace_all_uuids_with_static_data(data):
     """
-    Recursively normalize UUID references in FHIR response data.
-    Replaces all urn:uuid:* references with a placeholder to allow comparison.
+    Recursively replaces all urn:uuid:* references in FHIR response data
+    with a static placeholder to allow comparison.
     """
 
     json_str = json.dumps(data)
-    # Replace all urn:uuid references with a normalized placeholder
-    normalized = re.sub(
+    # Replace all urn:uuid references with a static placeholder
+    static_uuid = re.sub(
         r"urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
-        "urn:uuid:normalized",
+        "urn:uuid:static_uuid",
         json_str,
     )
-    return json.loads(normalized)
+    return json.loads(static_uuid)
 
 
 @pytest.fixture(scope="session")
@@ -174,12 +174,12 @@ def test_duplicate_records_with_different_primary_source_remain_stable(
     second_response = imms_api_helper.get_raw_api_response_for_child(vaccine, child)
     second_response_data = second_response.json()
 
-    # Normalize UUIDs before comparison (UUIDs are dynamically generated)
-    normalized_first = normalize_uuids(first_response_data)
-    normalized_second = normalize_uuids(second_response_data)
+    # Static UUIDs before comparison (UUIDs are dynamically generated)
+    static_first = _replace_all_uuids_with_static_data(first_response_data)
+    static_second = _replace_all_uuids_with_static_data(second_response_data)
 
     # Verify both search results are identical
-    assert normalized_first == normalized_second, (
+    assert static_first == static_second, (
         "Search results changed between first and second search. "
-        f"First: {normalized_first}, Second: {normalized_second}"
+        f"First: {static_first}, Second: {static_second}"
     )
