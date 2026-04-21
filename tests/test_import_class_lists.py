@@ -29,7 +29,7 @@ def setup_class_list_import(
 
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -213,7 +213,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
 
     schedule_school_session_if_needed(page, school, [Programme.HPV], [year_group])
     SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -227,7 +227,7 @@ def test_class_list_file_upload_duplicate_different_postcode_keep_both(
     ImportRecordsWizardPage(page, point_of_care_file_generator).verify_linking(child)
 
     ImportsPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
 
     ImportRecordsWizardPage(
@@ -298,7 +298,7 @@ def test_class_list_close_match_verify_counts(
 
     # Navigate back to import page
     ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator

@@ -17,7 +17,7 @@ from mavis.test.utils import (
 
 class ImportRecordsWizardPage:
     # Regex patterns for navigation and verification
-    IMPORTS_MENU_PATTERN = re.compile(r"Imports\s+\(\s*\d+\s*\)")
+    IMPORTS_MENU_PATTERN = re.compile(r"(?:Imports|Manage data)\s+\(\s*\d+\s*\)")
     ISSUES_MENU_PATTERN = re.compile(r"Issues\s+\(\s*\d+\s*\)")
     UPLOADED_RECORDS_REVIEW_PATTERN = re.compile(
         r"\d+\s+uploaded\s+records?\s+needs?\s+review"

@@ -143,7 +143,7 @@ def test_match_unmatched_consent_response_and_verify_activity_log(
     child = children[Programme.HPV][0]
 
     DashboardPage(page).navigate()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -268,7 +268,7 @@ def test_accessibility(
     child = children[Programme.HPV][0]
 
     DashboardPage(page).navigate()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -326,7 +326,7 @@ def test_match_consent_with_vaccination_record_no_service_error(
 
     # Step 2: Import a class list to create searchable child records for both children
     DashboardPage(page).navigate()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator

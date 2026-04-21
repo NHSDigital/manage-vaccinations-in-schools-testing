@@ -49,7 +49,7 @@ def setup_vaccs_flu(
     schedule_school_session_if_needed(page, school, [Programme.FLU], [year_group])
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
     SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator

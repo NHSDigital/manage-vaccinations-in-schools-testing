@@ -152,7 +152,7 @@ def test_site_child_record_import(
     )
 
     TeamSchoolsPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -170,7 +170,7 @@ def test_site_child_record_import(
     file_with_site = set_site_for_child_list(input_file_path, "A")
 
     TeamSchoolsPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -222,7 +222,7 @@ def test_site_class_list_import(
     TeamSchoolsPage(page).confirm_site()
 
     TeamSchoolsPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -234,7 +234,7 @@ def test_site_class_list_import(
         programme_group=Programme.MMR_MMRV.group,
     )
     TeamSchoolsPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator

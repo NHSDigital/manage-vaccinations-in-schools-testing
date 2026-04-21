@@ -151,7 +151,7 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     team_a_vaccs_fg = _make_file_generator(team_a, [c1, c2, c3, c4])
 
     SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, team_a_vaccs_fg
@@ -184,7 +184,7 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     team_b_vaccs_fg = _make_file_generator(team_b, [c5, c6])
 
     SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, team_b_vaccs_fg

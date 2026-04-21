@@ -20,7 +20,7 @@ def setup_child_import(
     page,
     point_of_care_file_generator,
 ):
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -191,7 +191,7 @@ def test_child_list_close_match_verify_counts(
         page, point_of_care_file_generator
     ).upload_and_verify_output(ChildFileMapping.CLOSE_MATCH_1)
     ImportRecordsWizardPage(page, point_of_care_file_generator).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -221,7 +221,7 @@ def test_accessibility(
     Verification:
     - No accessibility violations are found on the import records page.
     """
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     AccessibilityHelper(page).check_accessibility()
 
     ImportsPage(page).click_upload_records()
