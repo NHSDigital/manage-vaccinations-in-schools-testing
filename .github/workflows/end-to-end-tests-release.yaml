@@ -8,8 +8,13 @@ on:
         required: false
         default: ''
         type: string
-      cross_service_tests:
-        description: 'Include imms api, pds api and reporting tests'
+      fhir_api_tests:
+        description: 'Include IMMS & PDS API tests'
+        required: false
+        default: false
+        type: boolean
+      reporting_tests:
+        description: 'Include reporting tests'
         required: false
         default: false
         type: boolean
@@ -84,8 +89,16 @@ on:
         description: 'Tests to run (leave blank to run all tests!)'
         required: false
         default: ''
-      cross_service_tests:
-        description: 'Include imms api, pds api and reporting tests'
+      fhir_api_tests:
+        description: 'Include IMMS & PDS API tests'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
+      reporting_tests:
+        description: 'Include reporting tests'
         required: false
         default: 'true'
         type: choice
@@ -173,7 +186,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TZ: "Europe/London"
+      TZ: Europe/London
 
     steps:
       # yamllint disable rule:line-length
@@ -189,7 +202,8 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             {
               echo "tests="
-              echo "cross_service_tests=true"
+              echo "fhir_api_tests=true"
+              echo "reporting_tests=true"
               echo "device=Desktop Chrome"
               echo "environment=${env_map[qa]}"
               echo "set_feature_flags=false"
@@ -203,7 +217,8 @@ jobs:
           else
             {
               echo "tests=${{ inputs.tests }}"
-              echo "cross_service_tests=${{ inputs.cross_service_tests }}"
+              echo "fhir_api_tests=${{ inputs.fhir_api_tests }}"
+              echo "reporting_tests=${{ inputs.reporting_tests }}"
               echo "device=${{ inputs.device }}"
 
               input_env="${{ inputs.environment }}"
@@ -223,8 +238,8 @@ jobs:
               echo "jira_test_cycle_version=${{ inputs.jira_test_cycle_version || vars.JIRA_TEST_CYCLE_VERSION}}"
           } >> "$GITHUB_OUTPUT"
           fi
-      # yamllint enable rule:line-length
 
+      # yamllint enable rule:line-length
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -247,9 +262,9 @@ jobs:
         uses: ./.github/actions/run-end-to-end-tests
         with:
           tests: ${{ steps.set-variables.outputs.tests }}
-          imms_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
-          pds_api_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
-          reporting_tests: ${{ steps.set-variables.outputs.cross_service_tests }}
+          imms_api_tests: ${{ steps.set-variables.outputs.fhir_api_tests }}
+          pds_api_tests: ${{ steps.set-variables.outputs.fhir_api_tests }}
+          reporting_tests: ${{ steps.set-variables.outputs.reporting_tests }}
           github_ref: ${{ inputs.github_ref || github.head_ref }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
