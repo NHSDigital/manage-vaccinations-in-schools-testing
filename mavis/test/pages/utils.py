@@ -3,12 +3,14 @@ from playwright.sync_api import Page
 from mavis.test.constants import (
     MAVIS_NOTE_LENGTH_LIMIT,
     ConsentMethod,
+    ConsentOption,
     Programme,
 )
 from mavis.test.data_models import Child, School, VaccinationRecord
 from mavis.test.pages import (
     AddSessionWizardPage,
     DashboardPage,
+    GillickCompetencePage,
     NurseConsentWizardPage,
     RecordVaccinationWizardPage,
     SessionsChildrenPage,
@@ -16,7 +18,7 @@ from mavis.test.pages import (
     SessionsPatientPage,
     SessionsSearchPage,
 )
-from mavis.test.utils import generate_random_string
+from mavis.test.utils import expect_alert_text, generate_random_string
 
 
 def schedule_school_session_if_needed(  # noqa: PLR0913
@@ -85,3 +87,34 @@ def record_nurse_consent_and_vaccination(
     RecordVaccinationWizardPage(page).record_vaccination(
         vaccination_record, notes=notes
     )
+
+
+def record_gillick_competence_and_self_consent(
+    page: Page,
+    child: Child,
+    programme: Programme,
+    consent_option: ConsentOption,
+    *,
+    is_competent: bool = True,
+) -> None:
+    """Record Gillick competence assessment and child self-consent.
+
+    Args:
+        page: The Playwright page object.
+        child: The child to assess and record consent for.
+        programme: The vaccination programme.
+        consent_option: The consent option (injection, nasal spray, etc.).
+        is_competent: Whether the child is assessed as Gillick competent.
+
+    """
+    sessions_patient_page = SessionsPatientPage(page)
+    gillick_competence_page = GillickCompetencePage(page)
+    nurse_consent_wizard_page = NurseConsentWizardPage(page)
+
+    sessions_patient_page.click_assess_gillick_competence()
+    gillick_competence_page.add_gillick_competence(is_competent=is_competent)
+
+    sessions_patient_page.click_record_a_new_consent_response()
+    nurse_consent_wizard_page.select_gillick_competent_child()
+    nurse_consent_wizard_page.record_child_given_consent(programme, consent_option)
+    expect_alert_text(page, f"Consent recorded for {child!s}")

@@ -301,6 +301,20 @@ class Programme(StrEnum):
         }
         return offline_name_map[self]
 
+    def get_default_vaccine(self, consent_option: ConsentOption) -> "Vaccine":
+        """Get the default vaccine for this programme and consent option."""
+        from mavis.test.constants import Vaccine  # noqa: PLC0415
+
+        vaccine_mapping = {
+            self.FLU: Vaccine.SEQUIRUS
+            if consent_option == ConsentOption.INJECTION
+            else Vaccine.FLUENZ,
+            self.HPV: Vaccine.GARDASIL_9,
+            self.MENACWY: Vaccine.NIMENRIX,
+            self.TD_IPV: Vaccine.REVAXIS,
+        }
+        return vaccine_mapping[self]
+
 
 class Vaccine(StrEnum):
     # Flu
