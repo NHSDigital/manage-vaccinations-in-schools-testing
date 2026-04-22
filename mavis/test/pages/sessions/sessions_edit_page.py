@@ -71,6 +71,36 @@ class SessionsEditPage:
         _future_date = get_offset_date_compact_format(offset_days=0)
         self.__edit_session(date=_future_date)
 
+    def edit_a_session_to_offset_days(self, offset_days: int) -> None:
+        session_date = get_offset_date_compact_format(offset_days=offset_days)
+        self.__edit_session(date=session_date)
+
+    def ensure_session_has_dates_for_today_and_yesterday(self) -> None:
+        today = get_offset_date_compact_format(offset_days=0)
+        yesterday = get_offset_date_compact_format(offset_days=-1)
+
+        self.click_change_session_dates()
+
+        if not self.session_date_already_scheduled(yesterday):
+            self.fill_date_fields(yesterday, edit_existing_date=True)
+
+        if not self.session_date_already_scheduled(today):
+            self.fill_date_fields(today)
+
+        self.click_continue_button()
+
+        if self.keep_session_dates_button.is_visible():
+            self.click_keep_session_dates()
+
+        self.continue_if_warning_appears()
+
+        self.click_save_changes()
+        expect(
+            self.page.locator("div")
+            .filter(has_text=re.compile(r"^Session datesNot provided$"))
+            .get_by_role("definition"),
+        ).not_to_be_visible()
+
     def __edit_session(self, date: str) -> None:
         self.click_change_session_dates()
         if not self.session_date_already_scheduled(date):

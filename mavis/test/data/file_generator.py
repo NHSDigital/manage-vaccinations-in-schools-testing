@@ -107,6 +107,7 @@ class FileGenerator:
     def _vaccs_file_replacements(self, session_id: str | None) -> dict[str, str]:
         return {
             "<<VACCS_DATE>>": get_current_datetime_compact()[:8],
+            "<<YESTERDAY>>": get_offset_date_compact_format(offset_days=-1),
             "<<VACCS_TIME>>": get_current_time_hms_format(),
             "<<HIST_VACCS_DATE>>": get_offset_date_compact_format(
                 offset_days=-(365 * 2)

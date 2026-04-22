@@ -20,6 +20,7 @@ from .log_out_page import LogOutPage
 from .online_consent_wizard_page import OnlineConsentWizardPage
 from .record_vaccination_wizard_page import RecordVaccinationWizardPage
 from .reports import (
+    CareplusReportsPage,
     ReportsConsentPage,
     ReportsDownloadPage,
     ReportsVaccinationsPage,
@@ -62,6 +63,7 @@ __all__ = [
     "ArchiveBatchPage",
     "ArchiveConsentResponsePage",
     "BadRequestPage",
+    "CareplusReportsPage",
     "ChildArchivePage",
     "ChildEditPage",
     "ChildProgrammePage",

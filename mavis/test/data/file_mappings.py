@@ -33,6 +33,7 @@ class VaccsFileMapping(FileMapping):
     HIST_NEGATIVE = "hist_negative"
     HIST_POSITIVE = "hist_positive"
     HPV_DOSE_TWO = "hpv_dose_two"
+    HPV_DOSE_TWO_YESTERDAY = "hpv_dose_two_yesterday"
     INVALID_STRUCTURE = "invalid_structure"
     MMR_DOSE_ONE = "mmr_dose_one"
     MMR_MMRV_PROCEDURE_CODES = "mmr_mmrv_procedure_codes"

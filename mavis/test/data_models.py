@@ -222,7 +222,7 @@ class PointOfCareTeam(Team):
             careplus_staff_type=organisation.ods_code + "C",
             careplus_username="careplus_user",
             careplus_password="careplus_password",  # noqa: S106
-            careplus_namespace="careplus_namespace",
+            careplus_namespace="MOCK",
             email=subteam.email,
             phone=subteam.phone,
         )
