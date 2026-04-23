@@ -129,6 +129,31 @@ Some tests are grouped using markers. You can include/exclude groups with the
 $ pytest -m log_in
 $ pytest -m "not imms_api and not pds_api and not accessibility"
 ```
+
+#### Unstable tests
+
+Tests that are known to be flaky can be marked with `@pytest.mark.unstable`
+(or by adding `unstable` to a module-level `pytestmark`). The `unstable`
+marker is excluded from the default test run in the E2E test workflow,
+so these tests do not affect local runs or the main pipeline result unless explicitly requested:
+
+```shell
+$ pytest -m unstable          # run only the unstable tests
+$ pytest -m "not unstable"    # explicitly exclude them (the default)
+```
+
+In the End-to-End tests workflow, unstable tests run in a separate matrix
+job (`End-to-End tests (unstable (failure accepted))`) which has
+`continue-on-error: true`. This means failures in unstable tests will not
+fail the pipeline, while the main job continues to enforce stability for
+all other tests. The `run-end-to-end-tests` action accepts an
+`unstable_tests` input with values `exclude` (default) or `only` to
+control which suite is executed.
+
+Use this marker sparingly — it is intended as a temporary measure for
+genuinely flaky tests while the underlying issue is being investigated,
+not as a way to silence failures. Fixing tests with the unstable label should be a priority.
+
 #### Parallel test execution
 
 This repository uses [pytest-xdist] to run test modules in parallel. The

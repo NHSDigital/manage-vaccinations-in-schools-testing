@@ -49,6 +49,7 @@ markers = [
   "pds_api",
   "reporting",
   "smoke",
+  "unstable",
 ]
 
 [tool.ruff]
