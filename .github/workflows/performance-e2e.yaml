@@ -62,7 +62,7 @@ on:
 
 jobs:
   nurse_journey_performance_test:
-    runs-on: ubuntu-latest
+    runs-on: codebuild-mavis-testing-github-runner-${{ github.run_id }}-${{ github.run_attempt }}
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
 
