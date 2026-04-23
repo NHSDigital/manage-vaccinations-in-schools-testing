@@ -171,7 +171,7 @@ jobs:
       id-token: write
 
     name: End-to-End tests
-    runs-on: ubuntu-latest
+    runs-on: codebuild-mavis-testing-github-runner-${{ github.run_id }}-${{ github.run_attempt }}
 
     env:
       TZ: Europe/London
@@ -239,7 +239,7 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         id: playwright-cache
         with:
-          path: /home/runner/.cache/ms-playwright
+          path: /root/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pyproject.toml') }}
 
       - name: Run tests
