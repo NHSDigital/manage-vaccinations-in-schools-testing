@@ -198,10 +198,7 @@ def test_merge_child_records_does_not_crash(
     DashboardPage(page).click_children()
     ChildrenSearchPage(page).search.search_for_child_name_with_all_filters(str(child2))
     ChildrenSearchPage(page).search.click_child(child2)
-    ChildRecordPage(page).click_programme(Programme.HPV)
-    ChildProgrammePage(page).expect_activity_log_entry(
-        "Child record merged", unique=True
-    )
+    ChildRecordPage(page).expect_activity_log_entry("Child record merged", unique=True)
 
 
 @issue("MAV-909", "MAV-1716")

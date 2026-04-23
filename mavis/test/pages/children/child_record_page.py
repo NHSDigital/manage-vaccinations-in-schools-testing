@@ -75,6 +75,17 @@ class ChildRecordPage:
     def click_vaccination_record(self, date: datetime.date | None = None) -> None:
         self._click_vaccination_record(date or get_todays_date())
 
+    @step("Checking for '{1}' in the activity log")
+    def expect_activity_log_entry(
+        self, heading_name: str, *, unique: bool = False
+    ) -> None:
+        heading = self.page.get_by_role("heading", name=heading_name)
+
+        if unique:
+            expect(heading).to_be_visible()
+        else:
+            expect(heading.first).to_be_visible()
+
     @step("Click on {1} vaccination record")
     def _click_vaccination_record(self, date: datetime.date) -> None:
         self.page.wait_for_load_state()
