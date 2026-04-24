@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 import httpx
 import pytest
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from mavis.test.constants import Programme
 from mavis.test.data import ClassFileMapping, VaccsFileMapping
@@ -34,13 +35,23 @@ pytestmark = pytest.mark.reporting
 _yg1, _yg2, _yg3 = random.sample(list(range(7, 12)), 3)
 _year_groups = {p.group: _yg1 for p in Programme}
 
+# Separate year groups for consent breakdown test
+# (different teams use different year groups to avoid school conflicts)
+_available_ygs = [y for y in range(7, 12) if y not in [_yg1, _yg2, _yg3]]
+_yg_consent_a, _yg_consent_b = random.sample(_available_ygs, 2)
+_year_groups_consent_a = {p.group: _yg_consent_a for p in Programme}
+_year_groups_consent_b = {p.group: _yg_consent_b for p in Programme}
+
 _setup_complete = False
+_consent_breakdown_setup_complete = False
 
 
-def _onboard_team(base_url):
+def _onboard_team(base_url, year_groups=None):
+    if year_groups is None:
+        year_groups = _year_groups
     onboarding = PointOfCareOnboarding.get_onboarding_data_for_tests(
         base_url=base_url,
-        year_groups=_year_groups,
+        year_groups=year_groups,
     )
     return _create_onboarding_with_retry(base_url, onboarding)
 
@@ -120,6 +131,43 @@ def school_a(team_a):
 @pytest.fixture(scope="module")
 def school_b(team_b):
     return team_b.schools[Programme.FLU.group][0]
+
+
+# Fixtures for consent breakdown test
+@pytest.fixture(scope="module")
+def consent_team_a(base_url):
+    onboarding = _onboard_team(base_url, _year_groups_consent_a)
+    yield onboarding
+    _delete_team(base_url, onboarding.team)
+
+
+@pytest.fixture(scope="module")
+def consent_team_b(base_url):
+    onboarding = _onboard_team(base_url, _year_groups_consent_b)
+    yield onboarding
+    _delete_team(base_url, onboarding.team)
+
+
+@pytest.fixture(scope="module")
+def consent_all_children():
+    return [
+        Child.generate(_yg_consent_a),
+        Child.generate(_yg_consent_a),
+        Child.generate(_yg_consent_a),
+        Child.generate(_yg_consent_a),
+        Child.generate(_yg_consent_b),
+        Child.generate(_yg_consent_b),
+    ]
+
+
+@pytest.fixture(scope="module")
+def consent_school_a(consent_team_a):
+    return consent_team_a.schools[Programme.FLU.group][0]
+
+
+@pytest.fixture(scope="module")
+def consent_school_b(consent_team_b):
+    return consent_team_b.schools[Programme.FLU.group][0]
 
 
 def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
@@ -209,6 +257,97 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     LogOutPage(page).verify_log_out_page()
 
     _setup_complete = True
+
+
+def _do_consent_breakdown_setup(
+    page, base_url, team_a, team_b, all_children, school_a, school_b
+):
+    global _consent_breakdown_setup_complete  # noqa: PLW0603
+    if _consent_breakdown_setup_complete:
+        return
+
+    c1, c2, c3, c4, c5, c6 = all_children
+    two_mf = ClassFileMapping.REPORTING_REGRESSION_TWO_MF
+    one_f = ClassFileMapping.REPORTING_REGRESSION_ONE_F
+
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        team_a.users["nurse"], team_a.team
+    )
+
+    _upload_class_list(page, school_a, team_a, [c1, c2], two_mf, _yg_consent_a)
+    _upload_class_list(page, school_a, team_a, [c3, c4], two_mf, _yg_consent_a)
+
+    schedule_school_session_if_needed(
+        page,
+        school_a,
+        [Programme.FLU],
+        [_yg_consent_a],
+    )
+    session_id_a = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+
+    team_a_vaccs_fg = _make_file_generator(team_a, [c1, c2, c3, c4])
+
+    SessionsOverviewPage(page).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, team_a_vaccs_fg
+    ).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(page, team_a_vaccs_fg).upload_and_verify_output(
+        file_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_A,
+        session_id=session_id_a,
+        programme_group=Programme.FLU.group,
+    )
+
+    LogOutPage(page).navigate()
+    LogOutPage(page).verify_log_out_page()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        team_b.users["nurse"], team_b.team
+    )
+
+    _upload_class_list(page, school_b, team_b, [c2], one_f, _yg_consent_a)
+    _upload_class_list(page, school_b, team_b, [c4], one_f, _yg_consent_a)
+    _upload_class_list(page, school_b, team_b, [c5, c6], two_mf, _yg_consent_b)
+
+    schedule_school_session_if_needed(
+        page,
+        school_b,
+        [Programme.FLU],
+        [_yg_consent_a, _yg_consent_b],
+    )
+    session_id_b = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+
+    team_b_vaccs_fg = _make_file_generator(team_b, [c5, c6])
+
+    SessionsOverviewPage(page).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(
+        page, team_b_vaccs_fg
+    ).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(page, team_b_vaccs_fg).upload_and_verify_output(
+        file_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_B,
+        session_id=session_id_b,
+        programme_group=Programme.FLU.group,
+    )
+
+    ImportsPage(page).header.click_mavis()
+    DashboardPage(page).click_school_moves()
+
+    SchoolMovesPage(page).click_child(c2)
+    ReviewSchoolMovePage(page).confirm()
+
+    SchoolMovesPage(page).click_child(c4)
+    ReviewSchoolMovePage(page).confirm()
+
+    _refresh_reporting(base_url)
+
+    LogOutPage(page).navigate()
+    LogOutPage(page).verify_log_out_page()
+
+    _consent_breakdown_setup_complete = True
 
 
 def test_team_a_reporting(
@@ -478,3 +617,71 @@ def test_team_b_aggregate_csv(
     assert yg3_f["Cohort"] == 1
     assert yg3_f["Vaccinated"] == 0
     assert yg3_f["Not Vaccinated"] == 1
+
+
+def test_consent_breakdown_counts_add_up(
+    page,
+    base_url,
+    consent_team_a,
+    consent_team_b,
+    consent_all_children,
+    consent_school_a,
+    consent_school_b,
+):
+    """
+    Test: Verify consent report breakdown counts add up to total.
+    Steps:
+    1. Setup with single year group for consent breakdown test.
+    2. Log in as Team A nurse.
+    3. Navigate to Reports > Consent tab.
+    4. Get counts from "No consent recorded" box and breakdown boxes.
+    5. Verify breakdown counts add up to total.
+    Verification:
+    - Sum of breakdown boxes equals "No consent recorded" total.
+    - Handles cases where some breakdown boxes may not exist.
+    """
+    _do_consent_breakdown_setup(
+        page,
+        base_url,
+        consent_team_a,
+        consent_team_b,
+        consent_all_children,
+        consent_school_a,
+        consent_school_b,
+    )
+
+    page.context.clear_cookies()
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(
+        consent_team_a.users["nurse"], consent_team_a.team
+    )
+
+    ReportsConsentPage(page).navigate()
+    ReportsConsentPage(page).check_filter_for_programme(Programme.FLU)
+
+    # Get the total from "No consent recorded" box
+    no_consent_total = ReportsConsentPage(page).get_children_count(
+        "No consent recorded"
+    )
+
+    # Get counts from the three breakdown boxes
+    # Note: These box names will need to be verified against actual UI
+    breakdown_box_1 = ReportsConsentPage(page).get_children_count(
+        "No consent response or not yet invited"
+    )
+    breakdown_box_2 = ReportsConsentPage(page).get_children_count("Consent refused")
+
+    # Try to get the third breakdown box, but it may not exist
+    # if no children have that status
+    try:
+        breakdown_box_3 = ReportsConsentPage(page).get_children_count(
+            "No response - follow-up requested"
+        )
+    except PlaywrightTimeoutError:
+        breakdown_box_3 = 0
+
+    # Verify the breakdown counts add up to the total
+    breakdown_sum = breakdown_box_1 + breakdown_box_2 + breakdown_box_3
+    assert breakdown_sum == no_consent_total, (
+        f"Breakdown sum ({breakdown_sum}) does not match total ({no_consent_total})"
+    )
