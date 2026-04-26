@@ -1,14 +1,15 @@
 import json
 import re
+import urllib.parse
 from datetime import timedelta
 
+import httpx
 import pytest
 from playwright.sync_api import expect
 
 from mavis.test.annotations import issue
 from mavis.test.constants import DeliverySite, Programme, Vaccine
 from mavis.test.helpers.imms_api_helper import ImmsApiHelper
-from mavis.test.helpers.sidekiq_helper import SidekiqHelper
 from mavis.test.pages import (
     ChildProgrammePage,
     ChildRecordPage,
@@ -52,6 +53,7 @@ def test_create_imms_record_then_verify_on_children_page(
     imms_api_helper,
     log_in_as_nurse,
     setup_session_for_flu,
+    base_url,
     page,
     children,
     schools,
@@ -78,8 +80,6 @@ def test_create_imms_record_then_verify_on_children_page(
     vaccination_time = vaccination_date.replace(
         hour=10, minute=30, second=0, microsecond=0
     )
-    sidekiq_job_name = "EnqueueVaccinationsSearchInNHSJob"
-
     # Create vaccination record via IMMS API
     imms_api_helper.create_vaccination_record(
         vaccine=vaccine,
@@ -89,7 +89,11 @@ def test_create_imms_record_then_verify_on_children_page(
         vaccination_time=vaccination_time,
     )
 
-    SidekiqHelper().run_recurring_job(sidekiq_job_name)
+    url = urllib.parse.urljoin(
+        base_url, "api/testing/vaccinations-search-in-nhs?wait=true"
+    )
+    response = httpx.post(url, timeout=300)
+    response.raise_for_status()
 
     # Verify the child created via IMMS API is visible in Mavis children page
     DashboardPage(page).navigate()
