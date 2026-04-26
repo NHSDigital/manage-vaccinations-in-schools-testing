@@ -78,7 +78,7 @@ def test_create_imms_record_then_verify_on_children_page(
     vaccination_time = vaccination_date.replace(
         hour=10, minute=30, second=0, microsecond=0
     )
-    sidekiq_job_name = "enqueue_vaccinations_search_in_nhs_job"
+    sidekiq_job_name = "EnqueueVaccinationsSearchInNHSJob"
 
     # Create vaccination record via IMMS API
     imms_api_helper.create_vaccination_record(
