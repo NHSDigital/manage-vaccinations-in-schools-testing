@@ -24,7 +24,8 @@ def year_groups() -> dict[str, int]:
 @pytest.fixture(scope="session")
 def point_of_care_onboarding(base_url, year_groups) -> PointOfCareOnboarding:
     onboarding_data = PointOfCareOnboarding.get_onboarding_data_for_tests(
-        base_url=base_url, year_groups=year_groups
+        base_url=base_url,
+        year_groups={k: [v] for k, v in year_groups.items()},
     )
     return _create_onboarding_with_retry(base_url, onboarding_data)
 
