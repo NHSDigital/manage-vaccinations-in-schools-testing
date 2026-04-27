@@ -1,3 +1,5 @@
+import re
+
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
@@ -18,3 +20,17 @@ class ReportsConsentPage(ReportsDashboardComponent):
     def navigate(self) -> None:
         self.page.goto("/reports")
         self.tabs.click_consent_tab()
+
+    def get_children_count(self, category: str) -> int:
+        category_card = self.page.locator(
+            f"//div[@class='nhsuk-card__content'][.//h3[normalize-space()='{category}']]"
+        )
+        caption_text = category_card.locator(".nhsuk-card__caption").inner_text()
+
+        match = re.search(r"(\d+)", caption_text)
+        if match:
+            num_children = int(match.group(1))
+        else:
+            msg = "Number of children not found"
+            raise AssertionError(msg)
+        return num_children
