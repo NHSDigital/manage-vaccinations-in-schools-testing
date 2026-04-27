@@ -33,6 +33,7 @@ pytestmark = pytest.mark.reporting
 
 _yg1, _yg2, _yg3 = random.sample(list(range(7, 12)), 3)
 _year_groups = {p.group: _yg1 for p in Programme}
+_school_year_groups = {p.group: [_yg1, _yg2, _yg3] for p in Programme}
 
 _setup_complete = False
 
@@ -40,7 +41,7 @@ _setup_complete = False
 def _onboard_team(base_url):
     onboarding = PointOfCareOnboarding.get_onboarding_data_for_tests(
         base_url=base_url,
-        year_groups=_year_groups,
+        year_groups=_school_year_groups,
     )
     return _create_onboarding_with_retry(base_url, onboarding)
 

@@ -66,15 +66,17 @@ class School(Location):
 
     @classmethod
     def get_from_testing_api(
-        cls, base_url: str, year_groups: dict[str, int]
+        cls, base_url: str, year_groups: dict[str, list[int]]
     ) -> "dict[str, list[School]]":
-        def _get_schools_with_year_group(year_group: int) -> list[School]:
+        def _get_schools_with_year_groups(
+            required_year_groups: list[int],
+        ) -> list[School]:
             url = urllib.parse.urljoin(base_url, "api/testing/locations")
             params = {
                 "type": "gias_school",
                 "status": "open",
                 "is_attached_to_team": "false",
-                "gias_year_groups[]": [str(year_group)],
+                "gias_year_groups[]": [str(yg) for yg in required_year_groups],
                 "site": "",
             }
 
@@ -91,8 +93,8 @@ class School(Location):
             data = response.json()
             if not data:
                 msg = (
-                    f"No schools found with year group {year_group} at {base_url}. "
-                    "Have GIAS locations been loaded? "
+                    f"No schools found with year groups {required_year_groups} "
+                    f"at {base_url}. Have GIAS locations been loaded? "
                     "Try running 'bin/mavis gias import' from the Mavis repository."
                 )
                 raise RuntimeError(msg)
@@ -112,7 +114,7 @@ class School(Location):
             ]
 
         return {
-            programme.group: _get_schools_with_year_group(year_groups[programme.group])
+            programme.group: _get_schools_with_year_groups(year_groups[programme.group])
             for programme in Programme
         }
 

@@ -61,7 +61,7 @@ class PointOfCareOnboarding(Onboarding):
 
     @classmethod
     def get_onboarding_data_for_tests(
-        cls, base_url: str, year_groups: dict[str, int]
+        cls, base_url: str, year_groups: dict[str, list[int]]
     ) -> "PointOfCareOnboarding":
         organisation = Organisation.generate()
         subteam = Subteam.generate()
