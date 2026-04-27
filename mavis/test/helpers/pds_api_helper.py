@@ -36,7 +36,7 @@ class Patient(NamedTuple):
 
         return cls(
             nhs_number=row["NHS_NUMBER"],
-            date_of_birth=datetime.strptime(row["DATE_OF_BIRTH"], "%Y%m%d")
+            date_of_birth=datetime.strptime(row["DATE_OF_BIRTH"][:8], "%Y%m%d")
             .replace(tzinfo=ZoneInfo("Europe/London"))
             .date(),
             family_name=row["FAMILY_NAME"],
@@ -94,7 +94,12 @@ class PdsApiHelper:
             newline=""
         ) as file:
             reader = csv.DictReader(file)
-            self.patients = [Patient.from_csv_row(row) for row in reader]
+            self.patients = []
+            for row in reader:
+                try:
+                    self.patients.append(Patient.from_csv_row(row))
+                except (IndexError, KeyError, ValueError):
+                    continue
 
     def get_random_child_patient_without_date_of_death(self) -> Child:
         child_patients = self._get_eligible_child_patients()
