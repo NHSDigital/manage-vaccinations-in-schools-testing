@@ -3,9 +3,6 @@ description: Execute tests
 inputs:
   tests:
     default: ''
-  github_ref:
-    default: 'main'
-    required: false
   accessibility_tests:
     default: 'false'
   reporting_tests:
@@ -14,6 +11,9 @@ inputs:
     default: 'false'
   pds_api_tests:
     default: 'false'
+  unstable_tests:
+    description: 'Configure whether to include unstable (flaky) tests'
+    default: 'exclude'
   device:
     required: true
   base_url:
@@ -76,6 +76,19 @@ runs:
             exclude="$exclude and not pds_api"
           else
             exclude="not pds_api"
+          fi
+        fi
+        if [ "${{ inputs.unstable_tests }}" = "only" ]; then
+          if [ -n "$exclude" ]; then
+            exclude="unstable and $exclude"
+          else
+            exclude="unstable"
+          fi
+        else
+          if [ -n "$exclude" ]; then
+            exclude="$exclude and not unstable"
+          else
+            exclude="not unstable"
           fi
         fi
         if [ -z "$exclude" ]; then

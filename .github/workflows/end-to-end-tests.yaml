@@ -170,7 +170,19 @@ jobs:
       contents: write
       id-token: write
 
-    name: End-to-End tests
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - label: main
+            unstable_tests: exclude
+            continue_on_error: false
+          - label: unstable (failure accepted)
+            unstable_tests: only
+            continue_on_error: true
+
+    continue-on-error: ${{ matrix.suite.continue_on_error }}
+    name: End-to-End tests (${{ matrix.suite.label }})
     runs-on: ubuntu-latest
 
     env:
@@ -249,7 +261,7 @@ jobs:
           imms_api_tests: ${{ steps.set-variables.outputs.fhir_api_tests }}
           pds_api_tests: ${{ steps.set-variables.outputs.fhir_api_tests }}
           reporting_tests: ${{ steps.set-variables.outputs.reporting_tests }}
-          github_ref: ${{ inputs.github_ref || github.head_ref }}
+          unstable_tests: ${{ matrix.suite.unstable_tests }}
           device: ${{ steps.set-variables.outputs.device }}
           base_url: ${{ steps.set-variables.outputs.environment }}
           screenshot_all_steps: ${{ steps.set-variables.outputs.screenshot_all_steps }}
@@ -267,14 +279,18 @@ jobs:
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
 
       - name: Configure AWS credentials
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        if: >-
+          always() && steps.set-variables.outputs.deploy_report == 'true'
+          && matrix.suite.label == 'main'
         uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           aws-region: eu-west-2
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
 
       - name: Process reports
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        if: >-
+          always() && steps.set-variables.outputs.deploy_report == 'true'
+          && matrix.suite.label == 'main'
         continue-on-error: true
         uses: ./.github/actions/deploy-reports
         with:

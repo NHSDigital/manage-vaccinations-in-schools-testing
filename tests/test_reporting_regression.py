@@ -29,7 +29,7 @@ from mavis.test.pages import (
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
 
-pytestmark = pytest.mark.reporting
+pytestmark = [pytest.mark.reporting]
 
 _yg1, _yg2, _yg3 = random.sample(list(range(7, 12)), 3)
 _year_groups = {p.group: _yg1 for p in Programme}
