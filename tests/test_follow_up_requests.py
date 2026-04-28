@@ -195,8 +195,9 @@ def test_consent_refusal_with_follow_up_request(
         SessionsPatientSessionActivityPage(page).check_session_activity_entry(
             "Consent refused"
         )
+    parent = child.parents[0]
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
-        "Consent confirmation refused sent"
+        f"Confirmation of consent refused sent to {parent.name_and_relationship}"
     )
 
 
@@ -313,7 +314,7 @@ def test_follow_up_journey_decision_stands_confirm_refusal(
     SessionsPatientPage(page).click_session_activity_and_notes()
 
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
-        "Consent confirmation refused sent"
+        f"Confirmation of consent refused sent to {parent.name_and_relationship}"
     )
     SessionsPatientSessionActivityPage(page).click_back_to_session(school)
     SessionsChildrenPage(page).tabs.click_children_tab()
@@ -386,7 +387,7 @@ def test_follow_up_journey_decision_changed_record_consent(
     SessionsPatientPage(page).click_session_activity_and_notes()
 
     SessionsPatientSessionActivityPage(page).check_session_activity_entry(
-        "Consent confirmation given sent"
+        f"Confirmation of consent given sent to {parent.name_and_relationship}"
     )
     SessionsPatientSessionActivityPage(page).click_back_to_session(school)
     SessionsChildrenPage(page).tabs.click_children_tab()
