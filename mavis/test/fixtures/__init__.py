@@ -1,3 +1,4 @@
+from .create_child import create_child
 from .data_models import (
     children,
     national_reporting_file_generator,
@@ -58,6 +59,7 @@ __all__ = [
     "browser_context_args",
     "browser_type",
     "children",
+    "create_child",
     "delete_teams_after_tests",
     "log_in_as_medical_secretary",
     "log_in_as_nurse",
