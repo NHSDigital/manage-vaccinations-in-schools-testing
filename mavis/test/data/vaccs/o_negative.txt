@@ -43,3 +43,4 @@ Row 42 DOSE_SEQUENCE: Enter a dose sequence number, for example, 1, 2 or 3
 Row 43 DOSE_SEQUENCE: must be less than or equal to 3
 Row 44 BATCH_NUMBER: must be at most 100 characters long
 Row 45 DOSE_SEQUENCE: must be less than or equal to 2
+Row 46 DOSE_SEQUENCE: must be less than or equal to 2

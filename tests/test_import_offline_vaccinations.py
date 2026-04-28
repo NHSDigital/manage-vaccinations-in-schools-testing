@@ -77,21 +77,20 @@ def test_vaccination_file_upload_valid_data(
     HPV:
     HPV_Optional, HPV_Gardasil9, HPV_Gardasil, HPV_Cervarix, HPV_NFA, HPV_Add_Not_Known,
     HPV_AllowPastExpiryDate, HPV_SiteRAU, HPV_SiteRAL, HPV_NotVaccinated,
-    HPV_AddressNFA, HPV_AddressNotKnown, HPV_AddressNotSpecified
+    HPV_PostcodeNFA, HPV_PostcodeAddressNotKnown, HPV_PostcodeAddressNotSpecified
     Doubles:
     TDIPV_Optional, TDIPV_NFA, TDIPV_Add_Not_Known, TDIPV_AllowPastExpiryDate,
     TDIPV_SiteRAU, TDIPV_SiteRAL, TDIPV_NotVaccinated, MenACWY_Optional, MenACWY_NFA,
-    MenACWY_Add_Not_Known, MenACWY_AllowPastExpiryDate, MenACWY_SiteRAU,MenACWY_SiteRAL,
-    MenACWY_NotVaccinated, MenACWY_BatchName100Chars,
+    MenACWY_Add_Not_Known, MenACWY_AllowPastExpiryDate, MenACWY_SiteRAU,
+    MenACWY_SiteRAL, MenACWY_NotVaccinated, MenACWY_BatchName100Chars
     Flu:
-    Flu_Optional, Flu_NFA,
-    Flu_Add_Not_Known, Flu_AllowPastExpiryDate, Flu_SiteRAU, Flu_SiteRAL,
-    Flu_NotVaccinated, Flu_BatchName100Chars,
+    Flu_Optional, Flu_NFA, Flu_Add_Not_Known, Flu_AllowPastExpiryDate, Flu_SiteRAU,
+    Flu_SiteRAL, Flu_NotVaccinated, Flu_BatchName100Chars
     MMR:
-    MMR_Optional, MMR_NFA, MMR_Add_Not_Known,
-    MMR_AllowPastExpiryDate, MMR_SiteRAU, MMR_SiteRAL, MMR_NotVaccinated,
-    MMR_BatchName100Chars, MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess,
-    MMR_UnknownDoseSeq, MMRNoDelayDose1, MMRNoDelayDose2, MMR_NoDelayDoseUnknown
+    MMR_Optional, MMR_NFA, MMR_Add_Not_Known, MMR_AllowPastExpiryDate, MMR_SiteRAU,
+    MMR_SiteRAL, MMR_DoseSeq2inSession, MMR_NotVaccinated, MMR_BatchName100Chars,
+    MMR_DoseSeq1WithoutSess, MMR_DoseSeq2WithoutSess, MMR_UnknownDoseSeq,
+    MMR_NoDelayDose1, MMR_NoDelayDose2, MMR_NoDelayDoseUnknown
     """
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -119,15 +118,17 @@ def test_vaccination_file_upload_invalid_data(
 
     HPV_InvalidODSCode, HPV_EmptyOrgCode, HPV_EmptySchoolURN, HPV_NotKnownSchoolEmpty,
     HPV_LongNHSNumber, HPV_ShortNHSNumber, HPV_EmptyForename, HPV_EmptyLastname,
-    HPV_EmptyDOB, HPV_InvalidFormatDOB, HPV_FutureDOB, HPV_NonLeapYearDOB,
-    HPV_EmptyGender, HPV_InvalidGender, HPV_EmptyPostCode, HPV_InvalidPostCode,
-    HPV_EmptyVaccDate, HPV_FutureVaccDate, HPV_EmptyVaccGiven, HPV_EmptyBatchNumber,
-    HPV_EmptyExpiryDate, HPV_EmptyAnatomicalSite, HPV_InvalidAnatomicalSite,
-    HPV_EmptyDoseSeq, HPV_InvalidDoseSeq, HPV_EmptyCareSetting, HPV_InvalidProfFName,
-    HPV_InvalidProfSName, HPV_InvalidProfEmail, HPV_InvalidClinic, HPV_InvalidTime,
-    HPV_InvalidReason, HPV_InvalidVaccinatedFlag, HPV_InvalidCareSetting,
-    HPV_TimeInFuture, HPV_VaccinatedFlagEmpty, TDIPV_EmptyDoseSeq, TDIPV_InvalidDoseSeq,
-    MenACWY_EmptyDoseSeq, MenACWY_InvalidDoseSeq, MenACWY_LongBatchNumber, MMR_DoseSeq3
+    HPV_EmptyDOB, HPV_InvalidFormatDOB, HPV_TooOldDOB, HPV_FutureDOB,
+    HPV_NonLeapYearDOB, HPV_EmptyGender, HPV_InvalidGender, HPV_EmptyPostCode,
+    HPV_InvalidPostCode, HPV_EmptyVaccDate, HPV_FutureVaccDate, HPV_EmptyVaccGiven,
+    HPV_EmptyBatchNumber, HPV_EmptyExpiryDate, HPV_EmptyAnatomicalSite,
+    HPV_InvalidAnatomicalSite, HPV_EmptyDoseSeq, HPV_InvalidDoseSeq,
+    HPV_EmptyCareSetting, HPV_InvalidProfFName, HPV_InvalidProfSName,
+    HPV_InvalidProfEmail, HPV_InvalidClinic, HPV_InvalidTime, HPV_InvalidReason,
+    HPV_InvalidVaccinatedFlag, HPV_InvalidCareSetting, HPV_TimeInFuture,
+    HPV_VaccinatedFlagEmpty, TDIPV_EmptyDoseSeq, TDIPV_InvalidDoseSeq,
+    MenACWY_EmptyDoseSeq, MenACWY_InvalidDoseSeq, MenACWY_LongBatchNumber, MMR_DoseSeq3,
+    MMR_DoseSeq2P
     """
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -216,6 +217,8 @@ def test_vaccination_file_upload_multiple_exact_duplicates(
     - Import summary shows correct duplicate count
     - Duplicate rows are handled appropriately (rejected or deduplicated)
     - Only unique records are imported into Mavis
+    Scenarios covered:
+    HPV_Gardasil9 (multiple exact duplicate rows in a single file)
     """
     setup = request.getfixturevalue(setup_fixture)
     file_generator = request.getfixturevalue(file_generator_fixture)
@@ -405,6 +408,9 @@ def test_vaccination_close_match_imports(
     Verification:
     - Close match review workflow is triggered.
     - Resolution completes successfully with "Record updated" message.
+    Scenarios covered:
+    CloseMatch1 (first vaccination with NHS number), CloseMatch2 (second vaccination
+    without NHS number but matching patient details)
     """
     # Upload first vaccination (creates patient)
     ImportRecordsWizardPage(
