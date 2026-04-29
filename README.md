@@ -143,7 +143,7 @@ $ pytest -m "not unstable"    # explicitly exclude them (the default)
 ```
 
 In the End-to-End tests workflow, unstable tests run in a separate matrix
-job (`End-to-End tests (unstable (failure accepted))`) which has
+job (`End-to-End tests (unstable — failure accepted)`) which has
 `continue-on-error: true`. This means failures in unstable tests will not
 fail the pipeline, while the main job continues to enforce stability for
 all other tests. The `run-end-to-end-tests` action accepts an
