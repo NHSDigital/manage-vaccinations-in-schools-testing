@@ -58,7 +58,8 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
       but not the name.
     - Name of the site must be different from original school name and cannot be blank.
     - Address of the site can be edited.
-    - The confirm screen shows the correct name and address details.
+    - Phase is pre-selected, but can be edited.
+    - The confirm screen shows the correct name, address and phase details.
     - Both new school sites are listed on the Schools page.
     - The URNs of the sites and original school are
       updated with site identifiers (A, B, C).
@@ -78,9 +79,12 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_site_details_form(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name_1)
     TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).check_phase_selection(school.phase)
+    TeamSchoolsPage(page).choose_phase("Primary")
+    TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).click_continue()  # Continue with pre-selected year groups
     TeamSchoolsPage(page).check_confirm_screen_shows_right_details(
-        new_site_urn_1, new_site_name_1, "New Address Line 1"
+        new_site_urn_1, new_site_name_1, "New Address Line 1", "Primary"
     )
     TeamSchoolsPage(page).confirm_site()
     TeamSchoolsPage(page).check_new_site_is_listed(
@@ -91,6 +95,7 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).select_school(school_to_not_use)
     TeamSchoolsPage(page).fill_site_name(f"{school_to_not_use} (Site 0)")
     TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).click_continue()  # Continue with pre-selected phase
     TeamSchoolsPage(page).click_continue()  # Continue with pre-selected year groups
     TeamSchoolsPage(page).click_change_parent_school()
 
@@ -101,9 +106,10 @@ def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_site_details_form(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name_2)
     TeamSchoolsPage(page).add_new_site_details()
+    TeamSchoolsPage(page).click_continue()  # Continue with pre-selected phase
     TeamSchoolsPage(page).click_continue()  # Continue with pre-selected year groups
     TeamSchoolsPage(page).check_confirm_screen_shows_right_details(
-        new_site_urn_2, new_site_name_2, "New Address Line 1"
+        new_site_urn_2, new_site_name_2, "New Address Line 1", school.phase
     )
     TeamSchoolsPage(page).confirm_site()
     TeamSchoolsPage(page).check_new_site_is_listed(
@@ -140,6 +146,8 @@ def test_site_child_record_import(
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name)
     TeamSchoolsPage(page).fill_missing_details()
+    TeamSchoolsPage(page).click_continue()
+    TeamSchoolsPage(page).choose_phase("Secondary")
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).select_year_groups([child.year_group])
     TeamSchoolsPage(page).click_continue()
@@ -214,6 +222,8 @@ def test_site_class_list_import(
     TeamSchoolsPage(page).select_school(school)
     TeamSchoolsPage(page).fill_site_name(new_site_name)
     TeamSchoolsPage(page).fill_missing_details()
+    TeamSchoolsPage(page).click_continue()
+    TeamSchoolsPage(page).choose_phase("Secondary")
     TeamSchoolsPage(page).click_continue()
     TeamSchoolsPage(page).select_year_groups([child.year_group])
     TeamSchoolsPage(page).click_continue()
