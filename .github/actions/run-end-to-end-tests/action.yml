@@ -108,11 +108,18 @@ runs:
       shell: bash
 
     - name: Run tests
-      run: >-
-        uv run pytest -n ${{ inputs.test_workers }}
-        ${{ steps.reruns.outputs.reruns }}
-        -m "${{ steps.marker.outputs.marker }}"
-        --device "${{ inputs.device }}" ${{ inputs.tests }}
+      run: |
+        set +e
+        uv run pytest -n ${{ inputs.test_workers }} \
+          ${{ steps.reruns.outputs.reruns }} \
+          -m "${{ steps.marker.outputs.marker }}" \
+          --device "${{ inputs.device }}" ${{ inputs.tests }}
+        exit_code=$?
+        if [ $exit_code -eq 5 ]; then
+          echo "No tests were collected — treating as success."
+          exit 0
+        fi
+        exit $exit_code
       shell: bash
       env:
         BASE_URL: ${{ inputs.base_url }}
