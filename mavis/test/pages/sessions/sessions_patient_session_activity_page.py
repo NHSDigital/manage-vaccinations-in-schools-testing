@@ -15,7 +15,7 @@ class SessionsPatientSessionActivityPage:
         self.header = HeaderComponent(page)
 
         self.note_textbox = self.page.get_by_role("textbox", name="Note")
-        self.add_a_note_span = self.page.get_by_text("Add a note")
+        self.add_a_note_span = self.page.get_by_text("Add a session note")
         self.save_note_button = self.page.get_by_role("button", name="Save note")
 
     @step("Click on Add a note")
