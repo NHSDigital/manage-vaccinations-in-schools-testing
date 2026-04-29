@@ -45,6 +45,7 @@ class Clinic(Location):
 
 @dataclass
 class School(Location):
+    id: int
     urn: str
     site: str
     address_line_1: str
@@ -65,56 +66,60 @@ class School(Location):
         return self.urn_and_site
 
     @classmethod
+    def get_schools_by_year_group(
+        cls, base_url: str, required_year_groups: list[int]
+    ) -> list["School"]:
+        url = urllib.parse.urljoin(base_url, "api/testing/locations")
+        params = {
+            "type": "gias_school",
+            "status": "open",
+            "is_attached_to_team": "false",
+            "gias_year_groups[]": [str(yg) for yg in required_year_groups],
+            "site": "",
+        }
+
+        try:
+            response = httpx.get(url, params=params, timeout=30)
+            response.raise_for_status()
+        except (httpx.ConnectError, httpx.HTTPStatusError):
+            msg = (
+                f"Could not reach the Mavis API at {base_url}. "
+                "Is Mavis (or the reporting app) running?"
+            )
+            raise RuntimeError(msg) from None
+
+        data = response.json()
+        if not data:
+            msg = (
+                f"No schools found with year groups {required_year_groups} "
+                f"at {base_url}. Have GIAS locations been loaded? "
+                "Try running 'bin/mavis gias import' from the Mavis repository."
+            )
+            raise RuntimeError(msg)
+        schools_data = random.choices(data, k=2)
+
+        return [
+            School(
+                id=school_data["id"],
+                name=normalize_whitespace(school_data["name"]),
+                urn=school_data["urn"],
+                site=school_data["site"],
+                address_line_1=school_data["address_line_1"],
+                address_line_2=school_data["address_line_2"],
+                address_town=school_data["address_town"],
+                address_postcode=school_data["address_postcode"],
+            )
+            for school_data in schools_data
+        ]
+
+    @classmethod
     def get_from_testing_api(
         cls, base_url: str, year_groups: dict[str, list[int]]
     ) -> "dict[str, list[School]]":
-        def _get_schools_with_year_groups(
-            required_year_groups: list[int],
-        ) -> list[School]:
-            url = urllib.parse.urljoin(base_url, "api/testing/locations")
-            params = {
-                "type": "gias_school",
-                "status": "open",
-                "is_attached_to_team": "false",
-                "gias_year_groups[]": [str(yg) for yg in required_year_groups],
-                "site": "",
-            }
-
-            try:
-                response = httpx.get(url, params=params, timeout=30)
-                response.raise_for_status()
-            except (httpx.ConnectError, httpx.HTTPStatusError):
-                msg = (
-                    f"Could not reach the Mavis API at {base_url}. "
-                    "Is Mavis (or the reporting app) running?"
-                )
-                raise RuntimeError(msg) from None
-
-            data = response.json()
-            if not data:
-                msg = (
-                    f"No schools found with year groups {required_year_groups} "
-                    f"at {base_url}. Have GIAS locations been loaded? "
-                    "Try running 'bin/mavis gias import' from the Mavis repository."
-                )
-                raise RuntimeError(msg)
-            schools_data = random.choices(data, k=2)
-
-            return [
-                School(
-                    name=normalize_whitespace(school_data["name"]),
-                    urn=school_data["urn"],
-                    site=school_data["site"],
-                    address_line_1=school_data["address_line_1"],
-                    address_line_2=school_data["address_line_2"],
-                    address_town=school_data["address_town"],
-                    address_postcode=school_data["address_postcode"],
-                )
-                for school_data in schools_data
-            ]
-
         return {
-            programme.group: _get_schools_with_year_groups(year_groups[programme.group])
+            programme.group: cls.get_schools_by_year_group(
+                base_url, year_groups[programme.group]
+            )
             for programme in Programme
         }
 
