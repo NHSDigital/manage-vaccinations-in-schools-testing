@@ -3,18 +3,46 @@ import pytest
 from mavis.test.annotations import issue
 from mavis.test.constants import ConsentMethod, ConsentRefusalReason, Programme, Vaccine
 from mavis.test.data_models import VaccinationRecord
-from mavis.test.pages import ReportsConsentPage, SessionsPatientPage
+from mavis.test.pages import DashboardPage, ReportsConsentPage, SessionsPatientPage
 from mavis.test.pages.sessions import NurseConsentWizardPage
 from mavis.test.pages.utils import (
     navigate_to_child_programme,
     prepare_child_for_vaccination,
     record_nurse_consent_and_vaccination,
 )
+from mavis.test.utils import refresh_reporting_data
 
 
 @pytest.fixture
 def setup_session_for_doubles(setup_session_and_batches_with_fixed_child):
     return setup_session_and_batches_with_fixed_child("doubles")
+
+
+def _get_consent_reporting_counts(page, programme: Programme) -> tuple[int, int, int]:
+    """Navigate to consent reports, refresh data, and get baseline counts.
+
+    Args:
+        page: Playwright page object
+        programme: Programme to filter reporting for
+
+    Returns:
+        Tuple of (refused_count, no_response_count, given_count)
+    """
+    DashboardPage(page).navigate()
+    refresh_reporting_data()
+    page.wait_for_timeout(120000)
+
+    ReportsConsentPage(page).navigate()
+    ReportsConsentPage(page).check_filter_for_programme(programme)
+    page.reload()
+
+    refused = ReportsConsentPage(page).get_category_count("Consent refused")
+    no_response = ReportsConsentPage(page).get_category_count(
+        "No consent response or not yet invited"
+    )
+    given = ReportsConsentPage(page).get_category_count("Consent given")
+
+    return refused, no_response, given
 
 
 @issue("MAV-955")
@@ -103,6 +131,13 @@ def test_consent_withdrawal_refusal_reason_reporting(
     child = children[programme_group][0]
     school = schools[programme_group][0]
 
+    # Get baseline counts to compare against
+    # Note: In shared test environments, parallel tests affect these numbers,
+    # so we use relative comparisons (greater/less than) rather than exact counts
+    refused_baseline, no_response_baseline, given_baseline = (
+        _get_consent_reporting_counts(page, Programme.MENACWY)
+    )
+
     # Step 1: Record initial consent refusal for MenACWY
     navigate_to_child_programme(page, school, programme_group, child, Programme.MENACWY)
     SessionsPatientPage(page).click_record_a_new_consent_response()
@@ -121,19 +156,29 @@ def test_consent_withdrawal_refusal_reason_reporting(
     NurseConsentWizardPage(page).click_continue()
     NurseConsentWizardPage(page).click_confirm()
 
-    # Verify: Check consent reporting after initial refusal
-    ReportsConsentPage(page).verify_consent_reporting(
-        Programme.MENACWY, {"Consent refused": "100"}
+    # Verify: Refused count should increase after recording refusal
+    refused_after_refusal, _, _ = _get_consent_reporting_counts(page, Programme.MENACWY)
+    assert refused_after_refusal > refused_baseline, (
+        f"Expected refused count to increase from {refused_baseline}, "
+        f"but got {refused_after_refusal}"
     )
 
     # Step 2: Invalidate the consent refusal
     navigate_to_child_programme(page, school, programme_group, child, Programme.MENACWY)
     SessionsPatientPage(page).invalidate_parent_refusal(child.parents[0])
 
-    # Verify: Check consent reporting after invalidating refusal
-    ReportsConsentPage(page).verify_consent_reporting(
-        Programme.MENACWY,
-        {"Consent refused": "0", "No consent response or not yet invited": "100"},
+    # Verify: Refused decreases and no response increases after invalidation
+    refused_after_invalidation, no_response_after_invalidation, _ = (
+        _get_consent_reporting_counts(page, Programme.MENACWY)
+    )
+
+    assert refused_after_invalidation < refused_after_refusal, (
+        f"Expected refused to decrease from {refused_after_refusal}, "
+        f"but got {refused_after_invalidation}"
+    )
+    assert no_response_after_invalidation == no_response_baseline, (
+        f"Expected no response to remain the same as {no_response_baseline}, "
+        f"but got {no_response_after_invalidation}"
     )
 
     # Step 3: Record consent (give consent) for the child
@@ -146,9 +191,18 @@ def test_consent_withdrawal_refusal_reason_reporting(
         programme=Programme.MENACWY
     )
 
-    # Verify: Check consent reporting after giving consent
-    ReportsConsentPage(page).verify_consent_reporting(
-        Programme.MENACWY, {"Consent given": "100"}
+    # Verify: Given increases and no response decreases after giving consent
+    _, no_response_after_consent, given_after_consent = _get_consent_reporting_counts(
+        page, Programme.MENACWY
+    )
+
+    assert given_after_consent > given_baseline, (
+        f"Expected given to increase from {given_baseline}, "
+        f"but got {given_after_consent}"
+    )
+    assert no_response_after_consent < no_response_after_invalidation, (
+        f"Expected no response to decrease from {no_response_after_invalidation}, "
+        f"but got {no_response_after_consent}"
     )
 
     # Step 4: Withdraw consent with 'Vaccine already received' reason
@@ -163,7 +217,16 @@ def test_consent_withdrawal_refusal_reason_reporting(
     )
     NurseConsentWizardPage(page).click_withdraw_consent()
 
-    # Step 5: Verify consent refused count and refusal reason in reporting
-    ReportsConsentPage(page).verify_consent_reporting(
-        Programme.MENACWY, {"Consent refused": "100", "Consent given": "0"}
+    # Verify: After withdrawal, refused increases and given decreases
+    refused_after_withdrawal, _, given_after_withdrawal = _get_consent_reporting_counts(
+        page, Programme.MENACWY
+    )
+
+    assert refused_after_withdrawal > refused_after_invalidation, (
+        f"Expected refused to increase from {refused_after_invalidation}, "
+        f"but got {refused_after_withdrawal}"
+    )
+    assert given_after_withdrawal < given_after_consent, (
+        f"Expected given to decrease from {given_after_consent}, "
+        f"but got {given_after_withdrawal}"
     )
