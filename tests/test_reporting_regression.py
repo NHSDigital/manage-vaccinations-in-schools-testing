@@ -1,8 +1,6 @@
 import random
-import urllib.parse
 from datetime import UTC, datetime
 
-import httpx
 import pytest
 
 from mavis.test.constants import Programme
@@ -28,6 +26,7 @@ from mavis.test.pages import (
     SessionsOverviewPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
+from mavis.test.utils import refresh_reporting_data
 
 pytestmark = pytest.mark.reporting
 
@@ -44,12 +43,6 @@ def _onboard_team(base_url):
         year_groups=_school_year_groups,
     )
     return _create_onboarding_with_retry(base_url, onboarding)
-
-
-def _refresh_reporting(base_url):
-    url = urllib.parse.urljoin(base_url, "api/testing/refresh-reporting?wait=true")
-    response = httpx.get(url, timeout=60)
-    response.raise_for_status()
 
 
 def _make_file_generator(onboarding, children_list):
@@ -204,7 +197,7 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     SchoolMovesPage(page).click_child(c4)
     ReviewSchoolMovePage(page).confirm()
 
-    _refresh_reporting(base_url)
+    refresh_reporting_data()
 
     LogOutPage(page).navigate()
     LogOutPage(page).verify_log_out_page()

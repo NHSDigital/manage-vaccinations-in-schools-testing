@@ -1,6 +1,3 @@
-import os
-
-import httpx
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
@@ -11,6 +8,7 @@ from mavis.test.pages.reports.reports_dashboard_component import (
     ReportsDashboardComponent,
 )
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
+from mavis.test.utils import refresh_reporting_data
 
 
 class ReportsConsentPage(ReportsDashboardComponent):
@@ -46,10 +44,7 @@ class ReportsConsentPage(ReportsDashboardComponent):
             self.navigate()
 
         # Refresh reporting data
-        base_url = os.getenv("BASE_URL", "PROVIDEURL")
-        refresh_reports_url = f"{base_url}/api/testing/refresh-reporting?wait=true"
-        response = httpx.get(refresh_reports_url, timeout=60)
-        response.raise_for_status()
+        refresh_reporting_data()
 
         self.check_filter_for_programme(programme)
 

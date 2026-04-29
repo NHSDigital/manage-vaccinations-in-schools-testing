@@ -1,3 +1,4 @@
+import os
 import random
 import re
 import time
@@ -6,6 +7,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import httpx
 from faker import Faker
 from playwright.sync_api import Locator, Page, expect
 from pypdf import PdfReader
@@ -14,6 +16,14 @@ from mavis.test.annotations import step
 from mavis.test.constants import MMRV_ELIGIBILITY_CUTOFF_DOB
 
 faker = Faker()
+
+
+def refresh_reporting_data() -> None:
+    """Refresh reporting data via API endpoint."""
+    base_url = os.getenv("BASE_URL", "PROVIDEURL")
+    refresh_reports_url = f"{base_url}/api/testing/refresh-reporting?wait=true"
+    response = httpx.get(refresh_reports_url, timeout=60)
+    response.raise_for_status()
 
 
 def format_datetime_for_upload_link(now: datetime) -> str:

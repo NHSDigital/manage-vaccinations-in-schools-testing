@@ -1,7 +1,5 @@
-import os
 import re
 
-import httpx
 from playwright.sync_api import Page
 
 from mavis.test.annotations import step
@@ -10,6 +8,7 @@ from mavis.test.pages.reports.reports_dashboard_component import (
     ReportsDashboardComponent,
 )
 from mavis.test.pages.reports.reports_tabs import ReportsTabs
+from mavis.test.utils import refresh_reporting_data
 
 
 class ReportsVaccinationsPage(ReportsDashboardComponent):
@@ -30,12 +29,7 @@ class ReportsVaccinationsPage(ReportsDashboardComponent):
     @step("Navigate to and refresh Reports")
     def navigate_and_refresh_reports(self) -> None:
         self.navigate()
-
-        base_url = os.getenv("BASE_URL", "PROVIDEURL")
-        refresh_reports_url = f"{base_url}/api/testing/refresh-reporting?wait=true"
-        response = httpx.get(refresh_reports_url, timeout=60)
-        response.raise_for_status()
-
+        refresh_reporting_data()
         self.page.reload()
 
     def get_children_count(self, category: str) -> int:
