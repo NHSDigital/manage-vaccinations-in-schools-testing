@@ -189,7 +189,7 @@ jobs:
           - label: main
             unstable_tests: exclude
             continue_on_error: false
-          - label: unstable (failure accepted)
+          - label: unstable — failure accepted
             unstable_tests: only
             continue_on_error: true
 
