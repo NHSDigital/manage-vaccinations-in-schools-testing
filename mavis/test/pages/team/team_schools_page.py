@@ -115,7 +115,8 @@ class TeamSchoolsPage:
     def check_confirm_screen_shows_right_details(
         self, site_urn: str, site_name: str, site_address_line_1: str
     ) -> None:
-        expect(self.page.get_by_text(site_urn)).to_be_visible()
+        expect(self.confirm_site_button).to_be_visible(timeout=10000)
+        expect(self.page.get_by_text(site_urn)).to_be_visible(timeout=10000)
         expect(self.page.get_by_text(site_name)).to_be_visible()
         expect(self.page.get_by_text(site_address_line_1)).to_be_visible()
 
