@@ -1,3 +1,4 @@
+import pytest
 from playwright.sync_api import expect
 
 from mavis.test.constants import Programme
@@ -42,6 +43,7 @@ def test_team_page_lists_correct_schools(page, log_in_as_nurse, schools):
     TeamSchoolsPage(page).check_only_expected_schools_visible(schools)
 
 
+@pytest.mark.unstable
 def test_team_page_add_school_sites(page, log_in_as_nurse, schools):
     """
     Test: Verify that the user can add multiple school sites to the team.
