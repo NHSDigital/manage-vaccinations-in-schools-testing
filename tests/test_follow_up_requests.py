@@ -169,11 +169,11 @@ def test_consent_refusal_with_follow_up_request(
     SessionsChildrenPage(page).tabs.click_children_tab()
 
     if follow_up_requested:
-        SessionsChildrenPage(page).search.select_needs_consent()
+        SessionsChildrenPage(page).search.select_has_a_refusal()
         SessionsChildrenPage(page).search.select_follow_up_requested()
         SessionsChildrenPage(page).search.click_on_update_results()
         SessionsChildrenPage(page).expect_child_programme_status(
-            child, "MMR", "Needs consent", "Follow-up requested"
+            child, "MMR", "Has a refusal", "Follow-up requested"
         )
     else:
         SessionsChildrenPage(page).expect_child_programme_status(
@@ -317,7 +317,7 @@ def test_follow_up_journey_decision_stands_confirm_refusal(
     )
     SessionsPatientSessionActivityPage(page).click_back_to_session(school)
     SessionsChildrenPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.select_needs_consent()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
     SessionsChildrenPage(page).search.select_follow_up_requested()
     SessionsChildrenPage(page).search.click_on_update_results()
     SessionsChildrenPage(page).search.search_for_child_that_should_not_exist(child)
@@ -390,7 +390,7 @@ def test_follow_up_journey_decision_changed_record_consent(
     )
     SessionsPatientSessionActivityPage(page).click_back_to_session(school)
     SessionsChildrenPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.select_needs_consent()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
     SessionsChildrenPage(page).search.select_follow_up_requested()
     SessionsChildrenPage(page).search.click_on_update_results()
     SessionsChildrenPage(page).search.search_for_child_that_should_not_exist(child)
@@ -430,7 +430,7 @@ def test_gillick_self_consent_overrides_follow_up_requested(
     )
     SessionsOverviewPage(page).click_set_session_in_progress_for_today()
     SessionsChildrenPage(page).tabs.click_children_tab()
-    SessionsChildrenPage(page).search.select_needs_consent()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
     SessionsChildrenPage(page).search.select_follow_up_requested()
     SessionsChildrenPage(page).search.click_on_update_results()
     SessionsChildrenPage(page).click_child(child)
@@ -522,12 +522,10 @@ def test_multiple_parents_with_follow_up_request(
         school, Programme.MMR_MMRV
     )
     SessionsChildrenPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.select_has_a_refusal()
 
     if expected_status == "Conflicting consent":
-        SessionsChildrenPage(page).search.select_has_a_refusal()
         SessionsChildrenPage(page).search.select_conflicting_consent()
-    else:
-        SessionsChildrenPage(page).search.select_needs_consent()
 
     SessionsChildrenPage(page).search.search_and_click_child(child)
     SessionsPatientPage(page).expect_consent_status(Programme.MMR_MMRV, expected_status)
@@ -548,9 +546,9 @@ def test_multiple_parents_with_follow_up_request(
             child, "MMR", expected_status
         )
     else:
-        SessionsChildrenPage(page).search.select_needs_consent()
+        SessionsChildrenPage(page).search.select_has_a_refusal()
         SessionsChildrenPage(page).search.select_follow_up_requested()
         SessionsChildrenPage(page).search.click_on_update_results()
         SessionsChildrenPage(page).expect_child_programme_status(
-            child, "MMR", "Needs consent", expected_status
+            child, "MMR", "Has a refusal", expected_status
         )
