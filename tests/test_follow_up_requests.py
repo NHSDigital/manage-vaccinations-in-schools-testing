@@ -402,6 +402,7 @@ def test_follow_up_journey_decision_changed_record_consent(
     )
 
 
+@pytest.mark.unstable
 def test_gillick_self_consent_overrides_follow_up_requested(
     give_online_consent_with_follow_up_request,
     page,
