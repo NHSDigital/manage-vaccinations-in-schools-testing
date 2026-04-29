@@ -1,10 +1,6 @@
 from playwright.sync_api import Page
 
-from mavis.test.constants import (
-    MAVIS_NOTE_LENGTH_LIMIT,
-    ConsentMethod,
-    Programme,
-)
+from mavis.test.constants import MAVIS_NOTE_LENGTH_LIMIT, ConsentMethod, Programme
 from mavis.test.data_models import Child, School, VaccinationRecord
 from mavis.test.pages import (
     AddSessionWizardPage,
