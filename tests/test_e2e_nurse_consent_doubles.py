@@ -6,6 +6,7 @@ from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import ReportsConsentPage, SessionsPatientPage
 from mavis.test.pages.sessions import NurseConsentWizardPage
 from mavis.test.pages.utils import (
+    navigate_to_child_programme,
     prepare_child_for_vaccination,
     record_nurse_consent_and_vaccination,
 )
@@ -103,9 +104,7 @@ def test_consent_withdrawal_refusal_reason_reporting(
     school = schools[programme_group][0]
 
     # Step 1: Record initial consent refusal for MenACWY
-    SessionsPatientPage(page).navigate_to_child_programme(
-        school, programme_group, child, Programme.MENACWY
-    )
+    navigate_to_child_programme(page, school, programme_group, child, Programme.MENACWY)
     SessionsPatientPage(page).click_record_a_new_consent_response()
 
     NurseConsentWizardPage(page).select_parent(child.parents[0])
@@ -128,9 +127,7 @@ def test_consent_withdrawal_refusal_reason_reporting(
     )
 
     # Step 2: Invalidate the consent refusal
-    SessionsPatientPage(page).navigate_to_child_programme(
-        school, programme_group, child, Programme.MENACWY
-    )
+    navigate_to_child_programme(page, school, programme_group, child, Programme.MENACWY)
     SessionsPatientPage(page).invalidate_parent_refusal(child.parents[0])
 
     # Verify: Check consent reporting after invalidating refusal
@@ -140,9 +137,7 @@ def test_consent_withdrawal_refusal_reason_reporting(
     )
 
     # Step 3: Record consent (give consent) for the child
-    SessionsPatientPage(page).navigate_to_child_programme(
-        school, programme_group, child, Programme.MENACWY
-    )
+    navigate_to_child_programme(page, school, programme_group, child, Programme.MENACWY)
     SessionsPatientPage(page).click_record_a_new_consent_response()
 
     NurseConsentWizardPage(page).select_parent(child.parents[0])
@@ -157,9 +152,7 @@ def test_consent_withdrawal_refusal_reason_reporting(
     )
 
     # Step 4: Withdraw consent with 'Vaccine already received' reason
-    SessionsPatientPage(page).navigate_to_child_programme(
-        school, programme_group, child, Programme.MENACWY
-    )
+    navigate_to_child_programme(page, school, programme_group, child, Programme.MENACWY)
     SessionsPatientPage(page).click_first_response_from_parent(child.parents[0])
     SessionsPatientPage(page).click_withdraw_consent()
     NurseConsentWizardPage(page).click_consent_refusal_reason(

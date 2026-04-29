@@ -49,6 +49,30 @@ def prepare_child_for_vaccination(
     SessionsChildrenPage(page).search.search_and_click_child(child)
 
 
+def navigate_to_child_programme(
+    page: Page,
+    school: School,
+    programme_group: str,
+    child: Child,
+    programme: Programme,
+) -> None:
+    """Navigate to a child's programme tab in a session.
+
+    Args:
+        page: The Playwright page instance
+        school: The school for the session
+        programme_group: The programme group identifier
+        child: The child to navigate to
+        programme: The programme tab to open
+    """
+    DashboardPage(page).header.click_mavis()
+    DashboardPage(page).click_sessions()
+    SessionsSearchPage(page).click_session_for_programme_group(school, programme_group)
+    SessionsOverviewPage(page).tabs.click_children_tab()
+    SessionsChildrenPage(page).search.search_and_click_child(child)
+    SessionsPatientPage(page).click_programme_tab(programme)
+
+
 def record_nurse_consent_and_vaccination(
     page: Page,
     vaccination_record: VaccinationRecord,

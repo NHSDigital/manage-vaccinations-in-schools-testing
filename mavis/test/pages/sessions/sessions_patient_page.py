@@ -8,11 +8,7 @@ from mavis.test.constants import (
     Programme,
 )
 from mavis.test.data_models import Child, Parent, School, VaccinationRecord
-from mavis.test.pages.dashboard_page import DashboardPage
 from mavis.test.pages.header_component import HeaderComponent
-from mavis.test.pages.sessions.sessions_children_page import SessionsChildrenPage
-from mavis.test.pages.sessions.sessions_overview_page import SessionsOverviewPage
-from mavis.test.pages.sessions.sessions_search_page import SessionsSearchPage
 from mavis.test.utils import (
     click_secondary_navigation_item,
     expect_alert_text,
@@ -110,31 +106,6 @@ class SessionsPatientPage:
         self.record_as_already_vaccinated_link = self.page.get_by_role(
             "link", name="Record as already vaccinated"
         )
-
-    @step("Navigate to child's programme page")
-    def navigate_to_child_programme(
-        self,
-        school: School,
-        programme_group: str,
-        child: Child,
-        programme: Programme,
-    ) -> None:
-        """Navigate to a child's programme tab in a session.
-
-        Args:
-            school: The school for the session
-            programme_group: The programme group identifier
-            child: The child to navigate to
-            programme: The programme tab to open
-        """
-        DashboardPage(self.page).header.click_mavis()
-        DashboardPage(self.page).click_sessions()
-        SessionsSearchPage(self.page).click_session_for_programme_group(
-            school, programme_group
-        )
-        SessionsOverviewPage(self.page).tabs.click_children_tab()
-        SessionsChildrenPage(self.page).search.search_and_click_child(child)
-        self.click_programme_tab(programme)
 
     @step("Click on {1} tab")
     def click_programme_tab(self, programme: Programme) -> None:
