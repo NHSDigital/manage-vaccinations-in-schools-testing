@@ -111,13 +111,22 @@ class TeamSchoolsPage:
     def fill_site_name(self, site_name: str) -> None:
         self.name_textbox.fill(site_name)
 
+    @step("Check phase selection is pre-selected with {1}")
+    def check_phase_selection(self, phase: str) -> None:
+        expect(self.page.get_by_role("radio", name=phase)).to_be_checked()
+
+    @step("Choose phase {1}")
+    def choose_phase(self, phase: str) -> None:
+        self.page.get_by_role("radio", name=phase).check()
+
     @step("Check confirm screen shows correct details")
     def check_confirm_screen_shows_right_details(
-        self, site_urn: str, site_name: str, site_address_line_1: str
+        self, site_urn: str, site_name: str, site_address_line_1: str, site_phase: str
     ) -> None:
         expect(self.page.get_by_text(site_urn)).to_be_visible()
         expect(self.page.get_by_text(site_name)).to_be_visible()
         expect(self.page.get_by_text(site_address_line_1)).to_be_visible()
+        expect(self.page.get_by_text(site_phase)).to_be_visible()
 
     @step("Confirm site")
     def confirm_site(self) -> None:

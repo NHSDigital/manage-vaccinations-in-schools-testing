@@ -2,6 +2,7 @@ import random
 import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import date
+from typing import ClassVar
 
 import httpx
 import nhs_number
@@ -51,9 +52,26 @@ class School(Location):
     address_line_2: str
     address_town: str
     address_postcode: str
+    gias_phase: str = ""
 
     def __str__(self) -> str:
         return self.name
+
+    _GIAS_PHASE_LABELS: ClassVar[dict[str, str]] = {
+        "nursery": "Nursery",
+        "primary": "Primary",
+        "middle_deemed_primary": "Primary",
+        "secondary": "Secondary",
+        "middle_deemed_secondary": "Secondary",
+        "sixteen_plus": "Other / Unknown",
+        "all_through": "Other / Unknown",
+        "not_applicable": "Other / Unknown",
+        "unknown": "Other / Unknown",
+    }
+
+    @property
+    def phase(self) -> str:
+        return self._GIAS_PHASE_LABELS.get(self.gias_phase.lower(), self.gias_phase)
 
     @property
     def urn_and_site(self) -> str:
@@ -109,6 +127,7 @@ class School(Location):
                     address_line_2=school_data["address_line_2"],
                     address_town=school_data["address_town"],
                     address_postcode=school_data["address_postcode"],
+                    gias_phase=school_data.get("gias_phase", ""),
                 )
                 for school_data in schools_data
             ]
