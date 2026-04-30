@@ -11,6 +11,8 @@ MAVIS_NOTE_LENGTH_LIMIT = 1000
 
 MMRV_ELIGIBILITY_CUTOFF_DOB = date(2020, 1, 1)
 
+ALL_YEAR_GROUPS = frozenset(range(12))
+
 
 class ConsentOption(StrEnum):
     INJECTION = "Injection"
