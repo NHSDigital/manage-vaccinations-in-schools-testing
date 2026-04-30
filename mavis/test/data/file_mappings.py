@@ -60,6 +60,7 @@ class VaccsFileMapping(FileMapping):
 class ChildFileMapping(FileMapping):
     EMPTY_FILE = "empty"
     FIXED_CHILD = "fixed_child"
+    FIXED_CHILD_ADD_NHS_GENDER = "fixed_child_add_nhs_gender"
     HEADER_ONLY = "header_only"
     HOME_EDUCATED_CHILD = "home_educated_child"
     INVALID_STRUCTURE = "invalid_structure"
@@ -83,7 +84,10 @@ class ClassFileMapping(FileMapping):
     DUPLICATE_POSTCODE_2 = "duplicate_postcode_2"
     EMPTY_FILE = "empty"
     FIXED_CHILD = "fixed_child"
+    FIXED_CHILD_NO_NHS_GENDER = "fixed_child_no_nhs_gender"
     HEADER_ONLY = "header_only"
+    TWO_CHILDREN_ACTIVITY_LOG = "two_children_activity_log"
+    TWO_CHILDREN_ACTIVITY_LOG_UPDATED = "two_children_activity_log_updated"
     INVALID_STRUCTURE = "invalid_structure"
     NEGATIVE = "negative"
     POSITIVE = "positive"
