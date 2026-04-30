@@ -34,6 +34,7 @@ pytestmark = pytest.mark.reporting
 
 _yg1, _yg2, _yg3 = random.sample(list(range(7, 12)), 3)
 _year_groups = {p.group: _yg1 for p in Programme}
+_school_year_groups = {p.group: [_yg1, _yg2, _yg3] for p in Programme}
 
 # Separate year groups for consent breakdown test
 # (different teams use different year groups to avoid school conflicts)
@@ -48,7 +49,7 @@ _consent_breakdown_setup_complete = False
 
 def _onboard_team(base_url, year_groups=None):
     if year_groups is None:
-        year_groups = _year_groups
+        year_groups = _school_year_groups
     onboarding = PointOfCareOnboarding.get_onboarding_data_for_tests(
         base_url=base_url,
         year_groups=year_groups,
