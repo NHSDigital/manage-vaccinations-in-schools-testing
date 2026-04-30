@@ -1,4 +1,7 @@
-from .create_child import create_child
+from .create_child import (
+    create_child,
+    create_child_eligible_for_programme,
+)
 from .data_models import (
     children,
     national_reporting_file_generator,
@@ -60,6 +63,7 @@ __all__ = [
     "browser_type",
     "children",
     "create_child",
+    "create_child_eligible_for_programme",
     "delete_teams_after_tests",
     "log_in_as_medical_secretary",
     "log_in_as_nurse",

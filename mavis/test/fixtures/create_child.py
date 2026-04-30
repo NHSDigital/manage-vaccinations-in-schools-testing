@@ -4,6 +4,7 @@ import urllib.parse
 import httpx
 import pytest
 
+from mavis.test.constants import Programme
 from mavis.test.data_models import Child, School, Team
 
 
@@ -49,3 +50,12 @@ def create_child(base_url):
         return child
 
     return _create_child
+
+
+@pytest.fixture
+def create_child_eligible_for_programme(create_child):
+    def _create_child_eligible_for_programme(programme: Programme, team: Team) -> Child:
+        year_group = random.choice(programme.year_groups)
+        return create_child(year_group, team)
+
+    return _create_child_eligible_for_programme
