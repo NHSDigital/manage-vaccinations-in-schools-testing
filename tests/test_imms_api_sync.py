@@ -17,7 +17,7 @@ from mavis.test.pages import (
     DashboardPage,
     VaccinationRecordPage,
 )
-from mavis.test.utils import get_current_datetime
+from mavis.test.utils import deliberate_sleep, get_current_datetime
 
 pytestmark = pytest.mark.imms_api
 
@@ -89,11 +89,16 @@ def test_create_imms_record_then_verify_on_children_page(
         vaccination_time=vaccination_time,
     )
 
-    url = urllib.parse.urljoin(
-        base_url, "api/testing/vaccinations-search-in-nhs?wait=true"
-    )
-    response = httpx.post(url, timeout=300)
-    response.raise_for_status()
+    api_url = urllib.parse.urljoin(base_url, "api/testing/vaccinations-search-in-nhs")
+    httpx.post(api_url, timeout=30).raise_for_status()
+
+    # Poll until the search queue has drained (GET returns 200 when empty)
+    for _ in range(1200):
+        r = httpx.get(api_url, timeout=30)
+        if r.is_success:
+            break
+        deliberate_sleep(0.25, "waiting for IMMS search queue to drain")
+    r.raise_for_status()
 
     # Verify the child created via IMMS API is visible in Mavis children page
     DashboardPage(page).navigate()
