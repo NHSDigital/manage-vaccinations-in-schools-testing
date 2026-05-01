@@ -37,7 +37,7 @@ class SessionsPatientPage:
         )
         self.edit_gillick_competence_link = self.page.get_by_role(
             "link",
-            name="Edit Gillick competence",
+            name="Update Gillick competence",
         )
         self.could_not_vaccinate_link = self.page.get_by_role(
             "link",
