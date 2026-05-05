@@ -96,7 +96,7 @@ def test_create_imms_record_then_verify_on_children_page(
     # Poll until the search queue has drained (GET returns 200 when empty)
     for _ in range(1200):
         r = httpx.get(api_url, timeout=30)
-        if r.is_success:
+        if r.status_code == 200:
             break
         deliberate_sleep(0.25, "waiting for IMMS search queue to drain")
     r.raise_for_status()
