@@ -88,7 +88,6 @@ jobs:
               echo "environment=${env_map[qa]}"
               echo "set_feature_flags=false"
               echo "additional_feature_flags="
-              echo "deploy_report=false"
               echo "screenshot_all_steps=false"
           } >> "$GITHUB_OUTPUT"
           else
@@ -102,7 +101,6 @@ jobs:
 
               echo "set_feature_flags=${{ github.event.inputs.set_feature_flags }}"
               echo "additional_feature_flags=${{ github.event.inputs.additional_feature_flags }}"
-              echo "deploy_report=true"
               echo "screenshot_all_steps=${{ github.event.inputs.screenshot_all_steps }}"
             } >> "$GITHUB_OUTPUT"
           fi
@@ -142,14 +140,14 @@ jobs:
           IMMS_API_PEM: ${{ secrets.IMMS_API_PEM }}
 
       - name: Configure AWS credentials
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        if: always()
         uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           aws-region: eu-west-2
           role-to-assume: arn:aws:iam::393416225559:role/GitHubAssuranceTestRole
 
       - name: Process reports
-        if: always() && steps.set-variables.outputs.deploy_report == 'true'
+        if: always()
         uses: ./.github/actions/deploy-reports
         with:
           device: ${{ steps.set-variables.outputs.device }}
