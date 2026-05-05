@@ -59,6 +59,7 @@ def setup_session_with_file_upload(
     return url_with_session_scheduled
 
 
+@pytest.mark.unstable
 def test_online_consent_school_moves_with_existing_patient(
     setup_session_with_file_upload,
     start_consent_with_session_scheduled,
@@ -122,6 +123,7 @@ def test_online_consent_school_moves_with_existing_patient(
     )
 
 
+@pytest.mark.unstable
 def test_online_consent_school_moves_with_new_patient(
     start_consent_with_session_scheduled,
     page,
