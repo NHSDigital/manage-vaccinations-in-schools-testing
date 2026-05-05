@@ -171,6 +171,76 @@ def consent_school_b(consent_team_b):
     return consent_team_b.schools[Programme.FLU.group][0]
 
 
+def _login_as_team(page, team):
+    """Log in as the specified team."""
+    LogInPage(page).navigate()
+    LogInPage(page).log_in_and_choose_team_if_necessary(team.users["nurse"], team.team)
+
+
+def _logout_and_login_as_team(page, team):
+    """Log out and then log in as the specified team."""
+    LogOutPage(page).navigate()
+    LogOutPage(page).verify_log_out_page()
+    _login_as_team(page, team)
+
+
+def _setup_team_with_vaccinations(
+    page,
+    onboarding,
+    school,
+    class_list_uploads,
+    year_groups_for_session,
+    vaccs_children,
+    vaccs_mapping,
+):
+    """
+    Upload class lists, schedule session, and upload vaccination records for a team.
+
+    Args:
+        page: The Playwright page object
+        onboarding: The team's onboarding data
+        school: The school to upload to
+        class_list_uploads: List of tuples (children, mapping, year_group)
+        year_groups_for_session: List of year groups to schedule for session
+        vaccs_children: List of children for vaccination records
+        vaccs_mapping: VaccsFileMapping to use for vaccination records
+    """
+    # Upload class lists
+    for children, mapping, year_group in class_list_uploads:
+        _upload_class_list(page, school, onboarding, children, mapping, year_group)
+
+    # Schedule session
+    schedule_school_session_if_needed(
+        page,
+        school,
+        [Programme.FLU],
+        year_groups_for_session,
+    )
+    session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
+
+    # Upload vaccination records
+    vaccs_fg = _make_file_generator(onboarding, vaccs_children)
+    SessionsOverviewPage(page).header.click_mavis()
+    DashboardPage(page).click_imports()
+    ImportsPage(page).click_upload_records()
+    ImportRecordsWizardPage(page, vaccs_fg).navigate_to_vaccination_records_import()
+    ImportRecordsWizardPage(page, vaccs_fg).upload_and_verify_output(
+        file_mapping=vaccs_mapping,
+        session_id=session_id,
+        programme_group=Programme.FLU.group,
+    )
+
+
+def _process_school_moves_for_children(page, children):
+    """Process school moves for the specified children."""
+    ImportsPage(page).header.click_mavis()
+    DashboardPage(page).click_school_moves()
+
+    for child in children:
+        SchoolMovesPage(page).click_child(child)
+        ReviewSchoolMovePage(page).confirm()
+
+
 def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     global _setup_complete  # noqa: PLW0603
     if _setup_complete:
@@ -180,80 +250,42 @@ def _do_setup(page, base_url, team_a, team_b, all_children, school_a, school_b):
     two_mf = ClassFileMapping.REPORTING_REGRESSION_TWO_MF
     one_f = ClassFileMapping.REPORTING_REGRESSION_ONE_F
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(
-        team_a.users["nurse"], team_a.team
-    )
-
-    _upload_class_list(page, school_a, team_a, [c1, c2], two_mf, _yg1)
-    _upload_class_list(page, school_a, team_a, [c3, c4], two_mf, _yg2)
-
-    schedule_school_session_if_needed(
+    # Set up team A
+    _login_as_team(page, team_a)
+    _setup_team_with_vaccinations(
         page,
+        team_a,
         school_a,
-        [Programme.FLU],
-        [_yg1, _yg2],
-    )
-    session_id_a = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-
-    team_a_vaccs_fg = _make_file_generator(team_a, [c1, c2, c3, c4])
-
-    SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(
-        page, team_a_vaccs_fg
-    ).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, team_a_vaccs_fg).upload_and_verify_output(
-        file_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_A,
-        session_id=session_id_a,
-        programme_group=Programme.FLU.group,
+        class_list_uploads=[
+            ([c1, c2], two_mf, _yg1),
+            ([c3, c4], two_mf, _yg2),
+        ],
+        year_groups_for_session=[_yg1, _yg2],
+        vaccs_children=[c1, c2, c3, c4],
+        vaccs_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_A,
     )
 
-    LogOutPage(page).navigate()
-    LogOutPage(page).verify_log_out_page()
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(
-        team_b.users["nurse"], team_b.team
-    )
-
-    _upload_class_list(page, school_b, team_b, [c2], one_f, _yg1)
-    _upload_class_list(page, school_b, team_b, [c4], one_f, _yg2)
-    _upload_class_list(page, school_b, team_b, [c5, c6], two_mf, _yg3)
-
-    schedule_school_session_if_needed(
+    # Set up team B
+    _logout_and_login_as_team(page, team_b)
+    _setup_team_with_vaccinations(
         page,
+        team_b,
         school_b,
-        [Programme.FLU],
-        [_yg1, _yg2, _yg3],
-    )
-    session_id_b = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-
-    team_b_vaccs_fg = _make_file_generator(team_b, [c5, c6])
-
-    SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(
-        page, team_b_vaccs_fg
-    ).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, team_b_vaccs_fg).upload_and_verify_output(
-        file_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_B,
-        session_id=session_id_b,
-        programme_group=Programme.FLU.group,
+        class_list_uploads=[
+            ([c2], one_f, _yg1),
+            ([c4], one_f, _yg2),
+            ([c5, c6], two_mf, _yg3),
+        ],
+        year_groups_for_session=[_yg1, _yg2, _yg3],
+        vaccs_children=[c5, c6],
+        vaccs_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_B,
     )
 
-    ImportsPage(page).header.click_mavis()
-    DashboardPage(page).click_school_moves()
+    # Process school moves
+    _process_school_moves_for_children(page, [c2, c4])
 
-    SchoolMovesPage(page).click_child(c2)
-    ReviewSchoolMovePage(page).confirm()
-
-    SchoolMovesPage(page).click_child(c4)
-    ReviewSchoolMovePage(page).confirm()
-
+    # Refresh reporting and log out
     _refresh_reporting(base_url)
-
     LogOutPage(page).navigate()
     LogOutPage(page).verify_log_out_page()
 
@@ -271,80 +303,42 @@ def _do_consent_breakdown_setup(
     two_mf = ClassFileMapping.REPORTING_REGRESSION_TWO_MF
     one_f = ClassFileMapping.REPORTING_REGRESSION_ONE_F
 
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(
-        team_a.users["nurse"], team_a.team
-    )
-
-    _upload_class_list(page, school_a, team_a, [c1, c2], two_mf, _yg_consent_a)
-    _upload_class_list(page, school_a, team_a, [c3, c4], two_mf, _yg_consent_a)
-
-    schedule_school_session_if_needed(
+    # Set up team A
+    _login_as_team(page, team_a)
+    _setup_team_with_vaccinations(
         page,
+        team_a,
         school_a,
-        [Programme.FLU],
-        [_yg_consent_a],
-    )
-    session_id_a = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-
-    team_a_vaccs_fg = _make_file_generator(team_a, [c1, c2, c3, c4])
-
-    SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(
-        page, team_a_vaccs_fg
-    ).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, team_a_vaccs_fg).upload_and_verify_output(
-        file_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_A,
-        session_id=session_id_a,
-        programme_group=Programme.FLU.group,
+        class_list_uploads=[
+            ([c1, c2], two_mf, _yg_consent_a),
+            ([c3, c4], two_mf, _yg_consent_a),
+        ],
+        year_groups_for_session=[_yg_consent_a],
+        vaccs_children=[c1, c2, c3, c4],
+        vaccs_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_A,
     )
 
-    LogOutPage(page).navigate()
-    LogOutPage(page).verify_log_out_page()
-    LogInPage(page).navigate()
-    LogInPage(page).log_in_and_choose_team_if_necessary(
-        team_b.users["nurse"], team_b.team
-    )
-
-    _upload_class_list(page, school_b, team_b, [c2], one_f, _yg_consent_a)
-    _upload_class_list(page, school_b, team_b, [c4], one_f, _yg_consent_a)
-    _upload_class_list(page, school_b, team_b, [c5, c6], two_mf, _yg_consent_b)
-
-    schedule_school_session_if_needed(
+    # Set up team B
+    _logout_and_login_as_team(page, team_b)
+    _setup_team_with_vaccinations(
         page,
+        team_b,
         school_b,
-        [Programme.FLU],
-        [_yg_consent_a, _yg_consent_b],
-    )
-    session_id_b = SessionsOverviewPage(page).get_session_id_from_offline_excel()
-
-    team_b_vaccs_fg = _make_file_generator(team_b, [c5, c6])
-
-    SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
-    ImportsPage(page).click_upload_records()
-    ImportRecordsWizardPage(
-        page, team_b_vaccs_fg
-    ).navigate_to_vaccination_records_import()
-    ImportRecordsWizardPage(page, team_b_vaccs_fg).upload_and_verify_output(
-        file_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_B,
-        session_id=session_id_b,
-        programme_group=Programme.FLU.group,
+        class_list_uploads=[
+            ([c2], one_f, _yg_consent_a),
+            ([c4], one_f, _yg_consent_a),
+            ([c5, c6], two_mf, _yg_consent_b),
+        ],
+        year_groups_for_session=[_yg_consent_a, _yg_consent_b],
+        vaccs_children=[c5, c6],
+        vaccs_mapping=VaccsFileMapping.REPORTING_REGRESSION_TEAM_B,
     )
 
-    ImportsPage(page).header.click_mavis()
-    DashboardPage(page).click_school_moves()
+    # Process school moves
+    _process_school_moves_for_children(page, [c2, c4])
 
-    SchoolMovesPage(page).click_child(c2)
-    ReviewSchoolMovePage(page).confirm()
-
-    SchoolMovesPage(page).click_child(c4)
-    ReviewSchoolMovePage(page).confirm()
-
+    # Refresh reporting and log out
     _refresh_reporting(base_url)
-
     LogOutPage(page).navigate()
     LogOutPage(page).verify_log_out_page()
 
