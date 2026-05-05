@@ -27,3 +27,7 @@ class ChildEditPage:
     @step("Fill NHS number {2} for child {1}")
     def fill_nhs_no_for_child(self, child: Child, nhs_no: str) -> None:
         self.page.get_by_role("textbox", name=str(child)).fill(nhs_no)
+
+    @step("Click Continue on edit summary page")
+    def click_save(self) -> None:
+        self.page.get_by_role("link", name="Continue").click()

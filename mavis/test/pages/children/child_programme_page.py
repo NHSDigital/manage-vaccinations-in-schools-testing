@@ -118,6 +118,10 @@ class ChildProgrammePage:
         else:
             expect(heading.first).to_be_visible()
 
+    @step("Check no '{1}' entry in the activity log")
+    def expect_no_activity_log_entry(self, heading_name: str) -> None:
+        expect(self.page.get_by_role("heading", name=heading_name)).not_to_be_visible()
+
     def verify_activity_log_for_created_or_matched_child(
         self,
     ) -> None:

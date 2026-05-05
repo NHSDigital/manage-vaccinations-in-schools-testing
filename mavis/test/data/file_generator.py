@@ -156,6 +156,9 @@ class FileGenerator:
                 replacements[f"<<CHILD_{index}_DATE_OF_BIRTH>>"] = (
                     child.date_of_birth.strftime("%Y%m%d")
                 )
+                replacements[f"<<CHILD_{index}_DATE_OF_BIRTH_ISO>>"] = (
+                    child.date_of_birth.strftime("%Y-%m-%d")
+                )
                 replacements[f"<<CHILD_{index}_YEAR_GROUP>>"] = str(child.year_group)
                 replacements[f"<<CHILD_{index}_PARENT_1_NAME>>"] = child.parents[
                     0
