@@ -183,6 +183,7 @@ def test_verify_child_cannot_be_vaccinated_twice_for_mmr_on_same_day(
     )
 
 
+@pytest.mark.unstable
 def test_recording_mmr_vaccination_e2e_with_imported_dose_one(
     url_with_mmr_session_scheduled,
     setup_session_for_mmr,

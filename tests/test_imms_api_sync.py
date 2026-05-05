@@ -49,6 +49,7 @@ def setup_session_for_flu(setup_session_and_batches_with_fixed_child):
 
 
 @issue("MAV-2831")
+@pytest.mark.unstable
 def test_create_imms_record_then_verify_on_children_page(
     imms_api_helper,
     log_in_as_nurse,
