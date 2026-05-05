@@ -1,4 +1,4 @@
-"""Minimal mock SOAP service implementing the SchImmsService / InsertImmsRecord
+"""Minimal mock SOAP service implementing the SCHImmsService / InsertImmsRecord
 endpoint described in the CarePlus WSDL.
 """
 
@@ -12,22 +12,17 @@ from defusedxml import ElementTree
 
 log = logging.getLogger(__name__)
 
-DEFAULT_NAMESPACE_BASE = "https://careplus.syhapp.thirdparty.nhs.uk"
+CAREPLUS_BASE_URL = "http://careplus.syhapp.thirdparty.nhs.uk"
 
 
 class Config(TypedDict):
     host: str
     port: int
-    namespace: str
     path: str
 
 
-def build_target_namespace(site_namespace: str) -> str:
-    return f"{DEFAULT_NAMESPACE_BASE}/{site_namespace}/webservices"
-
-
 def build_service_path(site_namespace: str) -> str:
-    return f"/{site_namespace}/soap.SchImms.cls"
+    return f"/{site_namespace}/soap.SCHImms.cls"
 
 
 def _split_request_target(request_target: str) -> tuple[str, str]:
@@ -37,18 +32,17 @@ def _split_request_target(request_target: str) -> tuple[str, str]:
 
 def _build_wsdl(config: Config) -> str:
     location = f"http://{config['host']}:{config['port']}{config['path']}"
-    soap_action = f"{config['namespace']}/soap.SchImms.InsertImmsRecord"
-    namespace = config["namespace"]
+    soap_action = f"{CAREPLUS_BASE_URL}/soap.SCHImms.InsertImmsRecord"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <definitions
     xmlns="http://schemas.xmlsoap.org/wsdl/"
     xmlns:s="http://www.w3.org/2001/XMLSchema"
-    xmlns:s0="{namespace}"
+    xmlns:s0="{CAREPLUS_BASE_URL}"
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    targetNamespace="{namespace}">
+    targetNamespace="{CAREPLUS_BASE_URL}">
 
   <types>
-    <s:schema elementFormDefault="qualified" targetNamespace="{namespace}">
+    <s:schema elementFormDefault="qualified" targetNamespace="{CAREPLUS_BASE_URL}">
       <s:element name="InsertImmsRecord">
         <s:complexType>
           <s:sequence>
@@ -75,14 +69,14 @@ def _build_wsdl(config: Config) -> str:
     <part name="parameters" element="s0:InsertImmsRecordResponse"/>
   </message>
 
-  <portType name="SchImmsServiceSoap">
+  <portType name="SCHImmsServiceSoap">
     <operation name="InsertImmsRecord">
       <input message="s0:InsertImmsRecordSoapIn"/>
       <output message="s0:InsertImmsRecordSoapOut"/>
     </operation>
   </portType>
 
-  <binding name="SchImmsServiceSoap" type="s0:SchImmsServiceSoap">
+  <binding name="SCHImmsServiceSoap" type="s0:SCHImmsServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
     <operation name="InsertImmsRecord">
       <soap:operation soapAction="{soap_action}" style="document"/>
@@ -91,8 +85,8 @@ def _build_wsdl(config: Config) -> str:
     </operation>
   </binding>
 
-  <service name="SchImmsService">
-    <port name="SchImmsServiceSoap" binding="s0:SchImmsServiceSoap">
+  <service name="SCHImmsService">
+    <port name="SCHImmsServiceSoap" binding="s0:SCHImmsServiceSoap">
       <soap:address location="{location}"/>
     </port>
   </service>
@@ -100,10 +94,10 @@ def _build_wsdl(config: Config) -> str:
 </definitions>"""
 
 
-def _soap_response(namespace: str, result: str) -> bytes:
+def _soap_response(result: str) -> bytes:
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-               xmlns:s0="{namespace}">
+               xmlns:s0="{CAREPLUS_BASE_URL}">
   <soap:Body>
     <s0:InsertImmsRecordResponse>
       <s0:InsertImmsRecordResult>{result}</s0:InsertImmsRecordResult>
@@ -251,8 +245,7 @@ class SOAPHandler(BaseHTTPRequestHandler):
             self._send_xml(400, _soap_fault("soap:Client", f"Malformed XML: {exc}"))
             return
 
-        namespace = self.config["namespace"]
-        insert_el = root.find(f".//{{{namespace}}}InsertImmsRecord")
+        insert_el = root.find(f".//{{{CAREPLUS_BASE_URL}}}InsertImmsRecord")
         if insert_el is None:
             self._send_xml(
                 400,
@@ -260,9 +253,9 @@ class SOAPHandler(BaseHTTPRequestHandler):
             )
             return
 
-        user_id = insert_el.findtext(f"{{{namespace}}}strUserId") or ""
-        pwd = insert_el.findtext(f"{{{namespace}}}strPwd") or ""
-        payload = insert_el.findtext(f"{{{namespace}}}strPayload") or ""
+        user_id = insert_el.findtext(f"{{{CAREPLUS_BASE_URL}}}strUserId") or ""
+        pwd = insert_el.findtext(f"{{{CAREPLUS_BASE_URL}}}strPwd") or ""
+        payload = insert_el.findtext(f"{{{CAREPLUS_BASE_URL}}}strPayload") or ""
 
         try:
             result = handle_insert_imms_record(user_id, pwd, payload)
@@ -271,7 +264,7 @@ class SOAPHandler(BaseHTTPRequestHandler):
             self._send_xml(400, _soap_fault("soap:Client", str(exc)))
             return
 
-        self._send_xml(200, _soap_response(namespace, result))
+        self._send_xml(200, _soap_response(result))
 
     def _send_xml(self, status: int, body: bytes) -> None:
         self.send_response(status)
