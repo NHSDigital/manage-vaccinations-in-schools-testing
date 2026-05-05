@@ -195,7 +195,7 @@ def upload_offline_vaccination(
         schedule_school_session_if_needed(page, school, [programme], [child.year_group])
         session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
         SessionsOverviewPage(page).header.click_mavis()
-        DashboardPage(page).click_imports()
+        DashboardPage(page).click_manage_data()
         ImportsPage(page).click_upload_records()
         ImportRecordsWizardPage(
             page, point_of_care_file_generator
@@ -299,5 +299,5 @@ def setup_national_reporting_import(
     LogInPage(page).log_in_and_choose_team_if_necessary(
         national_reporting_nurse, national_reporting_team
     )
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()

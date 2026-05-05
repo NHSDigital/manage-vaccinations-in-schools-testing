@@ -41,7 +41,7 @@ def test_single_from_child_record(
     imports_page = ImportsPage(page)
 
     # Import a child with parent details via child records.
-    imports_page.header.click_imports()
+    imports_page.header.click_manage_data()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_child_record_import()
     import_records_wizard_page.upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
@@ -106,7 +106,7 @@ def test_bulk_home_educated_or_unknown_school(
 
     # Import a home-educated or unknown school child with parent details via child
     # records.
-    imports_page.header.click_imports()
+    imports_page.header.click_manage_data()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_child_record_import()
     import_records_wizard_page.upload_and_verify_output(child_file_mapping)

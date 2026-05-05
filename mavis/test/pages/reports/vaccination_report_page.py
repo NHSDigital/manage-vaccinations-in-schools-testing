@@ -1,7 +1,7 @@
-from io import StringIO
+import re
 
 import pandas as pd
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 from mavis.test.annotations import step
 from mavis.test.constants import Programme, ReportFormat
@@ -49,24 +49,27 @@ class VaccinationReportPage:
     def download_report_as_dataframe(self) -> pd.DataFrame:
         """Download the report and return it as a pandas DataFrame."""
         _file_path = f"working/rpt_{get_current_datetime_compact()}.csv"
-        browser_type_name = getattr(
-            getattr(self.page.context, "browser", None), "browser_type", None
-        )
 
-        # Playwright's webkit browser always opens CSVs in the browser
-        if getattr(browser_type_name, "name", None) == "webkit":
-            self.click_download_report()
-            csv_content = self.page.locator("pre").inner_text()
-            df = pd.read_csv(StringIO(csv_content))
-            self.page.go_back()
-        else:
-            with self.page.expect_download() as download_info:
-                self.click_download_report()
-            download = download_info.value
-            download.save_as(_file_path)
-            df = pd.read_csv(_file_path)
+        self.page.get_by_role("group", name="Academic year").get_by_role(
+            "radio"
+        ).first.check()
 
-        return df
+        self.click_download_report()
+        self.page.wait_for_url("**/downloads*")
+
+        expect(self.page.get_by_text("Ready").first).to_be_visible(timeout=60_000)
+
+        with self.page.expect_download() as download_info:
+            self.page.get_by_role(
+                "link", name=re.compile(r"vaccination records")
+            ).first.click()
+
+        download = download_info.value
+        download.save_as(_file_path)
+
+        self.page.go_back()
+
+        return pd.read_csv(_file_path)
 
     def choose_programme(self, programme: Programme) -> None:
         # temp to ensure MMR works as expected

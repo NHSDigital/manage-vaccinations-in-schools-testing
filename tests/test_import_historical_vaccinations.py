@@ -20,7 +20,7 @@ def setup_hist_vaccs(
     page,
     point_of_care_file_generator,
 ):
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator

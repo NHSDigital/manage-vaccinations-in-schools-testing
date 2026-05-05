@@ -79,7 +79,7 @@ def setup_mav_853(
     session_id = SessionsOverviewPage(page).get_session_id_from_offline_excel()
 
     SessionsOverviewPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -89,7 +89,7 @@ def setup_mav_853(
     ).upload_and_verify_output(ChildFileMapping.FIXED_CHILD)
 
     ImportsPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator
@@ -226,7 +226,7 @@ def test_archive_and_unarchive_child_via_cohort_upload(
     ChildArchivePage(page).archive_child_record()
 
     ChildRecordPage(page).header.click_mavis()
-    DashboardPage(page).click_imports()
+    DashboardPage(page).click_manage_data()
     ImportsPage(page).click_upload_records()
     ImportRecordsWizardPage(
         page, point_of_care_file_generator

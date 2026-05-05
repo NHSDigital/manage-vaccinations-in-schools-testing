@@ -1,5 +1,4 @@
 from datetime import date
-from io import StringIO
 
 import pandas as pd
 from pandas import DataFrame, Series
@@ -8,6 +7,7 @@ from playwright.sync_api import Page
 from mavis.test.annotations import step
 from mavis.test.constants import SCHOOL_MOVE_HEADERS
 from mavis.test.data_models import Child, School
+from mavis.test.pages.downloads_page import DownloadsPage
 from mavis.test.pages.header_component import HeaderComponent
 
 
@@ -26,8 +26,9 @@ class DownloadSchoolMovesPage:
         self.to_month = to_group.get_by_role("textbox", name="Month")
         self.to_year = to_group.get_by_role("textbox", name="Year")
 
-        self.continue_button = page.get_by_role("button", name="Continue")
-        self.download_csv_button = page.get_by_role("button", name="Download CSV")
+        self.continue_button = page.get_by_role(
+            "button", name="Download school move data"
+        )
 
     def enter_date_range(
         self,
@@ -47,24 +48,10 @@ class DownloadSchoolMovesPage:
         self.click_continue()
 
     def confirm_and_get_school_moves_csv(self) -> DataFrame:
-        browser = getattr(self.page.context, "browser", None)
-        browser_type_name = getattr(
-            getattr(browser, "browser_type", None),
-            "name",
-            None,
-        )
-
-        # Playwright's webkit browser always opens CSVs in the browser
-        # unlike Chromium and Firefox
-        if browser_type_name == "webkit":
-            self.click_download_csv()
-            csv_content = self.page.locator("pre").inner_text()
-            self.page.go_back()
-            return pd.read_csv(StringIO(csv_content), dtype={"NHS_REF": str})
-
-        with self.page.expect_download() as download_info:
-            self.click_download_csv()
-        return pd.read_csv(download_info.value.path(), dtype={"NHS_REF": str})
+        downloads = DownloadsPage(self.page)
+        downloads.wait_for_ready()
+        file_path = downloads.download_csv()
+        return pd.read_csv(file_path, dtype={"NHS_REF": str})
 
     def verify_school_moves_csv_contents(
         self, school_moves_csv: DataFrame, children: list[Child], school: School
@@ -104,10 +91,6 @@ class DownloadSchoolMovesPage:
         for col, expected in fields_to_check:
             actual = str(row_data[col])
             assert actual == expected, f"{col}: expected '{expected}', got '{actual}'"
-
-    @step("Click Download CSV")
-    def click_download_csv(self) -> None:
-        self.download_csv_button.click()
 
     @step("Click Continue")
     def click_continue(self) -> None:

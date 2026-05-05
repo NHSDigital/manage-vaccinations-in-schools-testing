@@ -12,6 +12,7 @@ from .consent import (
     ConsentResponseDetailsPage,
 )
 from .dashboard_page import DashboardPage
+from .downloads_page import DownloadsPage
 from .error_pages import BadRequestPage, PageNotFound, ServiceErrorPage
 from .flipper_page import FlipperPage
 from .imports import ImportIssuesPage, ImportRecordsWizardPage, ImportsPage
@@ -74,6 +75,7 @@ __all__ = [
     "CreateNewRecordConsentResponsePage",
     "DashboardPage",
     "DownloadSchoolMovesPage",
+    "DownloadsPage",
     "EditVaccinationRecordPage",
     "FlipperPage",
     "GillickCompetencePage",

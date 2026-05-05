@@ -15,7 +15,11 @@ class HeaderComponent:
         links = page.get_by_label("Menu", exact=True)
 
         self.children_link = links.get_by_role("link", name="Children")
-        self.imports_link = links.get_by_role("link", name="Imports")
+        self.manage_data_link = (
+            links.get_by_role("link", name="Manage data")
+            .or_(links.get_by_role("link", name="Imports"))
+            .first
+        )
         self.programmes_link = links.get_by_role("link", name="Programmes")
         self.school_moves_link = links.get_by_role("link", name="School Moves")
         self.schools_link = links.get_by_role("link", name="Schools")
@@ -34,9 +38,9 @@ class HeaderComponent:
     def click_children(self) -> None:
         self.children_link.click()
 
-    @step("Click on Imports")
-    def click_imports(self) -> None:
-        self.imports_link.click()
+    @step("Click on Manage data")
+    def click_manage_data(self) -> None:
+        self.manage_data_link.click()
 
     @step("Click on Programmes")
     def click_programmes(self) -> None:

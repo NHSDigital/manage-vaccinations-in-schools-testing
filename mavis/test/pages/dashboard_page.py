@@ -19,7 +19,9 @@ class DashboardPage:
             "Unmatched Consent Responses",
         )
         self.school_moves_link = links.get_by_text("School Moves")
-        self.imports_link = links.get_by_text("Imports")
+        self.manage_data_link = links.get_by_text("Manage data").or_(
+            links.get_by_text("Imports")
+        )
         self.your_team_link = links.get_by_text("Your Team")
         self.service_guidance_link = links.get_by_text("Service Guidance")
         self.schools_link = links.get_by_text("Schools")
@@ -64,9 +66,9 @@ class DashboardPage:
     def click_school_moves(self) -> None:
         self.school_moves_link.click()
 
-    @step("Click on Imports")
-    def click_imports(self) -> None:
-        self.imports_link.click()
+    @step("Click on Manage data")
+    def click_manage_data(self) -> None:
+        self.manage_data_link.click()
 
     @step("Click on Your Team")
     def click_your_team(self) -> None:
@@ -84,17 +86,17 @@ class DashboardPage:
     def verify_children_link_visible(self) -> None:
         expect(self.children_link).to_be_visible()
 
-    @step("Verify Imports link is visible")
-    def verify_imports_link_visible(self) -> None:
-        expect(self.imports_link).to_be_visible()
+    @step("Verify Manage data link is visible")
+    def verify_manage_data_link_visible(self) -> None:
+        expect(self.manage_data_link).to_be_visible()
 
     @step("Verify header Children link is visible")
     def verify_header_children_link_visible(self) -> None:
         expect(self.header.children_link).to_be_visible()
 
-    @step("Verify header Import Records link is visible")
-    def verify_header_imports_link_visible(self) -> None:
-        expect(self.header.imports_link).to_be_visible()
+    @step("Verify header Manage data link is visible")
+    def verify_header_manage_data_link_visible(self) -> None:
+        expect(self.header.manage_data_link).to_be_visible()
 
     @step("Verify Service Guidance link for National Reporting")
     def verify_service_guidance_link_national_reporting(self) -> None:

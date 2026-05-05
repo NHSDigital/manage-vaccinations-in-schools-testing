@@ -61,7 +61,7 @@ def test_eligible(
     vaccination_record_page = VaccinationRecordPage(page)
 
     # Import a child that is eligible for the programme.
-    imports_page.header.click_imports()
+    imports_page.header.click_manage_data()
     imports_page.click_upload_records()
     import_records_wizard_page.navigate_to_child_record_import()
     import_records_wizard_page.upload_and_verify_output(

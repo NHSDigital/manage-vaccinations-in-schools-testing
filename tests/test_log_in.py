@@ -67,10 +67,10 @@ def test_login_with_valid_credentials_national_reporting(
 
     DashboardPage(page).verify_mavis_link_visible()
     DashboardPage(page).verify_children_link_visible()
-    DashboardPage(page).verify_imports_link_visible()
+    DashboardPage(page).verify_manage_data_link_visible()
 
     DashboardPage(page).verify_header_children_link_visible()
-    DashboardPage(page).verify_header_imports_link_visible()
+    DashboardPage(page).verify_header_manage_data_link_visible()
 
     DashboardPage(page).verify_service_guidance_link_national_reporting()  # MAV-3261
 
@@ -123,12 +123,12 @@ def test_login_with_valid_credentials_point_of_care(
     DashboardPage(page).verify_vaccines_link_visible()
     DashboardPage(page).verify_unmatched_consent_responses_link_visible()
     DashboardPage(page).verify_school_moves_link_visible()
-    DashboardPage(page).verify_imports_link_visible()
+    DashboardPage(page).verify_manage_data_link_visible()
     DashboardPage(page).verify_your_team_link_visible()
     DashboardPage(page).verify_service_guidance_link_visible()
 
     DashboardPage(page).verify_header_children_link_visible()
-    DashboardPage(page).verify_header_imports_link_visible()
+    DashboardPage(page).verify_header_manage_data_link_visible()
 
     DashboardPage(page).verify_service_guidance_link_point_of_care()  # MAV-3261
 
