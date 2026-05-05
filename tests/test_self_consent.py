@@ -8,17 +8,23 @@ from mavis.test.constants import (
     Programme,
 )
 from mavis.test.data import ClassFileMapping
+from mavis.test.data_models import VaccinationRecord
 from mavis.test.pages import (
+    ChildProgrammePage,
+    ChildRecordPage,
+    ChildrenSearchPage,
     DashboardPage,
     GillickCompetencePage,
     ImportRecordsWizardPage,
     NurseConsentWizardPage,
+    RecordVaccinationWizardPage,
     SchoolChildrenPage,
     SchoolsSearchPage,
     SessionsChildrenPage,
     SessionsOverviewPage,
     SessionsPatientPage,
     SessionsPatientSessionActivityPage,
+    SessionsRecordVaccinationsPage,
     SessionsSearchPage,
 )
 from mavis.test.pages.utils import schedule_school_session_if_needed
@@ -69,56 +75,93 @@ programmes_and_consent_options = [
     indirect=True,
     ids=lambda v: f"{v[0]}-{v[1]}",
 )
-def test_gillick(session_with_child_for_programme, children, schools, page):
+def test_gillick_competence_consent_and_vaccination(
+    session_with_child_for_programme, children, schools, page, add_vaccine_batch
+):
     """
-    Test: Add and edit Gillick competence assessment for a child.
+    Test: Record Gillick competence, child self-consent, and vaccination.
 
     Steps:
-    1. Open the session for the school and programme.
-    2. Navigate to Gillick competence assessment for the child.
-    3. Add a Gillick competence assessment as competent.
-    4. Edit the assessment to mark as not competent.
+    1. Open the session and navigate to the child's programme tab.
+    2. Assess Gillick competence as competent.
+    3. Record child self-consent.
+    4. Verify Gillick competence status appears on offline sheet.
+    5. Set session in progress and register child as attending.
+    6. Add vaccine batch and record vaccination for the child.
+    7. Verify vaccination is recorded and appears in child record.
 
     Expectations:
-    - Gillick competence status is updated and reflected for the child.
+    - Gillick competence is recorded as competent and verified.
+    - Child self-consent is recorded successfully.
+    - Vaccination is recorded for the child and appears in their record.
     """
-
-    programme, _ = session_with_child_for_programme
+    programme, consent_option = session_with_child_for_programme
     child = children[programme.group][0]
     school = schools[programme.group][0]
 
-    dashboard_page = DashboardPage(page)
-    gillick_competence_page = GillickCompetencePage(page)
-    sessions_children_page = SessionsChildrenPage(page)
-    sessions_overview_page = SessionsOverviewPage(page)
-    sessions_patient_page = SessionsPatientPage(page)
-    sessions_search_page = SessionsSearchPage(page)
+    vaccine = programme.get_default_vaccine(consent_option)
+    batch_name = add_vaccine_batch(vaccine)
 
+    dashboard_page = DashboardPage(page)
+    dashboard_page.header.click_mavis()
+    dashboard_page.click_sessions()
+    SessionsSearchPage(page).click_session_for_programmes(school, [programme])
+
+    sessions_overview_page = SessionsOverviewPage(page)
     sessions_overview_page.tabs.click_children_tab()
+
+    sessions_children_page = SessionsChildrenPage(page)
     sessions_children_page.search.search_and_click_child(child)
+
+    sessions_patient_page = SessionsPatientPage(page)
     sessions_patient_page.click_programme_tab(programme)
     sessions_patient_page.click_assess_gillick_competence()
+
+    gillick_competence_page = GillickCompetencePage(page)
     gillick_competence_page.add_gillick_competence(is_competent=True)
 
-    sessions_children_page.header.click_mavis()
+    sessions_patient_page.click_record_a_new_consent_response()
+
+    nurse_consent_wizard_page = NurseConsentWizardPage(page)
+    nurse_consent_wizard_page.select_gillick_competent_child()
+    nurse_consent_wizard_page.record_child_given_consent(programme, consent_option)
+    expect_alert_text(page, f"Consent recorded for {child!s}")
+
+    sessions_patient_page.header.click_mavis()
     dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programmes(school, [programme])
+    SessionsSearchPage(page).click_session_for_programmes(school, [programme])
     sessions_overview_page.verify_offline_sheet_gillick_competence(
         child, competent=True
     )
 
+    sessions_overview_page.click_set_session_in_progress_for_today()
     sessions_overview_page.tabs.click_children_tab()
-    sessions_children_page.search.search_and_click_child(child)
-    sessions_patient_page.click_programme_tab(programme)
-    sessions_patient_page.click_edit_gillick_competence()
-    gillick_competence_page.edit_gillick_competence(is_competent=False)
+    sessions_children_page.register_child_as_attending(child)
 
-    sessions_children_page.header.click_mavis()
-    dashboard_page.click_sessions()
-    sessions_search_page.click_session_for_programmes(school, [programme])
-    sessions_overview_page.verify_offline_sheet_gillick_competence(
-        child, competent=False
+    sessions_children_page.tabs.click_record_vaccinations_tab()
+    sessions_record_vaccinations_page = SessionsRecordVaccinationsPage(page)
+    sessions_record_vaccinations_page.search.search_and_click_child(child)
+
+    vaccination_record = VaccinationRecord(child, programme, batch_name, consent_option)
+    sessions_patient_page.set_up_vaccination(vaccination_record)
+
+    record_vaccination_wizard_page = RecordVaccinationWizardPage(page)
+    record_vaccination_wizard_page.record_vaccination(
+        vaccination_record, test_recording_twice=True
     )
+
+    record_vaccination_wizard_page.header.click_mavis()
+    dashboard_page.click_children()
+
+    children_search_page = ChildrenSearchPage(page)
+    children_search_page.search.search_for_child_name_with_all_filters(str(child))
+    children_search_page.search.click_child(child)
+
+    child_record_page = ChildRecordPage(page)
+    child_record_page.click_programme(programme)
+
+    child_programme_page = ChildProgrammePage(page)
+    child_programme_page.verify_one_vaccination_appears()
 
 
 @issue("MAV-955")
