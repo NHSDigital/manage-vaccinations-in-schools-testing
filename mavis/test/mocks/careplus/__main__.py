@@ -18,7 +18,6 @@ from mavis.test.mocks.careplus import (
     Config,
     SOAPHandler,
     build_service_path,
-    build_target_namespace,
 )
 
 DEFAULT_HOST = "127.0.0.1"
@@ -30,19 +29,17 @@ log = logging.getLogger(__name__)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Mock SchImmsService SOAP server")
+    parser = argparse.ArgumentParser(description="Mock SCHImmsService SOAP server")
     parser.add_argument("--host", default=DEFAULT_HOST)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     parser.add_argument("--site-namespace", default=DEFAULT_SITE_NAMESPACE)
     args = parser.parse_args()
 
-    namespace = build_target_namespace(args.site_namespace)
     path = build_service_path(args.site_namespace)
 
     config: Config = {
         "host": args.host,
         "port": args.port,
-        "namespace": namespace,
         "path": path,
     }
 
